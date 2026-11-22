@@ -1,98 +1,57 @@
 # Automatic graphics configuration: audit and phased plan (VQ-07h)
 
-2026-11-18 · Owner request: audit and consolidate before expanding further. This plan is a VQ-07h subplan of the [advanced graphics plan](advanced-graphics.md). It builds on the [global plan's](global-performance-visual-quality.md) VQ-06a/b preset and Scene detail work and introduces no new track namespace. Decisions live in [DECISIONS](../DECISIONS.md#compatibility-baseline-and-a-windows-nvidia-package); evidence lives in the linked research folders. An independent review challenged the first draft, and its corrections are included below.
+Updated 2026-11-21 against `1f24cb067ca73cc20963f65ad613e7deb4c3899b` and the current implementation branch. Owner: **VQ-07h**, with UI/persistence, PT, desktop delivery, Apple and scenery owners at their existing boundaries. This is a subplan of [advanced graphics](advanced-graphics.md); the [global plan](global-performance-visual-quality.md#gates-to-freeze-in-vq-01c) owns the performance and visual gates. Existing A0–A7 identifiers and links remain authoritative. F01–F20 identify findings in the [retained source audit](../research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/source-audit.md); R01–R20 refer to the [20 primary-source investigations](../research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/research.md). Those dated documents preserve evidence; this plan supersedes their execution order.
 
-**Status, 2026-11-18:**
+**Goal.** Start with a safe, explainable recommendation for the active hardware, preserve the player's choices and physical scenario, and improve quality or smoothness only where matching evidence supports the change. Keep the fixed 240 Hz simulation independent of rendering.
 
-- **Owner decision:** "proceed with the plan, native kernel always". The plan is approved, and the native physics kernel ships and is used on every platform, Windows included (A6 is promoted).
-- **A0 delivered.** [`auto_graphics_report.gd`](../../app/render/auto_graphics_report.gd) explains every automatic decision. AppRoot logs a `Graphics auto:` line at launch, and the bridge command `graphics_auto` returns the full report.
-- **Legacy snapshot.** [`auto_graphics_snapshot.json`](../../app/tests/data/auto_graphics_snapshot.json) holds 1,558 decisions generated from the pre-refactor code: Steam GPUs, Mesa and Apple names × Windows, Linux and macOS × 720p–4K and MacBook panels. `test_auto_graphics_snapshot.gd` guards it.
-- **A1 delivered, output-identical.** [`auto_graphics_policy.gd`](../../app/render/auto_graphics_policy.gd) holds every threshold and decision: renderer, Scene detail, first-launch values and calibration limits. `renderer_preference.gd`, `scene_detail.gd`, `auto_calibration.gd`, `auto_graphics_report.gd` and AppRoot delegate to it; their old constant names alias it. The snapshot reproduces all 1,558 decisions, and the test fails if a threshold copy reappears. The hardware profile is still the report's input dictionary; a separate `HardwareProfile` class waits until A4 adds CPU and RAM terms.
-- **A3 step 1 delivered.** Every capability row states its `provenance` (`measured`, `measured-circular`, `benchmark-derived` or `extrapolated`) and a `correction` factor, 1.0 until A5 evidence exists. Today: the RTX 3090 and the M1 are measured (the M1's correction is 1.09, below), 46 rows benchmark-derived (2026 iGPUs, Arc, RDNA 4, Apple M) and 269 extrapolated. `lookup()` applies the correction and returns the provenance, so the runtime report shows how far each estimate is trusted. Decisions are unchanged.
-- **A5 partly delivered (software and the 3090 only).**
-  - Calibration now classifies CPU-bound frames from the renderer's CPU time and real frame intervals against a refresh- and cap-aware floor. A CPU-bound frame never raises Scene detail; GPU verdicts stay GPU-only. The verdict stores the CPU p95, the interval p95, refresh and SubViewport state as evidence.
-  - `debugctl bugit` now includes the `graphics_auto` report and a one-line graphics summary.
-  - The [worst-case protocol](../research/visual-quality-implementation/VQ-07/worst-case-2026-11-18/README.md) ran on the 3090 at 1080p, 1440p and 4K.
-  - Still open: process and physics CPU in the classification, GPU clock state, the integrated-GPU Mobile/Compatibility measurement, the flying live route and the lab machines.
-- **A4 step 1 delivered: Automatic Extreme.** `AutoGraphicsPolicy.extreme()` admits Extreme where Automatic picks High, High is running, VRAM ≥ 8 GB, CPU threads ≥ 8, and 1.25× the High estimate fits the 4.3 ms budget. The factor is the measured 3090 worst case. The reviewed snapshot diff changes 442 of 1,558 decisions, all High → Extreme: Windows 239, Linux 203, Mac none. Lens effects Automatic follows to Ultra. Calibration drops a missed Extreme to High and never raises to it. Verdicts now record their measured level (format 3), so a "down" measured at High still caps a later Automatic Extreme at Medium, and a policy upgrade is measured again. The host facts are read once per launch. The base model, the other tiers and Ultra shadows or planar reflections are unchanged; those need their owners' qualification.
-  - Still open (independent review): the 8-thread CPU floor is a weak proxy, and calibration has no CPU-bound "down" path. The plan forbids adding one before lab CPUs are measured. The GTX 1070 passes the 1080p gate with about 2% margin.
-- **A7 step 1 delivered: transparency in Settings.**
-  - The Graphics info tooltip states Automatic's mode and Scene detail for this GPU, how far the estimate is trusted (measured, benchmarks, extrapolated or not in the table), and the in-flight GPU p95 once measured.
-  - "Restore graphics defaults" says it also measures again. It already acts as the plan's Re-detect action.
-  - The text lives in the tooltip because the page must still fit at 1080p; all eight languages are translated.
-  - Still open: a Help/Support route to the full report (today `debugctl graphics_auto` and bug reports).
-- **A6 Mac: the M1 row is measured (2026-11-19).** The Apple track's [DT-MAC-03b ladder](../research/desktop-delivery-investigations/DT-MAC-03b/README.md) ran the real Home → Fly route on the M1 under beta2 on an **external 1080p display** mirrored to the panel, so it is 1080p evidence, not native-panel (Retina) evidence. One owner holds the Mac for rendered measurements, so this plan runs no separate M1 anchor.
-  - **Correction 1.09.** Clean 1080p frames with the GPU about 98% busy: Forward+ 17.45 ms (L09 on High) and Mobile 13.05 ms (L10). Against the 3090's 1.07 and 0.77 ms they imply `rel` 0.061 and 0.059, so the M1 row keeps the 0.055 base (the other Apple rows' benchmark ratios use it) and gains a correction of 1.09. Its High estimate at 1080p moves from 19.5 ms (+12%) to 17.9 ms (+3%) against the measured 17.45 ms. `build_gpu_capability.py` computes it from the recorded measurements; `capability.json` keeps them as cross-checks, and the test reproduces both within 5% (in-sample calibration, not validation).
-  - **Scope.** It is cooled throughput: frame intervals bound GPU time from above, but the Mac had external cooling, a fanless Air in sustained play measured `rel` 0.045–0.055, and the anchor (scripted circle) and M1 (real route) workloads differ. Thermal headroom belongs to A3 step 2's power envelope. Above 1080p the single `rel` underestimates the M1 (2560×1600: 20.3 ms modelled against 22.4 ms from the M1 fit), which matters only without MetalFX. The Settings tooltip says "measured on this GPU model"; the scope lives in the row's provenance.
-  - **Decisions.** None of the 1,558 snapshot decisions changes. The M1's Mac Scene detail would flip from Low to Medium only at 2.85–3.11 MP of rendered pixels, which no Apple panel or common scaled mode reaches at the Automatic MetalFX scale (3200×2000 and 3360×2100 sit just outside). Its `rel` stays far from 0.15 (High), 0.18 (120 Hz) and the High renderer budget.
-  - **The Mac rules hold at 1080p.** Automatic picks Standard and Scene detail Medium on the M1 at 1080p, measured at 78.3 fps cooled. Forward+ would cost 21–27%. Scene detail High would cost 2.3% ± 2.2%, and a fanless Air in sustained play loses up to a third at heavy settings while `thermalState` stays `fair`, so Medium stays. With VSync on a 60 Hz panel every level holds a 60 fps mean; the 120 Hz cap rule does not apply. The pacing misses and Home's GPU cost belong to the Apple track (DT-MAC-03b recommendations 6–7).
-  - **Still open:** the Retina branch with the panel alone (A6 below).
-- **AI companion pins renewed after these edits (2026-11-18).**
-  - Behavior manifest: `app_root.gd` and `main.gd`. Their edits are graphics, shadow and update-check only, with no companion admission or launch change.
-  - Solver re-bind `5511bbbc → 90499aa6`: all 9 tapes identical ([receipt](../research/ai-companions/AFC-02/rebinds/2026-11-18-5511bbbc-to-90499aa6.json)), run from an LF clone in WSL. A CRLF Windows checkout makes `rebind.py` and `get-godot.sh` fail.
-- **A6 Windows CPU wired into CI (not yet observed on hosted runners).** `native-kernel-windows` ran green on the hosted runner and is now required. The release export packages its qualified DLL. A new required `native-kernel-windows-package` job qualifies the exported archive on Windows before `release`. Details: [Windows release packages](../../research/native-kernel/README.md#windows-release-packages-nk-4-owner-decision-2026-11-18-native-kernel-always).
+**Current status.** A0 reporting and the legacy snapshot, A1 policy consolidation, A3 provenance, A4 Automatic Extreme and A7's Settings tooltip have already been delivered to the scope described below. The [Home render budget](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results) and the [controller-store stall fixes](../research/visual-quality-implementation/VQ-07/graphics-ladder-2026-11-19/README.md#1-a-2-hz-main-thread-stall-found-and-fixed) are also delivered; extend their existing ownership and tests only if a new failure is demonstrated. Their historical gains are not gains of a new candidate.
 
-**Goal:** on first launch, any supported computer starts with the highest graphical quality it can sustain smoothly, with no player configuration. The examples range from an RTX 5090 to an integrated laptop GPU and a MacBook at its native panel.
+**Branch handoff.** F07 incomplete-calibration acceptance/session cooldown, F13 graphics-reset transaction and F16 RC-circuit preservation are implemented in this branch. Successful reset also retires a partial collector and refreshes live LOD/lens/flags coherently; the general F10/F11 calibration lifecycle remains open. The [implementation receipt](../research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/README.md) owns exact verification and outstanding gates. Other repair substeps are proposed, except where explicitly called delivered. No new target-GPU performance result or tested promotion is claimed.
+
+**Execution decision:** follow the numbered phases and subphases in [§5](#5-order-risks-and-owner-decisions). Complete the current bounded repair first; implement finite renderer recovery next. Use existing hardware evidence immediately, and reserve new machine runs for the specific behavior or performance claim changed by a candidate. A0 is retained evidence, not a new baseline project.
 
 ## 1. Audit of the current system
 
 ### 1.1 What exists
 
-| Decision | Where | Inputs | Output |
-| --- | --- | --- | --- |
-| Renderer (Standard/High) | [`renderer_preference.gd`](../../app/app_state/renderer_preference.gd) `plan()`, `auto_profile()` | GPU row, screen pixels, OS, saved mode, renderer guard, calibration | `user://renderer.cfg` override, which takes effect in exported builds only |
-| GPU knowledge | [`gpu_capability.gd`](../../app/render/gpu_capability.gd) and [`capability.json`](../../app/data/gpu/capability.json), from [`build_gpu_capability.py`](../../tools/graphics/build_gpu_capability.py) | Adapter name (GL, Vulkan, Metal, ANGLE or Mesa) | Row id, `rel`, class, VRAM; the High cost estimate |
-| Scene detail Automatic | [`scene_detail.gd`](../../app/render/scene_detail.gd) | Capability row; on Macs the rendered pixels; calibration; legacy name markers | Low/Medium/High |
-| First-launch display values | `first_run_settings()` with the [`display_preferences.gd`](../../app/app_state/display_preferences.gd) hook | GPU class and `rel`, OS, Retina scale, refresh rate | MSAA, Mac full screen, 60 fps cap |
-| Reconstruction Automatic | [`reconstruction.gd`](../../app/render/reconstruction.gd) `auto_mode()` | Metal capabilities, output rows | MetalFX Spatial or Native |
-| Measured correction | [`auto_calibration.gd`](../../app/render/auto_calibration.gd) | GPU p95 during the first flight | Scene detail ±1; reject automatic High |
-| Recovery | [`renderer_guard.gd`](../../app/app_state/renderer_guard.gd) | Unconfirmed RD launch per build | Falls back to Compatibility and blocks High for that build |
-| Derived knobs | `flag_quality.gd` and Scenery tiers | Scene detail level | Follow Scene detail automatically |
-| Independent knobs | `shadow_settings.gd` (shadows track), birds, meadow, max FPS, VSync | Fixed defaults | Not hardware-aware |
-
-Coverage: 317 rows (144 discrete, 72 laptop, 100 integrated, 1 software). The Steam survey fixture `app/tests/data/steam_gpus_2026_10.json` resolves all 181 named GPUs, which covers about 96% of the surveyed share. About 300 checks guard these pieces.
+| Boundary | Existing owner and behavior | Remaining concern |
+| --- | --- | --- |
+| Recommendation and snapshot | [`auto_graphics_policy.gd`](../../app/render/auto_graphics_policy.gd), [`auto_graphics_report.gd`](../../app/render/auto_graphics_report.gd), and [`auto_graphics_snapshot.json`](../../app/tests/data/auto_graphics_snapshot.json); A0/A1 centralized the thresholds and captured 1,558 decision cases; the later Automatic Extreme change intentionally revised 442 cases. | A stable snapshot proves decision stability, not correctness or performance. Intentionally changed decisions need a reviewed diff. |
+| Renderer | [`renderer_preference.gd`](../../app/app_state/renderer_preference.gd), [`renderer_guard.gd`](../../app/app_state/renderer_guard.gd), and [`app_root.gd`](../../app/app_root.gd) select, restart and recover. | An alternating successful recommendation can lack convergence; the explicit High restart's guard and storage outcomes need repair. |
+| Hardware estimates | [`gpu_capability.gd`](../../app/render/gpu_capability.gd), generated [`capability.json`](../../app/data/gpu/capability.json) and [`build_gpu_capability.py`](../../tools/graphics/build_gpu_capability.py) provide names, relative estimates and provenance. | Matching precedence, broad-family confidence, actual capacity and active-device identity are not fully distinguished. |
+| Calibration and applied detail | [`auto_calibration.gd`](../../app/render/auto_calibration.gd), [`scene_detail.gd`](../../app/render/scene_detail.gd) and AppRoot sample an eligible flight, store a verdict and resolve Automatic detail. Existing code already avoids raising on CPU-bound evidence and records a measured level. | Incomplete, stale, mixed-workload or unvalidated-tier evidence must not become a permanent success; applying a changed level must reach its viewport consumers. |
+| Preferences and explanation | [`display_preferences.gd`](../../app/app_state/display_preferences.gd), [`settings_screen.gd`](../../app/ui/settings_screen.gd) and the report preserve settings and expose a summary. | Reset side effects, renderer Automatic intent, failed persistence and the difference between recommendation and effective result need explicit outcomes. |
+| Existing dynamic work | [`home_render_budget.gd`](../../app/render/home_render_budget.gd) already controls Home scale under its defined ownership rules. | Do not introduce a second Home scaler or extend it to flight without a separately qualified need. |
 
 ### 1.2 What works
 
-- **Detect once, store, never override the player.** Every automatic value is either re-derived (Scene detail Automatic) or stored once (first-launch values, calibration). Explicit choices always win, and Restore defaults returns to the recommendation.
-- **Safety nets.** Unknown GPUs get safe defaults. A renderer that never confirms falls back per build. Editor-binary development, tests and captures are isolated from the saved renderer through the `.template` override. GPUs are keyed by normalized name, so OpenGL and Vulkan names agree.
-- **A measured anchor and a self-correcting loop.** One machine anchors the data (§2), and the first-flight calibration corrects wrong estimates from real GPU time.
+- Current saved/manual values remain user choices; the renderer guard and Compatibility fallback are real recovery mechanisms, although their coverage is incomplete.
+- A4 already admits Automatic Extreme under its measured-anchor policy and records the measured level; a miss can lower Extreme to High. This is not proof that every admitted GPU or scene meets its target.
+- Settings already shows an automatic-graphics summary and the debug bridge exposes `graphics_auto`. Improve their accuracy in A7 rather than adding another report system.
+- The first-flight collector and existing flight/graphics tools are reusable. Their evidence, observers and native-backend status must be checked for the specific claim.
 
 ### 1.3 Weaknesses found
 
-| # | Finding | Consequence |
-| --- | --- | --- |
-| W1 | **The decision logic is spread across six places**, each with its own thresholds: renderer budget 4.3 ms; Scene detail at rel 0.04/0.15; MSAA at rel 0.10; Mac 120 Hz at 0.18; calibration at 85%/30% of a 60 Hz frame. | Settings can contradict each other, and every new knob adds another heuristic. Nothing explains a decision end to end. |
-| W2 | **Only High has a cost estimate.** Scene detail and MSAA use `rel` cut-offs. The Mac pixel rule duplicates `Reconstruction.auto_mode` and is only partly wired to it. | Tiers do not follow the frame budget at the player's resolution. Windows Scene detail ignores resolution entirely. |
-| W3 | **The ceiling is too low for top GPUs.** Automatic never selects Extreme Scene detail or the optional planar reflections, and targets 60 fps only. An RTX 5090 gets the same bundle as an RTX 3060. | The owner's "RTX 5090 at maximum" requirement is not met. |
-| W4 | **Compatibility is the default for most weak hardware**, even though it is never the cheapest renderer measured (§2). | Integrated GPUs, where GPU time decides smoothness, get an expensive path. |
-| W5 | **CPU, RAM and power are not modeled.** Windows releases ship the native physics kernel since v0.2.9 (about 380 µs per tick against 742 µs reference), but reference fallbacks remain. Compatibility costs 1.0–1.3 ms of render CPU per frame. | Weak-CPU laptops can be CPU-limited while the GPU looks fine, and calibration cannot tell CPU-bound from GPU-bound. |
-| W6 | **One scalar per GPU.** `rel` is a single raster estimate. VRAM variants (RTX 3060 8/12 GB, 4060 Ti 8/16 GB), laptop power limits (35–140 W) and memory bandwidth are not represented. Driver quirks are not recorded. | Variants share one row. Bandwidth-bound integrated GPUs and Max-Q laptops may be overestimated. |
-| W7 | **Most data is estimated.** Only the RTX 3090 is measured in this workload. The M1 row is derived from its own measurement (§2). Calibration verdicts stay on each player's machine. | Accuracy cannot improve beyond the estimates without new measurement. |
-| W8 | **There is no transparency.** No UI or log explains why a computer got its settings, the renderer choice is not shown, and the only "re-detect" is Restore defaults. | Support and validation are hard, and players cannot see what Automatic did. |
-| W9 | **The documentation is fragmented.** DECISIONS holds one long VQ-07h paragraph. STACK still describes Compatibility as the renderer, and the policy is spread over four documents. | Hard to maintain. This plan becomes the canonical home (A7). |
-| W10 | **Renderer recovery handles only High.** `plan()` blocks and writes state only for `forward_plus` (`high_blocked_build`), and calibration can only reject High. The guard's Compatibility fallback is a command-line override that never clears a saved override for another renderer. | Adding any other automatic renderer, such as Mobile, would restart through the fallback on every launch of a failing build. |
-| W11 | **The adapter name comes from the first, OpenGL, process.** On hybrid (Optimus) laptops that name can be the iGPU, while Vulkan or D3D12 later selects the dGPU. | Hybrid laptops can be misclassified. |
-| W12 | **"Standard" means different renderers on different hosts.** It is Compatibility on Windows and Linux but Mobile on Apple Silicon, and Settings offers only a binary High/Standard restart. | Profile names (the look) and renderers must be separated before a third automatic profile exists. |
+The current priority is bounded correctness, not another broad baseline campaign:
+
+1. **Startup and player intent:** F01/F02/F15 can make renderer transitions repeat or leave a failed production restart without a reliable recovery record. F13/F14/F16 affect transaction cancellation, return to Automatic and the physical circuit.
+2. **Identity and confidence:** F03–F06 can reuse a verdict for another adapter, select a less-specific model, or admit a top tier using family or model-estimated memory as if it were verified device capacity.
+3. **Measurement and application:** F07–F12 can retain incomplete or stale results, mix workloads, fail to validate an adjusted tier or leave viewport detail inconsistent. Renderer, device, display and resource unknowns must stay unknown.
+4. **Scope and explanation:** F17–F20 concern uncovered activities, mismatches between the effective result and the report, synchronous driver-information latency risk, and limited independent hardware evidence. The driver call is a documented risk, not a measured startup delay here.
 
 ## 2. Evidence and extrapolation
 
-**Measured anchors:**
+These are retained historical observations, not new measurements of this branch. Each result applies to its recorded host, source, engine, route and display. GPU viewport polls can be cached; frame intervals are not displayed-frame timing.
 
-- [RTX 3090 renderer and resolution matrix](../research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md).
-- [Setting costs at 4K](../research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18/README.md).
-- [Graphics ladder on the 3090 at 4K in the real route](../research/visual-quality-implementation/VQ-07/graphics-ladder-2026-11-19/README.md):
-  - flight is CPU-bound at every tier, while Home is GPU-bound;
-  - FSR2 never speeds up a CPU-bound frame;
-  - the separate render thread gives +15–33 % but is experimental.
-- [Cross-platform ladder analysis](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md):
-  - CPU and GPU option costs, measured on bottleneck-matched views;
-  - option costs that differ by GPU family;
-  - defects D1–D12, improvement items I1–I10 and follow-up tests T1–T15.
-- [Native physics](../research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md#native-kernel-follow-up-2026-11-18).
-- The 7-core M1 under Mobile/Metal: 23.4 ms GPU at 2560×1600 ([DT-MAC-00-R4](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md)). That run used Medium detail, a research copy and beta1.
-- The same M1 under beta2 in the real route at 720p, 900p and 1080p, on Mobile and Forward+ ([DT-MAC-03b](../research/desktop-delivery-investigations/DT-MAC-03b/README.md)).
-- The [Mac display probe](../research/visual-quality-implementation/VQ-07/mac-display-probe-2026-11-18/README.md).
+| Evidence | Reuse and limit |
+| --- | --- |
+| [RTX 3090 matrix](../research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md) and [real-route ladder](../research/visual-quality-implementation/VQ-07/graphics-ladder-2026-11-19/README.md) | Windows/5900X flight was mainly main-thread limited; Home and ground views were GPU-sensitive. The original ladder's USB-profile stall contaminated absolute values; use its corrected A/B and later clean baseline. The parked-route native/reference comparison does not qualify active flight. |
+| [Cross-platform analysis](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results) | Home budget at 4K/120 Hz moved the named 3090's L09 Home from 112–113 to 120 fps and L13 from 96–99 to about 119 fps, at 0.85 scale. The ground view cost 5.4–7.2 ms GPU versus about 2.2 ms in orbit. These changes are already implemented. |
+| [Separate render-thread screen](../research/visual-quality-implementation/VQ-07/graphics-ladder-2026-11-19/README.md#6-experiments) | On the named 3090, two interleaved pairs reported +15–33% uncapped flight throughput; the 120 Hz capped result did not improve and Home p99 worsened. Godot treats this thread model as experimental, timing getters can synchronize it, and input latency is unmeasured. High potential, not a qualified default. |
+| [M1 ladder](../research/desktop-delivery-investigations/DT-MAC-03b/README.md) | External mirrored 1080p, GDScript reference physics and cooled throughput; its M1 correction is in-sample. A Spatial Quality configuration reported +28%; the ladder did not independently verify scaler execution. Its Temporal request fell back to Native. Thermal drift and remote capture materially affected results. |
+| [M1 native-panel history](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-05c-five-pair-compatibility-versus-metal-campaign-2026-11-05) | Five short Metal-versus-GL pairs gave +32.2–36.3% on that circuit but did not pass the absolute pacing screen. The later nonstock-LF matrix is not normal-product qualification; a selected MetalFX mode alone does not prove execution. |
+| [UHD 630 renderer comparison](../research/visual-quality-implementation/VQ-07/igpu-uhd630-2026-11-20/README.md) | On **Megatron CT 206**, 3 × 60 s scripted Linux/Weston runs had GPU p50 about 46 ms Compatibility, 56 ms Mobile and 74 ms Forward+. This is a separate host from Primis, with no physical-panel claim; it disproves a universal assumption that Mobile wins on iGPUs. |
+| [2026-11-20 GOD TEST tour](../research/god-test/2026-11-20-performance-tour.md) and [2026-11-21 hardening](../research/god-test/2026-11-21-measurement-hardening.md) | The three-aircraft V1 run was headless, reference-backend functional evidence: `performance=not_qualified`. Hardening verified tooling offline, with no target GPU runs. Scenic takeoff/roll/crash V2 remains planned. |
 
 **GPU cost per renderer on the 3090.** These are root-viewport GPU times for the scripted pilot circle at MSAA 4× and Scene detail High; MP is rendered megapixels. The values are fitted linear terms:
 
@@ -104,11 +63,11 @@ Coverage: 317 rows (144 discrete, 72 laptop, 100 integrated, 1 software). The St
 
 The Compatibility and Forward+ fits reproduce their four points within about 5%. The Mobile row joins two points from different run sets, 1080p from the matrix and 4K from the knob benchmark. It has no residual, and it stays out of decisions until 720p and 1440p Mobile rows exist.
 
-**How far the model extends.** For another GPU, the shipped High estimate divides the whole cost by `rel`. Only the per-pixel slope supports that. The 3090 runs at 450–700 fps, 5–17× under load, so its fixed term probably includes driver, queue and clock-state overhead that does not scale with raster throughput. Dividing that term by a small `rel` alone gives 8–19 ms for Iris Xe. Predictions for weak GPUs below are therefore **upper-bound-leaning and unvalidated** until A5 measures one.
+**How far the model extends.** For another GPU, the shipped High estimate divides the whole cost by `rel`. The fixed and per-pixel terms may scale differently. The 3090 runs at 450–700 fps, 5–17× under load, so its fixed term probably includes driver, queue and clock-state overhead that does not scale with raster throughput. Dividing that term by a small `rel` alone gives 8–19 ms for Iris Xe. The weak-GPU predictions below are **upper-bound-leaning and unvalidated** on the target device; the separate Linux container observation above is not a real-panel validation.
 
-**The first independent check, the M1 (DT-MAC-03b), supports that caveat.** Its 1080p frames give `rel` 0.059–0.061 on both renderers, now the row's correction. Across 720p, 900p and 1080p (L09, Mobile) its frame time fits 3.1 ms + 4.7 ms/MP within 0.08 ms. Against the 3090's Mobile terms the slope ratio is 0.047 but the fixed ratio 0.10: the M1's fixed share is 24% at 1080p, the 3090's 41%. Dividing the whole 3090 cost by one `rel` therefore overestimates the M1 by 1% at 1080p, 7% at 900p and 18% at 720p. The 720p run was close to CPU-bound, so its true GPU share is smaller still. This is one machine and the 3090's Mobile terms are interpolated, but it is the direction A4's refit (only the slope divided by `rel`) assumes. That refit needs its own per-row value: dividing only the slope would put the M1 at 0.047, not the 0.060 that matches its whole 1080p frame.
+**The M1 check (DT-MAC-03b) supports that caveat.** Its 1.09 correction is fitted to these same measurements; it is an in-sample cross-check, not independent validation. Its 1080p frames give `rel` 0.059–0.061 on both renderers, now the row's correction. Across 720p, 900p and 1080p (L09, Mobile) its frame time fits 3.1 ms + 4.7 ms/MP within 0.08 ms. Against the 3090's Mobile terms the slope ratio is 0.047 but the fixed ratio 0.10: the M1's fixed share is 24% at 1080p, the 3090's 41%. Dividing the whole 3090 cost by one `rel` therefore overestimates the M1 by 1% at 1080p, 7% at 900p and 18% at 720p. The 720p run was close to CPU-bound, so its true GPU share is smaller still. This is one machine and the 3090's Mobile terms are interpolated, but it is the direction A4's refit (only the slope divided by `rel`) assumes. That refit needs its own per-row value: dividing only the slope would put the M1 at 0.047, not the 0.060 that matches its whole 1080p frame.
 
-**Predicted GPU time per 1080p frame.** These come from the fixed + slope model divided by `rel`. Every `rel` except the 3090's is an estimate, and the weak-GPU rows carry the caveat above.
+**Predicted GPU time per 1080p frame.** These come from the fixed + slope model divided by `rel`. Most `rel` values are estimates; the M1 is corrected in sample, and the 3090 anchor applies only to its measured workload. The weak-GPU rows carry the caveat above.
 
 | GPU | rel | Compatibility | Forward+ | Mobile (interp.) | Forward+ at 4K |
 | --- | --- | --- | --- | --- | --- |
@@ -124,201 +83,154 @@ The Compatibility and Forward+ fits reproduce their four points within about 5%.
 | Steam Deck | 0.04 | 32.4 | 26.9 | 19.4 | — |
 | UHD 620 | 0.02 | 64.9 | 53.8 | 38.8 | — |
 
-**What the evidence says:**
-
-1. **GPU and CPU limits differ per machine.** On the 5900X, the 3090 is not GPU-limited at 1080p.
-   - The live route's 3.4–4.5 ms frames are mostly CPU. Even the scripted route is 71% GPU at only 1.5 ms of wall time.
-   - The model predicts mid-range cards are already GPU-relevant: a GTX 1060 at about 5 ms exceeds the measured live-route frame.
-   - Every dedicated GPU in the table stays well below 16.7 ms, so with a reasonable CPU all of them can hold 60 fps.
-   - Integrated GPUs are clearly GPU-limited, if the model holds.
-   - No claim is made for other CPUs. Automatic must model both CPU and GPU (W5).
-2. **Compatibility is never the cheapest renderer measured.**
-   - On GPU it costs more than Forward+ below about 3.6 MP (≈1440p).
-   - It costs more than Mobile at every measured point, including 4K (2.38 against 2.13 ms).
-   - On CPU it costs 3.5–5× the RD renderers at every resolution.
-3. **Mobile is the cheapest measured renderer**, on GPU at 1080p and 4K and on CPU everywhere. That makes it the candidate efficient path for GPU-limited integrated graphics. Four facts temper this:
-   - In this project Mobile delivers only the Standard look. `HighGraphics` and `ShadowSettings._high_active()` require Forward+, so Mobile has no SSAO, no PCSS, 2 cascades instead of 4 and no sky reflections. Temporal MetalFX and frame generation also require Forward+.
-   - [`viewport_color.gd`](../../app/render/viewport_color.gd) forces an RGBA16F `use_hdr_2d` buffer on Mobile. That costs extra bandwidth on shared-memory iGPUs, which the 3090 cannot reveal.
-   - DT-MAC-00-R4 finding S3 shows Mobile's subpasses do not stay in tile memory on Metal.
-   - Mobile has been visually accepted only on Apple Silicon (DT-MAC-05b).
-4. **High-end GPUs are underused.** The model gives an RTX 4090 or 5090 more than 10× headroom at 1080p and about 4× at 4K. The known Ultra candidates are:
-   - **Extreme Scene detail.** It costs trees and draw calls, which is CPU work a GPU-ms model cannot price.
-   - **Ultra shadows.** These add only filter 4 over High's current 8192 atlas, which is small.
-   - **The optional planar reflections**, which need their own qualification.
-
-**Limits.** These numbers come from one scripted view. GPU polls are cached readings, and their freshness is unverified. The [worst-case protocol](../research/visual-quality-implementation/VQ-07/worst-case-2026-11-18/README.md) (night lights, storm, lens rain, planar lake, Extreme) has since been measured on the 3090 only: +13–25% GPU over the base scene, and about 1 ms of planar-mirror wall time outside the root GPU query.
+**Interpretation.** The 3090's fixed term, a single `rel`, model-derived VRAM and an eight-thread proxy do not establish a weaker GPU's budget. Costs differ by renderer, GPU family and scene; Home, low ground views and flight can have different bottlenecks. The [3090 worst-case study](../research/visual-quality-implementation/VQ-07/worst-case-2026-11-18/README.md) found +13–25% root GPU time versus its base, but its effect flags were not visually confirmed and the root query excludes planar SubViewport work. Do not promote its 1.25 factor as universal.
 
 ## 3. Renderer strategy (Forward+, Mobile, Compatibility)
 
-**The owner's hypothesis:** Forward+ should be the default for almost all hardware, and Compatibility may be unnecessary. **Verdict: partly confirmed.** Since 2026-11-20 Compatibility is a [frozen legacy renderer](../DECISIONS.md#compatibility-is-a-frozen-legacy-renderer); the four removal gates are in the [legacy modes audit](../research/legacy-modes-audit-2026-11-20/README.md#gates-before-compatibility-can-become-fallback-only).
+Keep the shipped strategy and existing [Compatibility decision](../DECISIONS.md#compatibility-is-a-frozen-legacy-renderer) until a narrowly scoped change passes A2. Forward+ offers the High feature set where its **qualified** cost fits. Apple Silicon Standard uses Mobile/Metal; the short M1 evidence does not qualify other Mac configurations. Compatibility remains a supported renderer, a recovery target, the Intel/Rosetta Mac and other weak-hardware path where applicable, and a CI reference. It is not deleted or made fallback-only by this plan.
 
-- **Forward+ (High)** should be the default for every dedicated GPU whose predicted cost fits the budget. That is already about 82% of the Steam top-45 share at 1080p. It is faster than Compatibility at 1080p on the measured card, carries the High lighting features, and its CPU cost is a quarter of Compatibility's.
-- **The best default for weak and integrated GPUs is not Forward+.** Forward+ has the highest per-pixel cost, and Intel's Vulkan driver is the one with the most Godot issues. The evidence points to **Mobile on Vulkan, D3D12 or Metal** as an "Efficient" profile, with the caveats in §2. Mobile is already the Apple Silicon decision (DT-MAC-05b), where it gave 1.33× Compatibility's frame rate on the M1.
-- **Compatibility should not be deleted.** It is still required:
-  - on hardware without Vulkan, D3D12 or Metal (Intel HD 4000–4600 on Windows, pre-GCN AMD, Fermi), where Godot falls back automatically;
-  - as the renderer guard's recovery target;
-  - on Intel and Rosetta Macs;
-  - for CI captures under llvmpipe;
-  - as the reference of the calibrated Standard look, which most visual evidence and goldens use.
-- **Not shipped: Windows arm64.** If it ships, the `rendering_method.arm64="mobile"` project key would select Mobile there, not ANGLE.
-- **Proposed roles:**
-  - Forward+ (High): the default wherever it fits.
-  - Mobile (Efficient): the default for integrated and weak GPUs once A2 validates it.
-  - Compatibility (Legacy): fallback and reference only.
-  - The project file keeps Compatibility as the safe baseline that engine and CI rely on, and Automatic selects the others through the existing override. The accepted cost is one extra restart on a fresh install that selects another renderer.
-  - Profile names (the look) must be separated from renderers (W12). Apple Silicon's "Standard" is already Mobile.
-
-**"Core".** This plan reads "Core" as the core renderer configuration: the `project.godot` renderer keys and their feature overrides (`.mobile`, `.arm64`), the `.template` renderer override, `rendering_device/driver`, the OpenGL and ANGLE fallbacks, and the renderer guard. A2 makes these consistent. If "Core" meant something else, for example the OpenGL core profile, A2 is where to adjust.
+Mobile is a candidate, not a universal efficient renderer. It has a different feature set; the Intel Linux container comparison favors Compatibility, while the RTX 3090 and M1 measurements have different bottlenecks. Qualify renderer, driver, visual look and recovery on the actual supported class before changing a default. Keep a player's explicit renderer request separate from a temporary fallback. The project renderer keys, `.template` override and guard together form the core startup path.
 
 ## 4. Phased plan
 
-Each phase is one reviewable step with its own evidence, under step ids **VQ-07h-A0…A7**. Section 5 gives the order.
+Each substep is independently reviewable. The priority table in §5 is the execution order; the original A0–A7 headings retain their existing links and ownership. Expected gain is an engineering hypothesis or a reliability benefit unless a historical measurement is explicitly cited.
+
+Research-to-work mapping: R01/R05/R11 inform A1's recovery and transaction; R02–R04/R06–R09 inform A3's capability and device-confidence boundary and A7's explanation; R10–R14 inform A5's route, clock and workload validity; R15/R16 inform A4's conditional bottleneck-aware adaptation; R17's potential Home energy experiment stays separate from the delivered Home budget; R18/R19 inform A6's thermal and Apple proof; and R20 informs A4/A6's reconstruction and moving-visual gate. These are design inputs, not evidence that the proposed behavior has been implemented or measured.
 
 ### A0. Decision report, legacy snapshot and reference baseline
 
-- **What:**
-  - Build one structured "graphics decision report". Its inputs:
-    - GPU: adapter, row, class, `rel`, and both adapter names on hybrid laptops (the first OpenGL process and the RD session, W11).
-    - System: OS and architecture, RD availability, RAM, CPU threads and name.
-    - Display: pixels, scale and refresh.
-    - Calibration.
-
-    Its outputs carry a reason each. It is written to the log at launch and exposed as a debug-bridge command (`graphics-auto`).
-  - **Before any refactor, generate the legacy decision snapshot from the current code.** It covers every Steam fixture GPU × {720p, 1080p, 1440p, 4K, MacBook native} × {Windows, Linux, macOS}. Commit it as a fixture, so A1 cannot produce its own baseline.
-- **Why:** nothing can be validated or supported while decisions stay implicit (W8). The snapshot protects the refactor.
-- **Affected:** `renderer_preference.gd`, `scene_detail.gd`, `gpu_capability.gd`, `debug/debug_bridge.gd`, `tools/debug`.
-- **Validation:** golden reports for fixed fake inputs. The report changes no decision.
+**Delivered:** the structured report and 1,558-decision snapshot. Reuse [`test_auto_graphics_snapshot.gd`](../../app/tests/test_auto_graphics_snapshot.gd), [`test_gpu_capability.gd`](../../app/tests/test_gpu_capability.gd), the existing frame tools and the retained hardware records. Freeze the exact source, engine and relevant settings only when comparing a specific candidate; no new blanket baseline phase or repeat of all historical ladders is required. Intentional policy differences get an explained snapshot diff, never an unreviewed regeneration. **ROI: high reuse; no new speedup claimed.**
 
 ### A1. Consolidate into one policy, output-identical
 
-- **What:** keep today's file locations and data, and add two pieces.
-  - **`HardwareProfile`** detects once per launch: GPU row, class, `rel`, VRAM, adapter key, driver info (`OS.get_video_adapter_driver_info`), RD availability, `OS.get_memory_info()`, `OS.get_processor_count()` and name, display pixels, scale and refresh, OS and architecture, calibration.
-  - **`AutoGraphicsPolicy`** is one pure function from a profile to the full bundle, with reasons. The bundle covers renderer, Scene detail, MSAA, reconstruction, frame cap and window mode, and later shadow and vegetation.
-  - Today's entry points become thin adapters over the policy: `renderer_preference.auto_profile`, `scene_detail_level`, `first_run_settings`, the Mac pixel rule (calling `Reconstruction.auto_mode`) and the calibration offsets.
-  - The legacy name markers in `scene_detail.gd` are retired only when the coverage test shows no GPU depends on them.
-- **Why:** removes W1 and W2, puts every threshold in one place, and makes new knobs cheap.
-- **Affected:** the modules above plus `display_preferences.gd`. The shadows, Scenery and UI owners are coordinated for their knobs.
-- **Validation:** the A0 snapshot must reproduce **exactly** with today's constants: 0.40/0.325, the `rel` cut-offs and the calibration thresholds. Any refit, including this plan's 0.41/0.322 fit and per-renderer models, is a separate reviewed table diff in A4. It is never part of the refactor.
+**Delivered:** initial policy consolidation. The following repair substeps extend it rather than creating a competing resolver.
+
+- **A1-R1 — finite renderer transitions (F01/F02/F15; very high reliability ROI, no predicted FPS gain).** Owners: [`renderer_preference.gd`](../../app/app_state/renderer_preference.gd), [`renderer_guard.gd`](../../app/app_state/renderer_guard.gd), AppRoot and desktop delivery. Define production transition versus explicit research/CLI intent; persist and verify a pending target and last workable renderer in the parent before child initialization. Bound automatic attempts and fallback; reconcile post-restart facts and stop with a diagnostic reason if no safe transition can be armed. A marker supports recovery on a later launch, not a still-hung process. Preserve requested choices and per-build retry behavior.
+  **Accept:** extend `test_renderer_preference.gd`, `test_renderer_guard.gd` and `test_high_graphics_restart.gd` for alternating adapter descriptions, inherited High environment, early failure, failed marker writes, fallback failure and manual/new-build retry. Then exercise the exported transition on an admitted affected platform; offline success is not exported-process proof. Do not add a new automatic renderer before this succeeds.
+- **A1-R2 — transactional reset and scenario preservation (F13/F16; very high correctness ROI).** Owners: Settings, display preferences, calibration and scenery. **Implemented in this branch; exact checks in the receipt.** A pending calibration reset participates in dirty/Keep/Revert/Close/trial-expiry semantics, including defaults already equal. A failed deletion stays visible and retryable; an unchanged retry does not rewrite the already committed display file. A successful clear invalidates partial collectors and refreshes live scene-dependent effects through a targeted AppRoot signal, preserving reconstruction and window state. Preserve `rc_track` and its terrain/collision choice when restoring graphics, re-detecting or changing quality. Keep telemetry's default-profile meaning consistent with the shared key list.
+  **Accept:** extend `test_advanced_graphics_settings.gd`, `test_display_preferences.gd` and the existing calibration/settings integration checks for Restore → Revert → unrelated Keep, equal defaults, failed save/delete, restart and retained circuit; use the existing scenery/collision check if that boundary changes. Check persisted and in-memory results. Native performance is not a prerequisite for this pure correctness repair.
+- **A1-R3 — explicit renderer Automatic intent (F14/F15; high usability ROI).** Offer a supported Auto → manual → Auto path with durable/session-only/unsupported/failed outcomes, retaining the Home-only renderer restart boundary and technical CLI precedence. Re-detect recommendations without silently erasing unrelated manual values. **Accept:** extend the existing Settings, preference and guard tests for both manual profiles, persistence failure and fallback. Depends on A1-R1 for any automatic restart.
 
 ### A2. Renderer strategy (Efficient = Mobile), behind measurement
 
-- **What:**
-  1. **Gate:** A5 has measured Mobile against Compatibility on at least one Intel and one AMD integrated GPU at 1080p: GPU and CPU time, pacing and stability. Mobile's forced `use_hdr_2d` buffer is costed separately, and dropped where HDR 2D is not needed. **2026-11-20, first iGPU row:** on an Intel UHD 630 under Linux/Mesa, Compatibility needed 46 ms GPU p50, Mobile 56 ms (+21%) and Forward+ 74 ms (+60%) ([evidence](../research/visual-quality-implementation/VQ-07/igpu-uhd630-2026-11-20/README.md)). The Efficient = Mobile hypothesis fails there; Windows Intel, AMD iGPU and Mobile without `use_hdr_2d` remain open.
-  2. Run a visual parity review of Mobile against the Standard look on Windows, as DT-MAC-05b did on Mac. Decide the Windows rendering driver per vendor (D3D12 or Vulkan for Intel) from the research and a measured A/B.
-  3. Generalize recovery before adopting any new automatic renderer (W10):
-     - a per-renderer blocked build in `plan()`;
-     - calibration that can retreat from any automatic renderer;
-     - a guard fallback that clears or blocks a saved non-High override, so a failing build cannot restart every launch.
-  4. Separate profile names from renderers in code and the Settings UI (W12), with translated labels.
-  5. If accepted, Automatic selects Mobile for integrated and weak GPUs through the same override and guard, and Compatibility becomes fallback only.
-  6. Update STACK and DECISIONS.
-- **Why:** W4, W10, W12 and the evidence in §2–3.
-- **Affected:** `renderer_preference.gd`, `renderer_guard.gd`, `auto_calibration.gd`, `high_graphics_profile.gd`, `viewport_color.gd`, `project.godot` comments, `settings_screen.gd` and the i18n files.
-- **Validation:** paired runs on the named machines (p95/p99 and pacing), owner visual acceptance, and the guard tested with forced failures for each automatic renderer. Captures stay on Compatibility.
+**A2-R1 — conditional renderer experiment (medium or unknown ROI, platform-specific).** Do not adopt Efficient = Mobile by general rule. First retain Compatibility as the current weak-GPU path and use the Megatron result as a bounded counterexample. If a specific target presents a real performance or stability problem, compare Compatibility and Mobile on that target with its effective `use_hdr_2d` cost isolated, matching applied settings, frame pacing and visual review. The original Intel-and-AMD integrated-GPU and Windows visual gates remain open; the three hosts in §6 do not supply every one of them. Do not infer Windows or AMD results from a Linux container.
+
+**Dependencies/acceptance:** A1-R1 recovery, A3 device confidence and A5 workload validity first. Preserve profile/look versus renderer terminology and the existing `.template` and guard behavior. Extend `test_renderer_preference.gd`, `test_renderer_guard.gd` and the affected settings tests for refusal, failed and repeated transitions. Promote only for the measured device/driver/workload scope with owner look acceptance; otherwise retain the current renderer and record the experiment as inconclusive or deferred.
 
 ### A3. Data model: provenance first, more fields only when they predict
 
-- **Step 1:**
-  - Give every row its provenance: measured, benchmark-derived or extrapolated. Record circular derivations such as the M1's.
-  - Add one **measured correction factor** per row, filled from A5 lab machines and from calibration reports.
-  - Refresh the Steam fixture quarterly, with a test that the new survey still resolves completely.
-  - Extend coverage to the full DX12 tail and to handheld and arm64 names.
-- **Step 2, only where A5 shows a field predicts something:** move to `openrc-gpu-capability v2`, adding:
-  - a bandwidth class;
-  - VRAM variants with a rule to pick among them;
-  - a laptop power envelope;
-  - architecture and API support;
-  - known driver quirks with fixed versions, for example the AMD driver ranges in Godot #109378.
-- **Why:** W6 and W7. Variants and laptops differ, and provenance tells the policy how far to trust a row.
-- **Affected:** `build_gpu_capability.py`, `capability.json`, `gpu_capability.gd`, the fixtures.
-- **Validation:** generator `--check`; the coverage test; and for each measured machine, prediction within ±30% of measurement after its correction.
+**A3-R1 — match and identity correctness (F03–F05; high reliability ROI).** Owners: GPU capability lookup/generator, policy and calibration. Give exact model/variant matches precedence over chip and generic family matches; preserve laptop distinctions. Separate display name, model match and active-device correlation. A broad-family or software/unknown match cannot establish a specific model or unlock top-tier behavior by itself. Ambiguous active-device identity must not reuse another device's calibration; treat unknown as unknown, with a conservative fallback, not as failure to start.
+
+**Accept:** extend `test_gpu_capability.gd`, `test_build_gpu_capability.py` and `test_auto_graphics_snapshot.gd`: Vega 56/64 reachability, generic Mesa chips with shared marketing names, laptop-versus-desktop aliases, unknown RTX/Radeon families, software wrappers and historical calibration migration. Add a witness for every affected generated row and inspect the exact decision diff. Do not silently rewrite the baseline fixture to hide a policy change.
+
+**A3-R2 — memory facts and optional platform identity (F06/F08; medium ROI, correctness first).** Separate dedicated capacity, unified/shared memory, current use, budget and model estimate with units, provenance and availability. Unknown capacity cannot pass a verified capacity threshold, and a Godot allocation/usage counter is not installed VRAM. If the pinned engine cannot reliably correlate the active renderer device, keep optional native probing diagnostic-only with explicit unknown; do not invent device identity or assume a GPU name is unique. Avoid permanent raw LUID/UUID assumptions.
+
+**Accept:** fixtures cover named variants on each side of a threshold, missing/mismatched IDs, same-model replacement, device migration and query failure. Any actual native helper needs at least one correctly correlated supported case, lifecycle/teardown and overhead evidence before it influences policy. Lack of that helper does not block the preceding conservative correctness fix. Generator `--check`, capability tests and a reviewed policy diff remain required.
 
 ### A4. Intelligent bundle, from quality ceiling to efficiency floor
 
-- **What:** the policy picks the best bundle per machine under a budget. The budget is 60 fps at the platform's target resolution; the refresh-rate target applies only where predicted headroom is at least 2× (an owner decision).
-  - **The model refit:** per-renderer fixed and slope terms, with only the slope divided by `rel` unless A5 shows otherwise. Reviewed as a snapshot diff.
-  - **An "Ultra" tier for top GPUs:**
-    - Extreme Scene detail, priced by CPU and draw-call measurement rather than the GPU model;
-    - Ultra shadows (filter 4);
-    - MSAA 4×;
-    - planar reflections, only after their own qualification.
-  - **An "Efficient" tier for integrated GPUs:** Mobile, MSAA 2× or off, Scene detail Low or Medium, and render scale through MetalFX, FSR or bilinear where the renderer allows.
-  - **A CPU term:** processor class, thread count, native-kernel availability and render CPU per renderer. Weak CPUs avoid Compatibility and draw-heavy detail.
-  - **A RAM term:** shared-memory iGPUs with 8 GB or less stay conservative. FSR2 adds 2.3–2.5 GB of process memory on an RTX 3090 at 4K, so it stays off hosts with 16 GB or less until that is explained ([I8](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results)).
-  - **The GPU budget comes from ground views, not the orbit.**
-    - Measured on the 3090 at 4K/120 Hz: the orbit takes 2.2 ms of GPU. A runway view takes 5.4–5.9 ms at L09 and 7.2 ms at L13, which misses about 4 % of refreshes. Home takes 8.7–9.2 ms at L13, now held by the Home render budget.
-    - Option costs also differ by GPU family: shadow-atlas quality costs −18 % at Home on the 3090 and −3 % on the M1 ([ladder analysis](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#1-the-model-one-route-three-bottlenecks)).
-- **Dependencies:** the Efficient tier needs A2's gate. Ultra needs A5's worst-case-scene protocol and CPU measurements.
-- **Why:** W3 and W5. This is the owner's "5090 at maximum, integrated as good as it can be while smooth" requirement.
-- **Affected:** the policy; `shadow_settings.gd` (an automatic quality value, coordinated with the shadows track); `scene_detail.gd` (Extreme becomes automatically reachable for qualified tiers); Settings labels.
-- **Validation:** the snapshot diff, and worst-case scenes under budget for each tier on the lab machines. On integrated GPUs, Automatic beats the previous default on p95 with equal or better image quality, by owner review.
+**Already delivered:** A4's first Automatic Extreme gate. Retain user overrides and existing quality controls. Do not treat its 3090-derived factor or thread count as proof for all devices.
+
+**A4-R1 — qualified bottleneck-aware bundle (F09/F12/F20; conditional ROI).** After A3 identity and A5 measurement/application validity, compare candidate cost models as hypotheses against held-out, same-workload evidence. Use CPU-sensitive detail only when CPU pressure is demonstrated; use resolution, MSAA or pixel effects only where the GPU is limiting. Keep capacity and confidence explicit; make unavailable timing non-promoting. Separate a recommendation from a player's manual request and report the applied state. A 60 Hz target is the general starting budget; a refresh-rate target needs independently established headroom and pacing.
+
+**Accept:** focused synthetic CPU/GPU/mixed/unknown cases, threshold-boundary tests and reviewed snapshot differences precede target-host A/B. Candidate settings must preserve visual readability and the fixed simulation/physical scenario. Keep the old model if prediction error, pacing or image quality is inconclusive. Ultra shadows, planar reflections, FSR2 or new adaptive flight scaling are not enabled automatically without their own relevant quality, memory and performance gates. FSR2's historical 3090 memory increase and CPU-bound slowdown make it a poor unconditional default.
 
 ### A5. Measurement loop and hardware lab
 
-- **What:**
-  - **First:** measure Mobile against Compatibility on at least one integrated GPU, and define the worst-case scene protocol (night lights, rain, planar lake, the live route).
-  - Make calibration refresh-aware, and sample with VSync off or in a known clock state. Classify CPU-bound against GPU-bound from render CPU, process and physics time, so a slow CPU does not lower GPU settings.
-    - The ladders show why. On the 3090 flight is main-thread-bound while Home and the crash are GPU-bound.
-    - Reconstruction helps only a GPU-bound frame: MetalFX spatial gave +28 % on the M1, while FSR2 was −2 to −28 % on the 3090.
-    - Calibration should measure on a ground-filling view.
-    - Calibration's per-frame `viewport_get_measured_render_time_*` reads would each force a sync under a separate render thread ([I7](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#4-improvement-plan)).
-  - Add an **opt-in "graphics report" export**: the decision report plus calibration, attached to bug reports and the debug bridge. It lets measured rows enter the table with provenance.
-  - Assemble a reference lab of 6–8 machines:
-    - owned: the RTX 3090 and an M1;
-    - borrowed or community: a GTX 1650/1060-class card, an RTX 3060 Laptop, Intel Iris Xe or UHD, an AMD 780M/890M or a Steam Deck on Linux, an Intel Arc 140V, and a newer Apple M chip.
+- **A5-R1 — incomplete-calibration acceptance and retry (F07; very high correctness ROI).** Owner: [`auto_calibration.gd`](../../app/render/auto_calibration.gd) and AppRoot. **Implemented in this branch; exact checks in the receipt.** Incomplete attempts are not accepted as persistent verdicts; a same-workload insufficient attempt is deferred until a later process or kept reset, while a failed save remains eligible for retry. A successful reset also invalidates an active collector, including while paused, and Settings explains insufficient samples without promising another measurement in the same session. This is a session cooldown, not a full reason-coded evidence model; preserve a safe choice and timing-lease cleanup without claiming unmeasured headroom.
+  **Accept:** extend `test_auto_calibration.gd` for insufficient samples, focus/pause, interrupted collection, retry cooldown, unsupported timing, failed save and eventual valid retry. Validate startup and next-flight integration with affected existing tests. No hardware speedup is implied.
+- **A5-R2 — invalidate and segment evidence (F03/F08/F10; high correctness ROI).** Record a versioned workload and evidence identity with the strongest actually available active-device/renderer/driver facts, output and internal dimensions, scaler, AA, relevant settings, activity and target. Distinguish valid, insufficient, interrupted, unsupported and failed observations without presenting an unavailable channel as headroom. Capture a generation before warmup; on material change discard or separately segment observations and warm up again. Missing required fields remain unverified; do not reuse a stale High veto or a favorable result across a changed workload. A documentation-only revision is not a reason to invalidate evidence.
+  **Accept:** extend calibration/scene-detail tests for changed device/API, resolution, scaling provider, AA, effect, target and activity, unknown values, unchanged reuse and migration. Preserve distinct renderer-crash and measured-performance recovery.
+- **A5-R3 — validate the applied tier (F09/F11; high correctness ROI).** Separate measured, proposed, applied and validated states. Apply an automatic change at a safe boundary, update viewport LOD and affected consumers coherently, warm and measure the resulting tier, and bound adjustment/rollback attempts. Never override an explicit choice. **Accept:** extend existing calibration, scene-detail and advanced-settings tests to cover Medium → High → missed target → rollback, Extreme → High still slow, no-op, live LOD reapplication and failure/interruption; check output and in-memory state across transitions.
+- **A5-R4 — activity and timing scope (F12/F17; conditional).** Until a route has eligible calibration, explain that limitation rather than promising a measurement. Extend to other activities only when workload equivalence and lifecycle ownership are established; a light aircraft flight does not qualify the car, quad or blimp. Separate process-loop, GPU and physical presentation timing, CPU and simulation pace. Do not lower resolution to fix a CPU-limited frame or change the 240 Hz clock.
 
-    That set spans most of the Steam share. Every machine runs one protocol: scripted route, live route and worst-case scene, at the platform's target resolution.
-- **Why:** W7. Estimates must converge to measurements.
-- **Affected:** `auto_calibration.gd`, the `research/performance/` tools, `tools/debug`, and one research folder per machine.
-- **Validation:** after its row update, each lab machine's prediction falls within tolerance of its measurement. Calibration verdicts agree with lab results.
+Reuse the [existing graphics ladder](../../research/performance/graphics_ladder/README.md), [GOD TEST tour](../../tools/godtest/PERFORMANCE_TOUR.md) and frame watcher; do not build a duplicate profiler. A full nine-launch V1 tour is justified only when the complete three-aircraft workload is affected or being qualified. V2 is not yet implemented. Hardware admission and monitoring limitations in §6 remain part of the result.
 
 ### A6. Platform completion
 
-- **Windows CPU:** ship the native physics kernel in Windows release packages. This needs an owner and CI-track decision, because the Linux packaging pipeline must be extended (W5).
-- **Mac:**
-  - Validate the Retina branch on the M1 with the panel alone (display mirror off): native full screen, MetalFX reconfiguration during the full-screen transition, the notch, and ProMotion where available.
-  - ~~Rerun the M1 anchor under beta2 at High detail.~~ Done at 1080p by DT-MAC-03b (correction 1.09, status above); the native-panel point comes with the Retina validation.
-  - Add newer Apple chips through the lab.
-- **Linux:** acquire a GPU-equipped Linux host to validate Automatic High and Mesa naming. The current SSH host has no GPU.
-- **Hybrid laptops:** use the RD-session adapter name for classification (W11).
-- **Validation:** each platform produces named-machine evidence under A5.
+**A6-R1 — affected platform checks only (F20; ROI conditional on actual change).** Use the targeted matrix in §6. Windows native physics is already packaged under the [native-kernel release policy](../../research/native-kernel/README.md#windows-release-packages-nk-4-owner-decision-2026-11-18-native-kernel-always); verify actual backend selection for performance claims. On Apple Silicon, the built-in Retina panel has native-pixel priority and output, drawable and internal 3D pixels require distinct proof. Any MetalFX claim requires evidence of actual execution and moving-aircraft readability. The 1080p external M1 result cannot substitute for that panel.
+
+**A6-R2 — defer unsupported extrapolation.** Do not equate Primis container rendering with Linux desktop performance or use missing Intel utilization as zero load. Mid-range, AMD, other Intel, laptops and newer Apple generations remain unqualified until available and relevant; no unavailable host blocks source-level correctness. Release exports, native physical presentation, longer soaks, pilot acceptance and other platform owners' gates remain separate from a debug comparison.
 
 ### A7. Player transparency and documentation
 
-- **What:**
-  - Settings shows "Automatic: GPU name → tier (reason)" for the graphics mode, with a translated "Re-detect" action that clears calibration and first-launch values.
-  - The decision report is reachable from Help or Support.
-  - Consolidate the VQ-07h paragraphs in DECISIONS into short decisions linking here, and update STACK.
-- **Why:** W8 and W9.
-- **Affected:** `settings_screen.gd` (UI track), i18n `.po` files, DECISIONS, STACK, `tools/graphics/README.md`.
-- **Validation:** UI and layout tests at 1080p and at MacBook native resolution; language checks.
+**Already delivered:** Settings summary, translated tooltip and debug report. **A7-R1 (F17/F18/F19; high support ROI, no assumed speedup):** derive UI and diagnostic text from the same resolved plan, while distinguishing saved request, model recommendation, guarded/effective renderer, configured settings, verified observations, measurement age/scope and reason for any fallback or unknown. Report unsupported activity/timing truthfully. Show model-derived provenance without presenting an in-sample correction as independent hardware validation.
+
+Move potentially slow driver enrichment off the interactive startup critical path only with one serialized owner, a safe teardown and cached immutable result; pending/unavailable remains explicit. Do not start concurrent unsafe driver queries or use unresolved identity to validate stale evidence. **Accept:** extend report and Settings tests for calibration veto, guard fallback, manual choice, stale workload, provider fallback and unavailable/slow driver data. Retain existing Help/Support routing as a separate UI task if it is still needed.
 
 ## 5. Order, risks and owner decisions
 
-**Order:**
+These phases are the implementation order. A0–A7 remain the owners; the decimal labels below are scheduling references. Effort is a planning estimate for one experienced developer, excluding machine availability and required release/CI waiting time. It is not a delivery promise. Reliability gains are stated directly; there is no invented FPS target for a correctness patch.
 
-1. **A0:** the decision report and the legacy snapshot from current code.
-2. **A1:** the output-identical consolidation.
-3. **A5:** lab measurements, starting with one integrated GPU (Mobile against Compatibility) and the worst-case protocol.
-4. **A3 step 1:** provenance and the correction factor.
-5. **A2:** the renderer strategy, including the recovery generalization.
-6. **A4:** the bundle and its model refit, as a reviewed snapshot diff.
-7. A3 step 2 and the A6 platform items as hardware arrives; A7 last.
+### Phase 1 — make automatic graphics recoverable and preserve intent
 
-**Risks:**
+| Subphase | Work / existing owner | Gain and priority | Exit and necessary test |
+| --- | --- | --- | --- |
+| **1.1 — finish the current repair** | A1-R2 + A5-R1: incomplete evidence, bounded session retry, transactional Restore, physical-circuit preservation and reset-time live effects. | **Highest immediate return; implemented.** Prevents permanently suppressed calibration, cancelled or uncommittable reset, misleading partial success and silent scenario changes. | Focused checked software tests and independent review, followed by required CI. No performance rerun is a prerequisite. Receipt distinguishes local completion from release qualification. |
+| **1.2 — close startup recovery** | A1-R1: bounded transition attempts, parent-written verified guard, explicit High failure, safe fallback and persistence errors. | **Highest next reliability return; approximately 2–4 developer-days.** Prevents restart loops and unrecoverable automatic escalation. | Model/property regressions first; one managed exported-process success/failure/recovery check on each affected platform. Include inherited environment and failed marker writes. |
+| **1.3 — make Automatic selectable again** | A1-R3 + relevant A7-R1 UI: manual → Automatic, durable versus session-only outcome, clear fallback reason. | **High support/usability return; approximately 1–2 days after 1.2.** Lets players recover automatic recommendations without losing unrelated settings. | Existing Home/Settings/restart integration; verify both manual profiles, cancellation and failed persistence. No GPU throughput campaign. |
 
-- The 3090-derived ratios may mispredict bandwidth-bound and tile-based GPUs, and the fixed term may not scale with `rel` at all. A5 and calibration bound this.
-- Mobile's look and feature set differ from both Compatibility and Forward+, so A2's visual gate is required.
-- Hybrid laptops may be classified from the wrong adapter (W11).
-- Ultra settings may expose unqualified features, so each needs its own evidence before Automatic may select it.
-- The policy refactor must stay output-identical to the A0 snapshot.
+**Phase exit:** startup transitions terminate, reset is reversible until Keep, persistence outcomes are honest, and graphics never silently chooses another physical scenario. This phase does not wait for all three hardware hosts to become available.
 
-**Owner decisions needed:**
+### Phase 2 — make detection and measured recommendations trustworthy
 
-1. The Efficient (Mobile) direction, subject to A2's evidence.
-2. ~~Shipping the native kernel in Windows packages (A6)~~ **Approved 2026-11-18: native kernel always.**
-3. The target refresh policy: 60 fps everywhere, or display refresh where headroom allows.
-   - Home now holds the refresh through its render budget (VQ-07h I2): M1 51 → 58–60 fps, 3090 4K L13 97 → 119 fps.
-   - Ground views in flight are the remaining limit.
-4. The hardware lab: which machines can be borrowed, and whether community testers report through the opt-in graphics report.
-5. **Flight near the ground (VQ-07h I6).** Should flight also lower its 3D scale when a ground-filling view misses the refresh, as Home does? The alternative is for Automatic to plan a bundle that holds the runway view. Evidence: [ladder analysis §8](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results).
+| Subphase | Work / existing owner | Gain and priority | Exit and necessary test |
+| --- | --- | --- | --- |
+| **2.1 — correct classification and conservative unknowns** | A3-R1/R2: exact model before chip/family, Vega reachability, Mesa collision protection, laptop variants, software/unknown devices and estimated versus verified memory. | **High reliability return; approximately 2–4 days.** Prevents another GPU's verdict or an unsupported capacity estimate from selecting High/Extreme. | Specific regression witnesses, generator check and reviewed decision diff. Reuse actual adapter strings from existing reports; request only missing correlated identity facts, not new benchmark ladders. |
+| **2.2 — invalidate and segment calibration** | A5-R2: effective workload signature, versioned acceptance, unknown values, High-veto scope and pre/post sample generation. | **High decision-quality return; approximately 3–5 days.** Removes stale AA/resolution/provider evidence and mixed windows. | Deterministic change-during-sample and migration cases; one affected transition smoke on the relevant host. Keep root GPU timing scope and unsupported channels explicit. |
+| **2.3 — apply and validate an adjustment** | A5-R3: measured/proposed/applied/validated state, coherent consumers, bounded remeasurement and rollback after a changed tier. | **High smoothness/quality potential; approximately 3–5 days.** Stops a faster or slower tier becoming a permanent untested conclusion. The FPS magnitude is unknown. | Complete a synthetic promote/fail/rollback lifecycle; then one actual GPU-sensitive affected-view comparison. Extend the targeted reset hook from 1.1 instead of replaying unrelated display configuration. |
+| **2.4 — report effective state** | A7-R1: request, guard, applied renderer, scaler, accepted evidence, cooldown and reason; move driver enrichment only if its latency warrants it. | **High diagnosis value; approximately 1–3 days.** Makes support and future tuning decisions traceable. Startup speed benefit remains unmeasured. | Report/Settings consistency tests and bounded query failure/teardown checks. Do not promise calibration for an unsupported activity. |
+
+**Phase exit:** every automatic decision can identify its accepted facts, workload and reason; a missing observation cannot promote quality. Native device bridges remain optional until a demonstrated ambiguity requires one.
+
+### Phase 3 — earn performance or quality gains on the three available machines
+
+Start with the highest-confidence affected case below. Run only one predeclared candidate change at a time, retain the current setting if it does not help, and use §6's existing comparison protocol. Initial implementation is approximately 1–3 days per bounded candidate plus its required hardware time; the accepted scope determines the actual cost.
+
+| Subphase | Candidate and evidence to reuse | Intended gain | Decision / stop rule |
+| --- | --- | --- | --- |
+| **3.1 — MacBook native-panel pixel and pacing work** | A4-R1/A6-R1. Reuse DT-MAC-03b and the existing Home budget; establish the actual native panel, backend and effective reconstruction before comparing a targeted MSAA or existing Spatial-quality choice. | **Best identified M1 opportunity:** reduce pixel/AA pressure while preserving moving-aircraft readability. The historical external-1080p Spatial configuration's +28% is a lead, not a Retina forecast. | Five matched short pairs for the candidate under the Apple protocol; inspect the applied scaler and motion. Stop if gain does not exceed variation, pacing worsens, or the scaler path is unproven. Long soaks apply to a selected sustained claim, not every edit. |
+| **3.2 — RTX 3090 ground/Home cost and CPU-bound flight** | A4-R1/A5-R4. Keep the delivered Home scaler and controller-stall fix. Use a ground-filling view for pixel work; use main-thread evidence to choose a CPU/scenery candidate for flight. | **Target-specific return:** improve the affected frame-budget misses or quality at equal pacing. Preserve the already observed 120 Hz Home benefit; do not count it again. | General 1080p comparison first; add the existing 4K/120 case only for a pixel/refresh change. No resolution reduction for a CPU-limited case. Separate render threading remains optional because its uncapped gain did not establish capped pacing/input latency. |
+| **3.3 — Primis resource and compatibility checks** | A2-R1/A6-R1. Keep Compatibility for the current weak-GPU policy; run affected light/medium OpenGL/Vulkan checks with verified Intel rendering. Isolate HDR-2D or allocation cost only if a real issue motivates it. | **Highest reliable return here is avoiding regressions and memory exhaustion.** Primis cannot establish a desktop FPS improvement. | One managed functional job at a time. Refuse software rendering; keep within the documented memory lane. Do not run the heavy nine-flight tour or promote Mobile from a shared headless result. |
+
+**Phase exit:** either a small supported policy/cost improvement has evidence on its actual host and workload, or it is explicitly rejected/deferred. A failed experiment is useful evidence; it is not a reason to broaden the default.
+
+### Phase 4 — release the accepted scope and expand only where justified
+
+- **4.1 — integrate and qualify:** run required CI and affected native/package checks for the accepted change; confirm the actual backend, persisted settings, recovery and retained reasons. Extend existing V1 GOD TEST only when all three aircraft routes are affected. Its new tooling is reusable; the headless V1 result is not GPU qualification.
+- **4.2 — preserve a recoverable rollout:** record the exact source/engine/native-artifact/workload identity, migrate or invalidate only incompatible evidence, retain the known workable renderer and manual choices, and document the concrete rollback trigger. A changed policy must not silently become a positive calibration result.
+- **4.3 — defer low-confidence expansion:** other activities, AMD/new GPU families, general dynamic flight resolution, native identity bridges and thermal/energy controllers need a demonstrated problem and their own acceptance evidence. The three available machines cannot qualify the whole hardware market.
+
+**Gain:** the accepted improvement reaches players without losing recovery or evidence provenance. **Effort:** scoped by the changed platform and package; use the existing owners' gates rather than starting a new universal qualification campaign.
+
+**Stop/defer rules.** Do not widen a renderer or Extreme default from a model fit, an ambiguous adapter, an incomplete sample or a single other-family host. Keep device-loss, missing monitor, stale identity, unsafe recovery, hardware access and visual/readability failures explicit. Experimental separate render threads, new native probes, custom engine forks, dynamic flight resolution, broad shader rewrites and additional hardware surveys remain optional hypotheses, not prerequisites for the correctness repairs. An existing Home fix is not a reason to add a second one.
+
+**Owner decisions at the point of evidence:** a new renderer/look or expanded automatic quality tier needs the existing visual/renderer owner decision and its scope; measured refresh-rate policy needs target-display headroom. The prior owner decision to use the native physics backend remains in force. Do not silently change power plans, display modes or shared-host resource policy to obtain a result.
+
+## 6. Focused verification on the available hosts
+
+At this handoff the test-pool configuration is unavailable in this workspace; native admission and host access have not been verified. Reconcile the owning pool/session using the [test queue guide](../../tools/testqueue/README.md) and platform guides before any launch. An unavailable native route is an open qualification item, not a reason to bypass admission, duplicate a job or postpone a pure correctness fix.
+
+### Tests still needed for the implemented repair
+
+The local receipt already covers cache acceptance, retry/cancellation, actual paused-flight LOD/lens/flags, retained circuit identity, display/reconstruction ownership and affected consumers. **Do not repeat the 139-run Mac ladder, 138-run Windows ladder or nine-flight tour for this patch.** Before describing the branch as verified on the user's machines, complete the following scoped rendering checks through their existing admission paths:
+
+| Host | Remaining repair check | Acceptance |
+| --- | --- | --- |
+| MacBook M1 | One rendered `test_graphics_reset_transaction.gd` and the affected paused-flight Settings flow in `test_ui_settings_integration.gd`, at the native panel and actual admitted backend. | Reset text remains readable; Keep/Revert/cancel work; live effects agree with detail; no changed scaler, window or paused tick. This is a functional check, not an FPS comparison. |
+| RTX 3090 PC | The same affected rendered reset/paused-flight flow at 1080p. Exercise 4K/120 only as a short display-state regression if that production configuration is in the release's affected scope. | Same transaction and effect results; system-drive profile; no native fallback claimed as native coverage. No timed A/B unless a later phase changes cost or policy. |
+| Primis Intel UHD 630 | The light `test_graphics_reset_transaction.gd` in the managed OpenGL lane; Vulkan only if the candidate affects that route. | Intel device receipt and clean checked result, within its single-job/memory limits. Do not substitute a heavy live-flight run for this functional lane. |
+
+The package/CI owners decide the required release matrix; these are the smallest unresolved platform observations for this change. Native hosts being unavailable does not invalidate the completed headless software checks, and those checks do not establish native rendering.
+
+### Performance tests for later candidates
+
+| Host | Smallest useful check when affected | What it cannot establish |
+| --- | --- | --- |
+| **MacBook M1, Apple Silicon** | For changes affecting Metal, Retina, reconstruction or a measured recommendation, run a focused native-panel affected-view A/B on AC with the panel alone, the actual native backend and matched settings. Record output, drawable, internal 3D pixels, effective scaler and thermal/background conditions; inspect moving aircraft separately when look changes. Follow the [Apple plan](apple-silicon-performance.md) for five alternating pairs with 30 s warmup and 120 s measurement and, when the owning sustained gate applies, three 30-minute runs per role. | External 1080p, requested MetalFX, a cooling-only run or a process-loop FPS figure does not qualify native-panel presentation, effective SDK execution, fanless sustained behavior or another Mac. |
+| **Primis Intel UHD 630** | For affected Linux/Mesa rendering, reuse the [rendered queue lane](../tools/primis-testlab.md) with an existing light/medium checked script, `opengl3` and/or `vulkan` only as affected, and require the Intel device line. | Shared CT 405 has a headless Weston compositor, a 3 GiB limit and 512 MiB swap. Heavy flight/MSAA 8× work has exhausted memory. This is functional rendering, not real-panel/vsync performance. GOD TEST has no Intel utilization backend; missing mandatory monitoring remains incomplete. |
+| **Windows RTX 3090** | For an affected candidate, compare at 1920×1080 first using the existing native-backend real route and relevant Home, ground-view or flight window. Add the existing 4K/120 Hz view only when its quality, refresh or pixel cost is affected. Use a system-drive profile, stable host, warm caches and no competing/remote capture. | One 3090/5900X result does not qualify weak GPUs, other CPUs or another renderer. The historical USB-profile campaign is not a clean absolute baseline. |
+
+For a performance comparison, freeze source/engine/native artifact and matching workload, display, driver, settings, seed, power and observer identity; preserve failures and predeclare exclusions, metrics, pair count and stop rule. The [general gate](global-performance-visual-quality.md#gates-to-freeze-in-vq-01c) uses at least 10 s warmup and 60 s sample with three alternating pairs; the Apple owner has the stricter protocol above. Report run-level p50/p95/p99 and target misses, plus the applicable CPU/GPU evidence and simulation pace; avoid treating correlated frames as independent trials. At the existing 60 Hz process-loop gate, p95 must be at most 18 ms, p99 at most 25 ms and the unpaused simulation/wall ratio 0.99–1.01; attribute recurring gameplay intervals over 50 ms. These are not displayed-frame guarantees. Gain must exceed paired variation and reach 5% of the affected complete workload, or remove a named reproducible hitch/memory defect, without a repeatable harmful tradeoff. Use a separate capture/observer-cost control where required; no screenshot readback inside timed acceptance. Visual, presentation and release evidence remain independent.
+
+The existing [GOD TEST guide](../../tools/godtest/PERFORMANCE_TOUR.md#managed-host-admission) documents nine launches for three aircraft × three repeats. Windows-local graphical admission is experimental; Linux/macOS enrolled graphical adapters and enrolled-host resume remain unimplemented. Its calculated execution lease is not an end-to-end completion guarantee. Do not use a full campaign for every local edit, or call a headless or incomplete-monitoring run target qualification.

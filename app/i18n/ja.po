@@ -278,6 +278,12 @@ msgstr "ラダー"
 msgid "Throttle"
 msgstr "スロットル"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "GPU の処理時間のサンプルが不足しています。再起動するか、グラフィック設定を初期値に戻して再試行してください。"
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "設定は保存されましたが、自動グラフィック設定をリセットできませんでした（エラー %d）。「保存」で再試行できます。"
+
 msgid "Could not save settings (error %d)."
 msgstr "設定を保存できませんでした（エラー%d）。"
 

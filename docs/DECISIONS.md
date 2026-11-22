@@ -295,6 +295,12 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ## Presentation
 
+### Graphics calibration is evidence; Restore is a transaction
+
+**VQ-07h A1-R2 / A5-R1 (2026-11-21).** Only complete GPU timing measurements may replace a stored calibration or modify Automatic Scene detail. An insufficient completed attempt delays the same adapter/renderer/pixel/MSAA workload for the current process; a later launch or successfully kept Restore can retry. A failed write remains retryable. This bounded policy avoids repeated unmeasurable flights without storing absence of evidence as permanent success; broader workload identity and tier validation remain in the [automatic graphics plan](plans/automatic-graphics.md).
+
+Restore carries an explicit pending operation even when values already match defaults. Revert/Close cancel it; Keep commits display values first and reports a failed calibration deletion as a retryable partial outcome. Successful deletion invalidates partial collectors and updates scene-dependent presentation through its existing owners, preserving reconstruction, camera and window state. The physical RC circuit is a scenario choice, outside graphics defaults and graphics-profile telemetry. [Evidence and implementation receipt](research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/README.md).
+
 ### Compatibility baseline and a Windows NVIDIA package
 
 **VQ-07 / GDU-11.** The official-engine build retains Compatibility. Following the owner's 2026-10-28 request, the current-source Windows NVIDIA package defaults to Forward+ and exposes DLSS, DLAA and Reflex as regular saved settings. This supersedes their experimental UI status, not the remaining performance, motion-quality or cross-device gates. Full-resolution Native reconstruction remains the initial choice; Reflex requests On when supported. Matched binaries, runtime hashes and a separate import cache prevent mixing the NVIDIA fork with official-engine resources. Strict AI companion engine admission remains unchanged, and saved companion requests cannot block player-only flights on the fork. Keep the Standard launcher for recovery. [Native package guide](../tools/graphics/native/README.md), [advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).

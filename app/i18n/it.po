@@ -277,6 +277,12 @@ msgstr "Timone"
 msgid "Throttle"
 msgstr "Gas"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Non sono stati raccolti abbastanza campioni del tempo GPU. Riavvia o ripristina le impostazioni grafiche predefinite per riprovare."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Le impostazioni sono state salvate, ma non è stato possibile ripristinare la grafica automatica (errore %d). Seleziona Mantieni per riprovare."
+
 msgid "Could not save settings (error %d)."
 msgstr "Impossibile salvare le impostazioni (errore %d)."
 

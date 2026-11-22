@@ -1,0 +1,232 @@
+{
+  "format": "openrc-focused-verification v1",
+  "date": "2026-11-21",
+  "base_commit": "1f24cb067ca73cc20963f65ad613e7deb4c3899b",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "environment": "Linux headless, Dummy audio; instantiated flights used GDScript reference",
+  "scope": "14 focused software/lifecycle scripts; no target GPU performance or native-backend qualification",
+  "changed_app_source_sha256": {
+    "app/app_root.gd": "abc3654d15372c9b198fb3ab30d238e653fad20fb0fbc39d4422334db36d3653",
+    "app/app_state/display_preferences.gd": "5b5d99436a2c5ed28cf3cafcfb44ba81e0393e2049b266c8dc03df0db48dc9c0",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "f33aa7c0ca2ea3d2ef9285462917c8e69682df38b4b8d760d8fc089fb632e258",
+    "app/data/ai/companions/behavior-manifest.json": "fc29c20bbf6807f09992e7f120bb3273a144d49795fdcfba5324f910bd0380e7",
+    "app/i18n/de.po": "ffd290972ee2c56f55a9c8aa39b7d6d7a08fa2dfcb612f37a386cdff489013fb",
+    "app/i18n/es.po": "9c2032c8af19fececaa79cf5daad5ed24e8a5856025017c8b85d3961f464c601",
+    "app/i18n/fr.po": "2969d0e15421d2c199e4edb94a15ab62e13fecb1f3b6b66f6166bd3b240e6c9d",
+    "app/i18n/it.po": "dfe204fb415d71c29f4a03c75e61c6bdf3446742cc39741681b3623067f5f3f7",
+    "app/i18n/ja.po": "b1f155d57eaa535db94d37d06c68078b6a353c45b3293e03fa093525f881b5b6",
+    "app/i18n/pt_BR.po": "644cd2ed7d2358fdaa3a785f3eff93efdaa20e07b07c7c2d379b6765206637ce",
+    "app/i18n/ru.po": "e0a3810121aa6727e3a59aa1d8424c8a4934f8de80bc5d0e230d1845a461eed2",
+    "app/i18n/zh_Hans.po": "c2aa068a7200651afcf16b98f3edce49e80eb691e9b60bb80b28155719ba7e26",
+    "app/render/auto_calibration.gd": "2fbe67ac1cfe0069624dab206acfbe2cd915c76251e186d827f14d9297adc935",
+    "app/render/scene_detail.gd": "dbc80bbcec2f10271aaefecbdd2db569519edb4e405dba49f4246d93d9b1ac15",
+    "app/tests/test_auto_calibration.gd": "4fde8beba0c5ae22fe3191d2203ecb219fee1d8a2b672ce5d605ba4ef56f8763",
+    "app/tests/test_graphics_reset_transaction.gd": "9acd8807ba26bb41ccef29668abad6d6b4de682a7ed5fac979142c56ebea5389",
+    "app/tests/test_graphics_reset_transaction.gd.uid": "659345946edb9d51bf24d8fbae78c81ccdbc0585f95cd0cef63ac2eadc39c0e4",
+    "app/tests/test_ui_settings_integration.gd": "eb168f2e2814b015f948c1a4ddaf4a8cd88ed70dd48c9b330f25ec0202032e81",
+    "app/ui/settings_screen.gd": "3a10d4bf5d3530247a81123934e14ce1279bd499fa910b2405ed138dee4843ea"
+  },
+  "results": [
+    {
+      "script": "res://tests/test_auto_calibration.gd",
+      "label": "final-test_auto_calibration",
+      "started_utc": "2026-11-21T22:44:53.585419+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 0.664676,
+      "log_sha256": "58058845a14b8f84c5855baa6672272d206a70a9517dd2c3a7c54adf1fefb74d",
+      "report_sha256": "27739a1cc37f00c612f43da5910a3b62cb72ad0550d8970872bde9bf321503ec"
+    },
+    {
+      "script": "res://tests/test_graphics_reset_transaction.gd",
+      "label": "accepted-test_graphics_reset_transaction",
+      "started_utc": "2026-11-21T22:50:00.717695+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 6.000333,
+      "log_sha256": "887c012c5ad2fcf01e393735c3f29d9d2082252de746741c1a49d9a17c4a96d1",
+      "report_sha256": "98d83975a54acefc6117c68c33e358333ba7815b5ec767196f0510ec19ff9cc1"
+    },
+    {
+      "script": "res://tests/test_auto_graphics_snapshot.gd",
+      "label": "accepted-test_auto_graphics_snapshot",
+      "started_utc": "2026-11-21T22:50:00.715238+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 1.369435,
+      "log_sha256": "7485c0b7a7a476e30a0dc7b519f85230ddffdf876f317e68a020a158fdd64ec8",
+      "report_sha256": "8b22832ef818747d28be0b13a9d8229c905b9fbc0fbbedbc0420e9d7cac6bd9d"
+    },
+    {
+      "script": "res://tests/test_display_preferences.gd",
+      "label": "accepted-test_display_preferences",
+      "started_utc": "2026-11-21T22:50:00.711665+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 5.543634,
+      "log_sha256": "84b4e7353e8f2b17f29714c1cda8b04b222cc49faef418cc13f7922e6e70c097",
+      "report_sha256": "1989188535d7faa7c520aabfe15ce308687f8e3fbdf6765e2ebc96158994fd71"
+    },
+    {
+      "script": "res://tests/test_settings_ui.gd",
+      "label": "accepted-test_settings_ui",
+      "started_utc": "2026-11-21T22:50:41.452792+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 10.240193,
+      "log_sha256": "38416a033b59151f4ce1dc23434c1801bc3aae9581d271023b694d544355176b",
+      "report_sha256": "5177eb14b1c3d2be062df1687afdd32e27d935d49fe617fc656f1fc82e8cade4"
+    },
+    {
+      "script": "res://tests/test_ui_settings_integration.gd",
+      "label": "final-test_ui_settings_integration",
+      "started_utc": "2026-11-21T22:44:53.573291+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "reason": "passed",
+      "elapsed_seconds": 33.409845,
+      "log_sha256": "76c8bf34ba1f2936d566eaff15707b8cf319cb3747aca347971e1e379c61b136",
+      "report_sha256": "41be8622afedaea8dfd88efcf6f9332ac9589382f64804f1e24395180bcf62b6"
+    },
+    {
+      "script": "res://tests/test_advanced_graphics_settings.gd",
+      "label": "final-test_advanced_graphics_settings",
+      "started_utc": "2026-11-21T22:45:50.253712+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 19.875227,
+      "log_sha256": "1b40c4f30f53ba1a834f5dc5e4300dd0b65dd600ddb0dcbfbd93ee26cbd87308",
+      "report_sha256": "a7849962b973f858bf0018a76a1c9450d03a4731b9a672c8d1648b698af8611d"
+    },
+    {
+      "script": "res://tests/test_scene_detail.gd",
+      "label": "final-test_scene_detail",
+      "started_utc": "2026-11-21T22:48:22.469982+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 10.688674,
+      "log_sha256": "c663738f1797a6b38a6a0525e6e5a0d3b301c600ddab7dd545e983a58d0e6054",
+      "report_sha256": "c24bc162c937253d9f038007e50ab01cc7c98454d04af4b8ff650d473e0e40d1"
+    },
+    {
+      "script": "res://tests/test_rc_track_flight.gd",
+      "label": "final-test_rc_track_flight",
+      "started_utc": "2026-11-21T22:45:50.250792+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 9.816689,
+      "log_sha256": "eaf4585656d4119fc957561ce0c58b924967e46e05a80963ec357d9e8996ed16",
+      "report_sha256": "13ea5e168b2e396ecaf06b1aeb68ba073d3f4c45b0127c1149e78ba5d1189db1"
+    },
+    {
+      "script": "res://tests/test_telemetry_app.gd",
+      "label": "accepted-test_telemetry_app",
+      "started_utc": "2026-11-21T22:50:00.713612+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "reason": "passed",
+      "elapsed_seconds": 30.254848,
+      "log_sha256": "ca866576248e9094abe2b6acef816c9dd5b8b816933a43bc2085a26ca5a70733",
+      "report_sha256": "d2e46769af4524e2e22e3bf727b9c61179963f7af97cedabceed67bf5d1cf5cf"
+    },
+    {
+      "script": "res://tests/test_ui_language.gd",
+      "label": "accepted-test_ui_language",
+      "started_utc": "2026-11-21T22:50:00.703454+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "reason": "passed",
+      "elapsed_seconds": 39.515884,
+      "log_sha256": "82734eeeaa9d0309d5e3e4d263136763ef6296ab3fbf02233b61fea22dbf8e61",
+      "report_sha256": "895b18a83f92e10a24a9f4b40374260511cb7ed440aa7fb9369de0dd05d4b343"
+    },
+    {
+      "script": "res://tests/test_companions_behavior_manifest.gd",
+      "label": "final-test_companions_behavior_manifest",
+      "started_utc": "2026-11-21T22:48:22.487564+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 5.652115,
+      "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "report_sha256": "24653f8929e64060f5d737cad8346b44cd79dcbd3aca5abfebedb20359ab31a6"
+    },
+    {
+      "script": "res://tests/test_companions_profiles.gd",
+      "label": "final-test_companions_profiles",
+      "started_utc": "2026-11-21T22:48:22.474581+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 4.61087,
+      "log_sha256": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26",
+      "report_sha256": "46e935b97b30c5ae2d70226a58a47a7cac39c2a1e45e6640af4eba4cb75a3885"
+    },
+    {
+      "script": "res://tests/test_companions_presentation.gd",
+      "label": "final-test_companions_presentation",
+      "started_utc": "2026-11-21T22:48:22.477565+00:00",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 6.296427,
+      "log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0",
+      "report_sha256": "f0f573438366e70ad168a79b795b3eb84eb7f21de090c525729c60df8f69fc2a"
+    }
+  ],
+  "required_ci": "not claimed complete",
+  "target_host_runs": 0,
+  "implementation_commit": "56f4078c2862edff61dc588b68421add9b26f3f0",
+  "local_implementation_commit": "5f8500d1d8b5e1e1835ba8451e0db8d6316b4d76",
+  "verified_application_tree_sha": "a010cae62acb5219a8066f33ed6d0990445a5d8b"
+}

@@ -276,6 +276,12 @@ msgstr "Seitenruder"
 msgid "Throttle"
 msgstr "Gas"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Es wurden nicht genügend GPU-Zeitmesswerte erfasst. Starte neu oder stelle die Grafikstandards wieder her, um es erneut zu versuchen."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Die Einstellungen wurden gespeichert, aber die automatische Grafik konnte nicht zurückgesetzt werden (Fehler %d). Wähle Änderungen beibehalten, um es erneut zu versuchen."
+
 msgid "Could not save settings (error %d)."
 msgstr "Einstellungen konnten nicht gespeichert werden (Fehler %d)."
 

@@ -116,7 +116,8 @@ static func _output_pixels() -> int:
 ## similar output size.
 static func calibrated(recommendation: Dictionary, adapter: String) -> Dictionary:
 	var offset := int(calibration.get("scene_offset", 0))
-	if offset == 0 or str(calibration.get("adapter", "")) != AutoCalibration.adapter_key(adapter) \
+	if not bool(calibration.get("complete", false)) or offset == 0 \
+			or str(calibration.get("adapter", "")) != AutoCalibration.adapter_key(adapter) \
 			or str(calibration.get("method", "")) != RenderingServer.get_current_rendering_method() \
 			or not AutoCalibration.size_matches(calibration, _output_pixels()) \
 			or not AutoCalibration.workload_matches(calibration, AutoCalibration.current_workload()):
