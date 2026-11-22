@@ -3203,6 +3203,9 @@ func _push_telemetry_state() -> void:
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
 	_refresh_telemetry_home_note()
+	var info := screens.get_screen("telemetry_info") as TelemetryScreen if screens != null else null
+	if is_instance_valid(info) and info.mode == "preview":
+		info.set_pending_data(telemetry.preview_text() if _telemetry_is_on() else "")
 	if not _telemetry_is_on():
 		_telemetry_graphics_values.clear()
 		_telemetry_graphics_profile = "unknown"
@@ -3339,7 +3342,7 @@ func _telemetry_context() -> Dictionary:
 		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
 		if session is Object and is_instance_valid(session):
 			activity_id = session.get_instance_id()
-			if activity == ground_vehicle:
+			if activity.has_signal(&"activity_reset"):
 				_bind_telemetry_reset(activity, &"activity_reset")
 			else:
 				_bind_telemetry_reset(session, &"resetting")
@@ -3349,7 +3352,7 @@ func _telemetry_context() -> Dictionary:
 			var paused: Variant = session.get("paused")
 			if not paused is bool and sim is Object and is_instance_valid(sim):
 				paused = sim.get("paused")
-			simulation_paused = paused != false
+			simulation_paused = not paused is bool or bool(paused)
 			if session.has_method("time_s"):
 				simulated = float(session.call("time_s"))
 			elif sim is Object and is_instance_valid(sim) and sim.has_method("time"):

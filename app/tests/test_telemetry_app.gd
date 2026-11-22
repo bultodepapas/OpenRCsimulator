@@ -143,6 +143,11 @@ func _settings_switch_and_language() -> void:
 	var info: Node = app.screens.get_screen("telemetry_info")
 	var data: Label = info.find_child("PendingData", true, false) if info != null else null
 	_check("the preview shows the exact pending data", data != null and data.text.contains("\"session_started\""))
+	app.telemetry.clock_usec = func() -> int: return Time.get_ticks_usec() + 601_000_000
+	_check("opening a preview after the deadline cannot show expired bytes", not app.telemetry.preview_text().contains("session_started"))
+	app.telemetry._process(0.0)
+	await ui.settle()
+	_check("the open preview removes the expired data", data != null and data.text.is_empty() and not data.visible)
 	info.close()
 	await ui.settle()
 	app.set_language("de")

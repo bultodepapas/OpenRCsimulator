@@ -60,11 +60,13 @@ var _session_start_usec := 0
 var _session_day := 0
 var _seq := 0
 var _pending: Array[Dictionary] = []
+var _pending_origins: Array[int] = []
 var _pending_context: Dictionary = {}
 var _pending_session := ""
 var _last_seal_usec := 0
 var _hardware: Dictionary = {}
 var _window: RefCounted
+var _window_origin := -1
 var _window_key: Array = []
 var _window_context: Dictionary = {}
 var _window_mode := ""
@@ -79,6 +81,7 @@ var _last_crash_sequence := -1
 ## activity already running when telemetry was admitted, or a later 5-minute slice, is not a complete observation.
 var _activity_from_start := false
 var _errors: Dictionary = {}
+var _error_origins: Dictionary = {}
 
 
 func _init() -> void:
@@ -153,7 +156,11 @@ func disable() -> Error:
 func note_error(category: String) -> void:
 	if state != Policy.ON or not category in Contract.ERROR_CATEGORIES:
 		return
-	_rotate_if_due(int(clock_usec.call()))
+	var now := int(clock_usec.call())
+	_rotate_if_due(now)
+	_expire_unsealed(now)
+	if not _errors.has(category):
+		_error_origins[category] = now
 	_errors[category] = mini(int(_errors.get(category, 0)) + 1, Contract.ERROR_MAX_COUNT)
 
 
@@ -161,7 +168,11 @@ func note_error(category: String) -> void:
 func note_flight_events(events: Array) -> void:
 	if state != Policy.ON:
 		return
-	_rotate_if_due(int(clock_usec.call()))
+	var now := int(clock_usec.call())
+	_rotate_if_due(now)
+	_expire_unsealed(now)
+	if _activity.is_empty():
+		_refresh_activity(now)
 	if _activity.is_empty() or _activity.classification != "accepted_fixed_wing":
 		return
 	for event: Variant in events:
@@ -195,11 +206,19 @@ func status() -> Dictionary:
 
 ## The exact data waiting in memory: sealed batches byte for byte, then the events not yet sealed.
 func preview_text() -> String:
+	if state != Policy.ON:
+		return ""
+	var cutoff := int(clock_usec.call()) - Queue.TTL_USEC
 	var parts := PackedStringArray()
 	for item: Dictionary in queue.items:
-		parts.append(item.body.get_string_from_utf8())
-	if not _pending.is_empty():
-		parts.append(JSON.stringify(_batch(_pending, _pending_context, _pending_session, "0".repeat(32)), "  ", false))
+		if roundi(float(item.observed) * 1000000.0) > cutoff:
+			parts.append(item.body.get_string_from_utf8())
+	var pending: Array[Dictionary] = []
+	for index: int in _pending.size():
+		if _pending_origins[index] > cutoff:
+			pending.append(_pending[index])
+	if not pending.is_empty():
+		parts.append(JSON.stringify(_batch(pending, _pending_context, _pending_session, "0".repeat(32)), "  ", false))
 	return "\n\n".join(parts)
 
 
@@ -209,11 +228,11 @@ func _process(_delta: float) -> void:
 		return
 	var now := int(clock_usec.call())
 	_rotate_if_due(now)
+	_expire_unsealed(now)
 	_observe(now)
-	if not _pending.is_empty() and now - _last_seal_usec >= SEAL_INTERVAL_US:
+	if (not _pending.is_empty() or not _errors.is_empty()) and now - _last_seal_usec >= SEAL_INTERVAL_US:
 		_seal(now)
-	if sender.busy():
-		_expire_request(now)
+	_expire_request(now)
 	if not sender.busy():
 		var item := queue.begin(now / 1000000.0, generation)
 		if not item.is_empty() and not sender.send(str(release.endpoint), item.body, int(item.serial)):
@@ -264,17 +283,50 @@ func _stop() -> void:
 	_discard_unsealed()
 
 
-func _discard_unsealed() -> void:
+func _clear_pending() -> void:
 	_pending.clear()
+	_pending_origins.clear()
 	_pending_context = {}
 	_pending_session = ""
+
+
+func _discard_unsealed() -> void:
+	_clear_pending()
 	_window = null
+	_window_origin = -1
 	_window_key = []
 	_window_context = {}
 	_last_usec = -1
 	_activity = {}
 	_activity_from_start = false
-	_errors = {}
+	_errors.clear()
+	_error_origins.clear()
+
+
+func _expire_unsealed(now: int) -> void:
+	var cutoff := now - Queue.TTL_USEC
+	var before := _pending.size()
+	for index: int in range(before - 1, -1, -1):
+		if _pending_origins[index] <= cutoff:
+			_pending.remove_at(index)
+			_pending_origins.remove_at(index)
+	if _pending.size() != before:
+		if _pending.is_empty():
+			_clear_pending()
+		state_changed.emit.call_deferred()
+	for category: String in _error_origins.keys():
+		if int(_error_origins[category]) <= cutoff:
+			_error_origins.erase(category)
+			_errors.erase(category)
+	if _window != null and _window_origin <= cutoff:
+		_window = null
+		_window_origin = -1
+		_last_usec = -1
+	if _last_usec <= cutoff:
+		_last_usec = -1
+	if not _activity.is_empty() and int(_activity.origin) <= cutoff:
+		_activity = {}
+		_activity_from_start = false
 
 
 func _new_session(now: int, day: int) -> void:
@@ -295,10 +347,14 @@ func _rotate_if_due(now: int) -> void:
 	_discard_unsealed()
 	_expire_request(now)
 	_new_session(now, day)
+	_refresh_activity(now)
+	state_changed.emit.call_deferred()
+
+
+func _refresh_activity(now: int) -> void:
 	var ctx := _read_context()
 	var active := Contract.is_true(ctx.get("activity"))
 	_track_activity(ctx, _mode(ctx), _vehicle(ctx, active), now, active)
-	state_changed.emit.call_deferred()
 
 
 func _expire_request(now: int) -> void:
@@ -337,20 +393,23 @@ func _observe(now: int) -> void:
 		_last_usec = now
 		_last_drawn = drawn
 		return
-	var interval := now - _last_usec
+	var interval_origin := _last_usec
+	var interval := now - interval_origin
 	if interval <= 0:
 		return # no time passed on the monotonic clock: nothing to observe yet
 	var draws := drawn - _last_drawn
 	_last_usec = now
 	_last_drawn = drawn
 	if interval > 0 and interval <= Contract.GAP_EXCLUDE_US and not _activity.is_empty():
-		_activity.active_us = int(_activity.active_us) + interval
+		_activity.active_us = int(_activity.active_us) + now - maxi(interval_origin, int(_activity.origin))
 	if _window == null:
 		_window = FrameWindow.new()
+		_window_origin = interval_origin
 	var result: String = _window.record(interval, draws if draws >= 0 else -1)
 	if result == FrameWindow.FULL:
 		_close_window(now, false)
 		_window = FrameWindow.new()
+		_window_origin = interval_origin
 		result = _window.record(interval, draws if draws >= 0 else -1)
 	if result == FrameWindow.INVALID or result == FrameWindow.FULL:
 		local_drops += 1 # an unrepresentable observation: drop it and restart from the next frame
@@ -369,13 +428,16 @@ func _observe(now: int) -> void:
 func _close_window(now: int, complete: bool, phase := "") -> void:
 	if _window == null or _window.is_empty():
 		_window = null
+		_window_origin = -1
 		return
 	if phase == "":
 		phase = "warmup" if _warmup_left_us > 0 else "steady"
 	var event: Dictionary = _window.event(0, _window_mode, _window_vehicle, phase, complete)
+	var origin := _window_origin
 	_window = null
+	_window_origin = -1
 	if not event.is_empty():
-		_append(event, now, _window_context)
+		_append(event, now, _window_context, origin)
 
 
 func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, active: bool) -> bool:
@@ -407,7 +469,7 @@ func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, a
 		return false
 	var fixed_wing := Contract.is_true(ctx.get("fixed_wing_accepted")) and vehicle in Contract.FIXED_WING_VEHICLES
 	# Without a simulated clock the summary reports 0 simulated seconds and says the observation is incomplete.
-	_activity = {"key": key, "vehicle": vehicle, "active_us": 0, "id": activity_id,
+	_activity = {"key": key, "vehicle": vehicle, "active_us": 0, "id": activity_id, "origin": now,
 		"sim_start": maxf(simulated, 0.0), "sim_last": maxf(simulated, 0.0),
 		"complete": _activity_from_start and simulated >= 0.0,
 		"classification": "accepted_fixed_wing" if fixed_wing else "unsupported",
@@ -429,12 +491,15 @@ func _end_activity(now: int, outcome: String, finished: bool) -> void:
 		"takeoffs": int(a.takeoffs) if fixed else null,
 		"landings": int(a.landings) if fixed else null,
 		"aircraft_crashes": int(a.aircraft_crashes) if fixed else null,
-		"physics_backend": str(a.get("physics_backend", "unknown"))}, now)
+		"physics_backend": str(a.get("physics_backend", "unknown"))}, now, {}, int(a.origin))
 
 
 ## Number the event, keep batches context-stable and seal when full. `event` arrives without its seq.
-func _append(event: Dictionary, now: int, observed_context: Dictionary = {}) -> void:
+func _append(event: Dictionary, now: int, observed_context: Dictionary = {}, origin_usec := -1) -> void:
 	if state != Policy.ON or _session_id == "":
+		return
+	var origin := now if origin_usec < 0 else origin_usec
+	if now - origin >= Queue.TTL_USEC:
 		return
 	var context := _context(_read_context()) if observed_context.is_empty() else observed_context
 	if not _pending.is_empty() and (context != _pending_context or _pending_session != _session_id):
@@ -448,25 +513,30 @@ func _append(event: Dictionary, now: int, observed_context: Dictionary = {}) -> 
 		if key != "name" and key != "seq": # builders may carry a placeholder seq; the session numbers events
 			numbered[key] = event[key]
 	_pending.append(numbered)
+	_pending_origins.append(origin)
 	if _pending.size() >= Contract.MAX_EVENTS:
 		_seal(now)
+	else:
+		state_changed.emit.call_deferred()
 
 
 func _seal(now: int) -> void:
+	_expire_unsealed(now)
 	_last_seal_usec = now
 	_flush_errors_into_pending()
 	if _pending.is_empty():
 		return
 	var batch := _batch(_pending, _pending_context, _pending_session, Contract.random_id())
-	_pending = []
-	_pending_context = {}
-	_pending_session = ""
+	var oldest := int(_pending_origins.min())
+	_clear_pending()
 	var error := Contract.check_batch(batch)
 	if error != "":
 		local_drops += 1
 		push_warning("telemetry: dropped a batch that failed the local contract check (%s)" % error)
 		return
-	queue.push(Contract.encode(batch), generation, now / 1000000.0)
+	queue.push(Contract.encode(batch), generation, now / 1000000.0, oldest / 1000000.0)
+	if sender.busy() and queue.active_serial < 0:
+		sender.cancel()
 	# Observers may change admission or record errors. Notify after the collector transition finishes.
 	state_changed.emit.call_deferred()
 
@@ -481,7 +551,9 @@ func _flush_errors_into_pending() -> void:
 		if _errors.has(category) and _pending.size() < Contract.MAX_EVENTS:
 			_seq += 1
 			_pending.append(Contract.error_count(_seq, category, int(_errors[category])))
+			_pending_origins.append(int(_error_origins[category]))
 			_errors.erase(category)
+			_error_origins.erase(category)
 
 
 func _batch(events: Array[Dictionary], context: Dictionary, session_id: String, batch_id: String) -> Dictionary:

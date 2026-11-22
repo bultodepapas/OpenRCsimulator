@@ -94,7 +94,7 @@ Do not attach a telemetry observer to every 240 Hz physics tick. Read already ac
 | In-flight work | One request; use_threads=false; no synchronous wait |
 | Timeout | 5-second request timeout plus monotonic deadline, tested during a silent connection |
 | Response | Maximum 4 KiB, redirects=0, TLS verification enabled |
-| Queue | At most 256 KiB / 32 sealed batches, oldest first eviction, maximum age 10 minutes |
+| Queue | At most 256 KiB / 32 sealed batches, oldest first eviction, expires ten minutes after its oldest included observation |
 | Cadence | At most one normal send per 60 seconds, randomized by 0–10 seconds |
 | Retry | Full-jitter exponential delay: uniform fraction of min(300, 5·2^n) seconds for retry n = 0…4, with a 1-second floor; honor a valid longer Retry-After |
 | Retry horizon | At most 5 retries per batch, also subject to age, hour budget and current grant |
