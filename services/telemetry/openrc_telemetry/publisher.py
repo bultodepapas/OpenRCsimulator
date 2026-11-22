@@ -162,6 +162,18 @@ def _classify(issues, title, body, key, bot_author, known_number):
     return exact, related
 
 
+def _concurrent_result(agg, repo, key, now, observed_number=None):
+    current = agg.get_publication(repo, key)
+    if current and current["state"] == "review_required":
+        return Result("review_required", "earlier review_required is sticky; resolve manually")
+    if current and current["state"] == "published":
+        if observed_number is not None and observed_number != current["issue_number"]:
+            agg.mark_publication_review(current, now)
+            return Result("review_required", "different issue numbers observed; stopped for review")
+        return Result("noop", "already published", current["issue_number"])
+    return Result("pending", "publication changed during this run; rerun to reconcile")
+
+
 def publish(agg, contracts, *, week, release, repository, approved_digest, execute, now,
             releases, bot_author="", label="telemetry", github=None):
     """Recompute, verify the approved digest, record intent, reconcile, then create at most once."""
@@ -186,47 +198,52 @@ def publish(agg, contracts, *, week, release, repository, approved_digest, execu
     author = canonical_author(bot_author)
 
     intent = agg.get_publication(repo, key)
-    if intent is not None:
-        if intent["state"] == "review_required":
-            return Result("review_required", "earlier review_required is sticky; resolve manually")
-        if intent["digest"] != digest or intent["bot_author"] != author:
-            agg.update_publication(repo, key, now, state="review_required")
-            return Result("review_required", "report digest or publisher changed since the recorded intent")
-        if intent["state"] == "published":
-            return Result("noop", "already published", intent["issue_number"])
-    else:
-        # Durable intent BEFORE any remote interaction.
+    if intent is None:
+        # Durable intent BEFORE any remote interaction. Another process may insert first.
         agg.create_publication(repo, key, digest, title, body, author, now)
         intent = agg.get_publication(repo, key)
+
+    if intent["state"] == "review_required":
+        return Result("review_required", "earlier review_required is sticky; resolve manually")
+    if intent["digest"] != digest or intent["bot_author"] != author:
+        agg.mark_publication_review(intent, now)
+        return Result("review_required", "report digest or publisher changed since the recorded intent")
+    if intent["state"] == "published":
+        return Result("noop", "already published", intent["issue_number"])
 
     issues, complete = github.list_issues(repo)
     exact, related = _classify(issues, title, body, key, author, intent["issue_number"])
     if related or len(exact) > 1:
-        agg.update_publication(repo, key, now, state="review_required")
+        agg.mark_publication_review(intent, now)
         return Result("review_required", "related or duplicate issue found; stopped for review")
     if not complete:
         return Result("pending", "issue discovery incomplete; rerun to reconcile (no create attempted)")
     if exact:
         number = exact.pop()
-        agg.update_publication(repo, key, now, state="published", issue_number=number)
+        if not agg.update_publication(intent, now, state="published", issue_number=number):
+            return _concurrent_result(agg, repo, key, now, number)
         return Result("published", f"reconciled with existing issue #{number}", number)
     if intent["create_attempts"] > 0:
-        agg.update_publication(repo, key, now, state="unknown")
         return Result("unknown", "a previous create has an unknown outcome and no issue is visible yet; "
                                  "not creating again, rerun later to reconcile")
 
-    # Mark the attempt durable before the single create request.
-    agg.update_publication(repo, key, now, state="creating", create_attempts=1)
+    # Only the worker that durably claims this revision may send the request.
+    if not agg.update_publication(intent, now, state="creating", create_attempts=1):
+        return _concurrent_result(agg, repo, key, now)
+    claim = {**intent, "revision": intent["revision"] + 1, "state": "creating", "create_attempts": 1}
     outcome, issue = github.create_issue(repo, title, body, label)
     if outcome == "created":
         view = _issue_view(issue, author)
         if view is None or view["title"] != title or _normalize(view["body"]) != _normalize(body):
-            agg.update_publication(repo, key, now, state="review_required")
+            agg.mark_publication_review(claim, now)
             return Result("review_required", "created issue does not match the frozen report")
-        agg.update_publication(repo, key, now, state="published", issue_number=view["number"])
+        if not agg.update_publication(claim, now, state="published", issue_number=view["number"]):
+            return _concurrent_result(agg, repo, key, now, view["number"])
         return Result("published", f"created issue #{view['number']}", view["number"])
     if outcome == "rejected":
-        agg.update_publication(repo, key, now, state="creating", create_attempts=0)
+        if not agg.update_publication(claim, now, create_attempts=0):
+            return _concurrent_result(agg, repo, key, now)
         return Result("rejected", "GitHub refused the create request; nothing was created")
-    agg.update_publication(repo, key, now, state="unknown")
+    if not agg.update_publication(claim, now, state="unknown"):
+        return _concurrent_result(agg, repo, key, now)
     return Result("unknown", "create outcome unknown; rerun later to reconcile instead of creating again")
