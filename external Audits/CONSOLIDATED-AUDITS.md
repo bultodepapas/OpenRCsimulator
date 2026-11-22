@@ -25,7 +25,10 @@ reviews main `7940a408` and refines the existing VRC proposal with concrete
 route/controller ownership findings, recording/environment/presentation
 extractions and family boundaries. Its repository-wide continuation adds settings,
 Creator/UI, checked-tooling, qualification/pin ownership and bounded legacy
-retirement findings. It is source evidence and proposed work;
+retirement findings. A third pass adds numeric-contract consistency, generator
+validation retirement, macOS tool identity closure, deferred overlay cleanup,
+bounded concurrency candidates and a dependency-aware parallel implementation plan.
+It is source evidence and proposed work;
 no runtime repair or performance result is claimed. The historical queue and
 completed-work statuses below are not reclassified by that review.
 

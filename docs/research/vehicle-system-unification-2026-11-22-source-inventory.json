@@ -5795,5 +5795,987 @@
       "Frozen references and shared schemas must not be merged with the implementation merely because source matches.",
       "All scanned application blob identities verified against source_commit."
     ]
+  },
+  "third_pass": {
+    "source_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+    "audit_parent": "f9b727dd12b1b83d81ba04562be43d7231959b41",
+    "application_tree": "fe6fdf080899707fab1a1dd4118a32481bca5e4c",
+    "method": "Targeted original-source/caller/test/identity inspection. Source references are pinned blob and SHA-256 identities; this is not a complete dynamic dependency graph or runtime test.",
+    "source_references": [
+      {
+        "reference": "t-ambience",
+        "path": "app/scenery/ambience_player.gd",
+        "anchor": "L16-L62",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/scenery/ambience_player.gd#L16-L62",
+        "blob": "7badca0b8bb7696b80c7cf5db2ebd9230b8e3253",
+        "sha256": "487f437938a90835eb025a5655eb208b6b2f05c7e866aa09448ac90ffbe06078",
+        "bytes": 2118,
+        "lines": 62
+      },
+      {
+        "reference": "t-ambience-history",
+        "path": "docs/research/menu-investigations/UI-34c-R5/README.md",
+        "anchor": "L67-L80",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/research/menu-investigations/UI-34c-R5/README.md#L67-L80",
+        "blob": "e8b43a0c213d45a94aa335dd970cd8d08f8c6356",
+        "sha256": "6f82af46d6eacf6638de106badf7cc89d3b8f056f9afbad212c5421765ac3309",
+        "bytes": 17738,
+        "lines": 82
+      },
+      {
+        "reference": "t-ambience-tests",
+        "path": "app/tests/test_scenery_ambience.gd",
+        "anchor": "L47-L71",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_scenery_ambience.gd#L47-L71",
+        "blob": "eedebed670a9c516b036f25dca5bce3cdd2b5d11",
+        "sha256": "c2ba38f41b20b1d67069e5fb1173b49aa0162d072b877acc39796104da629031",
+        "bytes": 6793,
+        "lines": 163
+      },
+      {
+        "reference": "t-capture-groups",
+        "path": "tools/ci/capture_groups.py",
+        "anchor": "L1-L43",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/ci/capture_groups.py#L1-L43",
+        "blob": "72ba9b89d69e13a69926bfe0ec5568036be6b7fe",
+        "sha256": "7bf6ea621a02dff2efe5c03f7d31213503cac47fca6b1bbc0fdfee90dfe50315",
+        "bytes": 44632,
+        "lines": 809
+      },
+      {
+        "reference": "t-catalog-alias",
+        "path": "app/app_state/aircraft_catalog.gd",
+        "anchor": "L172-L178",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/app_state/aircraft_catalog.gd#L172-L178",
+        "blob": "5790cd5275ac08ff2d1dc34c23e595c1ec269c87",
+        "sha256": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
+        "bytes": 14519,
+        "lines": 345
+      },
+      {
+        "reference": "t-ci-plan",
+        "path": "docs/plans/release-ci-efficiency.md",
+        "anchor": "L51-L80",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/plans/release-ci-efficiency.md#L51-L80",
+        "blob": "ce4a04803dca49abd1b2b0918d913b12b78d9e60",
+        "sha256": "f0c3b469bb4576ed2ee7bc23426dcbed723b8a6e1637ef099f54a5f5a23bcc92",
+        "bytes": 28133,
+        "lines": 120
+      },
+      {
+        "reference": "t-ci-status",
+        "path": "tools/ci/README.md",
+        "anchor": "L45-L59",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/ci/README.md#L45-L59",
+        "blob": "232355179e1f7e2de3b159473702754858102add",
+        "sha256": "e276806110376e60c8476eabc72f17c010ddaeeb1a154b670afe09579309d5d4",
+        "bytes": 15713,
+        "lines": 90
+      },
+      {
+        "reference": "t-collision-builder",
+        "path": "app/scenery/collision_world.gd",
+        "anchor": "L64-L209",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/scenery/collision_world.gd#L64-L209",
+        "blob": "ad8b30cd854d3052b4590b40de3ddd1e49557cad",
+        "sha256": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+        "bytes": 52889,
+        "lines": 1012
+      },
+      {
+        "reference": "t-collision-inputs",
+        "path": "app/scenery/collision_setup.gd",
+        "anchor": "L10-L25",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/scenery/collision_setup.gd#L10-L25",
+        "blob": "e7e72e96c3af7ae5ffb891d21fd9be6ce830b67f",
+        "sha256": "ede20eb77fa7b0e8301c08e8db82cc2b74a29a719d0bb60233fe0ad719727045",
+        "bytes": 1280,
+        "lines": 25
+      },
+      {
+        "reference": "t-collision-test",
+        "path": "app/tests/test_collision_world_cache.gd",
+        "anchor": "L211-L269",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_collision_world_cache.gd#L211-L269",
+        "blob": "8dff0175b884e65169e952d194771bb52ac74760",
+        "sha256": "a70df7e392b2a77e1d6a4e2d2540a55c4fb4369b2b396c67aa4358475e6098ae",
+        "bytes": 16031,
+        "lines": 317
+      },
+      {
+        "reference": "t-conformance-identity",
+        "path": "research/aircraft-standardization/conformance.py",
+        "anchor": "L21-L31",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-standardization/conformance.py#L21-L31",
+        "blob": "a5f607e32e8dc64b18c0d9446feb05fa05e700ff",
+        "sha256": "a7eaaa6b127f16df5c1c52d1a7407ea096366ff377fae7d924f6e80810f553d4",
+        "bytes": 12597,
+        "lines": 205
+      },
+      {
+        "reference": "t-copy-identities",
+        "path": "tools/testqueue/snapshots.py",
+        "anchor": "L18-L23",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/testqueue/snapshots.py#L18-L23",
+        "blob": "3414c24a5564ca30a79e02195290154de9ed0f8f",
+        "sha256": "5a533a09cb7e75537834a3bd3a031ce8adb46156dbb4a773936424a50b6489fd",
+        "bytes": 24404,
+        "lines": 494
+      },
+      {
+        "reference": "t-descriptor-check",
+        "path": "research/aircraft-editor/build_descriptors.py",
+        "anchor": "L97-L133",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-editor/build_descriptors.py#L97-L133",
+        "blob": "a3f70e3b09e97550ebe42239d2e48fb597ec6492",
+        "sha256": "992a4fc3f3f6a594064f4fef42271dc8413673571de121755a98a8d8430e82d3",
+        "bytes": 10707,
+        "lines": 236
+      },
+      {
+        "reference": "t-descriptor-output",
+        "path": "research/aircraft-editor/build_descriptors.py",
+        "anchor": "L151-L191",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-editor/build_descriptors.py#L151-L191",
+        "blob": "a3f70e3b09e97550ebe42239d2e48fb597ec6492",
+        "sha256": "992a4fc3f3f6a594064f4fef42271dc8413673571de121755a98a8d8430e82d3",
+        "bytes": 10707,
+        "lines": 236
+      },
+      {
+        "reference": "t-descriptor-tests",
+        "path": "research/aircraft-editor/test_descriptor_checkout.py",
+        "anchor": "L15-L153",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-editor/test_descriptor_checkout.py#L15-L153",
+        "blob": "23c644b55bd92a3c53bc3d77e33c47f42de08c34",
+        "sha256": "565857a0432588bdceebc23fbffea70a816236db4f58273c49f1cf2e12469e09",
+        "bytes": 9051,
+        "lines": 177
+      },
+      {
+        "reference": "t-economy-jobs",
+        "path": "app/economy/incident.gd",
+        "anchor": "L952-L1472",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/economy/incident.gd#L952-L1472",
+        "blob": "3b06d717e9642daf6bb7f428256cad5b093d3b03",
+        "sha256": "c9a4d93574b81a68c1c08dfa31c9688f705dd29402ce74eeea98656d77a8b1c4",
+        "bytes": 82228,
+        "lines": 1710
+      },
+      {
+        "reference": "t-flag-requests",
+        "path": "app/render/flag.gd",
+        "anchor": "L45-L131",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/render/flag.gd#L45-L131",
+        "blob": "0cc0d371e58fecbd9ac02695895f13b9445465d8",
+        "sha256": "9d9d23aff72efb9d92f41fdf3551f12b009c6504fa05ace99e6bd1ca12ff1170",
+        "bytes": 10844,
+        "lines": 282
+      },
+      {
+        "reference": "t-flag-tests",
+        "path": "app/tests/test_flag_render.gd",
+        "anchor": "L126-L150",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_flag_render.gd#L126-L150",
+        "blob": "951563a48b49ada1dbdea9edb44d106074c7b0d4",
+        "sha256": "69f36a9a20b4bc37a834e919b092a42619b9fc716b2ffd8b324a7b39e21fbf97",
+        "bytes": 30658,
+        "lines": 595
+      },
+      {
+        "reference": "t-glow-pump",
+        "path": "app/audio/glow_audio_pump.gd",
+        "anchor": "L1-L150",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/audio/glow_audio_pump.gd#L1-L150",
+        "blob": "75441a8ab1d1f4aeab1eac73b3d11dfb1861ee39",
+        "sha256": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+        "bytes": 11564,
+        "lines": 344
+      },
+      {
+        "reference": "t-godtest-copy",
+        "path": "tools/godtest/runner.py",
+        "anchor": "L51-L163",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/godtest/runner.py#L51-L163",
+        "blob": "0cbba105709e2b8030f4e60b525d63bb656b04aa",
+        "sha256": "e2db797afab31b70125d7bedf2dc6f31ef8b16a5e6e43c35c95c934754493568",
+        "bytes": 27876,
+        "lines": 501
+      },
+      {
+        "reference": "t-godtest-copy-tests",
+        "path": "tools/godtest/test_godtest.py",
+        "anchor": "L345-L406",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/godtest/test_godtest.py#L345-L406",
+        "blob": "91b5514616e6a8e157a11765721b80111785c9f6",
+        "sha256": "ace38acc98e9f82dea3269c9ef7b64c2ee7840f77815f2d0e684794aa9638422",
+        "bytes": 31793,
+        "lines": 499
+      },
+      {
+        "reference": "t-godtest-observers",
+        "path": "tools/godtest/godtest.py",
+        "anchor": "L70-L211",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/godtest/godtest.py#L70-L211",
+        "blob": "230737f62ddbfd3cb1bf05c937697db9bf9b0295",
+        "sha256": "2cd1fafa6b08ec21381410e9f99dc906197988a1b50dca6280ca4d306f89ee5d",
+        "bytes": 30989,
+        "lines": 474
+      },
+      {
+        "reference": "t-godtest-orchestrator",
+        "path": "tools/godtest/runner.py",
+        "anchor": "L18-L25",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/godtest/runner.py#L18-L25",
+        "blob": "0cbba105709e2b8030f4e60b525d63bb656b04aa",
+        "sha256": "e2db797afab31b70125d7bedf2dc6f31ef8b16a5e6e43c35c95c934754493568",
+        "bytes": 27876,
+        "lines": 501
+      },
+      {
+        "reference": "t-graphics-copy",
+        "path": "tools/graphics/prepare_research.py",
+        "anchor": "L163-L289",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/graphics/prepare_research.py#L163-L289",
+        "blob": "72d841101dac135c18894ac62bdda412a4276778",
+        "sha256": "61a458ef4590c5612b406a05b18bac783bc2094957a4a98d05982fdb70a6e384",
+        "bytes": 17013,
+        "lines": 309
+      },
+      {
+        "reference": "t-graphics-copy-tests",
+        "path": "tools/graphics/test_prepare_research.py",
+        "anchor": "L63-L376",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/graphics/test_prepare_research.py#L63-L376",
+        "blob": "b0453382bda644331ff93feffba7d4aed7dfea31",
+        "sha256": "8a9ae7a26077e8d141766558cca0c8ee37c06e13df8f3588442b1149d52a5ab1",
+        "bytes": 24123,
+        "lines": 411
+      },
+      {
+        "reference": "t-kernel-transaction",
+        "path": "app/sim/simulation.gd",
+        "anchor": "L387-L704",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/sim/simulation.gd#L387-L704",
+        "blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+        "sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+        "bytes": 76864,
+        "lines": 1453
+      },
+      {
+        "reference": "t-macos-isolation",
+        "path": "tools/godtest/isolation.py",
+        "anchor": "L17-L91",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/godtest/isolation.py#L17-L91",
+        "blob": "93d58ed5a1d5c05f0278f32a2b2af6e501a6daff",
+        "sha256": "2ce2368119bf11b77a511d819b71cfedd49838d9bac56522efc05a5803ca63c8",
+        "bytes": 4932,
+        "lines": 91
+      },
+      {
+        "reference": "t-main-collision",
+        "path": "app/main.gd",
+        "anchor": "L964-L1125",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/main.gd#L964-L1125",
+        "blob": "8f76e4242698f609ef4a3637de0eca8c6faee22f",
+        "sha256": "5ae216f228dbebad4280f843e061c2e9d19a20ede042556f0bcd7d35babce8af",
+        "bytes": 218547,
+        "lines": 4303
+      },
+      {
+        "reference": "t-overlay-descriptor",
+        "path": "research/aircraft-editor/build_descriptors.py",
+        "anchor": "L82-L94",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-editor/build_descriptors.py#L82-L94",
+        "blob": "a3f70e3b09e97550ebe42239d2e48fb597ec6492",
+        "sha256": "992a4fc3f3f6a594064f4fef42271dc8413673571de121755a98a8d8430e82d3",
+        "bytes": 10707,
+        "lines": 236
+      },
+      {
+        "reference": "t-overlay-dispatch",
+        "path": "app/aircraft/model_registry.gd",
+        "anchor": "L10-L25",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/aircraft/model_registry.gd#L10-L25",
+        "blob": "4845a004d70d2eaac20cec2be9eb0def2c991671",
+        "sha256": "2780fd6fe0561c4a6e1ec386ca76f62165cf9f019da059f027bcf6ab5a5526bd",
+        "bytes": 29865,
+        "lines": 481
+      },
+      {
+        "reference": "t-overlay-export",
+        "path": "app/addons/aircraft_contract/export_plugin.gd",
+        "anchor": "L40-L122",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/addons/aircraft_contract/export_plugin.gd#L40-L122",
+        "blob": "0a8f1702dd70ffb5e48d40c87b3e66104f73e29a",
+        "sha256": "9a69d9cd8d923303763f9876ab7707bd1719e2cce857dce543c10fd78c1b7bd8",
+        "bytes": 8243,
+        "lines": 147
+      },
+      {
+        "reference": "t-overlay-package-tests",
+        "path": "app/tests/test_aircraft_package_proofs.gd",
+        "anchor": "L50-L74",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_aircraft_package_proofs.gd#L50-L74",
+        "blob": "be434c0207aec842fb8171c19ba4aab81414143d",
+        "sha256": "852f9a149421dca2738dced287a2eb61958d5da6b35d9676da555134b39ef205",
+        "bytes": 15488,
+        "lines": 301
+      },
+      {
+        "reference": "t-overlay-plan",
+        "path": "docs/plans/ugly-stik-two-variants.md",
+        "anchor": "L146-L166",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/plans/ugly-stik-two-variants.md#L146-L166",
+        "blob": "49b6c4a9c5c22b31cc6ac68bf0a861d12bfc1ced",
+        "sha256": "112a55fc458323109e05728fdfccf5296599b792a495f5d90374d7fa2deb779b",
+        "bytes": 40117,
+        "lines": 217
+      },
+      {
+        "reference": "t-overlay-proof",
+        "path": "app/aircraft/overlay_source_proof.gd",
+        "anchor": "L6-L67",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/aircraft/overlay_source_proof.gd#L6-L67",
+        "blob": "21e4f04aa1dabe6dc9dba710996c665bc13bfc93",
+        "sha256": "f541a274a433ba22e0cd9045ab2a0ca7a7bbde6fa07d411593a4a04bdabc97aa",
+        "bytes": 4779,
+        "lines": 94
+      },
+      {
+        "reference": "t-overlay-registries",
+        "path": "app/aircraft/model_overlay_registry.gd",
+        "anchor": "L3-L41",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/aircraft/model_overlay_registry.gd#L3-L41",
+        "blob": "7141b5e32b6cfb81434179b99eddda4515c9911c",
+        "sha256": "63ff18e0b9190682eb5b300c50649089b6ede697f9f4ac7d1635f662b23af91e",
+        "bytes": 2035,
+        "lines": 44
+      },
+      {
+        "reference": "t-overlay-tests",
+        "path": "app/tests/test_stik_electric_overlay.gd",
+        "anchor": "L15-L68",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_stik_electric_overlay.gd#L15-L68",
+        "blob": "6daaaf6d62ec9bc9eb1d9230e955451f3911d0c6",
+        "sha256": "8c9c767221b0ee799fb128a91614641a6adf588d8a1a952b2ccfac02eec6f534",
+        "bytes": 7858,
+        "lines": 113
+      },
+      {
+        "reference": "t-overlay-workshop",
+        "path": "app/ui/workshop.gd",
+        "anchor": "L3777-L3788",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/ui/workshop.gd#L3777-L3788",
+        "blob": "0c6dc276e97f57542313b881fe6e1363e09f3097",
+        "sha256": "28d1119d1da6175912e1db21f3a7fb4e1fec5f13ebd39b783b6cf682f067dfde",
+        "bytes": 165529,
+        "lines": 3788
+      },
+      {
+        "reference": "t-phase-roster",
+        "path": "tools/ci/phase_roster.py",
+        "anchor": "L1-L199",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/ci/phase_roster.py#L1-L199",
+        "blob": "fd68e0867d542137ac7fe8242348db4c62f6e664",
+        "sha256": "b57f0c6e2e5971ef574116334da079db6a61cdee39b27ff82e8a82fe468fad08",
+        "bytes": 11889,
+        "lines": 238
+      },
+      {
+        "reference": "t-physical-identity",
+        "path": "research/aircraft-standardization/physical_identity.py",
+        "anchor": "L15-L61",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-standardization/physical_identity.py#L15-L61",
+        "blob": "f3a259f8c05af8b39a290c59e4d7fab76fafa860",
+        "sha256": "3c349e063c86a89fa4796bfef8f39cabecc3c75270190c2fa2ffe64f0690dcc4",
+        "bytes": 5063,
+        "lines": 122
+      },
+      {
+        "reference": "t-preview-worker",
+        "path": "app/ui/home_preview_geometry.gd",
+        "anchor": "L21-L152",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/ui/home_preview_geometry.gd#L21-L152",
+        "blob": "2bd853002327ce8832607bbdb41de7a5b24dc213",
+        "sha256": "6a9c1cd02bd0ec2f0971d9121b761d076e6144ff9af3b1e2aad1d22bb40fa7be",
+        "bytes": 5141,
+        "lines": 153
+      },
+      {
+        "reference": "t-queue-copy",
+        "path": "tools/testqueue/snapshots.py",
+        "anchor": "L269-L399",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/testqueue/snapshots.py#L269-L399",
+        "blob": "3414c24a5564ca30a79e02195290154de9ed0f8f",
+        "sha256": "5a533a09cb7e75537834a3bd3a031ce8adb46156dbb4a773936424a50b6489fd",
+        "bytes": 24404,
+        "lines": 494
+      },
+      {
+        "reference": "t-queue-copy-tests",
+        "path": "tools/testqueue/test_snapshots.py",
+        "anchor": "L59-L282",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/tools/testqueue/test_snapshots.py#L59-L282",
+        "blob": "7974c95963fe104dfbc0c51c6c8cf85f5f8230b8",
+        "sha256": "ef24e3cac3d30e0a24fdb4fb149f801f0a9efe1db0f97269ab1682f6303b8abb",
+        "bytes": 15802,
+        "lines": 294
+      },
+      {
+        "reference": "t-runtime-boundaries",
+        "path": "docs/STACK.md",
+        "anchor": "godot-runtime-boundaries",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/STACK.md#godot-runtime-boundaries",
+        "blob": "011f167e0750d6a028adf8da65743bcd9ea4342c",
+        "sha256": "2d0805a1b361f0220b0c20ec3c81f517fe0fb62b80e565861c5f77b56d6af515",
+        "bytes": 18761,
+        "lines": 95
+      },
+      {
+        "reference": "t-scene-loader",
+        "path": "app/ui/flight_scene_load.gd",
+        "anchor": "L1-L58",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/ui/flight_scene_load.gd#L1-L58",
+        "blob": "14648cc5b7a1ab6f5b65ea0e7ebb49760f5f34b0",
+        "sha256": "bc34ecfe1d30eb23d9647119bebe87c4037563485e01d16ef74f30258c40946c",
+        "bytes": 1305,
+        "lines": 58
+      },
+      {
+        "reference": "t-schema-corpus",
+        "path": "research/aircraft-standardization/test_schema_v2.py",
+        "anchor": "L208-L293",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/aircraft-standardization/test_schema_v2.py#L208-L293",
+        "blob": "106ae19fd3e67f43f416fdc6d6d13d4746066468",
+        "sha256": "35229166475940d6355c59bfb0a1fdd89c04006bcf8eb890799b976ffa284b60",
+        "bytes": 38000,
+        "lines": 701
+      },
+      {
+        "reference": "t-stats-choices",
+        "path": "app/statistics/service.gd",
+        "anchor": "L685-L705",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/statistics/service.gd#L685-L705",
+        "blob": "dfc3e1057ce6a5f8d1ebefc883a22aabd007791b",
+        "sha256": "45202dd0c666d2a3336c2213f0f9e53ae16a7315b70c33d798085eb694bc407a",
+        "bytes": 32879,
+        "lines": 825
+      },
+      {
+        "reference": "t-stats-identity",
+        "path": "app/statistics/aircraft_identity.gd",
+        "anchor": "L1-L14",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/statistics/aircraft_identity.gd#L1-L14",
+        "blob": "76c1c565d46601c38c7e691f9b8f449e9f4cff4f",
+        "sha256": "e2d8fae30d8434cf630170a82965bf8abe5645b00d913a505062735de9bc6b07",
+        "bytes": 536,
+        "lines": 14
+      },
+      {
+        "reference": "t-stats-labels",
+        "path": "app/ui/statistics_screen.gd",
+        "anchor": "L937-L954",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/ui/statistics_screen.gd#L937-L954",
+        "blob": "727f2ba5a92fae0359cc786c48f67020cb491666",
+        "sha256": "35fdbdca793b7e367902f1fb687e5f7ffac74bec4accf789617d8127e8d636e8",
+        "bytes": 45482,
+        "lines": 1051
+      },
+      {
+        "reference": "t-stats-reset-tests",
+        "path": "app/tests/test_flight_statistics_resets.gd",
+        "anchor": "L21-L102",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_flight_statistics_resets.gd#L21-L102",
+        "blob": "5a2764b77fc409bfe2e13a6b835ab28c2091b85d",
+        "sha256": "b75cb4fa10b65305fe9ca6dc949deebc90af00026381a2064ce2b65c1c0c1467",
+        "bytes": 18347,
+        "lines": 257
+      },
+      {
+        "reference": "t-stats-ui-tests",
+        "path": "app/tests/test_ui_statistics.gd",
+        "anchor": "L395-L448",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_ui_statistics.gd#L395-L448",
+        "blob": "f7852f89d1ec1fd57ba2e4bc1da8bbe03fe73582",
+        "sha256": "bb149860654b7832072cc108d2de312b5719ce12e91935975047c322837696de",
+        "bytes": 31900,
+        "lines": 653
+      },
+      {
+        "reference": "t-stats-writer",
+        "path": "app/statistics/writer.gd",
+        "anchor": "L1-L65",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/statistics/writer.gd#L1-L65",
+        "blob": "17a1462d84a3dfaa250342c053285adea96181f4",
+        "sha256": "ebd46d2cb8729004f46d14fdc8efac156605c3c5c2eaaed2ad03b88dd8e0db08",
+        "bytes": 1858,
+        "lines": 65
+      },
+      {
+        "reference": "t-telem-audit",
+        "path": "docs/research/telemetry/TELEM-AUDIT-2026-11-19/README.md",
+        "anchor": "L51-L55",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/research/telemetry/TELEM-AUDIT-2026-11-19/README.md#L51-L55",
+        "blob": "9be42d04dde1f8f8d7f541f3dd6f734b7e726ef9",
+        "sha256": "00c62a759e90b44ab1fd91d2bb6c5db52eab31c0d425b7a785a624ea483c67f8",
+        "bytes": 13766,
+        "lines": 71
+      },
+      {
+        "reference": "t-telem-equivalence",
+        "path": "services/telemetry/tests/test_equivalence.py",
+        "anchor": "L45-L123",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/tests/test_equivalence.py#L45-L123",
+        "blob": "8291fa0e4336b7cabe4e4014b1b9fb4e1c5cc465",
+        "sha256": "2b0944a67f14f9a5cc94867d28055fda01c4639d7965f7f909905c56b61177e3",
+        "bytes": 18059,
+        "lines": 318
+      },
+      {
+        "reference": "t-telem-generator",
+        "path": "research/telemetry/generate_contracts.py",
+        "anchor": "L19-L90",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/telemetry/generate_contracts.py#L19-L90",
+        "blob": "571b8e1ea9ab19552a90ab72ca5ea6d34ee42664",
+        "sha256": "f73dd02d6e91c46226f5108351f2c496af071cca4e03be66785cdda3d0000b0f",
+        "bytes": 12493,
+        "lines": 235
+      },
+      {
+        "reference": "t-telem-insights",
+        "path": "services/telemetry/openrc_telemetry/insights.py",
+        "anchor": "L21-L262",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/insights.py#L21-L262",
+        "blob": "a5c41ecf3ea0867fd5f5c74918fef7911b1ae99d",
+        "sha256": "0819033ad9effe2bc1ddda66fe1161d8de9a6abc259ec5ea1402b8e43fcf7378",
+        "bytes": 18147,
+        "lines": 351
+      },
+      {
+        "reference": "t-telem-parity",
+        "path": "app/tests/test_telemetry_contract.gd",
+        "anchor": "L39-L77",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_telemetry_contract.gd#L39-L77",
+        "blob": "158b352c8b5f9119593f10d6c292c587ada3e61d",
+        "sha256": "ee1590a96720b47146c84b0d1bfbfec9a990d5000eddb7b84d7a926d99e7bac3",
+        "bytes": 16610,
+        "lines": 275
+      },
+      {
+        "reference": "t-telem-receiver",
+        "path": "services/telemetry/openrc_telemetry/contract.py",
+        "anchor": "L16-L119",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/contract.py#L16-L119",
+        "blob": "847d0ca5303c055d74fc53028a0fcd6e50ea664e",
+        "sha256": "f912f53ce7764cd821ac6a78d4e786e54c1b7ca471ce131636209a21f6b926ab",
+        "bytes": 6991,
+        "lines": 175
+      },
+      {
+        "reference": "t-telem-reference",
+        "path": "research/telemetry/reference.py",
+        "anchor": "L18-L43",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/research/telemetry/reference.py#L18-L43",
+        "blob": "1a0df036f7dbe69c12b787bcfa2e748ba07efcba",
+        "sha256": "0ceb3459cdaf45ebba9ab0cb1ac931f0964c014a1f45fcfad74516bb8209a9e5",
+        "bytes": 21522,
+        "lines": 505
+      },
+      {
+        "reference": "t-telem-report",
+        "path": "services/telemetry/openrc_telemetry/report.py",
+        "anchor": "L15-L18",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/report.py#L15-L18",
+        "blob": "c2fc7800fcb5748317c5c82b1c2885b12600240d",
+        "sha256": "a2cabf3734e5b980fa5239520f99f15a42cda44d95226947415f62cd4e8edac1",
+        "bytes": 10223,
+        "lines": 188
+      },
+      {
+        "reference": "t-telem-storage",
+        "path": "services/telemetry/openrc_telemetry/storage.py",
+        "anchor": "L228-L254",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/storage.py#L228-L254",
+        "blob": "ac7373d8e44aed13631be0686b2e9714bd0ea1df",
+        "sha256": "5d765d40d994fdc319be717c164076d4047d897af106e20884c4cb5e417cabe7",
+        "bytes": 19899,
+        "lines": 416
+      },
+      {
+        "reference": "t-telem-window",
+        "path": "app/telemetry/telemetry_frame_window.gd",
+        "anchor": "L22-L45",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/telemetry/telemetry_frame_window.gd#L22-L45",
+        "blob": "97ac3d8e5f048bf0f0d92dc8934f7dde57f7b4f4",
+        "sha256": "1eee31daeb2c0cb3cc49854feff35a38514a4725edd3bd71350863625942db6b",
+        "bytes": 2483,
+        "lines": 68
+      },
+      {
+        "reference": "t-test-invocations",
+        "path": "app/test.sh",
+        "anchor": "L471-L550",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/test.sh#L471-L550",
+        "blob": "a36b85ced739297bfda1935db65c9d39f0e3e6de",
+        "sha256": "521ecbb0666a6fa2a1cc7932cb76d05342107026a939db89f185d41830b36903",
+        "bytes": 47208,
+        "lines": 822
+      },
+      {
+        "reference": "t-thumbnail-caller",
+        "path": "app/ui/workshop.gd",
+        "anchor": "L1352-L1375",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/ui/workshop.gd#L1352-L1375",
+        "blob": "0c6dc276e97f57542313b881fe6e1363e09f3097",
+        "sha256": "28d1119d1da6175912e1db21f3a7fb4e1fec5f13ebd39b783b6cf682f067dfde",
+        "bytes": 165529,
+        "lines": 3788
+      },
+      {
+        "reference": "t-thumbnail-freeze",
+        "path": "app/workshop/trial.gd",
+        "anchor": "L8-L168",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/workshop/trial.gd#L8-L168",
+        "blob": "4f14a5b09cc3b14f6c0ef24b6b09a5d1f3ad0633",
+        "sha256": "8e54b7abef7c46663001b34b6150b17ee761a1539d806f2422a50c274432f531",
+        "bytes": 15418,
+        "lines": 240
+      },
+      {
+        "reference": "t-thumbnail-request",
+        "path": "app/ui/workshop_thumbnail.gd",
+        "anchor": "L45-L71",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/ui/workshop_thumbnail.gd#L45-L71",
+        "blob": "f305e4dd540e44562614f71f985aef65c1649d8e",
+        "sha256": "18c66d76f34776339cb09fa710ceeaaeaf66b12ce6651bc722a95d5af13ea90f",
+        "bytes": 17751,
+        "lines": 465
+      },
+      {
+        "reference": "t-thumbnail-tests",
+        "path": "app/tests/test_workshop_thumbnails.gd",
+        "anchor": "L107-L149",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/tests/test_workshop_thumbnails.gd#L107-L149",
+        "blob": "557c34be42ada6a9c9f6306ff79df64c8967f808",
+        "sha256": "e35764bab9775fca47369bb5eaab3a9749f8ce1fe2e2005694d32be0df8ccb25",
+        "bytes": 10054,
+        "lines": 200
+      },
+      {
+        "reference": "t-trace-writer",
+        "path": "app/sim/trace_chunk_store.gd",
+        "anchor": "L1-L54",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/sim/trace_chunk_store.gd#L1-L54",
+        "blob": "1c084f4abff4c26d17d918b8d491cae01d4f739c",
+        "sha256": "f5747fd6c6d9903958cebaac673a1c4a4fa9a654496fc063222ba929e7265b28",
+        "bytes": 26503,
+        "lines": 790
+      },
+      {
+        "reference": "t-trim-job",
+        "path": "app/sim/launch_trim_job.gd",
+        "anchor": "L1-L48",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/sim/launch_trim_job.gd#L1-L48",
+        "blob": "7ac2206df0dd9051452743be5c3e792711d178e1",
+        "sha256": "4479b311a4f0dbf28ff2bf485828df9c73bbf76b89f42c6f79aac880e7651e4d",
+        "bytes": 1662,
+        "lines": 48
+      }
+    ],
+    "finding_dispositions": [
+      {
+        "id": "R13",
+        "priority": "medium",
+        "decision": "Consistency witness first; separate runtime implementations and fixed semantic oracle",
+        "owners": [
+          "TELEM",
+          "PT"
+        ],
+        "evidence": [
+          "t-telem-generator",
+          "t-telem-window",
+          "t-telem-receiver",
+          "t-telem-parity",
+          "t-telem-reference",
+          "t-telem-storage",
+          "t-telem-insights"
+        ]
+      },
+      {
+        "id": "R14",
+        "priority": "low/medium",
+        "decision": "Optional statistics-local label projection; preserve raw and selected scope distinction",
+        "owners": [
+          "UI-FS"
+        ],
+        "evidence": [
+          "t-stats-choices",
+          "t-stats-labels",
+          "t-stats-identity",
+          "t-stats-reset-tests",
+          "t-stats-ui-tests"
+        ]
+      },
+      {
+        "id": "R15",
+        "priority": "low",
+        "decision": "Scope generator-only redundant validation retirement; byte-identical outputs required",
+        "owners": [
+          "AS",
+          "AE"
+        ],
+        "evidence": [
+          "t-descriptor-check",
+          "t-physical-identity",
+          "t-descriptor-output",
+          "t-descriptor-tests",
+          "t-conformance-identity",
+          "t-schema-corpus"
+        ]
+      },
+      {
+        "id": "R16",
+        "priority": "medium",
+        "decision": "Repair existing macOS supervisor helper identity closure independently; shared copier conditional after contract fixtures",
+        "owners": [
+          "DX",
+          "PT",
+          "DT-MAC"
+        ],
+        "evidence": [
+          "t-macos-isolation",
+          "t-godtest-orchestrator",
+          "t-godtest-observers",
+          "t-godtest-copy",
+          "t-queue-copy",
+          "t-graphics-copy",
+          "t-copy-identities"
+        ]
+      },
+      {
+        "id": "R17",
+        "priority": "low",
+        "decision": "Defer registry deduplication until full overlay proof/saved-identity migration is justified",
+        "owners": [
+          "AS",
+          "US",
+          "AE",
+          "DT"
+        ],
+        "evidence": [
+          "t-overlay-registries",
+          "t-overlay-dispatch",
+          "t-overlay-descriptor",
+          "t-overlay-workshop",
+          "t-overlay-proof",
+          "t-overlay-plan",
+          "t-overlay-export",
+          "t-overlay-tests"
+        ]
+      }
+    ],
+    "runtime_candidates": [
+      {
+        "candidate": "collision_preparation",
+        "disposition": "profile and closure audit first",
+        "serial_constraints": [
+          "mutable input resolution",
+          "non-mutating speculative cache probe only",
+          "original authoritative lookup/diagnostic/error precedence",
+          "synchronous fallback for unsafe/unadmitted snapshots",
+          "final session admission"
+        ],
+        "evidence": [
+          "t-main-collision",
+          "t-collision-builder",
+          "t-collision-inputs",
+          "t-collision-test"
+        ]
+      },
+      {
+        "candidate": "thumbnail_preparation",
+        "disposition": "profile and explicit asynchronous caller contract first",
+        "serial_constraints": [
+          "dependency revalidation",
+          "renderer identity and GPU/scene operations",
+          "current-generation publication"
+        ],
+        "evidence": [
+          "t-thumbnail-request",
+          "t-thumbnail-freeze",
+          "t-thumbnail-caller",
+          "t-thumbnail-tests"
+        ]
+      },
+      {
+        "candidate": "flag_request_coalescing",
+        "disposition": "profile-gated local ownership only; no demonstrated duplicate physical loads or leak",
+        "serial_constraints": [
+          "weak latest-intent subscribers",
+          "bounded admission",
+          "exactly one collection per successful request",
+          "private materials"
+        ],
+        "evidence": [
+          "t-flag-requests",
+          "t-flag-tests"
+        ]
+      },
+      {
+        "candidate": "ambience_cold_coalescing",
+        "disposition": "known refinement; profile-gated; retain simpler owner if cost is unjustified",
+        "serial_constraints": [
+          "PCM order",
+          "independent mutable WAVs",
+          "bounded cache",
+          "no lock during synthesis/join",
+          "re-entry and final retirement"
+        ],
+        "evidence": [
+          "t-ambience",
+          "t-ambience-tests",
+          "t-ambience-history"
+        ]
+      }
+    ],
+    "integration_conflicts": [
+      {
+        "paths": [
+          "app/app_root.gd"
+        ],
+        "topics": [
+          "U01",
+          "U02",
+          "U04",
+          "VRC controls",
+          "UI-FS/TELEM attachment"
+        ],
+        "rule": "one integration owner"
+      },
+      {
+        "paths": [
+          "app/ui/controller_setup.gd"
+        ],
+        "topics": [
+          "R05",
+          "D6 persistence/control repairs"
+        ],
+        "rule": "characterize/migrate consumers before obsolete nodes retire"
+      },
+      {
+        "paths": [
+          "app/ui/workshop_thumbnail.gd",
+          "app/ui/workshop.gd"
+        ],
+        "topics": [
+          "R07",
+          "thumbnail asynchronous contract",
+          "R04 integration"
+        ],
+        "rule": "sequence shared hunks; bounds and async behavior are different packets"
+      },
+      {
+        "paths": [
+          "tools/godtest/runner.py",
+          "tools/godtest/godtest.py"
+        ],
+        "topics": [
+          "R10",
+          "R16"
+        ],
+        "rule": "one source-identity/resume integration owner"
+      },
+      {
+        "paths": [
+          ".github/workflows/ci.yml",
+          "app/test.sh",
+          "app/addons/aircraft_contract/export_plugin.gd"
+        ],
+        "topics": [
+          "R03",
+          "R08",
+          "R09",
+          "R17",
+          "PT1-CI rollout"
+        ],
+        "rule": "central orchestration edits integrated sequentially"
+      },
+      {
+        "paths": [
+          "app/scenery/collision_setup.gd",
+          "app/scenery/collision_world.gd",
+          "app/main.gd"
+        ],
+        "topics": [
+          "U05",
+          "U06",
+          "collision preparation"
+        ],
+        "rule": "current admission/cache/publication ownership first"
+      },
+      {
+        "paths": [
+          "app/physics/glow/four_stroke.gd",
+          "app/physics/glow/two_stroke.gd"
+        ],
+        "topics": [
+          "R11",
+          "R12"
+        ],
+        "rule": "retirement and primitive extraction serialized"
+      },
+      {
+        "paths": [
+          "app/aircraft/model_overlay_registry.gd",
+          "app/data/aircraft_model_overlays",
+          "app/data/aircraft_customization_overlays",
+          "app/data/workshop"
+        ],
+        "topics": [
+          "R17",
+          "AS/US/AE generation"
+        ],
+        "rule": "one owner for complete proof chain after source settles"
+      }
+    ],
+    "evidence_limits": [
+      "No runtime/tool implementation changed.",
+      "No engine, native build, capture, device, package, performance or full-CI run.",
+      "Named tests are inspected prospective witnesses, not executed passes.",
+      "Existing audit, VRC and domain statuses remain unchanged.",
+      "No entire-repository dead-code or thread-safety proof."
+    ],
+    "publication_base_check": {
+      "remote_main_commit": "c20a074ded808c650b56cb19495d1a42fd12d877",
+      "compared_to_source_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+      "changed_paths": [
+        "README.md",
+        "site/ar.html",
+        "site/content.js",
+        "site/de.html",
+        "site/en.html",
+        "site/fr.html",
+        "site/index.html",
+        "site/it.html",
+        "site/ja.html",
+        "site/ko.html",
+        "site/locales/ar.json",
+        "site/locales/de.json",
+        "site/locales/fr.json",
+        "site/locales/it.json",
+        "site/locales/ja.json",
+        "site/locales/ko.json",
+        "site/locales/pt.json",
+        "site/locales/ru.json",
+        "site/locales/zh-Hans.json",
+        "site/pt.html",
+        "site/ru.html",
+        "site/zh-Hans.html"
+      ],
+      "application_tree": "fe6fdf080899707fab1a1dd4118a32481bca5e4c",
+      "cited_source_files_unchanged": 156,
+      "result": "Only README and site release presentation changed; all audited cited-source blobs and the application tree are unchanged. No runtime qualification was executed."
+    }
   }
 }
