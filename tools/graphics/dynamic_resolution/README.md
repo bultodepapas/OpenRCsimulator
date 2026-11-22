@@ -50,7 +50,8 @@ a visible window.
 
 The Windows lab build used the patched source and SCons 4.10.1 with
 `platform=windows use_mingw=yes target=template_debug arch=x86_64 d3d12=no
-opengl3=yes vulkan=yes accesskit=no optimize=none debug_symbols=no`.
+opengl3=yes vulkan=yes accesskit=no optimize=none debug_symbols=no
+disable_path_overrides=no`.
 Use its `.console.exe` wrapper with the adjacent game executable for the probe.
 
 1. Run the producer probe at 1080p and then 4K. Require a new completed
