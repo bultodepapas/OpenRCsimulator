@@ -7,6 +7,9 @@ Build a separate editor on the target OS using the project's pinned SCons.
 On Windows use `platform=windows arch=x86_64 target=editor`. On Apple Silicon
 use `platform=macos arch=arm64 target=editor`. Build a matching custom export
 template before testing a package. Keep Godot's license and third-party notices.
+Use the [native kernel qualification procedure](../../../research/native-kernel/README.md#normal-flight-backend-selection)
+with the experimental binary before collecting flight performance. Check which
+physics backend the application actually selected.
 
 The patch publishes a completed viewport draw with the configuration generation,
 internal and target texture sizes, recording time and GPU duration. The duration
@@ -15,6 +18,8 @@ viewports have their own costs. The patch exposes Vulkan and Metal 3 timestamps
 only when the device supplies the required counters. OpenGL Compatibility and
 legacy Metal keep fixed resolution. The macOS test requires the Metal 3 driver,
 counter support and a verified GPU receipt for the actual driver.
+The Linux adaptive candidate uses Mobile/Vulkan. Keep the product's
+Compatibility row for fixed-scale measurements and the unavailable-option test.
 
 Start the patched editor binary in game mode with the project and
 `-- --experimental-dynamic-resolution`. Use a fresh test profile. From Home,
@@ -29,3 +34,8 @@ Check the recorded backend and pixel extents while testing. Follow the
 [platform matrix](../../../docs/plans/dynamic-resolution.md#native-platform-trials)
 for native, best fixed and adaptive runs, including pause, fullscreen, focus
 loss, Keep/Revert and a switch back to Off.
+
+Before running the flight, run the [rendered producer probe](../../../app/tests/probe_completed_gpu_frame.gd)
+with the patched editor, a visible 1920×1080 window or the native Retina target,
+and the experiment flag. It validates fresh completed frames across a full-size
+draw, an 85% draw and restoration. Use the checked runner on an admitted target.
