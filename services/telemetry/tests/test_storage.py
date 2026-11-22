@@ -3,6 +3,7 @@ import json
 import os
 import sqlite3
 import unittest
+from unittest.mock import Mock, call, patch
 
 from openrc_telemetry.cli import main
 from openrc_telemetry.storage import AggStore, RawStore, StorageUnavailable, utc_day
@@ -199,6 +200,40 @@ class AggStoreTests(unittest.TestCase):
 
 
 class PurgeCliTests(unittest.TestCase):
+    def test_automatic_purge_reports_busy_wal_and_retries_promptly(self):
+        from openrc_telemetry.cli import PURGE_RETRY_S, _purge_loop
+        from .support import make_config
+        with TempDir() as directory:
+            config = make_config(directory)
+            raw, agg = RawStore(config.raw_path), AggStore(config.aggregates_path)
+            reader = RawStore(config.raw_path, read_only=True)
+            try:
+                self.assertEqual(put(raw, 1, NOW), "accepted")
+                with raw.connection() as conn:
+                    conn.execute("PRAGMA busy_timeout=0")
+                with reader.read_snapshot():
+                    self.assertEqual(reader.count(), 1)
+                    stop = Mock()
+                    # End the reader snapshot when the short retry is scheduled.
+                    def wait(delay):
+                        if delay == PURGE_RETRY_S:
+                            reader.close()
+                        return stop.wait.call_count == 3
+                    stop.wait.side_effect = wait
+                    with patch("openrc_telemetry.cli.time.time", return_value=NOW + 48 * 3600):
+                        with self.assertLogs("openrc_telemetry", level="WARNING") as logs:
+                            _purge_loop(config, raw, agg, stop, config.purge_interval_s)
+                    self.assertEqual(stop.wait.call_args_list, [call(config.purge_interval_s),
+                                                               call(PURGE_RETRY_S), call(config.purge_interval_s)])
+                    self.assertEqual(logs.output, ["WARNING:openrc_telemetry:purge category=checkpoint_busy"])
+                self.assertEqual(raw.count(), 0)
+                wal = config.raw_path.with_name("raw.sqlite-wal")
+                self.assertEqual(wal.stat().st_size if wal.exists() else 0, 0)
+            finally:
+                reader.close()
+                raw.close()
+                agg.close()
+
     def test_purge_command_runs_against_data_dir(self):
         with TempDir() as directory:
             os.environ["OPENRC_TELEMETRY_DATA_DIR"] = str(directory)

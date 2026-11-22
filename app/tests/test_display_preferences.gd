@@ -1,6 +1,7 @@
 extends SceneTree
 
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PREFS := "user://test_display_preferences.cfg"
 
@@ -10,6 +11,7 @@ var _failures := 0
 
 func _initialize() -> void:
 	_run()
+	_test_gpu_defaults()
 	_reset()
 	print("display preferences checks=%d failures=%d" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -395,6 +397,60 @@ func _independent_recovery() -> void:
 	_check("multiple invalid values recover without resetting other choices", multiple_store.config == multiple_expected)
 	_check("multiple recovered values persist with other choices", multiple_store.save(multiple_store.config) == OK
 		and DisplayPreferences.new(PREFS).config == multiple_expected)
+
+
+func _test_gpu_defaults() -> void:
+	_reset()
+	var previous := DisplayPreferences.first_run_defaults
+	var flagship := AutoGraphicsPolicy.first_run("NVIDIA GeForce RTX 5090", "Windows", 1.0, 60.0,
+		Vector2i(2560, 1440), 16, true)
+	var integrated := AutoGraphicsPolicy.first_run("Intel(R) UHD Graphics 630", "Windows", 1.0, 60.0,
+		Vector2i(1366, 768), 8, false)
+	DisplayPreferences.first_run_defaults = flagship
+	var store := DisplayPreferences.new(PREFS)
+	_check("fresh renderer uses and stores GPU defaults", store.apply_gpu_defaults(true) == OK
+		and store.config.msaa_3d == Viewport.MSAA_8X and store.config.shadow_quality == "ultra")
+	var manual := store.config.duplicate()
+	manual.msaa_3d = Viewport.MSAA_2X
+	manual.window_mode = "windowed"
+	manual.window_resolution = "1600x900"
+	_check("manual antialiasing and window choice are saved", store.save(manual) == OK)
+	store = DisplayPreferences.new(PREFS)
+	DisplayPreferences.first_run_defaults = integrated
+	_check("a new GPU updates automatic shadows but preserves manual MSAA and window dimensions",
+		store.apply_gpu_defaults(false) == OK and store.config.msaa_3d == Viewport.MSAA_2X
+		and store.config.shadow_quality == "low" and store.config.shadow_technique == "projected"
+		and store.config.window_mode == "windowed" and store.config.window_resolution == "1600x900")
+	_check("the new settings survive a relaunch", DisplayPreferences.new(PREFS).config == store.config)
+	# The user had released MSAA. A failed Keep must leave it manual on disk and in this session.
+	store.writable = false
+	_check("a failed Restore keeps the current choices",
+		store.save_gpu_defaults(DisplayPreferences.recommended_defaults()) == ERR_FILE_NO_PERMISSION
+		and store.config.msaa_3d == Viewport.MSAA_2X)
+	store.writable = true
+	DisplayPreferences.first_run_defaults = flagship
+	_check("a later successful auto update leaves the failed Restore's manual choice intact",
+		store.apply_gpu_defaults(false) == OK and store.config.msaa_3d == Viewport.MSAA_2X
+		and store.config.shadow_quality == "ultra")
+	_check("a kept Restore opts the manual field back in", store.save_gpu_defaults(DisplayPreferences.recommended_defaults()) == OK)
+	store = DisplayPreferences.new(PREFS)
+	DisplayPreferences.first_run_defaults = integrated
+	store.writable = false
+	_check("unwritable storage still uses the new GPU's settings for this session",
+		store.apply_gpu_defaults(false) == ERR_FILE_NO_PERMISSION and store.config.msaa_3d == Viewport.MSAA_DISABLED
+		and DisplayPreferences.new(PREFS).config.msaa_3d == Viewport.MSAA_8X)
+	store = DisplayPreferences.new(PREFS)
+	_check("the next writable launch persists the recovered recommendation",
+		store.apply_gpu_defaults(false) == OK and DisplayPreferences.new(PREFS).config.msaa_3d == Viewport.MSAA_DISABLED)
+
+	_reset()
+	_check("a legacy profile with coincidentally matching values is saved", DisplayPreferences.save_to(PREFS, store.config) == OK)
+	var legacy := DisplayPreferences.new(PREFS)
+	var original := FileAccess.get_file_as_string(PREFS)
+	DisplayPreferences.first_run_defaults = flagship
+	_check("a legacy profile keeps all saved fields and bytes until it opts in",
+		legacy.apply_gpu_defaults(false) == OK and legacy.config == store.config and FileAccess.get_file_as_string(PREFS) == original)
+	DisplayPreferences.first_run_defaults = previous
 
 
 func _reset() -> void:

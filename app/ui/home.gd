@@ -159,6 +159,7 @@ var control_label: Label
 var controller_prompt_label: Label
 var keys_legend: GridContainer
 var note_label: Label
+var basic_graphics_notice: Label
 var stock_selection_notice: Label
 var _retained_stock_id := ""
 var launch_warning: Label
@@ -691,6 +692,11 @@ func _init() -> void:
 	_launch_notices.add_theme_constant_override("separation", 0)
 	primary_actions.add_child(_launch_notices)
 	_launch_notices.add_child(note_label)
+	basic_graphics_notice = _label("Basic graphics are active. You can raise the quality in Settings > Graphics.", "SecondaryLabel")
+	basic_graphics_notice.name = "BasicGraphicsNotice"
+	basic_graphics_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	basic_graphics_notice.hide()
+	_launch_notices.add_child(basic_graphics_notice)
 	_launch_notices.add_child(stock_selection_notice)
 	launch_warning = _label("", "SecondaryLabel", false)
 	launch_warning.name = "LaunchConditionsNotice"
@@ -1096,9 +1102,9 @@ func _apply_responsive_layout() -> void:
 	# Long concurrent notices can otherwise force the pinned actions below the viewport. Put the whole
 	# notice group at the start of the existing scroll body; the corrective action and Fly stay pinned.
 	# An empty visible container still reserves the parent's separation and can overflow Practice.
-	_launch_notices.visible = stock_selection_notice.visible or note_label.visible \
+	_launch_notices.visible = basic_graphics_notice.visible or stock_selection_notice.visible or note_label.visible \
 		or launch_warning.visible or failure_launch_notice.visible
-	var notices_in_scroll := stock_selection_notice.visible or note_label.visible
+	var notices_in_scroll := basic_graphics_notice.visible or stock_selection_notice.visible or note_label.visible
 	var notices_parent: Node = _page_host if notices_in_scroll else _primary_actions
 	var restore_notice_focus := _scroll.has_focus() and not notices_in_scroll
 	if _launch_notices.get_parent() != notices_parent:
@@ -1841,6 +1847,12 @@ func set_note(text: String) -> void:
 	note_label.text = text
 	note_label.visible = text != ""
 	if is_node_ready():
+		_apply_responsive_layout.call_deferred()
+
+
+func set_basic_graphics_notice(active: bool) -> void:
+	if active != basic_graphics_notice.visible:
+		basic_graphics_notice.visible = active
 		_apply_responsive_layout.call_deferred()
 
 

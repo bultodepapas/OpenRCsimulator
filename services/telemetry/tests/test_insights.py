@@ -65,16 +65,19 @@ class InsightsCase(unittest.TestCase):
 
 
 class DisclosureTests(InsightsCase):
-    def test_small_cohort_day_now_publishes_where_the_whole_table_rule_published_nothing(self):
+    def test_small_cohort_day_folds_unproven_gpu_cells_into_a_safe_row(self):
         day = MONDAY
         self.day_of_sessions(day)
         self.roll(day)
         # Before (daily whole-table rule): one small family suppresses everything.
         self.assertEqual(self.agg.get_day(day.isoformat(), RELEASE, "gpu"), ("suppressed", []))
-        # After: the 30-session family is published, the five small ones are combined (12+8+6+3+1 = 30).
+        # The stored GPU marginals do not prove that different families had distinct sessions.
+        # The five small cells only prove 12 session-days. Fold in the eligible 30-session cell.
         table = self.week()["tables"]["flight_gpu"]
-        self.assertEqual([row["dims"] for row in table["published"]], [["nvidia_rtx"]])
+        self.assertEqual(table["published"], [])
         self.assertEqual(table["combined"]["sessions"], 30)
+        self.assertTrue(table["combined"]["sessions_lower_bound"])
+        self.assertEqual(table["combined"]["metrics"]["windows"], 60)
 
     def test_a_week_pools_days_and_never_leaves_a_withheld_remainder(self):
         for offset in range(7):
@@ -84,39 +87,71 @@ class DisclosureTests(InsightsCase):
         data = self.week()
         table = data["tables"]["flight_gpu"]
         published = {row["dims"][0]: row["sessions"] for row in table["published"]}
-        # The lone small cell (software, 7) is never shown alone and never left out: the smallest shown cell
-        # (nvidia_gtx, 21) joins it in the combined row, so the table still adds up to its full population.
+        # The lone small cell (software, 7) is never shown alone or omitted. The smallest eligible cell
+        # (nvidia_gtx, 21) joins it. The combined window count includes both cells, even if sessions overlap.
         self.assertEqual(published, {"nvidia_rtx": 210, "amd_radeon": 84, "intel_integrated": 56,
                                      "apple_silicon": 42})
-        self.assertEqual(table["combined"]["sessions"], 28)
+        self.assertEqual(table["combined"]["sessions"], 21)
+        self.assertTrue(table["combined"]["sessions_lower_bound"])
+        self.assertEqual(table["combined"]["metrics"]["windows"], 28)
+        self.assertTrue(all("sessions_by_day" not in row for row in table["published"]))
         self.assertEqual(sum(1 for d in data["days"] if d["status"] == "ready"), 7)
+        self.assertEqual(data["insights_version"], 2)
         body = insights.render(data)
+        self.assertIn("openrc-telemetry:insights-v2/", body)
         self.assertIn("| nvidia_rtx | 210 |", body)
+        self.assertIn("| combined small cells | ≥ 21 |", body)
         self.assertNotIn("software", body)
         self.assertNotIn("nvidia_gtx", body)
         self.assertIn("Operator-only report: do not publish", body)
 
-    def test_every_table_adds_up_to_its_population_or_is_not_shown(self):
-        mixes = [{"nvidia_rtx": 25, "software": 1}, {"amd_radeon": 19}, {"nvidia_gtx": 7, "intel_arc": 9},
-                 {"apple_silicon": 30, "intel_integrated": 18, "other": 2}]
-        for offset, mix in enumerate(mixes):
-            self.day_of_sessions(MONDAY + timedelta(days=offset), mix)
-            self.roll(MONDAY + timedelta(days=offset))
-        pooled = insights._pool(sum((self.agg.get_cells((MONDAY + timedelta(days=d)).isoformat(), RELEASE)
-                                     for d in range(len(mixes))), []))
+    def test_ten_sessions_in_two_vehicle_cells_do_not_clear_the_floor(self):
+        events = [activity_event(1), activity_event(2, vehicle="jensen-das-ugly-stik-60")]
+        self.day_of_sessions(MONDAY, {"nvidia_rtx": 10}, events=events)
+        self.roll(MONDAY)
         data = self.week()
-        for table, cells in pooled.items():
-            total = sum(entry["sessions"] for entry in cells.values())
-            shown = data["tables"].get(table)
-            if shown is None:
-                self.assertLess(total, 20, table)
-                continue
-            rows = shown["published"] + ([shown["combined"]] if shown["combined"] else [])
-            self.assertEqual(sum(row["sessions"] for row in rows), total, table)
-            self.assertTrue(all(row["sessions"] >= 20 for row in rows), table)
-            if shown["combined"]:
-                self.assertGreaterEqual(len([1 for dims, e in cells.items()
-                                             if [*dims] not in [r["dims"] for r in shown["published"]]]), 2, table)
+        self.assertNotIn("usage_vehicle", data["tables"])
+        self.assertNotIn("usage_backend", data["tables"])
+        eligible = self.week(floor=10)["tables"]["usage_vehicle"]
+        self.assertIsNone(eligible["combined"])
+        self.assertEqual([row["sessions"] for row in eligible["published"]], [10, 10])
+        self.assertEqual([row["metrics"]["summaries"] for row in eligible["published"]], [10, 10])
+
+    def test_gpu_marginals_can_overlap_across_batches(self):
+        for session in range(1, 11):
+            self.put(batch(session, batch_id=2 * session, gpu="nvidia_rtx"), MONDAY)
+            self.put(batch(session, batch_id=2 * session + 1, gpu="amd_radeon", events=[perf_event(2)]), MONDAY)
+        self.roll(MONDAY)
+        data = self.week()
+        self.assertNotIn("mix_gpu", data["tables"])
+        self.assertNotIn("flight_gpu", data["tables"])
+
+    def test_cells_from_different_days_have_an_exact_combined_count(self):
+        self.day_of_sessions(MONDAY, {"nvidia_rtx": 11})
+        self.roll(MONDAY)
+        tuesday = MONDAY + timedelta(days=1)
+        self.day_of_sessions(tuesday, {"amd_radeon": 9})
+        self.roll(tuesday)
+        table = self.week()["tables"]["flight_gpu"]
+        self.assertEqual(table["published"], [])
+        self.assertEqual(table["combined"]["sessions"], 20)
+        self.assertNotIn("sessions_lower_bound", table["combined"])
+
+    def test_daily_maxima_prove_more_sessions_than_weekly_maximum(self):
+        aircraft = "jensen-das-ugly-stik-60"
+        tuesday = MONDAY + timedelta(days=1)
+        self.day_of_sessions(MONDAY, {"nvidia_rtx": 11}, events=[activity_event(1)])
+        self.day_of_sessions(MONDAY, {"nvidia_rtx": 1}, events=[activity_event(1, vehicle=aircraft)])
+        self.roll(MONDAY)
+        self.day_of_sessions(tuesday, {"nvidia_rtx": 1}, events=[activity_event(1)])
+        self.day_of_sessions(tuesday, {"nvidia_rtx": 9}, events=[activity_event(1, vehicle=aircraft)])
+        self.roll(tuesday)
+        table = self.week()["tables"]["usage_vehicle"]
+        self.assertEqual(table["published"], [])
+        self.assertEqual(table["combined"]["sessions"], 20)
+        self.assertTrue(table["combined"]["sessions_lower_bound"])
+        self.assertEqual(table["combined"]["metrics"]["summaries"], 22)
+        self.assertNotIn("usage_vehicle", self.week(floor=21)["tables"])
 
     def test_one_forged_odd_batch_no_longer_hides_the_day(self):
         self.day_of_sessions(MONDAY, {"nvidia_rtx": 25})
@@ -125,7 +160,9 @@ class DisclosureTests(InsightsCase):
         table = self.week()["tables"]["flight_gpu"]
         # The day is not hidden; the odd cell cannot be isolated: everything is shown as one combined row.
         self.assertEqual(table["published"], [])
-        self.assertEqual(table["combined"]["sessions"], 26)
+        self.assertEqual(table["combined"]["sessions"], 25)
+        self.assertTrue(table["combined"]["sessions_lower_bound"])
+        self.assertEqual(table["combined"]["metrics"]["windows"], 26)
 
     def test_floor_bounds_and_private_label(self):
         self.day_of_sessions(MONDAY)
@@ -134,7 +171,7 @@ class DisclosureTests(InsightsCase):
             insights.collect(self.agg, WEEK, RELEASE, 9, now=AFTER_WEEK)
         data = self.week(floor=10)
         published = {row["dims"][0] for row in data["tables"]["flight_gpu"]["published"]}
-        self.assertEqual(published, {"nvidia_rtx", "amd_radeon"})
+        self.assertEqual(published, {"nvidia_rtx"})
         self.assertIn("Private floor 10", insights.render(data))
         self.assertNotIn("Private floor", insights.render(self.week()))
 

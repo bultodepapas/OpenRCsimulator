@@ -416,10 +416,6 @@ func _ready() -> void:
 	renderer_guard_path = preferences_path + ".renderer"
 	if RendererGuard.begin(get_tree(), renderer_guard_path):
 		return # restarting into Compatibility after an unconfirmed RD launch of this build
-	if RendererPreference.apply_at_startup(get_tree(), RendererGuard.load_state(renderer_guard_path),
-			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
-		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
-		return # restarting into the saved graphics mode (exported builds only)
 	has_home = true
 	var ui_window: Window = get_tree().root
 	_automatic_window_size = ui_window.size
@@ -433,16 +429,29 @@ func _ready() -> void:
 	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless":
 		SceneDetail.calibration = AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
 			RenderingServer.get_current_rendering_method())
-		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(RenderingServer.get_video_adapter_name(),
-			OS.get_name(), DisplayServer.screen_get_scale(), DisplayServer.screen_get_refresh_rate())
+		var screen := DisplayServer.window_get_current_screen()
+		var adapter := RenderingServer.get_video_adapter_name()
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(adapter,
+			OS.get_name(), DisplayServer.screen_get_scale(screen), DisplayServer.screen_get_refresh_rate(screen),
+			DisplayServer.screen_get_size(screen), OS.get_processor_count(),
+			RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD)
 		fresh_install = not FileAccess.file_exists(preferences_path) and not FileAccess.file_exists(display_path)
 	DisplayPreferences.first_run_applies = fresh_install
 	display_preferences = DisplayPreferences.new(display_path)
-	if fresh_install and not DisplayPreferences.first_run_defaults.is_empty() and display_preferences.save(display_preferences.config) != OK:
+	AutoGraphicsPolicy.startup_output_pixels = 0
+	if DisplayServer.get_name() != "headless":
+		AutoGraphicsPolicy.startup_output_pixels = AutoGraphicsPolicy.output_pixels(
+			DisplayServer.screen_get_size(ui_window.current_screen), display_preferences.config, ui_window.size)
+	if RendererPreference.apply_at_startup(get_tree(), RendererGuard.load_state(renderer_guard_path),
+			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
+		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
+		return # restarting into the saved graphics mode (exported builds only)
+	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless" \
+			and display_preferences.apply_gpu_defaults(fresh_install) != OK:
 		push_warning("Could not store the recommended display settings; they apply to this session only.")
 	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
 	if DisplayServer.get_name() != "headless":
-		var report := AutoGraphicsReport.runtime()
+		var report := AutoGraphicsReport.runtime(false)
 		print("Graphics auto: %s → %s · %s" % [report.inputs.adapter, AutoGraphicsReport.compact(report.decisions),
 			JSON.stringify(report.decisions.reasons)])
 	menu_audio = MenuSounds.attach(self, func() -> Control:
@@ -883,6 +892,7 @@ func _install_home(setup: Dictionary) -> void:
 	_update_controller_home()
 	_update_controller_button_prompts()
 	home.set_note(_settings_note)
+	_refresh_basic_graphics_notice(display_preferences.config)
 	_refresh_telemetry_home_note()
 	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	if not _update_info.is_empty():
@@ -2087,7 +2097,14 @@ static func apply_master_volume(level: float) -> void:
 	AudioServer.set_bus_volume_db(master, linear_to_db(clamped) if clamped > 0.0 else -80.0)
 
 
+func _refresh_basic_graphics_notice(config: Dictionary) -> void:
+	if home != null and home.is_node_ready():
+		home.set_basic_graphics_notice(preferences_path == Preferences.DEFAULT_PATH and
+				AutoGraphicsPolicy.basic_settings_active(DisplayPreferences.first_run_defaults, config))
+
+
 func _apply_presentation(config: Dictionary) -> void:
+	_refresh_basic_graphics_notice(config)
 	ShadowSettings.apply(config)
 	AircraftLightingPolicy.apply(config)
 	if is_instance_valid(menu_audio):

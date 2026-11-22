@@ -14588,3 +14588,6 @@ msgstr "Выберите самолёт, который может взлета�
 
 msgid "Preparing panorama"
 msgstr "Подготовка панорамы"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "Включены базовые настройки графики. Повысить качество можно в разделе «Настройки» > «Графика»."

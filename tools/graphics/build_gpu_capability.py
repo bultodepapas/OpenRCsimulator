@@ -61,21 +61,21 @@ add("gtx_1650_ti_unsuffixed", r"^gtx 1650 ti\b", 0.15, 4, "laptop")  # laptop-on
 
 # NVIDIA desktop.
 for model, rel, vram, share in [
-        ("5090", 1.90, 32, None), ("5080", 1.48, 16, 1.78), ("5070 ti", 1.27, 16, 1.91), ("5070", 1.00, 12, 3.78),
-        ("5060 ti", 0.68, 16, 2.70), ("5060", 0.57, 8, 3.15), ("5050", 0.45, 8, None),
+        ("5090", 1.66, 32, None), ("5080", 1.48, 16, 1.78), ("5070 ti", 1.27, 16, 1.91), ("5070", 1.00, 12, 3.78),
+        ("5060 ti", 0.68, 8, 2.70), ("5060", 0.57, 8, 3.15), ("5050", 0.45, 8, None),
         ("4090", 1.60, 24, 0.70), ("4080 super", 1.33, 16, 0.62), ("4080", 1.30, 16, 0.67),
         ("4070 ti super", 1.17, 16, 0.73), ("4070 ti", 1.07, 12, 0.89), ("4070 super", 1.00, 12, 1.43),
-        ("4070", 0.80, 12, 1.71), ("4060 ti", 0.62, 8, 2.30), ("4060", 0.50, 8, 3.51),
+        ("4070", 0.80, 12, 1.71), ("4060 ti", 0.62, 8, 2.30), ("4060", 0.58, 8, 3.51),
         ("3090 ti", 1.10, 24, None), ("3090", 1.00, 24, None), ("3080 ti", 0.97, 12, None), ("3080", 0.87, 10, 1.36),
-        ("3070 ti", 0.74, 8, 0.90), ("3070", 0.67, 8, 1.98), ("3060 ti", 0.60, 8, 2.13), ("3060", 0.43, 12, 3.78),
-        ("3050", 0.30, 8, 3.25),
+        ("3070 ti", 0.74, 8, 0.90), ("3070", 0.67, 8, 1.98), ("3060 ti", 0.60, 8, 2.13), ("3060", 0.50, 8, 3.78),
+        ("3050", 0.30, 6, 3.25),
         ("2080 ti", 0.70, 11, None), ("2080 super", 0.60, 8, None), ("2080", 0.57, 8, None),
         ("2070 super", 0.52, 8, 0.66), ("2070", 0.46, 8, None), ("2060 super", 0.43, 8, 0.76), ("2060", 0.36, 6, 1.61)]:
     add("rtx_%s" % key(model), r"^rtx %s\b" % model, rel, vram, "discrete", share)
 for model, rel, vram, share in [
         ("1660 super", 0.32, 6, 1.39), ("1660 ti", 0.31, 6, 0.86), ("1660", 0.28, 6, None),
         ("1650 super", 0.22, 4, None), ("1650", 0.16, 4, 2.44), ("1080 ti", 0.52, 11, None), ("1080", 0.40, 8, None),
-        ("1070 ti", 0.36, 8, None), ("1070", 0.32, 8, None), ("1060", 0.21, 6, 1.45), ("1050 ti", 0.12, 4, 1.14),
+        ("1070 ti", 0.36, 8, None), ("1070", 0.32, 8, None), ("1060", 0.21, 3, 1.45), ("1050 ti", 0.12, 4, 1.14),
         ("1050", 0.09, 2, None)]:
     add("gtx_%s" % key(model), r"^gtx %s\b" % model, rel, vram, "discrete", share)
 # Maxwell, Kepler and GT parts.
@@ -108,7 +108,6 @@ for model, rel, vram, kind in [
     add("rx_%s" % key(model), r"^radeon rx ?%s\b" % model, rel, vram, kind)
 for model, rel in [("11", 0.045), ("10", 0.04), ("8", 0.035), ("7", 0.035), ("6", 0.025), ("3", 0.015)]:
     add("radeon_vega_%s_igpu" % model, r"^radeon (rx )?vega %s( mobile)? graphics\b" % model, rel, 0, "integrated")
-add("rx_vega", r"^radeon rx vega\b", 0.31, 8, "discrete")
 add("radeon_r7_igpu", r"^radeon r7 graphics\b", 0.02, 0, "integrated")
 add("radeon_r5_igpu", r"^radeon r[45] graphics\b", 0.012, 0, "integrated")
 add("radeon_r_mobile", r"^radeon r[5-9] m\d{3}\b", 0.015, 2, "laptop")
@@ -118,9 +117,9 @@ add("radeon_r9", r"^radeon r9 \d{3}x?\b", 0.12, 4, "discrete")
 add("radeon_r7_discrete", r"^radeon r7 \d{3}x?\b", 0.06, 2, "discrete")
 # AMD desktop.
 for model, rel, vram, share in [
-        ("9070 xt", 1.12, 16, 1.59), ("9070", 1.00, 16, None), ("9060 xt", 0.78, 16, 0.89), ("9060", 0.65, 8, None),
+        ("9070 xt", 1.12, 16, 1.59), ("9070", 1.00, 16, None), ("9060 xt", 0.78, 8, 0.89), ("9060", 0.65, 8, None),
         ("7900 xtx", 1.45, 24, None), ("7900 xt", 1.25, 20, None), ("7900 gre", 1.05, 16, None),
-        ("7800 xt", 0.92, 16, 0.63), ("7700 xt", 0.78, 12, None), ("7600 xt", 0.50, 16, None), ("7600", 0.48, 8, None),
+        ("7800 xt", 0.92, 16, 0.63), ("7700 xt", 0.78, 12, None), ("7600 xt", 0.60, 16, None), ("7600", 0.57, 8, None),
         ("6950 xt", 1.05, 16, None), ("6900 xt", 1.00, 16, None), ("6800 xt", 0.93, 16, None), ("6800", 0.82, 16, None),
         ("6750 xt", 0.68, 12, None), ("6700 xt", 0.64, 12, None), ("6700", 0.57, 10, None), ("6650 xt", 0.50, 8, None),
         ("6600 xt", 0.47, 8, None), ("6600", 0.42, 8, 0.84), ("6500 xt", 0.20, 4, None), ("6400", 0.15, 4, None),
@@ -130,6 +129,7 @@ for model, rel, vram, share in [
 add("rx_5500", r"^radeon rx 5500\b", 0.24, 8, "discrete")  # after "5500 xt" so the XT keeps its own row
 add("rx_vega_64", r"^radeon rx vega 64\b", 0.33, 8, "discrete")
 add("rx_vega_56", r"^radeon rx vega 56\b", 0.29, 8, "discrete")
+add("rx_vega", r"^radeon rx vega\b", 0.31, 8, "discrete")
 add("rx_unlisted", r"^radeon rx [7-9]\d{3}\b", 0.60, 8, "discrete")
 # AMD integrated: named Radeon 7x0M/8x0M parts, then the generic "Radeon Graphics".
 # 2026 revision (Notebookcheck Time Spy and game averages, about 10% below the midpoint because these parts
@@ -143,7 +143,7 @@ add("radeon_vega_igpu", r"^radeon vega \d+\b|^radeon (rx )?vega graphics\b", 0.0
 add("radeon_graphics_igpu", r"^radeon graphics\b", 0.05, 0, "integrated", 2.72)
 
 # Intel.
-for model, rel, vram in [("b580", 0.55, 12), ("b570", 0.48, 10), ("a770", 0.50, 16), ("a750", 0.45, 8),
+for model, rel, vram in [("b580", 0.58, 12), ("b570", 0.48, 10), ("a770", 0.50, 8), ("a750", 0.45, 8),
                          ("a580", 0.38, 8), ("a380", 0.15, 6), ("a310", 0.10, 4)]:
     add("arc_%s" % model, r"^arc %s\b" % model, rel, vram, "discrete")
 for model, rel, vram in [("a770m", 0.40, 16), ("a730m", 0.33, 12), ("a570m", 0.28, 8), ("a370m", 0.12, 4),
@@ -238,11 +238,22 @@ MEASURED = {"rtx_3090": "measured: RTX 3090 renderer/resolution matrix and knob 
                         "beta2, cooled (DT-MAC-03b, 2026-11-18); not the Retina panel or fanless sustained play"}
 CORRECTIONS = {"apple_m1": M1_CORRECTION}
 BENCHMARK_DERIVED_IDS = {
+    "rtx_5090", "rtx_3060", "rtx_4060", "rx_7600", "arc_b580",
     "radeon_8060s", "radeon_8050s", "radeon_8040s", "radeon_890m", "radeon_880m", "radeon_860m", "radeon_840m",
     "radeon_820m", "radeon_780m", "radeon_760m", "radeon_740m", "radeon_680m", "radeon_660m", "arc_b390_igpu",
     "arc_b370_igpu", "arc_140v_igpu", "arc_130v_igpu", "arc_140t_igpu", "arc_130t_igpu", "arc_igpu",
     "rx_9070_xt", "rx_9070", "rx_9060_xt", "rx_9060"}
+# These names span materially different models or give only a chip family.
+# Keep the match for diagnostics while choosing the basic startup profile.
+FAMILY_ONLY = {
+    "rtx_workstation", "rtx_workstation_laptop", "rtx_unlisted", "rtx_unlisted_laptop",
+    "rx_unlisted", "apple_unlisted", "mx_series", "gt_series", "gt_laptop", "rx_vega",
+    "radeon_graphics_igpu", "intel_graphics_igpu", "radeon_hd", "radeon_r9", "radeon_r_mobile",
+    "radeon_r7_discrete", "radeon_pro_laptop",
+}
 for _row in ROWS:
+    if _row["id"] in FAMILY_ONLY or _row["id"].startswith("mesa_"):
+        _row["family_only"] = True
     _id = _row["id"]
     if _id in MEASURED:
         _row["provenance"] = MEASURED[_id]
@@ -276,11 +287,13 @@ DOCUMENT = {
     "provenance": (
         "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor "
         "specifications and review aggregates; only rows whose provenance is `measured` (the anchor and the M1) were "
-        "measured in OpenRC's workload. vram_gb: common vendor configuration. "
+        "measured in OpenRC's workload. vram_gb: estimated SKU capacity, with lower capacities for known variants. "
         "steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). "
         "2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, "
         "scaled to the anchor; integrated parts about 10% below the midpoint for power limits. "
-        "No third-party benchmark table is copied."),
+        "RTX 3060, 4060, 5090, RX 7600 and Arc B580: native 1080p Ultra raster geometric means "
+        "relative to the RTX 3090, rounded (Tom's Hardware GPU hierarchy, November 2026): "
+        "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"),
     "provenance_levels": {
         "measured": "OpenRC measured this GPU in its own workload",
         "measured-circular": "derived from an OpenRC measurement that also defines it; not independent evidence",

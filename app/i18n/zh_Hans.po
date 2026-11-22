@@ -13787,3 +13787,6 @@ msgstr "请选择支持跑道起飞的飞机。"
 
 msgid "Preparing panorama"
 msgstr "正在准备全景"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "已启用基础画质。你可以在“设置”>“图形”中提高画质。"

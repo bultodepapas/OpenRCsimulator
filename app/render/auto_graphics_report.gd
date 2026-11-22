@@ -24,7 +24,9 @@ static func decide(inputs: Dictionary) -> Dictionary:
 static func compact(decision: Dictionary) -> String:
 	var first_run: Dictionary = decision.get("first_run", {})
 	return "|".join([str(decision.renderer), str(decision.scene_detail),
-		str(first_run.get("msaa_3d", "-")), str(first_run.get("window_mode", "-")), str(first_run.get("max_fps", "-"))])
+		str(first_run.get("msaa_3d", "-")), str(first_run.get("window_mode", "-")), str(first_run.get("max_fps", "-")),
+		str(first_run.get("window_resolution", "-")), str(first_run.get("shadow_quality", "-")),
+		str(first_run.get("shadow_technique", "-"))])
 
 
 ## VQ-07h-A7: what Settings tells the player about Automatic on this host: the mode and Scene detail it picks, how
@@ -35,7 +37,7 @@ static func player_summary(report: Dictionary) -> Dictionary:
 	var decisions: Dictionary = report.get("decisions", {})
 	var applied: Dictionary = report.get("applied", {})
 	var gpu: Dictionary = inputs.get("gpu", {})
-	var provenance := str(gpu.get("provenance", "unknown")).get_slice(":", 0) if bool(gpu.get("matched", false)) \
+	var provenance := str(gpu.get("provenance", "unknown")).get_slice(":", 0) if not AutoGraphicsPolicy.needs_fallback(gpu) \
 		else "unknown"
 	var estimate: String = {"measured": "measured", "benchmark-derived": "benchmarks", "extrapolated": "extrapolated",
 		"measured-circular": "extrapolated"}.get(provenance, "unknown")
@@ -50,7 +52,7 @@ static func player_summary(report: Dictionary) -> Dictionary:
 
 
 ## The actual host and what Automatic decided for it, including saved and measured state.
-static func runtime() -> Dictionary:
+static func runtime(include_driver_info: bool = true) -> Dictionary:
 	var adapter := RenderingServer.get_video_adapter_name()
 	var headless := DisplayServer.get_name() == "headless"
 	var screen := Vector2i.ZERO if headless else DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
@@ -58,6 +60,8 @@ static func runtime() -> Dictionary:
 		scale = 1.0 if headless else DisplayServer.screen_get_scale(),
 		refresh = 60.0 if headless else DisplayServer.screen_get_refresh_rate(), cpu_threads = OS.get_processor_count(),
 		forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"}
+	if AutoGraphicsPolicy.startup_output_pixels > 0:
+		inputs["output_pixels"] = AutoGraphicsPolicy.startup_output_pixels
 	var memory := OS.get_memory_info()
 	var method := RenderingServer.get_current_rendering_method()
 	var gpu := GpuCapability.lookup(adapter)
@@ -67,7 +71,7 @@ static func runtime() -> Dictionary:
 		"inputs": {
 			"adapter": adapter, "vendor": RenderingServer.get_video_adapter_vendor(),
 			"adapter_key": AutoCalibration.adapter_key(adapter), "gpu": gpu,
-			"driver_info": OS.get_video_adapter_driver_info(),
+			"driver_info": OS.get_video_adapter_driver_info() if include_driver_info else PackedStringArray(),
 			"os": OS.get_name(), "arm64": inputs.arm64, "template": OS.has_feature("template"),
 			"rendering_method": method, "rendering_driver": RenderingServer.get_current_rendering_driver_name(),
 			"screen": [screen.x, screen.y], "screen_scale": inputs.scale, "refresh_hz": inputs.refresh,

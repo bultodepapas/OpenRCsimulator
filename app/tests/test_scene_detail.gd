@@ -91,13 +91,13 @@ func _test_recommendations() -> void:
 		"NVIDIA GeForce MX250/PCIe/SSE2|NVIDIA Corporation": "medium",
 		"Intel(R) UHD Graphics 620|Intel": "low",
 		"NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2|NVIDIA Corporation": "medium",
-		"AMD Radeon Graphics (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)|AMD": "high",
+		"AMD Radeon Graphics (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)|AMD": "low",
 		"AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)|AMD": "medium",
 		"Mesa Intel(R) Iris(R) Xe Graphics (TGL GT2)|Intel": "medium",
-		"AMD Radeon(TM) Graphics|ATI Technologies Inc.": "medium",
+		"AMD Radeon(TM) Graphics|ATI Technologies Inc.": "low",
 		"ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)|Google Inc.": "medium",
-		"Some Future GPU 9000|Acme": "medium",
-		"|": "medium",
+		"Some Future GPU 9000|Acme": "low",
+		"|": "low",
 	}
 	for gpu: String in cases:
 		var parts := gpu.split("|")
@@ -118,10 +118,10 @@ func _test_recommendations() -> void:
 	SceneDetail.set_preference("high")
 	_check("explicit High on unknown hardware remains High", SceneDetail.level() == "high")
 	SceneDetail.set_preference(SceneDetail.AUTO)
-	_check("Automatic on unknown hardware starts at Medium", SceneDetail.level() == "medium"
-		and Scenery.options().quality == "balanced")
+	_check("Automatic on unknown hardware starts at Low", SceneDetail.level() == "low"
+		and Scenery.options().quality == "low")
 	SceneDetail.adapter_override = PackedStringArray(["", ""])
-	_check("Automatic without a reported GPU starts at Medium", SceneDetail.level() == "medium")
+	_check("Automatic without a reported GPU starts at Low", SceneDetail.level() == "low")
 	SceneDetail.adapter_override = PackedStringArray()
 	SceneDetail.set_preference("")
 	_check("tools without a saved preference retain High", SceneDetail.level() == "high")

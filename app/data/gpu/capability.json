@@ -51,7 +51,7 @@
    "source": "docs/research/desktop-delivery-investigations/DT-MAC-03b/README.md"
   }
  ],
- "provenance": "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor specifications and review aggregates; only rows whose provenance is `measured` (the anchor and the M1) were measured in OpenRC's workload. vram_gb: common vendor configuration. steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). 2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, scaled to the anchor; integrated parts about 10% below the midpoint for power limits. No third-party benchmark table is copied.",
+ "provenance": "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor specifications and review aggregates; only rows whose provenance is `measured` (the anchor and the M1) were measured in OpenRC's workload. vram_gb: estimated SKU capacity, with lower capacities for known variants. steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). 2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, scaled to the anchor; integrated parts about 10% below the midpoint for power limits. RTX 3060, 4060, 5090, RX 7600 and Arc B580: native 1080p Ultra raster geometric means relative to the RTX 3090, rounded (Tom's Hardware GPU hierarchy, November 2026): https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html",
  "provenance_levels": {
   "measured": "OpenRC measured this GPU in its own workload",
   "measured-circular": "derived from an OpenRC measurement that also defines it; not independent evidence",
@@ -74,6 +74,7 @@
    "rel": 0.2,
    "vram_gb": 4,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -469,6 +470,7 @@
    "rel": 0.015,
    "vram_gb": 1,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -478,6 +480,7 @@
    "rel": 0.06,
    "vram_gb": 2,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -502,10 +505,10 @@
   {
    "id": "rtx_5090",
    "match": "^rtx 5090\\b",
-   "rel": 1.9,
+   "rel": 1.66,
    "vram_gb": 32,
    "class": "discrete",
-   "provenance": "extrapolated",
+   "provenance": "benchmark-derived",
    "correction": 1.0
   },
   {
@@ -542,7 +545,7 @@
    "id": "rtx_5060_ti",
    "match": "^rtx 5060 ti\\b",
    "rel": 0.68,
-   "vram_gb": 16,
+   "vram_gb": 8,
    "class": "discrete",
    "steam_share_2026_10": 2.7,
    "provenance": "extrapolated",
@@ -650,11 +653,11 @@
   {
    "id": "rtx_4060",
    "match": "^rtx 4060\\b",
-   "rel": 0.5,
+   "rel": 0.58,
    "vram_gb": 8,
    "class": "discrete",
    "steam_share_2026_10": 3.51,
-   "provenance": "extrapolated",
+   "provenance": "benchmark-derived",
    "correction": 1.0
   },
   {
@@ -727,18 +730,18 @@
   {
    "id": "rtx_3060",
    "match": "^rtx 3060\\b",
-   "rel": 0.43,
-   "vram_gb": 12,
+   "rel": 0.5,
+   "vram_gb": 8,
    "class": "discrete",
    "steam_share_2026_10": 3.78,
-   "provenance": "extrapolated",
+   "provenance": "benchmark-derived",
    "correction": 1.0
   },
   {
    "id": "rtx_3050",
    "match": "^rtx 3050\\b",
    "rel": 0.3,
-   "vram_gb": 8,
+   "vram_gb": 6,
    "class": "discrete",
    "steam_share_2026_10": 3.25,
    "provenance": "extrapolated",
@@ -898,7 +901,7 @@
    "id": "gtx_1060",
    "match": "^gtx 1060\\b",
    "rel": 0.21,
-   "vram_gb": 6,
+   "vram_gb": 3,
    "class": "discrete",
    "steam_share_2026_10": 1.45,
    "provenance": "extrapolated",
@@ -1154,6 +1157,7 @@
    "rel": 0.05,
    "vram_gb": 2,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1163,6 +1167,7 @@
    "rel": 0.5,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1172,6 +1177,7 @@
    "rel": 0.25,
    "vram_gb": 6,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1181,6 +1187,7 @@
    "rel": 0.5,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1455,15 +1462,6 @@
    "correction": 1.0
   },
   {
-   "id": "rx_vega",
-   "match": "^radeon rx vega\\b",
-   "rel": 0.31,
-   "vram_gb": 8,
-   "class": "discrete",
-   "provenance": "extrapolated",
-   "correction": 1.0
-  },
-  {
    "id": "radeon_r7_igpu",
    "match": "^radeon r7 graphics\\b",
    "rel": 0.02,
@@ -1487,6 +1485,7 @@
    "rel": 0.015,
    "vram_gb": 2,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1496,6 +1495,7 @@
    "rel": 0.1,
    "vram_gb": 4,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1505,6 +1505,7 @@
    "rel": 0.05,
    "vram_gb": 2,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1514,6 +1515,7 @@
    "rel": 0.12,
    "vram_gb": 4,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1523,6 +1525,7 @@
    "rel": 0.06,
    "vram_gb": 2,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1549,7 +1552,7 @@
    "id": "rx_9060_xt",
    "match": "^radeon rx 9060 xt\\b",
    "rel": 0.78,
-   "vram_gb": 16,
+   "vram_gb": 8,
    "class": "discrete",
    "steam_share_2026_10": 0.89,
    "provenance": "benchmark-derived",
@@ -1613,7 +1616,7 @@
   {
    "id": "rx_7600_xt",
    "match": "^radeon rx 7600 xt\\b",
-   "rel": 0.5,
+   "rel": 0.6,
    "vram_gb": 16,
    "class": "discrete",
    "provenance": "extrapolated",
@@ -1622,10 +1625,10 @@
   {
    "id": "rx_7600",
    "match": "^radeon rx 7600\\b",
-   "rel": 0.48,
+   "rel": 0.57,
    "vram_gb": 8,
    "class": "discrete",
-   "provenance": "extrapolated",
+   "provenance": "benchmark-derived",
    "correction": 1.0
   },
   {
@@ -1837,11 +1840,22 @@
    "correction": 1.0
   },
   {
+   "id": "rx_vega",
+   "match": "^radeon rx vega\\b",
+   "rel": 0.31,
+   "vram_gb": 8,
+   "class": "discrete",
+   "family_only": true,
+   "provenance": "extrapolated",
+   "correction": 1.0
+  },
+  {
    "id": "rx_unlisted",
    "match": "^radeon rx [7-9]\\d{3}\\b",
    "rel": 0.6,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -1987,16 +2001,17 @@
    "vram_gb": 0,
    "class": "integrated",
    "steam_share_2026_10": 2.72,
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
   {
    "id": "arc_b580",
    "match": "^arc b580\\b",
-   "rel": 0.55,
+   "rel": 0.58,
    "vram_gb": 12,
    "class": "discrete",
-   "provenance": "extrapolated",
+   "provenance": "benchmark-derived",
    "correction": 1.0
   },
   {
@@ -2012,7 +2027,7 @@
    "id": "arc_a770",
    "match": "^arc a770\\b",
    "rel": 0.5,
-   "vram_gb": 16,
+   "vram_gb": 8,
    "class": "discrete",
    "provenance": "extrapolated",
    "correction": 1.0
@@ -2167,6 +2182,7 @@
    "rel": 0.08,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2682,6 +2698,7 @@
    "rel": 0.12,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2691,6 +2708,7 @@
    "rel": 1.1,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2700,6 +2718,7 @@
    "rel": 0.75,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2709,6 +2728,7 @@
    "rel": 1.1,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2718,6 +2738,7 @@
    "rel": 0.75,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2727,6 +2748,7 @@
    "rel": 0.45,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2736,6 +2758,7 @@
    "rel": 0.3,
    "vram_gb": 8,
    "class": "laptop",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2745,6 +2768,7 @@
    "rel": 1.3,
    "vram_gb": 20,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2754,6 +2778,7 @@
    "rel": 0.85,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2763,6 +2788,7 @@
    "rel": 0.48,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2772,6 +2798,7 @@
    "rel": 0.93,
    "vram_gb": 16,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2781,6 +2808,7 @@
    "rel": 0.64,
    "vram_gb": 12,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2790,6 +2818,7 @@
    "rel": 0.44,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2799,6 +2828,7 @@
    "rel": 0.18,
    "vram_gb": 4,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2808,6 +2838,7 @@
    "rel": 0.42,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2817,6 +2848,7 @@
    "rel": 0.25,
    "vram_gb": 4,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2826,6 +2858,7 @@
    "rel": 0.31,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2835,6 +2868,7 @@
    "rel": 0.2,
    "vram_gb": 8,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2844,6 +2878,7 @@
    "rel": 0.1,
    "vram_gb": 4,
    "class": "discrete",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2853,6 +2888,7 @@
    "rel": 0.3,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2862,6 +2898,7 @@
    "rel": 0.12,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2871,6 +2908,7 @@
    "rel": 0.09,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2880,6 +2918,7 @@
    "rel": 0.04,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2889,6 +2928,7 @@
    "rel": 0.08,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2898,6 +2938,7 @@
    "rel": 0.04,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2907,6 +2948,7 @@
    "rel": 0.03,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2916,6 +2958,7 @@
    "rel": 0.03,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2925,6 +2968,7 @@
    "rel": 0.025,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },
@@ -2934,6 +2978,7 @@
    "rel": 0.02,
    "vram_gb": 0,
    "class": "integrated",
+   "family_only": true,
    "provenance": "extrapolated",
    "correction": 1.0
   },

@@ -5,7 +5,7 @@
 ## Precedence: --scene_detail=<level> after --, then OPENRC_SCENE_DETAIL, then the player's saved
 ## preference, then the default. The scene parts apply when the world is next built. "auto" (the
 ## saved default) resolves through detected() at each launch; tools without a preference keep High.
-## VQ-07h: AutoGraphicsPolicy first asks the GPU capability table (render/gpu_capability.gd); markers cover unknown
+## VQ-07h: AutoGraphicsPolicy first asks the GPU capability table (render/gpu_capability.gd); the basic profile covers unknown
 ## GPUs. detected() adds this host's Extreme facts (A4) and the measured first-flight verdict.
 extends RefCounted
 
@@ -16,16 +16,6 @@ const AutoCalibration := preload("res://render/auto_calibration.gd")
 const LEVELS: Array[String] = ["low", "medium", "high", "extreme"]
 const DEFAULT := "high"
 const AUTO := "auto"
-const AUTO_FALLBACK := "medium"
-# VQ-06b-R1: Godot 4.7.2's Compatibility driver reports no device type (always DEVICE_TYPE_OTHER),
-# so Automatic classifies the GL renderer/vendor strings. Discrete markers are checked before
-# integrated ones ("Intel Arc", "Radeon RX"). Unknown GPUs start at Medium. Extreme is automatic only for
-# GPUs running High with worst-case headroom (VQ-07h-A4, AutoGraphicsPolicy.extreme); recommend() never picks it.
-const SOFTWARE_MARKERS := AutoGraphicsPolicy.SOFTWARE_MARKERS
-const ENTRY_DISCRETE_MARKERS := AutoGraphicsPolicy.ENTRY_DISCRETE_MARKERS
-const DISCRETE_MARKERS := AutoGraphicsPolicy.DISCRETE_MARKERS
-const INTEGRATED_MARKERS := AutoGraphicsPolicy.INTEGRATED_MARKERS
-const MOBILE_MARKERS := AutoGraphicsPolicy.MOBILE_MARKERS
 # scenery_quality: Scenery tier filter. field_tree_half_angle_deg: 3D field trees within this angle
 # of the runway as seen from the pilot (0 = cards only; 180 = the whole near ring).
 # mesh_lod_threshold_px: Godot's per-viewport LOD error; 1 px is its perceptually lossless default.
@@ -95,7 +85,7 @@ static func extreme_facts() -> Dictionary:
 		return {}
 	if _extreme_facts.is_empty():
 		var screen := DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
-		_extreme_facts = {os = OS.get_name(), arm64 = OS.has_feature("arm64"), pixels = screen.x * screen.y,
+		_extreme_facts = {os = OS.get_name(), arm64 = OS.has_feature("arm64"), pixels = AutoGraphicsPolicy.startup_output_pixels if AutoGraphicsPolicy.startup_output_pixels > 0 else screen.x * screen.y,
 			cpu_threads = OS.get_processor_count(),
 			forward_plus = RenderingServer.get_current_rendering_method() == AutoCalibration.HIGH_METHOD}
 	return _extreme_facts
@@ -133,7 +123,7 @@ static func calibrated(recommendation: Dictionary, adapter: String) -> Dictionar
 static func _native_render_pixels() -> int:
 	if DisplayServer.get_name() == "headless" or not OS.has_feature("arm64") \
 			or not GpuCapability.mac_native_target(OS.get_name(), DisplayServer.screen_get_scale()):
-		return 0
+		return AutoGraphicsPolicy.startup_output_pixels
 	var screen := DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
 	return GpuCapability.mac_render_pixels(screen, _applied_3d_scale(screen))
 

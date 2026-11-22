@@ -1215,7 +1215,7 @@ func _refresh_graphics_info() -> void:
 ## VQ-07h-A7: Automatic's choice for this GPU, how far its estimate is trusted and the first-flight measurement.
 ## Tooltip only: the Graphics page must still fit at 1080p.
 func _automatic_graphics_text() -> String:
-	var report := AutoGraphicsReport.runtime()
+	var report := AutoGraphicsReport.runtime(false)
 	var summary := AutoGraphicsReport.player_summary(report)
 	var workload := AutoCalibration.current_workload()
 	var estimate: String = {"measured": "measured on this GPU model", "benchmarks": "from benchmark data",
@@ -1355,7 +1355,10 @@ func keep_changes() -> void:
 		return
 	var err: Error = OK
 	if not _calibration_reset_display_committed or _draft != _saved:
-		err = display_preferences.save(_draft)
+		if _calibration_reset_pending:
+			err = display_preferences.save_gpu_defaults(_draft)
+		else:
+			err = display_preferences.save(_draft)
 		if err != OK:
 			_set_status("save_error", err)
 			feedback_requested.emit(&"reject")

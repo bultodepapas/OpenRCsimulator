@@ -324,6 +324,10 @@ func _test_scene_detail() -> void:
 	SceneDetail.adapter_override = PackedStringArray(["NVIDIA GeForce RTX 3090", "NVIDIA"])
 	SceneDetail.calibration = {}
 	_check("without a verdict Automatic follows the table", SceneDetail.detected().level == "high")
+	var navi23 := AutoCalibration.adapter_key("AMD Radeon Graphics (radeonsi, navi23, LLVM 17)")
+	_check("distinct Mesa chips cannot reuse a generic Radeon calibration",
+		navi23 != AutoCalibration.adapter_key("AMD Radeon Graphics (radeonsi, navi48, LLVM 17)") and
+		navi23 != AutoCalibration.adapter_key("AMD Radeon Graphics"))
 	var key := AutoCalibration.adapter_key("NVIDIA GeForce RTX 3090")
 	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high", "complete": true}
 	var shifted := SceneDetail.detected()

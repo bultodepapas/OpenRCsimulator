@@ -256,6 +256,10 @@ static func evaluate(samples: PackedFloat64Array, allow_up: bool = true, method:
 ## (e.g. Vulkan's "(KBL GT2)" suffix), and a verdict must survive a renderer change it caused.
 static func adapter_key(adapter: String) -> String:
 	var key := GpuCapability.normalize(adapter)
+	if key == "radeon graphics":
+		var chip := GpuCapability.mesa_codename(adapter)
+		if not chip.is_empty():
+			return "%s %s" % [key, chip]
 	return key if not key.is_empty() else adapter.strip_edges().to_lower()
 
 

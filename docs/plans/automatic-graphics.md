@@ -6,9 +6,26 @@ Updated 2026-11-21 against `1f24cb067ca73cc20963f65ad613e7deb4c3899b` and the cu
 
 **Current status.** A0 reporting and the legacy snapshot, A1 policy consolidation, A3 provenance, A4 Automatic Extreme and A7's Settings tooltip have already been delivered to the scope described below. The [Home render budget](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results) and the [controller-store stall fixes](../research/visual-quality-implementation/VQ-07/graphics-ladder-2026-11-19/README.md#1-a-2-hz-main-thread-stall-found-and-fixed) are also delivered; extend their existing ownership and tests only if a new failure is demonstrated. Their historical gains are not gains of a new candidate.
 
-**Branch handoff.** F07 incomplete-calibration acceptance/session cooldown, F13 graphics-reset transaction and F16 RC-circuit preservation are implemented in this branch. Successful reset also retires a partial collector and refreshes live LOD/lens/flags coherently; the general F10/F11 calibration lifecycle remains open. The [implementation receipt](../research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/README.md) owns exact verification and outstanding gates. Other repair substeps are proposed, except where explicitly called delivered. No new target-GPU performance result or tested promotion is claimed.
+**Integrated audit repairs.** F07 incomplete-calibration acceptance/session cooldown, F13 graphics-reset transaction and F16 RC-circuit preservation were integrated from the audit branch. Successful reset also retires a partial collector and refreshes live LOD/lens/flags coherently; the general F10/F11 calibration lifecycle remains open. The [implementation receipt](../research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/README.md) owns exact verification and outstanding gates. The first-launch implementation below also addresses automatic restart convergence, Mesa name precedence and family-only recommendations. No new target-GPU performance result or tested promotion is claimed.
 
-**Execution decision:** follow the numbered phases and subphases in [§5](#5-order-risks-and-owner-decisions). Complete the current bounded repair first; implement finite renderer recovery next. Use existing hardware evidence immediately, and reserve new machine runs for the specific behavior or performance claim changed by a candidate. A0 is retained evidence, not a new baseline project.
+**Execution decision:** follow the numbered phases and subphases in [§5](#5-order-risks-and-owner-decisions). Complete the remaining explicit renderer recovery work next. Use existing hardware evidence immediately, and reserve new machine runs for the specific behavior or performance claim changed by a candidate. A0 is retained evidence, not a new baseline project.
+
+### First-launch policy on main
+
+On a fresh install the game starts at 1920 × 1080 when a window of that size fits a larger desktop. Smaller panels and Apple Silicon Retina displays use native borderless output. A saved window choice determines the pixel budget on subsequent launches. Rendering and the 240 Hz simulation clock remain independent.
+
+| Example at 1080p on Windows x86-64 with 12 CPU threads | Initial graphics |
+| --- | --- |
+| Desktop RTX 5090 | Forward+, Extreme scene detail, 8× MSAA, Ultra shadows at Far distance, High aircraft lighting and Many birds |
+| Desktop RTX 3090 | Forward+, Extreme detail, 4× MSAA and the High renderer's standard shadow configuration |
+| Desktop RTX 3060 | Forward+, High detail, 2× MSAA and Medium shadows |
+| Intel UHD 630, software renderer or unidentified model | Standard, Low detail, MSAA off, projected aircraft shadow, cloud shadows and runway meadow off, Few birds. Home explains how to raise quality. |
+
+Recommendations use the shipped table offline. Public raster tests put a desktop RTX 3060 12 GB at about 0.50 and an RTX 5090 at 1.66 relative to the 3090 at 1080p Ultra. At 4K their ratios differ. OpenRC uses the estimates to order initial graphics choices. Its 3090 and M1 workload measurements, resolution, renderer availability and CPU floor constrain those choices. The 0.75 desktop floor for Extreme and 1.50 floor for maximum effects are provisional policy margins. [Raster measurements and methodology](https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html)
+
+Laptop entries have separate estimates. For example, measured Time Spy Graphics scores for 49 RTX 3060 laptops span 6,285 to 9,235 points. The table also distinguishes exact marketing names from ambiguous chip, workstation and unlisted families. Family-only names use basic graphics. A specific RX model takes precedence over its shared Mesa codename. [Laptop measurements](https://www.notebookcheck.net/NVIDIA-GeForce-RTX-3060-Mobile-GPU-Benchmarks-and-Specs.497453.0.html)
+
+The display store remembers the last automatically applied value for each managed quality option. When the active GPU or renderer changes, the game updates those fields. Keeping a manual change releases that field. Existing files without ownership metadata retain their choices until the player keeps Restore graphics defaults. A successful Forward+ launch that reverses the recommendation falls back to Standard for that build. Explicit renderer restart recovery (F02/F15) and hardware qualification remain open.
 
 ## 1. Audit of the current system
 
@@ -71,9 +88,9 @@ The Compatibility and Forward+ fits reproduce their four points within about 5%.
 
 | GPU | rel | Compatibility | Forward+ | Mobile (interp.) | Forward+ at 4K |
 | --- | --- | --- | --- | --- | --- |
-| RTX 5090 | 1.90 | 0.7 | 0.6 | 0.4 | 1.6 |
+| RTX 5090 | 1.66 | 0.8 | 0.6 | 0.5 | 1.9 |
 | RTX 3090 (measured) | 1.00 | 1.3 | 1.1 | 0.8 | 3.1 |
-| RTX 3060 | 0.43 | 3.0 | 2.5 | 1.8 | 7.2 |
+| RTX 3060 | 0.50 | 2.6 | 2.1 | 1.6 | 6.2 |
 | RTX 4060 Laptop | 0.40 | 3.2 | 2.7 | 1.9 | 7.7 |
 | Arc B390 (iGPU) | 0.30 | 4.3 | 3.6 | 2.6 | 10.3 |
 | GTX 1060 | 0.21 | 6.2 | 5.1 | 3.7 | 14.7 |

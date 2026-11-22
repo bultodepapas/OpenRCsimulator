@@ -13838,3 +13838,6 @@ msgstr "滑走路から離陸できる飛行機を選んでください。"
 
 msgid "Preparing panorama"
 msgstr "パノラマを準備中"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "基本のグラフィック設定を使用しています。「設定」>「グラフィック」で画質を上げられます。"

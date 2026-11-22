@@ -105,29 +105,29 @@ static func lookup(adapter: String) -> Dictionary:
 	var normalized := normalize(adapter)
 	var result := {"matched": false, "id": "", "rel": 0.0, "vram_gb": 0, "class": "unknown", "normalized": normalized,
 		"provenance": "unknown"}
-	var candidates: Array[String] = []
-	var codename := mesa_codename(adapter)
-	if not codename.is_empty():
-		candidates.append("mesa " + codename)
-	if not normalized.is_empty():
-		candidates.append(normalized)
-	for candidate: String in candidates:
-		for entry: Array in _compiled:
-			if (entry[0] as RegEx).search(candidate) != null:
-				var row: Dictionary = entry[1]
-				# A Mesa chip we do not know must not fall back to the generic "Radeon Graphics" iGPU row:
-				# newer Mesa names discrete cards that way too. Unknown keeps the safe defaults.
-				if not codename.is_empty() and str(row.get("id", "")) == GENERIC_RADEON_ROW:
-					return result
-				result.matched = true
-				result.id = str(row.get("id", ""))
-				# A3: a measured correction (1.0 until lab or calibration evidence exists) scales the estimate.
-				result.rel = float(row.get("rel", 0.0)) * float(row.get("correction", 1.0))
-				result["provenance"] = str(row.get("provenance", "extrapolated"))
-				result.vram_gb = int(row.get("vram_gb", 0))
-				result["class"] = str(row.get("class", "unknown"))
-				return result
+	var row := _match_row(normalized)
+	var chip := mesa_codename(adapter)
+	if not chip.is_empty() and (row.is_empty() or bool(row.get("family_only", false))):
+		var chip_row := _match_row("mesa " + chip)
+		if not chip_row.is_empty() or str(row.get("id", "")) == GENERIC_RADEON_ROW:
+			row = chip_row
+	if row.is_empty():
+		return result
+	result.matched = true
+	result.id = row.id
+	result.rel = float(row.rel) * float(row.get("correction", 1.0))
+	result.provenance = row.provenance
+	result.vram_gb = int(row.vram_gb)
+	result["class"] = row["class"]
+	result["family_only"] = bool(row.get("family_only", false))
 	return result
+
+
+static func _match_row(name_text: String) -> Dictionary:
+	for entry: Array in _compiled:
+		if (entry[0] as RegEx).search(name_text) != null:
+			return entry[1]
+	return {}
 
 
 ## Extrapolated High-profile GPU milliseconds at `pixels` output pixels for a relative throughput `rel`.

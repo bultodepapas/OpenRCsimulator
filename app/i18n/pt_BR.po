@@ -14626,3 +14626,6 @@ msgstr "Escolha um avião que possa decolar de uma pista."
 
 msgid "Preparing panorama"
 msgstr "Preparando o panorama"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "Os gráficos estão na qualidade básica. Você pode aumentar a qualidade em Configurações > Gráficos."

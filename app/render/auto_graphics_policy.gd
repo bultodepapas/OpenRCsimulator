@@ -13,13 +13,15 @@ const GpuCapability := preload("res://render/gpu_capability.gd")
 const HIGH_BUDGET_MS := 4.3
 const MIN_HIGH_VRAM_GB := 4
 const MIN_PIXELS := 1920 * 1080
+## Frozen when Home opens so the renderer and scene use the same planned output.
+static var startup_output_pixels := 0
 const AUTO_HIGH_OSES: Array[String] = ["Windows", "Linux"]
 
 # --- Scene detail Automatic -------------------------------------------------------------------------------------
 ## Estimated throughput tiers (x RTX 3090): below LOW Low, below MEDIUM Medium, else High; Extreme only via extreme().
 const SCENE_LOW_BELOW := 0.04
 const SCENE_MEDIUM_BELOW := 0.15
-const SCENE_FALLBACK := "medium"
+const SCENE_FALLBACK := "low"
 ## A4 Ultra, step 1: Automatic Extreme (the whole 3D tree ring; Lens effects Automatic follows to Ultra) where
 ## Automatic also picks High and the worst-case scene still fits the High budget. The worst-case protocol (night
 ## lights, storm, lens rain, planar lake, Extreme) measured up to 1.25x the base High GPU time on the RTX 3090
@@ -28,18 +30,29 @@ const SCENE_FALLBACK := "medium"
 const EXTREME_WORST_CASE_FACTOR := 1.25
 const EXTREME_MIN_VRAM_GB := 8
 const EXTREME_MIN_CPU_THREADS := 8
-## Name markers for GPUs missing from the capability table (VQ-06b-R1). Discrete markers precede integrated ones.
-const SOFTWARE_MARKERS: Array[String] = ["llvmpipe", "softpipe", "lavapipe", "swiftshader",
-	"microsoft basic render", "gdi generic", "software rasterizer"]
-const ENTRY_DISCRETE_MARKERS: Array[String] = ["geforce mx", "geforce gt ", "geforce 9", "geforce 8"]
-const DISCRETE_MARKERS: Array[String] = ["geforce", "rtx", "quadro", "radeon rx", "radeon pro", "radeon r9",
-	"radeon r7", "firepro", "intel(r) arc", "intel arc", "arc(tm)"]
-const INTEGRATED_MARKERS: Array[String] = ["intel", "uhd graphics", "iris", "hd graphics", "radeon(tm) graphics",
-	"radeon graphics", "radeon vega", "radeon(tm) vega", "apple m"]
-const MOBILE_MARKERS: Array[String] = ["adreno", "mali", "powervr", "tegra"]
+## Leave the full tree ring and expensive shadow filters for desktop cards with headroom.
+const EXTREME_MIN_REL := 0.75
+const MAX_QUALITY_MIN_REL := 1.50
+const BASIC_SETTINGS := {
+	"msaa_3d": Viewport.MSAA_DISABLED, "shadow_quality": "low", "shadow_technique": "projected",
+	"shadow_cloud": "off", "runway_meadow": "off", "birds": "few",
+}
+
+static func basic_settings_active(recommended: Dictionary, current: Dictionary) -> bool:
+	if str(current.get("scene_detail", "auto")) not in ["auto", "low"]:
+		return false
+	for key: String in BASIC_SETTINGS:
+		if recommended.get(key) != BASIC_SETTINGS[key] or current.get(key) != BASIC_SETTINGS[key]:
+			return false
+	return true
+
+
+static func needs_fallback(gpu: Dictionary) -> bool:
+	return not bool(gpu.get("matched", false)) or bool(gpu.get("family_only", false))
+
 
 # --- First-launch display values ---------------------------------------------------------------------------------
-## Integrated GPUs below this start without MSAA, others at 2x; dedicated, unknown and tile-based GPUs keep 4x.
+## Shared-memory integrated GPUs below this start without MSAA.
 const MSAA_OFF_BELOW := 0.10
 ## Apple GPUs from about M4 Pro class keep 120 Hz on ProMotion panels; slower chips start capped at 60 fps.
 const MAC_120HZ_MIN_REL := 0.18
@@ -65,8 +78,8 @@ static func renderer(facts: Dictionary) -> Dictionary:
 	if os_name not in AUTO_HIGH_OSES or bool(facts.get("arm64", false)):
 		return {profile = "standard", reason = "High is chosen automatically only on Windows and Linux x86_64"}
 	var gpu := GpuCapability.lookup(str(facts.get("adapter", "")))
-	if not bool(gpu.matched):
-		return {profile = "standard", reason = "GPU not in the capability table", gpu = gpu}
+	if needs_fallback(gpu):
+		return {profile = "standard", reason = "GPU model could not be identified", gpu = gpu}
 	if str(gpu["class"]) in ["integrated", "software"]:
 		return {profile = "standard", reason = "%s GPU" % gpu["class"], gpu = gpu}
 	# Linux: desktop GPUs only. Hybrid laptops usually present their integrated GPU to OpenGL anyway, and
@@ -92,6 +105,8 @@ static func extreme(facts: Dictionary) -> Dictionary:
 	if not bool(facts.get("forward_plus", true)):
 		return {extreme = false, reason = "High is not running"}
 	var gpu: Dictionary = high.gpu
+	if str(gpu["class"]) != "discrete" or float(gpu.rel) < EXTREME_MIN_REL:
+		return {extreme = false, reason = "insufficient estimated desktop GPU headroom for Extreme"}
 	if int(gpu.vram_gb) < EXTREME_MIN_VRAM_GB:
 		return {extreme = false, reason = "less than %d GB of video memory" % EXTREME_MIN_VRAM_GB}
 	var threads := int(facts.get("cpu_threads", 0))
@@ -106,7 +121,7 @@ static func extreme(facts: Dictionary) -> Dictionary:
 ## `render_pixels` > 1080p (Macs: the native panel after MetalFX) scales the estimate by the extra pixel load.
 static func scene_detail_from_capability(adapter: String, render_pixels: int = 0) -> Dictionary:
 	var gpu := GpuCapability.lookup(adapter)
-	if not bool(gpu.matched):
+	if needs_fallback(gpu):
 		return {"level": "", "reason": "", "gpu": gpu}
 	var reference := GpuCapability.REFERENCE_PIXELS
 	var rel := float(gpu.rel) * minf(1.0, float(reference) / float(maxi(render_pixels, reference)))
@@ -119,48 +134,68 @@ static func scene_detail_from_capability(adapter: String, render_pixels: int = 0
 	return {"level": level, "reason": reason, "detail": "%s (estimated %.2f× RTX 3090)" % [gpu.id, rel], "gpu": gpu}
 
 
-## Scene detail Automatic before measured calibration: the capability table, then name markers, then Medium.
-## High becomes Extreme only when `extreme_facts` (see extreme()) are given and qualify.
-static func scene_detail(adapter: String, vendor: String, render_pixels: int = 0,
+## Unknown models always start at Low, including family-only matches.
+static func scene_detail(adapter: String, _vendor: String, render_pixels: int = 0,
 		extreme_facts: Dictionary = {}) -> Dictionary:
-	var gpu := (adapter + " " + vendor).strip_edges().to_lower()
-	if gpu.is_empty():
-		return {level = SCENE_FALLBACK, reason = "no GPU reported"}
 	var capable := scene_detail_from_capability(adapter, render_pixels)
-	if not str(capable.level).is_empty():
-		if str(capable.level) == "high" and not extreme_facts.is_empty():
-			var facts := extreme_facts.duplicate()
-			facts["adapter"] = adapter
-			var top := extreme(facts)
-			if bool(top.extreme):
-				return {level = "extreme", reason = capable.reason, detail = "%s; Extreme: %s" % [capable.detail, top.reason]}
-		return {level = capable.level, reason = capable.reason, detail = capable.detail}
-	for rule: Array in [[SOFTWARE_MARKERS, "low", "software renderer"], [MOBILE_MARKERS, "low", "mobile GPU"],
-			[ENTRY_DISCRETE_MARKERS, "medium", "entry-level GPU"], [DISCRETE_MARKERS, "high", "dedicated GPU"],
-			[INTEGRATED_MARKERS, "medium", "integrated GPU"]]:
-		for marker: String in rule[0]:
-			if gpu.contains(marker):
-				return {level = rule[1], reason = rule[2]}
-	return {level = SCENE_FALLBACK, reason = "unrecognized GPU"}
+	if str(capable.level).is_empty():
+		return {level = SCENE_FALLBACK, reason = "no GPU reported" if adapter.is_empty() else "unrecognized GPU"}
+	if str(capable.level) == "high" and not extreme_facts.is_empty():
+		var facts := extreme_facts.duplicate()
+		facts["adapter"] = adapter
+		var top := extreme(facts)
+		if bool(top.extreme):
+			return {level = "extreme", reason = capable.reason, detail = "%s; Extreme: %s" % [capable.detail, top.reason]}
+	return {level = capable.level, reason = capable.reason, detail = capable.detail}
 
 
-## First-launch display values, applied only on a fresh install (DisplayPreferences). Evidence:
-## docs/research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18 (MSAA) and the AGENTS Mac exception.
-static func first_run(adapter: String, os_name: String = "", screen_scale: float = 1.0, refresh_hz: float = 60.0) -> Dictionary:
-	var settings := {}
+## A native fullscreen fits small panels. Larger desktops get a 1080p window, leaving space
+## for window chrome. Apple Silicon Retina presents at native resolution.
+static func first_display(screen: Vector2i, native_retina: bool) -> Dictionary:
+	if native_retina:
+		return {"window_mode": "borderless"}
+	if screen.x <= 0 or screen.y <= 0:
+		return {}
+	if screen.x >= 1952 and screen.y >= 1200:
+		return {"window_resolution": "1920x1080"}
+	return {"window_mode": "borderless"}
+
+
+static func output_pixels(screen: Vector2i, config: Dictionary, window: Vector2i) -> int:
+	var size := window
+	if str(config.get("window_mode", "")) == "borderless":
+		size = screen
+	else:
+		var dimensions := str(config.get("window_resolution", "auto")).split("x")
+		if dimensions.size() == 2:
+			size = Vector2i(int(dimensions[0]), int(dimensions[1]))
+	return maxi(size.x, 0) * maxi(size.y, 0)
+
+
+## First install and Restore share this bundle. Manual values are persisted by DisplayPreferences.
+static func first_run(adapter: String, os_name: String = "", screen_scale: float = 1.0, refresh_hz: float = 60.0,
+		screen: Vector2i = Vector2i.ZERO, cpu_threads: int = 0, forward_plus: bool = false) -> Dictionary:
 	var gpu := GpuCapability.lookup(adapter)
-	# Apple Silicon only: Intel Macs have neither MetalFX nor the GPU for a native Retina frame.
-	if GpuCapability.mac_native_target(os_name, screen_scale) and str(gpu.id).begins_with("apple_"):
-		settings["window_mode"] = "borderless"
-		if refresh_hz > 61.0 and float(gpu.rel) < MAC_120HZ_MIN_REL:
-			settings["max_fps"] = 60
-	if not bool(gpu.matched) or str(gpu["class"]) not in ["integrated", "software"]:
+	var apple := str(gpu.id).begins_with("apple_")
+	var retina := apple and GpuCapability.mac_native_target(os_name, screen_scale)
+	var settings := first_display(screen, retina)
+	if retina and refresh_hz > 61.0 and float(gpu.rel) < MAC_120HZ_MIN_REL:
+		settings["max_fps"] = 60
+	if needs_fallback(gpu) or str(gpu["class"]) == "software" or float(gpu.rel) < SCENE_LOW_BELOW:
+		settings.merge(BASIC_SETTINGS)
 		return settings
-	# Tile-based GPUs (Apple, Adreno) resolve MSAA on chip; the shared-bandwidth argument does not apply.
-	if str(gpu.id).begins_with("apple_") or str(gpu.id).begins_with("adreno_"):
+	if apple or str(gpu.id).begins_with("adreno_"):
 		return settings
-	settings["msaa_3d"] = Viewport.MSAA_DISABLED if str(gpu["class"]) == "software" \
-		or float(gpu.rel) < MSAA_OFF_BELOW else Viewport.MSAA_2X
+	if str(gpu["class"]) == "integrated":
+		settings["msaa_3d"] = Viewport.MSAA_DISABLED if float(gpu.rel) < MSAA_OFF_BELOW else Viewport.MSAA_2X
+		settings["shadow_quality"] = "low"
+	elif float(gpu.rel) < EXTREME_MIN_REL:
+		settings["msaa_3d"] = Viewport.MSAA_DISABLED if float(gpu.rel) < SCENE_MEDIUM_BELOW else Viewport.MSAA_2X
+		settings["shadow_quality"] = "low" if float(gpu.rel) < SCENE_MEDIUM_BELOW else "medium"
+	elif float(gpu.rel) >= MAX_QUALITY_MIN_REL and extreme({adapter = adapter, os = os_name, pixels = output_pixels(screen, settings, screen),
+			cpu_threads = cpu_threads, forward_plus = forward_plus}).extreme:
+		settings.merge({"msaa_3d": Viewport.MSAA_8X, "shadow_quality": "ultra", "shadow_distance": "far",
+			"aircraft_lighting_quality": "high", "birds": "many"})
 	return settings
 
 
@@ -174,13 +209,16 @@ static func decide(inputs: Dictionary) -> Dictionary:
 	var screen: Vector2i = inputs.get("screen", Vector2i.ZERO)
 	var scale := float(inputs.get("scale", 1.0))
 	var arm64 := bool(inputs.get("arm64", false))
-	var facts := {os = os_name, arm64 = arm64, adapter = adapter, pixels = screen.x * screen.y,
+	var display := first_display(screen, GpuCapability.mac_native_target(os_name, scale) and arm64)
+	var pixels := int(inputs.get("output_pixels", output_pixels(screen, display, screen)))
+	var facts := {os = os_name, arm64 = arm64, adapter = adapter, pixels = pixels,
 		cpu_threads = int(inputs.get("cpu_threads", 0)), forward_plus = bool(inputs.get("forward_plus", true))}
 	var chosen_renderer := renderer(facts)
 	# Retina Macs judge Scene detail at the pixels rendered under Automatic MetalFX (AGENTS display exception).
 	var render_pixels := GpuCapability.mac_render_pixels(screen) \
-		if GpuCapability.mac_native_target(os_name, scale) and arm64 else 0
+		if GpuCapability.mac_native_target(os_name, scale) and arm64 else pixels
 	var scene := scene_detail(adapter, "", render_pixels, facts)
 	return {"renderer": str(chosen_renderer.profile), "scene_detail": str(scene.level),
-		"first_run": first_run(adapter, os_name, scale, float(inputs.get("refresh", 60.0))),
+		"first_run": first_run(adapter, os_name, scale, float(inputs.get("refresh", 60.0)), screen,
+			int(facts.cpu_threads), bool(facts.forward_plus)),
 		"reasons": {"renderer": str(chosen_renderer.reason), "scene_detail": str(scene.get("detail", scene.reason))}}

@@ -12,6 +12,9 @@ const SCHEMA := 1
 ## DT-MAC-07b: every save writes this flag. Without it, "native" is the old only-possible default and is read as
 ## "auto" (behavior-identical except MetalFX Spatial on large Apple Silicon Metal outputs); with it, Native is kept.
 const RECONSTRUCTION_AUTO_KEY := "reconstruction_auto"
+const GPU_DEFAULTS_KEY := "gpu_defaults"
+const GPU_MANAGED_KEYS: Array[String] = ["msaa_3d", "shadow_quality", "shadow_technique", "shadow_distance",
+	"shadow_cloud", "birds", "runway_meadow", "aircraft_lighting_quality", "max_fps"]
 const WINDOW_MODES: Array[String] = ["windowed", "borderless"]
 const WINDOW_RESOLUTIONS: Array[String] = [
 	"auto", "1280x720", "1280x800", "1600x900", "1920x1080", "1920x1200",
@@ -136,6 +139,7 @@ var path: String
 var config: Dictionary
 var writable := true
 var note := ""
+var _gpu_defaults: Dictionary = {}
 
 
 func _init(file_path: String = DEFAULT_PATH) -> void:
@@ -144,7 +148,7 @@ func _init(file_path: String = DEFAULT_PATH) -> void:
 
 
 func reload() -> Dictionary:
-	var loaded := load_from(path)
+	var loaded := load_from(path, _gpu_defaults)
 	config = _config_only(loaded)
 	writable = bool(loaded.get("writable", true))
 	note = str(loaded.get("note", ""))
@@ -157,21 +161,65 @@ func save(candidate: Dictionary) -> Error:
 	var checked := validate(candidate)
 	if not checked.ok:
 		return ERR_INVALID_DATA
-	var err := save_to(path, checked.config)
+	# A kept manual edit releases ownership permanently, even if a later recommendation happens to match it.
+	var owned := _matching_gpu_defaults(checked.config, _gpu_defaults)
+	var err := save_to(path, checked.config, owned)
 	if err == OK:
 		config = checked.config.duplicate(true)
+		_gpu_defaults = owned
 		note = ""
 	return err
 
 
+## Kept Restore also opts an older profile back into automatic recommendations. Save through the normal store
+## so a protected or unavailable profile can reject the whole display transaction.
+func save_gpu_defaults(candidate: Dictionary) -> Error:
+	var previous := _gpu_defaults
+	_gpu_defaults = _matching_gpu_defaults(candidate, recommended_defaults())
+	var err := save(candidate)
+	if err != OK:
+		_gpu_defaults = previous
+	return err
+
+
+## Called after renderer selection. The window uses its first-launch recommendation only on a fresh install.
+## A changed recommendation is used this session even when the file cannot be updated.
+func apply_gpu_defaults(fresh_install: bool) -> Error:
+	var recommended := recommended_defaults()
+	var updated := recommended.duplicate() if fresh_install else config.duplicate()
+	var owned := _matching_gpu_defaults(config, _gpu_defaults)
+	if fresh_install:
+		owned = _matching_gpu_defaults(recommended, recommended)
+	else:
+		for key: String in owned:
+			updated[key] = recommended[key]
+			owned[key] = recommended[key]
+	if not fresh_install and updated == config:
+		return OK
+	config = updated
+	_gpu_defaults = owned
+	return save(config)
+
+
+static func _matching_gpu_defaults(candidate: Dictionary, previous: Variant) -> Dictionary:
+	var owned := {}
+	if previous is Dictionary:
+		for key: String in GPU_MANAGED_KEYS:
+			if candidate.has(key) and previous.has(key) and typeof(previous[key]) == typeof(candidate[key]) \
+					and previous[key] == candidate[key]:
+				owned[key] = candidate[key]
+	return owned
+
+
 ## Return validated values plus file status. Invalid files are preserved as `.bad` for inspection.
-static func load_from(file_path: String) -> Dictionary:
+static func load_from(file_path: String, owned_gpu_defaults: Dictionary = {}) -> Dictionary:
+	owned_gpu_defaults.clear()
 	var result := DEFAULTS.duplicate(true)
 	result.writable = true
 	result.note = ""
 	if not FileAccess.file_exists(file_path):
 		return _with_first_run_defaults(result) if first_run_applies else result
-	return _load_existing(file_path, result)
+	return _load_existing(file_path, result, owned_gpu_defaults)
 
 
 ## VQ-07h: per-GPU recommendations (render/gpu_capability.gd first_run_settings). They replace DEFAULTS when no
@@ -190,7 +238,7 @@ static func recommended_defaults() -> Dictionary:
 ## belongs to the flight scenario; restoring graphics must preserve its terrain and collision choice.
 static func graphics_default_keys() -> Array[String]:
 	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
-		"runway_meadow", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
+		"runway_meadow", "reconstruction", "fsr2_sharpness", "nvidia_reflex", "aircraft_lighting_quality"]
 	for key: String in SHADOW_FILE_KEYS:
 		keys.append(key)
 	return keys
@@ -221,12 +269,22 @@ static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
 		if key in ["msaa_3d", "max_fps"] and typeof(value) == TYPE_INT \
 				and int(value) in (MSAA_3D_VALUES if key == "msaa_3d" else MAX_FPS_VALUES):
 			result[key] = int(value)
-		elif key == "window_mode" and typeof(value) == TYPE_STRING and str(value) in WINDOW_MODES:
-			result[key] = str(value)
+		elif key in SHADOW_FILE_KEYS and value in ShadowSettings.CHOICES[key]:
+			result[key] = value
+		elif key == "birds" and value in BIRD_LEVELS:
+			result[key] = value
+		elif key == "runway_meadow" and value in RUNWAY_MEADOW_LEVELS:
+			result[key] = value
+		elif key == "aircraft_lighting_quality" and value in LIGHTING_QUALITY_LEVELS:
+			result[key] = value
+		elif key == "window_resolution" and value in WINDOW_RESOLUTIONS:
+			result[key] = value
+		elif key == "window_mode" and value in WINDOW_MODES:
+			result[key] = value
 	return result
 
 
-static func _load_existing(file_path: String, result: Dictionary) -> Dictionary:
+static func _load_existing(file_path: String, result: Dictionary, owned_gpu_defaults: Dictionary) -> Dictionary:
 
 	var cfg := ConfigFile.new()
 	var load_error := cfg.load(file_path)
@@ -299,12 +357,14 @@ static func _load_existing(file_path: String, result: Dictionary) -> Dictionary:
 	var checked := validate(raw)
 	if checked.ok:
 		result.merge(checked.config, true)
+		if result.writable:
+			owned_gpu_defaults.merge(_matching_gpu_defaults(checked.config, cfg.get_value("meta", GPU_DEFAULTS_KEY, {})))
 	else:
 		result.note = _append_note(result.note, "invalid display values were replaced with defaults")
 	return result
 
 
-static func save_to(file_path: String, candidate: Dictionary) -> Error:
+static func save_to(file_path: String, candidate: Dictionary, owned_gpu_defaults: Variant = null) -> Error:
 	var checked := validate(candidate)
 	if not checked.ok:
 		return ERR_INVALID_DATA
@@ -315,10 +375,15 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 			var current_schema: Variant = existing.get_value("meta", "schema", -1)
 			if typeof(current_schema) == TYPE_INT and current_schema > SCHEMA:
 				return ERR_FILE_NO_PERMISSION
+			if owned_gpu_defaults == null:
+				owned_gpu_defaults = existing.get_value("meta", GPU_DEFAULTS_KEY, {})
 
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "schema", SCHEMA)
 	cfg.set_value("meta", RECONSTRUCTION_AUTO_KEY, true)
+	var owned := _matching_gpu_defaults(checked.config, owned_gpu_defaults)
+	if not owned.is_empty():
+		cfg.set_value("meta", GPU_DEFAULTS_KEY, owned)
 	cfg.set_value("display", "window_mode", checked.config.window_mode)
 	cfg.set_value("display", "window_resolution", checked.config.window_resolution)
 	cfg.set_value("display", "ui_scale", checked.config.ui_scale)

@@ -694,3 +694,11 @@ sent. The receiver accepts v1 under the old notice and v2 under the new one, nev
 field only as the operator `usage_backend` table. Deploy the receiver before tagging a release with the v2 client;
 `check-release` ingests the v2 example. [Data contract](plans/telemetry/data-contract.md),
 [legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
+
+### Start graphics from the active GPU and keep manual choices
+
+**VQ-07h, 2026-11-21.** Use offline raster estimates, OpenRC workload measurements and
+the planned output size to seed individual graphics options. Unknown or ambiguous models
+start at Low with a visible explanation. Track ownership per quality option across
+GPU changes and renderer recovery. The [automatic graphics plan](plans/automatic-graphics.md#first-launch-policy-on-main)
+owns thresholds, hardware examples and evidence limits.

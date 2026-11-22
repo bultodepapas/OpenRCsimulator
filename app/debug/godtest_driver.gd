@@ -747,7 +747,12 @@ func _process(delta: float) -> void:
 	var interval_draws := drawn - previous_drawn
 	previous_drawn = drawn
 	if drawable: drawable_intervals += 1
-	elif native_display: undrawable_intervals += 1
+	elif native_display:
+		undrawable_intervals += 1
+		# Diagnostic only (verdicts unchanged): locate window-setup transients.
+		if undrawable_intervals <= 20:
+			_event("window_undrawable", {interval = undrawable_intervals, drawable_before = drawable_intervals,
+				drawn = drawn, mode = DisplayServer.window_get_mode(), focused = DisplayServer.window_is_focused()})
 	if native_display and interval_draws <= 0: no_draw_intervals += 1
 	var tick := -1
 	var sim_s := 0.0

@@ -192,14 +192,16 @@ VSync on/off and main-view MSAA off/2×/4×/8×. **Display → Window resolution
 720p through 4K, including 16:10 and ultrawide sizes, fitted to the available desktop.
 Automatic preserves the window size at the start of a settings transaction;
 borderless fullscreen uses the desktop resolution. Graphics changes preview immediately
-and share the 15-second Keep/Revert recovery. Restore graphics defaults returns to
-unlimited FPS, VSync on and 4× MSAA. These controls do not change flight physics.
+and share the 15-second Keep/Revert recovery. New installations start at 1080p or the
+native display size. The simulator chooses scene detail, antialiasing and shadows for
+the active GPU. On basic graphics, Home shows where to raise the quality. Kept manual
+choices survive a GPU change. Restore graphics defaults reapplies the recommendation.
 VSync's effective state is displayed because the driver/compositor may override it.
 **Scene detail** (Automatic, Low, Medium, High, Extreme) sets trees, props and model detail
 from the next flight: Low and Medium draw all field trees as cards with fewer props and simpler
 parked-model engines, High
 draws the trees in front of the pilot in 3D, and Extreme every nearby field tree. Automatic
-(default) picks Low, Medium or High from your GPU at each launch; its tooltip names the GPU. Tree
+(default) picks Low through Extreme from your GPU at each launch; its tooltip names the GPU. Tree
 and scenery collision are the same at every level; collidable props remain visible.
 High and Extreme also add field-textured walking-path edges. This ground effect can be
 disabled independently with the [launch override](../tools/ground/README.md#l9b-r3-field-textured-path-shoulders).

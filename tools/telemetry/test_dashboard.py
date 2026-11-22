@@ -104,7 +104,7 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(day_state["2027-01-18"], "missed")
         self.assertEqual(day_state["2027-01-19"], "overdue")
         self.assertEqual(day_state["2027-01-20"], "pending")
-        self.assertEqual(day_state["2027-01-10"], "none")
+        self.assertEqual(day_state["2027-01-10"], "unknown")
         self.assertEqual(cells[(RELEASE, "2027-01-13")][0], "ready")
         titles = [title for _, title, _ in dashboard.alerts(data, rows, day_state)]
         self.assertEqual(titles[0], "Raw row past 48 h")  # the seeded raw rows were never purged
@@ -136,7 +136,7 @@ class DashboardCase(unittest.TestCase):
         _, _, day_state = dashboard.coverage_model(data, rows)
         self.assertEqual([t for _, t, _ in dashboard.alerts(data, rows, day_state)], ["Waiting for first batch"])
         page = dashboard.render(data)
-        self.assertIn("No player data yet", page)
+        self.assertIn("Waiting for the first accepted batch.", page)
         self.assertIn("never", page)
 
     def test_silence_after_raw_purge_is_not_first_batch(self):
@@ -149,6 +149,39 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(dashboard.last_seen(data, rows)[1], "on 2027-01-16")
         self.assertIn("1 day(s) never rolled up", [t for _, t, _ in alerts])
         self.assertIn("2027-01-16", dashboard.render(data))
+        self.assertIn("The receiver has accepted batches. Weekly rollup data is unavailable.", dashboard.render(data))
+
+    def test_legacy_rollup_and_interrupted_ingress_do_not_establish_zero_for_a_missing_release(self):
+        data = snapshot.collect(self.config, NOW, days=4, weeks=1, floor=20)
+        day = "2027-01-17"
+        data["releases_with_cells"] = [RELEASE, "v0.3.2"]
+        data["coverage"] = [{"day": day, "release_id": RELEASE, "table": table, "status": "ready"}
+                            for table in ("gpu", "vehicle", "cells")]
+        data["rollup_days"] = {day: "legacy"}
+        self.assertEqual(dashboard.coverage_model(data, dashboard.ingest_rows(data))[1][("v0.3.2", day)][0], "unknown")
+        data["rollup_days"][day] = "complete"
+        self.assertEqual(dashboard.coverage_model(data, dashboard.ingest_rows(data))[1][("v0.3.2", day)][0], "none")
+        data["ingest"][0]["counts"] = {"rate_limited": 1}
+        cells = dashboard.coverage_model(data, dashboard.ingest_rows(data))[1]
+        self.assertEqual(cells[("v0.3.2", day)][0], "unknown")
+        self.assertEqual(cells[(RELEASE, day)][0], "ready")
+
+    def test_weekly_cohort_summary_respects_overlap_and_refuses_legacy_combined_rows(self):
+        tables = {"mix_os": {"published": [{"dims": ["windows"], "sessions": 25},
+                                          {"dims": ["macos"], "sessions": 24}],
+                             "combined": {"dims": ["combined small cells"], "sessions": 30,
+                                          "sessions_lower_bound": True}}}
+        report = {"insights_version": 1, "week": "2027-W02", "release_id": RELEASE, "floor": 20,
+                  "days": [{"day": "2027-01-17", "status": "ready"}], "week_closed": True, "tables": tables}
+        data = {"insights": [report]}
+        self.assertEqual(dashboard.latest_week_players(data), ("2027-W02", RELEASE, 25))
+        old = dashboard.report_section(0, report, False, {}, set())
+        self.assertNotIn("combined small cells", old)
+        report["insights_version"] = 2
+        self.assertEqual(dashboard.latest_week_players(data), ("2027-W02", RELEASE, 30))
+        updated = dashboard.report_section(0, report, False, {}, {"2027-01-17"})
+        self.assertIn("<td>≥30</td>", updated)
+        self.assertIn("Receiver-wide ingress interruptions on 1 day(s)", updated)
 
     def test_missing_database_is_refused(self):
         config = make_config(self.dir / "elsewhere")
@@ -226,7 +259,7 @@ class DashboardCase(unittest.TestCase):
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
         for text in ("Last 7 full days", "2027-01-13 to 2027-01-19", "Package downloads", "Repository views",
                      "New stars", "Recent releases", "<td>v0.3.10</td>", "Downloads by platform",
-                     "Repository referrers, 14 days", "Downloads per day", "Interest per day",
+                     "Repository referrers, 14 days", "GitHub package downloads by collection day", "Interest per day",
                      "Website (GA4)</b> not connected", "Telemetry batches"):
             self.assertIn(text, overview)
         self.assertIn("Old snapshot.", page)  # the fixture is from 2027-01-20
@@ -253,7 +286,8 @@ class DashboardCase(unittest.TestCase):
         self.assertNotIn("<b>evil</b>", page)
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
         for text in ("Website sessions", "Website download requests", "8% of 7-day users request a download",
-                     "Top countries", "Where people come from", "Website, 7 days", "<td>github</td>"):
+                     "Top countries", "Where people come from", "Website, 7 days", "<td>github</td>",
+                     'aria-label="Website download requests per day"'):
             self.assertIn(text, overview)
         rows = dashboard.ingest_rows(data)
         self.assertNotIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
@@ -291,6 +325,39 @@ class DashboardCase(unittest.TestCase):
                                        uncertain={days[-1]})
         self.assertIsNone(metric.previous)
         self.assertEqual(metric.condition, "Partial coverage")
+
+    def test_long_timeline_keeps_every_day_inspectable_with_one_tab_stop(self):
+        days = [(MONDAY + timedelta(days=offset)).isoformat() for offset in range(90)]
+        page = dashboard.line_chart(days, [("Views", list(range(90)), "s1")], "Views")
+        self.assertEqual(page.count('class="hit"'), 90)
+        self.assertEqual(page.count('tabindex="0"'), 1)
+        self.assertIn(f'aria-label="{days[-1]} · Views: 89"', page)
+        self.assertIn(f'<th scope="row">{days[0]}</th><td>0 (observed)</td>', page)
+        self.assertEqual(page.count('class="tick date-tick'), 7)
+
+    def test_stacked_release_bars_keep_exact_proportions_and_zero(self):
+        counts = {"Windows": 199, "macOS": 1, "Linux": 0, "Other": 0}
+        empty = dict.fromkeys(counts, 0)
+        page = dashboard.release_chart([("v2", counts, 200), ("v1", empty, 0)])
+        self.assertIn('class="fill-s1" style="flex-grow:199"', page)
+        self.assertIn('class="fill-s2" style="flex-grow:1"', page)
+        self.assertIn('aria-label="v2 · Total 200 · Windows: 199 · macOS: 1"', page)
+        self.assertIn('aria-label="v1 · Total 0"', page)
+        self.assertEqual(page.count('tabindex="0"'), 1)
+
+
+
+    def test_download_columns_distinguish_observed_zero_and_missing_intervals(self):
+        days = ["2027-01-01", "2027-01-02", "2027-01-03"]
+        html = dashboard.download_collection_chart(days, {days[0]: 12, days[2]: 0},
+                                                   {days[1]: "Long collection interval"}, "Package downloads")
+        self.assertEqual(html.count('class="collection-bar '), 1)
+        self.assertEqual(html.count('class="collection-gap"'), 1)
+        self.assertEqual(html.count('class="collection-zero '), 1)
+        self.assertIn('2027-01-02 · Matched counter increase: Unavailable · Long collection interval', html)
+        self.assertIn('2027-01-03 · Matched counter increase: 0 (observed)', html)
+        self.assertNotIn('class="line line-', html)
+        self.assertEqual(html.count('tabindex="0"'), 1)
 
     def test_download_counter_gap_preserves_the_original_interval(self):
         intervals = [{"from_end": "2027-01-16T10:00:00Z", "to_end": "2027-01-19T10:00:00Z",
