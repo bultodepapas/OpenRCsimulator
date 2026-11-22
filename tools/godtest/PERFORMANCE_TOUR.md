@@ -306,7 +306,13 @@ bind the original and resolved manifests, renderer receipt and diagnostics, stri
 phase labels and raw draw counters. Each requested phase needs drawability and
 positive draw progress inside that phase; a boundary-crossing frame alone is
 insufficient. A missing or contradictory receipt makes coverage partial and data
-ineligible. Explicit headless functional runs remain available without graphics
+ineligible. One narrow exception exists: during `startup`, intervals that still
+draw within 2 s after the window's single observed switch into fullscreen carry
+`render_window_transition` and count as `window_mode_transition_intervals`. macOS
+reports its fullscreen Space animation (about 0.5 s on the M1) as undrawable. Any
+other undrawable or zero-draw interval still invalidates the phase. Likewise, focus
+losses inside `startup` precede any flight session and are not flagged; later
+losses are. Explicit headless functional runs remain available without graphics
 qualification. `reducer_sources` and the aggregate `reducer_sha256` include the
 helper modules that now affect acceptance.
 

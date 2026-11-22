@@ -41,6 +41,31 @@ class RawRenderEvidenceTests(unittest.TestCase):
             self.assertEqual(receipt["segments"], 1)
             self.assertEqual(receipt["undrawable_intervals"], 0)
 
+    def test_labeled_window_mode_transition_is_counted_not_invalidating(self):
+        # macOS fullscreen Space animation: undrawable while frames still draw.
+        rows = [(0, 100, 10, 10, 1, 1, 0), (0, 110, 10, 11, 1, 0, 1), (0, 120, 10, 12, 1, 0, 1),
+                (0, 130, 10, 13, 1, 1, 0)]
+        receipt = accumulator_rows(rows)["0"]
+        self.assertEqual(receipt["status"], "complete")
+        self.assertEqual((receipt["window_mode_transition_intervals"], receipt["undrawable_intervals"]), (2, 0))
+
+    def test_unlabeled_or_contradictory_transition_evidence_stays_invalid(self):
+        unlabeled = accumulator_rows([(0, 100, 10, 10, 1, 1, 0), (0, 110, 10, 11, 1, 0, 0)])["0"]
+        self.assertEqual(unlabeled["status"], "incomplete")
+        self.assertIn("window_undrawable", unlabeled["reasons"])
+        # Older streams without the label keep the strict meaning.
+        legacy = accumulator_rows([(0, 100, 10, 10, 1, 1), (0, 110, 10, 11, 1, 0)])["0"]
+        self.assertIn("window_undrawable", legacy["reasons"])
+        drawable = accumulator_rows([(0, 100, 10, 10, 1, 1, 0), (0, 110, 10, 11, 1, 1, 1)])["0"]
+        self.assertIn("window_transition_without_undrawable_window", drawable["reasons"])
+        invalid = accumulator_rows([(0, 100, 10, 10, 1, 1, 0), (0, 110, 10, 11, 1, 0, 2)])["0"]
+        self.assertIn("invalid_render_window_transition", invalid["reasons"])
+        # A labeled interval without draw progress is a stall, not an animation.
+        stalled = accumulator_rows([(0, 100, 10, 10, 1, 1, 0), (0, 110, 10, 10, 0, 0, 1),
+                                    (0, 120, 10, 11, 1, 1, 0)])["0"]
+        self.assertEqual((stalled["undrawable_intervals"], stalled["window_mode_transition_intervals"]), (1, 0))
+        self.assertIn("window_undrawable", stalled["reasons"])
+
     def test_transition_draw_cannot_prove_new_phase(self):
         result = accumulator_rows([(0, 100, 10, 10, 1, 1), (0, 110, 10, 11, 1, 1),
                                    (1, 120, 10, 15, 4, 1), (1, 130, 10, 15, 0, 1)])

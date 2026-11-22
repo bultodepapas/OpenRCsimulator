@@ -97,7 +97,8 @@ def validate_stream(directory: Path, frames: dict) -> dict:
                 previous_phase = phase_index
                 rendering.add(phase_index, ends[offset], wall,
                               *(metrics[key][offset] if key in metrics else None for key in
-                                ("render_frames_drawn", "render_interval_draws", "render_window_drawable")))
+                                ("render_frames_drawn", "render_interval_draws", "render_window_drawable",
+                                 "render_window_transition")))
                 if simulation_pace_error is None:
                     try:
                         simulation_pace.add(phase_index, wall, ends[offset],
@@ -557,7 +558,13 @@ def report(directory: Path, *, write: bool = True) -> dict:
     watched = watch_report(directory, execution, runtime, problems) if manifest.get("watch_frames") else {"status": "not_requested"}
     if manifest.get("require_native") and requested_rendered and runtime.get("identity", {}).get("backend", {}).get("backend") != "native":
         problems.append("rendered performance workload requires actual native physics; reference fallback was observed")
-    if runtime.get("metrics", {}).get("focus_losses", 0):
+    # A loss inside startup precedes any flight session (macOS can briefly move focus
+    # while the window is created); the driver then requires a focused window before
+    # selection, and later losses or pauses still fail.
+    focus_losses = runtime.get("metrics", {}).get("focus_losses", 0)
+    startup_focus_losses = sum(p["focus_losses"] for p in phase_records if isinstance(p, dict)
+                               and p.get("name") == "startup" and type(p.get("focus_losses")) is int and p["focus_losses"] > 0)
+    if focus_losses and (type(focus_losses) is not int or focus_losses > startup_focus_losses):
         problems.append("native focus loss observed; session equivalence requires diagnosis")
     active = [p for p in phase_records if p.get("name") in ("takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop") and p.get("status") == "complete"]
     targets = []

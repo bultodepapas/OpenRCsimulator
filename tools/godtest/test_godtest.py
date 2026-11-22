@@ -114,6 +114,18 @@ class ManifestTests(unittest.TestCase):
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_only_focus_losses_after_startup_question_session_equivalence(self):
+        message = "native focus loss observed; session equivalence requires diagnosis"
+        for total, in_startup, flagged in ((2, 2, False), (3, 2, True), (1, 0, True), (0, 0, False)):
+            with self.subTest(total=total, in_startup=in_startup), tempfile.TemporaryDirectory() as root:
+                directory = Path(root) / "run"
+                artifacts(directory)
+                runtime = json.loads((directory / "runtime.json").read_text())
+                runtime["metrics"]["focus_losses"] = total
+                runtime["phases"][0]["focus_losses"] = in_startup
+                write_json(directory / "runtime.json", runtime)
+                self.assertEqual(message in report(directory, write=False)["issues"], flagged)
+
     def test_phase_pacing_uses_assigned_intervals_and_breaks_runs_at_phase_changes(self):
         with tempfile.TemporaryDirectory() as root:
             directory = Path(root) / "run"

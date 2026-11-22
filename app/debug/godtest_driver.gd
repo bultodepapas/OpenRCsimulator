@@ -37,6 +37,11 @@ var event_count := 0
 var trajectory_count := 0
 var drawable_intervals := 0
 var undrawable_intervals := 0
+var last_window_mode := -1
+var window_mode_events := 0
+var window_mode_changed_usec := 0
+var transition_undrawable_intervals := 0
+const WINDOW_MODE_TRANSITION_USEC := 2000000
 var no_draw_intervals := 0
 var focus_losses := 0
 var observer_usec := 0
@@ -744,12 +749,30 @@ func _process(delta: float) -> void:
 	var drawn := Engine.get_frames_drawn()
 	var native_display := DisplayServer.get_name() != "headless"
 	var drawable := native_display and DisplayServer.window_can_draw()
+	if native_display:
+		var mode := DisplayServer.window_get_mode()
+		if mode != last_window_mode:
+			# Arm once, only for the startup switch into fullscreen.
+			if last_window_mode != -1 and window_mode_changed_usec == 0 and phase.get("name", "") == "startup" \
+					and mode in [DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]:
+				window_mode_changed_usec = began
+			if window_mode_events < 20:
+				window_mode_events += 1
+				_event("window_mode_changed", {previous = last_window_mode, mode = mode, drawable = drawable})
+		last_window_mode = mode
 	var interval_draws := drawn - previous_drawn
 	previous_drawn = drawn
+	# macOS reports the window undrawable during its fullscreen Space animation
+	# (~0.5 s) although frames keep drawing. Only startup intervals that still draw,
+	# within 2 s after the observed switch into fullscreen, are labeled as that
+	# transition; any other undrawable interval still invalidates rendered evidence.
+	var mode_transition: bool = native_display and not drawable and interval_draws > 0 \
+		and phase.get("name", "") == "startup" and window_mode_changed_usec > 0 \
+		and began - window_mode_changed_usec <= WINDOW_MODE_TRANSITION_USEC
 	if drawable: drawable_intervals += 1
+	elif mode_transition: transition_undrawable_intervals += 1
 	elif native_display:
 		undrawable_intervals += 1
-		# Diagnostic only (verdicts unchanged): locate window-setup transients.
 		if undrawable_intervals <= 20:
 			_event("window_undrawable", {interval = undrawable_intervals, drawable_before = drawable_intervals,
 				drawn = drawn, mode = DisplayServer.window_get_mode(), focused = DisplayServer.window_is_focused()})
@@ -766,7 +789,7 @@ func _process(delta: float) -> void:
 	var sample: Dictionary = diagnostics.sample()
 	sample.merge({phase_index = phases.size(), cycle = cycle, sim_tick = tick, sim_time_s = sim_s,
 		paused = paused, crashed = crashed, render_frames_drawn = drawn, render_interval_draws = interval_draws,
-		render_window_drawable = int(drawable), window_focused = int(get_tree().root.has_focus()),
+		render_window_drawable = int(drawable), render_window_transition = int(mode_transition), window_focused = int(get_tree().root.has_focus()),
 		draw_calls = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)})
 	if not collector.record_frame(delta, wall_usec, began, sample):
@@ -899,7 +922,8 @@ func _finish(success: bool) -> void:
 	if collector != null:
 		frame_report = collector.seal_event(success and failure.is_empty(), "scenario_finished" if success else failure)
 		frame_report.route = "godtest-normal-startup"
-		frame_report.render_progress = {drawable_intervals = drawable_intervals, undrawable_intervals = undrawable_intervals, no_draw_intervals = no_draw_intervals}
+		frame_report.render_progress = {drawable_intervals = drawable_intervals, undrawable_intervals = undrawable_intervals,
+			window_mode_transition_intervals = transition_undrawable_intervals, no_draw_intervals = no_draw_intervals}
 		_write_json("frametimes.json", frame_report)
 	if diagnostics != null:
 		diagnostics.stop()

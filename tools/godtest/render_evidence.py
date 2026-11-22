@@ -45,7 +45,7 @@ class RenderAccumulator:
         self._phases[key]["invalid"].add(reason)
 
     def add(self, phase_index, end_usec, wall_usec, render_frames_drawn=None,
-            render_interval_draws=None, render_window_drawable=None):
+            render_interval_draws=None, render_window_drawable=None, render_window_transition=None):
         if self._finished:
             raise ValueError("render accumulator is already finished")
         phase = _integer(phase_index, _MAX_PHASE_INDEX)
@@ -56,6 +56,7 @@ class RenderAccumulator:
         if key not in self._phases:
             self._phases[key] = {"frames": 0, "segments": 0, "segments_without_draw": 0,
                                  "positive_in_phase_intervals": 0, "undrawable_intervals": 0,
+                                 "window_mode_transition_intervals": 0,
                                  "missing": set(), "invalid": set()}
         state = self._phases[key]
         previous_phase = self._active
@@ -86,7 +87,18 @@ class RenderAccumulator:
         drawn = normalized["render_frames_drawn"]
         delta = normalized["render_interval_draws"]
         drawable = normalized["render_window_drawable"]
-        if drawable == 0:
+        # The driver labels only undrawable intervals within 2 s after an observed
+        # window-mode change (the macOS fullscreen Space animation). Absent in older
+        # streams, where every undrawable interval keeps invalidating the phase.
+        window_transition = 0 if render_window_transition is None else _integer(render_window_transition, 1)
+        if window_transition is None:
+            self._incomplete(key, "invalid_render_window_transition")
+        elif window_transition == 1 and drawable != 0:
+            self._incomplete(key, "window_transition_without_undrawable_window")
+        # A labeled interval must still show draw progress; a zero-draw stall stays a gap.
+        if drawable == 0 and window_transition == 1 and isinstance(delta, int) and delta > 0:
+            state["window_mode_transition_intervals"] += 1
+        elif drawable == 0:
             state["undrawable_intervals"] += 1
             self._incomplete(key, "window_undrawable")
         if drawn is not None and delta is not None:
@@ -119,7 +131,8 @@ class RenderAccumulator:
             status = "incomplete" if invalid or (no_draw and not missing) else "unavailable" if missing else "complete"
             result[key] = {"status": status, "reasons": reasons,
                            **{name: state[name] for name in ("frames", "segments", "segments_without_draw",
-                                                             "positive_in_phase_intervals", "undrawable_intervals")},
+                                                             "positive_in_phase_intervals", "undrawable_intervals",
+                                                             "window_mode_transition_intervals")},
                            "scope": "drawable interval endpoints and in-phase draw progress; physical presentation unverified"}
         return result
 
