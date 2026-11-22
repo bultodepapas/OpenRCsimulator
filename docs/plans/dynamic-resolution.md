@@ -67,4 +67,4 @@ and 4 have native evidence.
 
 Mark each matrix row **qualified opt-in**, **fixed only** or **unmeasured**. For a fixed-only result, name the failed condition and fallback. Attach the matched flight results and the moving-image verdict. A fixed-only result closes that row until the workload, backend capability or provider changes.
 
-The [RTX 3090 Windows screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-rtx3090-2026-11-22.md) and [Primis UHD 630 screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-primis-2026-11-22.md) record completed sizes and controlled pixel-load comparisons ahead of flight qualification.
+The [RTX 3090 Windows screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-rtx3090-2026-11-22.md), [Primis UHD 630 screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-primis-2026-11-22.md) and [Angela M1 Retina screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-angela-2026-11-22.md) record completed sizes and controlled pixel-load comparisons ahead of flight qualification.
