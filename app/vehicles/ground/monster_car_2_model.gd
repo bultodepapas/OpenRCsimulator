@@ -498,7 +498,14 @@ static func _sample_compiled_track(sampler: TrackSampler, bytes: PackedByteArray
 			return null
 		for component in 12:
 			sampler.values[component] += bytes.decode_float(sample_offset + component * 4) * weight
-	return sampler.correction * _transform_from_floats(sampler.values)
+	# Keep the interpolated components packed through the render boundary.
+	var values := sampler.values
+	return sampler.correction * Transform3D(
+		Vector3(values[0], values[1], values[2]),
+		Vector3(values[3], values[4], values[5]),
+		Vector3(values[6], values[7], values[8]),
+		Vector3(values[9], values[10], values[11]),
+	)
 
 
 static func _inverse_steer_map(steer_map: Array, wheel_angle_rad: float) -> float:

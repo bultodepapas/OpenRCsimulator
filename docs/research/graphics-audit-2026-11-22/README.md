@@ -1,5 +1,15 @@
 # Graphics and FPS audit — current-main follow-up, 22 November 2026
 
+## Implementation follow-up from `dc59add8e`
+
+| Finding | Change and verification |
+| --- | --- |
+| [M01](measurement-integrity.md#m01-initially-unfocused-wayland-can-receive-the-seatless-focus-override) | Rendered tours require observed focus before selection. An explicit seatless Wayland diagnostic and older synthetic-focus receipts are ineligible for comparison. The driver regression injects immediate focus, delayed focus and timeout. Physical desktop focus remains unverified. |
+| [M02](measurement-integrity.md#m02-focus-wait-frames-receive-the-next-phases-index) | A separate setup phase owns focus-wait callbacks. The reducer withholds phase metrics when the recorded and streamed counts disagree. Regression packets cover a wait-side stall, a chunk boundary and an interval crossing into selection. |
+| [U02](rig-sampler-experiment.md) | The Nitro adapter reads its packed float32 interpolation result directly when building the transform. With the actual parent and candidate code, all 38,874 track/input pairs matched byte for byte on macOS, including the retained audit digest. The two scene builds also matched mesh transforms and visibility in all 173 RCV-37 poses. Shared axis preparation and rendered FPS measurement remain open. |
+
+## Audit record
+
 **Latest: [fifth pass into uncovered paths](fifth-pass.md).** The branch now integrates main `0f859b5f358f4807877ec8bd7fe8009bc3856d3f`, including new paint assets, render changes and Linux test evidence. Nine additional conditional investigations cover paint loading/residency/LOD, input event dispatch, quad keyboard sampling, repeated throttle decoding, propagation search, mechanical audio and first-rain warm-up. Independent review rejected duplicate claims for already-tracked glow and terrain-anchor work. The pass includes exact source-data arithmetic and a current-main/caps report; it adds no production optimization or newly measured FPS gain.
 
 **Fourth-pass record: [deeper vehicle/rendering investigation](fourth-pass.md).** Thirteen further traced items cover cars, drones, helicopters, retractable aircraft, Home and lighting. A source-bound Nitro sampler experiment has byte-identical tested outputs and a 19.6–27.7% median paired component-time reduction across six process/workload summaries; this is not FPS or production visual qualification. The audited simulator-source CI completed successfully; latest main `c20a074de` adds only release/download website content and has a separate in-progress CI run. The branch integrates that latest main. Detailed traces, retained raw timings and native/platform follow-ups are linked there.
