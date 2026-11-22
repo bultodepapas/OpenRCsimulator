@@ -14,6 +14,7 @@ const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const Session := preload("res://sim/flight_session.gd")
+const Flight := preload("res://main.gd")
 const View := preload("res://vehicles/ground/airfield_track_view.gd")
 const RcTrackField := preload("res://render/rc_track_field.gd")
 const Option := preload("res://scenery/rc_track_option.gd")
@@ -25,6 +26,7 @@ var _failures := 0
 
 
 func _initialize() -> void:
+	await process_frame
 	var loaded := Field.load_from()
 	var track_result := Track.load_default()
 	_check("default field and circuit load", loaded.ok and track_result.ok)
@@ -38,6 +40,7 @@ func _initialize() -> void:
 	_test_shared_surface(loaded, track, rects)
 	_test_wheels(track, rects)
 	_test_session(field, track)
+	_test_hud_ground(field, track)
 	_test_hull_contact(field, track)
 	_test_collision_world(field, track)
 	_test_dressing_matches_render(track)
@@ -120,6 +123,68 @@ func _test_session(field: Dictionary, track: Dictionary) -> void:
 		and not session.environment.identity().has("rc_track") and session._checkpoint_configuration() == plain_config)
 	session.free()
 	plain.free()
+
+
+func _test_hud_ground(field: Dictionary, track: Dictionary) -> void:
+	var session := _new_session(field)
+	var flight := Flight.new()
+	flight.session = session
+	flight.field = field
+	var camera := Camera3D.new()
+	root.add_child(camera)
+	flight._camera = camera
+
+	var original_surfaces := session.ground_surfaces
+	var north := 12.345
+	var east := -8.75
+	session.ground_surfaces = PackedFloat64Array()
+	session.sim.state = _state([north, east, -2.0], [8.0, 0.0, 3.1])
+	_check("flight HUD measures the flat datum", flight._overlay_snapshot().telemetry.height_agl == 2.0)
+	session.ground_surfaces = PackedFloat64Array([-INF, INF, -INF, INF, 0.3, GroundTerrain.ROLLING_ROUGH])
+	var slope := GroundTerrain.sample(north, east, session.ground_surfaces)
+	_check("flight HUD subtracts a sloped field at the same north/east point",
+		absf(slope[1]) + absf(slope[2]) > 1.0e-4
+		and absf(flight._overlay_snapshot().telemetry.height_agl - (2.0 - slope[0])) < 1.0e-12)
+	session.ground_surfaces = PackedFloat64Array([NAN])
+	_check("malformed terrain cannot give the flight HUD an altitude above ground",
+		is_nan(flight._overlay_snapshot().telemetry.height_agl))
+	session.ground_surfaces = original_surfaces
+
+	north = 45.0
+	east = float(track.center_east_m) + float(track.half_straight_m) + float(track.radius_m) + 1.4
+	var height := Track.composed(GroundTerrain.sample(north, east, original_surfaces), track, north, east)[0]
+	# Keep the angle beyond the threshold so the test isolates the altitude gate.
+	session.aircraft.model.envelope.a1 = deg_to_rad(12.0)
+	session.aircraft.model.envelope.n1 = deg_to_rad(12.0)
+	session.sim.state = _state([north, east, -(height + 0.8)], [8.0, 0.0, 3.1])
+	var without := flight._overlay_snapshot()
+	_check("disabled circuit leaves this pose airborne with LOW and STALL",
+		without.telemetry.height_agl > 1.0 and without.telemetry.alpha_deg > 12.0
+		and without.warnings.has("low") and without.warnings.has("stall"), str(without.warnings))
+	_check("HUD fixture installs the raised circuit", session.set_rc_track(track))
+	var with_track := flight._overlay_snapshot()
+	_check("the raised circuit removes LOW and STALL below the airborne threshold",
+		absf(with_track.telemetry.height_agl - 0.8) < 1.0e-12
+		and not with_track.warnings.has("low") and not with_track.warnings.has("stall"), str(with_track.warnings))
+	session.sim.state = _state([north, east, -(height + 6.1)], [8.0, 0.0, 3.1])
+	var near_ground := flight._overlay_snapshot()
+	_check("flight HUD shows LOW above the bank at its terrain-relative warning threshold",
+		absf(near_ground.telemetry.height_agl - 6.1) < 1.0e-12 and near_ground.warnings.has("low"),
+		str(near_ground.warnings))
+	_check("circuit can be disabled for the same HUD pose", session.set_rc_track({}))
+	_check("removing the bank clears LOW at that pose", not flight._overlay_snapshot().warnings.has("low"))
+	_check("circuit can be restored for measurements across the field", session.set_rc_track(track))
+
+	for point: Array in [[39.0, -4.0], [39.31, -4.1], [45.0, east], [80.0, 0.0]]:
+		var terrain := session.environment.ground(point[0], point[1])
+		session.sim.state = _state([point[0], point[1], -(terrain[0] + 2.0)], [8.0, 0.0, 0.0])
+		var before := session.sim.state.to_byte_array()
+		_check("flight HUD agrees with contact ground at %s" % [point],
+			absf(flight._overlay_snapshot().telemetry.height_agl - 2.0) < 1.0e-12
+			and session.sim.state.to_byte_array() == before)
+	flight.free()
+	camera.free()
+	session.free()
 
 
 ## The hull meets the tabletop deck at the exact surface; thin pad dirt stays with the flat datum.
