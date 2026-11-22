@@ -162,6 +162,7 @@ func _run() -> void:
 	view.set_meta(Reconstruction.POLICY_META, temporal.duplicate(true))
 	var settings := Settings.new(Preferences.new("user://test_metalfx_policy.cfg"), "en")
 	view.add_child(settings)
+	settings._show_category(3)
 	settings._draft.reconstruction = config.reconstruction
 	settings._draft.msaa_3d = config.msaa_3d
 	settings.presentation_changed.connect(func(draft: Dictionary) -> void: Reconstruction.apply(view, draft, forward))
@@ -188,9 +189,11 @@ func _run() -> void:
 	_check("initial non-pilot cut latches Native and restores MSAA", cut_report.provider == "native"
 		and cut_report.effective == "native" and view.msaa_3d == Viewport.MSAA_8X
 		and cut_report.runtime_failure.reason == "history_reset_unavailable")
+	settings._surface.set_active(false)
 	settings._process(0.5)
-	_check("periodic settings refresh notices the viewport rollback", not settings._msaa_picker.disabled
-		and settings._graphics_info.text.contains("Native"))
+	_check("covered Settings notices the viewport rollback", not settings._msaa_picker.disabled)
+	settings._surface.set_active(true)
+	_check("revealed Graphics reports the viewport rollback", settings._graphics_info.text.contains("Native"))
 	# The periodic refresh must expose the same fallback, even if no other
 	# reconstruction provider is available to enable the picker.
 	var only_temporal := forward.duplicate(true)
