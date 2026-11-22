@@ -1,0 +1,22 @@
+name: D11g v0.3.3 reconstruction
+on:
+  push:
+    branches: [release-check/v0.3.3-d11g]
+permissions:
+  contents: read
+jobs:
+  reconstruct:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Reconstruct and compare the exact inputs
+        run: python3 .github/d11g-v033-check.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: d11g-reconstruction
+          path: ${{ runner.temp }}/d11g-v033/evidence/
+          if-no-files-found: error
