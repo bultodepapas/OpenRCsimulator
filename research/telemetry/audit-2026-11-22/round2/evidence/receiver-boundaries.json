@@ -1,0 +1,45 @@
+{
+  "full_quota_retry": {
+    "first_http": 202,
+    "used_bytes": 32768,
+    "identical_retry_full_http": 503,
+    "new_batch_full_http": 503,
+    "stored_rows": 1,
+    "identical_retry_with_room_http": 202,
+    "seconds_elapsed_before_successful_retry": 240.0,
+    "receipt_unchanged": true
+  },
+  "accepted_configuration": [
+    {
+      "setting": "OPENRC_TELEMETRY_CLIENT_REFILL_PER_S",
+      "input": "inf",
+      "accepted_value": "inf"
+    },
+    {
+      "setting": "OPENRC_TELEMETRY_GLOBAL_REFILL_PER_S",
+      "input": "inf",
+      "accepted_value": "inf"
+    },
+    {
+      "setting": "OPENRC_TELEMETRY_CLIENT_BURST",
+      "input": "0.5",
+      "accepted_value": "0.5"
+    },
+    {
+      "setting": "OPENRC_TELEMETRY_MAX_CLIENTS",
+      "input": "-1",
+      "accepted_value": "-1"
+    },
+    {
+      "setting": "OPENRC_TELEMETRY_MAX_RAW_BYTES",
+      "input": "-1",
+      "accepted_value": "-1"
+    }
+  ],
+  "rate_behavior": {
+    "zero_refill_allowed_of_10": 1,
+    "infinite_refill_allowed_of_10": 10,
+    "fractional_burst_first_wait": 1,
+    "negative_max_clients_first_wait": 1
+  }
+}

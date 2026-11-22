@@ -694,6 +694,18 @@
 				}
 			]
 		},
+		"turbo-lumber-evolution": {
+			"default_label": "Factory",
+			"base": {},
+			"skins": [
+				{
+					"id": "jr_servos",
+					"label": "JR Servos Tribute",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/jr_servos.tres",
+					"materials": {}
+				}
+			]
+		},
 		"jensen-das-ugly-stik-60": {
 			"default_label": "",
 			"base": {},
@@ -1764,6 +1776,114 @@
 							"metallic": 0.0,
 							"roughness": 0.39,
 							"clearcoat": 0.45,
+							"clearcoat_roughness": 0.23
+						}
+					}
+				},
+				{
+					"id": "jeti_ruby",
+					"label": "JETI Ruby",
+					"node_lod_bias": {
+						"fuselage_core": 16.0,
+						"vertical_tail_fixed": 16.0
+					},
+					"nodes": {
+						"rudder": {
+							"paint_fin": {
+								"albedo": "#ae122e",
+								"albedo_texture": null
+							}
+						}
+					},
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.38,
+							"clearcoat": 0.44,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_wing.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.32,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_stab.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.32,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fin.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.38,
+							"clearcoat": 0.44,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_doors_ala": {
+							"albedo": "#d6dee4",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.36,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_doors": {
+							"albedo": "#d6dee4",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.36,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_fence": {
+							"albedo": "#ae122e",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.36,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_fence_lower": {
+							"albedo": "#353b44",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.49,
+							"clearcoat": 0.36,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_fillets": {
+							"albedo": "#d6dee4",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.36,
+							"clearcoat_roughness": 0.23
+						},
+						"paint_trim_carbono": {
+							"albedo": "#353b44",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.49,
+							"clearcoat": 0.36,
 							"clearcoat_roughness": 0.23
 						}
 					}

@@ -1,0 +1,19 @@
+{
+  "app/statistics/detector.gd": "ee5b76a7e50650f1f727fc2cd477848198b61921c3fe610391806772e3745abb",
+  "app/statistics/flight_event.gd": "13eab97a17efc371043df49642cdb47cb8ee38c58ae338175006eefe5ab1ccdb",
+  "app/statistics/rules.gd": "369b2f685335eebf9dfc7211629afc732349d2811a47fa3b81cded49ad81c6b3",
+  "app/telemetry/telemetry_consent_store.gd": "543753ececf5067cb38a3d70888a903a4d4a9a489eae59b55bc3c23f7a9215f7",
+  "app/telemetry/telemetry_contract.gd": "29b7c02bbf9cb89a573997355f61703115d623aa08f88f8508bb78b385ea797e",
+  "app/telemetry/telemetry_frame_window.gd": "1eee31daeb2c0cb3cc49854feff35a38514a4725edd3bd71350863625942db6b",
+  "app/telemetry/telemetry_hardware.gd": "95f45bfe8000f8bbf6e7a776df09a3d23ae70bba3e903421f03195c83c19d722",
+  "app/telemetry/telemetry_policy.gd": "6c6b10151045c3811e88ef1356c23f24708366c992f41bfc71c5eb37457876ac",
+  "app/telemetry/telemetry_queue.gd": "78ad293b75fe9000b8536a4a26f7c5dfe9399af63dd19f0810e633a768fd3c16",
+  "app/telemetry/telemetry_sender.gd": "d8e6c266bba24a1881a3de6716d15a41510ab40802cd9aa9727217c0e4d51e3f",
+  "app/telemetry/telemetry_service.gd": "0424d16ccecafb1013990ceaf5ccaa27d45b7c4436f866dc5ca8234a4f4dff9f",
+  "research/telemetry/audit-2026-11-22/consent_failure_probe.gd": "a33299302921faa3e49a28423a6c04ecbdb49ff9bb55caf29c04dcd82c23797e",
+  "research/telemetry/audit-2026-11-22/context_boundary_probe.gd": "3bb1c447ef00056908510a29a70cc08d83ae989ac1d060e68c60921c98623d25",
+  "research/telemetry/audit-2026-11-22/crash_revision_probe.gd": "a6f2bd377f31fcc699901a8c3e02e80f4c45ebbf52fbb5ed9074c48d8815ad75",
+  "research/telemetry/audit-2026-11-22/epoch_boundary_probe.gd": "051b3c093c15e1a80f4c218f9ff5d42bebe724818c2228d430fb0ad2634d2133",
+  "research/telemetry/audit-2026-11-22/inflight_ttl_probe.gd": "6ab14e43de77cb7836a397bc2f435af7ca38e8cc872f262f3195459897f214a9",
+  "research/telemetry/audit-2026-11-22/pending_age_probe.gd": "30ecf9465e1de85e8d4ac2714d77a0e9e9a4f261af37d47468625de54aebd1a8"
+}

@@ -122,7 +122,7 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	airplane.visual_family = family
 	# Render-only part finishes (data/vehicle_paints.json, e.g. the Ugly Stik landing gear) on the validated model,
 	# before lighting, customization and paint kits copy its materials.
-	if VehiclePaint.has_family(family):
+	if family != TIMBER_ID and VehiclePaint.has_family(family):
 		VehiclePaint.apply(airplane.root, family, paint_skin)
 	airplane.model_manifest = manifest.duplicate(true)
 	airplane.model_manifest_sha256 = resolved.manifest_sha256
@@ -190,6 +190,12 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 				radius_m = float(anchor.radius_m), kind = str(anchor.kind), pump = bool(anchor.get("pump", false))})
 	if family == TIMBER_ID:
 		TimberVisualDetails.apply(airplane.root)
+		if not paint_skin.is_empty():
+			var stock_paint := VehiclePaint.apply(airplane.root, family, paint_skin)
+			if not stock_paint.ok:
+				airplane.root.free()
+				push_warning("Turbo Lumber paint: " + str(stock_paint.error))
+				return {}
 		_retain_surface_override_materials(airplane.root)
 		TimberVisualLighting.apply(airplane.root)
 	if custom_livery:

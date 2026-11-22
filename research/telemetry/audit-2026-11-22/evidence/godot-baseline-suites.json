@@ -1,0 +1,77 @@
+[
+  {
+    "label": "test_telemetry_admission",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.284193,
+    "log_sha256": "c30c2565d34f0adf3b8f3dca5d99e59eed737781e8a5397474c2365401ba3ecb",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   policy {  } -> on/granted\nok   policy { \"choice\": \"unset\" } -> ask/unset\nok   policy { \"choice\": \"disabled\" } -> off/declined\nok   policy { \"choice\": \"unreadable\" } -> off/unreadable\nok   policy { \"choice\": \"maybe\" } -> off/unknown\nok   policy { \"notice\": \"2025-01-01\" } -> ask/new_notice\nok   policy { \"locale\": \"es\" } -> on/granted\nok   policy { \"locale\": \"es_AR\" } -> on/granted\nok   policy { \"locale\": \"de\" } -> off/locale\nok   policy { \"locale\": \"zh_Hans\" } -> off/locale\nok   policy { \"locale\": 7 } -> off/locale\nok   policy { \"suspended\": true } -> off/suspended\nok   policy { \"suspended\": <null> } -> off/suspended\nok   policy { \"interactive\": false } -> unavailable/route\nok   policy { \"interactive\": 1 } -> unavailable/route\nok   policy { \"release\": { \"ok\": false } } -> unavailable/build\nok   policy { \"release\": { \"ok\": \"true\" } } -> unavailable/build\nok   policy { \"release\": <null> } -> unavailable/build\nok   policy refuses a non-dictionary\nok   only English and Spanish notices are reviewed\nok   an ordinary launch is interactive\nok   Finder's -psn_ argument is ignored\nok   the renderer guard's Compatibility restart is still the player's session\nok   a renderer and driver shortcut is still the player's session\nok   route refused: no Home\nok   route refused: user arguments\nok   route refused: engine arguments\nok   route refused: an unknown renderer\nok   route refused: a renderer option without a value\nok   route refused: a renderer plus another argument\nok   route refused: a renderer value on its own\nok   route refused: headless\nok   route refused: a test settings file\nok   route refused: the debug bridge\nok   route refused: the package probe\nok   route refused: GOD TEST\nok   route refused: a local force-off\nok   route refused: mistyped facts\nok   an approved stable release is available\nok   a prerelease tag is the preview channel\nok   release refused: development\nok   release refused: debug template\nok   release refused: another engine\nok   release refused: commits after the tag\nok   release refused: a dirty tree\nok   release refused: a manual export\nok   release refused: no packed configuration\nok   release refused without endpoint\nok   release refused without operator\nok   release refused without contact\nok   endpoint https://t.example.org/v1/batches (loopback false) -> true\nok   endpoint https://t.example.org:8443/v1/batches (loopback false) -> true\nok   endpoint http://t.example.org/v1/batches (loopback false) -> false\nok   endpoint https://t.example.org/v1/batches?x=1 (loopback false) -> false\nok   endpoint https://user@t.example.org/v1/batches (loopback false) -> false\nok   endpoint https://t.example.org (loopback false) -> false\nok   endpoint https://127.0.0.1/v1/batches (loopback false) -> false\nok   endpoint http://127.0.0.1:8787/v1/batches (loopback true) -> true\nok   endpoint http://localhost:8787/v1/batches (loopback true) -> true\nok   endpoint http://10.0.0.5:8787/v1/batches (loopback true) -> false\nok   endpoint https://127.0.0.1:8787/v1/batches (loopback true) -> false\nok   qualification uses a loopback receiver and a placeholder release\nok   qualification refuses a remote origin\nok   this source run offers no production telemetry\nok   no file means not asked yet\nok   saving a grant\nok   the grant reads back with its notice\nok   a decline replaces the grant\nok   no temporary or backup file remains\nok   an invalid choice is refused\nok   unreadable file fails closed: not a config [\nok   unreadable file fails closed: [telemetry]\\nformat=\\\"openrc-telemetry-con\nok   unreadable file fails closed: [telemetry]\\nformat=\\\"openrc-telemetry-con\nok   unreadable file fails closed: [telemetry]\\nformat=\\\"openrc-telemetry-con\nok   unreadable file fails closed: [telemetry]\\nformat=\\\"openrc-telemetry-con\nok   unreadable file fails closed: \nok   a grant replaces an unreadable file\nok   a failed decline reports its error\nok   a failed decline never leaves the earlier grant\nok   a grant can be saved again afterwards\nok   an unwritable location reports an error\nall telemetry admission checks passed\n"
+  },
+  {
+    "label": "test_telemetry_queue",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.641256,
+    "log_sha256": "035c4bf64f38312294ec37dc88ded854d734c9da574645e019f5eb65f686fdcb",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   at most 32 batches, oldest evicted\nok   at most 256 KiB\nok   a batch expires at ten minutes\nok   expiring the active batch releases the request slot\nok   first send is immediate\nok   one request at a time\nok   accepted\nok   normal cadence waits 60 s\nok   jitter adds up to 10 s\nok   another generation's batch is never sent\nok   hour attempts never exceed 90\nok   hour bytes never exceed 256 KiB within a fixed window\nok   turning off keeps the hourly budget\nok   full-jitter backoff caps 5\u00b72^n (5, 10, 20, 40, 80 s)\nok   the sixth failure drops the batch\nok   a zero jitter still waits at least 1 s\nok   Retry-After within the lifetime is honored\nok   Retry-After beyond the ten-minute lifetime drops instead of retrying early\nok   a retry is not held back by the normal cadence\nok   status 400 drops the batch\nok   status 404 drops the batch\nok   status 409 drops the batch\nok   status 413 drops the batch\nok   status 415 drops the batch\nok   status 422 drops the batch\nok   status 310 drops the batch\nok   status 200 drops the batch\nok   status 204 drops the batch\nok   status 401 suspends\nok   status 403 suspends\nok   status 410 suspends\nok   status 0 retries\nok   status 408 retries\nok   status 429 retries\nok   status 500 retries\nok   status 599 retries\nok   a late answer after purge is stale\nall telemetry queue checks passed\n"
+  },
+  {
+    "label": "test_telemetry_sender",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.85119,
+    "log_sha256": "9ae61e2322d749223b2dbfeeca8cf7d6e55c102247f0973702bcdccfb1a1da22",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   Retry-After [\"Retry-After: 30\"] -> 30.0\nok   Retry-After [\"content-type: x\", \"retry-after:  5 \"] -> 5.0\nok   Retry-After [\"Retry-After: Wed, 21 Oct 2015 07:28:00 GMT\"] -> -1.0\nok   Retry-After [\"Retry-After: -3\"] -> -1.0\nok   Retry-After [\"Retry-After: 99999999\"] -> -1.0\nok   Retry-After [] -> -1.0\nok   collector listens on loopback\nok   send starts\nok   one request at a time\nok   202 is reported\nok   the exact body bytes arrive\nok   POST with JSON and a fixed user agent, no compression offer\nok   429 reports its Retry-After\nok   a redirect is refused, never followed\nok   a silent peer has not answered\nok   the monotonic deadline reports a transport failure\nok   cancel is silent\nok   a refused connection is a retryable transport failure\nall telemetry sender checks passed\n"
+  },
+  {
+    "label": "test_telemetry_service",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.770863,
+    "log_sha256": "b81d86a94db14a970965e9aac9e9e0971aabcfd54ee43f78e4469de5bf7867ed",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   a build without telemetry is unavailable even with a saved grant\nok   an unavailable build cannot be enabled\nok   disabling an unavailable build writes nothing\nok   first launch asks and collects nothing\nok   nothing is queued or sent before Enable\nok   Enable is saved\nok   admission starts a session\nok   ten seconds of warmup, then a complete 30 s steady window\nok   drawn frames equal processed intervals at 60 Hz\nok   a batch is sealed after 60 s\nok   the sealed batch carries the classified context only\nok   the sealed batch satisfies the contract\nok   it was sent to the configured endpoint\nok   the preview shows the exact pending bytes\nok   202 removes it\nok   without a graphics provider the context's own value applies\nok   errors are coalesced counters\nok   the graphics profile comes from its provider, asked per recorded event, not per frame\nok   a pause closes the open window as partial\nok   a failed decline is reported, stays off and leaves no grant on disk\nok   a fixed-wing flight is summarized when it returns home\nok   accepted classifier counts, durations and outcome\nok   a restart closes the car's activity as reset, with no classifier counts\nok   custom content is never named\nok   Workshop editing: windows with no vehicle and no activity summary\nok   a request is in flight\nok   turning off saves the choice\nok   off drops every pending byte, window and token\nok   a late answer from before the switch changes nothing\nok   nothing is collected while off\nok   re-enabling starts a fresh session\nok   an unreviewed language turns collection off without changing the saved choice\nok   a reviewed language resumes with another fresh session\nok   410 suspends this process but keeps the player's choice\nok   a suspended service cannot be re-enabled in-process\nok   a saved grant admits at start-up\nok   an activity already running at admission is not a complete observation\nok   the UTC day boundary rotates the session token\nok   old batches keep their own token\nok   four hours rotate the session token for the next event\nok   quitting a 12-minute flight keeps two 5-minute slices\nall telemetry service checks passed\n"
+  },
+  {
+    "label": "contract",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 3.508204,
+    "log_sha256": "0a9a89b69f9d9bb4e7b4892a90e5b5061353d008edbfd4190ced1a2554c93ff1",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   canonical schema and example are readable\nok   schema and notice versions match\nok   the current version requires physics_backend in activity summaries\nok   release pattern is the schema pattern\nok   context keys match in order\nok   context os_family values match\nok   context architecture values match\nok   context cpu_family values match\nok   context logical_threads_bucket values match\nok   context ram_gib_bucket values match\nok   context gpu_family values match\nok   context renderer values match\nok   context driver values match\nok   context resolution_class values match\nok   context resolution_basis values match\nok   context vsync values match\nok   context fps_cap_bucket values match\nok   context graphics_profile values match\nok   context input_class values match\nok   stock vehicle list matches the schema\nok   performance keys match\nok   activity keys match\nok   physics backends match\nok   fixed-wing classifier list matches\nok   error categories match\nok   modes, phases, outcomes match\nok   every Home-selectable vehicle is a schema stock vehicle\nok   generated example passes the client check\nok   client-built batch encodes exactly like the generated example\nok   valid base batch\nok   rejects extra top-level key\nok   rejects missing context key\nok   rejects unknown enum\nok   rejects float seq\nok   rejects uppercase session id\nok   rejects wrong engine\nok   rejects no events\nok   rejects seventeen events\nok   rejects sequence not increasing\nok   rejects histogram count mismatch\nok   rejects histogram duration impossible\nok   rejects complete window under 30 s\nok   rejects rendered frames with unavailable counter\nok   rejects gpu value while not measured\nok   rejects fixed-wing counts on unsupported\nok   rejects fixed-wing classifier on a car\nok   rejects null counts on accepted fixed wing\nok   rejects active seconds over the slice\nok   rejects unknown error category\nok   rejects none vehicle in an activity\nok   rejects activity without physics_backend\nok   rejects refusal text as physics_backend\nok   rejects v1 batch from the client\nok   accepts an unsupported activity with null counts\nok   sixteen windows stay under 32 KiB\nok   vehicle ids: custom wins, unknown for unlisted\nok   random ids are 32 lowercase hex\nok   release v0.2.8 accepted\nok   release v0.1.0-rc2 accepted\nok   release v0.1.9-beta.1 accepted\nok   release v0.2.0-rc.10 accepted\nok   release v12.0.3-alpha7 accepted\nok   release 0.2.8 refused\nok   release v0.2.8+3.gabc1234 refused\nok   release v0.2.8-dirty refused\nok   release v0.2 refused\nok   release export-manual refused\nok   release v0.2.8-rc refused\nok   release v0.2.8\\n refused\nok   release v0.2.8-preview1 refused\nok   cpu Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz -> intel_core\nok   cpu AMD Ryzen 9 5950X 16-Core Processor -> amd_ryzen\nok   cpu Apple M1 -> apple_silicon\nok   cpu Intel(R) Xeon(R) W-2295 -> other\nok   cpu  -> unknown\nok   gpu NVIDIA GeForce RTX 3090 -> nvidia_rtx\nok   gpu NVIDIA GeForce GTX 1060 6GB -> nvidia_gtx\nok   gpu AMD Radeon RX 6800 XT -> amd_radeon\nok   gpu Intel(R) Arc(TM) A770 Graphics -> intel_arc\nok   gpu Intel(R) UHD Graphics 630 -> intel_integrated\nok   gpu Intel(R) Graphics -> intel_integrated\nok   gpu Mesa Intel(R) Xe Graphics (TGL GT2) -> intel_integrated\nok   gpu Intel(R) Arc(TM) Graphics -> intel_arc\nok   gpu AMD Custom GPU 0405 (RADV VANGOGH) -> amd_radeon\nok   gpu AMD Radeon RX 7800 XT (RADV NAVI32) -> amd_radeon\nok   gpu Intel UHD Graphics / NVIDIA GeForce RTX 3060 -> other\nok   gpu Apple M2 Pro -> apple_silicon\nok   gpu llvmpipe (LLVM 15.0.7, 256 bits) -> software\nok   gpu NVIDIA GeForce RTX GTX hybrid -> other\nok   gpu Microsoft Basic Render Driver -> other\nok   threads buckets\nok   memory buckets use usable bytes\nok   resolution classes are pixel-count bands (16:10, MacBook panels, ultrawide, windowed)\nok   vsync and frame cap\nok   platform names map explicitly\nok   the engine context is closed and valid\nok   10 ms and 50 ms draws\nok   an interval over five seconds is excluded, never clamped\nok   exactly five seconds is a hitch, not a gap\nok   bad input is refused\nok   the 60 s hard bound refuses without changing counters\nok   an unavailable draw counter sends null, and short windows are never complete\nok   an empty window has no event\nall telemetry contract checks passed\n"
+  }
+]

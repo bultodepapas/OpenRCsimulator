@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://assets/vehicle-paints/turbo-lumber-evolution/jr_servos.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://assets/vehicle-paints/turbo-lumber-evolution/jr_servos_decals.png" id="2"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/silver = Color(0.86, 0.875, 0.89, 1)
+shader_parameter/charcoal = Color(0.122, 0.138, 0.164, 1)
+shader_parameter/red = Color(0.79, 0.115, 0.18, 1)
+shader_parameter/green = Color(0.252, 0.622, 0.188, 1)
+shader_parameter/decals = ExtResource("2")

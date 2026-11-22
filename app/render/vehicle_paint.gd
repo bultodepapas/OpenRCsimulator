@@ -8,6 +8,7 @@ extends RefCounted
 
 const SceneDetail := preload("res://render/scene_detail.gd")
 const ExtraFinish := preload("res://aircraft/extra_300s_finish.gd")
+const TimberPaint := preload("res://render/timber_stock_paint.gd")
 const DATA_PATH := "res://data/vehicle_paints.json"
 const FORMAT := "openrc-vehicle-paints-v1"
 const ORIGIN_META := "vehicle_paint_origin"
@@ -65,13 +66,15 @@ static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array =
 	var family := family_for(vehicle_id)
 	if root == null or family.is_empty():
 		return {ok = false, skin = "", materials = 0, error = "no stock paint for " + vehicle_id}
+	var resolved := resolve(vehicle_id, skin_id)
+	var skin := _skin(vehicle_id, resolved)
+	if family == TimberPaint.FAMILY:
+		return TimberPaint.apply(root as Node3D, resolved, str(skin.get("covering", "")))
 	var entry: Dictionary = _vehicles()[family]
 	# Families built by the same generator share one definition (the glow and electric Ugly Stik gear).
 	if entry.has("same_as"):
 		entry = _vehicles().get(str(entry.same_as), {})
 	var bindings: Dictionary = (entry.get("base", {}) as Dictionary).duplicate()
-	var resolved := resolve(vehicle_id, skin_id)
-	var skin := _skin(vehicle_id, resolved)
 	var covering: ShaderMaterial
 	var stock_covering: Shader
 	if family == "gp-extra-300s-60":

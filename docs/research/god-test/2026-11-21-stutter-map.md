@@ -124,6 +124,7 @@ and compare a matched before/after run on the same machine:
 3. One freeze per menu transition: Settings, Controls, lighting Apply and Home return.
 4. M1 Home/menu frame rate and in-flight sub-60 FPS dips at full GPU load.
 5. Linux UHD 630: slow-motion simulation below ~15 FPS, 36–45 s loading freezes and
-   a forced kill at shutdown.
+   a forced kill at shutdown. Explained and fixed for the tour on 2026-11-22; see the
+   [Linux UHD 630 comparison](2026-11-22-linux-uhd630-comparison.md).
 
 Repeat with `--repeats 3` and an idle, unlocked desktop before claiming any change.

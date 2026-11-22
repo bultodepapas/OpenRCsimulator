@@ -1,0 +1,154 @@
+/workspace/scratch/bb5cc1a5ab2b/OpenRCsimulator-telemetry-audit/services/telemetry/tests/test_equivalence.py:7: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient
+test_canonical_fixture (tests.test_equivalence.EquivalenceTests.test_canonical_fixture) ... ok
+test_conflict_and_duplicate_statuses_match_the_ingress_model (tests.test_equivalence.EquivalenceTests.test_conflict_and_duplicate_statuses_match_the_ingress_model) ... ok
+test_daily_gpu_reducer_matches_reference (tests.test_equivalence.EquivalenceTests.test_daily_gpu_reducer_matches_reference) ... ok
+test_dict_mutations_match_reference (tests.test_equivalence.EquivalenceTests.test_dict_mutations_match_reference) ... ok
+test_non_bytes_rejected_identically (tests.test_equivalence.EquivalenceTests.test_non_bytes_rejected_identically) ... ok
+test_raw_byte_mutations_match_reference_with_all_status_categories (tests.test_equivalence.EquivalenceTests.test_raw_byte_mutations_match_reference_with_all_status_categories) ... ok
+test_report_validator_matches_reference (tests.test_equivalence.EquivalenceTests.test_report_validator_matches_reference) ... ok
+test_godot_client_batches_are_accepted_and_stored (tests.test_godot_e2e.GodotClientEndToEnd.test_godot_client_batches_are_accepted_and_stored) ... skipped 'OPENRC_GODOT is not set'
+test_client_table_is_bounded (tests.test_ingress.LimiterTests.test_client_table_is_bounded) ... ok
+test_ipv6_clients_share_a_bucket_per_64 (tests.test_ingress.LimiterTests.test_ipv6_clients_share_a_bucket_per_64) ... ok
+test_keys_rotate_and_are_not_the_address (tests.test_ingress.LimiterTests.test_keys_rotate_and_are_not_the_address) ... ok
+test_refill_and_global_cap (tests.test_ingress.LimiterTests.test_refill_and_global_cap) ... ok
+test_logs_contain_only_fixed_categories (tests.test_ingress.LoggingTests.test_logs_contain_only_fixed_categories) ... ok
+test_forwarded_for_ignored_unless_trusted (tests.test_ingress.ProxyTests.test_forwarded_for_ignored_unless_trusted) ... ok
+test_rightmost_forwarded_for_used_when_trusted (tests.test_ingress.ProxyTests.test_rightmost_forwarded_for_used_when_trusted) ... ok
+test_disabled_without_token (tests.test_ingress.ReportEndpointTests.test_disabled_without_token) ... ok
+test_limiter_is_used_for_failed_attempts (tests.test_ingress.ReportEndpointTests.test_limiter_is_used_for_failed_attempts) ... ok
+test_requires_bearer_token_and_valid_query (tests.test_ingress.ReportEndpointTests.test_requires_bearer_token_and_valid_query) ... ok
+test_400_variants (tests.test_ingress.StatusTests.test_400_variants) ... ok
+test_409_overlapping_session_sequence (tests.test_ingress.StatusTests.test_409_overlapping_session_sequence) ... ok
+test_409_same_batch_id_different_bytes (tests.test_ingress.StatusTests.test_409_same_batch_id_different_bytes) ... ok
+test_410_for_a_suspended_release_is_never_stored (tests.test_ingress.StatusTests.test_410_for_a_suspended_release_is_never_stored) ... ok
+test_410_for_everything_when_suspended (tests.test_ingress.StatusTests.test_410_for_everything_when_suspended) ... ok
+test_413_does_not_invoke_the_validator (tests.test_ingress.StatusTests.test_413_does_not_invoke_the_validator) ... ok
+test_413_oversize_is_rejected_before_parsing (tests.test_ingress.StatusTests.test_413_oversize_is_rejected_before_parsing) ... ok
+test_415_media_type_and_encoding (tests.test_ingress.StatusTests.test_415_media_type_and_encoding) ... ok
+test_422_variants (tests.test_ingress.StatusTests.test_422_variants) ... ok
+test_429_with_retry_after (tests.test_ingress.StatusTests.test_429_with_retry_after) ... ok
+test_503_when_database_file_is_unusable (tests.test_ingress.StatusTests.test_503_when_database_file_is_unusable) ... ingest status=503 category=storage_unavailable
+ok
+test_503_when_storage_is_full (tests.test_ingress.StatusTests.test_503_when_storage_is_full) ... ingest status=503 category=storage_unavailable
+ok
+test_503_when_storage_unavailable (tests.test_ingress.StatusTests.test_503_when_storage_unavailable) ... ingest status=503 category=storage_unavailable
+ok
+test_activity_summary_batch_accepted (tests.test_ingress.StatusTests.test_activity_summary_batch_accepted) ... ok
+test_canonical_fixture_accepted_and_replay_is_idempotent (tests.test_ingress.StatusTests.test_canonical_fixture_accepted_and_replay_is_idempotent) ... ok
+test_empty_release_allowlist_rejects_everything (tests.test_ingress.StatusTests.test_empty_release_allowlist_rejects_everything) ... ok
+test_error_bodies_are_tiny_fixed_json_and_never_echo_input (tests.test_ingress.StatusTests.test_error_bodies_are_tiny_fixed_json_and_never_echo_input) ... ok
+test_global_cap_429 (tests.test_ingress.StatusTests.test_global_cap_429) ... ok
+test_health (tests.test_ingress.StatusTests.test_health) ... ok
+test_raw_and_aggregates_can_live_in_separate_directories (tests.test_ingress.StatusTests.test_raw_and_aggregates_can_live_in_separate_directories) ... ok
+test_raw_database_contains_only_validated_bytes (tests.test_ingress.StatusTests.test_raw_database_contains_only_validated_bytes) ... ok
+test_unknown_routes_are_404 (tests.test_ingress.StatusTests.test_unknown_routes_are_404) ... ok
+test_cells_hold_no_identifiers_and_rollup_is_idempotent (tests.test_insights.ContextTablesTest.test_cells_hold_no_identifiers_and_rollup_is_idempotent) ... ok
+test_cli_json_and_markdown (tests.test_insights.ContextTablesTest.test_cli_json_and_markdown) ... ok
+test_context_dimensions_usage_and_errors (tests.test_insights.ContextTablesTest.test_context_dimensions_usage_and_errors) ... ok
+test_corrupt_stored_cells_are_refused (tests.test_insights.ContextTablesTest.test_corrupt_stored_cells_are_refused) ... ok
+test_gpu_report_public_daily_form_is_unchanged (tests.test_insights.ContextTablesTest.test_gpu_report_public_daily_form_is_unchanged) ... ok
+test_v2_physics_backend_table (tests.test_insights.ContextTablesTest.test_v2_physics_backend_table)
+Schema v2: one usage_backend cell per (vehicle, backend), capped per session like usage_vehicle. ... ok
+test_a_week_pools_days_and_never_leaves_a_withheld_remainder (tests.test_insights.DisclosureTests.test_a_week_pools_days_and_never_leaves_a_withheld_remainder) ... ok
+test_cells_from_different_days_have_an_exact_combined_count (tests.test_insights.DisclosureTests.test_cells_from_different_days_have_an_exact_combined_count) ... ok
+test_daily_maxima_prove_more_sessions_than_weekly_maximum (tests.test_insights.DisclosureTests.test_daily_maxima_prove_more_sessions_than_weekly_maximum) ... ok
+test_floor_bounds_and_private_label (tests.test_insights.DisclosureTests.test_floor_bounds_and_private_label) ... ok
+test_gpu_marginals_can_overlap_across_batches (tests.test_insights.DisclosureTests.test_gpu_marginals_can_overlap_across_batches) ... ok
+test_one_forged_odd_batch_no_longer_hides_the_day (tests.test_insights.DisclosureTests.test_one_forged_odd_batch_no_longer_hides_the_day) ... ok
+test_small_cohort_day_folds_unproven_gpu_cells_into_a_safe_row (tests.test_insights.DisclosureTests.test_small_cohort_day_folds_unproven_gpu_cells_into_a_safe_row) ... ok
+test_ten_sessions_in_two_vehicle_cells_do_not_clear_the_floor (tests.test_insights.DisclosureTests.test_ten_sessions_in_two_vehicle_cells_do_not_clear_the_floor) ... ok
+test_bad_patterns_refuse_to_start (tests.test_insights.ReleasePatternTests.test_bad_patterns_refuse_to_start) ... ok
+test_ingest_and_check_release_honour_prefixes (tests.test_insights.ReleasePatternTests.test_ingest_and_check_release_honour_prefixes) ... ok
+test_prefixes_match_a_series_only (tests.test_insights.ReleasePatternTests.test_prefixes_match_a_series_only) ... ok
+test_aggregate_purge_removes_old_counters (tests.test_observability.CountersTest.test_aggregate_purge_removes_old_counters) ... ok
+test_counts_add_up_across_flushes_and_days (tests.test_observability.CountersTest.test_counts_add_up_across_flushes_and_days) ... ok
+test_counts_are_persisted_at_shutdown (tests.test_observability.CountersTest.test_counts_are_persisted_at_shutdown) ... ok
+test_failed_flush_keeps_the_counts (tests.test_observability.CountersTest.test_failed_flush_keeps_the_counts) ... ok
+test_forwarded_header_presence_is_counted_without_its_value (tests.test_observability.CountersTest.test_forwarded_header_presence_is_counted_without_its_value) ... ok
+test_keys_are_bounded_and_unsafe_categories_collapse (tests.test_observability.CountersTest.test_keys_are_bounded_and_unsafe_categories_collapse) ... ok
+test_outcomes_are_counted_by_fixed_category (tests.test_observability.CountersTest.test_outcomes_are_counted_by_fixed_category) ... ok
+test_rate_limit_and_suspension_are_counted (tests.test_observability.CountersTest.test_rate_limit_and_suspension_are_counted) ... ok
+test_check_release (tests.test_observability.StatusAndReleaseCheckTest.test_check_release) ... ok
+test_status_reports_raw_age_counters_and_retention (tests.test_observability.StatusAndReleaseCheckTest.test_status_reports_raw_age_counters_and_retention) ... ok
+test_cli_rejects_both_flags (tests.test_publisher.CliTests.test_cli_rejects_both_flags) ... ok
+test_default_dry_run_then_execute_posts_once (tests.test_publisher.CliTests.test_default_dry_run_then_execute_posts_once) ... ok
+test_execute_without_token_is_a_config_error (tests.test_publisher.CliTests.test_execute_without_token_is_a_config_error) ... ok
+test_changed_report_after_intent_needs_review (tests.test_publisher.CreateTests.test_changed_report_after_intent_needs_review) ... ok
+test_creates_once_records_intent_first_and_is_idempotent (tests.test_publisher.CreateTests.test_creates_once_records_intent_first_and_is_idempotent) ... ok
+test_crlf_and_trailing_newline_normalisation_still_matches (tests.test_publisher.CreateTests.test_crlf_and_trailing_newline_normalisation_still_matches) ... ok
+test_pagination_finds_issue_on_a_later_page (tests.test_publisher.CreateTests.test_pagination_finds_issue_on_a_later_page) ... ok
+test_pull_requests_and_other_authors_do_not_block_or_bind (tests.test_publisher.CreateTests.test_pull_requests_and_other_authors_do_not_block_or_bind) ... ok
+test_digest_mismatch_refuses_before_any_write (tests.test_publisher.GuardTests.test_digest_mismatch_refuses_before_any_write) ... ok
+test_dry_run_prints_plan_without_side_effects (tests.test_publisher.GuardTests.test_dry_run_prints_plan_without_side_effects) ... ok
+test_github_base_url_must_be_https_or_loopback (tests.test_publisher.GuardTests.test_github_base_url_must_be_https_or_loopback) ... ok
+test_open_week_refused (tests.test_publisher.GuardTests.test_open_week_refused) ... ok
+test_unapproved_release_and_bad_inputs (tests.test_publisher.GuardTests.test_unapproved_release_and_bad_inputs) ... ok
+test_altered_same_key_issue_requires_review_and_is_sticky (tests.test_publisher.ReconcileTests.test_altered_same_key_issue_requires_review_and_is_sticky) ... ok
+test_created_issue_that_differs_from_the_report_needs_review (tests.test_publisher.ReconcileTests.test_created_issue_that_differs_from_the_report_needs_review) ... ok
+test_definitive_refusal_allows_a_clean_retry (tests.test_publisher.ReconcileTests.test_definitive_refusal_allows_a_clean_retry) ... ok
+test_exact_existing_issue_is_bound_without_creating (tests.test_publisher.ReconcileTests.test_exact_existing_issue_is_bound_without_creating) ... ok
+test_exact_plus_altered_or_duplicate_exact_requires_review (tests.test_publisher.ReconcileTests.test_exact_plus_altered_or_duplicate_exact_requires_review) ... ok
+test_incomplete_discovery_never_creates (tests.test_publisher.ReconcileTests.test_incomplete_discovery_never_creates) ... ok
+test_connection_dropped_after_server_created_issue (tests.test_publisher.UnknownOutcomeTests.test_connection_dropped_after_server_created_issue) ... ok
+test_crash_between_attempt_mark_and_result_is_treated_as_unknown (tests.test_publisher.UnknownOutcomeTests.test_crash_between_attempt_mark_and_result_is_treated_as_unknown) ... ok
+test_dropped_before_creation_stays_unknown_and_never_recreates (tests.test_publisher.UnknownOutcomeTests.test_dropped_before_creation_stays_unknown_and_never_recreates) ... ok
+test_gateway_error_after_server_created_issue (tests.test_publisher.UnknownOutcomeTests.test_gateway_error_after_server_created_issue) ... ok
+test_read_timeout_after_server_created_issue (tests.test_publisher.UnknownOutcomeTests.test_read_timeout_after_server_created_issue) ... ok
+test_token_is_sent_only_as_bearer_and_never_printed (tests.test_publisher.UnknownOutcomeTests.test_token_is_sent_only_as_bearer_and_never_printed) ... ok
+test_report_command_prints_body_and_digest (tests.test_report.ReportCliTests.test_report_command_prints_body_and_digest) ... ok
+test_report_command_rejects_bad_arguments (tests.test_report.ReportCliTests.test_report_command_rejects_bad_arguments) ... ok
+test_deterministic_and_digest_covers_title_and_body (tests.test_report.ReportTests.test_deterministic_and_digest_covers_title_and_body) ... ok
+test_empty_week_states_no_claims (tests.test_report.ReportTests.test_empty_week_states_no_claims) ... ok
+test_implausible_daily_rows_are_refused (tests.test_report.ReportTests.test_implausible_daily_rows_are_refused) ... ok
+test_input_validation (tests.test_report.ReportTests.test_input_validation) ... ok
+test_json_form_embeds_schema_valid_daily_reports (tests.test_report.ReportTests.test_json_form_embeds_schema_valid_daily_reports) ... ok
+test_slow_frame_shares_come_from_the_summed_histogram (tests.test_report.ReportTests.test_slow_frame_shares_come_from_the_summed_histogram) ... ok
+test_vehicle_rows_that_bypassed_the_rollup_are_refused_at_publication (tests.test_report.ReportTests.test_vehicle_rows_that_bypassed_the_rollup_are_refused_at_publication) ... ok
+test_week_closed_boundary (tests.test_report.ReportTests.test_week_closed_boundary) ... ok
+test_weekly_pooling_and_wording (tests.test_report.ReportTests.test_weekly_pooling_and_wording) ... ok
+test_empty_day_with_a_series_allowlist_has_a_completion_marker (tests.test_rollup.AtomicRollupTests.test_empty_day_with_a_series_allowlist_has_a_completion_marker) ... ok
+test_failure_in_second_release_preserves_prior_committed_day (tests.test_rollup.AtomicRollupTests.test_failure_in_second_release_preserves_prior_committed_day) ... ok
+test_bad_day_strings (tests.test_rollup.EligibilityTests.test_bad_day_strings) ... ok
+test_cli_refuses_with_message (tests.test_rollup.EligibilityTests.test_cli_refuses_with_message) ... ok
+test_closed_and_expired_days_are_refused (tests.test_rollup.EligibilityTests.test_closed_and_expired_days_are_refused) ... ok
+test_window_helper (tests.test_rollup.EligibilityTests.test_window_helper) ... ok
+test_120_window_cap_per_session_token (tests.test_rollup.GpuTests.test_120_window_cap_per_session_token) ... ok
+test_cells_are_pooled_across_channels_within_a_release (tests.test_rollup.GpuTests.test_cells_are_pooled_across_channels_within_a_release) ... ok
+test_days_use_trusted_receipt_day (tests.test_rollup.GpuTests.test_days_use_trusted_receipt_day) ... ok
+test_exactly_30_second_window_counts_and_floor_is_enforced_on_complete_claims (tests.test_rollup.GpuTests.test_exactly_30_second_window_counts_and_floor_is_enforced_on_complete_claims) ... ok
+test_histogram_and_gap_counts_are_summed_per_cell (tests.test_rollup.GpuTests.test_histogram_and_gap_counts_are_summed_per_cell) ... ok
+test_identical_rerun_is_idempotent (tests.test_rollup.GpuTests.test_identical_rerun_is_idempotent) ... ok
+test_one_small_cell_suppresses_the_whole_table (tests.test_rollup.GpuTests.test_one_small_cell_suppresses_the_whole_table) ... ok
+test_only_complete_observed_steady_flight_windows_count (tests.test_rollup.GpuTests.test_only_complete_observed_steady_flight_windows_count) ... ok
+test_releases_are_separate_and_allowlisted_empty_release_is_no_data (tests.test_rollup.GpuTests.test_releases_are_separate_and_allowlisted_empty_release_is_no_data) ... ok
+test_suppressed_at_19_tokens_and_published_at_20 (tests.test_rollup.GpuTests.test_suppressed_at_19_tokens_and_published_at_20) ... ok
+test_aggregate_daily_gpu_matches_reference_signature_semantics (tests.test_rollup.ReducerApiTests.test_aggregate_daily_gpu_matches_reference_signature_semantics) ... ok
+test_counts_and_active_seconds_per_vehicle (tests.test_rollup.VehicleTests.test_counts_and_active_seconds_per_vehicle) ... ok
+test_vehicle_floor_cannot_be_lowered_and_custom_rows_count_like_stock (tests.test_rollup.VehicleTests.test_vehicle_floor_cannot_be_lowered_and_custom_rows_count_like_stock) ... ok
+test_vehicle_table_has_no_identifiers (tests.test_rollup.VehicleTests.test_vehicle_table_has_no_identifiers) ... ok
+test_vehicle_table_suppressed_at_19_tokens (tests.test_rollup.VehicleTests.test_vehicle_table_suppressed_at_19_tokens) ... ok
+test_aggregates_expire_after_180_days (tests.test_storage.AggStoreTests.test_aggregates_expire_after_180_days) ... ok
+test_an_aggregates_file_from_before_the_histogram_columns_is_refused (tests.test_storage.AggStoreTests.test_an_aggregates_file_from_before_the_histogram_columns_is_refused) ... ok
+test_has_no_identifier_columns (tests.test_storage.AggStoreTests.test_has_no_identifier_columns) ... ok
+test_put_day_is_an_idempotent_replace (tests.test_storage.AggStoreTests.test_put_day_is_an_idempotent_replace) ... ok
+test_read_only_legacy_store_does_not_create_the_missing_commit_table (tests.test_storage.AggStoreTests.test_read_only_legacy_store_does_not_create_the_missing_commit_table) ... ok
+test_read_only_view_reads_live_wal_and_holds_a_committed_snapshot (tests.test_storage.AggStoreTests.test_read_only_view_reads_live_wal_and_holds_a_committed_snapshot) ... ok
+test_automatic_purge_reports_busy_wal_and_retries_promptly (tests.test_storage.PurgeCliTests.test_automatic_purge_reports_busy_wal_and_retries_promptly) ... ok
+test_purge_command_runs_against_data_dir (tests.test_storage.PurgeCliTests.test_purge_command_runs_against_data_dir) ... ok
+test_purge_interval_cannot_delete_rows_before_their_day_closes_for_rollup (tests.test_storage.PurgeCliTests.test_purge_interval_cannot_delete_rows_before_their_day_closes_for_rollup) ... ok
+test_serve_purge_cuts_early_enough_that_no_row_outlives_48_hours (tests.test_storage.PurgeCliTests.test_serve_purge_cuts_early_enough_that_no_row_outlives_48_hours) ... ok
+test_dedup_and_conflict_come_from_constraints (tests.test_storage.RawStoreTests.test_dedup_and_conflict_come_from_constraints) ... ok
+test_duplicate_does_not_extend_expiry (tests.test_storage.RawStoreTests.test_duplicate_does_not_extend_expiry) ... ok
+test_pragmas_and_constraints (tests.test_storage.RawStoreTests.test_pragmas_and_constraints) ... ok
+test_purge_boundary_is_exactly_48_hours (tests.test_storage.RawStoreTests.test_purge_boundary_is_exactly_48_hours) ... ok
+test_purge_frees_dedup_keys_and_overwrites_bytes (tests.test_storage.RawStoreTests.test_purge_frees_dedup_keys_and_overwrites_bytes) ... ok
+test_read_only_store_does_not_change_an_unrelated_sqlite_database (tests.test_storage.RawStoreTests.test_read_only_store_does_not_change_an_unrelated_sqlite_database) ... ok
+test_records_for_day_in_ingestion_order (tests.test_storage.RawStoreTests.test_records_for_day_in_ingestion_order) ... ok
+test_unavailable_storage_raises (tests.test_storage.RawStoreTests.test_unavailable_storage_raises) ... ok
+
+----------------------------------------------------------------------
+Ran 142 tests in 6.892s
+
+OK (skipped=1)
+{"checkpoint_busy": false, "deleted_aggregate_rows": 0, "deleted_batches": 0}

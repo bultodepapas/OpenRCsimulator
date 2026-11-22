@@ -1,0 +1,71 @@
+{
+  "diagnostic_output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nERRORS_ONLY_IDLE_PROBE {\"cleared_on_off\":true,\"eventually_sent_after_resume\":true,\"idle_elapsed_seconds\":600,\"idle_error_count\":1,\"initial_batch_drained\":true,\"no_counter_batch\":true,\"no_replay_on_reenable\":true,\"no_send_while_off\":true,\"preview_empty\":true,\"status_pending\":0,\"total_sends_after_idle\":1}\nREPRODUCED: an errors-only observation remains unsent through ten idle minutes\n",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "initial_checked_run": {
+    "capture_id": "1d73c604-fcaf-4d68-abd9-a3a312022839",
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "elapsed_seconds": 0.525694,
+    "exit_code": 0,
+    "format": "openrc-godot-check v1",
+    "label": "errors-only-idle",
+    "log_bytes": 454,
+    "log_sha256": "883d706a8187faf2cda96f3a676eacb62a0095a5578826b49bd0cb4d078b83f6",
+    "missing_required_text": [],
+    "ok": true,
+    "process_exit": 0,
+    "reason": "passed",
+    "required_text": [
+      "REPRODUCED:"
+    ],
+    "started_utc": "2026-11-22T16:26:25.108944+00:00"
+  },
+  "portable_checked_runs": [
+    {
+      "capture_id": "49953047-81f2-4469-bd81-dea36b5b6fb5",
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.177601,
+      "exit_code": 0,
+      "format": "openrc-godot-check v1",
+      "label": "round2-import",
+      "log_bytes": 1697,
+      "log_sha256": "f03e2201da007bd74869dc1bc319009feec7fbb79d0950438d98d9ebd8fe5e6f",
+      "missing_required_text": [],
+      "ok": true,
+      "process_exit": 0,
+      "reason": "passed",
+      "required_text": [],
+      "started_utc": "2026-11-22T16:34:16.351044+00:00"
+    },
+    {
+      "capture_id": "422fe28c-5ca1-4db1-8a6c-d41446fa83b0",
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.386528,
+      "exit_code": 0,
+      "format": "openrc-godot-check v1",
+      "label": "errors-only-idle",
+      "log_bytes": 454,
+      "log_sha256": "883d706a8187faf2cda96f3a676eacb62a0095a5578826b49bd0cb4d078b83f6",
+      "missing_required_text": [],
+      "ok": true,
+      "process_exit": 0,
+      "reason": "passed",
+      "required_text": [
+        "REPRODUCED:"
+      ],
+      "started_utc": "2026-11-22T16:34:21.530014+00:00"
+    }
+  ],
+  "scope": "Actual service with injected clock/context and fake sender in isolated source-copy project. No real player profile, network or AppRoot run."
+}

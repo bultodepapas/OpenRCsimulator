@@ -1,0 +1,69 @@
+{
+  "python": "3.12.14",
+  "runs": [
+    {
+      "batches": 40,
+      "events_per_batch": 16,
+      "events": 640,
+      "stored_body_bytes": 239800,
+      "wall_seconds_three_runs": [
+        0.270609583998521,
+        0.20781937799984007,
+        0.2134942550001142
+      ],
+      "wall_median_seconds": 0.2134942550001142,
+      "python_allocation_peak_bytes": 1121195,
+      "event_digest_encodes": 1920,
+      "raw_body_selects": 1,
+      "day_statuses": {
+        "v0.2.7/cells": "ready",
+        "v0.2.7/gpu": "ready",
+        "v0.2.7/vehicle": "no_data"
+      },
+      "rollup_committed": true
+    },
+    {
+      "batches": 160,
+      "events_per_batch": 16,
+      "events": 2560,
+      "stored_body_bytes": 959200,
+      "wall_seconds_three_runs": [
+        0.9175710099989374,
+        0.9055275880000409,
+        0.9583313629991608
+      ],
+      "wall_median_seconds": 0.9175710099989374,
+      "python_allocation_peak_bytes": 4304209,
+      "event_digest_encodes": 7680,
+      "raw_body_selects": 1,
+      "day_statuses": {
+        "v0.2.7/cells": "ready",
+        "v0.2.7/gpu": "ready",
+        "v0.2.7/vehicle": "no_data"
+      },
+      "rollup_committed": true
+    },
+    {
+      "batches": 480,
+      "events_per_batch": 16,
+      "events": 7680,
+      "stored_body_bytes": 2877600,
+      "wall_seconds_three_runs": [
+        2.6884992710001825,
+        2.6476627070005634,
+        2.7808858629996394
+      ],
+      "wall_median_seconds": 2.6884992710001825,
+      "python_allocation_peak_bytes": 12767364,
+      "event_digest_encodes": 23040,
+      "raw_body_selects": 1,
+      "day_statuses": {
+        "v0.2.7/cells": "ready",
+        "v0.2.7/gpu": "ready",
+        "v0.2.7/vehicle": "no_data"
+      },
+      "rollup_committed": true
+    }
+  ],
+  "limits": "Synthetic local CPU/SQLite workload; traced allocations are not process RSS. No fix or production capacity is measured."
+}
