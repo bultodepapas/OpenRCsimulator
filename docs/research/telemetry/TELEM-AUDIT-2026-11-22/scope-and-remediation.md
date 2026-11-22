@@ -95,3 +95,14 @@ The following are proposed ownership areas and acceptance evidence, not tickets 
 | 4 | Residual consent, deletion and release qualification | Product + client + DevOps | Explicit persistence decision, all-copy deletion drill, packaged OS admission and current deployment evidence |
 
 After each repair, convert the corresponding counterexample to an assertion of correct behavior. Preserve the baseline evidence and add a new dated closure record referencing the repair commit. Re-run the affected existing suite and actual bridge where a contract or wire behavior changes. Full application tests and deployment gates belong to the eventual repair/release scope; broad test repetition on this documentation branch would not supply the missing native or live-host evidence.
+
+## Verification on main — 2026-11-22
+
+Both source inventories matched all 137 distinct Git blobs at the audited commit. Before repairs, 136 matched integrated `main` at `2bfb4dc7b`. The only difference was the link to this audit in the telemetry plan.
+
+| Finding | Repair and verification | Open acceptance |
+| --- | --- | --- |
+| TA22-R01 | Validated integer metrics stay integral in GPU, vehicle and private insight aggregation. The regression covers stored and newly ingested integer, decimal and exponent forms across two releases. It also checks aggregate equality and original-body retry/conflict behavior. The receiver suite passed 142 tests and the reference suite passed 128. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/25c3736d3badd71e45eae5dcf140c93d9419fbf4) | Loopback Godot bridge and deployed recovery rehearsal |
+| TA22-O01 | Machine health and the independent checker now include warning severity and recovery details. Regression checks cover all six receiver warnings, a recoverable rollup, quiet and suppressed cases, and separation from upstream failures. All 103 operator tests passed on Windows. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/0f859b5f358f4807877ec8bd7fe8009bc3856d3f) | Deploy matching dashboard and checker code and confirm notification delivery before the rollup cutoff |
+
+The hosted telemetry workflow passed schemas, examples, reference, receiver, operator and container-smoke checks for both repairs. [Telemetry contracts run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440057).

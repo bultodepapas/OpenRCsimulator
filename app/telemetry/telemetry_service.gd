@@ -74,6 +74,8 @@ var _warmup_left_us := 0
 var _last_usec := -1
 var _last_drawn := 0
 var _activity: Dictionary = {}
+var _last_crash_generation := ""
+var _last_crash_sequence := -1
 ## True once this admission has observed the moment an activity begins (a non-activity frame or a reset); an
 ## activity already running when telemetry was admitted, or a later 5-minute slice, is not a complete observation.
 var _activity_from_start := false
@@ -161,6 +163,17 @@ func note_flight_events(events: Array) -> void:
 		if not event is Dictionary:
 			continue
 		var kind := str(event.get("type", ""))
+		if kind == "CRASH":
+			# Revision zero announces the accident. Later revisions update the same one.
+			# Keep a local high-water mark for the detector generation across telemetry slices.
+			var detector_generation := str(event.get("generation_id", ""))
+			var sequence := int(event.get("sequence", -1))
+			if int(event.get("revision", -1)) != 0 or detector_generation == "" or sequence < 0:
+				continue
+			if detector_generation == _last_crash_generation and sequence <= _last_crash_sequence:
+				continue
+			_last_crash_generation = detector_generation
+			_last_crash_sequence = sequence
 		var key := "takeoffs" if kind == "TAKEOFF" else "landings" if kind == "LANDING_SUCCESS" else \
 			"aircraft_crashes" if kind == "CRASH" else ""
 		if key != "":
@@ -247,6 +260,7 @@ func _stop() -> void:
 	_window_key = ""
 	_last_usec = -1
 	_activity = {}
+	_last_crash_generation = ""
 	_errors = {}
 
 
@@ -344,6 +358,7 @@ func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, a
 			return
 	if key == "":
 		_activity_from_start = true
+		_last_crash_generation = ""
 		return
 	var fixed_wing := Contract.is_true(ctx.get("fixed_wing_accepted")) and vehicle in Contract.FIXED_WING_VEHICLES
 	# Without a simulated clock the summary reports 0 simulated seconds and says the observation is incomplete.

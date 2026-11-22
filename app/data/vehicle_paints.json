@@ -703,6 +703,12 @@
 					"label": "JR Servos Tribute",
 					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/jr_servos.tres",
 					"materials": {}
+				},
+				{
+					"id": "aserradero",
+					"label": "Aserradero",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/aserradero.tres",
+					"materials": {}
 				}
 			]
 		},
@@ -1793,6 +1799,16 @@
 								"albedo": "#ae122e",
 								"albedo_texture": null
 							}
+						},
+						"canopy_frame": {
+							"paint_trim_carbono": {
+								"albedo": "#a0aab5",
+								"albedo_texture": null,
+								"metallic": 0.24,
+								"roughness": 0.47,
+								"clearcoat": 0.2,
+								"clearcoat_roughness": 0.34
+							}
 						}
 					},
 					"materials": {
@@ -1801,9 +1817,11 @@
 							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
 							"emission_texture": null,
 							"metallic": 0.0,
-							"roughness": 0.38,
-							"clearcoat": 0.44,
-							"clearcoat_roughness": 0.23
+							"roughness": 1.0,
+							"clearcoat": 0.27,
+							"clearcoat_roughness": 0.24,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png",
+							"specular": 0.46
 						},
 						"paint_wing": {
 							"albedo": "#ffffff",
@@ -1885,6 +1903,20 @@
 							"roughness": 0.49,
 							"clearcoat": 0.36,
 							"clearcoat_roughness": 0.23
+						},
+						"canopy_glass": {
+							"albedo": "#2c3c5088",
+							"metallic": 0.0,
+							"roughness": 0.055,
+							"specular": 0.57,
+							"clearcoat": 0.62,
+							"clearcoat_roughness": 0.055
+						},
+						"intake_duct": {
+							"albedo": "#24262e",
+							"metallic": 0.0,
+							"roughness": 0.61,
+							"clearcoat": 0.0
 						}
 					}
 				}
@@ -1892,6 +1924,7 @@
 		}
 	},
 	"detail_map_means": {
+		"res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png": 0.4202613531374464,
 		"res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png": 0.36732230373457364,
 		"res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png": 0.4474937915802002,
 		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,

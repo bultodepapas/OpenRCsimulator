@@ -1198,34 +1198,86 @@ def build_revoc(atlas):
 JETI_RUBY = hex_rgb("#ae122e")
 JETI_GARNET = hex_rgb("#801129")
 JETI_GRAPHITE = hex_rgb("#353b44")
+JETI_CARBON = hex_rgb("#262b33")
 JETI_SILVER = hex_rgb("#d6dee4")
 JETI_PEARL = hex_rgb("#f0f4f6")
 JETI_SIZES = {"fuselage": (4096, 4096), "wing": (4096, 4096), "stab": (2048, 2048), "fin": (2048, 2048)}
+JETI_ROUGHNESS_SIZE = (1024, 1024)
+
+
+def jeti_shell_edges(y, z):
+    lower = y + 0.014 - 0.078 * smoothstep(0.30, 1.12, z)
+    shoulder = y - (0.111 - 0.022 * smoothstep(-0.19, 0.36, z) + 0.156 * smoothstep(0.28, 1.10, z))
+    return lower, shoulder
 
 
 def jeti_shell(y, z):
-    lower = y + 0.014 - 0.078 * smoothstep(0.30, 1.12, z)
-    shoulder = y - (0.111 - 0.022 * smoothstep(-0.19, 0.36, z) + 0.156 * smoothstep(0.28, 1.10, z))
+    lower, shoulder = jeti_shell_edges(y, z)
     lacquer = mix(JETI_GARNET, JETI_RUBY, smoothstep(0.0, 0.043, lower))
     colour = mix(JETI_SILVER, lacquer, smoothstep(-0.0013, 0.0013, lower))
     colour = mix(colour, JETI_PEARL, smoothstep(-0.0013, 0.0013, shoulder))
     return mix(colour, JETI_GRAPHITE, smoothstep(0.005, 0.0076, shoulder))
 
 
+def jeti_nose_cut(y, z):
+    return z + 0.784 - 0.20 * (y - 0.054)
+
+
+def jeti_exhaust_collar(z):
+    # The nose pole at V=1 filters against the exhaust end at V=0.
+    return smoothstep(1.219, 1.234, z)
+
+
 def jeti_fuselage(p, logo):
-    _, y, z = p.T
+    x, y, z = p.T
     colour = jeti_shell(y, z)
-    cap = z + 0.784 - 0.20 * (y - 0.054)
-    colour = mix(JETI_GRAPHITE, colour, smoothstep(0.0, 0.003, cap))
-    colour = mix(colour, JETI_PEARL, smoothstep(0.002, 0.004, cap) * (1 - smoothstep(0.008, 0.010, cap)))
-    # The original wide badge sits on the shoulder above the lower intake crease.
-    avanti_flank_decal(colour, p, logo, -0.550, -0.260, 0.055)
-    return colour
+    cap = jeti_nose_cut(y, z)
+    colour = mix(JETI_CARBON, colour, smoothstep(0.001, 0.003, cap))
+    colour = mix(colour, JETI_PEARL, smoothstep(0.002, 0.004, cap) * (1 - smoothstep(0.007, 0.009, cap)))
+
+    # The carbon insert follows the exposed spine behind the cockpit.
+    taper = smoothstep(0.31, 0.45, z) * (1 - smoothstep(0.75, 0.91, z))
+    inset = (1 - smoothstep(0.048, 0.057, np.abs(x))) * taper * smoothstep(0.160, 0.186, y)
+    warp = np.sin(2 * np.pi * x / 0.005)
+    weft = np.sin(2 * np.pi * z / 0.006)
+    twill = warp * weft * np.cos(2 * np.pi * (x - z) / 0.012)
+    colour = mix(colour, JETI_CARBON + 0.016 * twill[:, None], 0.76 * inset)
+
+    # Two brushed-silver rails end in the same diagonal as the fin's signal marks.
+    rail = np.abs(x) - (0.053 - 0.029 * smoothstep(0.42, 0.87, z))
+    rail = (1 - smoothstep(0.0010, 0.0027, np.abs(rail))) * taper
+    colour = mix(colour, JETI_SILVER, 0.59 * rail * smoothstep(0.177, 0.192, y))
+    for start, width in ((0.615, 0.012), (0.644, 0.016), (0.677, 0.021)):
+        edge = z - start + 0.36 * x
+        shape = np.maximum(np.abs(x) - width, np.abs(edge) - 0.007)
+        mark = (1 - smoothstep(-0.0011, 0.0011, shape)) * smoothstep(0.177, 0.192, y)
+        colour = mix(colour, JETI_SILVER, mark)
+
+    # Keep the full badge on the smooth cheek ahead of the rising intake fold.
+    centre = 0.033 + 0.013 * smoothstep(-0.748, -0.493, z)
+    avanti_flank_decal(colour, p, logo, -0.748, -0.493, centre)
+    return mix(colour, JETI_CARBON, jeti_exhaust_collar(z))
+
+
+def jeti_fuselage_roughness(p):
+    _, y, z = p.T
+    lower, shoulder = jeti_shell_edges(y, z)
+    lacquer = smoothstep(-0.002, 0.002, lower) * (1 - smoothstep(-0.002, 0.007, shoulder))
+    # Lacquer, satin aluminium and satin carbon share one UV layout.
+    satin = 0.49 + 0.09 * smoothstep(0.0, 0.009, shoulder)
+    rough = satin + (0.27 - satin) * lacquer
+    rough = 0.55 + (rough - 0.55) * smoothstep(0.001, 0.011, jeti_nose_cut(y, z))
+    rough += (0.55 - rough) * jeti_exhaust_collar(z)
+    return np.repeat(rough[:, None], 3, axis=1)
 
 
 def jeti_fin(p):
     _, y, z = p.T
     colour = mix(jeti_shell(y, z), JETI_RUBY, smoothstep(0.243, 0.285, y))
+    # A low-contrast ruby sweep rounds off the fixed fin's leading shoulder.
+    ridge = z - (0.86 + 0.81 * (y - 0.23))
+    tint = (1 - smoothstep(0.028, 0.093, ridge)) * smoothstep(0.255, 0.352, y)
+    colour = mix(colour, JETI_GARNET, 0.48 * tint)
     # A rising group of telemetric signal bars with generous clearance from the rudder.
     along = z - 0.72 * (y - 0.30)
     across = y + 0.34 * (z - 1.03)
@@ -1240,7 +1292,8 @@ def jeti_lifting(atlas, span, z, lower_face):
         # The tailplane reuses V around the hinge. Its bands depend on span alone.
         silver = mix(JETI_GRAPHITE, JETI_SILVER, smoothstep(0.162, 0.166, span))
         silver = mix(silver, JETI_PEARL, smoothstep(0.254, 0.258, span))
-        return np.broadcast_to(mix(silver, JETI_RUBY, smoothstep(0.266, 0.270, span)), (*z.shape[:-1], span.size, 3))
+        tip = mix(JETI_RUBY, JETI_GARNET, 0.72 * smoothstep(0.407, 0.432, span))
+        return np.broadcast_to(mix(silver, tip, smoothstep(0.266, 0.270, span)), (*z.shape[:-1], span.size, 3))
 
     # One tapered blade on each wing opens toward the leading edge.
     blade = span - (0.310 + 0.45 * (z - 0.23) + 0.65 * (z - 0.24) ** 2)
@@ -1249,16 +1302,24 @@ def jeti_lifting(atlas, span, z, lower_face):
     upper = mix(JETI_GRAPHITE, JETI_SILVER, silver)
     border = smoothstep(-0.010, -0.007, blade) * (1 - smoothstep(-0.002, 0.001, blade))
     upper = mix(upper, JETI_PEARL, border)
+    # A tapered graphite inlay beside the blade provides a secondary edge in close-up.
+    inlay = smoothstep(-0.033, -0.029, blade) * (1 - smoothstep(-0.015, -0.011, blade))
+    inlay *= smoothstep(0.045, 0.117, z) * (1 - smoothstep(0.33, 0.43, z))
+    upper = mix(upper, JETI_CARBON, 0.64 * inlay)
     # The gear doors all close within the silver field on the underside.
     lower = mix(JETI_SILVER, JETI_GRAPHITE, smoothstep(0.688, 0.694, span))
     colour = mix(upper, lower, lower_face)
     cap = span - (0.746 + 0.28 * (z - 0.28))
     colour = mix(colour, JETI_PEARL, smoothstep(-0.017, -0.013, cap))
-    colour = mix(colour, JETI_RUBY, smoothstep(-0.002, 0.002, cap))
-    return mix(colour, JETI_GARNET, smoothstep(0.946, 0.951, span))
+    bevel = smoothstep(0.016, 0.025, cap) * (1 - smoothstep(0.041, 0.057, cap))
+    ruby = mix(JETI_RUBY, JETI_GARNET, 0.50 * bevel)
+    colour = mix(colour, ruby, smoothstep(-0.002, 0.002, cap))
+    return mix(colour, JETI_GARNET, smoothstep(0.932, 0.953, span))
 
 
 def build_jeti(atlas):
+    if atlas == "fuselage_roughness":
+        return bake_avanti_side("fuselage", JETI_ROUGHNESS_SIZE, jeti_fuselage_roughness).convert("L")
     size = JETI_SIZES[atlas]
     if atlas in ("wing", "stab"):
         return bake_avanti_lifting(atlas, size, jeti_lifting)
@@ -2892,6 +2953,7 @@ def outputs() -> dict:
         files[f"avanti-s-a200/revoc_custom_{atlas}.png"] = lambda a=atlas: encode(build_revoc(a), ".png")
     for atlas in JETI_SIZES:
         files[f"avanti-s-a200/jeti_ruby_{atlas}.png"] = lambda a=atlas: encode(build_jeti(a), ".png")
+    files["avanti-s-a200/jeti_ruby_fuselage_roughness.png"] = lambda: encode(build_jeti("fuselage_roughness"), ".png")
     for atlas in SABRE_ATLASES:
         stem = f"avanti-s-a200/sabre_plata_{atlas}"
         files[stem + ".jpg"] = lambda a=atlas: encode(_sabre_cached(a)[0], ".jpg")

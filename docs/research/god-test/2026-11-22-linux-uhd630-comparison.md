@@ -75,22 +75,50 @@ The large first-case freezes are synchronous OpenGL shader compiles at first use
 a cold Mesa disk cache (later cases reuse it). They are real stalls on a player's first
 launch, and they leave the first Home phase without enough drawn frames.
 
-## Host setup that works
+## Is the GPU underperforming?
 
-- Weston headless with `--xwayland`; Godot on X11 (`DISPLAY` set, `WAYLAND_DISPLAY`
-  unset). Packages: `xwayland`, `libxcursor1 libxinerama1 libxrandr2 libxi6
-  libxrender1 libxext6`. Xwayland composition cost about 8 % of flight FPS.
-- No `pcm null` ALSA default; the runner selects the Dummy driver itself.
-- At least ~2 GB RSS headroom for Forward+ and ~3 GB for Compatibility, plus
-  iGPU shmem, which is charged to the container.
+No fault was found in the driver or container path. Both hosts run Proxmox kernel
+7.0 with default i915 parameters (GuC off, as usual for Gen9). Mesa is 25.0.7, and
+the containers get the DRM render node directly, so there is no virtualization layer
+in the GPU path. Under load PRIMIS held 1100 MHz (its maximum) at 62–69 °C and 29 W
+package power, below its 35 W limit. The UHD 630 is a 24-EU integrated GPU of about
+0.4 TFLOPS that shares system RAM. Measured Home GPU time per frame on PRIMIS:
 
-## Follow-ups
+| Setting | Forward+ | Mobile |
+| --- | --- | --- |
+| Tour settings (MSAA 2×, 3D scale 1.0) | 101.5 ms | 105.8 ms |
+| MSAA off | 72.4 ms | 65.6 ms |
+| MSAA off, 3D scale 0.75 | 49.4 ms (20 FPS) | — |
 
-1. Product: let quality presets scale the terrain shader (`ground.gdshader`) and
-   MSAA, and consider a render scale for integrated GPUs; the ground alone is
-   about a third of Home GPU time on a UHD 630.
-2. Product: split the first Home's indivisible 1.7–2.3 s frame, and prepare the
-   Compatibility materials before first use (30.9 s cold first-launch freeze).
-3. Test pool: rendered pool checks on PRIMIS still use Godot's Wayland backend and
-   can hit the same shutdown join.
-4. Report the Wayland shutdown join upstream with a reproducer.
+Mobile in flight with MSAA off reached 21.5 FPS. The tour's fixed workload uses
+MSAA 2× at native 1080p; the product's Automatic mode on this GPU starts without
+MSAA and at Low detail.
+
+A minimal product profile in `display.cfg` changes this a lot: MSAA off, Low detail,
+birds, runway meadow and RC track off, static flags, shadows off (technique, aircraft
+cue, clouds), lens effects off, aircraft lighting Low without VFX. Measured on
+PRIMIS (X11, 1920×1080, Stik, debug-bridge sessions rather than the tour):
+
+| Profile and renderer | Home | Flight |
+| --- | --- | --- |
+| Tour settings, Forward+ | 9.8 FPS | 12.3–12.9 FPS |
+| Minimal, Forward+ | 14.0 FPS | 16.7–17.0 FPS |
+| Minimal, Mobile | 14.2 FPS | 22.3–22.4 FPS |
+| Minimal, Compatibility (the product's iGPU renderer) | 19.8 FPS | 25.2–27.6 FPS |
+| Minimal, Mobile, 3D scale 0.75 (bilinear, set live) | 15.6 FPS | **34.7–35.2 FPS** |
+
+Minimal Forward+ with FSR2 Quality did not reach Home within the launch timeout: it was
+still compiling shaders. Home manages its own 3D scale (`home_render_budget.gd`), so
+the live scale reached only the flight. The product offers no plain bilinear render
+scale: its reconstruction modes are native, FSR2/FSR3, DLSS and MetalFX.
+
+Host findings that do cost performance on megatron:
+
+- **Memory:** a 16 GB and a 4 GB DIMM, both at 2400 MT/s. With unequal sizes only
+  4 + 4 GB run dual-channel; the other 12 GB are single-channel, and the iGPU uses
+  system RAM. This plausibly explains megatron's 8–12 % lower flight FPS than PRIMIS
+  despite its faster CPU (PRIMIS: two 8 GB DIMMs at 2667 MT/s, dual-channel).
+- **Cooling:** 92 °C package and up to 94 °C per core at only 39 W with Frigate
+  alone (i5-10500, 65 W TDP, 100 °C limit). The cooler, fan, paste or airflow needs
+  attention; a GPU tour runs close to thermal throttling there.
+- **Sharing:** Frigate keeps the same iGPU at its maximu

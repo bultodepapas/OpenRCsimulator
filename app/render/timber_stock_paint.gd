@@ -1,4 +1,4 @@
-## Timber stock liveries project into the neutral model pose and retain its foam finish.
+## Timber stock liveries use a neutral projection across the airframe and its hinges.
 extends RefCounted
 
 const ImportedModel := preload("res://aircraft/imported_model.gd")
@@ -20,6 +20,15 @@ const PARTS := {
 	"fin_fixed": 3, "rudder": 3,
 }
 const COVERING := ["white", "red", "black", "dark_grey"]
+# The wood finish also replaces the canopy, gear and rotor materials. The
+# rotor keeps a StandardMaterial3D so the blade fade uses the laminate.
+const ROTOR := 7
+const WOOD_TRIM := {
+	"canopy_glass": 4,
+	"gear_left_leg": 5, "gear_right_leg": 5, "tailwheel_fork": 5,
+	"wheel_left": 6, "wheel_right": 6, "tailwheel": 6,
+	"propeller_rotor": ROTOR,
+}
 
 
 static func apply(root: Node3D, skin: String, covering_path: String) -> Dictionary:
@@ -32,14 +41,22 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 			return {ok = false, skin = "", materials = 0, error = "missing Lumber covering material"}
 	elif str(root.get_meta("vehicle_paint", "")).is_empty():
 		return {ok = true, skin = "", materials = 0}
+	var prop_wood: Texture2D
+	if preset != null and preset.has_meta(&"wood_propeller"):
+		prop_wood = preset.get_meta(&"wood_propeller") as Texture2D
 	var detail := SceneDetail.level() != "low"
 	var count := 0
 	for mesh_node: MeshInstance3D in root.find_children("*", "MeshInstance3D", true, false):
-		var part: int = PARTS.get(str(mesh_node.name), -1)
+		var name := str(mesh_node.name)
+		var trim := WOOD_TRIM.has(name)
+		var part: int = PARTS.get(name, WOOD_TRIM.get(name, -1))
 		if part < 0 or mesh_node.mesh == null or mesh_node.material_override != null:
 			continue
+		var paint_node := preset != null and (not trim or prop_wood != null)
+		if not paint_node and not mesh_node.has_meta(COATS):
+			continue
 		# AirplaneBuilder applies the first coat before any control poses.
-		if preset != null and not mesh_node.has_meta(REST):
+		if paint_node and not mesh_node.has_meta(REST):
 			mesh_node.set_meta(REST, ImportedModel.relative(root, mesh_node))
 		var rest: Transform3D = mesh_node.get_meta(REST, Transform3D.IDENTITY)
 		var retained: Array = mesh_node.get_meta(RETAINED, [])
@@ -49,12 +66,12 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 			if active == null:
 				continue
 			var original := active.get_meta(ORIGINAL, active) as StandardMaterial3D
-			if original == null or original.resource_name not in COVERING or not original.uv1_triplanar:
+			if original == null or (not trim and (original.resource_name not in COVERING or not original.uv1_triplanar)):
 				continue
-			if preset != null:
-				var key := "%s:%d:%d" % [covering_path, surface, int(detail)]
+			if paint_node:
+				var key := "%s:%d:%d" % [covering_path, surface, int(detail and part != ROTOR)]
 				if not coats.has(key):
-					coats[key] = _covering(preset, original, part, rest, detail)
+					coats[key] = _rotor(original, prop_wood) if part == ROTOR else _covering(preset, original, part, rest, detail, prop_wood == null)
 					if not retained.has(original):
 						retained.append(original)
 					retained.append(coats[key])
@@ -73,7 +90,7 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 	return {ok = true, skin = skin, materials = count}
 
 
-static func _covering(preset: ShaderMaterial, original: StandardMaterial3D, part: int, rest: Transform3D, detail: bool) -> ShaderMaterial:
+static func _covering(preset: ShaderMaterial, original: StandardMaterial3D, part: int, rest: Transform3D, detail: bool, foam: bool) -> ShaderMaterial:
 	var painted := preset.duplicate() as ShaderMaterial
 	painted.resource_name = original.resource_name
 	painted.render_priority = original.render_priority
@@ -81,12 +98,14 @@ static func _covering(preset: ShaderMaterial, original: StandardMaterial3D, part
 	painted.set_shader_parameter("part", part)
 	painted.set_shader_parameter("rest_basis", rest.basis)
 	painted.set_shader_parameter("rest_origin", rest.origin)
+	painted.set_shader_parameter("grow_amount", original.grow_amount if original.grow else 0.0)
+	painted.set_shader_parameter("detail_enabled", detail)
+	if not foam:
+		return painted
 	var roughness := original.roughness * (1.0 if detail else FOAM_ROUGHNESS_MEAN)
 	painted.set_shader_parameter("roughness_value", roughness)
 	painted.set_shader_parameter("metallic_value", original.metallic)
 	painted.set_shader_parameter("specular_value", original.metallic_specular)
-	painted.set_shader_parameter("grow_amount", original.grow_amount if original.grow else 0.0)
-	painted.set_shader_parameter("detail_enabled", detail)
 	if detail:
 		painted.set_shader_parameter("foam_normal", original.normal_texture)
 		painted.set_shader_parameter("foam_roughness", original.roughness_texture)
@@ -94,4 +113,18 @@ static func _covering(preset: ShaderMaterial, original: StandardMaterial3D, part
 		painted.set_shader_parameter("foam_offset", original.uv1_offset)
 		painted.set_shader_parameter("foam_sharpness", original.uv1_triplanar_sharpness)
 		painted.set_shader_parameter("normal_strength", original.normal_scale)
+	return painted
+
+
+static func _rotor(original: StandardMaterial3D, laminate: Texture2D) -> StandardMaterial3D:
+	var painted := original.duplicate() as StandardMaterial3D
+	painted.set_meta(ORIGINAL, original)
+	painted.albedo_color = Color("#d2ad85")
+	painted.albedo_texture = laminate
+	painted.uv1_triplanar = true
+	painted.uv1_scale = Vector3(2.8, 3.4, 3.6)
+	painted.uv1_offset = Vector3(0.5, 0.5, 0.5)
+	painted.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	painted.metallic = 0.0
+	painted.roughness = 0.36
 	return painted
