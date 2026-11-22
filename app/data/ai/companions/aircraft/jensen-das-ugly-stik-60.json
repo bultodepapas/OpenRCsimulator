@@ -65,6 +65,6 @@
     "path": "res://data/ai/companions/behavior-manifest.json",
     "format": "openrc-ai-behavior-manifest v1",
     "normalization": "utf8-lf",
-    "sha256": "f596cd36e6d369096fc593fbfc554b294cf955cd3ee8f5ff705734137511180d"
+    "sha256": "aa030deb13b65bb088d6c50ef2809439789743580ebfb9a19bd942fb4533aa54"
   }
 }
