@@ -24,11 +24,23 @@ Run phases 1–4 independently on each host. Use the same aircraft, recorded inp
 
 ## Phase 1 · Establish the fixed baseline (M0 / M1)
 
+GOD TEST can now set the fixed bilinear scale with `--render-scale` and check it
+at both boundaries of each requested flight phase. Use this for initial
+screening and record native campaign results separately. [Fixed-scale procedure](../../tools/godtest/PERFORMANCE_TOUR.md#fixed-scale-flight-comparison)
+
 1. **1.1 Freeze one flight.** Use the starting display and renderer in each platform row. Record source, engine/template, OS/driver, actual renderer, reconstruction, native simulation backend, drawable and output. Record the observed 3D input when available. If only the nominal extent is available, label it as estimated for this screen and require observed pixels in phase 2. Repeat the same aircraft, field, camera and input tape across quiet flight and a demanding pass. Match focus, power, refresh, cap and VSync. Measure cold loading separately. [Performance tour](../../tools/godtest/PERFORMANCE_TOUR.md)
 2. **1.2 Change only internal scale.** Compare native with the available fixed bilinear levels, including 0.75 where supported. Screen for CPU, pacing and shader stalls with the existing frame tools. Compare whole-frame p95/p99, missed target frames and simulation/wall across alternating repeats. Inspect the moving aircraft at each scale. [Frame diagnosis](../tools/graphics.md#frame-diagnosis)
 3. **1.3 Decide whether a controller can help.** Name the target FPS and best readable fixed setting before designing the controller. Advance each renderer/device independently if high-load flight repeatedly benefits from fewer pixels **and** a lighter segment can afford a higher readable scale. If a single fixed choice meets both needs, record that choice and close the row as fixed.
 
 ## Phase 2 · Prove feedback and scale changes (M0 / M1)
+
+The pinned renderer's viewport timing poll has unverified freshness. On Metal,
+the experimental completion stream exposes frame identity and completion time.
+It still needs a duration and actual 3D extent tied to that frame. Vulkan needs
+to associate completed timestamp slots with viewport generations and actual
+extents. Compatibility/OpenGL also needs a nonblocking read of completed
+queries. Keep each configuration on fixed rendering until its producer passes
+2.1 and its transitions pass 2.2–2.3. [Metal completion stream](../../tools/graphics/metalfx/README.md)
 
 1. **2.1 Identify completed GPU work.** For the admitted renderer, require one coherent observation containing viewport lifetime, completed render ID, configuration generation, actual input extent, GPU duration and a monotonic recording time with bounded age. Describe which passes it covers. Exercise duplicate, delayed and out-of-order completions and viewport reuse. Compare observer-off/on process-loop p95 and record overhead against the M0 screening budget of 0.2 ms. Keep historical diagnostic formats readable. If the backend cannot supply the association asynchronously at acceptable cost, close as fixed. [Timing lease](../../app/render/render_timing_lease.gd) · [Diagnostic producer](../../app/render/frame_diagnostics.gd)
 2. **2.2 Build a legal scale range.** Intersect the provider's size/alignment limits, the measured pilot-readability floor and the player's fixed ceiling. Map each scalar to integer width and height as the pinned engine does, check both axes and remove duplicate extents. Verify observed pixels at odd window sizes as well as 1080p. A fixed 85% ceiling and an 85% floor can leave only one size. Fewer than two legal sizes closes that configuration as fixed.

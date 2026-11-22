@@ -228,6 +228,28 @@ This tour seeds native reconstruction; it does not claim MetalFX qualification.
 The standalone example does not establish Mac graphical-worker admission, panel
 pixel proof or native performance; those remain separate prerequisites.
 
+### Fixed-scale flight comparison
+
+Run the same configuration in separate outputs with `--render-scale 100` and
+`--render-scale 75`, alternating run order. The available percentages are
+100, 85, 75, 67 and 50. The explicit scale overrides the recommended scale
+when used with `--graphics automatic`. Run only one workload at a time.
+Use Forward+/Vulkan on Windows, Mobile/Metal on the M1 native Retina display
+and Compatibility/OpenGL on the UHD 630 as specified in the
+[flight resolution plan](../../docs/plans/dynamic-resolution.md#native-platform-trials).
+The default scenario keeps the existing pacing and profile when the option is omitted.
+
+For a short exploratory run, select `run runway-menus --phase runway_circuit`.
+The case report requires the requested bilinear scale at the start and end
+of each completed, requested pilot phase. These are viewport settings.
+Confirm actual pixels separately for native qualification. Match aircraft,
+camera, output size, scene settings and pacing before comparing p95/p99 and
+missed frames from the corresponding phases. The tour's closed-loop pilot
+can vary its path across repeats. Use recorded input for final paired
+acceptance and check the moving aircraft at each candidate scale. Inspect each
+run's report directly. The existing `compare` command requires the same
+requested workload and only admits supported transition phases.
+
 Windows uses the same Python entry point, normally with the console editor:
 
 ```powershell

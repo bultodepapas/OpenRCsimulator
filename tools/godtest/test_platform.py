@@ -54,6 +54,14 @@ class PlatformTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 catalog.performance_tour(options)
 
+    def test_fixed_render_scale_reaches_every_tour_case_and_rejects_invalid_values(self):
+        args = parser().parse_args(["performance-tour", "--render-scale", "75", "--graphics", "automatic", "--dry-run"])
+        self.assertEqual({case["render_scale"] for case in plan(args)}, {75})
+        self.assertNotIn("render_scale", catalog.scenario("runway-menus"))
+        for value in (True, 75.0, 74, "75"):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "render_scale"):
+                catalog.scenario("runway-menus", {"render_scale": value})
+
     def test_native_panel_requires_borderless_and_product_vsync_values(self):
         with self.assertRaisesRegex(ValueError, "borderless"):
             catalog.scenario("runway-menus", {"resolution": [3024, 1964]})

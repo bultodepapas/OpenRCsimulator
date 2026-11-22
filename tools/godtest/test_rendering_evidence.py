@@ -14,6 +14,32 @@ from test_godtest import artifacts, replace_stream
 
 
 class RenderingEvidenceTests(unittest.TestCase):
+    def test_explicit_render_scale_requires_matching_bilinear_receipts_at_both_boundaries(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "run"
+            artifacts(path)
+            for name in ("manifest.requested.json", "manifest.resolved.json"):
+                manifest = json.loads((path / name).read_text())
+                manifest.update(render_scale=67, phases=["recover"])
+                write_json(path / name, manifest)
+            runtime = json.loads((path / "runtime.json").read_text())
+            phase = runtime["phases"][0]
+            phase.update(name="recover", id="0-0-recover")
+            phase["start_flight_3d_scaling"] = {"bilinear": True, "scale": 0.6700000166893005}
+            for receipt, eligible in (
+                (phase["start_flight_3d_scaling"], True),
+                (None, False),
+                ({"bilinear": True, "scale": 1.0}, False),
+                ({"bilinear": False, "scale": 0.67}, False),
+            ):
+                with self.subTest(receipt=receipt):
+                    phase["end_flight_3d_scaling"] = receipt
+                    write_json(path / "runtime.json", runtime)
+                    result = report(path, write=False)
+                    self.assertEqual(result["data"] == "valid", eligible, result["issues"])
+                    if not eligible:
+                        self.assertIn("requested bilinear render scale not verified", " ".join(result["issues"]))
+
     def test_missing_false_or_non_boolean_runtime_receipt_fails_closed(self):
         for observed in (None, False, 1, "true"):
             with self.subTest(observed=observed), tempfile.TemporaryDirectory() as temporary:

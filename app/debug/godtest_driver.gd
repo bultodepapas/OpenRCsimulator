@@ -142,7 +142,7 @@ func _run() -> void:
 		instrumentation = "frames_diagnostics_pilot_v1", physical_presentation = "not_observed",
 		profile_overrides = {first_flight_hint_seen = true, update_checks = false,
 			window_mode = str(config.get("window_mode", "windowed")), master_volume = 0.0}}
-	for key: String in ["max_fps", "vsync_mode"]:
+	for key: String in ["max_fps", "vsync_mode", "render_scale"]:
 		if config.has(key): identity.profile_overrides[key] = config[key]
 	identity.graphics = graphics_profile.duplicate(true)
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
@@ -264,6 +264,8 @@ func _prepare_profile() -> void:
 	display.set_value("display", "window_resolution", window_resolution)
 	display.set_value("graphics", "scene_detail", str(config.get("scene_detail", "medium")))
 	display.set_value("graphics", "reconstruction", "native")
+	if config.has("render_scale"):
+		display.set_value("graphics", "render_scale", int(config.render_scale))
 	if config.has("max_fps"): display.set_value("graphics", "max_fps", int(config.max_fps))
 	if config.has("vsync_mode"): display.set_value("graphics", "vsync_mode", str(config.vsync_mode))
 	display.set_value("camera", "view", str(config.get("camera", "pilot")))
@@ -290,7 +292,7 @@ func _apply_automatic_graphics(path: String) -> void:
 	candidate.erase("note")
 	var applied := {}
 	for key: String in DisplayPreferences.GPU_MANAGED_KEYS:
-		if key != "max_fps" and bundle.has(key):
+		if key != "max_fps" and bundle.has(key) and not (key == "render_scale" and config.has(key)):
 			candidate[key] = bundle[key]
 			applied[key] = bundle[key]
 	if DisplayPreferences.save_to(path, candidate) != OK:
@@ -874,8 +876,18 @@ func _begin(name_value: String) -> void:
 		start_drawn = Engine.get_frames_drawn(), start_undrawable = undrawable_intervals, start_focus_losses = focus_losses}
 	phase_frames.clear()
 	phase_frame_count = 0
+	if config.has("render_scale") and name_value in PILOT_PHASES:
+		phase.start_flight_3d_scaling = _flight_3d_scaling()
 	_event("phase_start", {name = name_value, id = phase.id, requested = phase.requested})
 	_progress("running")
+
+
+func _flight_3d_scaling() -> Dictionary:
+	if not _same_bound_session():
+		return {}
+	var viewport := get_tree().root
+	return {bilinear = viewport.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR,
+		scale = viewport.scaling_3d_scale}
 
 
 func _runtime_display() -> Dictionary:
@@ -915,6 +927,8 @@ func _end(status: String = "complete", reason: String = "") -> void:
 	phase.rendered = DisplayServer.get_name() != "headless" and Engine.get_frames_drawn() > int(phase.start_drawn) and undrawable_intervals == int(phase.start_undrawable)
 	phase.focus_losses = focus_losses - int(phase.start_focus_losses)
 	phase.runtime_display = _runtime_display()
+	if phase.has("start_flight_3d_scaling"):
+		phase.end_flight_3d_scaling = _flight_3d_scaling()
 	_event("phase_end", phase)
 	phases.append(phase.duplicate(true))
 	phase.clear()

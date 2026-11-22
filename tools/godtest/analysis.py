@@ -503,6 +503,16 @@ def report(directory: Path, *, write: bool = True) -> dict:
         phase["pacing"] = integrity.get("phase_pacing", {}).get(str(phase.get("index")), {})
         if not observed and phase.get("requested") and phase.get("status") == "complete":
             problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
+        if (manifest_valid and "render_scale" in manifest and phase.get("requested")
+                and phase["status"] == "complete" and phase.get("name") in catalog.PILOT_PHASES):
+            expected_scale = manifest["render_scale"] / 100
+            for boundary in ("start", "end"):
+                scaling = phase.get(f"{boundary}_flight_3d_scaling")
+                scale = scaling.get("scale") if isinstance(scaling, dict) else None
+                if (type(scale) not in (int, float) or not 0 < scale <= 1
+                        or not math.isclose(scale, expected_scale, abs_tol=1e-6)
+                        or scaling.get("bilinear") is not True):
+                    problems.append(f"requested bilinear render scale not verified at {phase.get('id')} {boundary}")
         phase["hitches"] = integrity.get("phase_hitches", {}).get(str(phase.get("index")), {})
         phase["engine_counters_at_last_sample"] = integrity.get("phase_final_counters", {}).get(str(phase.get("index")), {})
         phase["simulation_pace"] = integrity.get("phase_simulation_pace", {}).get(str(phase.get("index")),
@@ -519,6 +529,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
     rendering = validate_rendering(requested_manifest, manifest, runtime, phase_records,
                                    integrity.get("phase_rendering", {}), execution)
     problems.extend(rendering["issues"])
+    if isinstance(requested_manifest, dict) and requested_manifest.get("render_scale") != manifest.get("render_scale"):
+        problems.append("render scale differs between requested and resolved manifests")
     requested_rendered = rendering["requested_headless"] is False
     rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True
