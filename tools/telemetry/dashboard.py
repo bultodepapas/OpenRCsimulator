@@ -721,6 +721,58 @@ def download_daily(model):
     return values, uncertain
 
 
+
+def download_collection_chart(days, values, notes, title):
+    """Show matched GitHub counter changes as observations assigned to collection dates."""
+    width, height, left, right, top, bottom = 640, 220, 82, 46, 25, 44
+    plot_width, plot_height = width - left - right, height - top - bottom
+    baseline = top + plot_height
+    counts = [values.get(day) for day in days]
+    observed = [i for i, count in enumerate(counts) if count is not None]
+    ticks = nice_ticks(max((counts[i] for i in observed), default=0))
+    scale = plot_height / ticks[-1]
+    slot = plot_width / max(len(days), 1)
+    bar_width = min(22, slot * 0.66)
+    labels = timeline_labels(len(days))
+    parts = [timeline_open(width, height, title)]
+    for tick in ticks:
+        y = baseline - tick * scale
+        cls = "axis" if tick == 0 else "grid"
+        parts.append(f'<line class="{cls}" x1="{left}" x2="{width - right}" y1="{y:.1f}" y2="{y:.1f}"/>')
+        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{timeline_tick(tick)}</text>')
+    start = observed[-1] if observed else len(days) - 1
+    targets, rows = [], []
+    for index, (day, count) in enumerate(zip(days, counts)):
+        center = left + (index + 0.5) * slot
+        note = notes.get(day, "")
+        if count is None:
+            mark_width = min(6, slot * 0.48)
+            parts.append(f'<line class="collection-gap" x1="{center - mark_width / 2:.1f}" '
+                         f'x2="{center + mark_width / 2:.1f}" y1="{baseline}" y2="{baseline}"/>')
+            value = "Unavailable"
+        elif count == 0:
+            parts.append(f'<circle class="collection-zero fill-s1" cx="{center:.1f}" cy="{baseline}" r="2.5"/>')
+            value = "0 (observed)"
+        else:
+            bar_height = count * scale
+            path = rounded_top(center - bar_width / 2, baseline - bar_height, bar_width, bar_height, 3)
+            parts.append(f'<path class="collection-bar fill-s1" d="{path}"/>')
+            value = fmt_int(count)
+        tip = [day, f"Matched counter increase: {value}"] + ([note] if note else [])
+        targets.append(timeline_target(center - slot / 2, slot, center, top, plot_height, tip, index == start))
+        if index in labels:
+            parts.append(timeline_date(center, height, day, labels[index]))
+        rows.append(f'<tr><th scope="row">{e(day)}</th><td>{e(value)}</td><td>{e(note)}</td></tr>')
+    chart = timeline_end(parts, targets, top, plot_height)
+    keys = []
+    if 0 in counts:
+        keys.append('<span class="key"><i class="collection-zero-key" aria-hidden="true"></i>Observed zero</span>')
+    if len(observed) < len(days):
+        keys.append('<span class="key"><i class="collection-gap-key" aria-hidden="true"></i>No daily value</span>')
+    legend_html = f'<div class="legend collection-legend">{"".join(keys)}</div>' if keys else ""
+    return chart + legend_html + timeline_table(title, ("Matched counter increase",), rows, "UTC collection day")
+
+
 def downloads_section(model, now, days):
     head = ""
     if model is None:
@@ -749,8 +801,7 @@ def downloads_section(model, now, days):
         for a, b, c in items) + "</div>"
     axis = window_days(now, days)
     by_day, uncertain = download_daily(model)
-    series = [("Matched counter increases", [by_day.get(day) for day in axis], "s1")]
-    daily_chart = line_chart(axis, series, "Downloads per collection day", release_days(model), 220, uncertain)
+    daily_chart = download_collection_chart(axis, by_day, uncertain, "Downloads per collection day")
     intervals = []
     for row in reversed(model.get("intervals", [])):
         if row["to_end"][:10] < axis[0]:
@@ -796,7 +847,7 @@ def release_days(model):
     return out
 
 
-def line_chart(days, series, aria, markers=None, height=240, notes=None, *, provisional=None):
+def line_chart(days, series, aria, markers=None, height=240, notes=None, *, provisional=None, key_html=""):
     """Lines on one shared axis. series: [(label, values aligned with days (None = unknown), slot)].
     notes: {day: text} appended to that day's tooltip."""
     markers, notes = markers or {}, notes or {}
@@ -881,10 +932,14 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None, *, prov
         if index in labels:
             parts.append(timeline_date(x, height, day, labels[index]))
     chart = timeline_end(parts, targets, top, plot_h)
-    heads = "".join(f'<th scope="col">{e(label)}</th>' for label, _, _ in series)
-    table = (f'<table><caption>{e(aria)}</caption><thead><tr><th scope="col">Day</th>{heads}'
-             f'<th scope="col">Notes</th></tr></thead><tbody>{"".join(table_rows_html)}</tbody></table>')
-    return chart + '<details><summary>Data table</summary>' + scroll(table) + "</details>"
+    return chart + key_html + timeline_table(aria, [label for label, _, _ in series], table_rows_html)
+
+
+def timeline_table(title, labels, rows, day_label="Day"):
+    heads = "".join(f'<th scope="col">{e(label)}</th>' for label in labels)
+    table = (f'<table><caption>{e(title)}</caption><thead><tr><th scope="col">{e(day_label)}</th>{heads}'
+             f'<th scope="col">Notes</th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
+    return '<details><summary>Data table</summary>' + scroll(table) + "</details>"
 
 
 def stat_tiles(items):
@@ -1290,19 +1345,23 @@ def overview_section(snapshot, rows, alert_items):
                                if players else "Player rollup unavailable or below the disclosure floor"))
 
     charts = []
+    if model:
+        title = "GitHub package downloads by collection day"
+        charts.append(panel("GitHub package downloads", "Matched counter increases by collection day · UTC.",
+                            download_collection_chart(days, download_values, download_partial, title)))
+    if website and "downloads" not in (website.get("errors") or {}):
+        request_days = website.get("days") or [(today - timedelta(days=i)).isoformat() for i in range(29, -1, -1)]
+        request_label = "Download requests"
+        provisional_key = ""
+        if any(day in ga_provisional and dl.get(day) is not None for day in request_days):
+            provisional_key = ('<div class="legend collection-legend"><span class="key">'
+                               '<i class="provisional-key" aria-hidden="true"></i>Provisional day</span></div>')
+        request_chart = line_chart(request_days, [(request_label, [dl.get(d) for d in request_days], "s1")],
+                                   "Website download requests per day", height=220,
+                                   provisional={request_label: ga_provisional}, key_html=provisional_key)
+        charts.append(panel("Website download requests", f"Requests recorded by GA4 · {zone}.", request_chart))
     if model or website:
-        series = [("Package downloads (UTC)", [download_values.get(d) for d in days], "s1")] if model else []
-        request_label = f"Website download requests ({zone})"
         session_label = f"Website sessions ({zone})"
-        if website and "downloads" not in (website.get("errors") or {}):
-            series.append((request_label, [dl.get(d) for d in days], "s2"))
-        if series:
-            charts.append(panel("Downloads per day", "GitHub counter increases by collection date. Each series uses "
-                                "its own day boundaries. Hollow points are provisional.",
-                                legend([(s[0], s[0], s[2]) for s in series], lines=True) + line_chart(
-                                    days, series, "Downloads per day", markers, 220,
-                                    download_partial,
-                                    provisional={request_label: ga_provisional})))
         interest = [("Repository views (UTC)", daily_values(traffic, days, "count"), "s1")] if model else []
         if website:
             interest.append((session_label, [daily.get(d) for d in days], "s2"))
@@ -1674,6 +1733,12 @@ line.axis{stroke:var(--axis);stroke-width:1;vector-effect:non-scaling-stroke}
 .tick,.value{font-variant-numeric:tabular-nums}.tick{fill:var(--muted);font-size:13px}
 .value{fill:var(--ink2);font-size:13px;font-weight:600}
 .date-tick{dominant-baseline:central}
+.collection-gap{stroke:var(--muted);stroke-opacity:.75;stroke-width:1.5;vector-effect:non-scaling-stroke}
+.collection-zero-key{width:6px;height:6px;border-radius:50%;background:var(--s1)}
+.collection-gap-key{width:9px;border-top:2px solid var(--muted)}
+.provisional-key{width:8px;height:8px;border:1.5px solid var(--s1);border-radius:50%}
+.collection-legend{font-size:12px;margin:2px 0 6px}
+@media (forced-colors:active){.collection-zero-key{background:CanvasText}.collection-gap-key{border-color:CanvasText}}
 .crosshair{stroke:var(--focus);stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;pointer-events:none}
 .crosshair[hidden]{display:none}
 @container (max-width:510px){.tick{font-size:16px}.minor-tick,.end-value{display:none}}

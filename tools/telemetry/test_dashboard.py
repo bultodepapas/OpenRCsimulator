@@ -226,7 +226,7 @@ class DashboardCase(unittest.TestCase):
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
         for text in ("Last 7 full days", "2027-01-13 to 2027-01-19", "Package downloads", "Repository views",
                      "New stars", "Recent releases", "<td>v0.3.10</td>", "Downloads by platform",
-                     "Repository referrers, 14 days", "Downloads per day", "Interest per day",
+                     "Repository referrers, 14 days", "GitHub package downloads by collection day", "Interest per day",
                      "Website (GA4)</b> not connected", "Telemetry batches"):
             self.assertIn(text, overview)
         self.assertIn("Old snapshot.", page)  # the fixture is from 2027-01-20
@@ -253,7 +253,8 @@ class DashboardCase(unittest.TestCase):
         self.assertNotIn("<b>evil</b>", page)
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
         for text in ("Website sessions", "Website download requests", "8% of 7-day users request a download",
-                     "Top countries", "Where people come from", "Website, 7 days", "<td>github</td>"):
+                     "Top countries", "Where people come from", "Website, 7 days", "<td>github</td>",
+                     'aria-label="Website download requests per day"'):
             self.assertIn(text, overview)
         rows = dashboard.ingest_rows(data)
         self.assertNotIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
@@ -310,6 +311,20 @@ class DashboardCase(unittest.TestCase):
         self.assertIn('aria-label="v2 · Total 200 · Windows: 199 · macOS: 1"', page)
         self.assertIn('aria-label="v1 · Total 0"', page)
         self.assertEqual(page.count('tabindex="0"'), 1)
+
+
+
+    def test_download_columns_distinguish_observed_zero_and_missing_intervals(self):
+        days = ["2027-01-01", "2027-01-02", "2027-01-03"]
+        html = dashboard.download_collection_chart(days, {days[0]: 12, days[2]: 0},
+                                                   {days[1]: "Long collection interval"}, "Package downloads")
+        self.assertEqual(html.count('class="collection-bar '), 1)
+        self.assertEqual(html.count('class="collection-gap"'), 1)
+        self.assertEqual(html.count('class="collection-zero '), 1)
+        self.assertIn('2027-01-02 · Matched counter increase: Unavailable · Long collection interval', html)
+        self.assertIn('2027-01-03 · Matched counter increase: 0 (observed)', html)
+        self.assertNotIn('class="line line-', html)
+        self.assertEqual(html.count('tabindex="0"'), 1)
 
     def test_download_counter_gap_preserves_the_original_interval(self):
         intervals = [{"from_end": "2027-01-16T10:00:00Z", "to_end": "2027-01-19T10:00:00Z",
