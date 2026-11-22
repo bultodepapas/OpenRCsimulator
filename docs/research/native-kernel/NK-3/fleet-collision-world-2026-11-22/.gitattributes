@@ -1,0 +1,4 @@
+*.gz binary
+*.json -text
+*.gd text eol=lf
+*.md text eol=lf

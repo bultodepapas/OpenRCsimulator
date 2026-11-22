@@ -120,6 +120,21 @@ const RUNWAY_LIVE_CONFIG_V6 := {
 		"ideal": {"on": "9c6e96d55c289ac8c6d9d6e34c200da033cc3fd1820831ee61f63318afc2d47f",
 			"off": "c999b8a213e7187ebdc9566b9b233d494805a1f70424ae3c48a676ec826d9a12"}},
 }
+# The 2026-11-22 collision world changed the checkpoint and world digests for these eight
+# crosswind runway resets. See docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-22.
+const RUNWAY_LIVE_CONFIG_V7 := {
+	"p51d-mustang-120": {"ideal": {
+		"on": "6bb0fc1f258d075f4d431a9c0c4eca5cedc703debf38eeac17d3d70faa393e10",
+		"off": "6423d88de4e447f7762a08c8ecb7353093454516039ab9aeb708f62edfc6ce3a"}},
+	"sebart-avanti-s-a200-p100rx": {"ideal": {
+		"on": "93898d3e0284ab73a7883d611ed669fce9795f3a96367e587fbcdd5be90be85b",
+		"off": "7c87b79c2b5ad06977db708f6db15e4ec8fb27dc00945630ed8cdc1f04ae78e7"}},
+	"turbo-lumber-evolution": {
+		"pack": {"on": "d7276388634d6dd39f1ebf652ae29b3042ad77306396d223fe178fac299aa1c7",
+			"off": "232ae31f35d3cfed37fd21ca64a1c353b94d4e60b7a19a692440cf13811e2e49"},
+		"ideal": {"on": "eb99ecf4ca4efe01de4e97ff3adf61df6ea45ee8e916f39baabf97c35fe52080",
+			"off": "f6dd7ff643b9dbdf32872f230847a8bad9a51e71551c8300030844be2d39ed67"}},
+}
 const TRIM_START_REFUSAL := "reset failed: trim: reference-speed trim already requires more than the requested throttle"
 const TRIM_START_BOUNDARIES := {
 	"skywalker-x8": {weather = "hot-high", batteries = {"ideal": {default_battery = false,
@@ -899,7 +914,7 @@ static func _fleet_start_proof_valid(row: Dictionary, proof: Variant, requested:
 	var live_hex: Variant = proof.get("live_config_bytes_hex")
 	var expected_live: String = spec.live_config_sha256["on" if row.soft_hull else "off"]
 	if runway:
-		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V6.get(row.aircraft, {})
+		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V7.get(row.aircraft, {})
 		var battery_pins: Dictionary = aircraft_pins.get(row.battery, {})
 		expected_live = str(battery_pins.get("on" if row.soft_hull else "off", ""))
 	if typeof(live_hex) != TYPE_STRING or live_hex.is_empty() or live_hex.length() > 1048576 \

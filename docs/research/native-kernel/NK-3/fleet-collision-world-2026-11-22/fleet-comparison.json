@@ -1,0 +1,183 @@
+{
+  "baseline_capture_sha256": "d2972b4df08025b99a7da17135d64b1da906f5893f2e5587093fb87c02886d9e",
+  "candidate_capture_sha256": "cd73d89e57953a47140e09980694aadb7e422cf3148e72ba5b9396ee204b0472",
+  "cases": [
+    {
+      "baseline_checkpoint_configuration": "ad0677126fd334af589b6476b4660f7543106bc4611e34fc202cabba41b52355",
+      "baseline_live_config_sha256": "d108d4faeb85ffb8dbb934e3ab0378ff9508cad5bca1e719ab8afe1e8ff63e49",
+      "candidate_checkpoint_configuration": "cd2671455d8e1e01dcbfbb5ec1cdc8d1c9a8ae74e6c9288f0d4ddfcdbee012f0",
+      "candidate_live_config_sha256": "6bb0fc1f258d075f4d431a9c0c4eca5cedc703debf38eeac17d3d70faa393e10",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "p51d-mustang-120",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "bb147c92f7ae6c17f86a016927a99bbb2965721a7cdce437266b03b7c5084fbf",
+      "baseline_live_config_sha256": "0f71be7c6a712582a53b6ce11d23d0835a376ca886857218477c8680a78218db",
+      "candidate_checkpoint_configuration": "6e1f7f5bda0206c97813834200e61587fcbdea488fd5b5ca31374276f8473d59",
+      "candidate_live_config_sha256": "6423d88de4e447f7762a08c8ecb7353093454516039ab9aeb708f62edfc6ce3a",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "p51d-mustang-120",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "032cdefd3625be1dba3e595567fb20b8973d8c42451de763e351294bdcd6c77c",
+      "baseline_live_config_sha256": "23865f3cbb09ccbcafe23bb27f283f6bc87fcf7f0570fe0e00ed3b9084d1c557",
+      "candidate_checkpoint_configuration": "1f8b7177a230918c8236739a86a7f80c4c9e9918780b29e1e8f64e827b0f0ca5",
+      "candidate_live_config_sha256": "93898d3e0284ab73a7883d611ed669fce9795f3a96367e587fbcdd5be90be85b",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "sebart-avanti-s-a200-p100rx",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "b8db6d9794706a04223836df4efc4af97b395ac54852bc2132855fb33e018fdf",
+      "baseline_live_config_sha256": "407eb70d51d1328d1bdc4fe5a3c2dc38d4e1ebe6d34a4c1f9db9405478b28ca7",
+      "candidate_checkpoint_configuration": "234811f5887931597183883e876ee8c9d1499fb069836db76d8b77281c8f5ac9",
+      "candidate_live_config_sha256": "7c87b79c2b5ad06977db708f6db15e4ec8fb27dc00945630ed8cdc1f04ae78e7",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "sebart-avanti-s-a200-p100rx",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "b5ccaf1a3a27334de3ee08c29515844df1cf5e20004f026ff26a33b8bc1772dc",
+      "baseline_live_config_sha256": "f545be87dd002775b8847acdbeac9f834dd81b7492755dab51c011de2bf63ce2",
+      "candidate_checkpoint_configuration": "61ad64cd7b3cb4a6454fb26d0b460452d39002ecc2d07c5390b244868d183c01",
+      "candidate_live_config_sha256": "d7276388634d6dd39f1ebf652ae29b3042ad77306396d223fe178fac299aa1c7",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "pack",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "2200761ae242659af7ca5ebfb528d4c2c762fa524482a2a9d583c8a3edf439f6",
+      "baseline_live_config_sha256": "96c35659a8b837f54f9f90d9aaa120498ec5f120359b6b6c4e2f33f58e3df446",
+      "candidate_checkpoint_configuration": "0d8c117f81ef907efa35d9ae59277bb98ae8a13eebe294d6ca5fea975e73fb80",
+      "candidate_live_config_sha256": "232ae31f35d3cfed37fd21ca64a1c353b94d4e60b7a19a692440cf13811e2e49",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "pack",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "a721c279703558c63037c99e8789cddbba05e786476e8de23a5789f1440c7791",
+      "baseline_live_config_sha256": "9c6e96d55c289ac8c6d9d6e34c200da033cc3fd1820831ee61f63318afc2d47f",
+      "candidate_checkpoint_configuration": "8f3fee9df771f34bc5ad3b6f75e4bf77ecd3c3884c1e6ecc47e2c217f7da671c",
+      "candidate_live_config_sha256": "eb99ecf4ca4efe01de4e97ff3adf61df6ea45ee8e916f39baabf97c35fe52080",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": false,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    },
+    {
+      "baseline_checkpoint_configuration": "69c572ee0fd1f6ed7f2e58b182b64003fc038416b444a82c9140ed5a007e7da7",
+      "baseline_live_config_sha256": "c999b8a213e7187ebdc9566b9b233d494805a1f70424ae3c48a676ec826d9a12",
+      "candidate_checkpoint_configuration": "eb2b565f2e6fbca748ca39812b3e751823a8a10649710abe80b53cbcd1f2ad28",
+      "candidate_live_config_sha256": "f6dd7ff643b9dbdf32872f230847a8bad9a51e71551c8300030844be2d39ed67",
+      "changed_live_configuration_indices": [
+        2,
+        7
+      ],
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": false,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      }
+    }
+  ],
+  "checks": 460,
+  "engine": {
+    "build": "official",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "hex": 264192.0,
+    "major": 4.0,
+    "minor": 8.0,
+    "patch": 0.0,
+    "status": "beta2",
+    "string": "4.8-beta2 (official)",
+    "timestamp": 0.0
+  },
+  "errors": [],
+  "failures": 0,
+  "format": "openrc-dr19e-fleet-live-configuration-comparison-v1",
+  "ok": true,
+  "os": "Linux"
+}
