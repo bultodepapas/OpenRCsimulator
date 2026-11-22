@@ -76,7 +76,6 @@
     "downloadIntro": "다운로드하고 ZIP을 압축 해제한 뒤 실행하세요.<br>Godot 설치는 필요하지 않습니다.",
     "downloadKicker": "02 / 다음 이륙",
     "downloadNote": "초기 알파 버전 v0.3.2. ZIP에는 설치 프로그램이나 아카이브 서명이 없습니다. macOS 앱은 임시 서명되었지만 공증되지 않았습니다.<br>항공기와 지상 차량 모델은 실험 단계이며 독립적인 실측과 파일럿 평가가 필요합니다.",
-    "droneNote": "ION R5 쿼드콥터는 Acro와 Angle 모드를 지원합니다. Tower Sprint 등의 코스에서 게이트를 통과하는 세 바퀴 로컬 레이스를 즐길 수 있습니다. 5 m RC 비행선은 전동 로터를 기울여 추력 방향을 바꿉니다.",
     "electricLink": "전기 추진 ↗",
     "evidenceBody": "openrc-aircraft v2 계약은 단위, 근거 유형, 출처를 요구합니다. 유효하지 않은 구성은 비행할 수 없습니다. 지오메트리와 물리 데이터는 각 소스에서 다시 생성합니다.",
     "evidenceDetail1": "F10은 고정익 비행을 기록하고 F11은 기동을 표시합니다. CSV 내보내기와 비교에는 동일한 입력 테이프를 사용합니다.",
@@ -255,7 +254,13 @@
     "clearviewExample": "가져오기 테스트를 마친 예제: <a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>.",
     "moonrunnerCopy": "Club field에서 날개폭 2.12 m의 전익기를 손으로 던져 띄워 보세요. 두 엘레본이 피치와 롤을 제어하고 뒤쪽 프로펠러가 추력을 냅니다.",
     "corsairCopy": "착륙할 때는 플랩과 접이식 착륙 장치를 내리세요. Moki 5기통 성형 엔진을 장착한 날개폭 2.78 m의 이 기체는 지상에서 역갈매기형 날개를 접을 수 있습니다.",
-    "phoenixScenery": "Phoenix 비행장 가져오기 ↗"
+    "phoenixScenery": "Phoenix 비행장 가져오기 ↗",
+    "vehicleHeading": "FPV 드론 레이싱과 RC 비행선",
+    "vehicleStart": "홈의 Vehicles에서 ION R5 또는 RC blimp를 선택한 뒤 Fly를 누르세요. 두 기체 모두 실험용 모델입니다.",
+    "ionTitle": "ION R5 · FPV 레이싱 드론",
+    "ionCopy": "6S 배터리를 장착한 5인치 쿼드콥터를 기체 카메라 시점에서 조종하세요. Acro 모드와 자동으로 수평을 잡는 Angle 모드를 선택할 수 있습니다. Club field에서는 <kbd>T</kbd>로 코스를 바꿉니다. 출발대에서 스로틀을 낮추고 모터를 암한 뒤 <kbd>G</kbd>를 누르고 GO 신호를 기다리세요. 게이트를 순서대로 통과해 세 바퀴를 돌면 기록이 기기에 저장됩니다.",
+    "blimpTitle": "5 m RC 비행선",
+    "blimpCopy": "바퀴를 지면에 댄 상태 또는 높이 6 m에서 비행을 시작할 수 있습니다. 일시 정지 메뉴에서 밸러스트와 일정한 바람의 세기를 조절하세요. 전동 로터를 기울이면 상승하거나 감속합니다. Vehicles에서 Tiburón Blanco, Histórico, Cromo Carbono Azul 중 하나를 고를 수 있습니다."
   },
   "labels": {
     "navigation": "주 탐색 메뉴",
@@ -270,7 +275,9 @@
     "clubAlt": "피트, 파일럿, 주차된 차량이 있는 OpenRC 모형 비행 클럽",
     "truckAlt": "서스펜션과 오프로드 타이어가 장착된 주황색 Bisonte MT8 모델 렌더",
     "moonrunnerAlt": "Club field의 잔디 위를 나는 MoonRunner X99와 멀리 보이는 나무들",
-    "corsairAlt": "3엽 프로펠러와 역갈매기형 날개를 장착한 남색 Corsair"
+    "corsairAlt": "3엽 프로펠러와 역갈매기형 날개를 장착한 남색 Corsair",
+    "ionAlt": "전면 카메라와 프레임 위에 고정한 배터리를 갖춘 4로터 ION R5",
+    "blimpAlt": "상어 입 무늬가 있고 기낭 아래에 곤돌라가 달린 Tiburón Blanco 비행선"
   },
   "attributes": {
     "Activar modo noche": "야간 테마로 전환",

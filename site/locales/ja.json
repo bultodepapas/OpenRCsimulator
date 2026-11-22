@@ -76,7 +76,6 @@
     "downloadIntro": "ダウンロードしてZIPを展開し、起動するだけ。<br>Godotのインストールは不要です。",
     "downloadKicker": "02 / 次の離陸へ",
     "downloadNote": "初期アルファ版 v0.3.2。ZIPにはインストーラーもアーカイブ署名もありません。macOSアプリはアドホック署名済みですが、公証されていません。<br>航空機と地上車両のモデルは実験段階で、独立した実測とパイロット評価が必要です。",
-    "droneNote": "クアッドコプター ION R5 は Acro と Angle の両モードに対応。Tower Sprint などのコースで、ゲートをくぐる3周のローカルレースを楽しめます。全長5 mの RC 飛行船は電動ローターを傾けて推力の向きを変えます。",
     "electricLink": "電動推進 ↗",
     "evidenceBody": "openrc-aircraft v2規約では、単位、証拠の種類、ソースの明記が必要です。無効な構成では飛行できません。ジオメトリと物理データはソースから再生成します。",
     "evidenceDetail1": "F10で固定翼機の飛行を記録し、F11でマニューバをマークします。CSV出力と比較では同じ入力テープを使います。",
@@ -255,7 +254,13 @@
     "clearviewExample": "インポートテスト済みの例：<a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>。",
     "moonrunnerCopy": "翼幅2.12 mの無尾翼機を Club field で手投げ発進。左右のエレボンでピッチとロールを操り、後部のプロペラで推力を得ます。",
     "corsairCopy": "着陸時はフラップと引込脚を下ろします。Moki 製5気筒星形エンジンを搭載した翼幅2.78 mの機体で、地上では逆ガル翼を折りたためます。",
-    "phoenixScenery": "Phoenix の飛行場を取り込む ↗"
+    "phoenixScenery": "Phoenix の飛行場を取り込む ↗",
+    "vehicleHeading": "FPVドローンレースとRC飛行船",
+    "vehicleStart": "ホームの機体一覧で ION R5 または RC 飛行船を選び、飛行を開始します。どちらも実験機です。",
+    "ionTitle": "ION R5 · FPVレーシングドローン",
+    "ionCopy": "6S バッテリーを搭載した5インチクアッドを機載カメラの視点で操縦します。Acro と自動水平復帰する Angle を選べます。Club field では <kbd>T</kbd> でコースを変更できます。スタート台でスロットルを下げてアームし、<kbd>G</kbd> を押して GO の合図を待ちます。ゲートを順番に通過して3周すると、タイムが端末に記録されます。",
+    "blimpTitle": "全長5 mのRC飛行船",
+    "blimpCopy": "車輪を地面に着けた状態か、高さ6 mからのリリースで始められます。ポーズメニューでバラストと一定の風を調整し、電動ローターを傾けて上昇または減速します。機体一覧では Tiburón Blanco、Histórico、Cromo Carbono Azul の3種類の塗装を選べます。"
   },
   "labels": {
     "navigation": "メインナビゲーション",
@@ -270,7 +275,9 @@
     "clubAlt": "OpenRCの模型飛行クラブ。ピット、パイロット、駐車中の車両",
     "truckAlt": "サスペンションとオフロードタイヤを備えたオレンジ色のBisonte MT8のモデルレンダー",
     "moonrunnerAlt": "Club field の草地を飛ぶ MoonRunner X99 と遠くの木立",
-    "corsairAlt": "3枚羽根のプロペラと逆ガル翼を備えた濃紺の Corsair"
+    "corsairAlt": "3枚羽根のプロペラと逆ガル翼を備えた濃紺の Corsair",
+    "ionAlt": "フロントカメラと機体上部に固定したバッテリーを備えた4ローターの ION R5",
+    "blimpAlt": "サメの口が描かれ、船体下にゴンドラのある Tiburón Blanco 飛行船"
   },
   "attributes": {
     "Activar modo noche": "ナイトテーマに切り替え",

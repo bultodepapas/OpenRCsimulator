@@ -7,6 +7,12 @@ const websiteCopy = {
   supportHeading:'Thank you for supporting<br>what we build in the open.', supportCopy:'OpenAI supports this project with a ChatGPT Pro subscription. That support gives us more room to research, build and share OpenRC with the model aviation community.', supportLink:'Thank you, OpenAI ↗',
   supportProducts:'Ideas to explore.<br>Code to share.', chatgptRole:'Support for open-source development', codexRole:'AI development contributor', alongside:'ALSO ALONG FOR THE FLIGHT', savoxEarly:'Thank you, Savox, for welcoming your products into the project.',
   hangarHeading:'Every aircraft.<br>A different character.',hangarIntro:"Choose from eight stock airplane configurations across seven airframes, plus the X-Cell .60 helicopter trainer. Explore six of the models in 360°.", actualModel:'RENDERS OF THE PROJECT MODEL',
+  vehicleHeading: "FPV racing and RC blimp",
+  vehicleStart: "Open Home → Vehicles, select ION R5 or RC blimp, then choose Fly. Both models are experimental.",
+  ionTitle: "ION R5 · FPV racing quad",
+  ionCopy: "Fly from the onboard camera of this 5-inch, 6S racer in Acro or self-levelling Angle mode. At Club field, press <kbd>T</kbd> to change courses. Arm on the pad at low throttle, press <kbd>G</kbd> and wait for GO. Fly the gates in order for three laps to record a local time.",
+  blimpTitle: "5 m RC blimp",
+  blimpCopy: "Start on the wheels or release the blimp at 6 m. Adjust ballast and steady wind in the pause menu, then tilt the electric rotors to climb or brake. Choose from three finishes in Vehicles: Tiburón Blanco, Histórico and Cromo Carbono Azul.",
   moonrunnerCopy: "Hand-launch this 2.12 m flying wing over Club field. Two elevons control pitch and roll, and a rear-mounted propeller provides thrust.",
   corsairCopy: "Lower the flaps and retractable gear for landing. On the ground, fold the inverted gull wings of this 2.78 m warbird with its five-cylinder Moki radial.",
   phoenixScenery: "Import a Phoenix flying site ↗",
@@ -25,7 +31,7 @@ const websiteCopy = {
   truckKicker:'ALSO ON WHEELS / MODEL RENDER',truckCopy:'Two experimental RC vehicles in current source: a driving course, suspension and separate physics. Bisonte is shown here; Monster Car 2 extends the activity with nitro propulsion.',truckLink:'Explore the RC vehicle activity ↗',
   assetModels:'Models and geometry',assetModelsSub:'Sources, generators and articulation',assetAudio:'The soundscape',assetAudioSub:'Engines, wind, foliage and wildlife',assetInstruments:'Flight instrumentation',assetInstrumentsSub:'Telemetry, sticks, warnings and diagnostics',
   partnersKicker:'06 / PROJECT PARTNERS',partnersHeading:'Support moves<br>the controls, too.',partnersIntro:'Thank you to the people who make room for an open project to keep growing.',savoxRole:'PARTNER / RC SERVOS',savoxCopy:'Savox has authorized us to include representations of its products in OpenRC Simulator. Thank you for supporting the project and connecting RC hardware with open simulation.',savoxStatus:'Servo catalogue selection is planned. This support does not establish validation of our physical models.',savoxLink:'Explore the planned integration ↗',
-  developmentKicker:'07 / DEVELOPMENT IN THE OPEN',developmentHeading:'A project moving forward.<br>Without skipping the questions.',devAvailable:'AVAILABLE',devAvailableTitle:'Download and fly.',devAvailableCopy:'Desktop early alpha. See its release notes for package contents.',devDownload:'Go to downloads ↑',devActive:'IN DEVELOPMENT',devActiveTitle:'Test and refine.',devActiveCopy:'Experimental aircraft, engines, ground, controls, helicopter and RC vehicles. Current source keeps evolving.',devChanges:'Project changes ↗',devOpen:'STILL TO DEMONSTRATE',devOpenTitle:'Measure in the real world.',devOpenCopy:'Mass, center of gravity, inertia, propulsion, maneuvers and pilot evaluation. The next step needs evidence.',devRoadmap:'Roadmap and acceptance gates ↗',droneNote:"The ION R5 quad offers Acro and Angle modes and local three-lap gate races, including Tower Sprint. The 5 m RC blimp uses electric rotors that tilt to steer its thrust."
+  developmentKicker:'07 / DEVELOPMENT IN THE OPEN',developmentHeading:'A project moving forward.<br>Without skipping the questions.',devAvailable:'AVAILABLE',devAvailableTitle:'Download and fly.',devAvailableCopy:'Desktop early alpha. See its release notes for package contents.',devDownload:'Go to downloads ↑',devActive:'IN DEVELOPMENT',devActiveTitle:'Test and refine.',devActiveCopy:'Experimental aircraft, engines, ground, controls, helicopter and RC vehicles. Current source keeps evolving.',devChanges:'Project changes ↗',devOpen:'STILL TO DEMONSTRATE',devOpenTitle:'Measure in the real world.',devOpenCopy:'Mass, center of gravity, inertia, propulsion, maneuvers and pilot evaluation. The next step needs evidence.',devRoadmap:'Roadmap and acceptance gates ↗'
 };
 
 Object.assign(websiteCopy, {
@@ -98,6 +104,8 @@ alts.clubAlt = ['Club de aeromodelismo, boxes, pilotos y vehículos en OpenRC','
 alts.truckAlt = ['Render del modelo naranja Bisonte MT8 con suspensión y neumáticos todoterreno','Orange Bisonte MT8 model render with suspension and off-road tires'];
 
 alts.moonrunnerAlt = ["MoonRunner X99 sobre la hierba de Club field con los árboles al fondo", "MoonRunner X99 over the grass at Club field with trees in the distance"];
+alts.ionAlt = ["Dron ION R5 de cuatro hélices, con cámara delantera y batería sujeta sobre el chasis", "Four-propeller ION R5 with a forward-facing camera and top-mounted battery"];
+alts.blimpAlt = ["Dirigible Tiburón Blanco con boca de tiburón pintada y góndola bajo la envolvente", "Tiburón Blanco blimp with shark-mouth markings and a gondola beneath its envelope"];
 alts.corsairAlt = ["Corsair azul oscuro con hélice tripala y alas de gaviota invertida", "Dark blue Corsair with a three-blade propeller and inverted gull wings"];
 
 const englishMetadata = {

@@ -76,7 +76,6 @@
     "downloadIntro": "Scarica, estrai lo ZIP e avvia l’app.<br>Non serve installare Godot.",
     "downloadKicker": "02 / IL TUO PROSSIMO DECOLLO",
     "downloadNote": "Versione alfa iniziale v0.3.2. Gli ZIP non hanno installer né firma dell’archivio; l’app macOS è firmata ad hoc ma non notarizzata.<br>I modelli di aerei e veicoli terrestri restano sperimentali e richiedono misurazioni indipendenti e valutazione dei piloti.",
-    "droneNote": "Il quadricottero ION R5 offre modalità Acro e Angle e gare locali di tre giri tra i gate, anche sul circuito Tower Sprint. Il dirigibile RC da 5 m inclina i rotori elettrici per orientare la spinta.",
     "electricLink": "Propulsione elettrica ↗",
     "evidenceBody": "Il contratto openrc-aircraft v2 richiede unità, tipo di prova e fonte. Le configurazioni non valide non possono volare. Geometria e dati fisici vengono rigenerati dalle rispettive fonti.",
     "evidenceDetail1": "F10 registra i voli ad ala fissa; F11 contrassegna le manovre. Esportazione CSV e confronti usano la stessa sequenza di input.",
@@ -255,7 +254,13 @@
     "clearviewExample": "Esempio testato per l’importazione: <a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>.",
     "moonrunnerCopy": "Lancia a mano quest’ala volante da 2,12 m sul Club field. Due elevoni controllano beccheggio e rollio, mentre un’elica spingente fornisce la spinta.",
     "corsairCopy": "Abbassa i flap e il carrello retrattile per atterrare. A terra puoi ripiegare le ali a gabbiano rovesciato di questo aereo da 2,78 m con motore radiale Moki a cinque cilindri.",
-    "phoenixScenery": "Importa un campo di volo Phoenix ↗"
+    "phoenixScenery": "Importa un campo di volo Phoenix ↗",
+    "vehicleHeading": "Gare di droni FPV e dirigibile RC",
+    "vehicleStart": "Dalla schermata iniziale apri Veicoli, seleziona ION R5 o il dirigibile RC e avvia il volo. Entrambi i modelli sono sperimentali.",
+    "ionTitle": "ION R5 · Drone da corsa FPV",
+    "ionCopy": "Pilota questo quadricottero da 5 pollici con batteria 6S dalla telecamera di bordo. Scegli Acro o Angle con autolivellamento. Sul Club field cambia circuito con <kbd>T</kbd>. Arma i motori sulla piazzola con il gas al minimo, premi <kbd>G</kbd> e attendi il segnale GO. Attraversa i gate in ordine per tre giri per registrare il tuo tempo.",
+    "blimpTitle": "Dirigibile RC da 5 m",
+    "blimpCopy": "Parti sulle ruote o rilascia il dirigibile a 6 m di altezza. Regola la zavorra e il vento costante dal menu di pausa. Inclina i rotori elettrici per salire o frenare. In Veicoli puoi scegliere tra tre livree: Tiburón Blanco, Histórico e Cromo Carbono Azul."
   },
   "labels": {
     "navigation": "Navigazione principale",
@@ -270,7 +275,9 @@
     "clubAlt": "Club di aeromodellismo OpenRC, piazzole, piloti e veicoli parcheggiati",
     "truckAlt": "Rendering del modello arancione Bisonte MT8 con sospensioni e pneumatici da fuoristrada",
     "moonrunnerAlt": "MoonRunner X99 in volo sul prato del Club field, con alberi in lontananza",
-    "corsairAlt": "Corsair blu scuro con elica tripala e ali a gabbiano rovesciato"
+    "corsairAlt": "Corsair blu scuro con elica tripala e ali a gabbiano rovesciato",
+    "ionAlt": "ION R5 con quattro eliche, telecamera frontale e batteria fissata sopra il telaio",
+    "blimpAlt": "Dirigibile Tiburón Blanco con bocca di squalo dipinta e gondola sotto l’involucro"
   },
   "attributes": {
     "Activar modo noche": "Passa al tema notte",

@@ -182,8 +182,20 @@ html[data-theme=night] .donation-button { background:var(--lime); color:var(--in
 .hangar-stills img { display: block; width: 100%; height: auto; }
 .hangar-stills h3 { margin: 18px 0 8px; font-size: clamp(24px, 2.5vw, 38px); line-height: 1.1; }
 .hangar-stills h3 a:hover { text-decoration: underline; }
-.hangar-stills h3 span { font-size: .65em; }
+.hangar-stills h3 [aria-hidden="true"] { font-size: .65em; }
 .hangar-stills p { max-width: 60ch; font-size: 15px; line-height: 1.6; }
+.vehicles-shortcut { display: block; width: fit-content; margin-block-start: .4em; color: var(--lime); text-decoration: underline; text-underline-offset: .2em; }
+.vehicle-guide { background: var(--green); color: var(--paper); }
+.vehicle-guide header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(24px, 4vw, 64px);
+}
+.vehicle-guide header h2 { font-size: clamp(36px, 4.5vw, 76px); line-height: 1.05; }
+.vehicle-guide header p { max-width: 48ch; line-height: 1.6; }
+.vehicle-guide .hangar-stills { margin-block-end: 0; }
+.vehicle-guide kbd { padding: 0 .3em; border: 1px solid currentColor; border-radius: 3px; font-size: .9em; }
 @media (max-width: 700px) {
-  .hangar-stills { grid-template-columns: minmax(0, 1fr); }
+  .hangar-stills, .vehicle-guide header { grid-template-columns: minmax(0, 1fr); }
 }
