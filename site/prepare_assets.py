@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate the prepared OpenRC Simulator WebP image assets.
 
-Requires Pillow==12.3.0. Source images remain untouched. Field and vehicle images
+Requires Pillow==12.3.0. Source images remain untouched. Simulator images
 are reduced to at most 1600 pixels wide and encoded as WebP at quality 85. Savox
 display copies are cropped to the official mark with clear space, resized to
 768 pixels wide and encoded losslessly;
@@ -20,10 +20,12 @@ from PIL import Image, __version__ as pillow_version
 PINNED_PILLOW_VERSION = "12.3.0"
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = Path(__file__).resolve().parent / "assets"
-MAX_FIELD_WIDTH = 1600
+MAX_IMAGE_WIDTH = 1600
 MAX_BRAND_WIDTH = 768
 
-FIELD_IMAGES = (
+SIMULATOR_IMAGES = (
+    (Path("docs/media/studio-f4u-corsair-250.png"), "f4u-corsair.webp"),
+    (Path("docs/media/flight-moonrunner-x99.png"), "moonrunner-flight.webp"),
     (
         Path("docs/research/landscape-upgrade/LU-21/evidence/final-after-day/postcard_club.png"),
         "field-club.webp",
@@ -68,18 +70,18 @@ def report(source: Path, destination: Path, size: tuple[int, int], encoding: str
     )
 
 
-def convert_field_images() -> None:
-    for relative_source, filename in FIELD_IMAGES:
+def convert_simulator_images() -> None:
+    for relative_source, filename in SIMULATOR_IMAGES:
         source = ROOT / relative_source
         destination = ASSET_DIR / filename
         with Image.open(source) as opened:
             opened.load()
             require_supported_source_mode(opened, source)
             metadata = metadata_for_webp(opened)
-            if opened.width > MAX_FIELD_WIDTH:
-                height = max(1, round(opened.height * MAX_FIELD_WIDTH / opened.width))
+            if opened.width > MAX_IMAGE_WIDTH:
+                height = max(1, round(opened.height * MAX_IMAGE_WIDTH / opened.width))
                 image = opened.resize(
-                    (MAX_FIELD_WIDTH, height),
+                    (MAX_IMAGE_WIDTH, height),
                     Image.Resampling.LANCZOS,
                 )
             else:
@@ -138,7 +140,7 @@ def main() -> int:
 
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
     if not args.brands_only:
-        convert_field_images()
+        convert_simulator_images()
     convert_brand_images()
     return 0
 

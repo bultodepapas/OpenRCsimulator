@@ -6,7 +6,7 @@
 
 Für die automatische Einrichtung und Hubschrauber-Testflüge benötigst du v0.3.2 oder neuer. Wähle im Dateidialog **ClearView-Flugzeug-ZIP**. v0.3.0 erlaubt Testflüge mit Flächenflugzeugen, v0.2.9 bietet eine Vorschau.
 
-**Experimentell.** Das Modell behält sein ClearView-Aussehen, fliegt aber mit der OpenRC-Physik, nicht mit dem ClearView-Flugmodell: Flugzeuge mit einer geschätzten, auf das Modell abgestimmten Konfiguration, Nurflügler mit der Standardphysik des Skywalker X8 und Hubschrauber mit der Referenzphysik des X-Cell .60. Gespeicherte Flugzeuge können noch nicht vom Startbildschirm gestartet werden.
+**Experimentell.** Das Modell behält sein ClearView-Aussehen, fliegt aber mit der OpenRC-Physik, nicht mit dem ClearView-Flugmodell: Flugzeuge mit einer geschätzten, auf das Modell abgestimmten Konfiguration, Nurflügler mit der Standardphysik des Skywalker X8 (MoonRunner X99) und Hubschrauber mit der Referenzphysik des X-Cell .60. Gespeicherte Flugzeuge können noch nicht vom Startbildschirm gestartet werden.
 
 ## Wo herunterladen?
 
@@ -19,7 +19,7 @@ Importgetestetes Beispiel: [MC Extra 330 Red](https://time2rc.s3.amazonaws.com/m
 
 1. Lade die `.zip`-Datei des Modells herunter und entpacke sie nicht.
 2. Öffne **Werkstatt → Flugzeug erstellen… → Import → Modell wählen…**. Wähle die ZIP-Datei; wähle bei einem Paket ein Flugzeug.
-3. Prüfe Vorschau und Meldungen. Wähle **Automatisch für den Flug einrichten** (bei einem Hubschrauber **Als Hubschrauber fliegen**), prüfe die Schätzwerte und nutze **Probeflug**. Gib einen Namen ein und wähle **Flugzeug speichern** oder **Entwurf speichern**.
+3. Wähle bei einem konventionellen Flugzeug **Automatisch für den Flug einrichten**, prüfe die Schätzwerte und starte den **Probeflug**. Wähle bei einem Hubschrauber **Als Hubschrauber fliegen** und bestätige den Start. Speichere einen Entwurf, um später weiterzuarbeiten. **Flugzeug speichern** ist für Flugzeuge verfügbar, die mit eigener Konfiguration die Prüfung bestehen.
 
 ## Welche Dateien funktionieren?
 

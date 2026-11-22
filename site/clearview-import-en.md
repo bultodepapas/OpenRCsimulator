@@ -6,7 +6,7 @@
 
 Use v0.3.2 or later for automatic setup and helicopter trials. Choose **ClearView aircraft ZIP** in the file picker. v0.3.0 supports airplane trials and v0.2.9 supports previews.
 
-**Experimental.** The model keeps its ClearView look but flies with OpenRC physics, not ClearView’s flight model: airplanes with an estimated configuration sized to the model, flying wings with the stock Skywalker X8 physics and helicopters with the X-Cell .60 reference physics. Saved aircraft cannot be launched from Home yet.
+**Experimental.** The model keeps its ClearView look but flies with OpenRC physics, not ClearView’s flight model: airplanes with an estimated configuration sized to the model, flying wings with the stock Skywalker X8 (MoonRunner X99) physics and helicopters with the X-Cell .60 reference physics. Saved aircraft cannot be launched from Home yet.
 
 ## Where to download
 
@@ -19,7 +19,7 @@ Tested example: [MC Extra 330 Red](https://time2rc.s3.amazonaws.com/mc-models/RP
 
 1. Download the model’s `.zip` and keep it zipped.
 2. Open **Workshop → Create aircraft… → Import → Choose model…**. Select the ZIP; for a pack, choose one aircraft.
-3. Check the preview and messages. Choose **Set up for flight automatically** (for a helicopter, **Fly as a helicopter**), review the estimates, then use **Test fly**. Name it and choose **Save aircraft** or **Save draft**.
+3. For a conventional airplane, choose **Set up for flight automatically**, review the estimates and select **Test fly**. For a helicopter, choose **Fly as a helicopter** and confirm to start the trial. Save a draft to keep editing. **Save aircraft** is available for airplanes that pass the checks with their own configuration.
 
 ## Which files work?
 
