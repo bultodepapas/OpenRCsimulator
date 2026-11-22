@@ -6,13 +6,35 @@ const VehicleData := preload("res://physics/ground_vehicle/vehicle_data.gd")
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Course := preload("res://physics/ground_vehicle/course.gd")
 
+class ExportFaultSession extends "res://sim/ground_vehicle/session.gd":
+	var fail_after_metadata_write := false
+	var refuse_metadata_cleanup := false
+	var refuse_stage_cleanup := false
+	var partial_metadata_path := ""
+
+	func _write_new_file(path: String, content: String) -> String:
+		if not fail_after_metadata_write:
+			return super._write_new_file(path, content)
+		var status := super._write_new_file(path, "{")
+		if not status.is_empty():
+			return status
+		partial_metadata_path = path
+		return "injected metadata write failure"
+
+	func _remove_recording_export_path(path: String) -> Error:
+		if (refuse_metadata_cleanup and path == partial_metadata_path) \
+				or (refuse_stage_cleanup and path.ends_with(".recording")):
+			return ERR_FILE_NO_PERMISSION
+		return super._remove_recording_export_path(path)
+
+
 var checks := 0
 var failures := 0
 
 
 func _initialize() -> void:
 	_test_sha256_contract()
-	var session = Session.new()
+	var session = ExportFaultSession.new()
 	_test_prepare_and_transaction(session)
 	if failures == 0:
 		_test_braking_checkpoint_events()
@@ -425,7 +447,9 @@ func _test_recording_export(session) -> void:
 		and not session.event_tape_snapshot().is_empty())
 	_check("recording stops", session.stop_recording() and not session.recording)
 	var unique_name := "rcv_session_test_%d" % Time.get_ticks_usec()
+	_test_recording_write_failure(session, unique_name)
 	var exported: Dictionary = session.export_recording(unique_name)
+	_check("same-name retry writes the versioned CSV and JSON metadata", exported.get("ok", false))
 	_check("versioned CSV and JSON metadata export successfully", exported.get("ok", false)
 		and FileAccess.file_exists(str(exported.get("csv_path", "")))
 		and FileAccess.file_exists(str(exported.get("metadata_path", ""))))
@@ -465,7 +489,89 @@ func _test_recording_export(session) -> void:
 		DirAccess.remove_absolute(csv_abs)
 		DirAccess.remove_absolute(json_abs)
 	_check("export rejects traversal-like names", not session.export_recording("../bad").get("ok", false))
+	if exported.get("ok", false):
+		_test_fresh_name_retry(session, unique_name + "_next")
 	_test_recording_limit(session)
+
+
+func _test_recording_write_failure(session: ExportFaultSession, name: String) -> void:
+	var directory := ProjectSettings.globalize_path("user://rcv")
+	var base := directory.path_join(name)
+	var stage := directory.path_join("." + name + ".recording")
+	var samples := session._record_samples.to_byte_array()
+	var generation := session._recording_generation
+	session.fail_after_metadata_write = true
+	var failed := session.export_recording(name)
+	_check("metadata failure occurs after the temporary JSON was created", not failed.ok
+		and failed.error.contains("injected metadata write failure") and not session.partial_metadata_path.is_empty())
+	_check("metadata failure clears both temporary files and leaves no output pair",
+		not DirAccess.dir_exists_absolute(stage) and not FileAccess.file_exists(base + ".csv")
+		and not FileAccess.file_exists(base + ".json"))
+	_check("metadata failure retains the samples and generation in memory", session.has_unexported_recording()
+		and session._recording_generation == generation and session._record_samples.to_byte_array() == samples)
+
+	var failed_cleanup_name := name + "_cleanup"
+	var blocked_stage := directory.path_join("." + failed_cleanup_name + ".recording")
+	session.refuse_metadata_cleanup = true
+	var failed_cleanup := session.export_recording(failed_cleanup_name)
+	_check("cleanup failure is reported alongside the original metadata failure", not failed_cleanup.ok
+		and failed_cleanup.error.contains("injected metadata write failure")
+		and failed_cleanup.error.contains("recording cleanup failed")
+		and FileAccess.file_exists(session.partial_metadata_path))
+	session.refuse_metadata_cleanup = false
+	DirAccess.remove_absolute(session.partial_metadata_path)
+	DirAccess.remove_absolute(blocked_stage)
+	session.fail_after_metadata_write = false
+
+	var existing_directory := base + ".json.tmp"
+	var made_directory := DirAccess.make_dir_absolute(existing_directory)
+	_check("fixture reserves a preexisting output directory", made_directory == OK)
+	if made_directory == OK:
+		var blocked := session.export_recording(name)
+		_check("an existing user's directory remains untouched after refusal", not blocked.ok
+			and DirAccess.dir_exists_absolute(existing_directory))
+		DirAccess.remove_absolute(existing_directory)
+	var held_stage := DirAccess.make_dir_absolute(stage)
+	_check("fixture reserves a competing export stage", held_stage == OK)
+	if held_stage == OK:
+		var competing := session.export_recording(name)
+		_check("this exporter cannot adopt another attempt's staging directory", not competing.ok
+			and DirAccess.dir_exists_absolute(stage))
+		DirAccess.remove_absolute(stage)
+	if OS.get_name() in ["Linux", "macOS"]:
+		var parent := DirAccess.open(directory)
+		var link := base + ".json"
+		var link_error := parent.create_link(base + ".missing", link)
+		_check("fixture creates a dangling metadata link", link_error == OK)
+		if link_error == OK:
+			var blocked := session.export_recording(name)
+			_check("export preserves a dangling link at an output path",
+				not blocked.ok and parent.is_link(link.get_file()))
+			DirAccess.remove_absolute(link)
+	_check("the original recording is still pending before the same-name retry", session.has_unexported_recording())
+
+
+func _test_fresh_name_retry(session: ExportFaultSession, name: String) -> void:
+	var captured := session.start_recording() and session.stop_recording()
+	_check("fresh-name retry has a separate stopped recording", captured)
+	if not captured:
+		return
+	session.fail_after_metadata_write = true
+	var failed := session.export_recording(name)
+	session.fail_after_metadata_write = false
+	_check("the second failed attempt leaves its recording pending", not failed.ok and session.has_unexported_recording())
+	session.refuse_stage_cleanup = true
+	var fresh_name := name + "_fresh"
+	var fresh := session.export_recording(fresh_name)
+	session.refuse_stage_cleanup = false
+	_check("a fresh name exports the retained recording and reports any cleanup warning",
+		fresh.ok and fresh.get("cleanup_warning", "").contains("recording cleanup failed")
+		and not session.has_unexported_recording())
+	if fresh.ok:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(str(fresh.csv_path)))
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(str(fresh.metadata_path)))
+		var directory := ProjectSettings.globalize_path("user://rcv")
+		DirAccess.remove_absolute(directory.path_join("." + fresh_name + ".recording"))
 
 
 func _test_recording_limit(session) -> void:
