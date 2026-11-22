@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, 'perf/three-aircraft-performance-cycle-*']
     paths:
-      - 'tools/godtest/**/*.py'
+      - 'tools/godtest/**'
       - 'tools/debug/frame_watch.py'
       - 'tools/debug/test_frame_watch.py'
       - 'tools/graphics/launch.py'
@@ -33,6 +33,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: godtest-tooling-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   contracts:
     name: Tooling on ${{ matrix.os }} (no GPU qualification)
@@ -45,6 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # repository pin, v4.4.0
         with:
+          persist-credentials: false
           sparse-checkout: |
             tools
             research/performance

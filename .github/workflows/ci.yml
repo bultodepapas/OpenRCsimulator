@@ -36,6 +36,7 @@ jobs:
   scope:
     name: CI selection and release preflight
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     outputs:
       app: ${{ steps.select.outputs.app }}
       three: ${{ steps.select.outputs.three }}
@@ -45,10 +46,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0 # Tag/version preflight and multi-commit push comparison.
-      - name: CI orchestration regressions
-        run: python3 -m unittest discover -s tools/ci -p 'test_*.py'
-      - name: Host admission and process ownership regressions
-        run: python3 -m unittest discover -s tools/testqueue -p 'test_*.py'
+          filter: blob:none # Keep all commits and tags. Historical file contents are fetched on demand.
       - name: Check release source, version and notes before expensive jobs
         run: python3 tools/ci/release_preflight.py --root . --event "$GITHUB_EVENT_NAME" --ref "$GITHUB_REF" --sha "$GITHUB_SHA"
       - name: Record conservative selection (shadow mode keeps full production)
@@ -63,6 +61,39 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  tooling:
+    name: CI orchestration and host regressions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONFAULTHANDLER: '1' # Preserve a Python stack if the observed native-process crash recurs.
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        id: checkout
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/
+            /.mcp.json
+            /app/*.sh
+            /app/*.cfg
+            /app/project.godot
+            /app/tests/*.py
+            /tools/**/*.py
+            /tools/**/*.sh
+            /research/**/toolchain-lock.json
+            /research/native-kernel/*.py
+      - name: Validate GitHub Actions workflows
+        run: bash tools/ci/check-workflows.sh
+      - name: CI orchestration regressions
+        if: ${{ !cancelled() && steps.checkout.outcome == 'success' }}
+        run: python3 -m unittest discover -s tools/ci -p 'test_*.py'
+      - name: Host admission and process ownership regressions
+        if: ${{ !cancelled() && steps.checkout.outcome == 'success' }}
+        run: python3 -m unittest discover -s tools/testqueue -p 'test_*.py'
+
   publication-fixture-evidence:
     name: Publication source rebind evidence
     if: github.event_name == 'workflow_dispatch' && inputs.publication_rebind
@@ -75,6 +106,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
@@ -96,6 +129,8 @@ jobs:
         working-directory: prototypes/stage0/three
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
@@ -105,15 +140,28 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npx playwright install --with-deps chromium
-      - run: npm run capture
+      - name: Render three fresh prototype captures
+        shell: bash
+        run: |
+          shots=(../capture-three.png ../capture-three-inspect.png ../capture-three-inspect-deflected.png)
+          rm -f -- "${shots[@]}"
+          npm run capture
+          for shot in "${shots[@]}"; do
+            test -s "$shot" || { echo "Missing fresh capture: $shot" >&2; exit 1; }
+          done
       - run: npm run e2e
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: captures-three
-          path: prototypes/stage0/capture-three*.png
+          path: |
+            prototypes/stage0/capture-three.png
+            prototypes/stage0/capture-three-inspect.png
+            prototypes/stage0/capture-three-inspect-deflected.png
+          if-no-files-found: error
+          retention-days: 14
 
   app:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     name: Godot app (${{ matrix.part }} ${{ matrix.shard }})
     runs-on: ubuntu-24.04
@@ -284,7 +332,7 @@ jobs:
           retention-days: 7
 
   native-linux:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     name: RC native Linux build
     runs-on: ubuntu-24.04
@@ -319,12 +367,12 @@ jobs:
 
   native-kernel-macos:
     name: NK-3 native kernel qualification (macOS ARM64)
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     uses: ./.github/workflows/native-macos.yml
 
   native-kernel-linux:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     name: NK-3 native kernel qualification (Linux)
     runs-on: ubuntu-24.04
@@ -486,7 +534,7 @@ jobs:
           retention-days: 7
 
   native-kernel-windows:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     # NK-4 (owner decision 2026-11-18, native kernel always): required. Its qualified DLL, receipt and oracle
     # evidence feed the release export; native-kernel-windows-package qualifies the exported executable.
@@ -648,7 +696,7 @@ jobs:
           retention-days: 7
 
   visuals:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     name: Godot visual captures
     runs-on: ubuntu-24.04
@@ -729,12 +777,16 @@ jobs:
           path: |
             app/captures/*
             !app/captures/l9c/stripes/raw-app/**
+          if-no-files-found: error
+          retention-days: 14
       - name: Upload complete captures and failure evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always() && (steps.capture_project_evidence.outcome != 'success' || steps.capture_project_evidence.outputs.equivalent != 'true')
         with:
           name: captures-app
           path: app/captures/*
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Upload visual import diagnostics
         if: always()
@@ -749,7 +801,7 @@ jobs:
   # compare every output with the unchanged full job above. `CI required` does not depend on these
   # jobs, and continue-on-error keeps a shadow difference from marking the run failed. Manual opt-in only.
   visual-groups:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true' && github.event_name == 'workflow_dispatch' && inputs.visual_shadow == true
     name: Visual group shadow (${{ matrix.group }})
     runs-on: ubuntu-24.04
@@ -848,7 +900,7 @@ jobs:
   # Legacy modes audit (2026-11-20), Compatibility removal gate 3: the same captures on Vulkan through Mesa lavapipe.
   # Shadow evidence only: manual opt-in, outside `CI required`; image contracts and goldens stay on Compatibility.
   vulkan-captures:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true' && github.event_name == 'workflow_dispatch' && inputs.vulkan_captures == true
     name: Vulkan capture shadow (${{ matrix.renderer }})
     runs-on: ubuntu-24.04
@@ -895,7 +947,7 @@ jobs:
           retention-days: 7
 
   native-windows:
-    needs: scope
+    needs: [scope, tooling]
     if: needs.scope.outputs.app == 'true'
     name: RC native Windows build
     runs-on: windows-2025-vs2026
@@ -1068,6 +1120,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0 # full history and tags: git describe names the packages and the build (UI-04a)
+          filter: blob:none
       - name: Install export dependencies
         timeout-minutes: 15
         run: |
@@ -1155,6 +1208,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-builds
+          compression-level: 0 # The three platform payloads are already ZIP archives.
           path: |
             ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-linux-x86_64.zip
             ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-windows-x86_64.zip
@@ -1258,12 +1312,20 @@ jobs:
   required:
     name: CI required
     if: always()
-    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-windows, native-kernel-macos, native-rc-runtime, export, native-kernel-windows-package]
+    needs: [scope, tooling, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-windows, native-kernel-macos, native-rc-runtime, export, native-kernel-windows-package]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 2 # Verify PR merge parents; policy fetches only an event-authorized missing base.
+          # Reconciliation walks every GDScript and hashes it with its runner inputs.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /app/**/*.gd
+            /app/test.sh
+            /app/get-godot.sh
+            /tools/ci/
+            /tools/godot/*.py
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: ci-selection
