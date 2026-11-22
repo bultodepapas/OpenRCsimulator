@@ -1341,6 +1341,11 @@ func _on_presentation_option_changed() -> void:
 	call_deferred("_refresh_shared_theme")
 
 
+## The current presentation choices, including an applied preview.
+func presentation_snapshot() -> Dictionary:
+	return _draft.duplicate(true)
+
+
 func _emit_presentation(config: Dictionary = {}) -> void:
 	presentation_changed.emit((config if not config.is_empty() else _draft).duplicate(true))
 

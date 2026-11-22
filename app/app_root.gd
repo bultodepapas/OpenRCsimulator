@@ -3203,7 +3203,14 @@ func _push_telemetry_state() -> void:
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
 	_refresh_telemetry_home_note()
-	if not _telemetry_renderer_noted and is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON:
+	if not _telemetry_is_on():
+		_telemetry_graphics_values.clear()
+		_telemetry_graphics_profile = "unknown"
+		_telemetry_graphics_revision = 0
+		_telemetry_activity_revision = 0
+		_bind_telemetry_reset(null, &"")
+		return
+	if not _telemetry_renderer_noted:
 		_telemetry_renderer_noted = true # a session fact: checked once, counted once, when collection is on
 		if _telemetry_renderer_unavailable():
 			telemetry.note_error("renderer_unavailable")
@@ -3229,8 +3236,14 @@ func _telemetry_renderer_unavailable() -> bool:
 	return failed is Dictionary and str(failed.get("build", "")) == RendererGuard.build_identity()
 
 
+func _telemetry_is_on() -> bool:
+	return is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON
+
+
 ## Settings can preview and revert a configuration before it is saved. Capture the applied values here.
 func _remember_telemetry_graphics(config: Dictionary, calibration_changed := false) -> void:
+	if not _telemetry_is_on():
+		return
 	var values := {"lens": LensSettings.validate(config), "camera": DisplayPreferences.CameraSettings.normalized(config)}
 	for key: String in DisplayPreferences.graphics_default_keys():
 		values[key] = config.get(key)
@@ -3292,6 +3305,13 @@ func _telemetry_note() -> String:
 ## forces or replay data. Loading, menus over an activity, a paused tree and an unfocused or minimized window are
 ## not eligible (the service closes its open window and re-primes its clock).
 func _telemetry_context() -> Dictionary:
+	if not _telemetry_is_on():
+		return {}
+	if _telemetry_graphics_values.is_empty():
+		# Admission can happen inside Settings while a preview is applied but not yet saved.
+		var settings := screens.get_screen("settings") as SettingsScreen
+		var config := settings.presentation_snapshot() if is_instance_valid(settings) else display_preferences.config
+		_remember_telemetry_graphics(config)
 	var mode := "other"
 	var vehicle := ""
 	var custom := false
