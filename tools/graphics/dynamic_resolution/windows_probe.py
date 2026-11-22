@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import time
 
@@ -18,8 +19,13 @@ from tools.testqueue.worker import desktop_ready, external_simulators
 from tools.godot.run_checked import inspect_log
 
 
+def _sha256(path: Path) -> str:
+    with path.open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
 def _available(owner: str | None = None) -> bool:
-    host = rpc("hosts", timeout=5)
+    host = rpc("hosts", timeout=15)
     reservation = host.get("reservation")
     if (host.get("condition") not in {"READY", "DRAINING"} or host.get("claims") != []
             or host.get("scheduler", {}).get("state") != "READY"
@@ -27,7 +33,7 @@ def _available(owner: str | None = None) -> bool:
             or not desktop_ready()):
         return False
     if owner is None:
-        return reservation is None and not external_simulators()
+        return reservation is None and host.get("occupancy", {}).get("external_simulators") is False
     return isinstance(reservation, dict) and reservation.get("owner") == owner
 
 
@@ -47,11 +53,7 @@ def _engine_identity(engine: Path) -> dict[str, str]:
         if engine.name.lower().endswith(suffix):
             files.append(engine.with_name(engine.name[:-len(suffix)] + ".exe"))
             break
-    hashes = {}
-    for path in files:
-        with path.open("rb") as stream:
-            hashes[path.name] = hashlib.file_digest(stream, "sha256").hexdigest()
-    return hashes
+    return {path.name: _sha256(path) for path in files}
 
 
 def run(args: argparse.Namespace) -> int:
@@ -71,7 +73,8 @@ def run(args: argparse.Namespace) -> int:
         time.sleep(2)
     if args.stress:
         script = "probe_flight_resolution_stress.gd"
-        probe_args = [f"--probe-target={args.fps}", f"--probe-fixed={args.fixed}", f"--probe-load={args.load}"]
+        probe_args = [f"--probe-target={args.fps}", f"--probe-fixed={args.fixed}", f"--probe-load={args.load}",
+                      f"--probe-heavy-seconds={args.heavy_seconds}", f"--probe-recovery-seconds={args.recovery_seconds}"]
     else:
         script = "probe_completed_gpu_frame.gd"
         probe_args = []
@@ -86,8 +89,11 @@ def run(args: argparse.Namespace) -> int:
     profile.mkdir()
     environment = dict(os.environ)
     environment["APPDATA"] = str(profile)
+    sources = ["project.godot", f"tests/{script}", "render/flight_dynamic_resolution.gd",
+               "render/flight_resolution_policy.gd", "render/reconstruction.gd", "render/render_timing_lease.gd"]
     identity = {"command": command, "engine_files": _engine_identity(engine),
-                "patch_sha256": hashlib.sha256((Path(__file__).parent / "completed_viewport_gpu.patch").read_bytes()).hexdigest(),
+                "source_sha256": {source: _sha256(app / source) for source in sources},
+                "patch_sha256": _sha256(Path(__file__).parent / "completed_viewport_gpu.patch"),
                 "reservation_owner": owner}
     write_json(output / "experiment.json", identity)
     process = OwnedProcess(command, app, environment, output / "launcher.log")
@@ -103,14 +109,14 @@ def run(args: argparse.Namespace) -> int:
             cleanup = True
             raise RuntimeError("The reserved desktop lost exclusivity before launch.")
         process.start()
-        deadline = time.monotonic() + (65 if args.stress else 30)
+        deadline = time.monotonic() + (args.heavy_seconds + args.recovery_seconds + 31 if args.stress else 30)
         while process.alive():
             if time.monotonic() >= deadline:
                 raise TimeoutError("The rendered case exceeded its time budget.")
             if not _available(owner):
                 observations.append("desktop or queue contention during the case")
                 break
-            time.sleep(1)
+            time.sleep(2)
         exit_code = process.poll()
         log = inspect_log(engine_log, ["target_fps" if args.stress else "Completed GPU frame probe: 0 failed"])
         if log["counts"]["error"]:
@@ -123,6 +129,13 @@ def run(args: argparse.Namespace) -> int:
         size = result.get("output") if args.stress else result.get("full", {}).get("output_size")
         if size != [int(part) for part in args.resolution.split("x")]:
             observations.append("measured output did not match the requested pixel dimensions")
+        if args.stress and result and result.get("vsync") != 0:
+            observations.append("VSync remained active")
+        if args.stress and args.fullscreen and result and result.get("window_mode") not in (3, 4):
+            observations.append("viewport did not enter fullscreen")
+    except (OSError, RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+        observations.append(str(error))
+        raise
     finally:
         if not cleanup:
             process.close()
@@ -146,11 +159,13 @@ def main() -> int:
     parser.add_argument("--stress", action="store_true")
     parser.add_argument("--fixed", type=int, choices=(0, 75, 85, 100), default=0)
     parser.add_argument("--fps", type=int, choices=(30, 60, 90, 120), default=120)
-    parser.add_argument("--load", type=int, choices=range(1, 385), metavar="1..384", default=64)
+    parser.add_argument("--load", type=int, choices=range(1, 769), metavar="1..768", default=64)
+    parser.add_argument("--heavy-seconds", type=int, choices=range(18, 46), metavar="18..45", default=18)
+    parser.add_argument("--recovery-seconds", type=int, choices=range(16, 31), metavar="16..30", default=16)
     parser.add_argument("--wait", type=int, choices=range(0, 301), metavar="0..300", default=30)
     try:
         return run(parser.parse_args())
-    except (OSError, RuntimeError, ValueError) as error:
+    except (OSError, RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
         print(f"Windows GPU probe: {error}", file=sys.stderr)
         return 2
 

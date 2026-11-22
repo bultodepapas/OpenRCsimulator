@@ -44,9 +44,9 @@ draw, an 85% draw and restoration. Use the checked runner on an admitted target.
 
 For an experimental binary on the enrolled Windows host, [windows_probe.py](windows_probe.py)
 uses the documented manual desktop reservation and tracks the owned process tree.
-It reports the experimental binary and patch hashes, logs and teardown in the
-selected output directory. Run with a fresh output path. The probe executes in
-a visible window.
+It records the experimental binary, patch and probe source hashes, logs and
+teardown in the selected output directory. Run with a fresh output path. The
+probe executes in a visible window.
 
 The Windows lab build used the patched source and SCons 4.10.1 with
 `platform=windows use_mingw=yes target=template_debug arch=x86_64 d3d12=no
@@ -63,10 +63,11 @@ Use its `.console.exe` wrapper with the adjacent game executable for the probe.
 3. With resolution, workload and target held constant, compare `--fixed 100`,
    `--fixed 85` and `--fixed 0` (adaptive). Record median and tail frame times,
    late callbacks, time at each observed 3D size and the first frames after
-   each transition. The high-load phase lasts 18 s. The light phase lasts 16 s
-   so the controller can recover after its dwell. Repeat decisive cases in
-   reverse order. Reject a case when another task uses the host or the probe
-   window loses focus.
+   each transition. The high-load and light phases default to 18 s and 16 s.
+   Use `--heavy-seconds 40 --recovery-seconds 26` to screen for scale changes
+   during a longer constant workload and to allow two recovery steps. Repeat
+   decisive cases in reverse order. Reject a case when another task uses the
+   host or the probe window loses focus.
 4. Use 60 FPS as a control on a workload with spare capacity. The fixed ceiling
    should hold. A useful 120 FPS result reduces missed frames during the
    heavy phase and returns to the ceiling during recovery. Compare the motion

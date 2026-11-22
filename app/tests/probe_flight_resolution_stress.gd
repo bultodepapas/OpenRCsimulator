@@ -43,14 +43,17 @@ func _run() -> void:
 	var target := _option("target", 120)
 	var fixed := _option("fixed", 0)
 	var load_count := _option("load", 64)
+	var heavy_seconds := _option("heavy-seconds", 18)
+	var recovery_seconds := _option("recovery-seconds", 16)
 	var output := root.size
 	if not DynamicResolution.supports(root) or target not in [30, 60, 90, 120] \
-			or fixed not in [0, 75, 85, 100] or load_count < 1 or load_count > 384 \
+			or fixed not in [0, 75, 85, 100] or load_count < 1 or load_count > 768 \
+			or heavy_seconds < 18 or heavy_seconds > 45 or recovery_seconds < 16 or recovery_seconds > 30 \
 			or output.x <= 0 or output.y <= 0:
 		printerr("Stress probe requires a supported rendered viewport and valid target, fixed scale and load.")
 		quit(1)
 		return
-	root.vsync_mode = Window.VSYNC_DISABLED
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED, root.get_window_id())
 	Engine.max_fps = 240
 	var camera := Camera3D.new()
 	camera.position.z = 2.0
@@ -80,8 +83,8 @@ func _run() -> void:
 		RenderingServer.call(DynamicResolution.SAMPLE_TOGGLE_METHOD, rid, true)
 	var reports: Array[Dictionary] = []
 	reports.append(await _measure("warmup", 3.0, load_count, target, fixed, material, owner, config))
-	reports.append(await _measure("heavy", 18.0, load_count, target, fixed, material, owner, config))
-	reports.append(await _measure("recovery", 16.0, 1, target, fixed, material, owner, config))
+	reports.append(await _measure("heavy", heavy_seconds, load_count, target, fixed, material, owner, config))
+	reports.append(await _measure("recovery", recovery_seconds, 1, target, fixed, material, owner, config))
 	owner.stop(root)
 	if lease != 0:
 		RenderingServer.call(DynamicResolution.SAMPLE_TOGGLE_METHOD, rid, false)
@@ -92,6 +95,7 @@ func _run() -> void:
 		renderer = RenderingServer.get_current_rendering_method(),
 		driver = RenderingServer.get_current_rendering_driver_name(),
 		refresh_hz = DisplayServer.screen_get_refresh_rate(root.current_screen),
+		window_mode = root.mode,
 		vsync = DisplayServer.window_get_vsync_mode(root.get_window_id()), fps_cap = Engine.max_fps, phases = reports}
 	print(JSON.stringify(result))
 	var valid := root.size == output and int(reports[1].completed_frames) > 30 and int(reports[2].completed_frames) > 30
