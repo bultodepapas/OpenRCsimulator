@@ -6,6 +6,8 @@ from __future__ import annotations
 
 import base64
 import json
+import stat
+import subprocess
 import os
 from pathlib import Path
 import sys
@@ -407,6 +409,76 @@ class GA4Case(unittest.TestCase):
         body = json.loads(pad(claims))
         self.assertEqual((body["scope"], body["iat"], body["exp"]), (ga4.SCOPE, int(NOW), int(NOW) + 3600))
         key.public_key().verify(pad(signature), f"{head}.{claims}".encode(), padding.PKCS1v15(), hashes.SHA256())
+
+
+class CredentialFileTests(unittest.TestCase):
+    def setUp(self):
+        # Windows ACL tests require a volume with native DACL support.
+        scratch = Path("D:/") if os.name == "nt" and Path("D:/").is_dir() else None
+        temporary = tempfile.TemporaryDirectory(prefix="openrc-ga4-acl-", dir=scratch)
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+        self.output = self.directory / "user.json"
+        self.payload = {"refresh_token": "synthetic-test-value"}
+
+    @unittest.skipUnless(os.name == "posix", "POSIX file modes")
+    def test_private_creation_and_replacement_under_umask_022(self):
+        previous = os.umask(0o022)
+        try:
+            ga4._write_credentials(self.output, self.payload)
+            self.assertEqual(stat.S_IMODE(self.output.stat().st_mode), 0o600)
+            self.output.chmod(0o644)
+            real_replace = os.replace
+
+            def replace(source, target):
+                self.assertEqual(stat.S_IMODE(source.stat().st_mode), 0o600)
+                return real_replace(source, target)
+
+            with mock.patch.object(ga4.os, "replace", side_effect=replace):
+                ga4._write_credentials(self.output, self.payload)
+        finally:
+            os.umask(previous)
+        self.assertEqual(stat.S_IMODE(self.output.stat().st_mode), 0o600)
+        self.assertEqual(json.loads(self.output.read_text(encoding="utf-8")), self.payload)
+
+    @unittest.skipUnless(os.name == "nt", "Windows DACLs")
+    def test_windows_creation_and_replacement_use_a_protected_user_dacl(self):
+        def assert_private(path):
+            command = """
+            $ErrorActionPreference = 'Stop'
+            $acl = [System.IO.File]::GetAccessControl($env:OPENRC_GA4_TEST_FILE)
+            $user = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+            $rules = @($acl.GetAccessRules($true, $true, [Security.Principal.SecurityIdentifier]))
+            if (-not $acl.AreAccessRulesProtected -or $rules.Count -ne 1 -or
+                $rules[0].IdentityReference.Value -ne $user -or $rules[0].IsInherited -or
+                $rules[0].AccessControlType -ne 'Allow') { exit 1 }
+            """
+            subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", command],
+                           env={**os.environ, "OPENRC_GA4_TEST_FILE": str(path)},
+                           capture_output=True, check=True)
+
+        ga4._write_credentials(self.output, self.payload)
+        assert_private(self.output)
+        subprocess.run(["icacls.exe", str(self.output), "/grant", "*S-1-1-0:(R)"],
+                       capture_output=True, check=True)
+        real_replace = os.replace
+
+        def replace(source, target):
+            assert_private(source)
+            return real_replace(source, target)
+
+        with mock.patch.object(ga4.os, "replace", side_effect=replace):
+            ga4._write_credentials(self.output, self.payload)
+        assert_private(self.output)
+        self.assertEqual(json.loads(self.output.read_text(encoding="utf-8")), self.payload)
+
+    def test_failed_replace_keeps_original_and_removes_private_temp(self):
+        self.output.write_text("existing value", encoding="utf-8")
+        with mock.patch.object(ga4.os, "replace", side_effect=OSError("simulated failure")):
+            with self.assertRaisesRegex(OSError, "simulated failure"):
+                ga4._write_credentials(self.output, self.payload)
+        self.assertEqual(self.output.read_text(encoding="utf-8"), "existing value")
+        self.assertEqual(list(self.directory.iterdir()), [self.output])
 
 
 if __name__ == "__main__":

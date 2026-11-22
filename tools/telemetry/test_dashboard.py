@@ -654,7 +654,7 @@ class DashboardCase(unittest.TestCase):
             self.assertEqual(backup_archive.main(archive, copies), 0)
         (saved,) = copies.glob("*.sqlite3")
         saved.rename(copies / downloads.github_history.DATABASE_NAME)
-        self.assertEqual(downloads.load(copies)["collected_utc"], downloads.load(archive)["collected_utc"])
+        self.assertEqual(downloads.load(copies), downloads.load(archive))
 
     def test_build_refuses_directories_inside_the_repository(self):
         with self.assertRaises(SystemExit):

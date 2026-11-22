@@ -1,10 +1,13 @@
 import io
 import json
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+import multiprocessing
 import os
+import sqlite3
 import threading
 import time
 import unittest
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import closing, redirect_stderr, redirect_stdout
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
@@ -33,6 +36,7 @@ class FakeGitHub:
         self.post_mode = "ok"       # ok | drop_after | drop_before | slow_after | 500_after | 422 | wrong_body
         self.list_mode = "ok"       # ok | 500 | redirect
         self.on_post = None
+        self.on_list = None
         owner = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -65,7 +69,10 @@ class FakeGitHub:
                     return self._send(302, {}, {"Location": "http://127.0.0.1:9/elsewhere"})
                 query = parse_qs(urlparse(self.path).query)
                 per, page = int(query["per_page"][0]), int(query["page"][0])
-                self._send(200, owner.issues[(page - 1) * per: page * per])
+                issues = owner.issues[(page - 1) * per: page * per]
+                if owner.on_list:
+                    owner.on_list()
+                self._send(200, issues)
 
             def do_POST(self):
                 if not self._authorized():
@@ -130,8 +137,9 @@ class PublisherCase(unittest.TestCase):
         self.agg.close()
         self._tmp.__exit__()
 
-    def go(self, *, execute=True, digest=None, now=NOW, github="default", bot=BOT, releases=frozenset({RELEASE})):
-        return publish(self.agg, contracts, week=WEEK, release=RELEASE, repository=REPO,
+    def go(self, *, execute=True, digest=None, now=NOW, github="default", bot=BOT,
+           releases=frozenset({RELEASE}), agg=None):
+        return publish(self.agg if agg is None else agg, contracts, week=WEEK, release=RELEASE, repository=REPO,
                        approved_digest=digest or self.digest, execute=execute, now=now, releases=releases,
                        bot_author=bot, github=self.github if github == "default" else github)
 
@@ -288,6 +296,142 @@ class ReconcileTests(PublisherCase):
         self.assertEqual(self.go().outcome, "review_required")
 
 
+def _publish_in_process(db_path, github_url, digest):
+    with closing(AggStore(db_path)) as store:
+        result = publish(store, contracts, week=WEEK, release=RELEASE, repository=REPO,
+                         approved_digest=digest, execute=True, now=NOW, releases={RELEASE},
+                         bot_author=BOT, github=GitHub(github_url, TOKEN, timeout=10))
+        return result.outcome
+
+
+class ConcurrentPublisherTests(PublisherCase):
+    def test_independent_processes_share_the_durable_claim(self):
+        discovery = threading.Barrier(2, timeout=10)
+        self.fake.on_list = discovery.wait
+        with ProcessPoolExecutor(max_workers=2, mp_context=multiprocessing.get_context("spawn")) as processes:
+            workers = [processes.submit(_publish_in_process, str(self.agg.path), self.fake.url, self.digest)
+                       for _ in range(2)]
+            outcomes = [worker.result(timeout=20) for worker in workers]
+        self.assertIn("published", outcomes)
+        self.assertTrue(set(outcomes) <= {"published", "pending", "noop"})
+        self.assertEqual(self.fake.count("POST"), 1)
+        self.assertEqual((self.intent()["state"], self.intent()["issue_number"]), ("published", 1))
+
+    def test_initial_and_parked_intents_allow_only_one_create(self):
+        for preexisting in (False, True):
+            with self.subTest(preexisting=preexisting):
+                with self.agg.transaction() as conn:
+                    conn.execute("DELETE FROM publications")
+                self.fake.issues.clear()
+                self.fake.requests.clear()
+                if preexisting:
+                    self.fake.list_mode = "500"
+                    self.assertEqual(self.go().outcome, "pending")
+                    self.fake.list_mode = "ok"
+                initial_read = threading.Barrier(2, timeout=5)
+                discovery = threading.Barrier(2, timeout=5)
+
+                class Store(AggStore):
+                    def get_publication(self, repository, key):
+                        result = super().get_publication(repository, key)
+                        if result is None:
+                            initial_read.wait()
+                        return result
+
+                class Client(GitHub):
+                    def list_issues(self, repo):
+                        result = super().list_issues(repo)
+                        discovery.wait()
+                        return result
+
+                def run():
+                    with closing(Store(self.agg.path)) as store:
+                        return self.go(agg=store, github=Client(self.fake.url, TOKEN, timeout=5)).outcome
+
+                with ThreadPoolExecutor(max_workers=2) as pool:
+                    outcomes = list(pool.map(lambda _: run(), range(2)))
+                self.assertIn("published", outcomes)
+                self.assertTrue(set(outcomes) <= {"published", "pending", "noop"})
+                self.assertEqual(self.fake.count("POST"), 1)
+                self.assertEqual((self.intent()["state"], self.intent()["issue_number"]), ("published", 1))
+
+    def test_inflight_success_cannot_overwrite_sticky_review(self):
+        dispatch = threading.Event()
+        reply = threading.Event()
+
+        def wait_for_reviewer(_payload):
+            dispatch.set()
+            reply.wait(5)
+
+        self.fake.on_post = wait_for_reviewer
+        with closing(AggStore(self.agg.path)) as store, ThreadPoolExecutor(max_workers=1) as pool:
+            flight = pool.submit(self.go, agg=store, github=GitHub(self.fake.url, TOKEN, timeout=5))
+            try:
+                self.assertTrue(dispatch.wait(5))
+                self.fake.add_issue(self.title, "changed report")
+                self.assertEqual(self.go().outcome, "review_required")
+            finally:
+                reply.set()
+            self.assertEqual(flight.result().outcome, "review_required")
+        self.assertEqual(self.intent()["state"], "review_required")
+        self.assertEqual(self.fake.count("POST"), 1)
+
+    def test_late_positive_conflict_evidence_still_requires_review(self):
+        for post_mode in ("ok", "wrong_body"):
+            with self.subTest(post_mode=post_mode):
+                with self.agg.transaction() as conn:
+                    conn.execute("DELETE FROM publications")
+                self.fake.issues.clear()
+                self.fake.requests.clear()
+                self.fake.post_mode = post_mode
+                dispatch = threading.Event()
+                reply = threading.Event()
+
+                def wait_for_reconciliation(_payload):
+                    dispatch.set()
+                    reply.wait(5)
+
+                self.fake.on_post = wait_for_reconciliation
+                with closing(AggStore(self.agg.path)) as store, ThreadPoolExecutor(max_workers=1) as pool:
+                    flight = pool.submit(self.go, agg=store, github=GitHub(self.fake.url, TOKEN, timeout=5))
+                    try:
+                        self.assertTrue(dispatch.wait(5))
+                        issue = self.fake.add_issue(self.title, self.body)
+                        reconciled = self.go()
+                        self.assertEqual((reconciled.outcome, reconciled.issue_number), ("published", issue["number"]))
+                    finally:
+                        reply.set()
+                    self.assertEqual(flight.result().outcome, "review_required")
+                self.assertEqual(self.intent()["state"], "review_required")
+                self.assertEqual(self.fake.count("POST"), 1)
+
+    def test_revision_fences_claims_against_a_refusal_and_later_retry(self):
+        self.fake.list_mode = "500"
+        self.assertEqual(self.go().outcome, "pending")
+        original = self.intent()
+        self.assertTrue(self.agg.update_publication(original, NOW, create_attempts=1))
+        claim = self.intent()
+        self.assertTrue(self.agg.update_publication(claim, NOW, create_attempts=0))
+        self.assertFalse(self.agg.update_publication(original, NOW, create_attempts=1))
+        self.assertTrue(self.agg.update_publication(self.intent(), NOW, create_attempts=1))
+        self.assertFalse(self.agg.update_publication(claim, NOW, create_attempts=0))
+        self.assertEqual(self.intent()["create_attempts"], 1)
+
+    def test_writer_upgrades_a_legacy_intent_without_resetting_uncertainty(self):
+        self.fake.list_mode = "500"
+        self.assertEqual(self.go().outcome, "pending")
+        self.agg.update_publication(self.intent(), NOW, create_attempts=1)
+        self.agg.close()
+        with closing(sqlite3.connect(self.agg.path)) as conn:
+            conn.execute("ALTER TABLE publications DROP COLUMN revision")
+        with closing(AggStore(self.agg.path, read_only=True)) as reader:
+            self.assertEqual(self.go(agg=reader, execute=False).outcome, "dry_run")
+        self.fake.list_mode = "ok"
+        self.assertEqual(self.go().outcome, "unknown")
+        self.assertEqual(self.intent()["create_attempts"], 1)
+        self.assertEqual(self.fake.count("POST"), 0)
+
+
 class UnknownOutcomeTests(PublisherCase):
     def assert_unknown_then_reconciled(self, mode, create_visible=True):
         self.fake.post_mode = mode
@@ -322,7 +466,7 @@ class UnknownOutcomeTests(PublisherCase):
     def test_crash_between_attempt_mark_and_result_is_treated_as_unknown(self):
         self.agg.create_publication(canonical_repository(REPO), self.key, self.digest, self.title, self.body,
                                     BOT.lower(), NOW)
-        self.agg.update_publication(canonical_repository(REPO), self.key, NOW, create_attempts=1)
+        self.assertTrue(self.agg.update_publication(self.intent(), NOW, create_attempts=1))
         result = self.go()
         self.assertEqual(result.outcome, "unknown")
         self.assertEqual(self.fake.count("POST"), 0)

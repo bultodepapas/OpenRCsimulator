@@ -129,7 +129,7 @@ Weekly publication flow:
 3. `publish --week W --release R --repo owner/name --approved-digest <sha256>` is a dry run: it prints the plan and writes nothing.
 4. Add `--execute` (with `GITHUB_TOKEN` and `OPENRC_TELEMETRY_BOT_AUTHOR`) to post. The report is recomputed and refused if its digest differs. The intent is committed first, existing issues are listed (all pages) and reconciled, and an issue is created only when none exists and no earlier create attempt is unresolved. Exit codes: 0 done or dry run, 2 refused, 3 review required, 4 unknown or pending, 5 GitHub refused.
 
-An unknown outcome (timeout, dropped connection, 5xx) stays unknown. The next run reconciles and never creates again while the earlier attempt is unresolved. To abandon an unresolved intent after checking GitHub by hand, delete its row from `publications` in `aggregates.sqlite`. `review_required` is sticky and has no automatic exit. A weekly digest changes whenever a daily table changes, so a changed digest after an intent exists also needs review.
+An unknown outcome (timeout, dropped connection, 5xx) stays unknown. The next run reconciles and never creates again while the earlier attempt is unresolved. Keep the ledger row while an outcome is uncertain. Pause the publisher and reconcile with GitHub before any manual intervention. Stop all publishers running the previous code before enabling the updated publisher; the first writable open adds the ledger revision to existing databases. `review_required` is sticky and has no automatic exit. A weekly digest changes whenever a daily table changes, so a changed digest after an intent exists also needs review.
 
 ### TLS reverse proxy (Caddy example, unverified here)
 

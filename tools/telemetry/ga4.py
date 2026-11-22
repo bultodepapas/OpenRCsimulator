@@ -21,6 +21,8 @@ import json
 import math
 import os
 from pathlib import Path
+import stat
+import tempfile
 import sys
 import time
 import urllib.error
@@ -503,6 +505,99 @@ def window(model, count):
 # ---------------------------------------------------------------------------------------------- CLI: login, check
 
 
+def _create_windows_private_file(path):
+    """Create an empty file with a protected DACL for the current account."""
+    import csv
+    import ctypes
+    from ctypes import wintypes
+    import msvcrt
+    import subprocess
+
+    whoami = Path(os.environ["SystemRoot"]) / "System32" / "whoami.exe"
+    try:
+        identity = subprocess.check_output([str(whoami), "/user", "/fo", "csv", "/nh"],
+                                           text=True, errors="replace")
+        _, sid = next(csv.reader(identity.splitlines()))
+    except (subprocess.CalledProcessError, StopIteration, ValueError) as error:
+        raise GA4Error("could not determine the Windows account for the GA4 login file") from error
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    advapi = ctypes.WinDLL("advapi32", use_last_error=True)
+
+    class SecurityAttributes(ctypes.Structure):
+        _fields_ = [("length", wintypes.DWORD), ("descriptor", wintypes.LPVOID), ("inherit", wintypes.BOOL)]
+
+    convert = advapi.ConvertStringSecurityDescriptorToSecurityDescriptorW
+    convert.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, ctypes.POINTER(wintypes.LPVOID), wintypes.LPVOID]
+    convert.restype = wintypes.BOOL
+    create_file = kernel.CreateFileW
+    create_file.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                            ctypes.POINTER(SecurityAttributes), wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE]
+    create_file.restype = wintypes.HANDLE
+    close_handle = kernel.CloseHandle
+    close_handle.argtypes = [wintypes.HANDLE]
+    close_handle.restype = wintypes.BOOL
+    local_free = kernel.LocalFree
+    local_free.argtypes = [wintypes.LPVOID]
+    local_free.restype = wintypes.LPVOID
+    volume_info = kernel.GetVolumeInformationByHandleW
+    volume_info.argtypes = [wintypes.HANDLE, wintypes.LPWSTR, wintypes.DWORD, wintypes.LPVOID,
+                            wintypes.LPVOID, ctypes.POINTER(wintypes.DWORD), wintypes.LPWSTR, wintypes.DWORD]
+    volume_info.restype = wintypes.BOOL
+
+    descriptor = wintypes.LPVOID()
+    if not convert(f"O:{sid}D:P(A;;GA;;;{sid})", 1, ctypes.byref(descriptor), None):
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        attrs = SecurityAttributes(ctypes.sizeof(SecurityAttributes), descriptor, False)
+        # GENERIC_WRITE, no sharing, CREATE_NEW, FILE_ATTRIBUTE_NORMAL.
+        handle = create_file(str(path), 0x40000000, 0, ctypes.byref(attrs), 1, 0x80, None)
+        if handle == ctypes.c_void_p(-1).value:
+            raise ctypes.WinError(ctypes.get_last_error())
+    finally:
+        local_free(descriptor)
+
+    try:
+        flags = wintypes.DWORD()
+        if not volume_info(handle, None, 0, None, None, ctypes.byref(flags), None, 0):
+            raise ctypes.WinError(ctypes.get_last_error())
+        if not flags.value & 0x00000008:  # FILE_PERSISTENT_ACLS
+            raise GA4Error("the GA4 login needs a volume that supports persistent Windows ACLs")
+        return msvcrt.open_osfhandle(handle, os.O_WRONLY | os.O_BINARY)
+    except BaseException:
+        close_handle(handle)
+        path.unlink(missing_ok=True)
+        raise
+
+
+def _write_credentials(out, payload):
+    """Publish an owner-only file from an exclusively created same-directory temporary file."""
+    out = Path(out)
+    if out.resolve().is_relative_to(REPO):
+        raise GA4Error("write the GA4 login outside the repository (it is a secret)")
+    out.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if os.name == "nt":
+        import secrets
+
+        tmp = out.with_name(f".{out.name}.{secrets.token_hex(8)}")
+        fd = _create_windows_private_file(tmp)
+    else:
+        fd, name = tempfile.mkstemp(prefix=f".{out.name}.", dir=out.parent)
+        tmp = Path(name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            if os.name != "nt":
+                os.fchmod(handle.fileno(), 0o600)
+                if stat.S_IMODE(os.fstat(handle.fileno()).st_mode) != 0o600:
+                    raise GA4Error("the GA4 login needs a filesystem that supports private file permissions")
+            json.dump(payload, handle, indent=1)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, out)
+    finally:
+        tmp.unlink(missing_ok=True)
+    return out
+
+
 def default_user_file():
     return Path.home() / ".config" / "openrc" / "ga4-user.json"
 
@@ -564,14 +659,9 @@ def login(client_file, out, redirect_uri, timeout_s=300, http=http_json):
         "client_id": client["client_id"], "client_secret": client["client_secret"], "code_verifier": verifier})
     if not reply.get("refresh_token"):
         raise GA4Error("Google returned no refresh token; revoke the app's access and log in again")
-    out = Path(out)
-    if out.resolve().is_relative_to(REPO):
-        raise GA4Error("write the GA4 login outside the repository (it is a secret)")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"type": "authorized_user", "client_id": client["client_id"],
-                               "client_secret": client["client_secret"], "refresh_token": reply["refresh_token"],
-                               "token_uri": client.get("token_uri") or TOKEN_URI}, indent=1), encoding="utf-8")
-    return out
+    return _write_credentials(out, {"type": "authorized_user", "client_id": client["client_id"],
+                                    "client_secret": client["client_secret"], "refresh_token": reply["refresh_token"],
+                                    "token_uri": client.get("token_uri") or TOKEN_URI})
 
 
 def main(argv=None):
