@@ -7,6 +7,8 @@
 
 ## 1. What exists
 
+**Planned cross-family consumer:** [Universal FPV, gimbal and OSD](universal-fpv.md) reuses HUD calculations, units, battery observations, alerts and layout controls through vehicle adapters. HUD keeps these components; DR keeps quad/race behavior. Selectable INAV/ArduPilot presentation and the universal adapter are proposed in that plan, not implemented here.
+
 Home flights provide nine legacy overlays and seven player instruments on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus. Diagnostics docks beside the control guide and below active warning chips to keep their headers accessible.
 
 | ID | Overlay | Anchor | Content |

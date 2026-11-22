@@ -190,6 +190,8 @@ Defaults: D = 3.5 × span (Stik ≈ 5.3 m), H = 0.35 × D, vertical FOV 55°. FO
 
 ### 5.3 Onboard / FPV (V3)
 
+**Current execution home (2026-11-22):** [Universal FPV, gimbal and OSD plan](universal-fpv.md) (`CAM-FPV-00…08`) develops CAM-11/13 across aircraft, helicopters, drones, cars and airships, reusing the implemented DR-31 drone FPV and HUD. That plan owns the new phased work and acceptance; the design below remains background and CAM-12 retains optional distortion. This is planned universal behavior, not a claim that CAM-11/13 are delivered.
+
 A camera mounted on the airframe, as on a real FPV or "action camera" installation.
 
 - **Mount:** each aircraft declares optional camera mounts (D7): `{id, position (model datum, m), pitch_up_deg, yaw_deg, roll_deg, fov_deg, kind: "fpv" | "wing" | "tail" | "cockpit", source}`. Until an aircraft declares one, a derived default (top of the fuselage, 15 % of the length aft of the spinner, labelled `estimated`) is used and shown as such.
