@@ -62,6 +62,15 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Entry points per track
 
+### Intel graphics performance
+
+[Intel UHD 630 investigation, 22 November 2026](god-test/2026-11-22-intel-gpu-investigation.md)
+reconciles the retained Intel/M1 studies with current rendering code and Intel,
+Godot, Mesa, Linux and Proxmox sources. It separates the already implemented
+Automatic profile from remaining workload, cache, driver and host hypotheses,
+corrects historical evidence ambiguities, and provides a same-hardware test
+protocol and hashed evidence ledger. No new hardware measurement is claimed.
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.
