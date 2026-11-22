@@ -169,12 +169,16 @@ func _run() -> void:
 	_check("opacity still replaces themes and updates Home scrims", UiTheme.opaque_panels
 		and app.home.theme != home_theme_before_motion
 		and is_equal_approx(app.home._rail_scrim.texture.gradient.get_color(0).a, 1.0))
+	_check("opaque preview updates the open Settings panel",
+		is_equal_approx(settings._surface.theme.get_stylebox("panel", "SettingsPanel").bg_color.a, 1.0))
 	home_theme_before_motion = null
 	settings._revert()
 	await ui.settle()
 	_check("Revert restores translucent scrims and motion policy", not UiTheme.opaque_panels
 		and not UiTheme.reduced_motion
 		and is_equal_approx(app.home._rail_scrim.texture.gradient.get_color(0).a, 0.92))
+	_check("Revert restores the open Settings panel opacity",
+		is_equal_approx(settings._surface.theme.get_stylebox("panel", "SettingsPanel").bg_color.a, 0.97))
 
 	# Choose Spanish through the live language selector; the root persists it immediately and refreshes open screens.
 	settings._category_buttons[1].grab_focus()
