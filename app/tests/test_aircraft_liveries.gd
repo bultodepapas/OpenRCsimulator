@@ -319,11 +319,24 @@ func _test_paint_layout() -> void:
 						paint_rect.position.y >= scroll_rect.position.y - 0.5
 						and paint_rect.end.y <= scroll_rect.end.y + 0.5, "%s in %s" % [paint_rect, scroll_rect])
 				home._select_page(0)
-				_check("paint hides outside Aircraft: " + label, not button.is_visible_in_tree())
+				await ui.settle()
+				var screen := Rect2(Vector2.ZERO, Vector2(viewport_size))
+				_check("Flight shows the skin action and current name beside the model: " + label,
+					button.is_visible_in_tree() and button.text.contains(tr("Change skin"))
+					and button.text.contains("Naval 308") and screen.encloses(button.get_global_rect())
+					and not button.get_global_rect().intersects(home._left_layout.get_global_rect()))
+				home.fly_button.grab_focus()
+				await ui.tap(KEY_RIGHT)
+				_check("Flight reaches the skin action from Fly: " + label, button.has_focus())
+				home._select_page(2)
+				_check("Practice hides the skin action: " + label, not button.is_visible_in_tree())
 				home._select_page(1)
 				home.set_aircraft(STIK)
 				_check("single-paint aircraft keeps the skin workflow reachable: " + label,
 					home._livery_row.visible)
+				home.set_activity("openrc-fpv5-x1")
+				home._select_page(0)
+				_check("vehicles without skins hide the Flight action: " + label, not button.is_visible_in_tree())
 				home.queue_free()
 				await process_frame
 	root.size = original_size

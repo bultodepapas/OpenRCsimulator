@@ -136,11 +136,11 @@ class PublishTests(unittest.TestCase):
         metadata = json.loads(metadata_path.read_text())
         metadata["format"] = manifest.LEGACY_FORMAT
         metadata.pop("macos_reference")
-        metadata_path.write_text(manifest.json_text(metadata))
+        metadata_path.write_text(manifest.json_text(metadata), encoding="utf-8", newline="\n")
         records = metadata["artifacts"] + metadata["reports"] + [{"filename": manifest.MANIFEST,
                     **manifest.file_info(metadata_path)}]
         (directory / manifest.CHECKSUMS).write_text(
-            "".join(f'{row["sha256"]}  {row["filename"]}\n' for row in records))
+            "".join(f'{row["sha256"]}  {row["filename"]}\n' for row in records), encoding="ascii", newline="\n")
 
     def run_command(self, command, *, root, timeout=1800):
         self.commands.append(command)

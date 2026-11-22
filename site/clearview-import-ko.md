@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-v0.3.0 이상을 사용하고 파일 선택기에서 **ClearView aircraft ZIP**을 고르세요. 자동 설정과 헬리콥터 비행은 v0.3.0 다음 버전에서 제공됩니다. v0.2.9는 미리보기만 가져옵니다.
+자동 설정과 헬리콥터 시험 비행에는 v0.3.2 이상이 필요합니다. 파일 선택기에서 **ClearView 항공기 ZIP**을 선택하세요. v0.3.0에서는 고정익 시험 비행을, v0.2.9에서는 미리 보기를 지원합니다.
 
-**실험적 기능입니다.** 모델은 ClearView 외관을 유지하지만 ClearView 비행 모델이 아닌 OpenRC 물리로 비행합니다. 비행기는 모델 크기에 맞춰 추정한 구성으로, 전익기는 기본 Skywalker X8 물리로, 헬리콥터는 X-Cell .60 기준 물리로 비행합니다. 저장된 기체는 아직 홈에서 실행할 수 없습니다.
+**실험적 기능입니다.** 모델은 ClearView 외관을 유지하지만 ClearView 비행 모델이 아닌 OpenRC 물리로 비행합니다. 비행기는 모델 크기에 맞춰 추정한 구성으로, 전익기는 기본 Skywalker X8 (MoonRunner X99) 물리로, 헬리콥터는 X-Cell .60 기준 물리로 비행합니다. 저장된 기체는 아직 홈에서 실행할 수 없습니다.
 
 ## 다운로드 위치
 
@@ -19,7 +19,7 @@ v0.3.0 이상을 사용하고 파일 선택기에서 **ClearView aircraft ZIP**�
 
 1. 모델의 `.zip`을 다운로드하고 압축을 풀지 마세요.
 2. **Workshop → Create aircraft… → Import → Choose model…**을 여세요. ZIP을 선택하고, 팩이면 항공기 하나를 고르세요.
-3. 미리보기와 메시지를 확인하세요. **Set up for flight automatically**를 선택하고(헬리콥터는 **Fly as a helicopter**) 추정값을 검토한 뒤 **Test fly**를 사용하세요. 이름을 정하고 **Save aircraft** 또는 **Save draft**를 선택하세요.
+3. 일반 비행기는 **Set up for flight automatically**을 선택하고 추정값을 검토한 뒤 **Test fly**을 시작하세요. 헬리콥터는 **Fly as a helicopter**을 선택하고 확인하면 시험 비행이 시작됩니다. 나중에 편집하려면 초안을 저장하세요. 자체 구성으로 검사를 통과한 비행기는 **Save aircraft**을 사용할 수 있습니다.
 
 ## 어떤 파일을 사용할 수 있나요?
 

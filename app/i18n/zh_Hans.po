@@ -195,6 +195,12 @@ msgstr "方向舵"
 msgid "Throttle"
 msgstr "油门"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "收集到的 GPU 耗时样本不足。请重启或恢复默认图形设置后重试。"
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "设置已保存，但无法重置自动图形设置（错误 %d）。选择“保留更改”重试。"
+
 msgid "Could not save settings (error %d)."
 msgstr "无法保存设置（错误 %d）。"
 
@@ -2448,6 +2454,9 @@ msgstr "重飞上次飞行"
 
 msgid "Back"
 msgstr "返回"
+
+msgid "Change skin"
+msgstr "更换涂装"
 
 msgid "Paint schemes"
 msgstr "涂装"
@@ -13763,3 +13772,24 @@ msgstr "Phoenix 起落架用于跑道起飞。可收放起落架保持放下。"
 
 msgid "Needs no landing gear"
 msgstr "仅限无起落架"
+
+msgid "Fly calibrated runway"
+msgstr "从已校准的跑道起飞"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "在无风条件下进行试飞。跑道、起飞位置和地面采用估计值。"
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "可以开始试飞。跑道、起飞位置和地面采用估计值。"
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "无法确认已安装的场景可用于飞行。"
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "请选择支持跑道起飞的飞机。"
+
+msgid "Preparing panorama"
+msgstr "正在准备全景"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "已启用基础画质。你可以在“设置”>“图形”中提高画质。"

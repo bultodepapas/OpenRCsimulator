@@ -28,6 +28,8 @@ from tests.support import (RELEASE, SCHEMA_DIR, TempDir, activity_event, batch, 
 import dashboard  # noqa: E402
 import github_archive as downloads  # noqa: E402
 import snapshot  # noqa: E402
+from deploy.ct import backup_archive  # noqa: E402
+from deploy.host import check_dashboard_health  # noqa: E402
 
 MONDAY = date(2027, 1, 11)
 NOW = unix("2027-01-20T09:30:00Z")  # Sunday + 47 h has passed; W02 is closed
@@ -102,7 +104,7 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(day_state["2027-01-18"], "missed")
         self.assertEqual(day_state["2027-01-19"], "overdue")
         self.assertEqual(day_state["2027-01-20"], "pending")
-        self.assertEqual(day_state["2027-01-10"], "none")
+        self.assertEqual(day_state["2027-01-10"], "unknown")
         self.assertEqual(cells[(RELEASE, "2027-01-13")][0], "ready")
         titles = [title for _, title, _ in dashboard.alerts(data, rows, day_state)]
         self.assertEqual(titles[0], "Raw row past 48 h")  # the seeded raw rows were never purged
@@ -134,7 +136,7 @@ class DashboardCase(unittest.TestCase):
         _, _, day_state = dashboard.coverage_model(data, rows)
         self.assertEqual([t for _, t, _ in dashboard.alerts(data, rows, day_state)], ["Waiting for first batch"])
         page = dashboard.render(data)
-        self.assertIn("No player data yet", page)
+        self.assertIn("Waiting for the first accepted batch.", page)
         self.assertIn("never", page)
 
     def test_silence_after_raw_purge_is_not_first_batch(self):
@@ -147,6 +149,39 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(dashboard.last_seen(data, rows)[1], "on 2027-01-16")
         self.assertIn("1 day(s) never rolled up", [t for _, t, _ in alerts])
         self.assertIn("2027-01-16", dashboard.render(data))
+        self.assertIn("The receiver has accepted batches. Weekly rollup data is unavailable.", dashboard.render(data))
+
+    def test_legacy_rollup_and_interrupted_ingress_do_not_establish_zero_for_a_missing_release(self):
+        data = snapshot.collect(self.config, NOW, days=4, weeks=1, floor=20)
+        day = "2027-01-17"
+        data["releases_with_cells"] = [RELEASE, "v0.3.2"]
+        data["coverage"] = [{"day": day, "release_id": RELEASE, "table": table, "status": "ready"}
+                            for table in ("gpu", "vehicle", "cells")]
+        data["rollup_days"] = {day: "legacy"}
+        self.assertEqual(dashboard.coverage_model(data, dashboard.ingest_rows(data))[1][("v0.3.2", day)][0], "unknown")
+        data["rollup_days"][day] = "complete"
+        self.assertEqual(dashboard.coverage_model(data, dashboard.ingest_rows(data))[1][("v0.3.2", day)][0], "none")
+        data["ingest"][0]["counts"] = {"rate_limited": 1}
+        cells = dashboard.coverage_model(data, dashboard.ingest_rows(data))[1]
+        self.assertEqual(cells[("v0.3.2", day)][0], "unknown")
+        self.assertEqual(cells[(RELEASE, day)][0], "ready")
+
+    def test_weekly_cohort_summary_respects_overlap_and_refuses_legacy_combined_rows(self):
+        tables = {"mix_os": {"published": [{"dims": ["windows"], "sessions": 25},
+                                          {"dims": ["macos"], "sessions": 24}],
+                             "combined": {"dims": ["combined small cells"], "sessions": 30,
+                                          "sessions_lower_bound": True}}}
+        report = {"insights_version": 1, "week": "2027-W02", "release_id": RELEASE, "floor": 20,
+                  "days": [{"day": "2027-01-17", "status": "ready"}], "week_closed": True, "tables": tables}
+        data = {"insights": [report]}
+        self.assertEqual(dashboard.latest_week_players(data), ("2027-W02", RELEASE, 25))
+        old = dashboard.report_section(0, report, False, {}, set())
+        self.assertNotIn("combined small cells", old)
+        report["insights_version"] = 2
+        self.assertEqual(dashboard.latest_week_players(data), ("2027-W02", RELEASE, 30))
+        updated = dashboard.report_section(0, report, False, {}, {"2027-01-17"})
+        self.assertIn("<td>≥30</td>", updated)
+        self.assertIn("Receiver-wide ingress interruptions on 1 day(s)", updated)
 
     def test_missing_database_is_refused(self):
         config = make_config(self.dir / "elsewhere")
@@ -224,7 +259,7 @@ class DashboardCase(unittest.TestCase):
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
         for text in ("Last 7 full days", "2027-01-13 to 2027-01-19", "Package downloads", "Repository views",
                      "New stars", "Recent releases", "<td>v0.3.10</td>", "Downloads by platform",
-                     "Repository referrers, 14 days", "Downloads per day", "Interest per day",
+                     "Repository referrers, 14 days", "GitHub package downloads by collection day", "Interest per day",
                      "Website (GA4)</b> not connected", "Telemetry batches"):
             self.assertIn(text, overview)
         self.assertIn("Old snapshot.", page)  # the fixture is from 2027-01-20
@@ -250,26 +285,152 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("&lt;b&gt;evil&lt;/b&gt;", website)  # country text is escaped
         self.assertNotIn("<b>evil</b>", page)
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
-        for text in ("Website sessions", "Website download requests", "8% of 30-day users request a download",
-                     "Top countries", "Where people come from", "Website, 30 days", "<td>github</td>"):
+        for text in ("Website sessions", "Website download requests", "8% of 7-day users request a download",
+                     "Top countries", "Where people come from", "Website, 7 days", "<td>github</td>",
+                     'aria-label="Website download requests per day"'):
             self.assertIn(text, overview)
         rows = dashboard.ingest_rows(data)
         self.assertNotIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
         data["website"] = test_ga4.model(fail={(("date",), "download_request")})
         overview, website = (dashboard.render(data).split('id="panel-website"')[i] for i in (0, 1))
         self.assertIn("download requests: report failed", overview)
-        self.assertIn('<div class="tv">-</div><div class="ts">report failed</div>', website)
+        self.assertIn("latest 7 days incomplete", website)
+        self.assertIn("Report failed:", website)
         data["website"] = {"error": "HTTP 403: <denied>", "collected_utc": "2027-01-20T09:00:00Z", "property": None}
         page = dashboard.render(data)
         self.assertIn("HTTP 403: &lt;denied&gt;", page)
         self.assertIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
 
     def test_week_over_week_delta(self):
-        self.assertIn("▲ 50% (+5) vs prior 7 days", dashboard.delta_html(15, 10))
-        self.assertIn("▼ 25% (-5) vs prior 7 days", dashboard.delta_html(15, 20))
-        self.assertIn("nothing in either week", dashboard.delta_html(0, 0))
-        self.assertIn("new (+3)", dashboard.delta_html(3, 0))
-        self.assertIn("no comparison yet", dashboard.delta_html(3, None))
+        up = dashboard.delta_html(15, 10)
+        down = dashboard.delta_html(15, 20)
+        self.assertIn('class="delta delta-up"', up)
+        self.assertIn('aria-hidden="true">↑</span><span class="vh">Up </span>50% (+5)', up)
+        self.assertIn('class="delta delta-down"', down)
+        self.assertIn('aria-hidden="true">↓</span><span class="vh">Down </span>25% (−5)', down)
+        self.assertIn("No activity in either week", dashboard.delta_html(0, 0))
+        self.assertIn("No change", dashboard.delta_html(3, 3))
+        self.assertIn("New (+3)", dashboard.delta_html(3, 0))
+        self.assertEqual(dashboard.delta_html(3, None), '<span class="delta">No comparison yet</span>')
+        current, missing, previous = "2027-01-19", "2027-01-20", "2027-01-18"
+        metric = dashboard.week_metric("Views", "github", "GitHub", "UTC", [current, missing], [previous],
+                                       {current: 9, previous: 3}, "2027-01-20T01:19:52.987Z")
+        card = dashboard.kpi_tiles([metric])
+        self.assertIn('class="kpi-coverage kpi-partial"', card)
+        self.assertIn("1/2 days observed", card)
+        self.assertIn("Jan 19–20 · UTC", card)
+        self.assertIn('<time datetime="2027-01-20T01:19:52.987Z"', card)
+        self.assertIn("Jan 20, 01:19 UTC", card)
+        self.assertNotIn("delta-up", card)
+        self.assertNotIn("delta-down", card)
+
+    def test_provisional_and_missing_observations_stay_distinct(self):
+        days = ["2027-01-01", "2027-01-02", "2027-01-03", "2027-01-04"]
+        html = dashboard.line_chart(days, [("Sessions", [0, None, 3, 4], "s1")], "Sessions",
+                                    provisional={"Sessions": {days[-1]}})
+        self.assertIn("0 (observed)", html)
+        self.assertIn("Unavailable", html)
+        self.assertIn("4 (provisional)", html)
+        self.assertIn('class="provisional line-s1"', html)
+        path = html.split('class="line line-s1" d="')[1].split('"')[0]
+        self.assertEqual(path.count("M"), 2)
+        self.assertNotIn("L", path)
+        self.assertIn("<summary>Data table</summary>", html)
+        metric = dashboard.week_metric("Sessions", "website", "GA4", "UTC", days[2:], days[:2],
+                                       dict(zip(days, (0, 0, 3, 4))), "2027-01-04T06:00:00Z",
+                                       uncertain={days[-1]})
+        self.assertIsNone(metric.previous)
+        self.assertEqual(metric.condition, "Partial coverage")
+
+    def test_long_timeline_keeps_every_day_inspectable_with_one_tab_stop(self):
+        days = [(MONDAY + timedelta(days=offset)).isoformat() for offset in range(90)]
+        page = dashboard.line_chart(days, [("Views", list(range(90)), "s1")], "Views")
+        self.assertEqual(page.count('class="hit"'), 90)
+        self.assertEqual(page.count('tabindex="0"'), 1)
+        self.assertIn(f'aria-label="{days[-1]} · Views: 89"', page)
+        self.assertIn(f'<th scope="row">{days[0]}</th><td>0 (observed)</td>', page)
+        self.assertEqual(page.count('class="tick date-tick'), 7)
+
+    def test_stacked_release_bars_keep_exact_proportions_and_zero(self):
+        counts = {"Windows": 199, "macOS": 1, "Linux": 0, "Other": 0}
+        empty = dict.fromkeys(counts, 0)
+        page = dashboard.release_chart([("v2", counts, 200), ("v1", empty, 0)])
+        self.assertIn('class="fill-s1" style="flex-grow:199"', page)
+        self.assertIn('class="fill-s2" style="flex-grow:1"', page)
+        self.assertIn('aria-label="v2 · Total 200 · Windows: 199 · macOS: 1"', page)
+        self.assertIn('aria-label="v1 · Total 0"', page)
+        self.assertEqual(page.count('tabindex="0"'), 1)
+
+
+
+    def test_download_columns_distinguish_observed_zero_and_missing_intervals(self):
+        days = ["2027-01-01", "2027-01-02", "2027-01-03"]
+        html = dashboard.download_collection_chart(days, {days[0]: 12, days[2]: 0},
+                                                   {days[1]: "Long collection interval"}, "Package downloads")
+        self.assertEqual(html.count('class="collection-bar '), 1)
+        self.assertEqual(html.count('class="collection-gap"'), 1)
+        self.assertEqual(html.count('class="collection-zero '), 1)
+        self.assertIn('2027-01-02 · Matched counter increase: Unavailable · Long collection interval', html)
+        self.assertIn('2027-01-03 · Matched counter increase: 0 (observed)', html)
+        self.assertNotIn('class="line line-', html)
+        self.assertEqual(html.count('tabindex="0"'), 1)
+
+    def test_download_counter_gap_preserves_the_original_interval(self):
+        intervals = [{"from_end": "2027-01-16T10:00:00Z", "to_end": "2027-01-19T10:00:00Z",
+                      "increase": 30, "status": "matched_ids"}]
+        with_archive = {"intervals": intervals, "assets": [], "pattern": "*.zip", "collected_utc": intervals[0]["to_end"]}
+        values, notes = dashboard.download_daily(with_archive)
+        self.assertEqual(values, {})
+        self.assertEqual(notes["2027-01-19"], "Long collection interval")
+        html = dashboard.downloads_section(with_archive, NOW, 7)
+        self.assertIn("<summary>Collection intervals</summary>", html)
+        self.assertIn("<td>2027-01-16T10:00:00Z</td><td>2027-01-19T10:00:00Z</td><td>30</td>", html)
+
+    def test_github_public_counters_continue_when_credentials_fail(self):
+        with unittest.mock.patch.dict(os.environ, {"GH_TOKEN": "fixture"}), unittest.mock.patch.object(
+                dashboard.downloads, "collect", side_effect=[(False, "authentication failed"), (True, "collected")]
+        ) as collect:
+            self.assertEqual(dashboard.refresh_github(self.dir), "authentication failed; public counters refreshed")
+        self.assertEqual(collect.call_args_list, [unittest.mock.call(self.dir, public_only=False),
+                                                  unittest.mock.call(self.dir, public_only=True)])
+
+    def test_release_cadence_requires_covered_and_equally_aged_cohorts(self):
+        current = {"tag": "v0.3.2", "published": "2027-01-04T18:00:00Z"}
+        previous = {"tag": "v0.3.1", "published": "2026-12-28T15:00:00Z"}
+        metrics = {f"hist{i}": 0 for i in range(dashboard.HIST_LEN)}
+        metrics.update(hist0=500, hist6=10, interval_sum_us=10_000_000, rendered_frames=510,
+                       excluded_gap_count=2)
+
+        def report(release, start, week):
+            return {"release_id": release["tag"], "week": week, "week_closed": True,
+                    "days": [{"day": (date.fromisoformat(start) + timedelta(days=offset)).isoformat(),
+                              "status": "ready"} for offset in range(7)],
+                    "tables": {"flight_pacing": {"published": [{"dims": ["unlimited"], "metrics": metrics,
+                                                                 "sessions": 20}]}}}
+
+        left = report(current, "2027-01-11", "2027-W02")
+        right = report(previous, "2027-01-04", "2027-W01")
+        data = {"insights": [left, right],
+                "rollup_days": {day["day"]: "complete" for r in (left, right) for day in r["days"]}}
+        self.assertIn("Release-age days 7–13", dashboard.release_cadence(data, current, previous))
+        self.assertIn(">unlimited<", dashboard.release_cadence(data, current, previous))
+        last = right["days"][-1]["day"]
+        data["rollup_days"][last] = "partial"
+        self.assertIn("Comparable data is unavailable", dashboard.release_cadence(data, current, previous))
+        data["rollup_days"][last] = "complete"
+        right["days"][-1]["status"] = "missing"
+        self.assertIn("Comparable data is unavailable", dashboard.release_cadence(data, current, previous))
+
+    def test_review_deduplicates_the_source_and_caps_actions(self):
+        sample = {"generated_unix": NOW, "website": {"missing": {"vitals": []}}}
+        alerts = [("critical", "Incomplete rollup", "retry before expiry"),
+                  ("warning", "No batch in 24 h", "otherwise healthy"),
+                  ("warning", "Download counters stale", "check collector")]
+        html = dashboard.review_items(sample, alerts, [])
+        self.assertEqual(html.count("<li>"), 3)
+        self.assertIn('href="#receiver"', html)
+        self.assertIn('href="#downloads"', html)
+        self.assertNotIn("No batch in 24 h", html)
 
     def test_build_writes_page_and_health_atomically(self):
         import test_ga4
@@ -277,15 +438,17 @@ class DashboardCase(unittest.TestCase):
         inbox, www, state = self.dir / "inbox.json", self.dir / "www", self.dir / "state"
         inbox.write_text(json.dumps(data), encoding="utf-8")
         args = ["build", "--receiver-snapshot", str(inbox), "--www", str(www), "--state-dir", str(state),
-                "--downloads-dir", str(self.dir / "no-archive"), "--days", "7"]
+                "--downloads-dir", str(self.dir / "no-archive"), "--days", "7", "--ga4-property", "123"]
         fresh = NOW + 600
         with unittest.mock.patch.object(dashboard.ga4, "fetch", return_value=test_ga4.model()) as fetch, \
                 unittest.mock.patch.object(dashboard.time, "time", return_value=fresh), \
                 unittest.mock.patch("sys.stdout"):
             self.assertEqual(dashboard.main(args), 0)
-        fetch.assert_called_once_with(7, None, None)
+        fetch.assert_called_once_with(7, "123", None)
         report = json.loads((www / "health.json").read_text(encoding="utf-8"))
-        self.assertEqual((report["status"], report["receiver_age_s"], report["website_connected"]), ("ok", 600, True))
+        self.assertEqual((report["status"], report["receiver_age_s"], report["website_connected"]),
+                         ("degraded", 600, True))
+        self.assertEqual(report["sources"]["github_downloads"]["status"], "missing")
         self.assertIn("Active users, 7 days", (www / "index.html").read_text(encoding="utf-8"))
         self.assertTrue((state / "dashboard.snapshot.json").is_file())
         self.assertFalse((www / "dashboard.snapshot.json").exists())  # the combined snapshot is never served
@@ -297,13 +460,160 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(json.loads((www / "health.json").read_text(encoding="utf-8"))["status"], "stale")
 
         page = (www / "index.html").read_text(encoding="utf-8")
-        inbox.write_text("{not json", encoding="utf-8")
-        with unittest.mock.patch("sys.stdout"):
-            self.assertEqual(dashboard.main(args + ["--no-ga4"]), 1)
-        report = json.loads((www / "health.json").read_text(encoding="utf-8"))
-        self.assertEqual(report["status"], "error")
-        self.assertIn("receiver snapshot unreadable", report["problems"][0])
-        self.assertEqual((www / "index.html").read_text(encoding="utf-8"), page)  # last good page kept
+        for invalid in ("{not json", "[]", '{"snapshot_version": 2}', '{"snapshot_version": 2, "generated_unix": NaN}'):
+            with self.subTest(invalid=invalid), unittest.mock.patch("sys.stdout"):
+                inbox.write_text(invalid, encoding="utf-8")
+                self.assertEqual(dashboard.main(args + ["--no-ga4"]), 1)
+                report = json.loads((www / "health.json").read_text(encoding="utf-8"))
+                self.assertEqual(report["status"], "error")
+                self.assertIn("receiver snapshot unreadable", report["problems"][0])
+                self.assertEqual((www / "index.html").read_text(encoding="utf-8"), page)
+
+    def test_health_tracks_partial_sources_and_persisted_errors(self):
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        stamp = dashboard.utc_stamp(NOW)
+        kinds = ("release assets", "traffic", "clones", "community", "referrals", "star history")
+        data["github"] = {"source_utc": dict.fromkeys(kinds, stamp), "collected_utc": stamp}
+        data["website"] = {"collected_utc": stamp}
+        self.assertEqual(dashboard.health(data, NOW, 7200, None, [])["status"], "ok")
+        data["github"]["source_attempts"] = {"traffic": {"success": False}}
+        data["website"]["missing"] = {"vitals": ["metric_name"]}
+        data["status"]["retention_ok"] = False
+        data["status"]["oldest_raw_age_h"] = 49
+        result = dashboard.health(data, NOW, 7200, None, [])
+        self.assertEqual(result["status"], "degraded")
+        self.assertEqual(result["sources"]["github_views"]["status"], "error")
+        self.assertEqual(result["sources"]["website"]["status"], "partial")
+        self.assertIn("Raw row past 48 h", result["receiver_issues"])
+
+    def test_partial_rollup_is_visible_in_legacy_snapshot(self):
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        data.pop("rollup_days", None)
+        day = "2027-01-19"
+        data["coverage"] = [{"release_id": "v0.3.0", "day": day, "table": "gpu", "status": "ready"}]
+        rows = dashboard.ingest_rows(data)
+        _, cells, days = dashboard.coverage_model(data, rows)
+        self.assertEqual(cells[("v0.3.0", day)][0], "partial")
+        self.assertEqual(days[day], "partial")
+        self.assertIn(("critical", "Incomplete rollup", f"retry within the 47 h window: {day}"),
+                      dashboard.alerts(data, rows, days))
+
+    def test_overview_compares_full_days_in_each_sources_timezone(self):
+        from datetime import datetime
+
+        data = snapshot.collect(self.config, NOW, days=14, weeks=1, floor=20)
+        data["generated_unix"] = datetime.fromisoformat("2027-01-20T01:00:00+00:00").timestamp()
+        axis = dashboard.window_days(data["generated_unix"], 16)
+        data["website"] = {"time_zone": "America/Bogota", "collected_utc": dashboard.utc_stamp(data["generated_unix"]),
+                           "days": axis[:-1], "daily": [{"day": d, "sessions": 1} for d in axis[:-2]] +
+                           [{"day": "2027-01-19", "sessions": 99}]}
+        overview = dashboard.overview_section(data, dashboard.ingest_rows(data), [])
+        self.assertIn("Website days follow America/Bogota, 2027-01-12 to 2027-01-18", overview)
+        self.assertIn('<div class="tl">Website sessions</div><div class="tv">7</div>', overview)
+        self.assertIn("7/7 days observed", overview)
+
+    def test_release_watch_refreshes_once_and_waits_for_complete_packages(self):
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        inbox, www, state = self.dir / "inbox.json", self.dir / "www", self.dir / "state"
+        inbox.write_text(json.dumps(data), encoding="utf-8")
+        args = ["build", "--receiver-snapshot", str(inbox), "--www", str(www), "--state-dir", str(state),
+                "--downloads-dir", str(self.dir / "analytics"), "--no-ga4"]
+        tag, name, stamp = "v0.3.2", "openrc-simulator-v0.3.2-linux-x86_64.zip", "2027-01-19T12:00:00Z"
+        inventory = {tag: (dashboard.datetime.fromisoformat(stamp), False, {(name, 42)})}
+        release = {"tag": tag, "published": stamp, "prerelease": False}
+        archive = {"repo": "bultodepapas/OpenRCsimulator", "releases": [release], "pattern": "*.zip",
+                   "collected_utc": stamp, "assets": [], "intervals": []}
+        with unittest.mock.patch.object(dashboard.time, "time", return_value=NOW), \
+                unittest.mock.patch.object(downloads, "public_release_inventory", return_value=inventory), \
+                unittest.mock.patch.object(downloads, "collect", return_value=(True, "collected")) as collect, \
+                unittest.mock.patch.object(dashboard, "load_downloads", return_value=archive) as load, \
+                unittest.mock.patch("sys.stdout"), unittest.mock.patch("sys.stderr"):
+            self.assertEqual(dashboard.main(args), 0)
+            page, health = (www / "index.html").read_bytes(), (www / "health.json").read_bytes()
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 1)
+            self.assertEqual((www / "index.html").read_bytes(), page)
+            self.assertEqual((www / "health.json").read_bytes(), health)
+            archive["assets"] = [{"id": 42, "tag": tag, "name": name, "platform": "Linux", "count": 0}]
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
+            self.assertIn(f"Latest release {tag}", (www / "index.html").read_text(encoding="utf-8"))
+            (www / "index.html").write_bytes(page)  # Simulate interrupted publication after the state was saved.
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
+            self.assertIn(f"Latest release {tag}", (www / "index.html").read_text(encoding="utf-8"))
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
+            self.assertEqual(collect.call_count, 2)
+            self.assertEqual(load.call_count, 4)
+
+    def test_public_release_inventory_ignores_counters_and_drafts(self):
+        api = downloads.github_history
+        stamp, tag, name = "2027-01-18T10:00:00Z", "v0.3.2", "openrc-simulator-v0.3.2-linux.zip"
+        rows = [{"draft": False, "published_at": stamp, "tag_name": tag, "prerelease": False,
+                 "assets": [{"name": name, "state": "uploaded", "id": 3, "download_count": 999},
+                            {"name": "SHA256SUMS", "state": "uploaded", "id": 4}]},
+                {"draft": True, "tag_name": "draft"}]
+        model = {"releases": [{"tag": tag, "published": stamp, "prerelease": False}],
+                 "assets": [{"tag": tag, "id": 3, "name": name, "count": 0}]}
+        with unittest.mock.patch.object(api, "public_github_json", return_value=rows) as request:
+            inventory = downloads.public_release_inventory()
+        request.assert_called_once_with(f"repos/{api.DEFAULT_REPO}/releases?per_page=100", paginated=True)
+        self.assertEqual(set(inventory), {tag})
+        self.assertFalse(downloads.release_inventory_changed(inventory, model))
+        self.assertTrue(downloads.release_inventory_changed({}, model))
+        model["assets"][0]["id"] = 2
+        self.assertTrue(downloads.release_inventory_changed(inventory, model))
+
+    def test_external_monitor_rejects_frozen_ok_and_source_failure(self):
+        from datetime import datetime, timezone
+
+        now = datetime.fromtimestamp(NOW, timezone.utc)
+        stamp = dashboard.utc_stamp(NOW)
+        report = {"built_utc": stamp, "status": "ok", "receiver_age_s": 300,
+                  "sources": {key: {"status": "ok", "observed_utc": stamp}
+                              for key in check_dashboard_health.SOURCE_MAX_AGE}}
+        self.assertIsNone(check_dashboard_health.check(report, now, 7200))
+        for difference in (-7201, 301):
+            bad = {**report, "built_utc": dashboard.utc_stamp(NOW + difference)}
+            self.assertIn("age", check_dashboard_health.check(bad, now, 7200))
+        report["sources"]["github_downloads"]["status"] = "stale"
+        self.assertIn("github_downloads=stale", check_dashboard_health.check(report, now, 7200))
+        report["sources"]["website"]["observed_utc"] = dashboard.utc_stamp(NOW - 7201)
+        self.assertIn("website=stale", check_dashboard_health.check(report, now, 7200))
+        report["sources"].pop("website")
+        with self.assertRaisesRegex(ValueError, "required source"):
+            check_dashboard_health.check(report, now, 7200)
+
+    def test_freshness_uses_build_clock_after_receiver_capture(self):
+        stamp = dashboard.utc_stamp(NOW + 15 * 60)
+        data = {"generated_unix": NOW, "github": {"collected_utc": stamp}}
+        with unittest.mock.patch.object(dashboard.time, "time", return_value=NOW + 16 * 60):
+            self.assertIn("<b>GitHub downloads</b> collected with this snapshot", dashboard.freshness_strip(data))
+
+    def test_failed_health_publication_rolls_back_page(self):
+        www = self.dir / "www"
+        www.mkdir()
+        index = www / "index.html"
+        index.write_text("previous")
+        write = dashboard.write_atomic
+
+        def fail_health(path, value):
+            if path.name == "health.json":
+                raise OSError("cannot replace the report")
+            write(path, value)
+
+        with unittest.mock.patch.object(dashboard, "write_atomic", side_effect=fail_health):
+            with self.assertRaisesRegex(OSError, "cannot replace"):
+                dashboard.publish_page(www, "candidate", {"status": "ok"})
+        self.assertEqual(index.read_text(), "previous")
+        self.assertEqual(list(www.iterdir()), [index])
+
+    def test_backup_requires_and_restores_archive(self):
+        archive, copies = self.dir / "archive", self.dir / "copies"
+        with unittest.mock.patch("sys.stdout"), unittest.mock.patch("sys.stderr"):
+            self.assertEqual(backup_archive.main(archive, copies), 1)
+            self.make_archive(archive)
+            self.assertEqual(backup_archive.main(archive, copies), 0)
+        (saved,) = copies.glob("*.sqlite3")
+        saved.rename(copies / downloads.github_history.DATABASE_NAME)
+        self.assertEqual(downloads.load(copies)["collected_utc"], downloads.load(archive)["collected_utc"])
 
     def test_build_refuses_directories_inside_the_repository(self):
         with self.assertRaises(SystemExit):
@@ -353,13 +663,24 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(releases[0][2], 13)
         self.assertEqual(downloads.per_day(model), {"2027-01-19": (16, False)})
         self.assertEqual(downloads.recent_increase(model, NOW), 16)
+        self.assertEqual([(row["day"], row["counts"]) for row in model["platform_history"]], [
+            ("2027-01-18", {"Windows": 43, "Linux": 5, "macOS": 2}),
+            ("2027-01-19", {"Windows": 51, "Linux": 9, "macOS": 6}),
+        ])
 
         data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
         data["github"] = model
         page = dashboard.render(data)
         self.assertIn('id="panel-downloads"', page)
         self.assertIn("Latest release v0.3.10", page)
+        tab = page.split('id="panel-downloads"', 1)[1].split('id="panel-github"', 1)[0]
+        self.assertIn('aria-label="Download counters over time by platform"', tab)
+        self.assertIn('aria-label="Download totals by release and platform"', tab)
+        self.assertIn("2027-01-18 · Windows: 43 · macOS: 2 · Linux: 5", tab)
+        self.assertIn("v0.3.10 · Windows: 7 · macOS: 6 · Linux: Unavailable", tab)
+        self.assertLess(tab.index('>v0.3.9</th>'), tab.index('>v0.3.10</th>'))
         rows = dashboard.ingest_rows(data)
+        data["github"]["collected_utc"] = dashboard.utc_stamp(NOW - 60)
         titles = [t for _, t, _ in dashboard.alerts(data, rows, dashboard.coverage_model(data, rows)[2])]
         self.assertNotIn("Download counters stale", titles)
         data["generated_unix"] = NOW + 3 * 86400

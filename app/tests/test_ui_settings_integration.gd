@@ -6,7 +6,23 @@ const UiDriver := preload("res://tests/ui_driver.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 const PREFS := "user://test_ui_settings_integration.cfg"
+
+
+class OwnedDisplayPreferences extends DisplayPreferences:
+	func _init() -> void:
+		super(PREFS + ".display")
+		path = Preferences.DEFAULT_PATH + ".display"
+
+	func save(candidate: Dictionary) -> Error:
+		var owner_path := path
+		path = PREFS + ".display"
+		var err := super.save(candidate)
+		path = owner_path
+		return err
 
 var _failures := 0
 var ui: RefCounted
@@ -309,6 +325,7 @@ func _run() -> void:
 	_check("kept graphics change preserves the paused flight and tick", root.msaa_3d == Viewport.MSAA_2X
 		and session.sim.paused and session.sim.tick == held_tick
 		and DisplayPreferences.load_from(PREFS + ".display").msaa_3d == 1)
+	await _calibration_reset_in_paused_flight(settings, held_tick)
 	settings._restore_graphics_defaults()
 	settings.keep_changes()
 	settings._category_buttons[1].grab_focus()
@@ -400,6 +417,45 @@ func _wait(seconds: float) -> void:
 	await create_timer(seconds).timeout
 
 
+func _calibration_reset_in_paused_flight(settings: CanvasLayer, held_tick: int) -> void:
+	AutoCalibration.calibration_path = PREFS + ".calibration"
+	var adapter := "NVIDIA GeForce RTX 3090"
+	SceneDetail.adapter_override = PackedStringArray([adapter, "NVIDIA"])
+	var method := RenderingServer.get_current_rendering_method()
+	AutoCalibration.save_result({"adapter": adapter, "method": method, "complete": true, "level": "high",
+		"scene_offset": -1, "pixels": root.size.x * root.size.y})
+	SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
+	var store := OwnedDisplayPreferences.new()
+	app.display_preferences = store
+	settings.display_preferences = store
+	settings._draft.lens_effects = "auto"
+	settings._restore_graphics_defaults()
+	await ui.settle()
+	_check("Restore preview still reflects accepted calibration before Keep", root.mesh_lod_threshold == 2.0
+		and app._lens_tier_applied == "medium" and app.flight._lens.settings.quality == "medium")
+	var flags := get_nodes_in_group("landscape_flags")
+	_check("paused flight has live flags to verify", not flags.is_empty())
+	var policy: Variant = root.get_meta(Reconstruction.POLICY_META, {})
+	var display := [root.scaling_3d_mode, root.scaling_3d_scale, root.msaa_3d, root.size, root.position]
+	var identity: String = app.flight.session.rc_track_identity()
+	settings.keep_changes()
+	await ui.settle()
+	var flags_high := true
+	for flag: Node in flags:
+		flags_high = flags_high and int(flag._profile.grid_x) == 32
+	_check("kept reset refreshes live LOD, lens and flags together", SceneDetail.calibration.is_empty()
+		and root.mesh_lod_threshold == 1.0 and app._lens_tier_applied == "high"
+		and app.flight._lens.settings.quality == "high" and flags_high)
+	_check("reset preserves reconstruction policy ownership and display configuration", is_same(policy, root.get_meta(Reconstruction.POLICY_META, {}))
+		and display == [root.scaling_3d_mode, root.scaling_3d_scale, root.msaa_3d, root.size, root.position])
+	_check("reset preserves the paused tick and installed circuit identity", app.flight.session.sim.paused
+		and app.flight.session.sim.tick == held_tick and app.flight.session.rc_track_identity() == identity)
+	store.path = PREFS + ".display"
+	AutoCalibration.calibration_path = AutoCalibration.CALIBRATION_PATH
+	SceneDetail.adapter_override = PackedStringArray()
+	app._apply_presentation(settings._draft)
+
+
 func _clean_preferences() -> void:
-	for path in [PREFS, PREFS + ".bad", PREFS + ".display", PREFS + ".display.bad"]:
+	for path in [PREFS, PREFS + ".bad", PREFS + ".display", PREFS + ".display.bad", PREFS + ".calibration"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

@@ -277,6 +277,12 @@ msgstr "Timone"
 msgid "Throttle"
 msgstr "Gas"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Non sono stati raccolti abbastanza campioni del tempo GPU. Riavvia o ripristina le impostazioni grafiche predefinite per riprovare."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Le impostazioni sono state salvate, ma non è stato possibile ripristinare la grafica automatica (errore %d). Seleziona Mantieni per riprovare."
+
 msgid "Could not save settings (error %d)."
 msgstr "Impossibile salvare le impostazioni (errore %d)."
 
@@ -2747,6 +2753,9 @@ msgstr "Ripeti l’ultimo volo"
 
 msgid "Back"
 msgstr "Indietro"
+
+msgid "Change skin"
+msgstr "Cambia livrea"
 
 msgid "Paint schemes"
 msgstr "Livree"
@@ -14590,3 +14599,24 @@ msgstr "Il carrello Phoenix è usato per i decolli dalla pista. Il carrello retr
 
 msgid "Needs no landing gear"
 msgstr "Solo senza carrello"
+
+msgid "Fly calibrated runway"
+msgstr "Vola dalla pista calibrata"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Volo sperimentale in aria calma con pista, posizione di partenza e terreno stimati."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Volo sperimentale pronto. Pista, posizione di partenza e terreno sono stimati."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Non è stato possibile verificare lo scenario installato per il volo."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Scegli un aereo che possa decollare da una pista."
+
+msgid "Preparing panorama"
+msgstr "Preparazione del panorama"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "Sono attive le impostazioni grafiche di base. Puoi aumentare la qualità in Impostazioni > Grafica."

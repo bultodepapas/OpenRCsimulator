@@ -1,5 +1,7 @@
 # Graphics, FPS and native performance audit — 2026-11-21
 
+**Latest follow-up, 22 November:** the [current-main audit](../graphics-audit-2026-11-22/README.md) integrates main `7940a408`, reviews the new tests/stutter map/CI, adds vehicle and menu opportunities, and reproduces a phase-attribution defect. Read its disposition ledger for current status; this document retains the original snapshot below.
+
 **Continued investigation:** the [second-pass report](second-pass.md) adds 16 scoped opportunities, a pinned-engine Nitro audio component measurement, independent cross-review, and a newer-main CI/source cross-check. The original missing-UID preflight failure below remains historical: release preflight passes at the newer `6b2228c…` revision, while broader CI was still running in the retained snapshot. Read the second pass for follow-up status; no production optimization or FPS gain is claimed.
 
 **Repository:** `bultodepapas/OpenRCsimulator` · **Audit branch:** `graphics-audit` · **Application baseline:** [`57abea025f62b20233ca281d58d2acbee4ab8b8e`](https://github.com/bultodepapas/OpenRCsimulator/commit/57abea025f62b20233ca281d58d2acbee4ab8b8e) · **Engine:** official `4.8.beta2.official.cafc17a19`.

@@ -1,7 +1,9 @@
 import hashlib
 import json
 import os
+import sqlite3
 import unittest
+from unittest.mock import Mock, call, patch
 
 from openrc_telemetry.cli import main
 from openrc_telemetry.storage import AggStore, RawStore, StorageUnavailable, utc_day
@@ -97,6 +99,21 @@ class RawStoreTests(unittest.TestCase):
         with self.assertRaises(StorageUnavailable):
             broken.count()
 
+    def test_read_only_store_does_not_change_an_unrelated_sqlite_database(self):
+        path = self.dir / "unrelated #+.sqlite"
+        conn = sqlite3.connect(path)
+        conn.execute("CREATE TABLE unrelated(value TEXT)")
+        conn.close()
+        before = path.read_bytes()
+        reader = RawStore(path, read_only=True)
+        try:
+            with self.assertRaises(StorageUnavailable):
+                reader.count()
+        finally:
+            reader.close()
+        self.assertEqual(path.read_bytes(), before)
+        self.assertFalse(path.with_name(path.name + "-wal").exists())
+
 
 class AggStoreTests(unittest.TestCase):
     def setUp(self):
@@ -115,7 +132,6 @@ class AggStoreTests(unittest.TestCase):
         self.assertFalse({"session_id", "batch_id"} & names)
 
     def test_an_aggregates_file_from_before_the_histogram_columns_is_refused(self):
-        import sqlite3
         path = self.dir / "old.sqlite"
         legacy = sqlite3.connect(str(path))
         legacy.execute("CREATE TABLE daily_gpu(day TEXT NOT NULL, release_id TEXT NOT NULL, gpu_family TEXT NOT NULL, "
@@ -149,8 +165,75 @@ class AggStoreTests(unittest.TestCase):
         self.assertIsNone(self.store.get_day("2026-07-18", "v0.2.7", "gpu"))
         self.assertIsNotNone(self.store.get_day("2026-07-19", "v0.2.7", "gpu"))
 
+    def test_read_only_view_reads_live_wal_and_holds_a_committed_snapshot(self):
+        day = "2027-01-14"
+        self.store.add_ingest_counts([(day, "accepted", 1)])
+        reader = AggStore(self.store.path, read_only=True)
+        try:
+            with reader.read_snapshot():
+                self.assertEqual(reader.ingest_counts(day), {"accepted": 1})
+                self.store.add_ingest_counts([(day, "accepted", 2)])
+                self.store.put_rollup(day, {}, NOW)
+                self.assertEqual(reader.rollup_commits(), {})
+                self.assertEqual(reader.ingest_counts(day), {"accepted": 1})
+            self.assertEqual(reader.rollup_commits(), {day: 0})
+            self.assertEqual(reader.ingest_counts(day), {"accepted": 3})
+            with self.assertRaises(StorageUnavailable):
+                reader.add_ingest_counts([(day, "accepted", 1)])
+            self.assertEqual(self.store.ingest_counts(day), {"accepted": 3})
+        finally:
+            reader.close()
+
+    def test_read_only_legacy_store_does_not_create_the_missing_commit_table(self):
+        day = "2027-01-14"
+        self.store.put_day(day, "v0.2.7", "gpu", "ready", [], NOW)
+        with self.store.connection() as conn:
+            conn.execute("DROP TABLE daily_rollup")
+        reader = AggStore(self.store.path, read_only=True)
+        try:
+            self.assertEqual(reader.rollup_commits(), {})
+            self.assertEqual(reader.day_statuses(day), {"v0.2.7/gpu": "ready"})
+        finally:
+            reader.close()
+        with self.store.connection() as conn:
+            self.assertIsNone(conn.execute("SELECT 1 FROM sqlite_master WHERE name='daily_rollup'").fetchone())
+
 
 class PurgeCliTests(unittest.TestCase):
+    def test_automatic_purge_reports_busy_wal_and_retries_promptly(self):
+        from openrc_telemetry.cli import PURGE_RETRY_S, _purge_loop
+        from .support import make_config
+        with TempDir() as directory:
+            config = make_config(directory)
+            raw, agg = RawStore(config.raw_path), AggStore(config.aggregates_path)
+            reader = RawStore(config.raw_path, read_only=True)
+            try:
+                self.assertEqual(put(raw, 1, NOW), "accepted")
+                with raw.connection() as conn:
+                    conn.execute("PRAGMA busy_timeout=0")
+                with reader.read_snapshot():
+                    self.assertEqual(reader.count(), 1)
+                    stop = Mock()
+                    # End the reader snapshot when the short retry is scheduled.
+                    def wait(delay):
+                        if delay == PURGE_RETRY_S:
+                            reader.close()
+                        return stop.wait.call_count == 3
+                    stop.wait.side_effect = wait
+                    with patch("openrc_telemetry.cli.time.time", return_value=NOW + 48 * 3600):
+                        with self.assertLogs("openrc_telemetry", level="WARNING") as logs:
+                            _purge_loop(config, raw, agg, stop, config.purge_interval_s)
+                    self.assertEqual(stop.wait.call_args_list, [call(config.purge_interval_s),
+                                                               call(PURGE_RETRY_S), call(config.purge_interval_s)])
+                    self.assertEqual(logs.output, ["WARNING:openrc_telemetry:purge category=checkpoint_busy"])
+                self.assertEqual(raw.count(), 0)
+                wal = config.raw_path.with_name("raw.sqlite-wal")
+                self.assertEqual(wal.stat().st_size if wal.exists() else 0, 0)
+            finally:
+                reader.close()
+                raw.close()
+                agg.close()
+
     def test_purge_command_runs_against_data_dir(self):
         with TempDir() as directory:
             os.environ["OPENRC_TELEMETRY_DATA_DIR"] = str(directory)

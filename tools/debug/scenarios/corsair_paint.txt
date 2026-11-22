@@ -3,11 +3,11 @@ eval expr="tree.root.set_size(Vector2i(1920,1080))"
 assert expr="tree.root.size == Vector2i(1920,1080)"
 call node=AppRoot method=set_aircraft args=["f4u-corsair-250"]
 call node=AppRoot method=set_livery args=["midnight"]
-press text=Aircraft
+press text=Vehicles
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_button.is_visible_in_tree()"
 assert expr="home.livery_button.get_global_rect().end.y <= home._scroll.get_global_rect().position.y + 0.5"
-press text="Choose paint"
+press text="Change skin"
 press text="Coastal Three Tone"
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"

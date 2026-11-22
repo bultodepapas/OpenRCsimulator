@@ -275,6 +275,12 @@ msgstr "Leme"
 msgid "Throttle"
 msgstr "Acelerador"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Não foram coletadas amostras suficientes do tempo de GPU. Reinicie ou restaure os padrões gráficos para tentar novamente."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "As configurações foram salvas, mas não foi possível redefinir os gráficos automáticos (erro %d). Selecione Manter alterações para tentar novamente."
+
 msgid "Could not save settings (error %d)."
 msgstr "Não foi possível salvar as configurações (erro %d)."
 
@@ -2750,6 +2756,9 @@ msgstr "Repetir o último voo"
 
 msgid "Back"
 msgstr "Voltar"
+
+msgid "Change skin"
+msgstr "Trocar pintura"
 
 msgid "Paint schemes"
 msgstr "Pinturas"
@@ -14602,3 +14611,24 @@ msgstr "O trem de pouso do Phoenix é usado para decolar da pista. O trem retrá
 
 msgid "Needs no landing gear"
 msgstr "Somente sem trem de pouso"
+
+msgid "Fly calibrated runway"
+msgstr "Voar da pista calibrada"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Voo experimental sem vento, com pista, ponto de partida e terreno estimados."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Voo experimental pronto. A pista, o ponto de partida e o terreno são estimados."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Não foi possível verificar o cenário instalado para o voo."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Escolha um avião que possa decolar de uma pista."
+
+msgid "Preparing panorama"
+msgstr "Preparando o panorama"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "Os gráficos estão na qualidade básica. Você pode aumentar a qualidade em Configurações > Gráficos."

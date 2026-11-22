@@ -2,7 +2,7 @@ extends Node
 ## GOD: opt-in source/debug benchmark, attached beside Startup, never a new solver.
 ## OPENRC_GODTEST_CONFIG names a runner-owned manifest. No user CLI arguments are added.
 
-const PILOT_PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop"]
+const PILOT_PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop"]
 const MAX_PHASE_FRAMES := 1000000
 const MAX_EVENTS := 20000
 const MAX_TRAJECTORY := 200000
@@ -37,6 +37,12 @@ var event_count := 0
 var trajectory_count := 0
 var drawable_intervals := 0
 var undrawable_intervals := 0
+var last_window_mode := -1
+var window_mode_events := 0
+var window_mode_changed_usec := 0
+var transition_undrawable_intervals := 0
+var window_focused_before_selection := false
+const WINDOW_MODE_TRANSITION_USEC := 2000000
 var no_draw_intervals := 0
 var focus_losses := 0
 var observer_usec := 0
@@ -55,7 +61,7 @@ func prepare_startup() -> bool:
 	config = parsed
 	output_dir = str(config.get("output_dir", "")).replace("\\", "/").simplify_path()
 	var user_dir := OS.get_user_data_dir().replace("\\", "/").simplify_path()
-	if not output_dir.is_absolute_path() or not DirAccess.dir_exists_absolute(output_dir) or not user_dir.to_lower().begins_with(output_dir.to_lower().trim_suffix("/") + "/"):
+	if not output_dir.is_absolute_path() or not DirAccess.dir_exists_absolute(output_dir) or not _profile_is_owned(user_dir):
 		return false
 	_prepare_profile()
 	profile_prepared = failure.is_empty()
@@ -85,9 +91,9 @@ func _run() -> void:
 		return
 	# The launcher must redirect user:// beneath this fresh run. Refuse player profiles.
 	var user_dir := OS.get_user_data_dir().replace("\\", "/").simplify_path()
-	if not user_dir.to_lower().begins_with(output_dir.to_lower().trim_suffix("/") + "/"):
+	if not _profile_is_owned(user_dir):
 		_write_json("runtime.json", {format = "openrc-godtest-runtime-v1", complete = false,
-			execution = "refused", coverage = "none", flight = "not_run", reason = "user profile is not inside run directory", phases = []})
+			execution = "refused", coverage = "none", flight = "not_run", reason = "user profile does not match the isolated run", phases = []})
 		return
 	for filename: String in ["runtime.json", "events.jsonl", "trajectory.csv", "frametimes.json", "frametimes.json.frames.jsonl"]:
 		if FileAccess.file_exists(output_dir.path_join(filename)):
@@ -130,18 +136,28 @@ func _run() -> void:
 		application_user_args = Array(OS.get_cmdline_user_args()), startup_route = "normal_startup",
 		cache_state = "fresh_process_os_cache_unknown", physics_hz = Engine.physics_ticks_per_second,
 		instrumentation = "frames_diagnostics_pilot_v1", physical_presentation = "not_observed",
-		profile_overrides = {first_flight_hint_seen = true, update_checks = false, windowed = true}}
+		profile_overrides = {first_flight_hint_seen = true, update_checks = false,
+			window_mode = str(config.get("window_mode", "windowed")), master_volume = 0.0}}
+	for key: String in ["max_fps", "vsync_mode"]:
+		if config.has(key): identity.profile_overrides[key] = config[key]
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
 	_begin("startup")
 	phase.start_usec = started_usec
 	if not await _wait_home(): return
+	identity.effective_display = app.display_preferences.config.duplicate(true)
 	_event("home_ready", {})
 	await get_tree().process_frame
 	_event("home_draw_observed", {drawn = Engine.get_frames_drawn()})
+	identity.runtime_display = _runtime_display()
 	_end()
+	if config.get("watch_frames", false):
+		_begin("monitor_arm")
+		if not await _wait_frame_watch(): return
+		_end()
 	if requested_phases == ["startup"] or requested_phases == ["startup", "shutdown"]:
 		_finish(true)
 		return
+	if not await _observe_window_focus(): return
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
 	if not catalog.is_player_selectable(str(config.aircraft)) or not catalog.can_fly(str(config.aircraft)) or catalog.is_rotorcraft(str(config.aircraft)):
 		_fail("this runtime requires a player-selectable fixed-wing aircraft")
@@ -173,6 +189,8 @@ func _run() -> void:
 				await _fly_phase(name_value)
 			elif name_value == "pause":
 				await _pause_phase()
+			elif name_value in ["menu_settings", "menu_controls"]:
+				await _menu_phase(name_value.trim_prefix("menu_"))
 			else:
 				_end("unsupported", "phase not implemented")
 			if not running: return
@@ -202,9 +220,25 @@ func _run() -> void:
 	_finish(true)
 
 
+func _profile_is_owned(user_dir: String) -> bool:
+	if config.has("isolated_user_dir"):
+		# macOS ignores APPDATA/XDG_DATA_HOME. The external owner changes only the
+		# name in a private frozen launch copy and records the exact fresh profile.
+		var project_name := str(config.get("isolated_project_name", ""))
+		var suffix := project_name.trim_prefix("OpenRC-GodTest-")
+		if OS.get_name() != "macOS" or not project_name.begins_with("OpenRC-GodTest-") or suffix.length() != 32 or not suffix.is_valid_hex_number():
+			return false
+		if str(ProjectSettings.get_setting("application/config/name", "")) != project_name or bool(ProjectSettings.get_setting("application/config/use_custom_user_dir", false)):
+			return false
+		var expected := OS.get_data_dir().path_join("Godot/app_userdata").path_join(project_name).replace("\\", "/").simplify_path()
+		return user_dir == expected and str(config.isolated_user_dir).replace("\\", "/").simplify_path() == expected
+	var prefix := output_dir.trim_suffix("/") + "/"
+	return user_dir.to_lower().begins_with(prefix.to_lower()) if OS.get_name() == "Windows" else user_dir.begins_with(prefix)
+
+
 func _prepare_profile() -> void:
 	# Fresh isolated settings only. Product validators still load/apply these files.
-	if FileAccess.file_exists("user://settings.cfg") or FileAccess.file_exists("user://display.cfg"):
+	if FileAccess.file_exists("user://settings.cfg") or FileAccess.file_exists("user://settings.cfg.display"):
 		failure = "benchmark requires fresh run-owned settings"
 		return
 	var settings := ConfigFile.new()
@@ -218,15 +252,39 @@ func _prepare_profile() -> void:
 	var display := ConfigFile.new()
 	display.set_value("meta", "schema", 1)
 	display.set_value("meta", "reconstruction_auto", true)
-	display.set_value("display", "window_mode", "windowed")
+	var window_mode := str(config.get("window_mode", "windowed"))
+	display.set_value("display", "window_mode", window_mode)
 	var size_value: Array = config.get("resolution", [1920, 1080])
-	display.set_value("display", "window_resolution", "%dx%d" % [int(size_value[0]), int(size_value[1])])
+	var window_resolution := "auto" if window_mode == "borderless" else "%dx%d" % [int(size_value[0]), int(size_value[1])]
+	display.set_value("display", "window_resolution", window_resolution)
 	display.set_value("graphics", "scene_detail", str(config.get("scene_detail", "medium")))
 	display.set_value("graphics", "reconstruction", "native")
+	if config.has("max_fps"): display.set_value("graphics", "max_fps", int(config.max_fps))
+	if config.has("vsync_mode"): display.set_value("graphics", "vsync_mode", str(config.vsync_mode))
 	display.set_value("camera", "view", str(config.get("camera", "pilot")))
 	display.set_value("camera", "auto_zoom", false)
-	if display.save("user://display.cfg") != OK: failure = "cannot prepare isolated display settings"
+	# Silent desk runs: mute the Master bus only; streams and mixing still run.
+	display.set_value("audio", "master_volume", 0.0)
+	if display.save("user://settings.cfg.display") != OK: failure = "cannot prepare isolated display settings"
 	OS.set_environment("OPENRC_SCENE_DETAIL", str(config.get("scene_detail", "medium")))
+
+
+func _wait_frame_watch() -> bool:
+	var ready_path := output_dir.path_join("frame-watch.ready.json")
+	var deadline := Time.get_ticks_usec() + 30000000
+	while running and not FileAccess.file_exists(ready_path):
+		if Time.get_ticks_usec() > deadline:
+			_fail("frame watcher did not arm before aircraft selection")
+			return false
+		await get_tree().process_frame
+	if not running: return false
+	var ready: Variant = JSON.parse_string(FileAccess.get_file_as_string(ready_path))
+	if not ready is Dictionary or ready.get("format") != "openrc-godtest-watch-ready-v1" or ready.get("run_id") != output_dir.get_file():
+		_fail("frame watcher readiness does not match this owned run")
+		return false
+	identity.frame_watch = ready.duplicate(true)
+	_event("frame_watch_armed", ready)
+	return true
 
 
 func _configure_home() -> bool:
@@ -254,8 +312,9 @@ func _configure_home() -> bool:
 		return false
 	dialog.preset_picker.select(preset_index)
 	dialog.preset_picker.item_selected.emit(preset_index)
-	if dialog.turbulence_inputs.has("seed"):
-		dialog.turbulence_inputs.seed.text = str(int(config.get("seed", 20261110)))
+	# Keep the preset's own turbulence seed: an edited seed is no longer an exact
+	# preset, and the Mac native domain then refuses it (reference fallback).
+	# The manifest seed drives the sky; identity.selection records both.
 	dialog.sky_controls.select_preset(str(config.get("sky", "clear")))
 	dialog.sky_controls.draft.seed = int(config.get("seed", 20261110))
 	dialog.apply_button.pressed.emit()
@@ -290,9 +349,19 @@ func _load_flight(pilot_script: Script) -> bool:
 	if not session.is_flyable() or session.radio.connected:
 		_fail("flight is not flyable through the selected keyboard")
 		return false
+	var selected_aircraft := str(config.aircraft)
+	var flight_aircraft := str(app.flight.aircraft_id)
+	var model_aircraft := str(session.aircraft.get("model", {}).get("id", ""))
+	if flight_aircraft != selected_aircraft or model_aircraft != selected_aircraft:
+		_fail("loaded flight/model aircraft does not match the selected aircraft")
+		return false
+	identity.flight_aircraft = {requested = selected_aircraft, flight = flight_aircraft, model = model_aircraft}
 	_event("flight_ready", {tick = session.sim.tick, paused = session.sim.paused, holds = session.holds.keys()})
 	if session.sim.paused or not session.holds.is_empty():
-		_fail("flight became ready with an unexpected pause or hold")
+		if not DisplayServer.window_is_focused(get_window().get_window_id()):
+			_fail("flight became ready paused: the app window is not focused; unlock the desktop and keep the app in front")
+		else:
+			_fail("flight became ready with an unexpected pause or hold")
 		return false
 	if str(config.get("entry", "continuous")) == "isolated" and requested_phases.any(func(value: Variant) -> bool: return str(value) in ["approach", "landing", "stop"]):
 		if not _prepare_isolated_approach(session): return false
@@ -342,6 +411,7 @@ func _fly_phase(name_value: String) -> void:
 			_end("failed", "flight accident, fault or unexpected pause")
 			return
 		var observation: Dictionary = pilot.observe()
+		phase.pilot = observation
 		if observation.get("failed", false):
 			_end("failed", str(observation.get("reason", "pilot failed")))
 			return
@@ -354,6 +424,63 @@ func _fly_phase(name_value: String) -> void:
 		await get_tree().process_frame
 
 
+func _menu_phase(screen_name: String) -> void:
+	if flight_lost or not _healthy_flight():
+		_end("failed", "no usable continuous flight for " + screen_name)
+		return
+	app.open_pause()
+	await get_tree().process_frame
+	if not _same_bound_session() or app.pause_menu == null or not bound_session.sim.paused or not app.screens.is_top("pause"):
+		_end("failed", "normal pause was not established before " + screen_name)
+		return
+	var tick: int = bound_session.sim.tick
+	var state: PackedFloat64Array = bound_session.sim.state.duplicate()
+	var aux: PackedFloat64Array = bound_session.sim.aux.duplicate()
+	var continuous: PackedFloat64Array = bound_session.sim.continuous.duplicate()
+	var modes: PackedInt64Array = bound_session.sim.modes.duplicate()
+	_event("menu_open_requested", {screen = screen_name, tick = tick})
+	if screen_name == "settings":
+		if not _usable_menu_button(app.pause_menu.settings_button):
+			_end("failed", "settings button is not available from pause")
+			return
+		app.pause_menu.settings_button.pressed.emit()
+	else:
+		if not app.pause_menu.session_options_container.visible:
+			if not _usable_menu_button(app.pause_menu.session_options_button):
+				_end("failed", "session options are not available from pause")
+				return
+			app.pause_menu.session_options_button.pressed.emit()
+		if not _usable_menu_button(app.pause_menu.controls_button):
+			_end("failed", "controls button is not available from pause")
+			return
+		app.pause_menu.controls_button.pressed.emit()
+	await get_tree().process_frame
+	var screen: Node = app.screens.get_screen(screen_name)
+	if screen == null or not app.screens.is_top(screen_name):
+		_end("failed", "menu did not open: " + screen_name)
+		return
+	_event("menu_opened", {screen = screen_name, tick = bound_session.sim.tick})
+	await _dwell(float(config.get("pause_s", 5)))
+	if not running: return
+	if not _same_bound_session():
+		_end("failed", "flight session changed while menu was open")
+		return
+	phase.menu_screen = screen_name
+	phase.pause_tick_invariant = bound_session.sim.tick == tick
+	phase.pause_state_invariant = bound_session.sim.state == state and bound_session.sim.aux == aux and bound_session.sim.continuous == continuous and bound_session.sim.modes == modes
+	if not phase.pause_tick_invariant or not phase.pause_state_invariant or not app.screens.is_top(screen_name):
+		_end("failed", "paused state or menu ownership changed in " + screen_name)
+		return
+	if screen_name == "settings": screen.close()
+	else: screen.request_close()
+	await get_tree().process_frame
+	if not _same_bound_session() or not app.screens.is_top("pause") or app.pause_menu == null or not bound_session.sim.paused:
+		_end("failed", "menu close did not restore pause: " + screen_name)
+		return
+	_event("menu_closed", {screen = screen_name, tick = bound_session.sim.tick})
+	await _resume_after_pause(tick, minf(2.0, float(config.get("sample_s", 10))), "menu_resume_tick_observed", {screen = screen_name})
+
+
 func _pause_phase() -> void:
 	if flight_lost or not _healthy_flight():
 		_end("failed", "no usable continuous flight for pause")
@@ -361,7 +488,7 @@ func _pause_phase() -> void:
 	_event("pause_requested", {})
 	app.open_pause()
 	await get_tree().process_frame
-	if app.pause_menu == null or not bound_session.sim.paused:
+	if not _same_bound_session() or app.pause_menu == null or not app.screens.is_top("pause") or not bound_session.sim.paused:
 		_end("failed", "normal pause menu did not pause")
 		return
 	var tick: int = bound_session.sim.tick
@@ -372,6 +499,10 @@ func _pause_phase() -> void:
 	var acknowledged := Time.get_ticks_usec()
 	_event("pause_acknowledged", {tick = tick})
 	await _dwell(float(config.get("pause_s", 5)))
+	if not running: return
+	if not _same_bound_session() or app.pause_menu == null or not app.screens.is_top("pause") or not bound_session.sim.paused:
+		_end("failed", "pause or flight ownership changed while paused")
+		return
 	phase.pause_hold_seconds = float(Time.get_ticks_usec() - acknowledged) / 1000000.0
 	phase.pause_tick_invariant = bound_session.sim.tick == tick
 	phase.pause_state_invariant = bound_session.sim.state == state and bound_session.sim.aux == aux and bound_session.sim.continuous == continuous and bound_session.sim.modes == modes
@@ -379,17 +510,7 @@ func _pause_phase() -> void:
 		_end("failed", "physical state advanced during expected pause")
 		return
 	_event("resume_requested", {tick = tick})
-	pilot.release_for_menu()
-	app.pause_menu.continue_button.pressed.emit()
-	var resumed := Time.get_ticks_usec()
-	while running and bound_session.sim.tick <= tick:
-		if Time.get_ticks_usec() - resumed > 5000000:
-			_end("failed", "normal continue did not resume simulation")
-			return
-		await get_tree().process_frame
-	phase.resume_to_tick_ms = float(Time.get_ticks_usec() - resumed) / 1000.0
-	_event("resume_tick_observed", {tick = bound_session.sim.tick})
-	await _dwell(minf(5.0, float(config.get("sample_s", 10))))
+	await _resume_after_pause(tick, minf(5.0, float(config.get("sample_s", 10))), "resume_tick_observed")
 
 
 func _settings_phase() -> void:
@@ -398,6 +519,14 @@ func _settings_phase() -> void:
 		return
 	app.open_pause()
 	await get_tree().process_frame
+	if not _same_bound_session() or app.pause_menu == null or not app.screens.is_top("pause") or not bound_session.sim.paused:
+		_end("failed", "normal pause was not established before lighting settings")
+		return
+	var tick: int = bound_session.sim.tick
+	var state: PackedFloat64Array = bound_session.sim.state.duplicate()
+	var aux: PackedFloat64Array = bound_session.sim.aux.duplicate()
+	var continuous: PackedFloat64Array = bound_session.sim.continuous.duplicate()
+	var modes: PackedInt64Array = bound_session.sim.modes.duplicate()
 	app.open_time_of_day()
 	await get_tree().process_frame
 	var dialog: Node = app.time_of_day_dialog
@@ -421,19 +550,98 @@ func _settings_phase() -> void:
 	_event("lighting_applied", {lighting = app.flight.lighting_config, sky = app.flight.sky_config,
 		night_options = app.flight.night_options, night_only = night_only})
 	await _dwell(1.0)
+	if not running: return
+	if not _same_bound_session():
+		_end("failed", "flight session changed while lighting settings were open")
+		return
+	phase.pause_tick_invariant = bound_session.sim.tick == tick
+	phase.pause_state_invariant = bound_session.sim.state == state and bound_session.sim.aux == aux and bound_session.sim.continuous == continuous and bound_session.sim.modes == modes
+	if app.pause_menu == null or not app.screens.is_top("pause") or not bound_session.sim.paused or not phase.pause_tick_invariant or not phase.pause_state_invariant:
+		_end("failed", "lighting settings did not preserve the paused flight")
+		return
+	await _resume_after_pause(tick, minf(2.0, float(config.get("sample_s", 10))), "settings_resume_tick_observed")
+
+
+func _usable_menu_button(button: BaseButton) -> bool:
+	return is_instance_valid(button) and button.is_visible_in_tree() and not button.disabled
+
+
+func _resume_after_pause(tick: int, dwell_seconds: float, event_name: String, event_data: Dictionary = {}) -> bool:
+	if app.pause_menu == null or not _usable_menu_button(app.pause_menu.continue_button):
+		_end("failed", "pause Continue button is not available")
+		return false
 	pilot.release_for_menu()
 	app.pause_menu.continue_button.pressed.emit()
-	await get_tree().process_frame
-	if bound_session.sim.paused: _end("failed", "settings transition did not resume")
+	return await _observe_resumed_flight(tick, dwell_seconds, event_name, event_data)
+
+
+func _observe_resumed_flight(pause_tick: int, dwell_seconds: float, event_name: String, event_data: Dictionary = {}) -> bool:
+	var resumed := Time.get_ticks_usec()
+	while running:
+		if not _healthy_flight():
+			_end("failed", "flight, pilot or screen ownership was lost after Continue")
+			return false
+		var tick: int = bound_session.sim.tick
+		if tick < pause_tick:
+			_end("failed", "simulation tick regressed after Continue")
+			return false
+		if tick > pause_tick: break
+		if Time.get_ticks_usec() - resumed > 5000000:
+			_end("failed", "Continue did not resume simulation")
+			return false
+		await get_tree().process_frame
+	if not running: return false
+	phase.resume_to_tick_ms = float(Time.get_ticks_usec() - resumed) / 1000.0
+	var first_tick: int = bound_session.sim.tick
+	var last_tick := first_tick
+	var last_progress := Time.get_ticks_usec()
+	var event := event_data.duplicate()
+	event.tick = first_tick
+	_event(event_name, event)
+	var deadline := Time.get_ticks_usec() + int(maxf(0.0, dwell_seconds) * 1000000)
+	while running and Time.get_ticks_usec() < deadline:
+		if not _healthy_flight():
+			_end("failed", "flight, pilot or screen ownership was lost during resumed flight")
+			return false
+		var tick: int = bound_session.sim.tick
+		if tick < last_tick:
+			_end("failed", "simulation tick regressed during resumed flight")
+			return false
+		if tick > last_tick:
+			last_tick = tick
+			last_progress = Time.get_ticks_usec()
+		elif Time.get_ticks_usec() - last_progress > 5000000:
+			_end("failed", "simulation stopped advancing during resumed flight")
+			return false
+		await get_tree().process_frame
+	if not running: return false
+	if not _healthy_flight():
+		_end("failed", "flight, pilot or screen ownership was lost at the end of resumed flight")
+		return false
+	if bound_session.sim.tick <= first_tick or bound_session.sim.tick < last_tick:
+		_end("failed", "simulation did not advance continuously after Continue")
+		return false
+	phase.resume_observed_ticks = bound_session.sim.tick - first_tick
+	return true
 
 
 func _end_home() -> bool:
+	var healthy := _healthy_flight()
+	if not running: return false
+	var accident := flight_lost
+	if not healthy and not accident:
+		_fail("flight was not healthy immediately before returning Home")
+		return false
+	if accident: _end("failed", "aircraft accident before returning Home")
 	_unbind()
 	if app.flight != null:
 		if app.pause_menu == null: app.open_pause()
 		app.end_flight()
 	var ok := await _wait_home()
 	if ok: _event("home_returned", {cycle = cycle})
+	if ok and accident:
+		_fail("aircraft accident before returning Home")
+		return false
 	return ok
 
 
@@ -470,6 +678,29 @@ func _prepare_isolated_approach(session: Node) -> bool:
 	return true
 
 
+## Record OS window focus before selection (up to 10 s). A flight pauses on a
+## focus loss (a locked screen keeps the window unfocused); a seatless headless
+## compositor never focuses it but sends no loss either, so this only observes.
+## A paused flight later fails with this cause instead of a bare "unexpected pause".
+func _observe_window_focus() -> bool:
+	if DisplayServer.get_name() == "headless": return true
+	var deadline := Time.get_ticks_usec() + 10000000
+	while running and not DisplayServer.window_is_focused(get_window().get_window_id()) and Time.get_ticks_usec() <= deadline:
+		await get_tree().process_frame
+	window_focused_before_selection = DisplayServer.window_is_focused(get_window().get_window_id())
+	identity.window_focused_before_selection = window_focused_before_selection
+	_event("window_focused" if window_focused_before_selection else "window_unfocused", {display_server = DisplayServer.get_name()})
+	# A headless Wayland compositor without a keyboard seat (Weston headless on a
+	# test host) never focuses any window, so AppRoot would open Pause at flight
+	# start. Treat the window as in front there, and record it. Real focus-loss
+	# notifications still pause; Windows, macOS and X11 keep the product probe.
+	if not window_focused_before_selection and DisplayServer.get_name() == "Wayland" and "window_focus_probe" in app:
+		app.window_focus_probe = func() -> bool: return true
+		identity.window_focus_probe_override = "wayland_without_keyboard_focus"
+		_event("window_focus_probe_override", {reason = "wayland_without_keyboard_focus"})
+	return running
+
+
 func _wait_home() -> bool:
 	var deadline := Time.get_ticks_usec() + int(float(config.get("phase_timeout_s", 180)) * 1000000)
 	while running:
@@ -491,8 +722,14 @@ func _dwell(seconds: float) -> void:
 		await get_tree().process_frame
 
 
+func _same_bound_session() -> bool:
+	return is_instance_valid(bound_session) and bound_session.sim != null and is_instance_valid(app) and is_instance_valid(app.flight) and app.flight.session == bound_session
+
+
 func _healthy_flight() -> bool:
-	if not is_instance_valid(bound_session) or bound_session.sim == null: return false
+	if not _same_bound_session():
+		_fail("bound flight session was replaced or removed")
+		return false
 	if not bound_session.crash.is_empty():
 		if not flight_lost: _event("aircraft_accident", {crash = bound_session.crash})
 		flight_lost = true
@@ -501,10 +738,17 @@ func _healthy_flight() -> bool:
 	if not str(bound_session.sim.fault_reason).is_empty():
 		_fail("simulation fault: " + str(bound_session.sim.fault_reason))
 		return false
+	if pilot == null:
+		_fail("benchmark pilot unavailable during flight")
+		return false
+	var observation: Dictionary = pilot.observe()
+	if observation.get("failed", false):
+		_fail("benchmark pilot failed: " + str(observation.get("reason", "unknown")))
+		return false
 	if bound_session.read_raw != pilot.read_raw or bound_session.radio.connected or not bound_session.physics_enabled or bound_session.external_driver_enabled:
 		_fail("normal input/physics ownership changed")
 		return false
-	if bound_session.sim.paused or not bound_session.holds.is_empty(): return false
+	if bound_session.sim.paused or not bound_session.holds.is_empty() or app.pause_menu != null or app.screens == null or app.screens.top() != null: return false
 	return true
 
 
@@ -517,10 +761,33 @@ func _process(delta: float) -> void:
 	var drawn := Engine.get_frames_drawn()
 	var native_display := DisplayServer.get_name() != "headless"
 	var drawable := native_display and DisplayServer.window_can_draw()
+	if native_display:
+		var mode := DisplayServer.window_get_mode()
+		if mode != last_window_mode:
+			# Arm once, only for the startup switch into fullscreen.
+			if last_window_mode != -1 and window_mode_changed_usec == 0 and phase.get("name", "") == "startup" \
+					and mode in [DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]:
+				window_mode_changed_usec = began
+			if window_mode_events < 20:
+				window_mode_events += 1
+				_event("window_mode_changed", {previous = last_window_mode, mode = mode, drawable = drawable})
+		last_window_mode = mode
 	var interval_draws := drawn - previous_drawn
 	previous_drawn = drawn
+	# macOS reports the window undrawable during its fullscreen Space animation
+	# (~0.5 s) although frames keep drawing. Only startup intervals that still draw,
+	# within 2 s after the observed switch into fullscreen, are labeled as that
+	# transition; any other undrawable interval still invalidates rendered evidence.
+	var mode_transition: bool = native_display and not drawable and interval_draws > 0 \
+		and phase.get("name", "") == "startup" and window_mode_changed_usec > 0 \
+		and began - window_mode_changed_usec <= WINDOW_MODE_TRANSITION_USEC
 	if drawable: drawable_intervals += 1
-	elif native_display: undrawable_intervals += 1
+	elif mode_transition: transition_undrawable_intervals += 1
+	elif native_display:
+		undrawable_intervals += 1
+		if undrawable_intervals <= 20:
+			_event("window_undrawable", {interval = undrawable_intervals, drawable_before = drawable_intervals,
+				drawn = drawn, mode = DisplayServer.window_get_mode(), focused = DisplayServer.window_is_focused()})
 	if native_display and interval_draws <= 0: no_draw_intervals += 1
 	var tick := -1
 	var sim_s := 0.0
@@ -534,7 +801,7 @@ func _process(delta: float) -> void:
 	var sample: Dictionary = diagnostics.sample()
 	sample.merge({phase_index = phases.size(), cycle = cycle, sim_tick = tick, sim_time_s = sim_s,
 		paused = paused, crashed = crashed, render_frames_drawn = drawn, render_interval_draws = interval_draws,
-		render_window_drawable = int(drawable), window_focused = int(get_tree().root.has_focus()),
+		render_window_drawable = int(drawable), render_window_transition = int(mode_transition), window_focused = int(get_tree().root.has_focus()),
 		draw_calls = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)})
 	if not collector.record_frame(delta, wall_usec, began, sample):
@@ -581,6 +848,28 @@ func _begin(name_value: String) -> void:
 	_progress("running")
 
 
+func _runtime_display() -> Dictionary:
+	# Read after preferences have been applied, rather than reusing startup diagnostics.
+	# Window/viewport coordinates do not establish native drawable pixel dimensions.
+	var window: Window = get_tree().root
+	var result := {status = "unavailable_headless", monotonic_usec = Time.get_ticks_usec(),
+		max_fps = Engine.max_fps, window_size = [window.size.x, window.size.y],
+		viewport_size = [window.get_visible_rect().size.x, window.get_visible_rect().size.y],
+		scope = "window and viewport coordinates; physical presentation and native drawable pixels not observed"}
+	if DisplayServer.get_name() == "headless": return result
+	var window_id := window.get_window_id()
+	var mode := DisplayServer.window_get_mode(window_id)
+	var vsync := DisplayServer.window_get_vsync_mode(window_id)
+	result.status = "observed"
+	result.window_mode_code = mode
+	result.window_mode = "windowed" if mode == DisplayServer.WINDOW_MODE_WINDOWED \
+		else "borderless" if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else "other"
+	result.vsync_mode_code = vsync
+	result.vsync_mode = "disabled" if vsync == DisplayServer.VSYNC_DISABLED \
+		else "enabled" if vsync == DisplayServer.VSYNC_ENABLED else "other"
+	return result
+
+
 func _end(status: String = "complete", reason: String = "") -> void:
 	if phase.is_empty(): return
 	phase.end_usec = Time.get_ticks_usec()
@@ -595,6 +884,7 @@ func _end(status: String = "complete", reason: String = "") -> void:
 	phase.frame_statistics = "offline_from_verified_stream"
 	phase.rendered = DisplayServer.get_name() != "headless" and Engine.get_frames_drawn() > int(phase.start_drawn) and undrawable_intervals == int(phase.start_undrawable)
 	phase.focus_losses = focus_losses - int(phase.start_focus_losses)
+	phase.runtime_display = _runtime_display()
 	_event("phase_end", phase)
 	phases.append(phase.duplicate(true))
 	phase.clear()
@@ -644,12 +934,14 @@ func _finish(success: bool) -> void:
 	if collector != null:
 		frame_report = collector.seal_event(success and failure.is_empty(), "scenario_finished" if success else failure)
 		frame_report.route = "godtest-normal-startup"
-		frame_report.render_progress = {drawable_intervals = drawable_intervals, undrawable_intervals = undrawable_intervals, no_draw_intervals = no_draw_intervals}
+		frame_report.render_progress = {drawable_intervals = drawable_intervals, undrawable_intervals = undrawable_intervals,
+			window_mode_transition_intervals = transition_undrawable_intervals, no_draw_intervals = no_draw_intervals}
 		_write_json("frametimes.json", frame_report)
 	if diagnostics != null:
 		diagnostics.stop()
 		identity.diagnostics = diagnostics.metadata()
 	identity.actual_resolution = [get_tree().root.size.x, get_tree().root.size.y]
+	identity.final_display = _runtime_display()
 	identity.viewport_size = [get_tree().root.get_visible_rect().size.x, get_tree().root.get_visible_rect().size.y]
 	var expected: Array = config.get("resolution", [1920, 1080])
 	var resolution_match := int(expected[0]) == get_tree().root.size.x and int(expected[1]) == get_tree().root.size.y

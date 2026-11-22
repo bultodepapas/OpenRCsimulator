@@ -19,6 +19,7 @@ from .rollup import eligibility_window, run_rollup
 from .storage import RAW_TTL, AggStore, RawStore, StorageUnavailable, utc_day
 
 COUNTER_FLUSH_S = 60
+PURGE_RETRY_S = 15
 
 
 def _parser():
@@ -64,13 +65,23 @@ def purge_once(config, now, raw=None, agg=None, margin_s=0):
     return {**raw.purge(now, RAW_TTL - margin_s), **agg.purge(now)}
 
 
-def _purge_loop(config, raw, agg, stop):
+def _automatic_purge(config, raw, agg):
+    result = purge_once(config, time.time(), raw, agg, purge_margin_s(config))
+    if result["checkpoint_busy"]:
+        logging.getLogger("openrc_telemetry").warning("purge category=checkpoint_busy")
+        return False
+    return True
+
+
+def _purge_loop(config, raw, agg, stop, delay):
     """Background retention inside serve; an external hourly purge remains a second line of defence."""
-    while not stop.wait(config.purge_interval_s):
+    while not stop.wait(delay):
         try:
-            purge_once(config, time.time(), raw, agg, purge_margin_s(config))
+            complete = _automatic_purge(config, raw, agg)
         except StorageUnavailable:
             logging.getLogger("openrc_telemetry").warning("purge category=storage_unavailable")
+            complete = False
+        delay = config.purge_interval_s if complete else PURGE_RETRY_S
 
 
 def _flush_counters(app):
@@ -93,8 +104,9 @@ def _serve(config, args):
         print("warning: OPENRC_TELEMETRY_RELEASES is empty; every batch will be rejected (422)", file=sys.stderr)
     app = create_app(config)
     stop = threading.Event()
-    purge_once(config, time.time(), app.state.raw, app.state.aggregates, purge_margin_s(config))
-    threading.Thread(target=_purge_loop, args=(config, app.state.raw, app.state.aggregates, stop),
+    complete = _automatic_purge(config, app.state.raw, app.state.aggregates)
+    delay = config.purge_interval_s if complete else PURGE_RETRY_S
+    threading.Thread(target=_purge_loop, args=(config, app.state.raw, app.state.aggregates, stop, delay),
                      name="telemetry-purge", daemon=True).start()
     threading.Thread(target=_counter_loop, args=(app, stop), name="telemetry-counters", daemon=True).start()
     try:

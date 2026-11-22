@@ -409,7 +409,10 @@ def _launch_local(argv: list[str]) -> int:
             print("--resolution must look like 1920x1080", file=sys.stderr)
             return 2
         command += ["--resolution", f"{width}x{height}"]
-        if (sys.platform.startswith("linux") and not os.environ.get("DISPLAY")
+        if sys.platform.startswith("linux") and not os.environ.get("DISPLAY") and os.environ.get("WAYLAND_DISPLAY"):
+            # Godot defaults to X11 and does not fall back on a Wayland-only session.
+            command += ["--display-driver", "wayland"]
+        elif (sys.platform.startswith("linux") and not os.environ.get("DISPLAY")
                 and not os.environ.get("WAYLAND_DISPLAY")):
             xvfb = shutil.which("xvfb-run")
             if xvfb is None:

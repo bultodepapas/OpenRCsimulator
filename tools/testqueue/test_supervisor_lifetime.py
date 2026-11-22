@@ -139,9 +139,14 @@ assert k32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(inf
 assert k32.AssignProcessToJobObject(job, k32.GetCurrentProcess()), ctypes.get_last_error()
 from tools.testqueue.pool_mcp import spawn_background
 import subprocess
-plain = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+# Use the actual interpreter so a Windows virtualenv launcher cannot stand in
+# for either child when the outer test checks its lifetime.
+child = [sys._base_executable, "-c", "import time; time.sleep(60)"]
+# Keep the parent result pipe independent of both child lifetimes.
+plain = subprocess.Popen(child, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL)
 with open(sys.argv[2], "ab") as log:
-    escaped = spawn_background([sys.executable, "-c", "import time; time.sleep(60)"], log)
+    escaped = spawn_background(child, log)
 print(plain.pid, escaped.pid, flush=True)
 """
 
@@ -150,15 +155,17 @@ print(plain.pid, escaped.pid, flush=True)
         with tempfile.TemporaryDirectory() as tmp:
             script = Path(tmp) / "parent.py"
             script.write_text(self.PARENT, encoding="utf-8")
-            output = subprocess.run([sys.executable, str(script), str(Path(__file__).resolve().parents[2]),
+            output = subprocess.run([sys._base_executable, str(script), str(Path(__file__).resolve().parents[2]),
                                      str(Path(tmp) / "log.txt")], capture_output=True, text=True, timeout=60)
             self.assertEqual(output.returncode, 0, output.stderr)
             plain, escaped = map(int, output.stdout.split())
-            time.sleep(0.5)
             try:
-                self.assertFalse(psutil.pid_exists(plain) and psutil.Process(plain).is_running()
-                                 and psutil.Process(plain).status() != psutil.STATUS_ZOMBIE,
-                                 "job closure should kill a child that stayed in the job")
+                try:
+                    psutil.Process(plain).wait(timeout=10)
+                except psutil.NoSuchProcess:
+                    pass
+                except psutil.TimeoutExpired:
+                    self.fail("job closure should kill a child that stayed in the job")
                 self.assertTrue(psutil.pid_exists(escaped), "breakaway child must survive the job")
             finally:
                 for pid in (plain, escaped):

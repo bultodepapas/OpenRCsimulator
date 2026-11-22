@@ -1,0 +1,91 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-21",
+  "baseline_commit": "85840cca71d2b68ec27fdaa9b835ef2a00618297",
+  "candidate_commit": "a1663d6b776fbe419129d34bd818f502547aec26",
+  "candidate_overlay": "app/project.godot config/version 0.3.0 to 0.3.1 and the two reviewed D11g inventory guard renewals",
+  "platform": "Linux x86_64 under WSL2 with sequential checked imports and separate profiles",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "inventory": {
+    "source_counts": [
+      151,
+      152
+    ],
+    "unchanged": 145,
+    "qualified_sha256_before": "5413312f534da9f0f3539ccc17bc2a55154dcf7c39750d115807393050a5f906",
+    "qualified_sha256_after": "4430342a0061e95b7c35002afb820a96831baa7b41f03f8598cd889698fa5148",
+    "added": {
+      "app/physics/ground_vehicle/scenery_walls.gd": "b0aacb3800f4285002da154c97537d846668c7acd4c24661b96285e2fad1d1bb"
+    },
+    "removed": {},
+    "changed": {
+      "app/physics/ground_vehicle/airfield_course.gd": {
+        "lf_sha256_before": "5164d012df12ddd0579a54ab8c71419c7a856bc443aacbe5a0d9684350f7e746",
+        "lf_sha256_after": "7e9bc35fc50a7099159b95e9139527a4745d2a28e342359edfb9e735b6481ae3"
+      },
+      "app/physics/ground_vehicle/vehicle_damage.gd": {
+        "lf_sha256_before": "f1a939c74c39df847b6c5c9bc26b51aa85c052d3baef8bd8e22a3844c8f2a319",
+        "lf_sha256_after": "a2d8eae35336dc4453a6e2b64e09289d9a024061119d6b8effa045638b987046"
+      },
+      "app/physics/hull_contact.gd": {
+        "lf_sha256_before": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+        "lf_sha256_after": "d2b704a24bac85fcb91cac07eff53ea162e760cdba7144e3854164924ff5e1e3"
+      },
+      "app/physics/multirotor/controlled_plant.gd": {
+        "lf_sha256_before": "e8c3ad8b39041b45eecabfa78222dbd75e72c72bc549698f7b898148a7f8049f",
+        "lf_sha256_after": "9bddbbc864ef2a68db75350360554e3c7e79d63bd83c7c73ed050d72c713005e"
+      },
+      "app/physics/rotorcraft/impact_detector.gd": {
+        "lf_sha256_before": "5e9eb9676e34e62da0617c490733dc6abb398ec764688c8853f1a1f83a32f0a7",
+        "lf_sha256_after": "5bd5946dbe1070cdb8cff7f6a2c273c0b829eb280a708fe93e4beb1afb613693"
+      },
+      "app/project.godot": {
+        "lf_sha256_before": "9354436b47efb8664e9e78048ed4def6ffc2d60564ac6f0a33bf73e5a120d0bf",
+        "lf_sha256_after": "4409aa94723db4338f0283d56d84dccd0df931bdf65962c515fb1791a27f6299"
+      }
+    }
+  },
+  "numerical_and_provenance_result": "All six reports agree exactly outside the solver source inventory and data-check result, including normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance.",
+  "checks": {
+    "baseline": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "7fad449f068c93b4def35269f154f2f9f3a5f8a0cd34600a0f2530f34a121206",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "6744a49d36bf523f89b0e2ba227ded14ad0f54783d50ed7d3a71a2f4b90b0856",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "renewed": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "ba339e52fad64684c96f051faca8eb29b16212a07c3dcd4694cb7fe154c3cde1",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "physics-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "302182f94d275f01879a11b7438592d1e7527ec8179bc12736d8c3a34b8fd4db",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "version-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "69882d747166acd34caa054580e0909fbbb16ecbd05848345b590009c14b640c",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "restored": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "ba339e52fad64684c96f051faca8eb29b16212a07c3dcd4694cb7fe154c3cde1",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    }
+  },
+  "limits": "Software provenance on Linux under WSL2. The production aircraft bytes and historical v3 source strings are unchanged."
+}

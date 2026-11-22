@@ -5,7 +5,7 @@ from openrc_telemetry.cli import main
 from openrc_telemetry.contract import ContractError, load_contracts
 from openrc_telemetry.rollup import (aggregate_daily_gpu, check_eligible, eligibility_window, run_rollup,
                                      utc_iso)
-from openrc_telemetry.storage import AggStore, RawStore
+from openrc_telemetry.storage import AggStore, RawStore, StorageUnavailable
 
 from .support import (RELEASE, SCHEMA_DIR, TempDir, activity_event, batch, encode, perf_event, unix)
 
@@ -152,6 +152,37 @@ class GpuTests(RollupCase):
             self.put(batch(900 + number, batch_id=900 + number), receipt=START - 60)  # previous day
         self.roll()
         self.assertEqual(self.table("gpu")[1][0]["session_observations"], 20)
+
+
+class AtomicRollupTests(RollupCase):
+    def test_failure_in_second_release_preserves_prior_committed_day(self):
+        self.sessions(19, 1)
+        self.roll()
+        before = self.agg.day_statuses(DAY)
+        self.assertEqual(self.agg.rollup_commits(), {DAY: 1})
+        self.sessions(1, 100)
+        self.sessions(1, 101, release="v0.2.8")
+        with self.agg.connection() as conn:
+            conn.execute(
+                "CREATE TRIGGER fail_second_release BEFORE INSERT ON daily_status "
+                "WHEN NEW.release_id = 'v0.2.8' AND NEW.tbl = 'cells' "
+                "BEGIN SELECT RAISE(ABORT, 'simulated storage failure'); END")
+        with self.assertRaises(StorageUnavailable):
+            self.roll(ROLL_NOW + 1)
+        self.assertEqual(self.agg.day_statuses(DAY), before)
+        self.assertEqual(self.table("gpu"), ("suppressed", []))
+        self.assertEqual(self.agg.rollup_commits(), {DAY: 1})
+        with self.agg.connection() as conn:
+            conn.execute("DROP TRIGGER fail_second_release")
+        self.roll(ROLL_NOW + 2)
+        self.assertEqual(self.table("gpu")[0], "ready")
+        self.assertEqual(len(self.agg.day_statuses(DAY)), 6)
+        self.assertEqual(self.agg.rollup_commits(), {DAY: 2})
+
+    def test_empty_day_with_a_series_allowlist_has_a_completion_marker(self):
+        self.assertEqual(self.roll(releases=frozenset({"v0.2.*"})), [])
+        self.assertEqual(self.agg.day_statuses(DAY), {})
+        self.assertEqual(self.agg.rollup_commits(), {DAY: 0})
 
 
 class VehicleTests(RollupCase):

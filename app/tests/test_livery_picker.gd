@@ -92,9 +92,43 @@ func _run() -> void:
 	cancelled.queue_free()
 	await driver.settle()
 	check("closing cancels pending thumbnail work", cancel_cache.is_empty())
-	var fallback := Picker.new([{id = "named", label = "Named paint"}], "", "Fixture")
-	check("missing preview retains an accessible named choice", fallback._images[0].texture == null and fallback.buttons[0].text.contains("Named paint"))
+	root.size = Vector2i(1920,1080)
+	UiTheme.text_scale = 1.0
+	var fallback := Picker.new([{id = "", label = "Original"}, {id = "named", label = "Named paint"}], "named", "Fixture", {}, null, true)
+	root.add_child(fallback)
+	for frame in 6: await process_frame
+	check("text-only skins allocate no image or caption controls", fallback._images.is_empty() and fallback._labels.is_empty()
+		and fallback._pending.is_empty() and fallback.buttons[0].get_child_count() == 0)
+	check("named list uses a compact panel %s" % fallback.panel.size, fallback.grid.columns == 1 and fallback.panel.size.y < root.size.y * 0.75)
+	check("two named skins fit without scrolling (grid %s, scroll %s)" % [fallback.grid.size, fallback.scroll.size],
+		not fallback.scroll.get_v_scroll_bar().visible)
+	check("current named skin is marked and focused", fallback.buttons[1].has_focus() and fallback.buttons[1].text.contains(tr("Selected")))
+	await driver.tap(KEY_UP)
+	check("Up reaches the preceding named skin", fallback.buttons[0].has_focus())
 	fallback.free()
+	var mixed := Picker.new([{id = "named", label = "Named paint"}, choices[1]], "", "Fixture", cache)
+	root.add_child(mixed)
+	check("mixed gallery binds thumbnails to their original choice", mixed._images.size() == 1
+		and mixed._images[1].texture == cache[choices[1].thumbnail] and mixed.buttons[0].text.contains("Named paint"))
+	mixed.free()
+	var long_list: Array = []
+	for index in 15:
+		long_list.append({id = str(index), label = "Long personal paint scheme %d" % index})
+	TranslationServer.set_locale("de")
+	UiTheme.text_scale = 2.0
+	var compact_list := Picker.new(long_list, "14", "Fixture", {}, UiTheme.build(), true)
+	root.add_child(compact_list)
+	root.size = Vector2i(1280, 720)
+	for frame in 6: await process_frame
+	var frame_rect := Rect2(Vector2.ZERO, Vector2(root.size))
+	check("enlarged list scrolls to the active skin (%s in %s)" % [compact_list.buttons.back().get_global_rect(), compact_list.scroll.get_global_rect()], compact_list.buttons.back().has_focus()
+		and compact_list.scroll.get_v_scroll_bar().visible and compact_list.scroll.get_global_rect().grow(1).encloses(compact_list.buttons.back().get_global_rect()))
+	check("enlarged dialog and all footer actions fit at 720p", frame_rect.encloses(compact_list.panel.get_global_rect())
+		and frame_rect.encloses(compact_list.cancel_button.get_global_rect())
+		and compact_list._skin_actions.all(func(button: Button) -> bool: return frame_rect.encloses(button.get_global_rect())))
+	await driver.tap(KEY_TAB)
+	check("keyboard reaches skin tools after the last named skin", compact_list._skin_actions[0].has_focus())
+	compact_list.free()
 	# Live theme changes replace the owner's theme; existing explicit card fonts
 	# must follow the replacement. Crystal decoration must not mutate shared styles.
 	root.size = Vector2i(1920,1080)

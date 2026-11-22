@@ -41,6 +41,7 @@ signal closed
 signal presentation_changed(config: Dictionary)
 signal presentation_committed
 signal presentation_reverted
+signal calibration_reset(config: Dictionary)
 signal language_changed(language: String)
 signal route_requested(route: String, from: Control)
 signal sound_preview_requested
@@ -68,6 +69,7 @@ var _surface: Control
 var _saved: Dictionary
 var _draft: Dictionary
 var _calibration_reset_pending := false
+var _calibration_reset_display_committed := false
 var _language := "en"
 var _trial_deadline_msec := 0
 var _trial_baseline: Dictionary = {}
@@ -1107,6 +1109,7 @@ func _restore_graphics_defaults() -> void:
 	for key: String in DisplayPreferences.graphics_default_keys(): # the set telemetry's graphics_profile compares
 		_draft[key] = recommended[key]
 	_calibration_reset_pending = true # VQ-07h: kept restores also forget the measured first-flight verdicts
+	_calibration_reset_display_committed = false
 	_on_graphics_option_changed()
 
 
@@ -1212,13 +1215,18 @@ func _refresh_graphics_info() -> void:
 ## VQ-07h-A7: Automatic's choice for this GPU, how far its estimate is trusted and the first-flight measurement.
 ## Tooltip only: the Graphics page must still fit at 1080p.
 func _automatic_graphics_text() -> String:
-	var summary := AutoGraphicsReport.player_summary(AutoGraphicsReport.runtime())
+	var report := AutoGraphicsReport.runtime(false)
+	var summary := AutoGraphicsReport.player_summary(report)
+	var workload := AutoCalibration.current_workload()
 	var estimate: String = {"measured": "measured on this GPU model", "benchmarks": "from benchmark data",
 		"extrapolated": "extrapolated from a measured GPU"}.get(str(summary.estimate), "GPU not in the table")
 	var text := tr("Automatic for this GPU: %s mode, %s scene detail.") % [
 		tr("High") if summary.mode == "high" else tr("Standard"), tr(str(summary.scene_detail).capitalize())]
 	text += "\n" + tr("GPU estimate: %s.") % tr(estimate)
-	if float(summary.measured_p95_ms) > 0.0:
+	if AutoCalibration.retry_delayed(str(report.inputs.adapter), str(report.inputs.rendering_method),
+			int(workload.get("pixels", 0)), workload):
+		text += "\n" + tr("Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry.")
+	elif float(summary.measured_p95_ms) > 0.0:
 		text += "\n" + tr("Measured in flight: %.1f ms of GPU time per frame (95th percentile).") % float(summary.measured_p95_ms)
 	else:
 		text += "\n" + tr("The next flight measures this GPU once and adjusts Automatic if needed.")
@@ -1345,28 +1353,47 @@ func keep_changes() -> void:
 	if _trial_waiting_for_draw:
 		feedback_requested.emit(&"reject")
 		return
-	var err: Error = display_preferences.save(_draft)
-	if err != OK:
-		_set_status("save_error", err)
-		feedback_requested.emit(&"reject")
-		return
+	var err: Error = OK
+	if not _calibration_reset_display_committed or _draft != _saved:
+		if _calibration_reset_pending:
+			err = display_preferences.save_gpu_defaults(_draft)
+		else:
+			err = display_preferences.save(_draft)
+		if err != OK:
+			_set_status("save_error", err)
+			feedback_requested.emit(&"reject")
+			return
+		_saved = _draft.duplicate(true)
+		_cancel_trial_draw_wait()
+		_trial_deadline_msec = 0
+		_trial_first_deadline_msec = 0
+		_trial_baseline.clear()
+		_calibration_reset_display_committed = _calibration_reset_pending
+		# Display settings are committed even if the separate calibration file cannot be deleted. AppRoot must
+		# keep that checkpoint. An unchanged retry need not rewrite this already committed display file.
+		presentation_committed.emit()
 	# Only the production profile owns the calibration file (AppRoot's preferences_path + ".display").
 	if _calibration_reset_pending and display_preferences.path == Preferences.DEFAULT_PATH + ".display":
-		AutoCalibration.clear()
+		err = AutoCalibration.clear()
+		if err != OK:
+			_set_status("calibration_reset_error", err)
+			_sync_action_buttons()
+			feedback_requested.emit(&"reject")
+			return
 		SceneDetail.calibration = {}
+		if is_inside_tree():
+			SceneDetail.apply(get_viewport(), str(_draft.scene_detail))
+		calibration_reset.emit(_draft.duplicate(true)) # refresh dependent effects without replaying display configuration
 	_calibration_reset_pending = false
-	_saved = _draft.duplicate(true)
-	_cancel_trial_draw_wait()
-	_trial_deadline_msec = 0
-	_trial_first_deadline_msec = 0
-	_trial_baseline.clear()
+	_calibration_reset_display_committed = false
 	_set_status("saved")
 	_sync_action_buttons()
-	presentation_committed.emit()
 	feedback_requested.emit(&"saved")
 
 
 func _revert() -> void:
+	_calibration_reset_pending = false
+	_calibration_reset_display_committed = false
 	_cancel_trial_draw_wait()
 	_trial_deadline_msec = 0
 	_trial_first_deadline_msec = 0
@@ -1399,7 +1426,7 @@ func _expire_display_trial() -> void:
 
 
 func close() -> void:
-	if _draft != _saved or _trial_deadline_msec > 0:
+	if _has_pending_changes() or _trial_deadline_msec > 0:
 		_revert()
 	closed.emit()
 	if is_inside_tree(): # standalone use; ScreenStack owns restoration for managed screens
@@ -1609,8 +1636,12 @@ func _reconstruction_fallback_text(mode: String, reason: String) -> String:
 	return tr("%s Native rendering is active, and your saved choice is kept.") % unavailable
 
 
+func _has_pending_changes() -> bool:
+	return _draft != _saved or _calibration_reset_pending
+
+
 func _sync_action_buttons() -> void:
-	var dirty := _draft != _saved
+	var dirty := _has_pending_changes()
 	var focus_was_on_action := false
 	var focus_was_on_keep := false
 	if is_inside_tree():
@@ -1870,7 +1901,7 @@ func _set_status(state: String, value := 0) -> void:
 	_status_value = value
 	if state == "save_error":
 		_save_error = value
-	elif state in ["saved", "reverted"]:
+	elif state in ["saved", "reverted", "calibration_reset_error"]:
 		_save_error = OK
 	_refresh_status_text()
 
@@ -1881,12 +1912,13 @@ func _refresh_status_text() -> void:
 	match _status_state:
 		"trial", "save_error": _status.text = ""
 		"preparing_trial": _status.text = tr("Preparing display preview…")
-		"expired": _status.text = tr("Display settings restored. Your other changes are still unsaved.") if _draft != _saved \
+		"expired": _status.text = tr("Display settings restored. Your other changes are still unsaved.") if _has_pending_changes() \
 			else tr("Display test expired. Saved settings restored.")
 		"saved": _status.text = tr("Settings saved.")
+		"calibration_reset_error": _status.text = tr("Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries.") % _status_value
 		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
 		# UI-36 (UI-30 SC-1): one transaction, stated plainly; Keep changes is the only commit.
-		_: _status.text = tr("Unsaved preview: Keep changes saves it, Close discards it.") if _draft != _saved \
+		_: _status.text = tr("Unsaved preview: Keep changes saves it, Close discards it.") if _has_pending_changes() \
 			else tr("Changes preview at once. Keep changes saves them; Close discards them.")
 	if _save_error != OK:
 		_status.text = (tr("Could not save settings (error %d).") % _save_error) + ("\n" + _status.text if not _status.text.is_empty() else "")

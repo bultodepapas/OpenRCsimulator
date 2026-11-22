@@ -48,12 +48,18 @@ const SEPARATE_READ_INTERVAL_USEC := 50000
 
 ## Test seam: tests point this at a private file.
 static var calibration_path := CALIBRATION_PATH
+## A completed attempt without enough GPU timings waits until the next launch (or a kept Restore) before
+## retrying this exact pixel/MSAA workload. It is not a persistent verdict. Interrupted flights never enter it.
+static var _incomplete_attempts: Dictionary = {}
+## A kept reset invalidates even a paused collector; its old samples must not repopulate the cleared cache.
+static var _reset_generation := 0
 
 signal finished(result: Dictionary)
 
 var _session: Node
 var _adapter := ""
 var _level := ""
+var _generation := 0
 var _token := 0
 var _active_s := 0.0
 var _samples: PackedFloat64Array = []
@@ -76,6 +82,7 @@ func _init(session: Node, adapter: String, level: String = "") -> void:
 	_session = session
 	_adapter = adapter
 	_level = level
+	_generation = _reset_generation
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
@@ -98,6 +105,10 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
+	if _generation != _reset_generation:
+		set_process(false)
+		queue_free()
+		return
 	if _token == 0 or not _flight_active():
 		_last_frame_usec = 0 # a pause or lost focus must not count as a slow frame
 		return
@@ -131,7 +142,7 @@ func _process(delta: float) -> void:
 		result["adapter"] = _adapter
 		result["method"] = RenderingServer.get_current_rendering_method()
 		result.merge(current_workload(get_viewport()), true)
-		save_result(result) # an unmeasurable flight stores a neutral verdict instead of retrying forever
+		result["stored"] = record_attempt(result)
 		finished.emit(result)
 		set_process(false)
 		queue_free()
@@ -245,6 +256,10 @@ static func evaluate(samples: PackedFloat64Array, allow_up: bool = true, method:
 ## (e.g. Vulkan's "(KBL GT2)" suffix), and a verdict must survive a renderer change it caused.
 static func adapter_key(adapter: String) -> String:
 	var key := GpuCapability.normalize(adapter)
+	if key == "radeon graphics":
+		var chip := GpuCapability.mesa_codename(adapter)
+		if not chip.is_empty():
+			return "%s %s" % [key, chip]
 	return key if not key.is_empty() else adapter.strip_edges().to_lower()
 
 
@@ -276,7 +291,11 @@ static func load_result(adapter: String, method: String) -> Dictionary:
 		"refresh_hz": float(cfg.get_value(section, "refresh_hz", 0.0))}
 
 
+## Complete evidence alone may replace a stored verdict. In particular, a timing-unavailable attempt must not
+## erase an earlier valid result for the same adapter/renderer.
 static func save_result(result: Dictionary) -> bool:
+	if not bool(result.get("complete", false)):
+		return false
 	var cfg := ConfigFile.new()
 	cfg.load(calibration_path) # keep other GPUs' and renderers' verdicts
 	if int(cfg.get_value("meta", "format", FORMAT)) != FORMAT:
@@ -298,6 +317,28 @@ static func save_result(result: Dictionary) -> bool:
 	cfg.set_value(section, "subviewports", bool(result.get("subviewports", false)))
 	cfg.set_value(section, "refresh_hz", float(result.get("refresh_hz", 0.0)))
 	return cfg.save(calibration_path) == OK
+
+
+## Finish one measurement. A failed write stays eligible; an insufficient sample only delays the same workload
+## in this process. The emitted `stored` flag distinguishes accepted persistence from a completed attempt.
+static func record_attempt(result: Dictionary) -> bool:
+	var key := _attempt_key(str(result.get("adapter", "")), str(result.get("method", "")),
+		int(result.get("pixels", 0)), result)
+	if not bool(result.get("complete", false)):
+		_incomplete_attempts[key] = true
+		return false
+	_incomplete_attempts.erase(key)
+	return save_result(result)
+
+
+static func _attempt_key(adapter: String, method: String, pixels: int, workload: Dictionary) -> String:
+	return "%s | %d | %d | %d" % [_section(adapter, method), maxi(pixels, 0),
+		maxi(int(workload.get("render_pixels", 0)), 0), int(workload.get("msaa_3d", -1))]
+
+
+## Shared by the scheduling decision and its Settings explanation.
+static func retry_delayed(adapter: String, method: String, pixels: int, workload: Dictionary) -> bool:
+	return _incomplete_attempts.has(_attempt_key(adapter, method, pixels, workload))
 
 
 ## Whether `pixels` is within PIXEL_TOLERANCE of the verdict's measured output size (unknown sizes match).
@@ -359,9 +400,12 @@ static func needed(adapter: String, method: String, pixels: int = 0, automatic_l
 		workload: Dictionary = {}) -> bool:
 	if adapter.is_empty():
 		return false
+	var current := workload if not workload.is_empty() else current_workload()
+	if retry_delayed(adapter, method, pixels, current):
+		return false
 	var verdict := load_result(adapter, method)
-	if verdict.is_empty() or not size_matches(verdict, pixels) \
-			or not workload_matches(verdict, workload if not workload.is_empty() else current_workload()):
+	if not bool(verdict.get("complete", false)) or not size_matches(verdict, pixels) \
+			or not workload_matches(verdict, current):
 		return true
 	var measured := LEVEL_ORDER.find(str(verdict.get("level", "")))
 	return LEVEL_ORDER.find(automatic_level) > measured and int(verdict.get("scene_offset", 0)) >= 0
@@ -382,10 +426,18 @@ static func apply_verdict(level: String, verdict: Dictionary) -> String:
 	return level
 
 
-## Deletes every verdict ("Restore graphics defaults").
-static func clear() -> void:
+## Deletes every verdict ("Restore graphics defaults"). Keep session evidence intact if persistence fails.
+static func clear() -> Error:
+	var absolute := ProjectSettings.globalize_path(calibration_path)
+	if DirAccess.dir_exists_absolute(absolute):
+		return ERR_FILE_CANT_WRITE
 	if FileAccess.file_exists(calibration_path):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(calibration_path))
+		var err := DirAccess.remove_absolute(absolute)
+		if err != OK:
+			return err
+	_incomplete_attempts.clear()
+	_reset_generation += 1
+	return OK
 
 
 ## Applies a stored offset to an Automatic level: Low ↔ Medium ↔ High. A measurement never raises a level to

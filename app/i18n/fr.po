@@ -278,6 +278,12 @@ msgstr "Gouverne de direction"
 msgid "Throttle"
 msgstr "Gaz"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Le nombre de mesures du temps GPU est insuffisant. Redémarrez ou rétablissez les paramètres graphiques par défaut pour réessayer."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Les paramètres ont été enregistrés, mais les graphismes automatiques n’ont pas pu être réinitialisés (erreur %d). Sélectionnez Conserver pour réessayer."
+
 msgid "Could not save settings (error %d)."
 msgstr "Impossible d’enregistrer les paramètres (erreur %d)."
 
@@ -2777,6 +2783,9 @@ msgstr "Répéter le dernier vol"
 
 msgid "Back"
 msgstr "Retour"
+
+msgid "Change skin"
+msgstr "Changer de livrée"
 
 msgid "Paint schemes"
 msgstr "Schémas de peinture"
@@ -14735,3 +14744,24 @@ msgstr "Le train d’atterrissage Phoenix sert aux départs sur piste. Un train 
 
 msgid "Needs no landing gear"
 msgstr "Seulement sans train d’atterrissage"
+
+msgid "Fly calibrated runway"
+msgstr "Décoller de la piste calibrée"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Vol expérimental par vent calme. La piste, le point de départ et le terrain sont estimés."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Vol expérimental prêt. La piste, le point de départ et le terrain sont estimés."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Le paysage installé n’a pas pu être vérifié pour le vol."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Choisissez un avion qui peut décoller d’une piste."
+
+msgid "Preparing panorama"
+msgstr "Préparation du panorama"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "La qualité graphique est réglée au minimum. Vous pouvez l’augmenter dans Paramètres > Graphismes."

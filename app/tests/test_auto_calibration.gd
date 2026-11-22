@@ -24,6 +24,8 @@ func _run() -> void:
 	_test_evaluate()
 	_test_read_rate()
 	_test_storage()
+	_test_incomplete_attempts()
+	_test_reset_invalidates_attempts()
 	_test_scene_detail()
 	_test_renderer()
 	_test_workload_identity()
@@ -186,7 +188,8 @@ func _test_storage() -> void:
 	_check("an older verdict without CPU evidence loads with neutral defaults", old.scene_offset == -1
 		and not old.cpu_bound and not old.subviewports and float(old.cpu_p95_ms) == 0.0
 		and float(old.interval_p95_ms) == 0.0 and float(old.refresh_hz) == 0.0, old)
-	_check("offsets are bounded", AutoCalibration.save_result({"adapter": "Example GPU", "method": "mobile", "scene_offset": 5})
+	_check("offsets are bounded", AutoCalibration.save_result({"adapter": "Example GPU", "method": "mobile", "scene_offset": 5,
+		"complete": true})
 		and AutoCalibration.load_result("Example GPU", "mobile").scene_offset == 1)
 	AutoCalibration.clear()
 	_check("Restore graphics defaults forgets every verdict", AutoCalibration.load_result(uhd, "forward_plus").is_empty()
@@ -198,6 +201,84 @@ func _test_storage() -> void:
 		AutoCalibration.shifted_level("extreme", -1) == "high" and AutoCalibration.shifted_level("extreme", 1) == "extreme"
 		and AutoCalibration.shifted_level("extreme", 0) == "extreme")
 	_test_measured_level()
+
+
+## Incomplete attempts are session-local cooldowns, not reusable measurements or permanent retry suppression.
+func _test_incomplete_attempts() -> void:
+	AutoCalibration.clear()
+	var gpu := "NVIDIA GeForce RTX 3090"
+	var workload := {"pixels": 2073600, "render_pixels": 2073600, "msaa_3d": 0}
+	var incomplete := workload.duplicate()
+	incomplete.merge({"adapter": gpu, "method": "forward_plus", "level": "high", "complete": false,
+		"scene_offset": -1, "reject_high": true})
+	var legacy := ConfigFile.new()
+	legacy.set_value("meta", "format", AutoCalibration.FORMAT)
+	var section := "gpu %s | forward_plus" % AutoCalibration.adapter_key(gpu)
+	for key: String in incomplete:
+		legacy.set_value(section, key, incomplete[key])
+	_check("legacy incomplete fixture saves", legacy.save(PRIVATE_PATH) == OK)
+	_check("legacy incomplete evidence cannot suppress retry or veto High",
+		AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", workload)
+		and not AutoCalibration.rejects_high(gpu, 2073600))
+	AutoCalibration.clear()
+	var session := Node.new()
+	var interrupted := AutoCalibration.new(session, gpu, "high")
+	interrupted.free()
+	session.free()
+	_check("an interrupted flight is still eligible", AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", workload))
+	_check("an insufficient attempt never creates a persistent verdict", not AutoCalibration.record_attempt(incomplete)
+		and not FileAccess.file_exists(PRIVATE_PATH))
+	_check("the same workload waits for the next session or explicit reset",
+		not AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", workload)
+		and AutoCalibration.retry_delayed(gpu, "forward_plus", 2073600, workload))
+	_check("changed pixels, MSAA or renderer remain eligible",
+		AutoCalibration.needed(gpu, "forward_plus", 3840 * 2160, "high", workload)
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", {"render_pixels": 1036800, "msaa_3d": 0})
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", {"render_pixels": 2073600, "msaa_3d": 1})
+		and AutoCalibration.needed(gpu, "mobile", 2073600, "high", workload))
+	_check("a kept Restore clears the session cooldown", AutoCalibration.clear() == OK
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", workload))
+	var complete := incomplete.duplicate()
+	complete.complete = true
+	_check("a later complete attempt is stored", AutoCalibration.record_attempt(complete))
+	var accepted := FileAccess.get_file_as_string(PRIVATE_PATH)
+	_check("incomplete evidence cannot overwrite a complete verdict", not AutoCalibration.save_result(incomplete)
+		and not AutoCalibration.record_attempt(incomplete) and FileAccess.get_file_as_string(PRIVATE_PATH) == accepted
+		and AutoCalibration.load_result(gpu, "forward_plus").complete)
+	AutoCalibration.clear()
+	AutoCalibration.calibration_path = "user://test_calibration_missing_parent/result.cfg"
+	_check("a failed persistent write is reported and remains retryable", not AutoCalibration.record_attempt(complete)
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", workload))
+	AutoCalibration.calibration_path = PRIVATE_PATH
+	AutoCalibration.clear()
+
+
+## A paused partial collection cannot undo a successful Restore. The invalidation runs before lease/focus
+## checks, so it can be exercised on headless hosts without inventing GPU timings or forcing a timing lease.
+func _test_reset_invalidates_attempts() -> void:
+	var gpu := "NVIDIA GeForce RTX 3090"
+	var session := Node.new()
+	var collector := AutoCalibration.new(session, gpu, "high")
+	collector._samples = _samples(20.0, 30)
+	collector._active_s = AutoCalibration.WARMUP_S + 1.0
+	var finished: Array[Dictionary] = []
+	collector.finished.connect(func(result: Dictionary) -> void: finished.append(result))
+	var blocked := PRIVATE_PATH + ".directory"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(blocked))
+	AutoCalibration.calibration_path = blocked
+	_check("failed reset reports the deletion error", AutoCalibration.clear() != OK)
+	collector._process(0.0)
+	_check("failed reset preserves the current partial collector", not collector.is_queued_for_deletion()
+		and collector._samples.size() == 30)
+	AutoCalibration.calibration_path = PRIVATE_PATH
+	AutoCalibration.clear()
+	collector._process(AutoCalibration.SAMPLE_S)
+	_check("successful reset retires a paused partial collector without a verdict or cooldown",
+		collector.is_queued_for_deletion() and finished.is_empty() and not FileAccess.file_exists(PRIVATE_PATH)
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", {"render_pixels": 2073600, "msaa_3d": 0}))
+	collector.free()
+	session.free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(blocked))
 
 
 ## VQ-07h-A4: a verdict is relative to the level it measured (format 3).
@@ -243,19 +324,27 @@ func _test_scene_detail() -> void:
 	SceneDetail.adapter_override = PackedStringArray(["NVIDIA GeForce RTX 3090", "NVIDIA"])
 	SceneDetail.calibration = {}
 	_check("without a verdict Automatic follows the table", SceneDetail.detected().level == "high")
+	var navi23 := AutoCalibration.adapter_key("AMD Radeon Graphics (radeonsi, navi23, LLVM 17)")
+	_check("distinct Mesa chips cannot reuse a generic Radeon calibration",
+		navi23 != AutoCalibration.adapter_key("AMD Radeon Graphics (radeonsi, navi48, LLVM 17)") and
+		navi23 != AutoCalibration.adapter_key("AMD Radeon Graphics"))
 	var key := AutoCalibration.adapter_key("NVIDIA GeForce RTX 3090")
-	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high"}
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high", "complete": true}
 	var shifted := SceneDetail.detected()
 	_check("a measured verdict lowers Automatic one level", shifted.level == "medium" and bool(shifted.get("calibrated", false)), shifted)
-	SceneDetail.calibration = {"adapter": key, "method": "another_renderer", "pixels": pixels, "scene_offset": -1, "level": "high"}
+	SceneDetail.calibration.complete = false
+	_check("an incomplete verdict never changes Automatic", SceneDetail.detected().level == "high")
+	SceneDetail.calibration.erase("complete")
+	_check("a verdict without completeness evidence never changes Automatic", SceneDetail.detected().level == "high")
+	SceneDetail.calibration = {"adapter": key, "method": "another_renderer", "pixels": pixels, "scene_offset": -1, "level": "high", "complete": true}
 	_check("a verdict from another renderer is ignored", SceneDetail.detected().level == "high")
-	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": maxi(pixels, 1) * 4, "scene_offset": -1, "level": "high"}
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": maxi(pixels, 1) * 4, "scene_offset": -1, "level": "high", "complete": true}
 	_check("a verdict from a very different output size is ignored", SceneDetail.detected().level == "high")
 	SceneDetail.calibration = {"adapter": AutoCalibration.adapter_key("Intel(R) Iris(R) Xe Graphics"), "method": method,
-		"pixels": pixels, "scene_offset": -1, "level": "high"}
+		"pixels": pixels, "scene_offset": -1, "level": "high", "complete": true}
 	_check("a verdict for another GPU is ignored", SceneDetail.detected().level == "high")
 	SceneDetail.set_preference("high")
-	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high"}
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high", "complete": true}
 	_check("an explicit level is never changed", SceneDetail.level() == "high")
 	SceneDetail.set_preference(SceneDetail.AUTO)
 	_check("Automatic applies the verdict", SceneDetail.level() == "medium")
@@ -301,8 +390,12 @@ func _test_workload_identity() -> void:
 		calibration_reject_high = AutoCalibration.rejects_high(gpu, 1920 * 1080)}
 	var state := {mode = "auto", renderer = "", standard_method = "", high_blocked_build = ""}
 	_check("Automatic picks High at 1080p after a 4K rejection", RendererPreference.plan(facts, state).profile == "high")
-	AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus", "level": "high", "pixels": 1920 * 1080,
-		"complete": false, "reject_high": true})
+	var incomplete := ConfigFile.new()
+	incomplete.load(AutoCalibration.calibration_path)
+	var section := "gpu %s | forward_plus" % AutoCalibration.adapter_key(gpu)
+	incomplete.set_value(section, "pixels", 1920 * 1080)
+	incomplete.set_value(section, "complete", false)
+	incomplete.save(AutoCalibration.calibration_path) # a legacy writer, before incomplete storage was refused
 	_check("an incomplete measurement never vetoes High", not AutoCalibration.rejects_high(gpu, 1920 * 1080))
 	var native := {"render_pixels": 3840 * 2160, "msaa_3d": 0}
 	var verdict := {"render_pixels": 3840 * 2160, "msaa_3d": 0}
@@ -369,7 +462,8 @@ func _test_output_identity() -> void:
 
 ## Audit 2026-11-19 F08: SubViewport activity is tracked through the sample without per-frame tree scans.
 func _test_view_tracking() -> void:
-	var calibration := AutoCalibration.new(Node.new(), "NVIDIA GeForce RTX 3090")
+	var session := Node.new()
+	var calibration := AutoCalibration.new(session, "NVIDIA GeForce RTX 3090")
 	root.add_child(calibration)
 	calibration._track_views()
 	var quiet := calibration._subviewports_active()
@@ -383,6 +477,7 @@ func _test_view_tracking() -> void:
 	view.free()
 	var freed := calibration._subviewports_active()
 	calibration.free()
+	session.free()
 	_check("a SubViewport added during the sample is seen and a disabled or freed one is not",
 		added and not disabled and not freed, [quiet, added, disabled, freed])
 	_check("a freed measurement leaves no node_added listener",

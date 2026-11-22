@@ -7,6 +7,7 @@ Build OpenRC Simulator incrementally: robust physics, realistic behavior and evi
 - Check `git status` and the current branch before editing. Preserve unrelated work and stage only your changes. Commits, pushes and merges are permitted within the user's requested scope; honor the requested branch and existing gates.
 - Before editing a path, read the applicable nested `AGENTS.md` files between the repository root and that path. A session started at the root may not have loaded them. Pass relevant scoped rules to helpers.
 - Current code, configuration and accepted data establish implemented behavior. Plans describe remaining work; dated research records evidence. Read the documents needed for the task:
+Use the disk U: as cache or disposable store. clean afeter use it, fallback D:
 
 | Task | Read |
 | --- | --- |

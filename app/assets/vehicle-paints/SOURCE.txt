@@ -23,6 +23,12 @@ with --check) from assets already in this repository:
   IM FELL English SC (SIL OFL 1.1; tools/skins/sources/steampunk/).
 - avanti-s-a200/sponsors/: Jumper RC and JETI model logos (trademarks, used as sponsor decals;
   see that folder's SOURCE.txt). Godot ignores the folder (.gdignore); the builder bakes them in.
+- avanti-s-a200/revoc_custom_*: original red, white and graphite livery acknowledging REVOC Custom.
+  Both flanks use the full logo. The fixed fin uses its square emblem, cropped from the same PNG.
+  The unchanged original is site/assets/brands/revoc/revoc-custom-logo.png, from
+  https://shop.revoc.eu/telechargement (SHA-256 c6e2cce11dc402a8b60a2e4e22172067ceb2c2fb2b0fd4a72df7376699d099eb).
+  REVOC retains its trademark rights. See site/BRANDS.md for the simulator acknowledgment.
+  Rebuild or verify these four albedo maps with build_vehicle_paints.py --only revoc_custom.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the
   owner-supplied Monster Car 2 livery and emission map, re-tinted.
 

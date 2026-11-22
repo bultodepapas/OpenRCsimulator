@@ -18,6 +18,7 @@ from __future__ import annotations
 import base64
 from datetime import datetime, timedelta, timezone
 import json
+import math
 import os
 from pathlib import Path
 import sys
@@ -34,7 +35,11 @@ DATA_API = "https://analyticsdata.googleapis.com/v1beta"
 ADMIN_API = "https://analyticsadmin.googleapis.com/v1beta"
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 TIMEOUT_S = 30
+COLLECTION_BUDGET_S = 120
 TOP = 15
+# GA4's daily results can change for 24–48 h during processing. Keep today's data and
+# the two preceding property-local days visible, but keep them out of comparisons.
+PROVISIONAL_DAYS = 3
 
 # Daily overview metrics: model key -> GA4 API name.
 DAILY = (("users", "activeUsers"), ("new_users", "newUsers"), ("sessions", "sessions"),
@@ -48,7 +53,7 @@ class GA4Error(Exception):
 # ---------------------------------------------------------------------------------------------- HTTP and auth
 
 
-def http_json(method, url, token=None, body=None, form=None, headers=None):
+def http_json(method, url, token=None, body=None, form=None, headers=None, *, timeout=TIMEOUT_S):
     """One HTTPS request; returns parsed JSON or raises GA4Error with Google's error message."""
     data, head = None, {"Accept": "application/json", **(headers or {})}
     if token:
@@ -60,7 +65,7 @@ def http_json(method, url, token=None, body=None, form=None, headers=None):
         head["Content-Type"] = "application/x-www-form-urlencoded"
     request = urllib.request.Request(url, data=data, headers=head, method=method)
     try:
-        with urllib.request.urlopen(request, timeout=TIMEOUT_S) as response:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             return json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
         raise GA4Error(f"HTTP {error.code}: {error_message(error)}") from None
@@ -198,17 +203,24 @@ def event_filter(name):
     return exact("eventName", name)
 
 
-def report_filter(event=None):
+def report_filter(event=None, segment=None):
     """TELEM-24b: every report counts only the published site (local previews reached GA before WEB-18)."""
     host = exact("hostName", PRODUCTION_HOST)
-    return {"andGroup": {"expressions": [host, event_filter(event)]}} if event else host
+    expressions = [host]
+    if event:
+        expressions.append(event_filter(event))
+    if segment:
+        dimension, values = segment
+        expressions.append({"filter": {"fieldName": dimension,
+                                       "inListFilter": {"values": values, "caseSensitive": True}}})
+    return {"andGroup": {"expressions": expressions}} if len(expressions) > 1 else host
 
 
-def report_body(axis, dimensions, metrics, event=None, order=None, limit=None, totals=False):
+def report_body(axis, dimensions, metrics, event=None, order=None, limit=None, totals=False, *, segment=None):
     """axis: the ISO days of the window, oldest first; explicit dates keep every report on the same days."""
     body = {"dateRanges": [{"startDate": axis[0], "endDate": axis[-1]}],
             "dimensions": [{"name": d} for d in dimensions], "metrics": [{"name": m} for m in metrics],
-            "dimensionFilter": report_filter(event)}
+            "dimensionFilter": report_filter(event, segment)}
     if order:
         body["orderBys"] = [{"metric": {"metricName": order}, "desc": True}]
     if limit:
@@ -219,10 +231,17 @@ def report_body(axis, dimensions, metrics, event=None, order=None, limit=None, t
 
 
 def number(text):
+    if isinstance(text, str):
+        try:
+            return int(text)
+        except ValueError:
+            pass
     try:
         value = float(text)
     except (TypeError, ValueError):
-        return 0
+        raise GA4Error("invalid numeric value in GA4 report") from None
+    if not math.isfinite(value):
+        raise GA4Error("non-finite numeric value in GA4 report")
     return int(value) if value.is_integer() else value
 
 
@@ -234,6 +253,15 @@ def parse_report(reply, metrics):
     for total in reply.get("totals") or []:
         totals = {m: number(v.get("value")) for m, v in zip(metrics, total.get("metricValues") or [])}
     return rows, totals
+
+
+def quality_flags(reply):
+    """GA4 metadata can limit what an absent row or a partial total tells us."""
+    metadata = reply.get("metadata") or {}
+    fields = (("subjectToThresholding", "thresholding"), ("samplingMetadatas", "sampled"),
+              ("dataLossFromOtherRow", "other_row"), ("dataTruncationReasons", "truncated"),
+              ("emptyReason", "empty"))
+    return [flag for field, flag in fields if metadata.get(field)]
 
 
 def iso_day(ga_date):
@@ -264,6 +292,10 @@ TABLES = (
      ("customEvent:download_platform",)),
     ("download_sources", ["customEvent:download_source"], ["eventCount"], "download_request", "eventCount",
      ("customEvent:download_source",)),
+    ("download_methods", ["customEvent:download_method"], ["eventCount"], "download_request", "eventCount",
+     ("customEvent:download_method",)),
+    ("handoff_actions", ["customEvent:handoff_action"], ["eventCount"], "download_handoff", "eventCount",
+     ("customEvent:handoff_action",)),
     ("vitals", ["customEvent:metric_name", "customEvent:metric_rating"], ["eventCount"], "web_vital", "eventCount",
      ("customEvent:metric_name", "customEvent:metric_rating")),
     ("download_releases", ["customEvent:release_version"], ["eventCount"], "download_request", "eventCount",
@@ -280,56 +312,107 @@ def collect(property_id, token, headers=None, days=30, now=None, http=http_json)
     """Aggregate website reports for the last `days` days. The daily overview must succeed (it proves access);
     the other reports record their own error and leave the rest of the model usable."""
     now = time.time() if now is None else now
+    if days < 1:
+        raise GA4Error("GA4 reporting window must contain at least one day")
     headers = headers or {}
     base = f"{DATA_API}/properties/{property_id}"
     run = lambda body: http("POST", f"{base}:runReport", token, body=body, headers=headers)  # noqa: E731
-    names = [api for _, api in DAILY]
     # A minimal report first: its metadata names the property's reporting time zone, which fixes the day window.
     probe = run({"dateRanges": [{"startDate": "today", "endDate": "today"}], "metrics": [{"name": "activeUsers"}]})
     time_zone = (probe.get("metadata") or {}).get("timeZone")
     today, zone_ok = property_today(time_zone, now)
     axis = [(today - timedelta(days=offset)).isoformat() for offset in range(days - 1, -1, -1)]
-    rows, totals = parse_report(run(report_body(axis, ["date"], names, totals=True)), names)
+    provisional = set(axis[-PROVISIONAL_DAYS:])
+    report_quality = {}
+
+    def report(key, dimensions, metrics, **options):
+        reply = run(report_body(axis, dimensions, metrics, **options))
+        flags = quality_flags(reply)
+        if flags:
+            report_quality[key] = list(dict.fromkeys(report_quality.get(key, []) + flags))
+        return parse_report(reply, metrics)
+
+    def summary(key, metrics, **options):
+        # A dimensionless report deduplicates users across the whole window. The
+        # Data API's TOTAL aggregation is a sum, unsuitable for unique-user days.
+        rows, _ = report(key, [], metrics, **options)
+        if len(rows) > 1:
+            raise GA4Error(f"{key} returned multiple whole-window rows")
+        return rows[0]["values"] if rows else {}
+
+    def absent_day(day, key):
+        return None if day in provisional or report_quality.get(key) else 0
+
+    names = [api for _, api in DAILY]
+    rows, _ = report("daily", ["date"], names)
     by_day = {iso_day(r["dims"][0]): r["values"] for r in rows}
     model = {
         "property": str(property_id), "measurement_id": MEASUREMENT_ID, "time_zone": time_zone,
         "zone_fallback": not zone_ok,
         "collected_utc": datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "days": axis,
-        "daily": [{"day": d, **{key: (by_day.get(d) or {}).get(api, 0) for key, api in DAILY}} for d in axis],
-        "totals": {key: (totals or {}).get(api, 0) for key, api in DAILY},
-        "downloads_daily": [], "downloads_total": 0, "downloads_users": None, "handoffs": None,
+        "days": axis, "provisional_days": [day for day in axis if day in provisional],
+        "comparison_through": (today - timedelta(days=PROVISIONAL_DAYS)).isoformat() if zone_ok else None,
+        "report_quality": report_quality,
+        "daily": [{"day": day, **{key: by_day[day].get(api) if day in by_day else absent_day(day, "daily")
+                                  for key, api in DAILY}} for day in axis],
+        "totals": {key: None for key, _ in DAILY}, "conversion_users": None,
+        "downloads_daily": [], "downloads_total": None, "downloads_users": None, "handoffs": None,
         "realtime_users": None, "host": PRODUCTION_HOST,
         "tables": {}, "funnels": {}, "missing": {}, "errors": {}, "setup": {},
     }
     try:
-        dl_rows, dl_totals = parse_report(run(report_body(axis, ["date"], ["eventCount", "totalUsers"],
-                                                          event="download_request", totals=True)),
-                                          ["eventCount", "totalUsers"])
-        dl = {iso_day(r["dims"][0]): r["values"]["eventCount"] for r in dl_rows}
-        model["downloads_daily"] = [{"day": d, "count": dl.get(d, 0)} for d in axis]
-        model["downloads_total"] = (dl_totals or {}).get("eventCount", sum(dl.values()))
-        model["downloads_users"] = (dl_totals or {}).get("totalUsers")
+        totals = summary("totals", names + ["totalUsers"])
+        default = 0 if not totals and not report_quality.get("totals") else None
+        model["totals"] = {key: totals.get(api, default) for key, api in DAILY}
+        if not report_quality.get("totals"):
+            model["conversion_users"] = totals.get("totalUsers", default)
+    except GA4Error as error:
+        model["errors"]["totals"] = str(error)
+    try:
+        dl_rows, _ = report("downloads", ["date"], ["eventCount"], event="download_request")
+        dl = {iso_day(r["dims"][0]): r["values"].get("eventCount") for r in dl_rows}
+        model["downloads_daily"] = [{"day": day, "count": dl.get(day, absent_day(day, "downloads"))}
+                                    for day in axis]
     except GA4Error as error:
         model["errors"]["downloads"] = str(error)
-        model["downloads_total"] = None
     try:
-        handoff_rows, _ = parse_report(run(report_body(axis, [], ["eventCount"], event="download_handoff")),
-                                       ["eventCount"])
-        model["handoffs"] = sum(r["values"]["eventCount"] for r in handoff_rows)
+        dl_totals = summary("download_totals", ["eventCount", "totalUsers"], event="download_request")
+        default = 0 if not dl_totals and not report_quality.get("download_totals") else None
+        model["downloads_total"] = dl_totals.get("eventCount", default)
+        requested, total = dl_totals.get("totalUsers", default), model["conversion_users"]
+        if not report_quality.get("download_totals") and total is not None and requested is not None:
+            if 0 <= requested <= total:
+                model["downloads_users"] = requested
+            else:
+                report_quality["conversion"] = ["inconsistent_totals"]
+    except GA4Error as error:
+        model["errors"]["download_totals"] = str(error)
+    try:
+        handoff_rows, _ = report("handoffs", [], ["eventCount"], event="download_handoff")
+        if handoff_rows or not report_quality.get("handoffs"):
+            model["handoffs"] = sum(r["values"]["eventCount"] for r in handoff_rows)
     except GA4Error as error:
         model["errors"]["handoffs"] = str(error)
     for key, dimension in FUNNELS:
+        report_key = f"funnel_{key}"
         try:
-            users, _ = parse_report(run(report_body(axis, [dimension], ["activeUsers"], order="activeUsers",
-                                                    limit=25)), ["activeUsers"])
-            requesting, _ = parse_report(run(report_body(axis, [dimension], ["totalUsers"], "download_request",
-                                                         "totalUsers", 50)), ["totalUsers"])
-            asked = {r["dims"][0]: r["values"]["totalUsers"] for r in requesting}
-            model["funnels"][key] = [{"name": r["dims"][0], "users": r["values"]["activeUsers"],
-                                      "requesting": asked.get(r["dims"][0], 0)} for r in users]
+            users, _ = report(report_key, [dimension], ["totalUsers"], order="totalUsers", limit=25)
+            names = [row["dims"][0] for row in users if row["dims"][0] not in ("", "(other)")]
+            requesting, _ = report(report_key, [dimension], ["totalUsers"], event="download_request",
+                                   segment=(dimension, names)) if names else ([], None)
+            asked = {row["dims"][0]: row["values"]["totalUsers"] for row in requesting}
+            rows = []
+            trustworthy = not report_quality.get(report_key)
+            for row in users:
+                name, total = row["dims"][0], row["values"]["totalUsers"]
+                requested = asked.get(name, 0) if trustworthy and name in names else None
+                if requested is not None and not 0 <= requested <= total:
+                    requested = None
+                    report_quality[report_key] = ["inconsistent_totals"]
+                rows.append({"name": name, "users": total, "requesting": requested})
+            model["funnels"][key] = rows
         except GA4Error as error:
-            model["errors"][f"funnel_{key}"] = str(error)
+            model["errors"][report_key] = str(error)
     try:
         available = {d.get("apiName") for d in http("GET", f"{base}/metadata", token, headers=headers)
                      .get("dimensions") or []}
@@ -341,8 +424,7 @@ def collect(property_id, token, headers=None, days=30, now=None, http=http_json)
             model["missing"][key] = absent
             continue
         try:
-            table, _ = parse_report(run(report_body(axis, dimensions, metrics, event, order,
-                                                    50 if key == "vitals" else TOP)), metrics)
+            table, _ = report(key, dimensions, metrics, event=event, order=order, limit=50 if key == "vitals" else TOP)
             model["tables"][key] = table
         except GA4Error as error:
             model["errors"][key] = str(error)
@@ -381,17 +463,27 @@ def fetch(days=30, property_id=None, credentials=None, now=None, http=http_json)
         return None
     stamp = datetime.fromtimestamp(time.time() if now is None else now, tz=timezone.utc).strftime(
         "%Y-%m-%dT%H:%M:%SZ")
+    deadline = time.monotonic() + COLLECTION_BUDGET_S
+
+    def request(*args, **kwargs):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise GA4Error("GA4 collection time budget exhausted")
+        if http is http_json:
+            kwargs["timeout"] = min(TIMEOUT_S, remaining)
+        return http(*args, **kwargs)
+
     try:
-        token, headers = access_token(credentials, http=http, now=now)
+        token, headers = access_token(credentials, http=request, now=now)
         property_id = property_id or os.environ.get("OPENRC_GA4_PROPERTY")
         if not property_id:
-            property_id = discover_property(token, headers, http=http)
+            property_id = discover_property(token, headers, http=request)
             print(f"GA4 property {property_id} has web stream {MEASUREMENT_ID}; set OPENRC_GA4_PROPERTY="
                   f"{property_id} to skip discovery", file=sys.stderr)
         property_id = str(property_id).removeprefix("properties/")
         if not property_id.isdigit():
             raise GA4Error(f"GA4 property must be the numeric property ID, not {property_id!r}")
-        return collect(property_id, token, headers, days, now, http)
+        return collect(property_id, token, headers, days, now, request)
     except GA4Error as error:
         return {"error": str(error), "collected_utc": stamp, "property": property_id}
     except Exception as error:  # noqa: BLE001 - the website tab is optional: never lose the rest of the snapshot
@@ -401,8 +493,11 @@ def fetch(days=30, property_id=None, credentials=None, now=None, http=http_json)
 
 
 def window(model, count):
-    """Sum of the newest `count` days of a daily key list, e.g. download requests in 7 days."""
-    return sum(r["count"] for r in (model.get("downloads_daily") or [])[-count:])
+    """Sum the last `count` download days when every value is available."""
+    if count < 1:
+        raise ValueError("window must contain at least one day")
+    values = [row["count"] for row in (model.get("downloads_daily") or [])[-count:]]
+    return sum(values) if len(values) == count and None not in values else None
 
 
 # ---------------------------------------------------------------------------------------------- CLI: login, check

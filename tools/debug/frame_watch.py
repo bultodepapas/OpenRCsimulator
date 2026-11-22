@@ -342,6 +342,12 @@ class Watcher:
         self.poll_rows_max = 0
         self.outcome = "running"
         self.identity: dict[str, Any] = {}
+        self.arm_request_usec: int | None = None
+        self.last_poll_identity: dict[str, Any] = {}
+        self.last_request_usec: int | None = None
+        self.stop_identity: dict[str, Any] = {}
+        self.stop_request_usec: int | None = None
+        self.final_poll = "not_requested"
         self.observer_fetch_after: int | None = None
         self.observer_excluded_rows = 0
         self.slow_polls = 0
@@ -643,9 +649,13 @@ class Watcher:
         self.polls += 1
         self.poll_rows_max = max(self.poll_rows_max, int(reply.get("frames", 0)))
         self._accept(reply)
+        self.last_poll_identity = {"launch_instance": reply["launch_instance"], "capture_id": reply["capture_id"],
+                                   "epoch": reply["epoch"]}
+        request_usec = reply.get("request_usec")
+        self.last_request_usec = request_usec if type(request_usec) is int and request_usec > 0 else None
         if not self.identity:
-            self.identity = {"launch_instance": reply["launch_instance"], "capture_id": reply["capture_id"],
-                             "epoch": reply["epoch"]}
+            self.identity = dict(self.last_poll_identity)
+            self.arm_request_usec = self.last_request_usec
         return True
 
     def _ping(self) -> dict[str, Any] | None:
@@ -694,17 +704,43 @@ class Watcher:
         if freeze is not None:
             freeze["hang"]["resolved"] = True
 
-    def run(self) -> dict[str, Any]:
+    def run(self, *, should_stop: Callable[[], bool] | None = None,
+            on_armed: Callable[[dict[str, Any]], None] | None = None) -> dict[str, Any]:
+        """Watch until duration, interruption, or cooperative owner stop.
+
+        ``on_armed`` runs once after the first accepted cursor and identity; that
+        cursor intentionally excludes earlier intervals. An owner stop attempts a
+        final read before closing any open incident and publishing the reports.
+        """
         self.started = self.now()
         self._freeze: dict[str, Any] | None = None
         self.out.mkdir(parents=True, exist_ok=False)
         last_answer = self.started
+        notified = False
         try:
             while self.now() - self.started < self.p.duration_s:
+                if should_stop is not None and should_stop():
+                    self.outcome = "owner_stopped"
+                    if self.identity:
+                        self.final_poll = "complete" if self._poll() else "failed"
+                        if self.final_poll == "complete":
+                            self.stop_identity = dict(self.last_poll_identity)
+                            self.stop_request_usec = self.last_request_usec
+                        else:
+                            self.error = "final poll did not answer; the observed tail is incomplete"
+                    else:
+                        self.final_poll = "not_armed"
+                        self.error = "owner stopped before the watcher armed"
+                    break
                 tick = self.now()
                 if self._poll():
                     last_answer = self.now()
                     self._end_freeze()  # the main thread answered: any freeze is over
+                    if not notified:
+                        notified = True
+                        if on_armed is not None:
+                            on_armed({"identity": dict(self.identity), "request_usec": self.arm_request_usec,
+                                      "cursor": self.segment["cursor"]})
                 else:
                     ping = self._ping()
                     if ping is None:
@@ -772,7 +808,7 @@ class Watcher:
                 "target_fps": seg["target_fps"], "budget_ms": round(seg["budget_ms"], 4),
                 "slow_threshold_ms": round(seg["slow_threshold_ms"], 4),
                 "first_sequence": seg["first_sequence"], "last_sequence": seg["last_sequence"],
-                "origin_usec": seg["origin_usec"], "rows_lost": seg["rows_lost"],
+                "origin_usec": seg["origin_usec"], "last_end_usec": seg["last_end_usec"], "rows_lost": seg["rows_lost"],
                 "coverage": "contiguous" if seg["rows_lost"] == 0 else "gaps_counts_are_lower_bounds",
                 "overall": seg["stats"].report(),
                 "routes": {route: stats.report() for route, stats in seg["routes"].items()},
@@ -782,7 +818,9 @@ class Watcher:
             })
         return {
             "format": WATCH_FORMAT, "version": 1, "outcome": self.outcome, "error": self.error,
-            "identity": self.identity, "slow_polls": self.slow_polls,
+            "identity": self.identity, "arm_request_usec": self.arm_request_usec, "final_poll": self.final_poll,
+            "stop_identity": self.stop_identity, "stop_request_usec": self.stop_request_usec,
+            "slow_polls": self.slow_polls,
             "drop_blind_s": DropDetector(self.p).blind_s(),
             "policy": {k: (list(v) if isinstance(v, tuple) else v) for k, v in asdict(self.p).items()},
             "elapsed_s": round(self.now() - self.started, 3), "polls": self.polls,

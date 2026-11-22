@@ -3,8 +3,8 @@
 Rollup stores every daily cell with its distinct-session count in the operator-only aggregate database (no session
 or batch identifier, no free text). Disclosure control happens when a week is reported: cells are pooled over the
 closed days of the week and each cell is published only if it reaches the floor (default 20 session-day
-observations). Cells below the floor are combined into one "combined small cells" row when that total reaches the
-floor, and withheld otherwise. No table total is printed, so a withheld remainder cannot be derived from a table.
+observations). Cells below the floor are folded into one combined row when its proven session-day count reaches
+the floor. The weekly computation uses a lower bound for combined cells that may share session-days.
 
 Counts are session-day observations: a temporary session token is counted once per UTC day and cell.
 
@@ -178,41 +178,56 @@ def encode_cells(cells):
     return out
 
 
-def _pool(rows):
-    """{table: {dims_tuple: {"sessions": n, "metrics": {...}}}} over stored daily rows."""
+def _pool(daily_rows):
+    """Pool each cell over receipt days while keeping daily counts for disclosure."""
     pooled = {}
-    for table, dims_json, sessions, metrics_json in rows:
-        dims, metrics = json.loads(dims_json), json.loads(metrics_json)
-        validate_cell(table, dims, sessions, metrics)
-        entry = pooled.setdefault(table, {}).setdefault(tuple(dims), {
-            "sessions": 0, "metrics": dict.fromkeys(_metric_names(table), 0)})
-        entry["sessions"] += sessions
-        for name, value in metrics.items():
-            entry["metrics"][name] += value
+    for day, rows in daily_rows.items():
+        for table, dims_json, sessions, metrics_json in rows:
+            dims, metrics = json.loads(dims_json), json.loads(metrics_json)
+            validate_cell(table, dims, sessions, metrics)
+            entry = pooled.setdefault(table, {}).setdefault(tuple(dims), {
+                "sessions": 0, "sessions_by_day": {}, "metrics": dict.fromkeys(_metric_names(table), 0)})
+            entry["sessions"] += sessions
+            entry["sessions_by_day"][day] = sessions
+            for name, value in metrics.items():
+                entry["metrics"][name] += value
     return pooled
 
 
+def _combined_session_floor(rows):
+    # A token can appear in several cells on one day, even for context fields from different batches.
+    # Each day's union contains at least its largest cell. Different days contribute separate session-days.
+    largest = {}
+    for row in rows:
+        for day, count in row["sessions_by_day"].items():
+            largest[day] = max(largest.get(day, 0), count)
+    return sum(largest.values())
+
+
 def _disclose(cells, floor):
-    """(published_rows, combined_row_or_None). A table never leaves a withheld remainder: small cells are combined,
-    and while the combined row is below the floor (or would hold a single cell) the smallest published cell joins it.
-    If even the whole table stays below the floor, nothing is shown. Rows plus the combined row therefore always add
-    up to the table's full population, so comparing tables reveals no remainder that this table withheld."""
+    """Disclose a complete set of cells, with small cells folded together, or withhold the table."""
     rows = sorted(({"dims": list(dims), **entry} for dims, entry in cells.items()),
                   key=lambda row: (row["sessions"], row["dims"]))
     published = [row for row in rows if row["sessions"] >= floor]
     small = [row for row in rows if row["sessions"] < floor]
-    if not small:
-        return sorted(published, key=lambda row: row["dims"]), None
-    while published and (sum(row["sessions"] for row in small) < floor or len(small) < 2):
-        small.append(published.pop(0))  # the smallest published cell joins the combined row
-    if sum(row["sessions"] for row in small) < floor or len(small) < 2:
-        return [], None  # the whole table is below the floor
-    metrics = dict.fromkeys(small[0]["metrics"], 0)
-    for row in small:
-        for name, value in row["metrics"].items():
-            metrics[name] += value
-    combined = {"dims": ["combined small cells"], "sessions": sum(row["sessions"] for row in small),
-                "metrics": metrics}
+    combined = None
+    if small:
+        sessions = _combined_session_floor(small)
+        if sessions < floor or len(small) < 2:
+            if not published:
+                return [], None
+            small.append(published.pop(0))  # one already eligible row is enough to clear the floor
+            sessions = _combined_session_floor(small)
+        metrics = dict.fromkeys(small[0]["metrics"], 0)
+        for row in small:
+            for name, value in row["metrics"].items():
+                metrics[name] += value
+        combined = {"dims": ["combined small cells"], "sessions": sessions, "metrics": metrics}
+        if sessions < sum(row["sessions"] for row in small):
+            combined["sessions_lower_bound"] = True
+    # Day-level marginals stay internal. Published named cells contain their exact per-cell counts.
+    for row in published:
+        del row["sessions_by_day"]
     return sorted(published, key=lambda row: row["dims"]), combined
 
 
@@ -221,18 +236,18 @@ def collect(agg, week, release_id, floor=MIN_TOKENS, *, now=None):
         raise ContractError("cohort_floor")
     days = [d.isoformat() for d in parse_week(week)]
     check_release(release_id)
-    rows, covered = [], []
+    rows, covered = {}, []
     for day in days:
         status = agg.cells_status(day, release_id)
         covered.append({"day": day, "status": status or "missing"})
         if status == "ready":
-            rows.extend(agg.get_cells(day, release_id))
+            rows[day] = agg.get_cells(day, release_id)
     tables = {}
     for table, cells in _pool(rows).items():
         published, combined = _disclose(cells, floor)
         if published or combined:
             tables[table] = {"published": published, "combined": combined}
-    return {"insights_version": 1, "week": week, "release_id": release_id, "floor": floor,
+    return {"insights_version": 2, "week": week, "release_id": release_id, "floor": floor,
             "week_closed": week_closed(week, now if now is not None else datetime.now(timezone.utc).timestamp()),
             "days": covered, "tables": tables}
 
@@ -249,17 +264,20 @@ def _cadence_columns(m):
 
 def _row_cells(kind, row):
     m, label = row["metrics"], " / ".join(row["dims"])
+    sessions = str(row["sessions"])
+    if row.get("sessions_lower_bound"):
+        sessions = f"≥ {sessions}"
     if kind == "cadence":
-        return [label, str(row["sessions"]), *_cadence_columns(m)]
+        return [label, sessions, *_cadence_columns(m)]
     if kind == "usage":
         hours = m["active_seconds"] / 3600
         rates = "-"
         if m["classified_summaries"]:
             rates = f"{m['takeoffs']} / {m['landings']} / {m['aircraft_crashes']}"
-        return [label, str(row["sessions"]), str(m["summaries"]), f"{hours:.1f}", rates]
+        return [label, sessions, str(m["summaries"]), f"{hours:.1f}", rates]
     if kind == "errors":
-        return [label, str(row["sessions"]), str(m["count"])]
-    return [label, str(row["sessions"])]
+        return [label, sessions, str(m["count"])]
+    return [label, sessions]
 
 
 HEADERS = {
@@ -281,7 +299,7 @@ SECTIONS = [
 def render(data):
     ready = sum(1 for d in data["days"] if d["status"] == "ready")
     lines = [
-        f"<!-- openrc-telemetry:insights-v1/{data['week']}/{data['release_id']} -->",
+        f"<!-- openrc-telemetry:insights-v{data['insights_version']}/{data['week']}/{data['release_id']} -->",
         "# OpenRC telemetry weekly insights",
         "",
         f"ISO week: {data['week']} · Release: {data['release_id']} · Rolled-up days: {ready} of 7"
@@ -295,6 +313,7 @@ def render(data):
         "Counts are session-day observations, not players or machines; observations cover consenting sessions only "
         f"and are not representative. A cell is shown with at least {data['floor']} session-days; smaller cells, "
         "with the smallest shown cell when needed, form one combined row, and a table below the floor is not shown. "
+        "A combined count marked ≥ is a lower bound. Individual cells can share session-days. "
         "FPS is an engine render-cadence estimate; intervals over 5 s are excluded, so these figures understate "
         "freezes. VSync or an FPS cap limits cadence by design: compare rows within the same frame-pacing class.",
     ]

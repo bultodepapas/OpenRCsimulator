@@ -68,6 +68,7 @@ func _test_normalize() -> void:
 
 func _test_lookup() -> void:
 	var cases := {
+		"AMD Radeon RX Vega 64": "rx_vega_64", "AMD Radeon RX Vega 56": "rx_vega_56",
 		"NVIDIA GeForce RTX 3090": "rtx_3090", "NVIDIA GeForce RTX 3060/PCIe/SSE2": "rtx_3060",
 		"NVIDIA GeForce RTX 3060 Ti": "rtx_3060_ti", "NVIDIA GeForce RTX 4060 Laptop GPU": "rtx_4060_laptop",
 		"NVIDIA GeForce RTX 4070 Ti SUPER": "rtx_4070_ti_super", "NVIDIA GeForce RTX 4070 SUPER": "rtx_4070_super",
@@ -99,11 +100,11 @@ func _test_lookup() -> void:
 		"ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)": "apple_m1",
 		"ANGLE (NVIDIA, NVIDIA GeForce GTX 1060 Direct3D11 vs_5_0 ps_5_0)": "gtx_1060",
 		"ANGLE (Intel, Intel(R) UHD Graphics 620 Direct3D11 vs_5_0 ps_5_0, D3D11)": "uhd_620_igpu",
-		"AMD Radeon RX 6600 (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)": "mesa_navi23",
+		"AMD Radeon RX 6600 (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)": "rx_6600",
 		"AMD Radeon Graphics (radeonsi, gfx1201, LLVM 19.1.7, DRM 3.61, 6.14.0)": "mesa_gfx1201",
-		"AMD Radeon 660M (radeonsi, rembrandt, LLVM 20.1.2, DRM 3.64, 6.14.0)": "mesa_rembrandt",
-		"AMD Radeon RX 5500 (navi14, LLVM 13.0.0, DRM 3.46, 5.18.7)": "mesa_navi14",
-		"AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)": "mesa_vangogh",
+		"AMD Radeon 660M (radeonsi, rembrandt, LLVM 20.1.2, DRM 3.64, 6.14.0)": "radeon_660m",
+		"AMD Radeon RX 5500 (navi14, LLVM 13.0.0, DRM 3.46, 5.18.7)": "rx_5500",
+		"AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)": "steam_deck",
 		"AMD Custom GPU 0405": "steam_deck",
 		"Mesa DRI Intel(R) HD Graphics 5500 (Broadwell GT2)": "hd_5500_igpu",
 		"llvmpipe (LLVM 15.0.7, 256 bits)": "software", "Microsoft Basic Render Driver": "software",
@@ -147,14 +148,14 @@ func _test_extreme() -> void:
 	_check("the measured RTX 3090 runs Extreme at 4K", extreme.call("NVIDIA GeForce RTX 3090", p2160))
 	_check("an RTX 4070 runs Extreme at 1440p but not at 4K",
 		extreme.call("NVIDIA GeForce RTX 4070", p1440) and not extreme.call("NVIDIA GeForce RTX 4070", p2160))
-	_check("an RTX 3060 runs Extreme at 1080p but not at 1440p",
-		extreme.call("NVIDIA GeForce RTX 3060", p1080) and not extreme.call("NVIDIA GeForce RTX 3060", p1440))
+	_check("an RTX 3060 keeps High at 1080p and 1440p",
+		not extreme.call("NVIDIA GeForce RTX 3060", p1080) and not extreme.call("NVIDIA GeForce RTX 3060", p1440))
 	_check("6 GB cards stay at High", not extreme.call("NVIDIA GeForce GTX 1660 SUPER", p1080)
 		and AutoGraphicsPolicy.renderer(facts.call("NVIDIA GeForce GTX 1660 SUPER", p1080)).profile == "high")
 	_check("a 4-thread CPU keeps High even with an RTX 5090", not extreme.call("NVIDIA GeForce RTX 5090", p1080, 4))
 	_check("the CPU floor is 8 threads", extreme.call("NVIDIA GeForce RTX 5090", p1080, 8)
 		and not extreme.call("NVIDIA GeForce RTX 5090", p1080, 7))
-	_check("8 GB cards qualify", extreme.call("NVIDIA GeForce RTX 3070", p1080))
+	_check("capacity alone cannot qualify a 3070 for Extreme", not extreme.call("NVIDIA GeForce RTX 3070", p1080))
 	_check("unknown CPU threads never choose Extreme", not extreme.call("NVIDIA GeForce RTX 5090", p1080, 0))
 	_check("integrated GPUs never choose Extreme", not extreme.call("Intel(R) Iris(R) Xe Graphics", p1080)
 		and not extreme.call("AMD Radeon 890M", p1080))
@@ -257,17 +258,45 @@ func _test_steam_coverage() -> void:
 
 
 func _test_first_run() -> void:
-	var cases := {"NVIDIA GeForce RTX 3090": {}, "NVIDIA GeForce GTX 1650": {}, "Example Accelerator 9000": {},
-		"AMD Radeon(TM) 890M Graphics": {"msaa_3d": Viewport.MSAA_2X},
-		"Intel(R) Arc(TM) B390 GPU": {"msaa_3d": Viewport.MSAA_2X},
-		"Intel(R) Iris(R) Xe Graphics": {"msaa_3d": Viewport.MSAA_DISABLED},
-		"AMD Custom GPU 0405": {"msaa_3d": Viewport.MSAA_DISABLED},
+	var basic := AutoGraphicsPolicy.BASIC_SETTINGS
+	var cases := {"NVIDIA GeForce RTX 3090": {}, "NVIDIA GeForce GTX 1650": {"msaa_3d": Viewport.MSAA_2X, "shadow_quality": "medium"},
+		"Example Accelerator 9000": basic, "NVIDIA GeForce RTX 6060": basic, "NVIDIA RTX A2000": basic,
+		"Intel(R) UHD Graphics 630": basic, "llvmpipe (LLVM 15.0.7, 256 bits)": basic,
 		"Apple M1 (Apple7)": {}, "Qualcomm(R) Adreno(TM) X1-85 GPU": {},
-		"AMD Radeon Graphics (radeonsi, gfx9999, LLVM 21.0.0, DRM 3.70, 6.20.0)": {},
-		"llvmpipe (LLVM 15.0.7, 256 bits)": {"msaa_3d": Viewport.MSAA_DISABLED}}
+		"AMD Radeon Graphics (radeonsi, gfx9999, LLVM 21.0.0)": basic,
+		"AMD Radeon(TM) 890M Graphics": {"msaa_3d": Viewport.MSAA_2X, "shadow_quality": "low"}}
 	for raw: String in cases:
-		_check("first-run settings for %s" % raw, AutoGraphicsPolicy.first_run(raw) == cases[raw],
-			AutoGraphicsPolicy.first_run(raw))
+		_check("first-run settings for %s" % raw, AutoGraphicsPolicy.first_run(raw) == cases[raw], AutoGraphicsPolicy.first_run(raw))
+	var hardware := {adapter = "NVIDIA GeForce RTX 5090", os = "Windows", cpu_threads = 12, screen = Vector2i(3840, 2160)}
+	var top := AutoGraphicsPolicy.decide(hardware)
+	_check("desktop flagship opens a 1080p window with Extreme, 8x AA and Ultra shadows",
+		top.scene_detail == "extreme" and top.first_run.window_resolution == "1920x1080" and
+		top.first_run.msaa_3d == Viewport.MSAA_8X and top.first_run.shadow_quality == "ultra", top)
+	hardware.output_pixels = 7680 * 4320
+	var ultra_hd := AutoGraphicsPolicy.decide(hardware)
+	_check("a saved native 8K output is budgeted before applying flagship effects",
+		ultra_hd.scene_detail != "extreme" and not ultra_hd.first_run.has("shadow_quality"), ultra_hd)
+	hardware.erase("output_pixels")
+	hardware.adapter = "NVIDIA GeForce RTX 3060"
+	var mid := AutoGraphicsPolicy.decide(hardware)
+	_check("the 3060 budgets High for its 1080p window on a 4K desktop", mid.renderer == "high" and
+		mid.scene_detail == "high" and mid.first_run.msaa_3d == Viewport.MSAA_2X and mid.first_run.shadow_quality == "medium", mid)
+	hardware.adapter = "NVIDIA GeForce RTX 5090 Laptop GPU"
+	_check("the laptop flagship does not inherit desktop maximums", not AutoGraphicsPolicy.decide(hardware).first_run.has("shadow_quality"))
+	for panel: Vector2i in [Vector2i(1920, 1080), Vector2i(1366, 768)]:
+		_check("1080p and smaller panels use their native output", AutoGraphicsPolicy.first_display(panel, false) == {"window_mode": "borderless"})
+	_check("a reserved dock leaves a native fullscreen instead of an undersized 1080p window",
+		AutoGraphicsPolicy.first_display(Vector2i(2560, 1440), false, Vector2i(2560, 1130)) == {"window_mode": "borderless"})
+	_check("Retina on Apple Silicon uses native output", AutoGraphicsPolicy.first_display(Vector2i(3024, 1964), true) == {"window_mode": "borderless"})
+	_check("the basic notice describes the active settings", AutoGraphicsPolicy.basic_settings_active(basic, basic)
+		and not AutoGraphicsPolicy.basic_settings_active(basic, {"msaa_3d": Viewport.MSAA_8X}))
+	var partly_manual := basic.duplicate()
+	partly_manual.msaa_3d = Viewport.MSAA_2X
+	_check("a manual MSAA choice preserves guidance for the remaining basic settings",
+		AutoGraphicsPolicy.basic_settings_active(basic, partly_manual))
+	partly_manual.scene_detail = "high"
+	_check("a manually raised scene detail dismisses basic graphics guidance",
+		not AutoGraphicsPolicy.basic_settings_active(basic, partly_manual))
 	var path := "user://test gpu first run display.cfg"
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run("Intel(R) Iris(R) Xe Graphics")

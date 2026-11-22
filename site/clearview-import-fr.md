@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Utilisez la v0.3.0 ou plus récente et choisissez **ZIP d’avion ClearView** dans le sélecteur de fichiers. La configuration automatique et les vols en hélicoptère arrivent dans la version suivant la v0.3.0 ; la v0.2.9 importe seulement l’aperçu.
+Utilisez la v0.3.2 ou une version ultérieure pour la configuration automatique et les essais en hélicoptère. Choisissez **ZIP d’aéronef ClearView** dans le sélecteur de fichiers. La v0.3.0 permet les essais en avion et la v0.2.9 permet la prévisualisation.
 
-**Expérimental.** Le modèle garde son apparence ClearView, mais vole avec la physique d’OpenRC, pas avec le modèle de vol de ClearView : les avions avec une configuration estimée adaptée au modèle, les ailes volantes avec la physique standard du Skywalker X8 et les hélicoptères avec la physique de référence du X-Cell .60. Les avions enregistrés ne peuvent pas encore être lancés depuis l’accueil.
+**Expérimental.** Le modèle garde son apparence ClearView, mais vole avec la physique d’OpenRC, pas avec le modèle de vol de ClearView : les avions avec une configuration estimée adaptée au modèle, les ailes volantes avec la physique standard du Skywalker X8 (MoonRunner X99) et les hélicoptères avec la physique de référence du X-Cell .60. Les avions enregistrés ne peuvent pas encore être lancés depuis l’accueil.
 
 ## Où télécharger ?
 
@@ -19,7 +19,7 @@ Exemple testé à l’importation : [MC Extra 330 Red](https://time2rc.s3.amazon
 
 1. Téléchargez le `.zip` du modèle et ne le décompressez pas.
 2. Ouvrez **Atelier → Créer un avion… → Importation → Choisir un modèle…**. Sélectionnez le ZIP ; pour un pack, choisissez un avion.
-3. Vérifiez l’aperçu et les messages. Sélectionnez **Configurer automatiquement pour le vol** (pour un hélicoptère, **Voler comme hélicoptère**), vérifiez les estimations, puis utilisez **Vol d’essai**. Nommez-le et choisissez **Enregistrer l’avion** ou **Enregistrer le brouillon**.
+3. Pour un avion classique, choisissez **Configurer automatiquement pour le vol**, vérifiez les estimations puis lancez le **Vol d’essai**. Pour un hélicoptère, sélectionnez **Voler comme hélicoptère** et confirmez pour décoller. Enregistrez un brouillon pour reprendre la configuration. **Enregistrer l’avion** est disponible pour les avions dont la configuration propre a passé les contrôles.
 
 ## Quels fichiers fonctionnent ?
 

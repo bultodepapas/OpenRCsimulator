@@ -65,6 +65,21 @@ class LocalePublicationTests(unittest.TestCase):
         for links in downloads[1:]:
             self.assertEqual(downloads[0], links)
 
+    def test_fpv_and_blimp_guides_are_reachable_from_the_hero_and_readme(self):
+        readme = (SITE.parent / 'README.md').read_text(encoding='utf-8')
+        self.assertIn('](#fpv-racing-and-rc-blimp)', readme)
+        for lang, page in self.pages.items():
+            with self.subTest(lang=lang):
+                self.assertIsNotNone(page.select_one('.hero-copy a[href="#fpv-blimp"]'))
+                for vehicle in ('ion-r5', 'rc-blimp'):
+                    card = page.select_one(f'#fpv-blimp #{vehicle}')
+                    self.assertIsNotNone(card)
+                    self.assertTrue(card.h3.get_text(strip=True))
+                    self.assertTrue(card.p.get_text(strip=True))
+                    self.assertTrue(card.img['alt'])
+                    self.assertEqual(card.img['src'], f'assets/{vehicle}-studio.webp')
+                    self.assertIn('site/' + card.img['src'], readme)
+
     def test_donation_links_and_funding_goal_are_available_in_every_language(self):
         paypal = 'https://www.paypal.com/paypalme/bultodepapas'
         steam_fee = 'https://partner.steamgames.com/doc/gettingstarted/appfee'
@@ -142,6 +157,9 @@ class LocalePublicationTests(unittest.TestCase):
             self.assertEqual(query['utm_source'], ['github'])
             self.assertEqual(query['utm_campaign'], ['readme'])
             for page in self.pages.values():
+                version = release.removeprefix('v')
+                self.assertEqual(json.loads(page.select_one('#software-schema').string)['softwareVersion'], version)
+                self.assertEqual(page.select_one('.hero-top .release-stage').get_text(strip=True).split('/')[-1].strip(), version)
                 self.assertEqual(len(page.select('script[src^="downloads.js?"]')), 1)
                 targets = [a['href'] for a in page.select('#download a[href]')
                            if '/releases/download/' + release + '/' in a['href']

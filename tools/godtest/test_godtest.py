@@ -18,10 +18,13 @@ import runner
 def artifacts(directory: Path, *, rendered=True, complete=True):
     directory.mkdir(parents=True)
     manifest = catalog.scenario("startup", {"headless": not rendered})
+    write_json(directory / "manifest.requested.json", manifest)
     manifest["output_dir"] = str(directory)
     write_json(directory / "manifest.resolved.json", manifest)
     rows = [dict(type="header", format="openrc-frame-stream v1"),
-            dict(type="chunk", sequence=0, start_frame=0, frames=2, wall_usec=[16000, 17000], end_usec=[1016000, 1033000], engine_delta_s=[.016, .017], metrics={"phase_index": [0, 0]}),
+            dict(type="chunk", sequence=0, start_frame=0, frames=2, wall_usec=[16000, 17000], end_usec=[1016000, 1033000], engine_delta_s=[.016, .017],
+                 metrics={"phase_index": [0, 0], "render_frames_drawn": [1, 2] if rendered else [0, 0],
+                          "render_interval_draws": [1, 1] if rendered else [0, 0], "render_window_drawable": [int(rendered)] * 2}),
             dict(type="trailer", complete=complete, frames=2, chunks=1)]
     raw = b"".join((json.dumps(item) + "\n").encode() for item in rows)
     (directory / "frametimes.json.frames.jsonl").write_bytes(raw)
@@ -32,7 +35,7 @@ def artifacts(directory: Path, *, rendered=True, complete=True):
     phase = dict(name="startup", id="0-0-startup", index=0, cycle=0, requested=True, status="complete", reason="", start_usec=1000000, end_usec=1033000, start_tick=-1, end_tick=-1, wall_seconds=.033, sim_seconds=0, frames=2, rendered=rendered, frame_ms=dict(p50=16, p95=17, p99=17, max=17))
     runtime = dict(format="openrc-godtest-runtime-v1", complete=complete, execution="completed", data="complete" if complete else "partial", coverage="complete", flight="not_run", phases=[phase], metrics=dict(rendered=rendered, requested_resolution_match=True), identity=dict(actual_resolution=[1920, 1080], viewport_size=[1920, 1080], selection={}, backend={}, scenery_sha256="same", field={}, diagnostics=diagnostic))
     write_json(directory / "runtime.json", runtime)
-    write_json(directory / "execution.json", dict(state="runtime_finished", failure="", source_changed=False, log=dict(counts=dict(error=0, warning=0), missing_required_text=[]), shutdown=dict(stopped=True, forced=False, launcher_exit_code=0), engine_files={"godot": "same"}))
+    write_json(directory / "execution.json", dict(state="runtime_finished", failure="", source_changed=False, log=dict(counts=dict(error=0, warning=0), missing_required_text=[]), shutdown=dict(stopped=True, forced=False, launcher_exit_code=0), engine_files={"godot": "same"}, rendering_requested={}))
     return frames
 
 
@@ -45,7 +48,9 @@ def replace_stream(directory, frames, walls, phases, split=512):
     rows = [dict(type="header", format="openrc-frame-stream v1")]
     for start in range(0, len(walls), split):
         stop = min(start + split, len(walls))
-        metrics = {} if phases is None else {"phase_index": phases[start:stop]}
+        metrics = {} if phases is None else {"phase_index": phases[start:stop],
+                    "render_frames_drawn": list(range(start + 1, stop + 1)),
+                    "render_interval_draws": [1] * (stop - start), "render_window_drawable": [1] * (stop - start)}
         rows.append(dict(type="chunk", sequence=len(rows)-1, start_frame=start, frames=stop-start,
                          wall_usec=walls[start:stop], end_usec=ends[start:stop],
                          engine_delta_s=[w/1_000_000 for w in walls[start:stop]], metrics=metrics))
@@ -109,6 +114,18 @@ class ManifestTests(unittest.TestCase):
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_only_focus_losses_after_startup_question_session_equivalence(self):
+        message = "native focus loss observed; session equivalence requires diagnosis"
+        for total, in_startup, flagged in ((2, 2, False), (3, 2, True), (1, 0, True), (0, 0, False)):
+            with self.subTest(total=total, in_startup=in_startup), tempfile.TemporaryDirectory() as root:
+                directory = Path(root) / "run"
+                artifacts(directory)
+                runtime = json.loads((directory / "runtime.json").read_text())
+                runtime["metrics"]["focus_losses"] = total
+                runtime["phases"][0]["focus_losses"] = in_startup
+                write_json(directory / "runtime.json", runtime)
+                self.assertEqual(message in report(directory, write=False)["issues"], flagged)
+
     def test_phase_pacing_uses_assigned_intervals_and_breaks_runs_at_phase_changes(self):
         with tempfile.TemporaryDirectory() as root:
             directory = Path(root) / "run"
@@ -181,7 +198,7 @@ class ArtifactTests(unittest.TestCase):
             directory = Path(root) / "run"
             artifacts(directory)
             runtime = json.loads((directory / "runtime.json").read_text())
-            stop = dict(runtime["phases"][0], name="stop", id="0-1-stop", requested=False,
+            stop = dict(runtime["phases"][0], name="stop", id="0-1-stop", index=1, requested=False,
                         pilot=dict(touchdown={"roll_deg": 2}, minimum_wheel_runway_margin_m=-4.5))
             runtime["phases"].append(stop)
             write_json(directory / "runtime.json", runtime)
@@ -247,16 +264,132 @@ class ArtifactTests(unittest.TestCase):
 
 
 class SupervisionTests(unittest.TestCase):
+    def setUp(self):
+        # Standalone supervision contracts must not depend on this host's queue enrollment.
+        enrollment = mock.patch("tools.testqueue.common.enabled", return_value=False)
+        enrollment.start()
+        self.addCleanup(enrollment.stop)
+
+    def test_declared_authoring_input_remains_required_when_sparse_checkout_omits_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            manifest = root / "app/data/aircraft_models/fixture.json"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(json.dumps({"authoring": {"path": "assets/aircraft/missing.json"}}))
+            helper = root / "research/performance/sustained_input.gd"
+            helper.parent.mkdir(parents=True)
+            helper.write_bytes(b"input conversion helper")
+            responses = [b"fixture-commit\n", b"", b"app/data/aircraft_models/fixture.json\0"]
+            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner.subprocess, "check_output", side_effect=responses):
+                identity = runner.source_identity()
+            self.assertEqual(identity["excluded_or_missing"], ["assets/aircraft/missing.json"])
+            self.assertEqual(identity["files"]["research/performance/sustained_input.gd"], hashlib.sha256(helper.read_bytes()).hexdigest())
+            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "_bridge") as bridge:
+                with self.assertRaisesRegex(ValueError, "required snapshot inputs"):
+                    runner.run(catalog.scenario("smoke", {"headless": True}), root / "run")
+                bridge.assert_not_called()
+
+    def native_fixture(self, root: Path) -> None:
+        kernel = root / "app/native/kernel"
+        kernel.mkdir(parents=True)
+        (root / "app/physics").mkdir(parents=True)
+        (root / "app/physics/law.gd").write_bytes(b"law\r\n")
+        binary = kernel / "openrc_native_kernel.dll"
+        binary.write_bytes(b"kernel")
+        (root / "Godot_win64.exe").write_bytes(b"gui engine")
+        (root / "Godot_win64_console.exe").write_bytes(b"console wrapper")
+        write_json(kernel / "build-receipt-windows.json", {"platforms": {"windows": {
+            "binary_sha256": hashlib.sha256(b"kernel").hexdigest(),
+            "engine_sha256": hashlib.sha256(b"gui engine").hexdigest(),
+            "mirrored_sources": {"app/physics/law.gd": hashlib.sha256(b"law\r\n").hexdigest()}}}})
+
+    def test_native_preflight_detects_stale_installs_from_raw_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            self.assertIn("no readable", runner.native_install_problem(root, "win32"))
+            self.native_fixture(root)
+            self.assertEqual(runner.native_install_problem(root, "win32"), "")
+            # The console wrapper launches the GUI executable the receipt binds.
+            console = root / "Godot_win64_console.exe"
+            self.assertEqual(runner.native_install_problem(root, "win32", console), "")
+            (root / "Godot_win64.exe").write_bytes(b"upgraded engine")
+            self.assertIn("another Godot executable", runner.native_install_problem(root, "win32", console))
+            # Only the runtime receipt applies where a separate domain pin exists.
+            self.assertEqual(runner.native_install_problem(root, "darwin"), "")
+            # A line-ending rewrite alone makes native_stage.gd refuse the kernel.
+            (root / "app/physics/law.gd").write_bytes(b"law\n")
+            self.assertIn("app/physics/law.gd", runner.native_install_problem(root, "win32"))
+            (root / "app/physics/law.gd").write_bytes(b"law\r\n")
+            (root / "app/native/kernel/openrc_native_kernel.dll").write_bytes(b"other build")
+            self.assertIn("binary", runner.native_install_problem(root, "win32"))
+
+    def test_rendered_native_workload_refuses_stale_install_before_freezing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            self.native_fixture(root)
+            (root / "app/physics/law.gd").write_bytes(b"edited after the native build\r\n")
+            identity = dict(files={}, digest="same", commit="fixture", excluded_or_missing=[])
+            manifest = catalog.scenario("smoke", {"require_native": True})
+            self.assertFalse(manifest["headless"])
+            with mock.patch.object(runner.sys, "platform", "win32"), mock.patch.object(runner, "ROOT", root), \
+                    mock.patch.object(runner, "source_identity", return_value=identity) as collect, \
+                    mock.patch.object(runner, "freeze_inputs") as freeze, mock.patch.object(runner, "_bridge") as bridge:
+                with self.assertRaisesRegex(ValueError, "requires actual native physics: 1 mirrored"):
+                    runner.run(manifest, root / "run", godot=str(root / "Godot_win64_console.exe"))
+            collect.assert_not_called()
+            freeze.assert_not_called()
+            bridge.assert_not_called()
+            # A refusal leaves no half-created output, so the same --out can be retried.
+            self.assertFalse((root / "run").exists())
+
+    def test_source_identity_refuses_links_inside_checkout_but_not_above_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            real = Path(temporary).resolve() / "real"
+            (real / "outside").mkdir(parents=True)
+            linked = Path(temporary).resolve() / "linked"
+            try:
+                linked.symlink_to(real, target_is_directory=True)
+                # A checkout below an OS link, as macOS temp paths sit below /var.
+                root = linked / "deep" / "checkout"
+                (root / "research/performance").mkdir(parents=True)
+                (root / "research/performance/sustained_input.gd").write_bytes(b"input")
+                (root / "app/data").mkdir(parents=True)
+                (root / "app/data/real.gd").write_bytes(b"inside")
+                (root / "app/linked").symlink_to(real / "outside", target_is_directory=True)
+            except (OSError, NotImplementedError) as error:
+                self.skipTest(f"directory symlinks unavailable: {error}")
+            (real / "outside/escaped.gd").write_bytes(b"external")
+            responses = [b"fixture-commit\n", b"", b"app/data/real.gd\0app/linked/escaped.gd\0"]
+            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner.subprocess, "check_output", side_effect=responses):
+                identity = runner.source_identity()
+            self.assertEqual(sorted(identity["files"]), ["app/data/real.gd", "research/performance/sustained_input.gd"])
+            self.assertEqual(identity["excluded_or_missing"], ["app/linked/escaped.gd"])
+
+    def test_snapshot_rejects_source_changed_after_identity_collection(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            source = root / "app/project.godot"
+            source.parent.mkdir()
+            source.write_bytes(b"changed after source identity")
+            output = root / "run"
+            output.mkdir()
+            identity = {"files": {"app/project.godot": hashlib.sha256(b"original identity").hexdigest()}}
+            with mock.patch.object(runner, "ROOT", root):
+                with self.assertRaisesRegex(ValueError, "source changed after identity collection"):
+                    runner.freeze_inputs(output, identity)
+            self.assertFalse((output / "snapshot.json").exists())
+            self.assertEqual(identity["files"]["app/project.godot"], hashlib.sha256(b"original identity").hexdigest())
+
     def test_reuse_receipt_rejects_escaping_paths(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             receipt = dict(format="openrc-godtest-source-v1", root=str(root), files={"app/project.godot": "0"*64, "../outside": "0"*64}, imports={})
             with self.assertRaisesRegex(ValueError, "invalid snapshot"):
                 runner.check_frozen(receipt)
 
     def test_frozen_inputs_survive_live_edits_and_detect_snapshot_edits(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             files = {"app/project.godot": b"project", "research/performance/sustained_input.gd": b"input", "app/.godot/imported/fixture.ctex": b"import"}
             for relative, raw in files.items():
                 path = root / relative
@@ -274,13 +407,14 @@ class SupervisionTests(unittest.TestCase):
 
     def test_early_process_exit_stops_only_the_owned_session(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             engine = root / "engine.bin"
             engine.write_bytes(b"engine")
             stopped = []
             def launch(arguments):
                 self.assertNotIn("--", arguments)
                 self.assertIn("--profile", arguments)
+                self.assertEqual(os.environ.get("OPENRC_GODOT"), str(engine))
                 print(json.dumps(dict(ok=True, port=49001, pid=10001)))
                 return 0
             def stop(arguments):
@@ -290,11 +424,43 @@ class SupervisionTests(unittest.TestCase):
             bridge = SimpleNamespace(launch=launch, stop=stop, godot=lambda: str(engine), alive=lambda pid: False, session_for=lambda port: dict(command=[str(engine)]))
             identity = dict(files={}, digest="same", commit="fixture")
             frozen = dict(root=str(root / "source"), files={}, imports={})
-            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge):
+            with mock.patch.object(runner.sys, "platform", "linux"), mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge):
                 path, result = runner.run(catalog.scenario("smoke", {"headless": True}), root / "run")
             self.assertIn("exited before", result["failure"])
             self.assertEqual(stopped, [("49001", [])])
             self.assertTrue((path / "execution.json").is_file())
+
+    def test_launched_command_and_final_engine_bytes_must_match_the_pinned_engine(self):
+        for damage in ("command", "bytes"):
+            with self.subTest(damage=damage), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary).resolve()
+                engine = root / "engine.bin"
+                engine.write_bytes(b"original engine")
+                stopped = []
+                output = root / "run"
+                def launch(arguments):
+                    self.assertEqual(os.environ.get("OPENRC_GODOT"), str(engine))
+                    if damage == "bytes": engine.write_bytes(b"replaced engine")
+                    write_json(output / "runtime.json", {"complete": True})
+                    print(json.dumps(dict(ok=True, port=49003, pid=10003)))
+                    return 0
+                def stop(arguments):
+                    stopped.append(arguments)
+                    print(json.dumps(dict(stopped=True, forced=False, launcher_exit_code=0)))
+                    return 0
+                bridge = SimpleNamespace(launch=launch, stop=stop, godot=lambda: str(engine), alive=lambda pid: False,
+                    session_for=lambda port: dict(command=[str(root / "different-engine" if damage == "command" else engine)]))
+                identity = dict(files={}, digest="same", commit="fixture")
+                frozen = dict(root=str(root / "source"), files={}, imports={})
+                with mock.patch.object(runner.sys, "platform", "linux"), mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge):
+                    _, result = runner.run(catalog.scenario("smoke", {"headless": True}), output)
+                self.assertEqual(stopped, [[]])
+                if damage == "command":
+                    self.assertFalse(result["engine_command_verified"])
+                    self.assertIn("pinned engine", result["failure"])
+                else:
+                    self.assertTrue(result["engine_command_verified"])
+                    self.assertEqual(result["engine_files_changed"], [str(engine)])
 
     def test_headless_cannot_establish_rendered_comparison(self):
         with tempfile.TemporaryDirectory() as root:
@@ -305,7 +471,7 @@ class SupervisionTests(unittest.TestCase):
 
     def test_busy_progress_read_does_not_cancel_a_completed_run(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             engine = root / "engine.bin"
             engine.write_bytes(b"engine")
             output = root / "run"
@@ -322,7 +488,7 @@ class SupervisionTests(unittest.TestCase):
             bridge = SimpleNamespace(launch=launch, stop=stop, godot=lambda: str(engine), alive=lambda pid: True, session_for=lambda port: dict(command=[str(engine)]))
             identity = dict(files={}, digest="same", commit="fixture")
             frozen = dict(root=str(root / "source"), files={}, imports={})
-            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge), mock.patch.object(runner, "read_json", side_effect=progress_busy), mock.patch.object(runner.time, "sleep", side_effect=complete_after_retry):
+            with mock.patch.object(runner.sys, "platform", "linux"), mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge), mock.patch.object(runner, "read_json", side_effect=progress_busy), mock.patch.object(runner.time, "sleep", side_effect=complete_after_retry):
                 path, result = runner.run(catalog.scenario("smoke", {"headless": True}), output)
             self.assertEqual(result["failure"], "")
             self.assertEqual(result["state"], "runtime_finished")

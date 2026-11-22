@@ -7,14 +7,14 @@ on:
         description: Previously accepted publication source commit
         type: string
         required: false
-        default: 'b4ae37fd734e9f3ec98c66216a5518c11ad560d8'
+        default: 'a1663d6b776fbe419129d34bd818f502547aec26'
   workflow_call:
     inputs:
       baseline-ref:
         description: Previously accepted publication source commit
         type: string
         required: false
-        default: 'b4ae37fd734e9f3ec98c66216a5518c11ad560d8'
+        default: 'a1663d6b776fbe419129d34bd818f502547aec26'
 
 permissions:
   contents: read
@@ -54,7 +54,7 @@ jobs:
           architecture: x64
       - name: Verify collector and obtain the baseline tree
         run: |
-          test "$BASELINE_REF" = b4ae37fd734e9f3ec98c66216a5518c11ad560d8
+          test "$BASELINE_REF" = a1663d6b776fbe419129d34bd818f502547aec26
           python tools/godot/test_collect_publication_rebind.py
           # Fetch the commit and trees only. checkout-index lazily requests only
           # changed historical blobs; unrelated historical assets stay absent.

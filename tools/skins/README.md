@@ -85,7 +85,10 @@ finishes such as TiN shock shafts, powder-coated springs, glass-filled nylon
 arms or red urethane bump stops); give it finishes, not colours a skin changes.
 `default_nodes` applies with the delivered paint, and a skin's `nodes` with that
 skin, for parts that carry a scheme's own colours, for example the MT8's
-machined shock bodies and anodised caps.
+machined shock bodies and anodised caps. A skin may map exact mesh-node names
+to minimum Godot LOD biases in `node_lod_bias` when simplification distorts a painted
+line. REVOC Custom uses this on the Avanti fuselage. Changing skins restores the
+original node bias.
 
 A fixed-wing skin from this registry appears in Home's paint gallery after the
 delivered liveries and repaints the default asset (no livery GLB of its own). The

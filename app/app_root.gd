@@ -416,10 +416,6 @@ func _ready() -> void:
 	renderer_guard_path = preferences_path + ".renderer"
 	if RendererGuard.begin(get_tree(), renderer_guard_path):
 		return # restarting into Compatibility after an unconfirmed RD launch of this build
-	if RendererPreference.apply_at_startup(get_tree(), RendererGuard.load_state(renderer_guard_path),
-			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
-		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
-		return # restarting into the saved graphics mode (exported builds only)
 	has_home = true
 	var ui_window: Window = get_tree().root
 	_automatic_window_size = ui_window.size
@@ -430,19 +426,39 @@ func _ready() -> void:
 	# and stores them at once; upgraders keep their values. Restore graphics defaults offers the same recommendation.
 	var display_path := preferences_path + ".display"
 	var fresh_install := false
-	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless":
-		SceneDetail.calibration = AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
-			RenderingServer.get_current_rendering_method())
-		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(RenderingServer.get_video_adapter_name(),
-			OS.get_name(), DisplayServer.screen_get_scale(), DisplayServer.screen_get_refresh_rate())
+	var player_display := preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless"
+	var screen := ui_window.current_screen
+	var adapter := RenderingServer.get_video_adapter_name()
+	DisplayPreferences.first_run_defaults = {}
+	if player_display:
+		SceneDetail.calibration = AutoCalibration.load_result(adapter, RenderingServer.get_current_rendering_method())
+		var native_retina := OS.has_feature("arm64") and AutoGraphicsPolicy.GpuCapability.mac_native_target(
+			OS.get_name(), DisplayServer.screen_get_scale(screen))
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_display(DisplayServer.screen_get_size(screen),
+			native_retina, DisplayServer.screen_get_usable_rect(screen).size)
 		fresh_install = not FileAccess.file_exists(preferences_path) and not FileAccess.file_exists(display_path)
 	DisplayPreferences.first_run_applies = fresh_install
 	display_preferences = DisplayPreferences.new(display_path)
-	if fresh_install and not DisplayPreferences.first_run_defaults.is_empty() and display_preferences.save(display_preferences.config) != OK:
-		push_warning("Could not store the recommended display settings; they apply to this session only.")
+	AutoGraphicsPolicy.startup_output_pixels = 0
+	if DisplayServer.get_name() != "headless":
+		AutoGraphicsPolicy.startup_output_pixels = AutoGraphicsPolicy.output_pixels(
+			DisplayServer.screen_get_size(ui_window.current_screen), display_preferences.config, ui_window.size)
+	if RendererPreference.apply_at_startup(get_tree(), RendererGuard.load_state(renderer_guard_path),
+			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
+		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
+		return # restarting into the saved graphics mode (exported builds only)
+	if player_display:
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(adapter,
+			OS.get_name(), DisplayServer.screen_get_scale(screen), DisplayServer.screen_get_refresh_rate(screen),
+			{screen = DisplayServer.screen_get_size(screen), usable = DisplayServer.screen_get_usable_rect(screen).size,
+			cpu_threads = OS.get_processor_count(), arm64 = OS.has_feature("arm64"),
+			forward_plus = RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD,
+			output_pixels = AutoGraphicsPolicy.startup_output_pixels})
+		if display_preferences.apply_gpu_defaults(fresh_install) != OK:
+			push_warning("Could not store the recommended display settings; they apply to this session only.")
 	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
 	if DisplayServer.get_name() != "headless":
-		var report := AutoGraphicsReport.runtime()
+		var report := AutoGraphicsReport.runtime(false)
 		print("Graphics auto: %s → %s · %s" % [report.inputs.adapter, AutoGraphicsReport.compact(report.decisions),
 			JSON.stringify(report.decisions.reasons)])
 	menu_audio = MenuSounds.attach(self, func() -> Control:
@@ -883,6 +899,7 @@ func _install_home(setup: Dictionary) -> void:
 	_update_controller_home()
 	_update_controller_button_prompts()
 	home.set_note(_settings_note)
+	_refresh_basic_graphics_notice(display_preferences.config)
 	_refresh_telemetry_home_note()
 	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	if not _update_info.is_empty():
@@ -1975,6 +1992,7 @@ func open_settings(from: Control = null) -> void:
 	var settings := SettingsScreen.new(display_preferences, preferences.get("language", "en"))
 	settings.window_close_managed = true
 	settings.presentation_changed.connect(_apply_presentation)
+	settings.calibration_reset.connect(_apply_calibration_reset)
 	var window_checkpoint := _capture_display_window_state()
 	_display_preview_checkpoint = window_checkpoint
 	settings.presentation_committed.connect(func() -> void:
@@ -2086,7 +2104,14 @@ static func apply_master_volume(level: float) -> void:
 	AudioServer.set_bus_volume_db(master, linear_to_db(clamped) if clamped > 0.0 else -80.0)
 
 
+func _refresh_basic_graphics_notice(config: Dictionary) -> void:
+	if home != null and home.is_node_ready():
+		home.set_basic_graphics_notice(preferences_path == Preferences.DEFAULT_PATH and
+				AutoGraphicsPolicy.basic_settings_active(DisplayPreferences.first_run_defaults, config))
+
+
 func _apply_presentation(config: Dictionary) -> void:
+	_refresh_basic_graphics_notice(config)
 	ShadowSettings.apply(config)
 	AircraftLightingPolicy.apply(config)
 	if is_instance_valid(menu_audio):
@@ -2112,15 +2137,7 @@ func _apply_presentation(config: Dictionary) -> void:
 	# LENS-01: a running flight (airplane, helicopter or FPV quad) rebuilds its lens stack at once; presentation only.
 	var lens_changed: bool = LensSettings.validate(config) != LensSettings.preference()
 	LensSettings.set_preference(config)
-	# Automatic follows Scene detail (applied above): a Scene detail change can change the lens tier too.
-	var lens_tier: String = str(LensSettings.resolve({}, true).quality)
-	lens_changed = lens_changed or (not _lens_tier_applied.is_empty() and lens_tier != _lens_tier_applied)
-	_lens_tier_applied = lens_tier
-	if lens_changed:
-		for activity: Node in [flight, ground_vehicle]:
-			if is_instance_valid(activity) and activity.has_method("apply_lens_preferences"):
-				activity.apply_lens_preferences()
-	get_tree().call_group("landscape_flags", "apply_quality")
+	_refresh_scene_detail_dependents(lens_changed)
 	# L11a-R3: hiding is live; turning the meadow on builds it at the next field load.
 	RunwayMeadow.set_preference(str(config.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow)))
 	get_tree().call_group(RunwayMeadow.GROUP, "set_visible", RunwayMeadow.preference() == "on")
@@ -2177,6 +2194,24 @@ func _apply_presentation(config: Dictionary) -> void:
 	# A window-size request is deferred while desktop fullscreen owns the size.
 	if requested == "windowed":
 		_display_resolution = resolution
+
+
+## A successful Restore changes Automatic's evidence after its preview was applied. Refresh only the
+## presentation that follows Scene detail; preserve reconstruction receipts, camera state and window geometry.
+func _apply_calibration_reset(config: Dictionary) -> void:
+	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
+	_refresh_scene_detail_dependents()
+
+
+func _refresh_scene_detail_dependents(lens_changed: bool = false) -> void:
+	var lens_tier: String = str(LensSettings.resolve({}, true).quality)
+	lens_changed = lens_changed or (not _lens_tier_applied.is_empty() and lens_tier != _lens_tier_applied)
+	_lens_tier_applied = lens_tier
+	if lens_changed:
+		for activity: Node in [flight, ground_vehicle]:
+			if is_instance_valid(activity) and activity.has_method("apply_lens_preferences"):
+				activity.apply_lens_preferences()
+	get_tree().call_group("landscape_flags", "apply_quality")
 
 
 func _refresh_screen_themes(node: Node) -> void:

@@ -26,9 +26,9 @@
 
 # OpenRC Simulator
 
-**An open-source flying field for RC pilots.** Connect your USB transmitter, pick an airplane and fly from the pilot's position. A gamepad or keyboard works too. Explore sport flying, warbirds, electric models and jets, with external cameras when you want a closer look.
+**An open-source flying field for RC pilots.** Hand-launch a MoonRunner X99, take a Corsair down the runway, race the ION R5 through FPV gates or bring a five-metre RC blimp in to land. Fly with a USB transmitter, gamepad or keyboard.
 
-**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Roadmap and donations](#roadmap-and-donations)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
+**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[FPV racing and RC blimp](#fpv-racing-and-rc-blimp)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Roadmap and donations](#roadmap-and-donations)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
 <p align="center">
   <a href="https://www.paypal.com/paypalme/bultodepapas">
@@ -38,23 +38,25 @@
 
 ![Home screen with MoonRunner X99 at Club field](docs/media/ui-home-moonrunner-x99.png)
 
-*Home with MoonRunner X99. Game images below were captured from development builds on **28–29 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
+*Home with MoonRunner X99, captured in a development build at 1920×1080. [Capture details](docs/media/README.md#readme-gallery).*
 
-> **Beta preview.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
+> The v0.3.2 download is an early alpha. The flight models still need independent measurements and feedback from RC pilots.
 
 ## Download and fly
 
-**Latest release: [v0.3.0](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.0).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
+**Latest release: [v0.3.2](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.2).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
 
 | Platform | Download and launch |
 | --- | --- |
-| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.3.0&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
-| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.3.0&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
-| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.3.0&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
+| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.3.2&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
+| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.3.2&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
+| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.3.2&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
 
-[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.0/SHA256SUMS) · [Release manifest](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.0/release-manifest.json) · [Linux ABI report](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.0/linux-abi.json) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.0/docs/FIRST-LAUNCH.md) · [Release notes](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.0/docs/releases/v0.3.0.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.0).
+[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.2/SHA256SUMS) · [Release manifest](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.2/release-manifest.json) · [Linux ABI report](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.2/linux-abi.json) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/FIRST-LAUNCH.md) · [Release notes](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/releases/v0.3.2.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.2).
 
-**For your first flight:**
+**New in the v0.3.2 download.** Test-fly supported airplanes from your local Phoenix RC installation. ClearView imports now offer automatic setup for airplanes and helicopter trials using X-Cell .60 physics. You can also import Phoenix panoramas and take off from five calibrated site revisions. [Aircraft Creator](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental) · [Phoenix scenery](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/LANDSCAPES.md#import-phoenix-scenery)
+
+**For your first flight**
 
 1. Select **Ugly Stick** and **Club field**.
 2. Choose **Start: in the air**, **Calm** and **Day** for an uncomplicated start, or **Start: runway** to explore takeoffs and landings.
@@ -68,17 +70,17 @@
 | **Gamepad** | Mapped pads have a Mode 2 starting layout. Check the displayed bindings and remap buttons as needed. |
 | **Keyboard** | Arrow keys: pitch/roll; **A / D**: rudder; **W / S**: throttle. **Down** pulls back on the elevator. |
 
-[Radio setup for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.0/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
+[Radio setup for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
 
 **The hangar and features below describe current source.** The published ZIP can differ from current source. Use the release notes for what your download includes.
 
 ## Aircraft
 
-Current source has **seven fixed-wing airframes and ten airplane configurations**. The Ugly Stik is the reference model; the other configurations are experimental. Click an aircraft for its guide, controls and modeling limits.
+Home offers **eight stock airplane configurations across seven airframes**. The basic Ugly Stick is the reference model. The other seven choices are experimental. Each guide covers the model's equipment and handling limits.
 
 ### MoonRunner X99
 
-**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** MoonRunner X99 joins the current-source hangar as an experimental flying wing, with no landing gear. [Model and asset pipeline](tools/aircraft/moonrunner/README.md) · [Aircraft asset terms](docs/AIRCRAFT-LICENSING.md).
+**2.12 m · 6S electric pusher · elevons.** Start in the air or choose a simulated hand launch and fly the wing from release. [MoonRunner guide](docs/X8-PLAN.md) · [Model and asset pipeline](tools/aircraft/moonrunner/README.md).
 
 | MoonRunner X99 over Club field | MoonRunner X99 model close-up |
 | --- | --- |
@@ -129,29 +131,43 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
   </tr>
 </table>
 
-**More ways to fly the Stik:** three additional [O.S. glow installations](docs/GLOW-ENGINES.md) — MAX-61FX, MAX-55AX and FS-64V — share its airframe, with finite fuel and engine start, cut and mixture controls.
+**Ugly Stick · Electric 6S** is the second Stik in the Home selector. It shares the 1.52 m airframe with the pictured glow trainer and pairs a 540 Kv motor with a 12×8 electric propeller. Normal flight draws from a 4,000 mAh pack by default. The Workshop trial uses fixed voltage. [Stik configurations](docs/UGLY-STIK-PLAN.md#stock-configurations)
 
 At **Club field**, geared airplanes offer runway or airborne starts. At **Green paradise**, they start airborne; MoonRunner X99 retains its hand-launch option. Aircraft equipment varies: use the in-game control guide for the selected model.
 
 [Full-size model views and capture details](docs/media/README.md#aircraft-stills). Studio views show the current models; the MoonRunner X99 flight image comes from the running simulator.
+
+## FPV racing and RC blimp
+
+In v0.3.2, open **Home → Vehicles**, select **ION R5** or **RC blimp**, then choose **Fly**. Both are experimental.
+
+| ION R5 · FPV racing quad | 5 m RC blimp · Tiburón Blanco |
+| --- | --- |
+| ![ION R5 with four propellers, a forward-facing camera and a battery strapped to the top](site/assets/ion-r5-studio.webp) | ![Tiburón Blanco blimp with a shark-mouth paint scheme and gondola below the envelope](site/assets/rc-blimp-studio.webp) |
+| Fly this 5-inch, 6S quad from its onboard camera in Acro or self-levelling Angle mode. At Club field, **T** selects a course, including Tower Sprint. Arm on the pad at low throttle, press **G** and wait for **GO**. Fly the gates in order for three laps to set a local time. | Start on the wheels or release the blimp at **6 m**. Use the pause menu to set ballast and steady wind, then tilt the electric rotors to climb or brake. Home offers three finishes: **Tiburón Blanco**, **Histórico** and **Cromo Carbono Azul**. |
+
+[ION R5 model](research/drone-racing/DR-29/ION_R5.md) · [Race courses and records](docs/plans/drone-racing.md) · [Blimp model and controls](docs/research/rc-airship/BL-12/README.md). Both images are studio views of the models included in the simulator.
 
 ## Current features
 
 | For the pilot | What you can explore |
 | --- | --- |
 | **Fly from the flightline** | Ground-pilot, chase, fly-by, orbit and close-up cameras; manual/automatic zoom and a ground-shadow aid. |
-| **Set up your controls** | Radio calibration, remapping, rates, trim, device-aware help and low-throttle arming. Disconnection pauses the flight for recovery. |
+| **Set up your controls** | Calibrate and remap a radio or gamepad. The EdgeTX USB Joystick (Classic) guide walks through stick calibration and checks switches for gear, flaps, smoke and restart. [Radio setup](docs/FIRST-LAUNCH.md#radio-setup) |
 | **Manage the model** | Aircraft-specific flaps, retracts, brakes, glow-engine controls, fuel and electric batteries. Source/configuration determines which equipment is available. |
 | **Change the conditions** | Wind, gusts, turbulence and atmosphere settings; separate day, dusk and night lighting. Restart repeats the selected conditions. |
 | **Practice and review** | Optional trim and emergency practice, local flight statistics, flight overlays, and fixed-wing logs: **F10** records, **F11** marks a maneuver. [Flight logging](docs/FLIGHT-LOGGING.md) |
+| **Share a circuit** | During normal fixed-wing flights at Club field in calm or light weather, enable one to three experimental AI companions. Each flies its own Ugly Stik circuit. [Companion setup and limits](docs/AI-FLIGHT-COMPANIONS.md#use) |
 | **Hear and see the aircraft** | Positional engine/propeller sounds, field ambience, aircraft lights and supported exhaust/show-smoke effects. |
-| **Choose the graphics** | Standard and optional High/Forward+ modes. Current source also has a separate [Windows NVIDIA build](tools/graphics/native/README.md) with DLSS, DLAA and Reflex; it is not the v0.3.0 download. |
+| **Choose the graphics** | Automatic graphics recommends settings and shows how much confidence to place in the estimate. Standard and High/Forward+ modes are available. Developers can also build a separate [Windows NVIDIA edition](tools/graphics/native/README.md) with DLSS, DLAA and Reflex. |
 
-The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. The v0.3.0 download includes all nine.
+The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. The v0.3.2 download includes all nine.
 
 ### Make a model your own
 
 The experimental **Aircraft Workshop** lets you save local builds, adjust supported setup parameters, customize supported paint/smoke/lighting options and launch test flights. You can compare changes and export/import builds. Available adjustments depend on the aircraft.
+
+To bring in your own model, open **Workshop → Create aircraft… → Import**. Choose a Phoenix RC `.mod` from your installation, a ClearView aircraft ZIP, an STL or a self-contained GLB. Review the proposed OpenRC setup before a test flight. Saved Creator aircraft reopen in the Workshop. [Aircraft Creator guide](docs/AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental)
 
 | Appearance | Flight setup |
 | --- | --- |
@@ -162,6 +178,8 @@ The experimental **Aircraft Workshop** lets you save local builds, adjust suppor
 ## Landscapes
 
 **Club field** has the runway, flightline, vegetation, lake, buildings and night fixtures. **Green paradise** offers an open, flat grass surface without scenery obstacles or a lake. Select the landscape on Home; to change it after flying, return to Home first.
+
+For a Phoenix panorama, open **Home → Flight → Import scenery**. The calibrated revisions of Airfield, Aircraft Carrier X98, Frönäs, Farmland and Aero Club Dolores offer a runway trial in calm conditions. Other site revisions open as previews. [Scenery import guide](docs/LANDSCAPES.md#import-phoenix-scenery)
 
 | Club field | Green paradise |
 | --- | --- |
@@ -205,7 +223,7 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
   </tr>
 </table>
 
-The advanced HX-700 helicopter candidate remains a laboratory project. Home's vehicle catalog also offers an experimental [5 m RC blimp](docs/research/rc-airship/BL-12/README.md) and [FPV quad with a local three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). Their flight models use estimated data; physical, pilot and target-hardware qualification remain open.
+The X-Cell .60 trainer above is the playable helicopter. The advanced HX-700 candidate remains a laboratory project.
 
 ## Roadmap and donations
 

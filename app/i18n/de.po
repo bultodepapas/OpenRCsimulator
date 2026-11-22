@@ -276,6 +276,12 @@ msgstr "Seitenruder"
 msgid "Throttle"
 msgstr "Gas"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Es wurden nicht genügend GPU-Zeitmesswerte erfasst. Starte neu oder stelle die Grafikstandards wieder her, um es erneut zu versuchen."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Die Einstellungen wurden gespeichert, aber die automatische Grafik konnte nicht zurückgesetzt werden (Fehler %d). Wähle Änderungen beibehalten, um es erneut zu versuchen."
+
 msgid "Could not save settings (error %d)."
 msgstr "Einstellungen konnten nicht gespeichert werden (Fehler %d)."
 
@@ -2770,6 +2776,9 @@ msgstr "Letzten Flug wiederholen"
 
 msgid "Back"
 msgstr "Zurück"
+
+msgid "Change skin"
+msgstr "Lackierung ändern"
 
 msgid "Paint schemes"
 msgstr "Lackierungen"
@@ -14708,3 +14717,24 @@ msgstr "Das Phoenix-Fahrwerk wird für Pistenstarts verwendet. Einziehfahrwerk b
 
 msgid "Needs no landing gear"
 msgstr "Nur ohne Fahrwerk"
+
+msgid "Fly calibrated runway"
+msgstr "Von kalibrierter Piste starten"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Experimenteller Flug bei Windstille mit geschätzter Piste, Startposition und Geländeform."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Experimenteller Flug bereit. Piste, Startposition und Gelände sind geschätzt."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Die installierte Szenerie konnte für den Flug nicht überprüft werden."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Wähle ein Flugzeug, das von einer Piste starten kann."
+
+msgid "Preparing panorama"
+msgstr "Panorama wird vorbereitet"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "Die einfachen Grafikeinstellungen sind aktiv. Unter Einstellungen > Grafik kannst du die Qualität erhöhen."

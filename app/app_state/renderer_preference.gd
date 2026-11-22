@@ -35,7 +35,7 @@ static var override_path := OVERRIDE_PATH
 ## Persisted state. `renderer` is the renderer key the engine will apply ("" = project default).
 static func load_state(path: String = "") -> Dictionary:
 	var cfg := ConfigFile.new()
-	var state := {mode = DEFAULT_MODE, renderer = "", standard_method = "", high_blocked_build = ""}
+	var state := {mode = DEFAULT_MODE, renderer = "", standard_method = "", high_blocked_build = "", auto_trial_build = ""}
 	if cfg.load(_path(path)) != OK:
 		return state
 	var mode := str(cfg.get_value(STATE_SECTION, "mode", DEFAULT_MODE))
@@ -45,6 +45,7 @@ static func load_state(path: String = "") -> Dictionary:
 	var standard := str(cfg.get_value(STATE_SECTION, "standard_method", ""))
 	state.standard_method = standard if standard in VALID_METHODS else ""
 	state.high_blocked_build = str(cfg.get_value(STATE_SECTION, "high_blocked_build", ""))
+	state.auto_trial_build = str(cfg.get_value(STATE_SECTION, "auto_trial_build", ""))
 	return state
 
 
@@ -57,6 +58,8 @@ static func save_state(state: Dictionary, path: String = "") -> bool:
 		cfg.set_value(STATE_SECTION, "standard_method", str(state.standard_method))
 	if not str(state.get("high_blocked_build", "")).is_empty():
 		cfg.set_value(STATE_SECTION, "high_blocked_build", str(state.high_blocked_build))
+	if not str(state.get("auto_trial_build", "")).is_empty():
+		cfg.set_value(STATE_SECTION, "auto_trial_build", str(state.auto_trial_build))
 	if cfg.save(_path(path)) != OK or load_state(path) != _normalized(state):
 		push_warning("Renderer preference: cannot save %s" % _path(path))
 		return false
@@ -81,7 +84,8 @@ static func auto_profile(facts: Dictionary) -> Dictionary:
 ## session_method, project_standard, build, guard_failed_method, guard_failed_build}.
 ## Returns {state, write, restart, profile, reason}. Only supported desktop hosts persist anything.
 static func plan(facts: Dictionary, state: Dictionary) -> Dictionary:
-	var out := _normalized(state)
+	var before := _normalized(state)
+	var out := before.duplicate()
 	var result := {state = out, write = false, restart = false, profile = "standard", reason = ""}
 	if bool(facts.get("headless", true)) or not supported(facts):
 		result.reason = "renderer preference unsupported on this host"
@@ -114,17 +118,29 @@ static func plan(facts: Dictionary, state: Dictionary) -> Dictionary:
 			if profile == "high" and bool(facts.get("calibration_reject_high", false)):
 				profile = "standard"
 				result.reason = "automatic: measured High GPU time missed the frame on this GPU"
+	# The exported game can see different adapters through OpenGL and Forward+. A Standard → High trial
+	# gets one decision on the target renderer. If that decision reverses, remember Standard for this build
+	# before returning to it. A later change of monitor on an already accepted High launch is a fresh decision.
+	if honored and not cli and not str(out.auto_trial_build).is_empty():
+		if out.auto_trial_build == build and out.mode == "auto" and session == HIGH_METHOD and profile == "standard":
+			out.high_blocked_build = build
+			result.reason = "automatic: High selected Standard after restart; keeping Standard for this build"
+		out.auto_trial_build = ""
 	if profile == "high" and not build.is_empty() and out.high_blocked_build == build:
 		profile = "standard"
+		if result.reason.is_empty() or str(result.reason).begins_with("automatic:"):
+			result.reason = "High is blocked for this build; keeping Standard"
 	result.profile = profile
 	var renderer := HIGH_METHOD if profile == "high" else ""
 	if out.renderer != renderer or (renderer == HIGH_METHOD and out.standard_method != standard):
 		out.renderer = renderer
 		out.standard_method = standard if renderer == HIGH_METHOD else ""
-		result.write = true
 		# Apply now only when the file governs this launch and nothing on the command line overrides it.
 		var wanted := HIGH_METHOD if renderer == HIGH_METHOD else standard
 		result.restart = honored and not cli and session != wanted
+		if result.restart and out.mode == "auto" and renderer == HIGH_METHOD:
+			out.auto_trial_build = build
+	result.write = out != before
 	return result
 
 
@@ -164,7 +180,7 @@ static func apply_at_startup(tree: SceneTree, guard_state: Dictionary, build: St
 	var decision := plan(facts(guard_state, build), before)
 	if not str(decision.reason).is_empty():
 		print("Graphics mode: %s (%s)" % [decision.profile, decision.reason])
-	if decision.state == _normalized(before):
+	if not decision.write:
 		return false
 	if not save_state(decision.state):
 		return false
@@ -183,6 +199,7 @@ static func save_choice(profile: String, persistent: bool, project_standard: Str
 		return false
 	var state := load_state()
 	state.mode = profile
+	state.auto_trial_build = ""
 	state.renderer = HIGH_METHOD if profile == "high" else ""
 	state.standard_method = project_standard if profile == "high" and project_standard in VALID_METHODS \
 		and project_standard != HIGH_METHOD else ("" if profile != "high" else FALLBACK_STANDARD_METHOD)
@@ -197,11 +214,14 @@ static func _normalized(state: Dictionary) -> Dictionary:
 	var standard := str(state.get("standard_method", ""))
 	return {mode = mode if mode in MODES else DEFAULT_MODE, renderer = renderer if renderer in VALID_METHODS else "",
 		standard_method = standard if standard in VALID_METHODS else "",
-		high_blocked_build = str(state.get("high_blocked_build", ""))}
+		high_blocked_build = str(state.get("high_blocked_build", "")),
+		auto_trial_build = str(state.get("auto_trial_build", ""))}
 
 
 ## The display the game opens on; fullscreen play renders at its size.
 static func _screen_pixels() -> int:
+	if AutoGraphicsPolicy.startup_output_pixels > 0:
+		return AutoGraphicsPolicy.startup_output_pixels
 	if DisplayServer.get_name() == "headless":
 		return 0
 	var size := DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())

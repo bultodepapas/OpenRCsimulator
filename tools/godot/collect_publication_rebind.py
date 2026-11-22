@@ -18,8 +18,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE = "b4ae37fd734e9f3ec98c66216a5518c11ad560d8"
-PRIOR_FIXTURE_SHA256 = "24bffa86e373599f4c105873d8e791d976d793672010a673200e8d37c669e85a"
+BASELINE = "a1663d6b776fbe419129d34bd818f502547aec26"
+PRIOR_FIXTURE_SHA256 = "4b11b8e68e82bc264b268cad67be67e75d81d5431a7655ca08dd5acf8c9420f6"
 PIN_FILE = ROOT / "app/tests/fixtures/publication_fixture_bridge.json"
 PRIOR_RECEIPT = ROOT / "docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-11.json"
 CAPTURE_SCRIPTS = {"shaft": "audit_fixture_shaft_capture.gd", "weather": "audit_fixture_weather_capture.gd"}

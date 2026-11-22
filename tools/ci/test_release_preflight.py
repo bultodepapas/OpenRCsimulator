@@ -119,13 +119,14 @@ class PreflightTests(unittest.TestCase):
             preflight.preflight(self.root, "push", f"refs/tags/{TAG}", sha)
 
     def test_requires_committed_uid_sidecars_before_import(self):
-        names = ("shadow policy á.gd", "shadow.gdshader")
+        names = ("shadow policy á.gd", "shadow.gdshader", "shared.gdshaderinc")
         for name in names:
             (self.root / "app" / name).write_text("# source\n", encoding="utf-8")
         sha = self.commit(notes=None, tag=None)
         with self.assertRaisesRegex(ValueError, "tracked Godot UID sidecars") as failure:
             preflight.preflight(self.root, "push", "refs/heads/main", sha)
         self.assertIn("shadow.gdshader.uid", str(failure.exception))
+        self.assertIn("shared.gdshaderinc.uid", str(failure.exception))
         for index, name in enumerate(names):
             (self.root / "app" / (name + ".uid")).write_text(f"uid://b{index + 1}2345\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "untracked application source"):

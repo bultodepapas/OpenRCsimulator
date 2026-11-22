@@ -9,10 +9,19 @@ from pathlib import Path
 import statistics
 from collections import defaultdict
 import heapq
+import catalog
 
 from runner import read_json, write_json
+from resource_coverage import (validate_resource_timing, validate_resource_required_fields,
+                               validate_resource_owner_clock)
+from pace_windows import PaceWindowAccumulator
+from render_evidence import RenderAccumulator, validate_rendering
+from gpu_coverage import validate_gpu_timing
 
-REDUCER_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+REDUCER_SOURCES = {name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+                   for name in ("analysis.py", "catalog.py", "runner.py", "resource_coverage.py",
+                                "gpu_coverage.py", "pace_windows.py", "render_evidence.py")}
+REDUCER_SHA256 = hashlib.sha256(json.dumps(REDUCER_SOURCES, sort_keys=True).encode()).hexdigest()
 
 
 def validate_stream(directory: Path, frames: dict) -> dict:
@@ -33,6 +42,9 @@ def validate_stream(directory: Path, frames: dict) -> dict:
     phase_final_counters = {}
     previous_phase = None
     slowest = []
+    simulation_pace = PaceWindowAccumulator()
+    simulation_pace_error = None
+    rendering = RenderAccumulator()
     with path.open("rb") as source:
         for line in source:
             if len(line) > 8 * 1024 * 1024:
@@ -83,6 +95,19 @@ def validate_stream(directory: Path, frames: dict) -> dict:
                         stats["consecutive"] = 0
                         stats["consecutive_ms"] = 0.0
                 previous_phase = phase_index
+                rendering.add(phase_index, ends[offset], wall,
+                              *(metrics[key][offset] if key in metrics else None for key in
+                                ("render_frames_drawn", "render_interval_draws", "render_window_drawable",
+                                 "render_window_transition")))
+                if simulation_pace_error is None:
+                    try:
+                        simulation_pace.add(phase_index, wall, ends[offset],
+                                            *(metrics[key][offset] if key in metrics else None
+                                              for key in ("sim_tick", "sim_time_s", "paused", "crashed")))
+                    except ValueError as error:
+                        # Preserve frame-time evidence even when its phase order
+                        # cannot support the stricter simulation-clock analysis.
+                        simulation_pace_error = str(error)
                 phase_samples[str(int(phase_index))].append(wall)
                 phase_final_counters[str(int(phase_index))] = {key: metrics[key][offset] for key in ("memory_static_bytes", "resource_count", "orphan_node_count", "render_texture_memory_bytes") if key in metrics}
                 for limit, stats in phase_hitches[str(int(phase_index))].items():
@@ -125,11 +150,298 @@ def validate_stream(directory: Path, frames: dict) -> dict:
             stats["slow_time_percent"] = 100 * stats["slow_time_ms"] / elapsed_ms
             stats["over_budget_percent"] = 100 * stats["frames"] / len(values)
         values.sort()
+        for suffix, fraction in (("1pct", .01), ("01pct", .001)):
+            tail = max(1, math.floor(len(values) * fraction))
+            phase_pacing[index][f"fps_{suffix}_low"] = tail * 1_000_000 / sum(values[-tail:])
+            phase_pacing[index][f"low_{suffix}_frames"] = tail
+            phase_pacing[index][f"low_{suffix}_status"] = "available" if len(values) >= round(1/fraction) else "short_sample"
+        phase_pacing[index]["low_method"] = "reciprocal of mean slowest tail; floor(N*fraction), at least one sample"
         phase_stats[index] = {name: values[max(0, math.ceil(q*len(values))-1)] / 1000 for name, q in (("p50", .5), ("p95", .95), ("p99", .99), ("max", 1))}
     return {"valid": True, "frames": count, "chunks": chunks, "phase_stats": phase_stats,
             "phase_hitches": dict(phase_hitches), "phase_pacing": phase_pacing,
             "phase_final_counters": phase_final_counters,
+            "phase_simulation_pace": simulation_pace.finish() if simulation_pace_error is None else {},
+            "simulation_pace_error": simulation_pace_error,
+            "phase_rendering": rendering.finish(),
             "slowest_frames": [dict(wall_ms=w/1000, frame=i, phase_index=p, end_usec=end) for w,i,p,end in sorted(slowest, reverse=True)]}
+
+
+def runway_receipt_valid(value: dict) -> bool:
+    """Do not turn a pilot's bare done flag or heading rotation into runway coverage."""
+    if not isinstance(value, dict) or value.get("format") != "openrc-godtest-runway-circuit-v1" or value.get("complete") is not True or value.get("failed") is not False:
+        return False
+    fields = ("center_north_m", "center_east_m", "target_radius_m", "runway_enclosing_radius_m",
+              "inner_radius_m", "outer_radius_m", "clockwise_sweep_rad", "lap_sim_seconds",
+              "minimum_radius_m", "maximum_radius_m", "minimum_agl_m", "maximum_agl_m")
+    if any(type(value.get(key)) not in (float, int) or not math.isfinite(value[key]) for key in fields):
+        return False
+    return (value.get("quadrants_mask") == 15 and value["clockwise_sweep_rad"] >= math.tau - 1e-9
+            and value["lap_sim_seconds"] >= 10 and value["runway_enclosing_radius_m"] > 0
+            and value["inner_radius_m"] > value["runway_enclosing_radius_m"]
+            and value["inner_radius_m"] <= value["target_radius_m"] <= value["outer_radius_m"]
+            and value["inner_radius_m"] <= value["minimum_radius_m"] <= value["maximum_radius_m"] <= value["outer_radius_m"]
+            and value.get("agl_limits_m") == [20, 140]
+            and 20 <= value["minimum_agl_m"] <= value["maximum_agl_m"] <= 140)
+
+
+def watch_report(directory: Path, execution: dict, runtime: dict, problems: list[str]) -> dict:
+    """Keep the bridge's original format and validate its separately owned receipt."""
+    receipt = execution.get("frame_watch", {})
+    try:
+        path = directory / "frame-watch/watch.json"
+        if receipt.get("status") != "complete" or receipt.get("error") or receipt.get("thread_alive") is not False or receipt.get("source_changed") is not False:
+            raise ValueError("frame watcher did not complete cleanly")
+        sources = receipt.get("source_sha256", {})
+        expected_sources = {"tools/godtest/frame_monitor.py", "tools/debug/frame_watch.py", "tools/debug/frame_capture.py", "tools/debug/debugctl.py"}
+        if not isinstance(sources, dict) or set(sources) != expected_sources or not all(_sha256(value) for value in sources.values()):
+            raise ValueError("frame watcher source identity is missing or invalid")
+        monitor_source = execution.get("orchestrator_sources", {}).get("frame_monitor.py")
+        if monitor_source is not None and sources["tools/godtest/frame_monitor.py"] != monitor_source:
+            raise ValueError("frame watcher source differs from the loaded orchestrator")
+        if not path.is_file() or path.is_symlink():
+            raise ValueError("frame watcher artifact is missing")
+        if receipt.get("report_sha256") != hashlib.sha256(path.read_bytes()).hexdigest():
+            raise ValueError("frame watcher artifact hash differs from its execution receipt")
+        value = read_json(path)
+        if value.get("format") != "openrc-debug-frame-watch v1" or value.get("outcome") != "owner_stopped" or value.get("error") or value.get("final_poll") != "complete":
+            raise ValueError("incomplete or unsupported frame watch")
+        segments = value.get("segments", [])
+        if len(segments) != 1 or value.get("gaps"):
+            raise ValueError("frame watch has missing frames or changed epochs")
+        segment = segments[0]
+        identity = {key: segment.get(key) for key in ("capture_id", "launch_instance", "epoch")}
+        armed = runtime.get("identity", {}).get("frame_watch", {})
+        if identity != value.get("identity") or identity != receipt.get("identity") or identity != armed.get("identity") or armed.get("run_id") != directory.name:
+            raise ValueError("frame watch identity differs from the armed runtime")
+        if not segment.get("overall", {}).get("frames") or segment.get("rows_lost") != 0 or segment.get("coverage") != "contiguous":
+            raise ValueError("frame watch contains no complete continuous sample")
+        totals = segment.get("reconciliation", {})
+        if set(totals) != {"relative_stutter_total", "stall_total", "hitch_total"} or any(item.get("agrees") is not True for item in totals.values()):
+            raise ValueError("frame watch counters do not reconcile")
+        # Both recorders use the engine's monotonic clock; the route string alone
+        # cannot distinguish a paused Settings overlay from active flight.
+        incidents = []
+        for incident in value.get("incidents", []):
+            item = dict(incident)
+            item["triggers"] = [dict(trigger, phase_at_interval_end=next(
+                (phase.get("id") for phase in runtime.get("phases", [])
+                 if type(trigger.get("end_usec")) is int and phase.get("start_usec", math.inf) <= trigger["end_usec"] < phase.get("end_usec", -math.inf)), None))
+                for trigger in incident.get("triggers", [])]
+            incidents.append(item)
+        return {"status": "complete", "path": "frame-watch/watch.json", "html": "frame-watch/report.html",
+                "scope": receipt.get("coverage_scope"), "overall": segment["overall"],
+                "incidents": incidents, "hangs": value.get("hangs", []), "policy": value.get("policy", {}),
+                "triggers_not_captured": value.get("triggers_not_captured", {}), "drop_blind_s": value.get("drop_blind_s"),
+                "phase_assignment": "trigger interval end on engine clock; overlapping transitions remain boundary observations"}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+        problems.append(str(error))
+        return {"status": "incomplete", "error": str(error)}
+
+
+def _sha256(value) -> bool:
+    return isinstance(value, str) and len(value) == 64 and all(char in "0123456789abcdef" for char in value)
+
+
+def _verify_gpu_samples(value: dict, execution: dict) -> None:
+    """Recheck utilization evidence instead of accepting an `available` label alone."""
+    digest = value.get("source_sha256")
+    if not _sha256(digest) or value.get("source_changed") is not False or execution.get("orchestrator_sources", {}).get("hardware.py") != digest:
+        raise ValueError("GPU sampler source identity changed or is unverified")
+    if value.get("source_end_sha256") != digest:
+        raise ValueError("GPU sampler final source identity is unverified")
+    if value.get("thread_alive") is not False or value.get("sample_cap_reached") is not False or value.get("worker_exit_reason") != "owner_stopped":
+        raise ValueError("GPU sampler did not stop cleanly within its coverage bound")
+    samples = value.get("samples")
+    if not isinstance(samples, list) or len(samples) < 2 or value.get("sample_count") != len(samples):
+        raise ValueError("GPU utilization needs at least two verified samples")
+    timing = value.get("timing_coverage", {})
+    interval = value.get("interval_seconds")
+    if type(interval) not in (int, float) or not math.isfinite(interval) or interval <= 0 or timing.get("status") != "complete":
+        raise ValueError("GPU sampling time coverage is incomplete")
+    gap_limit = round((3 * interval + 0.25) * 1_000_000)
+    start, stop = value.get("start_monotonic_usec"), value.get("stop_requested_monotonic_usec")
+    if type(start) is not int or type(stop) is not int or not 0 <= start <= stop:
+        raise ValueError("GPU sampling observation bounds are invalid")
+    observed, previous_start, previous_end = {}, None, start
+    for sample in samples:
+        before, after = sample.get("start_monotonic_usec"), sample.get("end_monotonic_usec")
+        if type(before) is not int or type(after) is not int or not previous_end <= before <= after:
+            raise ValueError("GPU sample clock brackets are invalid or out of order")
+        if before - (previous_start if previous_start is not None else start) > gap_limit:
+            raise ValueError("GPU sample clock contains an excessive gap")
+        # The independent owner-clock validator handles bounded stop races and
+        # excludes post-stop reads from timing support.
+        previous_start, previous_end = before, after
+        backends = sample.get("backends")
+        if not isinstance(backends, list) or not backends:
+            raise ValueError("GPU sample has no backend observations")
+        in_poll = set()
+        for backend in backends:
+            lower, upper = backend.get("start_monotonic_usec"), backend.get("end_monotonic_usec")
+            if type(lower) is not int or type(upper) is not int or not before <= lower <= upper <= after:
+                raise ValueError("GPU backend clock brackets are outside their poll")
+            devices = backend.get("devices")
+            if not isinstance(devices, list):
+                raise ValueError("GPU backend device list is invalid")
+            for device in devices:
+                identity = device.get("identity", {})
+                key, utilization = identity.get("key"), device.get("metrics", {}).get("gpu_utilization_pct")
+                if not isinstance(key, str) or not key or key in in_poll or type(utilization) not in (int, float) or not math.isfinite(utilization) or not 0 <= utilization <= 100:
+                    raise ValueError("GPU utilization or device identity is missing or invalid")
+                if device.get("metric_status", {}).get("gpu_utilization_pct") != "available" or backend.get("status") != "available":
+                    raise ValueError("GPU utilization observation is incomplete")
+                in_poll.add(key)
+                entry = observed.setdefault(key, {"identity": identity, "backend": backend.get("backend"), "values": []})
+                if entry["identity"] != identity or entry["backend"] != backend.get("backend"):
+                    raise ValueError("GPU device identity changed during observation")
+                entry["values"].append(utilization)
+    if max(0, stop - previous_end) > gap_limit:
+        raise ValueError("GPU observation stopped before the owned run ended")
+    summary = value.get("summary_by_device", {})
+    if not observed or set(summary) != set(observed):
+        raise ValueError("GPU summary does not match observed devices")
+    for key, item in observed.items():
+        values, recorded = item["values"], summary[key]
+        stats = recorded.get("metrics", {}).get("gpu_utilization_pct", {})
+        expected = {"min": min(values), "max": max(values), "mean": statistics.mean(values)}
+        if (len(values) != len(samples) or recorded.get("samples") != len(values) or stats.get("count") != len(values)
+                or recorded.get("identity") != item["identity"] or recorded.get("backend") != item["backend"]
+                or any(type(stats.get(k)) not in (int, float) or not math.isfinite(stats[k]) or not math.isclose(stats[k], v, rel_tol=1e-9, abs_tol=1e-9) for k, v in expected.items())):
+            raise ValueError("GPU summary or per-device coverage differs from raw utilization")
+
+
+def monitor_lifecycle(execution: dict) -> dict:
+    """Bind both observer windows to the start/stop order actually used by runner."""
+    ordered = (("resource_observation", "start_requested_usec"),
+               ("resource_observation", "start_returned_usec"),
+               ("gpu_observation", "start_requested_usec"),
+               ("gpu_observation", "start_returned_usec"),
+               ("resource_observation", "stop_requested_usec"),
+               ("resource_observation", "finish_returned_usec"),
+               ("gpu_observation", "stop_requested_usec"),
+               ("gpu_observation", "finish_returned_usec"))
+    bounds = {}
+    for owner, key in ordered:
+        value = execution.get(owner, {})
+        if not isinstance(value, dict) or key not in value:
+            return {"status": "unavailable", "reason": "observer lifecycle receipt is missing", "bounds": bounds}
+        stamp = value[key]
+        if type(stamp) is not int or not 0 <= stamp <= 2**63 - 1:
+            return {"status": "incomplete", "reason": "observer lifecycle timestamp is invalid", "bounds": bounds}
+        bounds[owner + "." + key] = stamp
+    stamps = list(bounds.values())
+    # CPU rounds perf_counter seconds; GPU truncates perf_counter_ns. Permit
+    # only their microsecond representation difference, not scheduling gaps.
+    complete = all(later + 2 >= earlier for earlier, later in zip(stamps, stamps[1:]))
+    return {"status": "complete" if complete else "incomplete",
+            "reason": None if complete else "CPU/GPU observer windows contradict the runner lifecycle",
+            "bounds": bounds, "rounding_tolerance_usec": 2}
+
+
+def hardware_report(directory: Path, execution: dict, required: bool) -> tuple[dict, dict, dict]:
+    """Keep capability and sample coverage separate from frame-data integrity."""
+    resources = {"status": "not_requested", "rss_peak_bytes": None, "cpu_percent_mean": None}
+    gpu = {"status": "not_requested", "summary_by_device": {}}
+    issues = []
+    for filename, key in (("resources.json", "resources"), ("gpu.json", "gpu")):
+        path = directory / filename
+        requested = required or execution.get("resource_sampling" if key == "resources" else "gpu_sampling")
+        if not requested and not path.exists():
+            continue
+        try:
+            if path.is_symlink() or not path.is_file():
+                raise ValueError(f"{key} artifact is missing")
+            expected = execution.get(key + "_sha256")
+            if (required or expected) and expected != hashlib.sha256(path.read_bytes()).hexdigest():
+                raise ValueError(f"{key} artifact does not match its execution receipt")
+            value = read_json(path, 128 * 1024 * 1024 if key == "gpu" else 32 * 1024 * 1024)
+            if key == "gpu":
+                if value.get("format") != "openrc-godtest-gpu-v1":
+                    raise ValueError("unsupported GPU sample format")
+                gpu = {k: v for k, v in value.items() if k != "samples"}
+                gpu["reported_timing_coverage"] = gpu.get("timing_coverage")
+                gpu["timing_coverage"] = validate_gpu_timing(value, execution)
+                gpu["path"] = filename
+                gpu["correlation"] = "whole-device observations; renderer-device binding and frame causation are not established"
+                if value.get("status") != "available" or value.get("thread_alive"):
+                    issues.append("GPU utilization sampling is " + str(value.get("status", "unavailable")))
+                else:
+                    _verify_gpu_samples(value, execution)
+                if gpu["timing_coverage"]["status"] != "complete":
+                    issues.append("GPU timing coverage is " + gpu["timing_coverage"]["status"] + ": " +
+                                  ", ".join(gpu["timing_coverage"]["reasons"]))
+                continue
+            if value.get("format") != "openrc-resource-samples v1":
+                raise ValueError("unsupported process sample format")
+            if required and (not _sha256(execution.get("resource_sampler_source_sha256")) or execution.get("resource_sampler_source_changed") is not False):
+                raise ValueError("process resource sampler source identity changed or is unverified")
+            samples = value.get("samples", [])
+            if not isinstance(samples, list) or len(samples) < 2 or value.get("sample_count") != len(samples):
+                raise ValueError("process resources need at least two verified samples")
+            if value.get("identity_status") != "verified" or value.get("pid") != execution.get("launch", {}).get("pid"):
+                raise ValueError("process resources do not identify the launched simulator")
+            timing = validate_resource_timing(value)
+            field_coverage = validate_resource_required_fields(value)
+            owner_clock = validate_resource_owner_clock(value, execution)
+            resources.update(timing_coverage=timing, field_coverage=field_coverage, owner_clock=owner_clock)
+            fields = ("elapsed_seconds", "cpu_user_seconds", "cpu_system_seconds", "rss_bytes")
+            if any(not isinstance(row, dict) or any(type(row.get(k)) not in (float, int) or not math.isfinite(row[k]) or row[k] < 0 for k in fields) for row in samples):
+                raise ValueError("process resource counters are missing or invalid")
+            for earlier, later in zip(samples, samples[1:]):
+                if later["elapsed_seconds"] <= earlier["elapsed_seconds"] or any(later[k] < earlier[k] for k in ("cpu_user_seconds", "cpu_system_seconds")):
+                    raise ValueError("process resource clock/counters decreased")
+            elapsed = samples[-1]["elapsed_seconds"] - samples[0]["elapsed_seconds"]
+            cpu_seconds = sum(samples[-1][k] - samples[0][k] for k in ("cpu_user_seconds", "cpu_system_seconds"))
+            cpu_percent = 100 * cpu_seconds / elapsed
+            if not all(math.isfinite(item) for item in (elapsed, cpu_seconds, cpu_percent)):
+                raise ValueError("derived process resource metrics are not finite")
+            peak = value.get("summary", {}).get("peaks", {})
+            resources = {"status": value.get("measurement_status", "unknown"), "path": filename,
+                "identity": value.get("identity_status"), "pid": value.get("pid"),
+                "coverage": value.get("required_coverage"), "timing_coverage": timing,
+                "field_coverage": field_coverage, "owner_clock": owner_clock, "samples": len(samples),
+                "sampled_wall_seconds": elapsed, "cpu_seconds": cpu_seconds,
+                "cpu_percent_mean": cpu_percent,
+                "cpu_percent_peak": peak.get("cpu_percent"),
+                "rss_peak_bytes": max(row["rss_bytes"] for row in samples),
+                "rss_delta_bytes": samples[-1]["rss_bytes"] - samples[0]["rss_bytes"],
+                "threads_peak": peak.get("num_threads"),
+                "io_counter_deltas": value.get("summary", {}).get("counter_deltas", {}),
+                "scope": execution.get("resource_scope"), "errors": value.get("errors", []),
+                "cpu_scope": "direct process; 100% means one logical CPU fully occupied; may exceed 100%",
+                "phase_correlation": "host monotonic samples are separate from engine phase clock; no same-frame causal claim"}
+            if value.get("required_coverage") != "complete":
+                issues.append("process resource sample coverage is incomplete")
+            if timing["status"] != "complete":
+                issues.append("process resource timing coverage is " + timing["status"] + ": " + ", ".join(timing["reasons"]))
+            for label, assessment in (("required fields", field_coverage), ("owner clock", owner_clock)):
+                if assessment["status"] != "complete":
+                    issues.append("process resource " + label + " is " + assessment["status"] + ": " + ", ".join(assessment["reasons"]))
+        except (OSError, ValueError, TypeError, KeyError, AttributeError, OverflowError) as error:
+            issues.append(str(error))
+            if key == "gpu":
+                gpu = {"status": "unavailable", "error": str(error), "summary_by_device": {}}
+            else:
+                resources.update(status="unavailable", error=str(error))
+    lifecycle = {"status": "not_requested"}
+    if required or resources.get("status") != "not_requested" or gpu.get("status") != "not_requested":
+        lifecycle = monitor_lifecycle(execution)
+        if lifecycle["status"] != "complete":
+            issues.append(lifecycle["reason"])
+    complete = (resources.get("coverage") == "complete" and resources.get("timing_coverage", {}).get("status") == "complete"
+                and resources.get("field_coverage", {}).get("status") == "complete"
+                and resources.get("owner_clock", {}).get("status") == "complete"
+                and gpu.get("status") == "available" and not issues)
+    return resources, gpu, {"required": required, "complete": complete, "issues": issues, "lifecycle": lifecycle,
+                            "scope": "independently bracketed CPU/GPU observer windows after bridge readiness; startup and setup before each observer starts and physical presentation are not sampled"}
+
+
+def screen_target_status(target: dict) -> str:
+    checks = [target.get(key) for key in ("p95_within_18ms", "p99_within_25ms",
+              "simulation_pace_target_met", "local_simulation_pace_target_met")]
+    if any(value is False for value in checks):
+        return "missed"
+    return "met_observed_screen" if all(value is True for value in checks) else "inconclusive"
 
 
 def report(directory: Path, *, write: bool = True) -> dict:
@@ -139,6 +451,18 @@ def report(directory: Path, *, write: bool = True) -> dict:
     runtime = read_json(directory / "runtime.json") if (directory / "runtime.json").exists() else {}
     frames = read_json(directory / "frametimes.json") if (directory / "frametimes.json").exists() else {}
     problems = []
+    requested_manifest = None
+    try:
+        requested_manifest = read_json(directory / "manifest.requested.json", 65536)
+    except (OSError, ValueError, TypeError) as error:
+        problems.append("original requested manifest is unavailable: " + str(error))
+    manifest_valid = True
+    for label, value, resolved in (("requested", requested_manifest, False), ("resolved", manifest, True)):
+        try:
+            catalog.validate(value, resolved=resolved)
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError) as error:
+            manifest_valid = False
+            problems.append(f"{label} manifest is invalid: {error}")
     integrity = {}
     try:
         if frames.get("format") != "openrc-godtest-frames-v1" or frames.get("completion_kind") != "scenario_event":
@@ -159,6 +483,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
         problems.append("clean owned process exit was not verified")
     if execution.get("source_changed"):
         problems.append("source changed during execution")
+    if execution.get("engine_command_verified") is False or execution.get("engine_files_changed"):
+        problems.append("engine executable identity changed or differs from the launched command")
     if runtime.get("complete") is not True or runtime.get("data") != "complete":
         problems.append("runtime/data incomplete")
     phase_records = runtime.get("phases", [])
@@ -169,6 +495,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
         if not isinstance(phase, dict) or phase.get("status") not in ("complete", "failed", "unsupported"):
             problems.append("invalid phase result")
             break
+        if type(phase.get("requested")) is not bool:
+            problems.append("phase requested flags must be explicit booleans")
         observed = integrity.get("phase_stats", {}).get(str(phase.get("index")))
         phase["frame_ms"] = observed or {"p50": None, "p95": None, "p99": None, "max": None}
         phase["frame_statistics_status"] = "available" if observed else "unavailable_no_verified_samples"
@@ -177,6 +505,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
             problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
         phase["hitches"] = integrity.get("phase_hitches", {}).get(str(phase.get("index")), {})
         phase["engine_counters_at_last_sample"] = integrity.get("phase_final_counters", {}).get(str(phase.get("index")), {})
+        phase["simulation_pace"] = integrity.get("phase_simulation_pace", {}).get(str(phase.get("index")),
+            {"status": "unavailable_stream_evidence", "issues": [integrity.get("simulation_pace_error") or "no_verified_samples"]})
         for key in ("wall_seconds", "sim_seconds"):
             if type(phase.get(key)) not in (float, int) or not math.isfinite(phase[key]) or phase[key] < 0:
                 problems.append(f"invalid phase {key}")
@@ -186,29 +516,85 @@ def report(directory: Path, *, write: bool = True) -> dict:
                 continue
             if type(value) not in (float, int) or not math.isfinite(value) or value < 0:
                 problems.append("invalid phase frame distribution")
-    rendered = runtime.get("metrics", {}).get("rendered") is True and manifest.get("headless") is False
+    rendering = validate_rendering(requested_manifest, manifest, runtime, phase_records,
+                                   integrity.get("phase_rendering", {}), execution)
+    problems.extend(rendering["issues"])
+    requested_rendered = rendering["requested_headless"] is False
+    rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True
-    if rendered and not display_ok:
+    if requested_rendered and not display_ok:
         problems.append("actual window dimensions differ from requested workload")
+    diagnostic = runtime.get("identity", {}).get("diagnostics", {})
+    if requested_rendered:
+        for key, expected in execution.get("rendering_requested", {}).items():
+            if diagnostic.get(key) != expected:
+                problems.append(f"actual {key} differs from requested workload")
+        adapter = str(diagnostic.get("adapter_name", "")).lower()
+        if any(name in adapter for name in ("llvmpipe", "lavapipe", "swiftshader", "software rasterizer", "microsoft basic render")):
+            problems.append("software renderer cannot qualify target-GPU performance")
+    if manifest.get("isolated_user_dir"):
+        isolation = execution.get("profile_isolation", {})
+        if (runtime.get("identity", {}).get("user_dir") != manifest["isolated_user_dir"] or
+                isolation.get("user_dir") != manifest["isolated_user_dir"] or
+                isolation.get("project_name") != manifest.get("isolated_project_name")):
+            problems.append("macOS runtime profile does not match its isolated launch receipt")
     coverage = runtime.get("coverage", "none")
-    missing_phases = [name for name in manifest.get("phases", []) if name != "shutdown" and not any(p.get("name") == name and p.get("requested") for p in phase_records)]
+    if rendering["status"] == "incomplete" or not manifest_valid:
+        coverage = "partial"
+    missing_phases = [name for name in manifest.get("phases", []) if name != "shutdown" and not any(p.get("name") == name and p.get("requested") is True for p in phase_records)]
     if missing_phases:
         problems.append("requested phases are absent: " + ", ".join(missing_phases))
         coverage = "partial"
     if any(p.get("requested") and p.get("status") != "complete" for p in phase_records):
         coverage = "partial"
-    if runtime.get("metrics", {}).get("focus_losses", 0):
+    for phase in phase_records:
+        if phase.get("name") == "runway_circuit" and phase.get("status") == "complete" and not runway_receipt_valid(phase.get("pilot", {}).get("runway_circuit")):
+            problems.append("completed runway circuit has no valid position-based lap receipt")
+            coverage = "partial"
+        if phase.get("name") in ("menu_settings", "menu_controls") and phase.get("status") == "complete":
+            if phase.get("menu_screen") != phase["name"].removeprefix("menu_") or phase.get("pause_tick_invariant") is not True or phase.get("pause_state_invariant") is not True or type(phase.get("resume_to_tick_ms")) not in (float, int) or not math.isfinite(phase["resume_to_tick_ms"]):
+                problems.append("completed menu phase lacks pause/return/resume evidence")
+                coverage = "partial"
+    watched = watch_report(directory, execution, runtime, problems) if manifest.get("watch_frames") else {"status": "not_requested"}
+    if manifest.get("require_native") and requested_rendered and runtime.get("identity", {}).get("backend", {}).get("backend") != "native":
+        problems.append("rendered performance workload requires actual native physics; reference fallback was observed")
+    # A loss inside startup precedes any flight session (macOS can briefly move focus
+    # while the window is created); the driver then requires a focused window before
+    # selection, and later losses or pauses still fail.
+    focus_losses = runtime.get("metrics", {}).get("focus_losses", 0)
+    startup_focus_losses = sum(p["focus_losses"] for p in phase_records if isinstance(p, dict)
+                               and p.get("name") == "startup" and type(p.get("focus_losses")) is int and p["focus_losses"] > 0)
+    if focus_losses and (type(focus_losses) is not int or focus_losses > startup_focus_losses):
         problems.append("native focus loss observed; session equivalence requires diagnosis")
-    active = [p for p in phase_records if p.get("name") in ("takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop") and p.get("status") == "complete"]
+    active = [p for p in phase_records if p.get("name") in ("takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop") and p.get("status") == "complete"]
     targets = []
     for phase in active:
         duration = phase.get("wall_seconds", 0)
         ratio = phase.get("sim_seconds", 0) / duration if duration else None
         available = phase["frame_statistics_status"] == "available"
-        targets.append({"phase_id": phase.get("id"), "pacing_target": ("screen_only" if duration < 60 else "observed") if available else "unavailable",
+        local = phase["simulation_pace"]
+        worst = (local.get("worst_window") or {}).get("simulation_wall_ratio")
+        fastest = (local.get("fastest_window") or {}).get("simulation_wall_ratio")
+        observed_local_miss = ((worst is not None and worst < .99) or
+                               (fastest is not None and fastest > 1.01))
+        # A supported bad window is an observation even if the remaining phase
+        # is incomplete. A positive screen requires complete window support.
+        local_complete = local.get("status") == "available" and local.get("partial_windows") == 0
+        local_target = False if observed_local_miss else (True if local_complete else None)
+        targets.append({"phase_id": phase.get("id"), "phase_index": phase.get("index"), "pacing_target": ("screen_only" if duration < 60 else "observed") if available else "unavailable",
                         "p95_within_18ms": phase["frame_ms"]["p95"] <= 18 if available else None,
                         "p99_within_25ms": phase["frame_ms"]["p99"] <= 25 if available else None,
-                        "simulation_wall_ratio": ratio, "simulation_pace_target_met": ratio is not None and 0.99 <= ratio <= 1.01})
+                        "simulation_wall_ratio": ratio, "simulation_pace_target_met": ratio is not None and 0.99 <= ratio <= 1.01,
+                        "local_simulation_pace_status": local.get("status", "unavailable"),
+                        "local_simulation_pace_target_met": local_target,
+                        "worst_local_simulation_wall_ratio": worst,
+                        "fastest_local_simulation_wall_ratio": fastest,
+                        "maximum_observed_simulation_lag_seconds": local.get("maximum_lag_seconds"),
+                        "local_simulation_pace_target_reason": ("observed_window_miss" if observed_local_miss else
+                            "partial_tail_unscored" if local.get("partial_windows", 0) > 0 else
+                            "complete_full_windows" if local_complete else "insufficient_or_invalid_local_evidence"),
+                        "simulation_pace_target_scope": "exploratory 0.99–1.01 phase total and supported 1 s windows; an unscored partial tail prevents a positive local screen; no hardware or statistical qualification"})
+        targets[-1]["screen_target_status"] = screen_target_status(targets[-1])
     loading = []
     for phase in phase_records:
         if phase.get("name") in ("startup", "loading"):
@@ -217,13 +603,7 @@ def report(directory: Path, *, write: bool = True) -> dict:
                                 target_seconds=5 if phase["name"] == "startup" else 2,
                                 screen_target_met=phase.get("wall_seconds", math.inf) <= (5 if phase["name"] == "startup" else 2),
                                 qualification="scope/repeats must match owning loading protocol"))
-    resources = {"status": "not_requested", "rss_peak_bytes": None}
-    if (directory / "resources.json").exists():
-        sampled = read_json(directory / "resources.json")
-        resources = dict(status=sampled.get("measurement_status", "unknown"),
-                         identity=sampled.get("identity_status"), coverage=sampled.get("required_coverage"),
-                         samples=sampled.get("sample_count"), rss_peak_bytes=sampled.get("summary", {}).get("peaks", {}).get("rss_bytes"),
-                         scope=execution.get("resource_scope"), errors=sampled.get("errors", []))
+    resources, gpu, monitoring = hardware_report(directory, execution, manifest.get("monitor_hardware", False))
     flight_observations = []
     for phase in phase_records:
         pilot = phase.get("pilot", {})
@@ -235,15 +615,17 @@ def report(directory: Path, *, write: bool = True) -> dict:
                                        maximum_contact_sink_mps=pilot.get("maximum_contact_sink_mps"),
                                        minimum_wheel_runway_margin_m=margin,
                                        wheel_outside_runway_observed=type(margin) in (int, float) and margin < 0))
-    result = dict(format="openrc-godtest-report-v1", reducer_sha256=REDUCER_SHA256,
-                  run_dir=str(directory), scenario=manifest["id"],
+    result = dict(format="openrc-godtest-report-v1", reducer_sha256=REDUCER_SHA256, reducer_sources=REDUCER_SOURCES,
+                  run_dir=str(directory), scenario=manifest["id"], aircraft=manifest["aircraft"],
                   execution=runtime.get("execution", execution.get("state", "unknown")), data="valid" if not problems else "ineligible",
                   coverage=coverage, flight=runtime.get("flight", "not_run"), rendered=rendered,
-                  performance="single_run_screen" if rendered and not problems else "not_qualified",
+                  requested_headless=rendering["requested_headless"], rendering=rendering,
+                  performance="single_run_screen" if rendered and not problems and coverage == "complete" and (not monitoring["required"] or monitoring["complete"]) else "not_qualified",
                   hardware_qualified=False, repeat_campaign="not_collected", issues=problems,
                   phases=phase_records, metrics=runtime.get("metrics", {}), integrity=integrity,
                   targets=targets, loading=loading, resources=resources, shutdown=shutdown,
-                  flight_observations=flight_observations)
+                  flight_observations=flight_observations, frame_watch=watched,
+                  physics_backend=runtime.get("identity", {}).get("backend", {}), gpu=gpu, monitoring=monitoring)
     if write:
         write_json(directory / "report.json", result)
         def number(value):
@@ -253,6 +635,28 @@ def report(directory: Path, *, write: bool = True) -> dict:
         flight_notes = "".join(f"<li>{html.escape(str(item['phase_id']))}: wheel contact outside the runway rectangle was observed (minimum margin {item['minimum_wheel_runway_margin_m']:.2f} m). Collection and stopping coverage do not establish a successful runway landing.</li>" for item in flight_observations if item["wheel_outside_runway_observed"])
         if flight_notes:
             document = document.replace("<table>", "<ul>" + flight_notes + "</ul><table>", 1)
+        target_rows = "".join("<tr>" + "".join("<td>" + html.escape(str(value)) + "</td>" for value in (
+            target["phase_id"], target["screen_target_status"], number(target["simulation_wall_ratio"]),
+            number(target["worst_local_simulation_wall_ratio"]), number(target["fastest_local_simulation_wall_ratio"]),
+            number(target["maximum_observed_simulation_lag_seconds"]), target["local_simulation_pace_status"])) + "</tr>"
+            for target in targets)
+        if target_rows:
+            target_section = ("<h2>Simulation pace and screen targets</h2><table><thead><tr><th>Phase</th><th>Screen targets</th>"
+                "<th>Total sim / wall</th><th>Worst 1 s sim / wall</th><th>Fastest 1 s sim / wall</th><th>Max observed lag s</th>"
+                "<th>Local pace evidence</th></tr></thead><tbody>" + target_rows + "</tbody></table>"
+                "<p>Screen targets combine p95 ≤18 ms, p99 ≤25 ms and simulation / wall ratios of 0.99–1.01. "
+                "A missed supported window remains visible even when phase-wide averages recover. Missing channels, holds, "
+                "unsupported windows, an unscored partial tail or excessive exclusions cannot produce a positive local screen. Ratios are callback "
+                "observations; short maneuvers are exploratory, and no statistical or hardware qualification is implied. "
+                "Raw window support, partial tails and clock issues are retained in report.json.</p>")
+            document = document.replace("</html>", target_section + "</html>")
+        if manifest.get("watch_frames"):
+            summary = watched.get("overall", {})
+            watch_section = f"<h2>Stutters and FPS drops</h2><p>Watcher: {html.escape(watched['status'])}. Relative stutter frames: {summary.get('relative_stutter_frames', 'unavailable')}; stalls: {summary.get('stall_frames', 'unavailable')}; incidents: {len(watched.get('incidents', []))}; freezes: {len(watched.get('hangs', []))}.</p><p>1% low: {number(summary.get('fps_1pct_low'))} FPS; 0.1% low: {number(summary.get('fps_01pct_low'))} FPS. <a href='frame-watch/report.html'>Open the original stutter report and incident evidence</a>.</p><p>Watching begins after the Home arming barrier; earlier startup is covered only by GOD TEST. Bridge route statistics combine flight and its menu overlays. Incident triggers in report.json are associated with the GOD TEST phase at interval end. Short-tail and detector warmup limits remain in the original report.</p>"
+            document = document.replace("</html>", watch_section + "</html>")
+        if monitoring["required"] or execution.get("resource_sampling"):
+            hardware_section = f"<h2>CPU, GPU and memory</h2><p>Monitoring complete: {monitoring['complete']}. Process CPU mean: {number(resources.get('cpu_percent_mean'))}% of one logical CPU. Process RSS peak: {number(resources.get('rss_peak_bytes') / 1048576 if resources.get('rss_peak_bytes') is not None else None)} MiB. GPU utilization: {html.escape(str(gpu.get('status')))}.</p><ul>{''.join('<li>'+html.escape(issue)+'</li>' for issue in monitoring['issues'])}</ul><p><a href='resources.json'>Process samples</a> · <a href='gpu.json'>Per-device GPU samples</a>. Measurements begin after bridge readiness. GPU activity includes other processes; the sampled device is not automatically identified as the renderer. Missing counters remain unavailable.</p>"
+            document = document.replace("</html>", hardware_section + "</html>")
         (directory / "report.html").write_text(document, encoding="utf-8")
     return result
 
@@ -268,7 +672,7 @@ def compare(baseline: Path, candidate: Path, phase_name: str | None = None) -> d
         if result["data"] != "valid": reasons.append(f"{role}: ineligible artifacts")
         if not result["rendered"]: reasons.append(f"{role}: rendered performance not established")
         if not phase_name and result["coverage"] != "complete": reasons.append(f"{role}: incomplete coverage")
-    ignored = {"output_dir"}
+    ignored = {"output_dir", "isolated_user_dir", "isolated_project_name"}
     if {k: v for k, v in manifests[0].items() if k not in ignored} != {k: v for k, v in manifests[1].items() if k not in ignored}:
         reasons.append("requested workload differs")
     for key in ("actual_resolution", "viewport_size", "selection", "backend", "scenery_sha256", "field", "pilot", "camera", "effective_weather", "effective_lighting", "effective_sky"):

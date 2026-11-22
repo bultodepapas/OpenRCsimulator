@@ -15,6 +15,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_auto_policy()
 	_test_plan()
+	_test_automatic_restart_sequence()
 	_test_file_roundtrip()
 	_test_standard_method()
 	_test_project_setting()
@@ -39,7 +40,7 @@ func _auto(adapter: String, vendor: String = "", os := "Windows", arm64 := false
 func _test_auto_policy() -> void:
 	var high := [["NVIDIA GeForce RTX 3090", "NVIDIA"], ["NVIDIA GeForce RTX 3060", "NVIDIA"],
 		["NVIDIA GeForce RTX 4060 Laptop GPU", "NVIDIA"], ["NVIDIA GeForce RTX 5070", "NVIDIA"],
-		["NVIDIA RTX A2000", "NVIDIA"], ["NVIDIA GeForce GTX 1660 SUPER", "NVIDIA"], ["NVIDIA GeForce GTX 1070", "NVIDIA"],
+		["NVIDIA GeForce GTX 1660 SUPER", "NVIDIA"], ["NVIDIA GeForce GTX 1070", "NVIDIA"],
 		["AMD Radeon RX 6800 XT", "ATI Technologies Inc."], ["AMD Radeon RX 7900 XTX", "ATI Technologies Inc."],
 		["AMD Radeon RX 9070 XT", "ATI Technologies Inc."], ["AMD Radeon RX 6600", "ATI Technologies Inc."],
 		["Intel(R) Arc(TM) A770 Graphics", "Intel"], ["Intel(R) Arc(TM) B580 Graphics", "Intel"]]
@@ -48,6 +49,7 @@ func _test_auto_policy() -> void:
 	var standard := [["NVIDIA GeForce GTX 1060 6GB", "NVIDIA"], ["NVIDIA GeForce GTX 1650", "NVIDIA"],
 		["NVIDIA GeForce MX450", "NVIDIA"], ["NVIDIA GeForce GT 1030", "NVIDIA"],
 		["NVIDIA GeForce RTX 3050 Laptop GPU", "NVIDIA"], ["NVIDIA GeForce RTX 2050", "NVIDIA"],
+		["NVIDIA RTX A2000", "NVIDIA"], ["NVIDIA GeForce RTX 6060", "NVIDIA"],
 		["NVIDIA RTX A1000 Laptop GPU", "NVIDIA"], ["AMD Radeon RX 5500M", "ATI Technologies Inc."],
 		["Radeon RX 580 Series", "ATI Technologies Inc."], ["AMD Radeon 780M Graphics", "ATI Technologies Inc."],
 		["AMD Radeon(TM) Graphics", "ATI Technologies Inc."], ["Intel(R) Arc(TM) Graphics", "Intel"],
@@ -57,8 +59,9 @@ func _test_auto_policy() -> void:
 	for gpu: Array in standard:
 		_check("Automatic keeps Standard for '%s'" % gpu[0], _auto(gpu[0], gpu[1]) == "standard")
 	_check("Linux desktop GPUs get Automatic High", _auto("NVIDIA GeForce RTX 3090", "NVIDIA", "Linux") == "high"
-		and _auto("AMD Radeon RX 6600 (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)", "AMD", "Linux") == "high"
-		and _auto("AMD Radeon Graphics (radeonsi, gfx1201, LLVM 19.1.7, DRM 3.61, 6.14.0)", "AMD", "Linux") == "high")
+		and _auto("AMD Radeon RX 6600 (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)", "AMD", "Linux") == "high")
+	_check("a Mesa chip shared by several models keeps Standard",
+		_auto("AMD Radeon Graphics (radeonsi, gfx1201, LLVM 19.1.7, DRM 3.61, 6.14.0)", "AMD", "Linux") == "standard")
 	_check("Linux laptops, iGPUs and handhelds keep Standard",
 		_auto("NVIDIA GeForce RTX 4060 Laptop GPU", "NVIDIA", "Linux") == "standard"
 		and _auto("AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)", "AMD", "Linux") == "standard"
@@ -88,7 +91,7 @@ func _facts(overrides: Dictionary = {}) -> Dictionary:
 
 
 func _state(overrides: Dictionary = {}) -> Dictionary:
-	var base := {mode = "auto", renderer = "", standard_method = "", high_blocked_build = ""}
+	var base := {mode = "auto", renderer = "", standard_method = "", high_blocked_build = "", auto_trial_build = ""}
 	base.merge(overrides, true)
 	return base
 
@@ -99,8 +102,10 @@ func _test_plan() -> void:
 		and first.profile == "high" and first.state.renderer == "forward_plus"
 		and first.state.standard_method == "gl_compatibility", first)
 	var second := RendererPreference.plan(_facts({session_method = "forward_plus"}), first.state)
-	_check("the High launch is stable: no write, no restart", not second.write and not second.restart
-		and second.state == first.state, second)
+	_check("the High launch accepts the trial without another restart", second.write and not second.restart
+		and second.state.renderer == "forward_plus" and second.state.auto_trial_build == "", second)
+	var stable := RendererPreference.plan(_facts({session_method = "forward_plus"}), second.state)
+	_check("later High launches neither write nor restart", not stable.write and not stable.restart, stable)
 	var fallback := RendererPreference.plan(_facts(), first.state)
 	_check("engine OpenGL fallback blocks High for this build without a restart", fallback.write
 		and not fallback.restart and fallback.state.renderer == "" and fallback.state.high_blocked_build == BUILD
@@ -151,6 +156,29 @@ func _test_plan() -> void:
 		{mode = "ultra", renderer = "vulkan", standard_method = "forward_plus"})
 	_check("invalid saved values normalize to Automatic", corrupt.state.mode == "auto"
 		and corrupt.state.renderer == "forward_plus" and corrupt.state.standard_method == "gl_compatibility", corrupt)
+
+
+## OpenGL and Vulkan can report different active devices. Simulate process boundaries through the real file.
+func _test_automatic_restart_sequence() -> void:
+	var trial := RendererPreference.plan(_facts(), _state())
+	_check("the pending automatic High trial is recorded before restart", trial.restart and trial.state.auto_trial_build == BUILD
+		and RendererPreference.save_state(trial.state, PRIVATE_PATH))
+	var child := _facts({session_method = "forward_plus", adapter = "Intel(R) UHD Graphics 630"})
+	var persisted := RendererPreference.load_state(PRIVATE_PATH)
+	var cli := RendererPreference.plan(_facts({session_method = "forward_plus", cli_renderer = true}), persisted)
+	_check("an explicit renderer session cannot accept an Automatic trial", not cli.restart and cli.state == persisted)
+	var recovery := RendererPreference.plan(child, persisted)
+	_check("a conflicting active adapter rolls back once", recovery.restart and recovery.state.mode == "auto"
+		and recovery.state.renderer == "" and recovery.state.high_blocked_build == BUILD and recovery.state.auto_trial_build == ""
+		and RendererPreference.save_state(recovery.state, PRIVATE_PATH), recovery)
+	var settled := RendererPreference.plan(_facts(), RendererPreference.load_state(PRIVATE_PATH))
+	_check("the original adapter reaches Standard with a reason", not settled.restart and not settled.write
+		and settled.profile == "standard" and str(settled.reason).contains("blocked"), settled)
+	var retry := RendererPreference.plan(_facts({build = "new build"}), settled.state)
+	_check("a new build can try High again", retry.restart and retry.state.auto_trial_build == "new build", retry)
+	var later_demotion := RendererPreference.plan(child, _state({renderer = "forward_plus", standard_method = "gl_compatibility"}))
+	_check("demotion on an established High install retains future eligibility", later_demotion.restart
+		and later_demotion.state.high_blocked_build == "", later_demotion)
 
 
 func _test_file_roundtrip() -> void:

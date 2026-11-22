@@ -1,5 +1,7 @@
 # Second pass — deeper graphics, native and frame-time opportunities
 
+**Later follow-up, 22 November:** the [current-main audit](../graphics-audit-2026-11-22/README.md) now integrates main `7940a408` and reviews its new evidence. Branch/base and CI statements below describe the second-pass snapshot, before that integration.
+
 **Branch:** `graphics-audit` · **First-pass application:** [`57abea025f62b20233ca281d58d2acbee4ab8b8e`](https://github.com/bultodepapas/OpenRCsimulator/commit/57abea025f62b20233ca281d58d2acbee4ab8b8e) · **Newer-main cross-check:** [`6b2228c7633a34e38cb05d92e3ca50893810e02b`](https://github.com/bultodepapas/OpenRCsimulator/commit/6b2228c7633a34e38cb05d92e3ca50893810e02b), v0.3.2 · **Engine:** official `4.8.beta2.official.cafc17a19`.
 
 The continued investigation adds **16 scoped findings and experiments**. The strongest new leads are process-thread Nitro PCM synthesis, repeated propeller calculations inside qualifying native stages, and Workshop loading/thumbnail work that survives existing caches. Accepted support-event proof work deepens the earlier contact finding, and native spatial-time preparation is explicitly a continuation of F26. Smaller hidden-feature paths and GPU/lifecycle hypotheses remain useful experiments, without being promoted to measured bottlenecks.

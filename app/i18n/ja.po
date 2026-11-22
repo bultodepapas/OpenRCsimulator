@@ -278,6 +278,12 @@ msgstr "ラダー"
 msgid "Throttle"
 msgstr "スロットル"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "GPU の処理時間のサンプルが不足しています。再起動するか、グラフィック設定を初期値に戻して再試行してください。"
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "設定は保存されましたが、自動グラフィック設定をリセットできませんでした（エラー %d）。「保存」で再試行できます。"
+
 msgid "Could not save settings (error %d)."
 msgstr "設定を保存できませんでした（エラー%d）。"
 
@@ -2540,6 +2546,9 @@ msgstr "前回のフライトを再現"
 
 msgid "Back"
 msgstr "戻る"
+
+msgid "Change skin"
+msgstr "塗装を変更"
 
 msgid "Paint schemes"
 msgstr "塗装パターン"
@@ -13814,3 +13823,24 @@ msgstr "Phoenix の降着装置を滑走路からの離陸に使います。引�
 
 msgid "Needs no landing gear"
 msgstr "降着装置なしの場合のみ"
+
+msgid "Fly calibrated runway"
+msgstr "調整済みの滑走路から飛行"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "無風の試験飛行です。滑走路、開始位置、地面には推定値を使います。"
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "試験飛行の準備ができました。滑走路、開始位置、地面には推定値を使います。"
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "インストールした風景が飛行に使えるか確認できませんでした。"
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "滑走路から離陸できる飛行機を選んでください。"
+
+msgid "Preparing panorama"
+msgstr "パノラマを準備中"
+
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
+msgstr "基本のグラフィック設定を使用しています。「設定」>「グラフィック」で画質を上げられます。"

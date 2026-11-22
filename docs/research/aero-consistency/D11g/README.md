@@ -221,3 +221,28 @@ The baseline passed both guards, and the unrenewed candidate refused exactly the
 On Windows 11 with pinned Godot 4.8 beta2, disposable sparse worktrees compared the v0.2.9 tag `b2f81d177` with `79aa82015` at version `0.3.0`. Of the 151 aggregated inputs, 149 were unchanged. `app/project.godot` changed only its version; `app/physics/resource_event_step.gd` carries the audit's event-root repair from `d736ee8a2`, which had already made CI refuse the old guard. The new aggregate is `5413312f534da9f0f3539ccc17bc2a55154dcf7c39750d115807393050a5f906`.
 
 The baseline passed both guards, and the unrenewed candidate refused exactly the three historical-source leaves. Every other report field, including the normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance, matched exactly. After renewal, both guards passed; a physics-comment mutation and a version mutation were each refused and restored, and the checks passed again. The [receipt](2026-11-20-release-v030-qualification.json) binds the six reports. This is a Windows software provenance renewal, not a Linux reconstruction or physical validation.
+
+### 2026-11-21 v0.3.1 release renewal
+
+On Linux under WSL2 with pinned Godot 4.8 beta2, isolated projects compared the v0.3.0 tag `85840cca7` with `a1663d6b7` at version `0.3.1`. Of the 151 baseline inputs, 145 were unchanged. Five physics scripts and `app/project.godot` changed, and the ground-vehicle scenery-wall script was added. The new 152-file aggregate is `4430342a0061e95b7c35002afb820a96831baa7b41f03f8598cd889698fa5148`.
+
+The baseline passed both guards. The unrenewed candidate refused the three historical provenance leaves. The normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance matched exactly. Both guards passed after renewal, refused independent physics-comment and version mutations, and passed again after restoration. The [receipt](2026-11-21-release-v031-qualification.json) binds the six reports.
+
+### 2026-11-21 v0.3.2 release renewal
+
+On Linux under WSL2 with pinned Godot 4.8 beta2, the v0.3.1 tag `caa45cee` and the v0.3.2 candidate `b720a502` yielded identical numerical and provenance results. Of the 152 inventory inputs, only `app/project.godot` changed, with the version going from `0.3.1` to `0.3.2`. The new aggregate is `58c12b9ffad2f269d902fca1970665dc11eadb397c9ab8f762fa4f4bc0606230`.
+
+Both guards passed on the baseline and refused the unrenewed candidate. The renewed guards passed, refused independent physics-comment and version mutations, and passed again after restoration. The [receipt](2026-11-21-release-v032-qualification.json) binds the six reports.
+
+### 2026-11-22 v0.3.3 release renewal
+
+The Linux reconstruction used pinned Godot 4.8 beta2 in separate projects.
+Of the 152 qualified files, only `app/project.godot` changed, from version
+`0.3.2` to `0.3.3`. The normalized aggregate is
+`3dc6f62398e28b809aa8cfe39398c74d3d408d7d84070cfbb3b7ca2d8be3685f`.
+
+The baseline and renewed guards passed. Both guards refused the unrenewed
+candidate and the separate physics-source and version mutations, then passed
+again after restoration. The trim, unrounded and rounded derivatives,
+sensitivity rows and generated provenance matched in all six reports.
+The [receipt](2026-11-22-release-v033-qualification.json) binds those reports.

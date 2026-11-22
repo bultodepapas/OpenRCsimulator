@@ -418,7 +418,7 @@ def _node_matrix(node: dict) -> np.ndarray:
     return t @ r @ s
 
 
-def scene_primitives(path: Path, materials):
+def scene_primitives(path: Path, materials, *, mesh_nodes=()):
     """Yield (material, scene positions, scene normals, uv, triangles) with every node transform applied."""
     doc, accessor = read_glb(path)
     names = [m["name"] for m in doc["materials"]]
@@ -428,7 +428,7 @@ def scene_primitives(path: Path, materials):
     def walk(index: int, parent: np.ndarray) -> None:
         node = doc["nodes"][index]
         world = parent @ _node_matrix(node)
-        if "mesh" in node:
+        if "mesh" in node and (not mesh_nodes or node.get("name") in mesh_nodes):
             normal_matrix = np.linalg.inv(world[:3, :3]).T
             for prim in doc["meshes"][node["mesh"]]["primitives"]:
                 name = names[prim["material"]]
@@ -450,7 +450,7 @@ def scene_primitives(path: Path, materials):
     return found
 
 
-def bake_scene(path: Path, materials, size, symmetric: bool = False, skin_axis: int = -1):
+def bake_scene(path: Path, materials, size, symmetric: bool = False, skin_axis: int = -1, *, mesh_nodes=()):
     """UV-space rasterisation of several materials sharing one atlas: scene position, normal, material id.
     `symmetric` folds the scene about the X = 0 plane first: left and right parts that share mirrored UVs (the
     jet's wings and stabiliser) then accumulate the same |x| instead of averaging to the centre line.
@@ -462,7 +462,7 @@ def bake_scene(path: Path, materials, size, symmetric: bool = False, skin_axis: 
     mat_map = np.full((height, width), -1, dtype=np.int32)
     weight = np.zeros((height, width))
     best = np.full((height, width), -1.0)
-    for name, pos, nrm, uv, tris in scene_primitives(path, materials):
+    for name, pos, nrm, uv, tris in scene_primitives(path, materials, mesh_nodes=mesh_nodes):
         mat_id = list(materials).index(name)
         if symmetric and pos[:, 0].mean() < 0.0:
             mirror = np.array([-1.0, 1.0, 1.0])
@@ -1053,6 +1053,140 @@ def _side_uv(p, n, z0, z1, y0, y1):
     v = (y1 - y) / (y1 - y0)
     inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1)
     return u, v, inside * smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+
+
+REVOC_RED = hex_rgb("#e30613")
+REVOC_WHITE = hex_rgb("#faf9f6")
+REVOC_GRAPHITE = hex_rgb("#26282c")
+REVOC_SIZES = {"fuselage": (2048, 4096), "wing": (2048, 2048), "stab": (1024, 1024), "fin": (2048, 1024)}
+
+
+def revoc_decal(colour, p, art, z0, z1, centre_y):
+    """Project premultiplied artwork across the intake bevels without fading the ink."""
+    height = (z1 - z0) * art.shape[0] / art.shape[1]
+    u = (p[:, 2] - z0) / (z1 - z0)
+    u = np.where(p[:, 0] > 0, 1 - u, u)
+    v = 0.5 + (centre_y - p[:, 1]) / height
+    hit = (u >= 0) & (u <= 1) & (v >= 0) & (v <= 1)
+    rgba = _bilinear(art, u[hit], v[hit])
+    colour[hit] = colour[hit] * (1 - rgba[:, 3:]) + rgba[:, :3]
+
+
+def revoc_body_colours(y, z):
+    # The lower sweep levels out beneath the intake and climbs into the tail.
+    knots = np.array([-0.94, -0.65, -0.15, 0.22, 0.88, 1.28])
+    heights = np.array([0.018, -0.050, -0.052, -0.012, 0.167, 0.255])
+    slopes = np.array([-0.31, -0.011, 0.0, 0.208, 0.29, 0.10])
+    i = np.clip(np.searchsorted(knots, z) - 1, 0, len(knots) - 2)
+    length = knots[i + 1] - knots[i]
+    t = np.clip((z - knots[i]) / length, 0, 1)
+    edge = (heights[i] + (heights[i + 1] - heights[i]) * t * t * (3 - 2 * t)
+            + length * t * (1 - t) * (slopes[i] * (1 - t) - slopes[i + 1] * t))
+    d = y - edge
+    colour = mix(REVOC_RED, REVOC_WHITE, smoothstep(-0.001, 0.001, d))
+    # Taper both ends of the graphite keyline into the paint instead of capping it square.
+    width = 0.030 * smoothstep(-0.23, 0.48, z) * (1 - smoothstep(0.94, 1.19, z))
+    stripe = smoothstep(0.004, 0.006, d) * (1 - smoothstep(0.003, 0.005, d - width))
+    colour = mix(colour, REVOC_GRAPHITE, stripe)
+    # Use the same upper sweep on both sides of the fuselage/fin joint.
+    rise = y - 0.245 + 0.28 * (z - 1.005)
+    return mix(colour, REVOC_RED, smoothstep(-0.001, 0.001, rise))
+
+
+def revoc_body(atlas, p, logo):
+    _, y, z = p.T
+    colour = revoc_body_colours(y, z)
+    if atlas == "fuselage":
+        # Finish the nose with a full cap.
+        colour = mix(colour, REVOC_GRAPHITE, 1 - smoothstep(-0.847, -0.845, z))
+        # Follow the lower intake crease on both flanks. At 390 mm wide the midpoint
+        # of the clear space between the two lines (source row 277) is 13.1 mm below centre.
+        crease_y = np.interp(z, [-0.52, -0.36, -0.205], [0.0128, 0.0097, 0.0091])
+        revoc_decal(colour, p, logo, -0.595, -0.205, crease_y + 0.0131)
+        return colour
+    # Curl the cap up to the top edge before the rudder, which shares UVs with
+    # the fixed fin and carries solid red across the whole hinge.
+    cap = y - 0.531 - 0.20 * (z - 1.1) - 0.064 * smoothstep(1.178, 1.218, z)
+    colour = mix(colour, REVOC_WHITE, smoothstep(-0.001, 0.001, cap))
+    colour = mix(colour, REVOC_GRAPHITE, smoothstep(0.010, 0.012, cap))
+    # The square emblem fits on the fixed fin ahead of the rudder hinge.
+    revoc_decal(colour, p, logo[:, :logo.shape[0]], 0.992, 1.109, 0.376)
+    return colour
+
+
+def revoc_lifting(atlas, size):
+    # For the exposed skins U is linear in span and each half of V is linear in
+    # chord. Use those shared paint coordinates on the fixed and moving pieces.
+    # Wrapped and overlapping cove UVs then cannot overwrite the visible faces.
+    if atlas == "stab":
+        inner, outer, nose, aft = 0.055, 0.443, 0.986, 1.297
+    else:
+        inner, outer, nose, aft = 0.060, 0.998, 0.001, 0.614
+    materials = JET_ATLASES[atlas][0]
+    edges = chord_table(JET_GLB, materials, 0, 28 if atlas == "stab" else 48, -outer, outer)
+    width, height = size
+    u = (np.arange(width) + 0.5) / width
+    span = inner + (outer - inner) * u
+    colour = np.empty((height, width, 3), dtype=np.uint8)
+    for start in range(0, height, 128):
+        end = min(start + 128, height)
+        v = (np.arange(start, end)[:, None] + 0.5) / height
+        z = aft - (aft - nose) * (2 * v % 1)
+        if atlas == "stab":
+            span_band = sweep = tip = span / outer
+        else:
+            span_band = span
+            sweep = span + 0.85 * (z - 0.28)
+            tip = span - 0.04 * (z - 0.4)
+        upper = mix(REVOC_WHITE, REVOC_GRAPHITE, smoothstep(0.397, 0.403, sweep))
+        upper = mix(upper, REVOC_WHITE, smoothstep(0.456, 0.462, sweep))
+        upper = mix(upper, REVOC_RED, smoothstep(0.485, 0.491, sweep))
+        lower = mix(REVOC_GRAPHITE, REVOC_WHITE, smoothstep(0.711, 0.717, span_band))
+        lower = mix(lower, REVOC_RED, smoothstep(0.826, 0.832, span_band))
+
+        # Keep the leading-edge roll in upper colours. The lower field runs to
+        # the hinge and trailing edge, where the UVs already separate the skins.
+        position = np.stack(np.broadcast_arrays(span, 0.0, z), axis=-1)
+        chord = chord_fraction(position, 0, edges, -outer, outer)
+        lower_face = (v >= 0.5) * smoothstep(0.025, 0.036, chord)
+        rgb = mix(upper, lower, lower_face)
+        # Finish the tips with continuous white keylines and graphite on both faces.
+        rgb = mix(rgb, REVOC_WHITE, smoothstep(0.897, 0.903, tip))
+        rgb = mix(rgb, REVOC_GRAPHITE, smoothstep(0.919, 0.925, tip))
+        colour[start:end] = np.clip(rgb * 255 + 0.5, 0, 255).astype(np.uint8)
+    return Image.fromarray(colour)
+
+
+def build_revoc(atlas):
+    size = REVOC_SIZES[atlas]
+    sample_size = (size[0] * 2, size[1] * 2)
+    if atlas in ("wing", "stab"):
+        return revoc_lifting(atlas, sample_size).resize(size, Image.Resampling.LANCZOS)
+    with Image.open(ROOT / "site/assets/brands/revoc/revoc-custom-logo.png") as source:
+        logo = np.asarray(source.convert("RGBA"), dtype=np.float32) / 255
+    logo[..., :3] *= logo[..., 3:]
+    materials = JET_ATLASES[atlas][0]
+    # Four samples per delivered texel. Filter the colour after projection and island
+    # padding, so a diagonal stripe and a UV seam get the same edge coverage.
+    mesh_nodes = ("vertical_tail_fixed",) if atlas == "fin" else ()
+    p, n, material_ids, covered = bake_scene(JET_GLB, materials, sample_size, skin_axis=0, mesh_nodes=mesh_nodes)
+    del n, material_ids
+    colour = np.zeros(p.shape, dtype=np.uint8)
+    for rows in range(0, len(covered), 128):
+        block = slice(rows, rows + 128)
+        hit = covered[block]
+        rgb = revoc_body(atlas, p[block][hit], logo)
+        colour[block][hit] = np.clip(rgb * 255 + 0.5, 0, 255).astype(np.uint8)
+    del p
+    # Include the gutter on both sides of each strip, wrapping like the GPU sampler.
+    gutter = 16
+    padded = np.empty_like(colour)
+    for start in range(0, len(covered), 256):
+        end = min(start + 256, len(covered))
+        rows = np.arange(start - gutter, end + gutter) % len(covered)
+        strip = dilate(colour[rows].astype(np.float32), covered[rows], passes=gutter)
+        padded[start:end] = np.rint(strip[gutter:-gutter]).astype(np.uint8)
+    return Image.fromarray(padded).resize(size, Image.Resampling.LANCZOS)
 
 
 class _Skin:
@@ -2672,6 +2806,8 @@ def outputs() -> dict:
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}.jpg"] = lambda a=atlas: encode(_jet_cached(a)[0], ".jpg")
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}_emission.png"] = lambda a=atlas: encode(_jet_cached(a)[1], ".png")
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}_roughness.png"] = lambda a=atlas: encode(_jet_cached(a)[2], ".png")
+    for atlas in REVOC_SIZES:
+        files[f"avanti-s-a200/revoc_custom_{atlas}.png"] = lambda a=atlas: encode(build_revoc(a), ".png")
     for atlas in SABRE_ATLASES:
         stem = f"avanti-s-a200/sabre_plata_{atlas}"
         files[stem + ".jpg"] = lambda a=atlas: encode(_sabre_cached(a)[0], ".jpg")

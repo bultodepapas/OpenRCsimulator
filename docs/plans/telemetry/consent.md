@@ -1,6 +1,6 @@
 # Consent, transparency and player control
 
-Status: **implemented in the client (TELEM-02/03), inactive in every build until activation (TELEM-14)**.
+Status: **available on eligible configured releases from v0.3.0**. Schema 2 uses the 2026-11-20 notice; package and rollout qualification are tracked in the [completion plan](../telemetry.md#completion-plan-telem-1626).
 Authority: [master plan](../telemetry.md). Code: [policy](../../../app/telemetry/telemetry_policy.gd), [consent store](../../../app/telemetry/telemetry_consent_store.gd), [notice screen](../../../app/ui/telemetry_screen.gd), Settings → Interface in [settings_screen.gd](../../../app/ui/settings_screen.gd). Evidence: [privacy investigations P01–P12](../../research/telemetry/TELEM-00/privacy.md), [implementation verification](../../research/telemetry/TELEM-02/README.md).
 
 ## Product decision
@@ -17,7 +17,7 @@ The English source strings live in [telemetry_screen.gd](../../../app/ui/telemet
 
 **Help improve OpenRC Simulator** — Recommended: share technical telemetry.
 
-> If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator.
+> If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, whether the flight physics ran on the fast native engine or the slower fallback, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator.
 >
 > We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity.
 >
@@ -31,7 +31,7 @@ The **Privacy notice** adds: pending data stays only in memory for at most ten m
 
 Spanish (reviewed with the owner's language): **Ayúdanos a mejorar OpenRC Simulator** — Recomendado: compartir telemetría técnica. The paragraphs follow the English meaning exactly; see `app/i18n/es.po`. Actions: **Activar la telemetría y continuar** · **Continuar sin telemetría** · **Ver exactamente lo que enviamos** · **Aviso de privacidad**; location **Ajustes → Interfaz**.
 
-The deployed retention and IP statements are **targets the operator must verify** before activation ([delivery](delivery.md#retention-and-logging-feasibility)); the copy may not ship enabled until they hold.
+The retention and IP statements apply to the deployed service. The operator verifies them through the [retention and logging drill](delivery.md#retention-and-logging-feasibility).
 
 ## Languages
 
@@ -45,7 +45,7 @@ The Interface page, after Updates, has **Share technical telemetry** (one switch
 
 Not implemented (deliberately deferred): copy/export of a sanitized report, a separate "clear pending" action (off already clears), and the manual GitHub diagnostics projector below.
 
-If saving the choice fails, Settings appends "Could not save the telemetry choice (error N). It applies to this session; check it again after restarting." A failed save never reopens the current gate. A decline removes any earlier grant before writing, and removes it again if the write fails, so a failed decline makes the next launch ask again instead of resuming (there is no restorable older grant: the file is replaced, never backed up).
+If saving the choice fails, Settings appends "Could not save the telemetry choice (error N). It applies to this session; check it again after restarting." A decline closes the current gate and attempts to remove any earlier grant before writing and again if writing fails. If both removal and replacement fail, the previous grant may persist across a restart. [Production audit follow-up](../../research/telemetry/TELEM-AUDIT-2026-11-21/README.md#open-evidence)
 
 The preview shows batches already sealed and events already numbered. The window being measured and an activity in progress appear once they close; error counters are added as one bounded `error_count` event per category when the batch is sealed.
 
@@ -86,4 +86,4 @@ Never put a report in a URL, auto-submit or attach local logs. Crash SDKs need a
 
 ## Accessibility and acceptance
 
-Implemented and tested headless at 1920×1080: equal actions, no default-focused grant before arming, Escape declines, held-input arming, status in Settings, translations present in all nine languages with glyph coverage. Still required before activation: rendered review of the notice at 1920×1080, above 1080p and 1280×720 (Apple Silicon Retina at native panel resolution), large text scales, controller traversal, and a screen-reader pass. The automated tests do not qualify rendered layout or assistive technology.
+Headless checks at 1920×1080 cover equal actions, held-input arming, Escape declines, status in Settings, and translation and glyph coverage across all nine languages. Package qualification still requires a rendered review of the notice at 1920×1080, above 1080p and 1280×720 (Apple Silicon Retina at native panel resolution), large text scales, controller traversal, and a screen-reader pass. [Verification](verification.md)

@@ -1,0 +1,69 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-21",
+  "baseline_commit": "caa45ceef576bf7a49d5299f3e26d9973c3488a9",
+  "candidate_commit": "b720a502a3736dda666447fca1526d0de48a8e3b",
+  "candidate_overlay": "app/project.godot config/version 0.3.1 to 0.3.2 and the two reviewed D11g inventory guard renewals",
+  "platform": "Linux x86_64 under WSL2 with sequential checked imports and separate profiles",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "inventory": {
+    "source_counts": [
+      152,
+      152
+    ],
+    "unchanged": 151,
+    "qualified_sha256_before": "4430342a0061e95b7c35002afb820a96831baa7b41f03f8598cd889698fa5148",
+    "qualified_sha256_after": "58c12b9ffad2f269d902fca1970665dc11eadb397c9ab8f762fa4f4bc0606230",
+    "added": {},
+    "removed": {},
+    "changed": {
+      "app/project.godot": {
+        "lf_sha256_before": "4409aa94723db4338f0283d56d84dccd0df931bdf65962c515fb1791a27f6299",
+        "lf_sha256_after": "4ee80b954552e1c6de47b5fe70d3a61f16ab353224278c6b6982dfb5d4075cf7"
+      }
+    }
+  },
+  "numerical_and_provenance_result": "All six reports agree exactly outside the solver source inventory and data-check result, including normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance.",
+  "checks": {
+    "baseline": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "ba339e52fad64684c96f051faca8eb29b16212a07c3dcd4694cb7fe154c3cde1",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "407e8bbac672b59e27c28028172737e584a01ec01f5c9423f86f53c1a4a55d93",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "renewed": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "e840bee3e15ad451807b8784c31c9dae8690e04ca0af18501db87fddc6c43f47",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "physics-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "c55d75216e500d76ecb1dc5dea8d4dc2a303d824c4094135ae37130a14e6c1b3",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "version-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "8e86628d9db985d85dd0451dd88a5e2e1b9ffde4d6948b800350b1047101b9d1",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "restored": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "e840bee3e15ad451807b8784c31c9dae8690e04ca0af18501db87fddc6c43f47",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    }
+  },
+  "limits": "Software provenance on Linux under WSL2. The production aircraft bytes and historical v3 source strings are unchanged."
+}

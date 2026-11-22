@@ -14,6 +14,7 @@ databases already exist, so a wrong data directory never creates empty stores.
 from __future__ import annotations
 
 import argparse
+from contextlib import closing
 from datetime import datetime, timedelta, timezone
 import json
 import re
@@ -29,6 +30,7 @@ from openrc_telemetry.storage import AggStore, RawStore, StorageUnavailable
 SNAPSHOT_VERSION = 2
 RELEASE_KEY_RE = re.compile(r"^v(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta|rc)\.?(\d+))?$")
 PRE_RANK = {"alpha": 0, "beta": 1, "rc": 2}
+ROLLUP_TABLES = {"gpu", "vehicle", "cells"}
 
 
 def release_key(release):
@@ -46,28 +48,46 @@ def _iso_week(day):
     return f"{year}-W{week:02d}"
 
 
+def _rollup_state(tables_by_release, expected):
+    complete = all(ROLLUP_TABLES <= tables for tables in tables_by_release.values())
+    if expected is not None:
+        return "complete" if complete and len(tables_by_release) == expected else "partial"
+    if tables_by_release:
+        return "legacy" if complete else "partial"
+    return None
+
+
 def collect(config, now, days=30, weeks=4, floor=20):
     for path in (config.raw_path, config.aggregates_path):
         if not path.is_file():
             raise FileNotFoundError(f"receiver database not found: {path} (check OPENRC_TELEMETRY_* paths)")
-    raw = RawStore(config.raw_path, config.max_raw_bytes)
-    agg = AggStore(config.aggregates_path)
-    try:
+    raw = RawStore(config.raw_path, config.max_raw_bytes, read_only=True)
+    agg = AggStore(config.aggregates_path, read_only=True)
+    with closing(raw), closing(agg), agg.read_snapshot():
+        commits = agg.rollup_commits()
+        with raw.read_snapshot():
+            status_report_data = status_report(config, now, raw, agg)
         today = datetime.fromtimestamp(int(now), tz=timezone.utc).date()
         # Release discovery reaches back over every reported week, not only the ingest window.
         lookback = max(days, 7 * weeks + 7)
-        ingest, coverage, releases = [], [], set()
+        ingest, coverage, rollup_days, releases = [], [], {}, set()
         for offset in range(lookback - 1, -1, -1):
             iso = (today - timedelta(days=offset)).isoformat()
             in_window = offset < days
             if in_window:
                 ingest.append({"day": iso, "counts": agg.ingest_counts(iso)})
+            tables_by_release = {}
             for key, status in agg.day_statuses(iso).items():
                 release, table = key.split("/", 1)
                 if in_window:
                     coverage.append({"day": iso, "release_id": release, "table": table, "status": status})
+                    tables_by_release.setdefault(release, set()).add(table)
                 if table == "cells":
                     releases.add(release)
+            if in_window:
+                state = _rollup_state(tables_by_release, commits.get(iso))
+                if state is not None:
+                    rollup_days[iso] = state
         ordered = sorted(releases, key=release_key, reverse=True)
         week_ids = sorted({_iso_week(today - timedelta(weeks=offset)) for offset in range(weeks)}, reverse=True)
         reports = []
@@ -82,12 +102,9 @@ def collect(config, now, days=30, weeks=4, floor=20):
                     reports.append(data)
         return {
             "snapshot_version": SNAPSHOT_VERSION, "generated_unix": int(now), "days": days, "weeks": weeks,
-            "floor": floor, "status": status_report(config, now, raw, agg), "ingest": ingest,
-            "coverage": coverage, "releases_with_cells": ordered, "insights": reports,
+            "floor": floor, "status": status_report_data, "ingest": ingest, "coverage": coverage,
+            "rollup_days": rollup_days, "releases_with_cells": ordered, "insights": reports,
         }
-    finally:
-        raw.close()
-        agg.close()
 
 
 def main(argv=None):
