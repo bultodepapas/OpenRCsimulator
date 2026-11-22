@@ -1,0 +1,1049 @@
+{
+  "reviewed_commit": "77b2d4e64a6a2c6c2a68093e9fdf68c0b111779b",
+  "roots": [
+    "app/sim/ground_vehicle/session.gd",
+    "app/tests/test_rcv_obstacle_contacts.gd",
+    "app/tests/test_rcv_nitro_session.gd",
+    "app/tests/test_rcv_passivity.gd",
+    "app/tests/test_rcv_nitro_service.gd",
+    "app/tests/test_rcv_vehicle_data.gd",
+    "app/input/ground_vehicle_input.gd"
+  ],
+  "files": [
+    {
+      "path": "app/data/field_loader.gd",
+      "git_blob_sha1": "9a37b7b5203fcf7efc3b5e4a375f84fb40f3e7d0",
+      "sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "bytes": 60929
+    },
+    {
+      "path": "app/data/field_loader.gd.uid",
+      "git_blob_sha1": "86327e2f35fb3c8bb2733c80cf737e0cebe99bca",
+      "sha256": "2fff43b8bb2a99130e92d0fc063a2c1d9d67f417e2afa81230aad9765eb5b08c",
+      "bytes": 20
+    },
+    {
+      "path": "app/data/fields/default.json",
+      "git_blob_sha1": "a631028d482bd77a300496652004fe915c7ae9e3",
+      "sha256": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+      "bytes": 150364
+    },
+    {
+      "path": "app/data/fields/lake.json",
+      "git_blob_sha1": "264ba6fa63813a0af8d45e41b0c180a7d354cb2d",
+      "sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+      "bytes": 1570
+    },
+    {
+      "path": "app/data/fuels/openrc-fuel-registry.json",
+      "git_blob_sha1": "e635a590826bf74ec050896517d8421ee26ba682",
+      "sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+      "bytes": 5493
+    },
+    {
+      "path": "app/data/glow/profile_contract.json",
+      "git_blob_sha1": "f6333040566154e4270b362dd6338a97b3abbd88",
+      "sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "bytes": 5102
+    },
+    {
+      "path": "app/data/ground/surface_friction.json",
+      "git_blob_sha1": "49b30dc7215433a02e94945aa69d2dad84a704d9",
+      "sha256": "6eef216dc77e6e131388ba0646c6180a82b7ae2fe0b01aec604e4262c79180c1",
+      "bytes": 4943
+    },
+    {
+      "path": "app/data/ground/wheel_profiles.json",
+      "git_blob_sha1": "eb295062f4bf96dbc4236cb0c87c94e463611f38",
+      "sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "bytes": 36426
+    },
+    {
+      "path": "app/data/ground_vehicle/airfield_track.json",
+      "git_blob_sha1": "97f9a8673e660b49c0e57eada2d369a207fd1cc9",
+      "sha256": "31ee093d4fc968d8bfb083a7ee89315030373ce886f87195b78115000e680e29",
+      "bytes": 3202
+    },
+    {
+      "path": "app/data/ground_vehicle/practice.json",
+      "git_blob_sha1": "45591291310cbb699e4e71afbd01cac74f0d8b4f",
+      "sha256": "e73d770799791cf8dafeb22c77c78cfd4d4adca3450093c140cb485233141d1c",
+      "bytes": 24641
+    },
+    {
+      "path": "app/data/lake_loader.gd",
+      "git_blob_sha1": "65916fc3882ead509a039b65839ce338563b232c",
+      "sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+      "bytes": 18729
+    },
+    {
+      "path": "app/data/lake_loader.gd.uid",
+      "git_blob_sha1": "c388fe42e2b7714b7a24f6a46108caa8ed61769f",
+      "sha256": "0473a469203db766f090d6c8bbf2d013249838bb30d24022bd2f6d1e1cf3dab2",
+      "bytes": 19
+    },
+    {
+      "path": "app/data/schema/aircraft-contract-v2.json",
+      "git_blob_sha1": "d4df4e153b83d3176babd3d838f727651e60f123",
+      "sha256": "afd91459a7bfc315d9fa1033c0dbb9a1522b3c0188b3d326d1dd02a96b21ce4e",
+      "bytes": 44340
+    },
+    {
+      "path": "app/data/schema/aircraft-modules-v1.json",
+      "git_blob_sha1": "6d780a4c2ed69b17db3302e8f09ee15ec7f32f48",
+      "sha256": "9d66d0fb0c69cea2db143bcbba9b3d3489b1a9cb89d95fad4c467584caafc840",
+      "bytes": 18761
+    },
+    {
+      "path": "app/data/vehicles/ground/monster_car_2.json",
+      "git_blob_sha1": "2eedf73ecf31f03c936b0a0b67f4c9c363a463aa",
+      "sha256": "088a71ccd4988e72a0947a860460d8195463cb3fbff7462033ea0031c713564c",
+      "bytes": 22898
+    },
+    {
+      "path": "app/data/vehicles/ground/mt8_bisonte.json",
+      "git_blob_sha1": "f6e8e678c140e96917863767326ef2e2502b631c",
+      "sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96",
+      "bytes": 16669
+    },
+    {
+      "path": "app/input/ground_vehicle_input.gd",
+      "git_blob_sha1": "1b552865ddeb504397365cbf9ea3edf95b01c302",
+      "sha256": "55764f9d082fa645320417ea7b9cee098ccf259e66a1dcc3e7b9f25b31075428",
+      "bytes": 4854
+    },
+    {
+      "path": "app/input/ground_vehicle_input.gd.uid",
+      "git_blob_sha1": "0fdb002977fa2334f0bc9c1a1f7e3ba23791e2f3",
+      "sha256": "670c18c3e42173b985b99d715c88bd7bcd979a4ff055f3eb1750017e4c40beb7",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/aero.gd",
+      "git_blob_sha1": "04bcbb1a2a9ffbe4c9cfad64e8150280d2ff7a66",
+      "sha256": "0041f8a7d45f6e864f1cbcc15b16e5b6e3fc39f0314f09e50f2c3efa1eed049f",
+      "bytes": 79346
+    },
+    {
+      "path": "app/physics/aero.gd.uid",
+      "git_blob_sha1": "99b827f5af7fe0b393fb4b42c2456472af2c78d0",
+      "sha256": "124039efecc50ceef7df4a4be1741f6bad102267d85536b31086378b2a1137a5",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "git_blob_sha1": "97a60a2cb5da9cc6f3551473f693f1a0820c443e",
+      "sha256": "d90450327b63698da22e5de5c6109e8f19f383fcbae4f166319deaf37cf9596c",
+      "bytes": 24166
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd.uid",
+      "git_blob_sha1": "68d9791b5e1b2a6bebbd1fad2b274eef3f5d3342",
+      "sha256": "69d2b8d55d1c0c60e7661009ccddb0c76d072a854ac52d23b8651ea9fbebf9b2",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "git_blob_sha1": "2842e7022df2127909fd88e99563a9ce7c3bc4fc",
+      "sha256": "da45bf4877643a322157d314d1eadca32bb7f39b4ebf20d51e01f745cf4ded5e",
+      "bytes": 154132
+    },
+    {
+      "path": "app/physics/aircraft_data.gd.uid",
+      "git_blob_sha1": "ac11ac225a3335b83ac7dcc063a062949890755e",
+      "sha256": "bfb6c202a09d359c1b94f01b01a6b518bf90f70b7890e3628a4d41f3b0a32256",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/aircraft_ground_profile.gd",
+      "git_blob_sha1": "a24fa58a6c10cbc5948531334b426d030c483e15",
+      "sha256": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2",
+      "bytes": 18200
+    },
+    {
+      "path": "app/physics/aircraft_ground_profile.gd.uid",
+      "git_blob_sha1": "f674dc6e29c7e9b3c8f2b9631a39dd0bb063d9ae",
+      "sha256": "6cb764ce7660773958049267cf3a483efa2f77e63dbf6662121beef9c509965c",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/aircraft_modules.gd",
+      "git_blob_sha1": "3a3df71e5b925d800b7aba2b6288e3e90c7096fd",
+      "sha256": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5",
+      "bytes": 19691
+    },
+    {
+      "path": "app/physics/aircraft_modules.gd.uid",
+      "git_blob_sha1": "9e1c7b292a4f2dfad80d0a56aa36551f1d214d2f",
+      "sha256": "6eae1adb5534d23f1438cf9bbc69269b89ea020209559ac3b692f7e451776f6a",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/atmosphere.gd",
+      "git_blob_sha1": "1fcbb9ae8369e649b870cce705648d329f8d3aa5",
+      "sha256": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+      "bytes": 8134
+    },
+    {
+      "path": "app/physics/atmosphere.gd.uid",
+      "git_blob_sha1": "2294613bce4e66370eb11237e40fba75bad1ff00",
+      "sha256": "754345ca18d56ccbf5536c76efc9b1dda123a1c7d6f978a8f5a615eb47379254",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/battery/battery_data.gd",
+      "git_blob_sha1": "f6dea3e744fe4c8803febf9b6ff76dd1d0e69ae1",
+      "sha256": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+      "bytes": 15869
+    },
+    {
+      "path": "app/physics/battery/battery_data.gd.uid",
+      "git_blob_sha1": "51030ccda5274476a75442fe7a4be6291a8e1e9e",
+      "sha256": "715b0ad06dbd60c345ed1ff5cb8829b170eaf028cbe9301513db5ceb123a491f",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/battery/esc_supervisor.gd",
+      "git_blob_sha1": "d038af769eb5d2678ac66d42292169149b769c96",
+      "sha256": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+      "bytes": 5295
+    },
+    {
+      "path": "app/physics/battery/esc_supervisor.gd.uid",
+      "git_blob_sha1": "360fb4907a03f045026e55a1e2d2204bbff2e1ab",
+      "sha256": "7d11a90b096da81dcaab39abb5f7d7db348b92adcde09e0eaedfa082f5f6a843",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/battery/pack_ecm.gd",
+      "git_blob_sha1": "079fb8fa9bb57b8f3f445f04db3f09e9fb3361d3",
+      "sha256": "ff5dd20f3c2ac83e747a12126198d29e4f7dc4bc35fd35f2ee23a0fe60ae89d9",
+      "bytes": 12515
+    },
+    {
+      "path": "app/physics/battery/pack_ecm.gd.uid",
+      "git_blob_sha1": "5bbc31f15f23c6dd3971e73d5cb9d85730cd6c3d",
+      "sha256": "7789a5651d2ad5be69b2600a662d3366a815397a02f5a0ec9d67bd2dc1cc952c",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/control_actuators.gd",
+      "git_blob_sha1": "b091a0281375b7889e32a305c2b4904a9a2bf918",
+      "sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "bytes": 10502
+    },
+    {
+      "path": "app/physics/control_actuators.gd.uid",
+      "git_blob_sha1": "6d9860b56660a375a0229adc51a28a2ee01d9001",
+      "sha256": "f79e118d9c17506dedc21503bdb9b9ec10a647e3d335721e464e31d1fbf63ca1",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/control_surfaces.gd",
+      "git_blob_sha1": "ee777ea9cc04663f8053aa7011f9c39116f04020",
+      "sha256": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447",
+      "bytes": 4077
+    },
+    {
+      "path": "app/physics/control_surfaces.gd.uid",
+      "git_blob_sha1": "fef26578eec18df3fb4aab90e97f6799ac84135b",
+      "sha256": "cf960d524606553e9197baafd182d868846db97691a38269952b83b224077c90",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/effective_mass.gd",
+      "git_blob_sha1": "f3499556283ca772f24b954fce6a0c77b1e51d92",
+      "sha256": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+      "bytes": 8146
+    },
+    {
+      "path": "app/physics/effective_mass.gd.uid",
+      "git_blob_sha1": "bc07cda1b6388aed781fe111197f47adaf020435",
+      "sha256": "a7e6857672e76032a540f71d46325f1bbd8f316c72a68afd1d2a7eec9a5feacc",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/electric_motor.gd",
+      "git_blob_sha1": "61609b5b0526e8b1d1e4b1d974c0a7686f162ef2",
+      "sha256": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+      "bytes": 4835
+    },
+    {
+      "path": "app/physics/electric_motor.gd.uid",
+      "git_blob_sha1": "41298cd6e7cbd68c0b479e81ba164378daee24c9",
+      "sha256": "da60a16c46db669df97becba2698cc4a0d7612cf909742e61a5e775a503c49f0",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/electric_supply.gd",
+      "git_blob_sha1": "3c2e737e0e0a4873cae99729b249518c3d2aba75",
+      "sha256": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+      "bytes": 15195
+    },
+    {
+      "path": "app/physics/electric_supply.gd.uid",
+      "git_blob_sha1": "188cb937929d45e397aa79f74ae94935d3c9b53c",
+      "sha256": "1fed2aefa95b80b36e27c982d2a5d393c90e946f765d203508840db6412225c1",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/event_bracket.gd",
+      "git_blob_sha1": "7afdf31864c45cd634a27f943199445273cb0e15",
+      "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "bytes": 1381
+    },
+    {
+      "path": "app/physics/event_bracket.gd.uid",
+      "git_blob_sha1": "a1a6f8784db03eae59dee7e217b464b926a751cc",
+      "sha256": "e214c40a4791de73b4df1dc44eee1bf255aa4ec121201871c6a1237048615dc0",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/event_step.gd",
+      "git_blob_sha1": "aa449f31501e9edc9bbb5b8bc695e4d7f2a0a33c",
+      "sha256": "b8d29d8d7b990ffbef9e4c9809f542d433bc10948b93242729ebd7cf4ba0a888",
+      "bytes": 7585
+    },
+    {
+      "path": "app/physics/event_step.gd.uid",
+      "git_blob_sha1": "4ebff8ccaf5c808fa0913807e1cde4788b7f060d",
+      "sha256": "d6b362e4fcb1bf575d64c3c4770631e5f59189bd951813709ece0c388d23276a",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd",
+      "git_blob_sha1": "a78510c0473ef526baa9afee814c63764c6ed1ce",
+      "sha256": "bb0c9ec1238acbbe4b786db4e54ae61a647658b3656f36257a7de7824d715e1e",
+      "bytes": 5453
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd.uid",
+      "git_blob_sha1": "aca62add0dbed9136358aa52e2c56ef4bf8fb913",
+      "sha256": "7910bc1ca451f7173e61cf7c51142bcdf79eacf26a198f6de383b14fe1bd1b30",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/flaps.gd",
+      "git_blob_sha1": "63fa22af65d87ad17a007cdb9ac077634e6dbf55",
+      "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "bytes": 1222
+    },
+    {
+      "path": "app/physics/flaps.gd.uid",
+      "git_blob_sha1": "fdaf6167334e9ca26bc2db51d001eb29173ad665",
+      "sha256": "a4ba457466f4862363bdd07bb938ec35528829ca2906e57e6879202840417604",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/fuel_properties.gd",
+      "git_blob_sha1": "1e2c9d534c1e7a132b4545430ca140ba6b30de06",
+      "sha256": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+      "bytes": 8798
+    },
+    {
+      "path": "app/physics/fuel_properties.gd.uid",
+      "git_blob_sha1": "8fda3fbb107d4a2ba1a5c916d0b790eb3bd4ea91",
+      "sha256": "edf7a8ba2d89efffe193d8dbe4235fa8e269891f71aeda055a176766ef888df5",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/generalized_coordinates.gd",
+      "git_blob_sha1": "460366e2fb983b12530a46b986fe702034e9c31f",
+      "sha256": "dfc38f8a268930683538b182c4c3d07c3aca48bec16bd2ea6bd4aeb4cbaef47d",
+      "bytes": 9453
+    },
+    {
+      "path": "app/physics/generalized_coordinates.gd.uid",
+      "git_blob_sha1": "e1899193fd24243f5cf53a17172032009c227eb0",
+      "sha256": "ce4526608fff6c0b9abffaf4b8396adb09c19c71031096ce1a492021e505911c",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/glow/carburetor.gd",
+      "git_blob_sha1": "9cc3869166d851ae63c9c07b345ac25c69994e09",
+      "sha256": "2f172faf92565467067df370293052d2ac253c4d68631e597c9986d58dc42e8a",
+      "bytes": 7183
+    },
+    {
+      "path": "app/physics/glow/carburetor.gd.uid",
+      "git_blob_sha1": "2f195f6c4ac5e776e2ea24ab7b6e77b904f0c7d6",
+      "sha256": "32d018221948b19af19d1c5751acabc6339b88d251a027c2675ed4f058ba3793",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/glow/four_stroke.gd",
+      "git_blob_sha1": "810ce4e2c5d77be3c2e888ffb74fd21672e05240",
+      "sha256": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+      "bytes": 16540
+    },
+    {
+      "path": "app/physics/glow/four_stroke.gd.uid",
+      "git_blob_sha1": "91453fed7f6f9fda820fb958873b0fd36ba39b17",
+      "sha256": "59153ed9a50b994dc8b95981e42354384a5811d0c04043152f65090fb4ed3107",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/fuel_feed.gd",
+      "git_blob_sha1": "9a6a73c27247c21526d384c99b8c550fc4774f28",
+      "sha256": "d90e14139fcfc98dd724f7c97f2e5c6d403db59ed935477cd1dc0cd4e81d8101",
+      "bytes": 15987
+    },
+    {
+      "path": "app/physics/glow/fuel_feed.gd.uid",
+      "git_blob_sha1": "cf426a99ff3972ae3f2e0bab120393bbb22df556",
+      "sha256": "a70b39dcdcf1786c22f307f0ea456c50b36643da352f051cd675fb017b10cb93",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd",
+      "git_blob_sha1": "48318b0b5fe5b5c767181273aae6e8324d475a0e",
+      "sha256": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+      "bytes": 4523
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd.uid",
+      "git_blob_sha1": "f2b8a146d7adcabb3d8f1e4137c69bd62723129d",
+      "sha256": "db73fb6844f8995c1763a8e3304fb805c3947135f2e79eee091574543e224f9c",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/installation.gd",
+      "git_blob_sha1": "35cc5bded9d206c04450ad93837f925d636fdc57",
+      "sha256": "743669589c65ac083aa32f5bccf899ef5039f2f9476f943786cec59b28f59593",
+      "bytes": 37652
+    },
+    {
+      "path": "app/physics/glow/installation.gd.uid",
+      "git_blob_sha1": "159c26a39a356237f970bf9ce35bbb3fa10ead12",
+      "sha256": "26701c4f7090953e7982bbf4c523c7070d0706c1cee664246775f8836e586869",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/operating_point.gd",
+      "git_blob_sha1": "834d6c799a56faed75cff8298b26e0581e33c043",
+      "sha256": "fe8f7718eaae59cb17279cb3b4fc2d4072e7e80e2e84376d0250ef55d7f45e7b",
+      "bytes": 4989
+    },
+    {
+      "path": "app/physics/glow/operating_point.gd.uid",
+      "git_blob_sha1": "219b17d38212d2bdec3f477a383cf4514cb889ee",
+      "sha256": "2bbdc966c88e3cbdd8867c40c021e7efa74f3b8a6a7480c651c899e09793d56e",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/profile.gd",
+      "git_blob_sha1": "5df9b8806534b18bdd912692c2d8bf9bd3b0ac55",
+      "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "bytes": 11485
+    },
+    {
+      "path": "app/physics/glow/profile.gd.uid",
+      "git_blob_sha1": "620fef733d88e6bc71d735489f394843313528a6",
+      "sha256": "4ee815415c6537a28974b23660850ad3a406d204a99fc119c81eb4c05b15322e",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/propeller.gd",
+      "git_blob_sha1": "09f4c151c6b6c6aa77a2d86f851c00ee46350f56",
+      "sha256": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e",
+      "bytes": 7595
+    },
+    {
+      "path": "app/physics/glow/propeller.gd.uid",
+      "git_blob_sha1": "9574082d328d400fa07a6afe30c86cfc4e05bbcc",
+      "sha256": "1eb5780c9b4ccbc62300771a63f29ef7fc024a12762fdf8849a76fb899aaec46",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/source.gd",
+      "git_blob_sha1": "74c932f56457533bf5ddcdbf8775613abb5beed8",
+      "sha256": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+      "bytes": 9565
+    },
+    {
+      "path": "app/physics/glow/source.gd.uid",
+      "git_blob_sha1": "7b15b0581062ae2499d165c45c66046983868d15",
+      "sha256": "0588f1901eb22e29595cd67dc0b04831be2663266d797e5fb89b7aa093d140a6",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/glow/two_stroke.gd",
+      "git_blob_sha1": "bc14d42c196b5ecf72e778fc4fe9ca4a9b2ec35a",
+      "sha256": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+      "bytes": 15716
+    },
+    {
+      "path": "app/physics/glow/two_stroke.gd.uid",
+      "git_blob_sha1": "d1b745de701fae596da4a4cb7b3f44f8d882838e",
+      "sha256": "77e94a0ced153bc74739717c03df8c4cf8547b684740626babd6ce7b084de9fb",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "git_blob_sha1": "455883bcfa2771a4c917dc0ce1d6e2c84e162f19",
+      "sha256": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+      "bytes": 27025
+    },
+    {
+      "path": "app/physics/ground_contact.gd.uid",
+      "git_blob_sha1": "2c359faaac39019946390b20e1882a454fffa0f6",
+      "sha256": "0da9fed34bb30096a28aaa68e688b1846f209ac4c857204ccfdf244f63411da3",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_effect.gd",
+      "git_blob_sha1": "de26a6a766911b1e8a07c48e1120f26375272708",
+      "sha256": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+      "bytes": 4675
+    },
+    {
+      "path": "app/physics/ground_effect.gd.uid",
+      "git_blob_sha1": "f68f2da47119f37073eb6cd78841d02c318b579c",
+      "sha256": "903f65589ca478f043c47368f36ff73d0ecaea310f8f15e28a393ee44280b200",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_support.gd",
+      "git_blob_sha1": "598dfb47a3f900730a5b05ecc092dff6c93e8931",
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "bytes": 7317
+    },
+    {
+      "path": "app/physics/ground_support.gd.uid",
+      "git_blob_sha1": "c0e98869198162f4d19eb3c5072125dcc91d0b7f",
+      "sha256": "319e3cb5619f6c692b3fc7ec9a795f14e6d10738af48c8ce408aa7e3dd23cdfc",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_surfaces.gd",
+      "git_blob_sha1": "8bbc652914c596db81180e6dc5cacdc008b00d27",
+      "sha256": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+      "bytes": 7963
+    },
+    {
+      "path": "app/physics/ground_surfaces.gd.uid",
+      "git_blob_sha1": "0a74532bd23f85dd5892102f0ff76a2dd55d4e8f",
+      "sha256": "99adfb626b18dd1dad5d266ab41f44b75b2f939f6d7bc0dbd9c8620353a30c22",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "git_blob_sha1": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "sha256": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+      "bytes": 14206
+    },
+    {
+      "path": "app/physics/ground_terrain.gd.uid",
+      "git_blob_sha1": "6c4aa09a175f108974f84765c37692d74eda2584",
+      "sha256": "da2661345329d72707a3d069d7ea714f1c1db4c8bf2fb6b36240dfb15fbfbc4d",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_course.gd",
+      "git_blob_sha1": "acc7b72dbc6db067b87716465a9e1bd633ce506f",
+      "sha256": "7e9bc35fc50a7099159b95e9139527a4745d2a28e342359edfb9e735b6481ae3",
+      "bytes": 24172
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_course.gd.uid",
+      "git_blob_sha1": "d4a96db394ef1ae1071b9daf112298ec17339e14",
+      "sha256": "54b956a4a0aea2e482e2fb04f1798f11234710111ee2193314c7d16101713755",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_track.gd",
+      "git_blob_sha1": "2dcf48c94b5fa54446841169dc3c559972740aa8",
+      "sha256": "8e7098ab347384eef95340f4e6a884930b8e4e5a3f6e48feff488e0c7061a0e2",
+      "bytes": 20198
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_track.gd.uid",
+      "git_blob_sha1": "4edc4719fa62a4d82f9c036462a76a6bd6807b65",
+      "sha256": "57b369e07eb5addfaea1dac5a99582f2896fa94539288a0d262b265145322d80",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/course.gd",
+      "git_blob_sha1": "15b6f81fdff43859975322e1898bae5c4dd3dd09",
+      "sha256": "e2b47e8f339311647342c25018e71093f1cf200071a2d92d4396974a2dc7747e",
+      "bytes": 24654
+    },
+    {
+      "path": "app/physics/ground_vehicle/course.gd.uid",
+      "git_blob_sha1": "127d58996c75b7c1e7645ee0396c8ba028e13832",
+      "sha256": "97b96158337d5102c0618f2c0dfeb9b5690a224e054e154f2ec43024fb0b2d95",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/ground_vehicle/nitro_dynamics.gd",
+      "git_blob_sha1": "76301915a12dc0b9f4ad7eebd850074737fe089b",
+      "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+      "bytes": 21400
+    },
+    {
+      "path": "app/physics/ground_vehicle/nitro_dynamics.gd.uid",
+      "git_blob_sha1": "358795a1b898e94882885a54e813e8bcf625d1fc",
+      "sha256": "0fc6cce79fb11f27a404d90bbec941e95f220bffcbeec3c63e2978ecff5271ee",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/scenery_walls.gd",
+      "git_blob_sha1": "04123a3edb916a49fe5fc3a37fdbde93d3c4a0b7",
+      "sha256": "b0aacb3800f4285002da154c97537d846668c7acd4c24661b96285e2fad1d1bb",
+      "bytes": 10963
+    },
+    {
+      "path": "app/physics/ground_vehicle/scenery_walls.gd.uid",
+      "git_blob_sha1": "af9c6d9adf6060239b42c6f1b3cdcb5124d18aea",
+      "sha256": "838f4dbc8be2c7b20b688fa7425b656be69c38fc2527f3864524ec50730a8a2c",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_damage.gd",
+      "git_blob_sha1": "1574756fd5bee70b4a5c1fbad6efc3babf3f821f",
+      "sha256": "a2d8eae35336dc4453a6e2b64e09289d9a024061119d6b8effa045638b987046",
+      "bytes": 24947
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_damage.gd.uid",
+      "git_blob_sha1": "3f8e5615a41358d0b518a1b4f902c12586d0fe44",
+      "sha256": "a0edd74ac3f2793b27829feda7385f875c474c6429a50bd6d0106fa691acf323",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_data.gd",
+      "git_blob_sha1": "381cdaf17c73034e2648a715c2d5eb981914a5db",
+      "sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+      "bytes": 31154
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_data.gd.uid",
+      "git_blob_sha1": "7a92e7de9526fd80ce528e1b59c6ea70b058b13e",
+      "sha256": "f45402ebbc50e047508dbf8900c2d38f71927a68b549311d9b69eaa03be6288d",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "git_blob_sha1": "94e2e920f9740e0bdbdf44f65aad527555f8954c",
+      "sha256": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46",
+      "bytes": 103044
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_dynamics.gd.uid",
+      "git_blob_sha1": "cb204c672e6277c7258107f235cf5d0df19138df",
+      "sha256": "7c9443ba209af2af5b2e3fdc7375386637b1ca24f0badf638eaeb5979e759e97",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_environment.gd",
+      "git_blob_sha1": "6caca980e1bed83c625a09a93236e02cfd6297aa",
+      "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+      "bytes": 6680
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_environment.gd.uid",
+      "git_blob_sha1": "43ba69db2fa3c2a788bf66c26687453e63f8741b",
+      "sha256": "e23161a0b8da936789740fb0c54faba19f043953e4f06c5c12cc095c2808c118",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/ground_wheels.gd",
+      "git_blob_sha1": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f",
+      "sha256": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87",
+      "bytes": 14264
+    },
+    {
+      "path": "app/physics/ground_wheels.gd.uid",
+      "git_blob_sha1": "c58c84569beaed3d169f6c81157604ea79077c68",
+      "sha256": "ce73b95d3d20e0cfcc80c3f3058cf28c767829fa1436d9e1d4d568ec696c1e48",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "git_blob_sha1": "e2473b7d3800afe354e3789c9051c381669ec409",
+      "sha256": "d2b704a24bac85fcb91cac07eff53ea162e760cdba7144e3854164924ff5e1e3",
+      "bytes": 48890
+    },
+    {
+      "path": "app/physics/hull_contact.gd.uid",
+      "git_blob_sha1": "d826a30a30bcd0f8598470e750bb8501d4b75e3a",
+      "sha256": "ee56f236f947a9ce1ff9c9c0330a65f3edf721212035041fa931ad1b179fdbc4",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/integrator.gd",
+      "git_blob_sha1": "83a715a7101a4a8d5657ddbc2d9dde63cd9a7324",
+      "sha256": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+      "bytes": 2313
+    },
+    {
+      "path": "app/physics/integrator.gd.uid",
+      "git_blob_sha1": "50fe5ffce5198db2f0211de399a69606f8626d36",
+      "sha256": "80fb2fd3708edffe839062a10ed0b40b3766df59f8d1fe5c9e953c054d33644c",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/intended_hull_support.gd",
+      "git_blob_sha1": "7c5cf00c3e586691e04a816742abffac724e70e3",
+      "sha256": "c4e9c16ddb9a99a383799bc96df3b051f86a695ac9b44e418171e4be67780819",
+      "bytes": 14439
+    },
+    {
+      "path": "app/physics/intended_hull_support.gd.uid",
+      "git_blob_sha1": "80abcccc6dfd5db6f4e216000393100a987a0130",
+      "sha256": "f19a3f739f80a7ce08193df5c5a0d8ad663b45229df2a78b73aabb1e9a8afda9",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "git_blob_sha1": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "sha256": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+      "bytes": 36949
+    },
+    {
+      "path": "app/physics/lake_surface.gd.uid",
+      "git_blob_sha1": "2aeef944ace55d2fb64ac1763a4d05df067c3c34",
+      "sha256": "dbfca37ade4571023f79f3977c525b8ba45c55857680bfe9e0b72ec9c0e9e575",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "git_blob_sha1": "f22935dc5786f6dc89fba89c9958245216097946",
+      "sha256": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d",
+      "bytes": 24425
+    },
+    {
+      "path": "app/physics/mass_inventory.gd.uid",
+      "git_blob_sha1": "72feb4190d72c322121e59798df5cb694c68db2d",
+      "sha256": "13d58b7e4c6717604541e0972d7d223778adf531939a6388ffae6d2315e182d3",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "git_blob_sha1": "63300f4d4d181477626a6a9e80f52c32d7a4e59e",
+      "sha256": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+      "bytes": 5527
+    },
+    {
+      "path": "app/physics/math3d.gd.uid",
+      "git_blob_sha1": "7fd13aa43fad60ea11a14515c0b42a0fd2e5fbad",
+      "sha256": "7b4cb517a7cbcbcfd2613d7113aa0da4c2d9c6ef0c008220f82546afe516ca07",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "git_blob_sha1": "eaa221b7199588dfb3bebd6b2fb6ab355df9a637",
+      "sha256": "7fdda97336cffec821a420d0666e6f8eb530ae77c628e767b212b1d31590d785",
+      "bytes": 10371
+    },
+    {
+      "path": "app/physics/normal_compliance.gd.uid",
+      "git_blob_sha1": "6dcd9ddaa743f7cc7d1f8240f0f6c3df5d8eff1f",
+      "sha256": "81b0e81a61af84101304007a97496c1310a1d3dde53c60d28258ed486f68af5b",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/physical_identity.gd",
+      "git_blob_sha1": "bb0fa8b785b8b95f05e67ca1cd44e41ee5c31d1d",
+      "sha256": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628",
+      "bytes": 6807
+    },
+    {
+      "path": "app/physics/physical_identity.gd.uid",
+      "git_blob_sha1": "ca778aeb78f90bce35ddc4dcb7ba0801244d3126",
+      "sha256": "27997301ff0c2db5d7087faa605c9ed6e939cbe84e6ba3ada6a5c285a35f2f2e",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/propeller_power_bound.gd",
+      "git_blob_sha1": "ecf4cc27dd67dbd593f865eca864064c5b82919b",
+      "sha256": "71dcf3a9ff628c245f91ab090c89100351888155c8e23960c10a33f3379409fc",
+      "bytes": 6197
+    },
+    {
+      "path": "app/physics/propeller_power_bound.gd.uid",
+      "git_blob_sha1": "57912e2ea375edb4d756900d24e1c8126178fada",
+      "sha256": "8670b8b68c4e1b9e63d004b90ee483c7ce1f097839a562187cf16a0ee42bcb84",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "git_blob_sha1": "0a5b1ffc5a8b36bec60ab4092b6af3c7dc08adf5",
+      "sha256": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f",
+      "bytes": 40437
+    },
+    {
+      "path": "app/physics/propulsion.gd.uid",
+      "git_blob_sha1": "3cb5ff708c1356149e728998ea3a8968b9c3d827",
+      "sha256": "23234fdbf1c8d2e1048dba70ea3736d6304e43402e5482c4f3b746ab7ffa6314",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "git_blob_sha1": "c2bb9c954d90aed8ef4b9ee58f63ea97d21bb8ed",
+      "sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+      "bytes": 5445
+    },
+    {
+      "path": "app/physics/rigid_body.gd.uid",
+      "git_blob_sha1": "7741e9c2bb4ae5b94a4bf8039e8b8f3748ed7fba",
+      "sha256": "afdf5b634b93f4e0d27fc2af721271f80d7838c011d0d775f347abbe8051e3e7",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd",
+      "git_blob_sha1": "101c2665a9d361944f63b7b8b404ef22b8c6f7be",
+      "sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+      "bytes": 27298
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd.uid",
+      "git_blob_sha1": "627a33d64aaa7010be80cd3f8f47b2aa1769dbfc",
+      "sha256": "9b752efec658498a12db9c82c34aa51bf19120ba888eceea6a6f4dd67dc97c8d",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/slew_trajectory.gd",
+      "git_blob_sha1": "f10673014e9be84a6ea709b1eaddeacb18521018",
+      "sha256": "13be929d8345a2bab5cbd92473d6d700d7e84ce226ddf23b0ebe5c6fc83f1dd8",
+      "bytes": 4371
+    },
+    {
+      "path": "app/physics/slew_trajectory.gd.uid",
+      "git_blob_sha1": "27aa5f9f2940a61620b56a9d50e2736d36a65a00",
+      "sha256": "f51a525dc37ed708938140c63044b1f437223b15f576d914c90003f3b219d09e",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "git_blob_sha1": "04b6eeb43a768fecb2df060b523fc270cc1b0f17",
+      "sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0",
+      "bytes": 10490
+    },
+    {
+      "path": "app/physics/turbine.gd.uid",
+      "git_blob_sha1": "5536cb921effea784d9503f424e4b0dd48b8156f",
+      "sha256": "ffa87c091f6f7eb41c7502bf3b600af5ef2a00ff0e827b029e0b198ce66451f6",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd",
+      "git_blob_sha1": "aa247362b986807e8b894414aa35375dfae4a9d2",
+      "sha256": "219c9654f8cab79bfeb518c0994117eb7387857f9d0f02f03e6c1a573ac5d60b",
+      "bytes": 15935
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd.uid",
+      "git_blob_sha1": "1555741c103dff660e1b994e0e2c5d320e55444a",
+      "sha256": "bb0804d5598c1333c4f223311c9763a095daa9857b491d04f46b34ce304affc6",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "git_blob_sha1": "dd0f7d221d59afa4c8a8b4d50b7a9355a38ef14a",
+      "sha256": "bdb76ff17b575b19eb0374375fcd62a10c4f6df2a99a74bc816c08094097d2a0",
+      "bytes": 13992
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd.uid",
+      "git_blob_sha1": "9731c02af9e2a1ea6258bfb746f73234a52ebe12",
+      "sha256": "5661d1a674c755d3d6d7bd286f297d05a7953153a654b9495443f7f3c8c6ba7f",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wind_config.gd",
+      "git_blob_sha1": "4961f1dc7e522e6dd7110cdb4b3214995efcd875",
+      "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66",
+      "bytes": 14295
+    },
+    {
+      "path": "app/physics/wind_config.gd.uid",
+      "git_blob_sha1": "00304ca4cd72e8624bb9717bbabcb8f9ceae3633",
+      "sha256": "1128d9ac371e2764e404b138d701d5c21b669ef26bf696307f3febc28e671e2b",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wind_field.gd",
+      "git_blob_sha1": "ed235d4023670f14f060d3ebbf92cf277017e2b5",
+      "sha256": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+      "bytes": 6835
+    },
+    {
+      "path": "app/physics/wind_field.gd.uid",
+      "git_blob_sha1": "626f95ae00c44e022f87f7b3d95c47ab6a65b2a8",
+      "sha256": "8c1498e008cd9eb4b49d8a2b1ca1b081dd30d32d293a98d6b20a1a33a3e3b05a",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wind_spatial_config.gd",
+      "git_blob_sha1": "ac4cac57de7e2fb8a6e05a4d811a707b07a39204",
+      "sha256": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+      "bytes": 26247
+    },
+    {
+      "path": "app/physics/wind_spatial_config.gd.uid",
+      "git_blob_sha1": "f68e20d85d19091a0f4c7e5f257e8706b4ead3a2",
+      "sha256": "12d81f30fa89f5f710e09248f50be39ec08d02ef197afc042dbf91eef833e24e",
+      "bytes": 19
+    },
+    {
+      "path": "app/physics/wind_spatial_field.gd",
+      "git_blob_sha1": "6c223c5529d38c825aa2ab5b038b2a727ac8edea",
+      "sha256": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+      "bytes": 19332
+    },
+    {
+      "path": "app/physics/wind_spatial_field.gd.uid",
+      "git_blob_sha1": "883473d9c890df52a35d9d55a34fc208c904b82a",
+      "sha256": "a77af34525b366aebb975300fd1acfa2a58792e1513e1d787e385259d9e35977",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wind_spatial_presets.gd",
+      "git_blob_sha1": "de4260fe2633046154f8455bf8221606cd3d4246",
+      "sha256": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+      "bytes": 7641
+    },
+    {
+      "path": "app/physics/wind_spatial_presets.gd.uid",
+      "git_blob_sha1": "2cce31978844e84aefd3dc068ac11e328671546b",
+      "sha256": "ffcd075528c80eecd5dbc2656a174ec37e205e16bbae49420d25cafbf319e7f7",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wind_thermal_field.gd",
+      "git_blob_sha1": "d8d58be0a542168920bb1fe25c4b966a13758b43",
+      "sha256": "2e2b33f3cf0ae0247d7bef8a8ff75ea03d814dbd4d4eb1c2a60ae6c9a71e075e",
+      "bytes": 17990
+    },
+    {
+      "path": "app/physics/wind_thermal_field.gd.uid",
+      "git_blob_sha1": "94a712dc8dc899073121f17f15475c7350f50727",
+      "sha256": "d848f9ee313c8616f63125558e5191fe062eadaab945631304fbb15b14d4df08",
+      "bytes": 20
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "git_blob_sha1": "f5be238c7ae06f58009d8c867cffa0e625f84c7c",
+      "sha256": "0bac361ded5d5276464121c531dcd21f4b5168ee91d1656382821376d105cf56",
+      "bytes": 6661
+    },
+    {
+      "path": "app/physics/wing_polar.gd.uid",
+      "git_blob_sha1": "78cb43ddcf9a508c1d4b6fed0387e043e35ba537",
+      "sha256": "c8cf48ffc52321ca3d75dedd5f5fdaa52c62e7e429c9c8bbe2c98b51327a3563",
+      "bytes": 20
+    },
+    {
+      "path": "app/sim/environment.gd",
+      "git_blob_sha1": "030875ea984475813df78d9a1c05b0a843b77d62",
+      "sha256": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1",
+      "bytes": 8822
+    },
+    {
+      "path": "app/sim/environment.gd.uid",
+      "git_blob_sha1": "c622461e5c2c2a74f9a61446d7c5029e530129e1",
+      "sha256": "6f4799ece7f48b0b208676a92be5604ae6de730c5b8e0e1c18278540e56ae886",
+      "bytes": 20
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "git_blob_sha1": "fa3f872ee54beb76679b5cb2be51dbfe158ea864",
+      "sha256": "5c5bb7c85eff37e1268e43b68e8b3da1206589eb6e1a094885a8177f32d314fe",
+      "bytes": 97356
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd.uid",
+      "git_blob_sha1": "3528f8967d2fefce62e5fc0fd3f8160520b338b6",
+      "sha256": "21995a16c5acb90dd7ed21d8b52d54a598f44abd586d372c95551d8a07cef504",
+      "bytes": 20
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "git_blob_sha1": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+      "bytes": 76864
+    },
+    {
+      "path": "app/sim/simulation.gd.uid",
+      "git_blob_sha1": "3b732a778aeb0478b96ac19521cb44b5c3d4849b",
+      "sha256": "509200bdd5831ee91e1d385d2dfdbf23f1e430c4f2fbfbb2a18bacc106f71d8a",
+      "bytes": 20
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "git_blob_sha1": "6b6685541ff65d7711da3fabff0f7f946e11802a",
+      "sha256": "d9cb12ae11bac4724661f4f4faf16c2f15c7e9f6a2365c1b7ed3a205b5e474bc",
+      "bytes": 19108
+    },
+    {
+      "path": "app/sim/vehicle_model.gd.uid",
+      "git_blob_sha1": "1832e279742d40914e5f79c21070badaf3abcc89",
+      "sha256": "121082fe9e1b179e65c6dcfd18649ff61e65b830d583c894f262f5b980e056a1",
+      "bytes": 19
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_service.gd",
+      "git_blob_sha1": "ec5209f299539392e53d1d5c3c9d199358b8314e",
+      "sha256": "7e5137ca915f98c3df70c0e91f0299183addfc469836710bbd2ed1cf1dd5f49f",
+      "bytes": 6020
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_service.gd.uid",
+      "git_blob_sha1": "c2a053d84c22b97ac4945dfdeaf9f1166e894326",
+      "sha256": "6ef3a68e8b741eed524ddc15b51fdfa202e0486248369c12d5086c1bb6e9cc94",
+      "bytes": 20
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_session.gd",
+      "git_blob_sha1": "a0ac0235f1c8e1f214426d5785f5dd23fdbbe053",
+      "sha256": "7556e3929b1d30ba23040a426a6d8515c8edf9eb6d8aec14f81f48849e85bc7f",
+      "bytes": 13514
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_session.gd.uid",
+      "git_blob_sha1": "3671ae83e845810ba0f26896cf211b2be07ab959",
+      "sha256": "f5481af36ed1a75b2b359ec82c9b447cb5d02dd58704011e59c961a94a4b2e99",
+      "bytes": 20
+    },
+    {
+      "path": "app/tests/test_rcv_obstacle_contacts.gd",
+      "git_blob_sha1": "b34069e7c6807c4ba2c3428ec2a942e033bf25cf",
+      "sha256": "9c0b69c4114c05ba5ad5b726709a0e5529d4e2a789a843587300e9a4ddb24fd8",
+      "bytes": 10208
+    },
+    {
+      "path": "app/tests/test_rcv_obstacle_contacts.gd.uid",
+      "git_blob_sha1": "53572a222a6f4cfbc040fc72bb6af84afadcd653",
+      "sha256": "416c151b3890e310c211d923dbbb513bec6d2599e89f2a992a97918fa5604102",
+      "bytes": 20
+    },
+    {
+      "path": "app/tests/test_rcv_passivity.gd",
+      "git_blob_sha1": "d549e95a00b3ab23488616be7d34d1b63e1560b9",
+      "sha256": "0d03927732aa5913d1c1e16f8056806f4cdb51cf0ec8f26ae43f18f7eb1822e1",
+      "bytes": 16962
+    },
+    {
+      "path": "app/tests/test_rcv_passivity.gd.uid",
+      "git_blob_sha1": "1e4239c89fc75929b658ff5f5870b42d2e96de93",
+      "sha256": "7f5510e22e981467441af63f4bb35b92ce5f7accd7a15e400e2334afdc2f73be",
+      "bytes": 19
+    },
+    {
+      "path": "app/tests/test_rcv_vehicle_data.gd",
+      "git_blob_sha1": "f15aff67bbe11c0971205c291cfe3b8ff5998476",
+      "sha256": "456e88a1d477b7b92c121c2bd7862486c5feaa2441e3285861602e936f3efc72",
+      "bytes": 7538
+    },
+    {
+      "path": "app/tests/test_rcv_vehicle_data.gd.uid",
+      "git_blob_sha1": "f7657a8fab186ea13894eb79f095d22089d4d1ce",
+      "sha256": "b73381494a5c5ff781a121f420b3728f1fad55259a0eadb4c0bd47b5feaeda89",
+      "bytes": 20
+    }
+  ],
+  "project_settings": "config_version=5\n[application]\nconfig/name=\"A36 R9 car research\"\n[physics]\ncommon/physics_ticks_per_second=240\ncommon/max_physics_steps_per_frame=12\ncommon/physics_jitter_fix=0.0\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\n",
+  "format": "openrc-a36-r9-source-manifest v1",
+  "native_extension_policy": "No optional native artifact installed; all probes explicitly select gdscript_reference. Native code is inspected separately at reviewed_commit."
+}

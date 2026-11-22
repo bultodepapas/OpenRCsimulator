@@ -70,6 +70,20 @@ The [helicopter report](eighth-pass-helicopters-2026-11-21.md) reviews `c1eb4269
 
 The [portable reproducer](probes/reproduce_eighth_pass.py) reconstructs 438 real dependencies with no stubs. [Retained evidence](eighth-pass-evidence.json) records nine clean checked jobs, 140 observation checks, 276 unchanged helicopter checks and three independent Python oracles; all source bytes remain unchanged. The [CI snapshot](eighth-pass-ci-snapshot.json) returns no PR-triggered runs for this reviewed head; prior required CI remains recorded as failed. No R8 production fix, native/physical qualification or measured optimization gain is claimed. Proposed repairs preserve 240 Hz sampling and the helicopter's existing tick-policy ownership.
 
+## Ninth-pass car physics and integration (A36 R9)
+
+The [car-focused report, 22 November](ninth-pass-cars-2026-11-22.md) reviews `77b2d4e64a6a2c6c2a68093e9fdf68c0b111779b` and establishes two bounded contact defects, while adding numerical evidence to the existing RCV-12 shaft/body work.
+
+| Item | Reproduced result and scope |
+| --- | --- |
+| **R9-F01 — wall/contact composition** | A 1 N constructed wall load applied after the tyre/brake solve leaves `0.2021599285 m/s²` patch-slip and `0.3139519255 rad/s²` relative wheel-acceleration residuals despite available holding capacity. Matched force-before and no-wall/airborne controls pass. A separate synthetic box goes through actual airfield preparation, an accepted braked tick and same-state checkpoint restoration. |
+| **R9-F02 — heading-dependent rest shortcut** | On the same flat road, public states differing only by yaw get zero versus approximately `0.668 N` lateral tyre forces. The shortcut skips rows without proving equilibrium. Fully parsed synthetic practice starts also commit neutral ticks with a `0.00030491636 m/s` suspension-rate difference. Zero-grip and true-equilibrium controls agree. |
+| **RCV-12 evidence upgrade** | Stock nitro idle/full-throttle cases with an open clutch produce byte-identical 31-value body states, but the flywheel changes by `+0.00050295298 N·m·s` in one tick. Component refinement, empty-fuel rundown and an accepted elevated-session pair are retained. Physical shaft axis/inertia/torque-port definitions remain necessary; no new duplicate gap ID or real pitch prediction. |
+
+The [portable reproducer](probes/reproduce_ninth_pass.py) uses **172 exact source/resource blobs, no stubs**. [Evidence](ninth-pass-evidence.json) retains eight clean checked jobs, **85 new checks**, **77 unchanged car checks**, and independent matrix/engine calculations. Source bytes remain unchanged. R9 makes no production correction, measured optimization, native-probe, rendered or physical qualification claim; constructed session routes are distinct from observed ordinary play.
+
+The [CI snapshot](ninth-pass-ci-snapshot.json) records associated CI failure despite successful RC native build/production jobs. Inspected failures use the synthetic PR merge checkout and concern fixed-wing provenance, companion identities, Home flight and Windows test infrastructure; they do not close whole-project readiness or qualify the new R9 cases on native backends.
+
 ## Original evidence
 
 | Artifact | Purpose |
@@ -174,6 +188,9 @@ Independent review checked the propeller algebra and runtime floor behavior, dim
 | Native and CI | Rebuild and requalify the native kernel for the mirrored edits (slipstream, swirl, aero, helicopter controls, flight session, aircraft data); rebind companion identities; run required CI | Native parity/selection gates and green required CI on the integrated source |
 | D11g Stik provenance | Regenerate the three Stik rate-derivative source strings (values are unchanged) together with the pinned aircraft-byte gates | `derive_rate_derivatives.gd --check` clean on main |
 | R3-G01 Nitro fuel mass | Measure tank datum, position and full/empty mass, then vary mass/CG/inertia from the shared inventory | Full/half/empty support, weight and replay checks |
+| R9-F01 car wall/contact composition | Include wall generalized loads in the tyre/brake response instead of adding unconstrained acceleration afterward | Unsaturated contact oracle, wall/ground/brake work and refinement, both backends, session rollback/recording/replay |
+| R9-F02 car rest shortcut | Remove the unjustified shortcut or prove zero required friction with a frame-independent equilibrium/residual test | Matched yaw and support perturbations, zero-grip/equilibrium controls, accepted ticks, native parity and measured corrected-path cost |
+| RCV-12 nitro shaft/body coupling | Define shaft axis, speed frame, disjoint inertia and internal/external torque ports before coupling the appended rotor | Full momentum/work ledgers, clutch directions, rundown, refinement and versioned native/reference/session replay |
 | Mixed Phoenix propulsion | Decode each source unit and define the supported aggregation domain | Heterogeneous diameter/pitch/RPM and mixed jet/prop cases, explicit refusal where no supported representation exists |
 | Physical aerodynamics | Calibrate imported coefficient references, finite-wing translation and full-angle fin behavior against source-matched observations | Matched aircraft/prop data, compatible recorded command tapes, flight envelope comparisons and pilot acceptance |
 | Energy and performance | Bound the complete blimp electrical/mechanical model and measure full Creator workloads | Power-domain admission, explicit stored-energy accounting and real target-host CPU/RAM measurements |

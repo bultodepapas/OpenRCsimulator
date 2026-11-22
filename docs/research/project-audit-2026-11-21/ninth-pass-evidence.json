@@ -1,0 +1,413 @@
+{
+  "format": "openrc-a36-r9-evidence v1",
+  "reviewed_commit": "77b2d4e64a6a2c6c2a68093e9fdf68c0b111779b",
+  "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "manifest_sha256": "6dafccada76c78de8efde11d1805e2fcbfae2ee31b8dcbc24e70bfede35f71e2",
+  "source_count": 172,
+  "execution_support_sha256": {
+    "tools/godot/run_checked.py": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+    "tools/testqueue/common.py": "d19fb3ecbad3b884689829b76ff0faa0036262c391dfeba6e6781ba76cf2d481",
+    "tools/testqueue/pool.py": "a3e837d62cda30c861a0b43d53a5a267cfdf0f9aefcca3d798f838d95c9ba9cc"
+  },
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "numpy_version": "2.3.5",
+  "production_stubs": [],
+  "backend": "gdscript_reference explicitly selected in new probes; optional native artifact absent",
+  "scope": "Linux headless components and real sessions on declared synthetic fixtures; no rendering, native R9 probe, measured vehicle or ordinary-play trajectory claim",
+  "host_admission": {
+    "pool_config_present": false,
+    "queue_enabled": false
+  },
+  "probe_sha256": {
+    "ninth_pass_walls.gd": "1c39e810c19d3ef42af6b566a4541155acf5a44e7ac4429b98ad2a462105e9a4",
+    "ninth_pass_heading.gd": "3a2c22bf448e154b7ad66550346bede9b638695a7fa295aed7ab2d1c5cc68569",
+    "ninth_pass_nitro.gd": "bb96e5249b08e2e51253e5a4625d8cec1be0a9ac45ac2d879ee0fd0d8e26eb85",
+    "ninth_pass_session.gd": "8cc69b23e78ad60faadbaf6fc7da7eb907e9b0f75f25daee5618eb36a0e99a0d",
+    "reproduce_ninth_pass.py": "260f6bbff8211f9a48015ff4c114c4e5f834ba03282ab9bcc2364d82baf2da14",
+    "ninth_pass_oracles.py": "3918bdc60b69605986835a5f508d770d8fe38362a9d8098e5d289d1fa64b01e9"
+  },
+  "checks": [
+    {
+      "label": "import",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0cf75212-7170-488a-9016-08dde60b1769",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:16.012531+00:00",
+        "label": "a36-r9-import",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-import-dl_xgpkm/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-import-dl_xgpkm/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "Godot Engine"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.666872,
+        "log_bytes": 6201,
+        "log_sha256": "2aeff02db0e5768008e9005df9e7687e0d5635e93396a005ba78e4bed43a95dd"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (84 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | GroundVehicleDamage\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AircraftContract\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AircraftModules\u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ControlSurfaces\u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindConfig\u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindField\u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindSpatialConfig\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindSpatialField\u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindThermalField\u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | GroundVehicleSession\u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n"
+    },
+    {
+      "label": "walls",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6c56cb62-bc17-4199-981f-5e519b5e7aec",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://ninth_pass_walls.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:23.681461+00:00",
+        "label": "a36-r9-walls",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-walls-a_efz_a4/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-walls-a_efz_a4/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R9 WALL: 25 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.473166,
+        "log_bytes": 8224,
+        "log_sha256": "53bbb1fa63d36754b652b1e5815bb072298ea69e51baf66cc2e1c09eef0438cd"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nOK select reference backend \nOK load stock Bisonte []\nOK initialize flat equilibrium \nOK evaluation returned ok \nOK evaluation returned ok \nOK evaluation returned ok \nOK evaluation returned ok \nOK evaluation returned ok \nRESULT clear_ground_braked {\"accel_x_m_s2\":-0.0000000000000000275993466749105,\"brake_torque_nm\":[0.00000000000000487964657766777,-0.00000000000000039374640811356,-0.00000000000000487900404888486,0.000000000000000377797561426299],\"ground_tire_lat_n\":[-0.00000000000135899963985719,0.00000000000135913317910563,-0.00000000000135905965603409,0.00000000000135935750788533],\"ground_tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"ground_tire_long_n\":[0.000000000000048798802611741,-0.00000000000000393512270625887,-0.0000000000000487877038610442,0.00000000000000378031557572839],\"patch_slip_accel_long_lat_m_s2\":[0.0000000000000000015529861464735,0.00000000000000000014394593934919,-0.00000000000000000156357486356885,-0.00000000000000000030442265637087,0.00000000000000000155160442112443,0.00000000000000000021892818238292,-0.00000000000000000157299760575852,-0.000000000000000000002556356583],\"pitch_accel_rad_s2\":0.000000000000000155997431026832,\"sweeps\":128,\"tire_contacts\":\"[1, 1, 1, 1]\",\"wall_count\":0,\"wall_load_n\":0.0,\"wheel_relative_accel_rad_s2\":[0.00000000000000000020842681047625,-0.00000000000000000009422742188753,0.00000000000000000022224406396694,0.00000000000000000000000000000912]}\nRESULT wall_after_solve_braked {\"accel_x_m_s2\":-0.178009344060247,\"brake_torque_nm\":[0.00000000000000487964657766777,-0.00000000000000039374640811356,-0.00000000000000487900404888486,0.000000000000000377797561426299],\"ground_tire_lat_n\":[-0.00000000000135899963985719,0.00000000000135913317910563,-0.00000000000135905965603409,0.00000000000135935750788533],\"ground_tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"ground_tire_long_n\":[0.000000000000048798802611741,-0.00000000000000393512270625887,-0.0000000000000487877038610442,0.00000000000000378031557572839],\"patch_slip_accel_long_lat_m_s2\":[-0.202159928487526,0.00554190843530681,-0.202159928487526,-0.00554190843530681,-0.202159928487526,-0.00554190843530681,-0.202159928487526,0.00554190843530681],\"pitch_accel_rad_s2\":-0.31395192548985,\"sweeps\":128,\"tire_contacts\":\"[1, 1, 1, 1]\",\"wall_count\":1,\"wall_load_n\":1.0000000000002,\"wheel_relative_accel_rad_s2\":[-0.31395192548985,-0.31395192548985,-0.31395192548985,-0.31395192548985]}\nRESULT same_load_before_solve_braked {\"accel_x_m_s2\":-0.0574803445967099,\"brake_torque_nm\":[0.0184399274264567,0.017305757009144,0.0167416185543566,0.0156337233398972],\"ground_tire_lat_n\":[0.139765811777442,-0.150878295271766,-0.139781119711749,0.150862327090349],\"ground_tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"ground_tire_long_n\":[0.189272540970428,0.177931372320446,0.172289455054352,0.161211036952459],\"patch_slip_accel_long_lat_m_s2\":[0.000217674003497165,-0.000020452910690685,-0.00020927176579762,-0.000040056673721784,0.000217692703004262,-0.0000199138600049235,-0.000209262935928502,-0.00000034008359325027],\"pitch_accel_rad_s2\":0.324920236899104,\"sweeps\":128,\"tire_contacts\":\"[1, 1, 1, 1]\",\"wall_count\":0,\"wall_load_n\":0.0,\"wheel_relative_accel_rad_s2\":[0.0000357898417337347,0.0000000882986905507846,0.0000356028466627585,-0.000000000000000567254576644416]}\nRESULT wall_after_solve_adaptive {\"accel_x_m_s2\":-0.178009344060247,\"brake_torque_nm\":[0.000000000000000213201810563016,0.00000000000000016408683131009,-0.000000000000000597336146156481,0.0000000000000000989604257764616],\"ground_tire_lat_n\":[-0.0000000000000673410196864818,0.000000000000131176715368803,-0.0000000000000956868281053172,0.000000000000129240085951361],\"ground_tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"ground_tire_long_n\":[0.00000000000000227932624721274,0.00000000000000202747719937612,-0.00000000000000583165721134399,0.000000000000000937351855210948],\"patch_slip_accel_long_lat_m_s2\":[-0.20215992848752,0.00554190843543265,-0.20215992848753,-0.00554190843529546,-0.20215992848752,-0.00554190843519363,-0.202159928487533,0.0055419084353068],\"pitch_accel_rad_s2\":-0.313951925489853,\"sweeps\":1,\"tire_contacts\":\"[1, 1, 1, 1]\",\"wall_count\":1,\"wall_load_n\":1.0000000000002,\"wheel_relative_accel_rad_s2\":[-0.313951925489863,-0.313951925489879,-0.313951925489863,-0.31395192548985]}\nRESULT same_load_before_solve_adaptive {\"accel_x_m_s2\":-0.0574803445967099,\"brake_torque_nm\":[0.0184399274264567,0.017305757009144,0.0167416185543566,0.0156337233398972],\"ground_tire_lat_n\":[0.139765811777442,-0.150878295271766,-0.139781119711749,0.150862327090349],\"ground_tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"ground_tire_long_n\":[0.189272540970428,0.177931372320446,0.172289455054352,0.161211036952459],\"patch_slip_accel_long_lat_m_s2\":[0.000217674003497165,-0.000020452910690685,-0.00020927176579762,-0.000040056673721784,0.000217692703004262,-0.0000199138600049235,-0.000209262935928502,-0.00000034008359325027],\"pitch_accel_rad_s2\":0.324920236899104,\"sweeps\":128,\"tire_contacts\":\"[1, 1, 1, 1]\",\"wall_count\":0,\"wall_load_n\":0.0,\"wheel_relative_accel_rad_s2\":[0.0000357898417337347,0.0000000882986905507846,0.0000356028466627585,-0.000000000000000567254576644416]}\nOK exactly one hull wall contact near 1 N wall_front=0.330933333333 overlap=0.000066666667\nOK four ground contacts \nOK negative control clear-road equilibrium [-0.0, 0.0, -0.00000000000009, 0.0, 0.0, 0.0, -0.0, 0.0, -0.0, 0.0, 0.0, -0.0, 0.0, 0.0]\nOK source ordering moves held wheel spin [-0.31395192548985, -0.31395192548985, -0.31395192548985, -0.31395192548985]\nOK source ordering creates large tire slip acceleration [-0.20215992848753, 0.00554190843531, -0.20215992848753, -0.00554190843531, -0.20215992848753, -0.00554190843531, -0.20215992848753, 0.00554190843531]\nOK force-before solve reduces tire residual below 0.001 [0.0002176740035, -0.00002045291069, -0.0002092717658, -0.00004005667372, 0.000217692703, -0.00001991386, -0.00020926293593, -0.00000034008359]\nOK force-before solve reduces brake residual below 0.001 [0.00003578984173, 0.00000008829869, 0.00003560284666, -0.0]\nOK force-before tire reactions below ten percent of capacity \nOK force-before brake reactions below ten percent of capacity \nOK default-adaptive wall retains large tire residual 0.20215992848753\nOK default-adaptive force-before retains small tire residual 0.000217692703\nOK default-adaptive force-before retains small brake residual \nADAPTIVE wall_sweeps=1 before_sweeps=128 wall_tire_residual=0.20215992848753 before_tire_residual=0.000217692703 wall_brake_residual=0.31395192548988 before_brake_residual=0.00003578984173\nORDER COMPARISON max state accel difference: 0.63887216238895; force-before residual tire: 0.000217692703; brake: 0.00003578984173\nOK air negative control evaluation ok \nOK air negative control evaluation ok \nRESULT air_wall_unbraked {\"accel_x_m_s2\":-0.178009344060247,\"brake_torque_nm\":[0.0,0.0,0.0,0.0],\"ground_tire_lat_n\":[0.0,0.0,0.0,0.0],\"ground_tire_load_n\":[0.0,0.0,0.0,0.0],\"ground_tire_long_n\":[0.0,0.0,0.0,0.0],\"patch_slip_accel_long_lat_m_s2\":[-0.202159928487526,-6.30753118536754,-0.202159928487526,6.30753118536754,-0.202159928487526,-6.31861500223815,-0.202159928487526,6.31861500223815],\"pitch_accel_rad_s2\":-0.31395192548985,\"sweeps\":0,\"tire_contacts\":\"[0, 0, 0, 0]\",\"wall_count\":1,\"wall_load_n\":1.0000000000002,\"wheel_relative_accel_rad_s2\":[-0.31395192548985,-0.31395192548985,-0.31395192548985,-0.31395192548985]}\nOK no terrain tire contacts in airborne control \nOK one identical air wall load \nOK same unconstrained additive response with and without terrain support max difference=0.00000000000001\nR9_WALL_BACKEND={\"abi_version\":1,\"backend\":\"gdscript_reference\",\"backend_version\":\"openrc-ground-vehicle-dynamics-rk4-v6\",\"binary_sha256\":\"\",\"implementation_artifact_kind\":\"gdscript_source\",\"solver_version\":\"openrc-ground-vehicle-dynamics-rk4-v6\",\"source_sha256\":\"6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46\",\"toolchain_sha256\":\"\"}\nR9 WALL: 25 checks, 0 failed\n"
+    },
+    {
+      "label": "heading",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "120bd4a4-f92c-44e6-9f59-824c74934afd",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://ninth_pass_heading.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:24.155761+00:00",
+        "label": "a36-r9-heading",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-heading-m_vwbymv/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-heading-m_vwbymv/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R9 HEADING: 7 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.968084,
+        "log_bytes": 7150,
+        "log_sha256": "12beb17a8aa3264df8a8a89e37fa5f7bc3ab3f4ff90d3d48707a33e60d36e08e"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nRESULT lowered10um_mu08_heading_0 {\"attitude\":[1.0,0.0,0.0,0.0],\"generalized_accel\":[-0.00000000000000000339764286229367,0.0000000000000000188411510078704,-0.00038505626964474,0.00000000000000152870952980781,0.000000000000000338625620772387,0.0,0.358159013044933,0.358159013044934,0.358159013044933,0.358159013044934,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387],\"position_down\":-0.174832439435897,\"slip_accel\":[0.0000000000000000226509524152911,0.0303217604482988,0.0000000000000000226509524152911,-0.0303217604482993,0.0000000000000000226509524152911,0.0303217604482988,0.0000000000000000226509524152911,-0.0303217604482993],\"sweeps\":0,\"tire_lat_n\":[0.0,0.0,0.0,0.0],\"tire_load_n\":[13.5981770000002,13.5981770000002,13.5981770000002,13.5981770000002],\"tire_long_n\":[0.0,0.0,0.0,0.0],\"travel\":[0.0130755333333333,0.0130755333333333,0.0130755333333333,0.0130755333333333]}\nRESULT lowered10um_mu08_heading_90 {\"attitude\":[0.707106781186548,0.0,0.0,0.707106781186547],\"generalized_accel\":[0.00000000033882603187821,0.0000000915962845228664,-0.04710082844999,-0.000001540691549844,-0.0000000490433882807627,-0.00000000481120617779299,0.00000520387373906693,0.00000444149944750813,0.00000507963968771333,0.00000431363627382327,-0.00000244674836803987,0.000000144280067673814,0.00000223575730037676,-0.0000000730639813773419],\"position_down\":-0.174832439435897,\"slip_accel\":[0.000000235304936381277,0.00000080373218012873,-0.0000000217344049111152,-0.000000012845609471903,-0.000000232945630460386,0.00000079523522555207,-0.00000000000000000599967057060573,-0.0000000000000000228512935621098],\"sweeps\":112,\"tire_lat_n\":[-0.667622623453677,0.667622926321417,-0.667622845328484,0.667623156695041],\"tire_load_n\":[13.5981770000002,13.5981770000002,13.5981770000002,13.5981770000002],\"tire_long_n\":[0.0000000359655746961824,-0.00000000289985183951292,-0.0000000342720103284688,0.000000000360308896448085],\"travel\":[0.0130755333333333,0.0130755333333333,0.0130755333333333,0.0130755333333333]}\nRESULT lowered10um_mu0_heading_0 {\"attitude\":[1.0,0.0,0.0,0.0],\"generalized_accel\":[-0.00000000000000000339764286229367,0.0000000000000000188411510078704,-0.00038505626964474,0.00000000000000152870952980781,0.000000000000000338625620772387,0.0,0.358159013044933,0.358159013044934,0.358159013044933,0.358159013044934,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387],\"position_down\":-0.174832439435897,\"slip_accel\":[0.0000000000000000226509524152911,0.0303217604482988,0.0000000000000000226509524152911,-0.0303217604482993,0.0000000000000000226509524152911,0.0303217604482988,0.0000000000000000226509524152911,-0.0303217604482993],\"sweeps\":0,\"tire_lat_n\":[0.0,0.0,0.0,0.0],\"tire_load_n\":[13.5981770000002,13.5981770000002,13.5981770000002,13.5981770000002],\"tire_long_n\":[0.0,0.0,0.0,0.0],\"travel\":[0.0130755333333333,0.0130755333333333,0.0130755333333333,0.0130755333333333]}\nRESULT lowered10um_mu0_heading_90 {\"attitude\":[0.707106781186548,0.0,0.0,0.707106781186547],\"generalized_accel\":[-0.00000000000000000339764286229367,0.0000000000000000188411510078704,-0.00038505626964474,0.00000000000000152870952980781,0.000000000000000338625620772387,0.0,0.358159013044933,0.358159013044934,0.358159013044933,0.358159013044934,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387],\"position_down\":-0.174832439435897,\"slip_accel\":[0.0000000000000000226509524152911,0.0303217604482988,0.0000000000000000226509524152911,-0.0303217604482993,0.0000000000000000226509524152911,0.0303217604482988,0.0000000000000000226509524152911,-0.0303217604482993],\"sweeps\":1,\"tire_lat_n\":[0.0,0.0,0.0,0.0],\"tire_load_n\":[13.5981770000002,13.5981770000002,13.5981770000002,13.5981770000002],\"tire_long_n\":[0.0,0.0,0.0,0.0],\"travel\":[0.0130755333333333,0.0130755333333333,0.0130755333333333,0.0130755333333333]}\nRESULT equilibrium_mu08_heading_0 {\"attitude\":[1.0,0.0,0.0,0.0],\"generalized_accel\":[-0.00000000000000000339764286229367,0.0000000000000000188411510078704,0.000000000000000372598348674307,0.00000000000000152870952980781,0.000000000000000338625620772387,0.0,0.000000000000728739683300728,0.000000000000729374071272049,0.000000000000728880893958871,0.000000000000729515281930191,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387,0.000000000000000338625620772387],\"position_down\":-0.174842439435897,\"slip_accel\":[0.0000000000000000226509524152911,0.0000000000000614435140671118,0.0000000000000000226509524152911,-0.000000000000062000471319845,0.0000000000000000226509524152911,0.0000000000000614554689686863,0.0000000000000000226509524152911,-0.0000000000000620124262214194],\"sweeps\":0,\"tire_lat_n\":[0.0,0.0,0.0,0.0],\"tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"tire_long_n\":[0.0,0.0,0.0,0.0],\"travel\":[0.0130755333333333,0.0130755333333333,0.0130755333333333,0.0130755333333333]}\nRESULT equilibrium_mu08_heading_90 {\"attitude\":[0.707106781186548,0.0,0.0,0.707106781186547],\"generalized_accel\":[-0.0000000000000000751051233892326,0.0000000000000145491685923723,-0.00000000000000703453558730346,-0.000000000000242878067978766,-0.00000000000000272784896776187,0.0000000000000274030175247132,0.000000000000739331265089365,0.000000000000612634022422255,0.000000000000725939947167623,0.000000000000611452588412611,-0.000000000000154682932115278,-0.000000000000138770448767086,0.000000000000384595279744479,-0.0000000000000643423696302946],\"position_down\":-0.174842439435897,\"slip_accel\":[0.0000000000000207870734802418,0.000000000000125866697807561,0.00000000000000744280791367912,0.0000000000000114092470964153,-0.0000000000000331407477057338,0.000000000000113223720783817,-0.00000000000000000000000000000677,-0.00000000000000000000000000002106],\"sweeps\":1,\"tire_lat_n\":[-0.0000000000000673410196864818,0.000000000000131205108572917,-0.0000000000000956527879875073,0.000000000000129227427273791],\"tire_load_n\":[13.5331770000001,13.5331770000001,13.5331770000001,13.5331770000001],\"tire_long_n\":[0.00000000000000227932624721274,0.00000000000000204063899698986,-0.00000000000000580984693068361,0.00000000000000092421780993799],\"travel\":[0.0130755333333333,0.0130755333333333,0.0130755333333333,0.0130755333333333]}\nCOMPARE {\"equilibrium_mu08_generalized_difference\":0.000000000000384256654123706,\"lowered_mu08_generalized_difference\":0.35815469940866,\"lowered_mu08_lateral_force_difference\":0.667623156695041,\"lowered_mu0_generalized_difference\":0.0}\nPASS lowered matched headings differ in generalized acceleration\nPASS lowered matched headings differ in lateral tyre force\nPASS zero-grip matched headings agree\nPASS true-equilibrium matched headings agree\nPASS zero heading suppresses rows while rotated case solves them\nPASS rotated residual is below one micrometre per second squared\nPASS rotated forces use less than ten percent of available grip\nR9 HEADING: 7 checks, 0 failed\n"
+    },
+    {
+      "label": "nitro",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ac6dc7cb-9800-469c-8d4e-cc8bfd1dee9c",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://ninth_pass_nitro.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:25.127038+00:00",
+        "label": "a36-r9-nitro",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-nitro-5qenk3_n/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-nitro-5qenk3_n/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R9 NITRO: 14 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.616288,
+        "log_bytes": 2977,
+        "log_sha256": "fb0c9c3b5f103dad731a07828b2f95a7141b2f1f2ae95d07a85c378abd119273"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS: airborne initial state; no wheel or hull contacts\nPASS: initial rotor is idle and disengaged\nPASS: subdivision 1: airborne, zero clutch, unchanged body response\nPASS: subdivision 1: neutral rotor steady and full-throttle rotor speeds up\nPASS: subdivision 2: airborne, zero clutch, unchanged body response\nPASS: subdivision 2: neutral rotor steady and full-throttle rotor speeds up\nPASS: subdivision 4: airborne, zero clutch, unchanged body response\nPASS: subdivision 4: neutral rotor steady and full-throttle rotor speeds up\nPASS: subdivision 8: airborne, zero clutch, unchanged body response\nPASS: subdivision 8: neutral rotor steady and full-throttle rotor speeds up\nPASS: 240 Hz rotor increment agrees with independent source-equation oracle\nPASS: empty-fuel engine rundown has zero combustion and zero clutch output\nPASS: fuelled and empty cases have equal body bytes, but opposite engine momentum change\nPASS: empty-fuel rundown agrees with independent drag midpoint calculation\nR9_REACTION_RESULT={\"elapsed_s\":0.00416666666666667,\"failures\":0,\"fixture\":\"synthetic-airborne-stock-monster-car-2\",\"identity\":{\"abi_version\":1,\"backend\":\"gdscript_reference\",\"backend_version\":\"openrc-nitro-ground-vehicle-composite-v2+openrc-ground-vehicle-dynamics-rk4-v6\",\"binary_sha256\":\"\",\"implementation_artifact_kind\":\"gdscript_source\",\"solver_version\":\"openrc-nitro-powertrain-midpoint-v2+openrc-ground-vehicle-dynamics-rk4-v6\",\"source_sha256\":\"070e07f78a2d3531611b58c5c02d51a4c2787ef780ede69f92d6a40dc1066c94\",\"toolchain_sha256\":\"\"},\"model_identity\":{\"format\":\"openrc-ground-vehicle\",\"id\":\"monster-car-2\",\"sha256\":\"088a71ccd4988e72a0947a860460d8195463cb3fbff7462033ea0031c713564c\",\"version\":\"1\"},\"results\":[{\"airborne\":true,\"body_bytes_equal\":true,\"clutch_disengaged\":true,\"dt_s\":0.00416666666666667,\"full_engine_rpm\":4548.02847172951,\"full_flywheel_delta_h_nms\":0.000502952979828575,\"neutral_engine_rpm\":4500.0,\"neutral_flywheel_delta_h_nms\":0.0,\"substeps\":1},{\"airborne\":true,\"body_bytes_equal\":true,\"clutch_disengaged\":true,\"dt_s\":0.00208333333333333,\"full_engine_rpm\":4547.99815451706,\"full_flywheel_delta_h_nms\":0.000502635498722231,\"neutral_engine_rpm\":4500.0,\"neutral_flywheel_delta_h_nms\":0.0,\"substeps\":2},{\"airborne\":true,\"body_bytes_equal\":true,\"clutch_disengaged\":true,\"dt_s\":0.00104166666666667,\"full_engine_rpm\":4547.99051786834,\"full_flywheel_delta_h_nms\":0.000502555527923772,\"neutral_engine_rpm\":4500.0,\"neutral_flywheel_delta_h_nms\":0.0,\"substeps\":4},{\"airborne\":true,\"body_bytes_equal\":true,\"clutch_disengaged\":true,\"dt_s\":0.000520833333333333,\"full_engine_rpm\":4547.98860150067,\"full_flywheel_delta_h_nms\":0.000502535459768501,\"neutral_engine_rpm\":4500.0,\"neutral_flywheel_delta_h_nms\":0.0,\"substeps\":8}],\"rundown\":{\"body_bytes_equal\":true,\"fuelled_delta_h_nms\":0.000797350156602545,\"initial_engine_rad_s\":700.0,\"no_fuel_delta_h_nms\":-0.0000712455468750022}}\nR9 NITRO: 14 checks, 0 failed\n"
+    },
+    {
+      "label": "session",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e8d6331d-ea41-4abb-a44c-560a0ffb8b3a",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://ninth_pass_session.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:25.745285+00:00",
+        "label": "a36-r9-session",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-session-otcd1g15/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-session-otcd1g15/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R9 SESSION: 39 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.536638,
+        "log_bytes": 6855,
+        "log_sha256": "5284b28e32b26d999a682cb8180c3d4a099e0918e62e4b2a839f4bfcf8df7240"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS reference backend selection\nPASS stock field loads\nPASS stock Bisonte airfield preparation\nPASS fixture default runway heading is east\nPASS synthetic box admitted through production airfield preparation\nPASS wall does not alter initial supported pose\nPASS prepared session stage accepts exactly one near-1-N wall contact\nPASS wall adds a substantial wheel acceleration to the same prepared no-wall state\nPASS wall leaves the ground and brake solution unchanged\nPASS neutral sample and explicit resume accepted\nPASS one braked wall tick committed by shared kernel\nPASS accepted tick moves relative wheel spin\nPASS matched no-wall braked tick accepted\nPASS wall changes the committed tick relative to matched no-wall control\nPASS wall tick checkpoint admitted and restores exact state\nR9_WALL_SESSION={\"accepted_tick\":1,\"backend\":{\"abi_version\":1,\"backend\":\"gdscript_reference\",\"backend_version\":\"openrc-ground-vehicle-dynamics-rk4-v6\",\"binary_sha256\":\"\",\"implementation_artifact_kind\":\"gdscript_source\",\"solver_version\":\"openrc-ground-vehicle-dynamics-rk4-v6\",\"source_sha256\":\"6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46\",\"toolchain_sha256\":\"\"},\"body_velocity_after_m_s\":[-0.000282929454204876,0.000623722801557916,0.0000133968909776028],\"fixture\":\"stock Bisonte/field, synthetic normalized box at spawn\",\"identities\":{\"course\":{\"format\":\"openrc-airfield-course\",\"id\":\"airfield-default\",\"sha256\":\"2f182a63c1f3dc84c79644ccc2237807403f3752fa2d6594cd6f1079921526c0\",\"version\":\"1\"},\"model\":{\"format\":\"openrc-ground-vehicle\",\"id\":\"mt8-bisonte-electric-4wd-estimate-v1\",\"sha256\":\"795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96\",\"version\":\"1\"},\"vehicle_id\":\"mt8-bisonte\"},\"initial_sweeps\":128,\"initial_wall_load_n\":1.0000000000002,\"initial_wheel_acceleration_rad_s2\":[-0.312106602959798,-0.314309446079667,-0.313171240219497,-0.313951233984345],\"no_wall_initial_wheel_acceleration_rad_s2\":[0.00184463102454739,-0.000358212095321813,0.000779993764847725,-0.000000000000000145716771982052],\"no_wall_wheel_spin_after_rad_s\":[-0.00713847936913038,-0.00656163014268472,-0.00706759743675739,-0.0261621283398937],\"wheel_spin_after_rad_s\":[-0.0435636715956484,-0.0411304493307041,-0.0430153271080323,-0.044133145109609],\"world\":{\"identity\":\"c041cba4d2553aeb020e535c783a3a8167949f2d32b2d064dada7dad6631e198\",\"proxies\":[{\"cos_heading\":1.0,\"down\":-1.0,\"east\":0.480933333333333,\"half_down\":1.0,\"half_x\":0.15,\"half_z\":1.0,\"id\":\"r9-synthetic-wall\",\"north\":15.0,\"response_class\":\"hard_terminal\",\"shape\":\"box\",\"sin_heading\":0.0}]}}\nPASS heading fixture has validated stock vehicle/course and supported height\nPASS synthetic heading/height course passes full loader 0.0\nPASS synthetic course passes public Session.prepare 0.0\nPASS prepared yaw stage accepts four tyre contacts 0.0\nPASS neutral yaw tick commits 0.0\nPASS synthetic heading/height course passes full loader 1.6\nPASS synthetic course passes public Session.prepare 1.6\nPASS prepared yaw stage accepts four tyre contacts 1.6\nPASS neutral yaw tick commits 1.6\nPASS only zero heading skips the prepared tyre solve\nPASS yaw-dependent derivative changes accepted suspension rates\nR9_HEADING_SESSION={\"fixture\":\"stock vehicle; fully validated practice variants change start heading and CG height only, with honest provenance\",\"max_travel_rate_difference_m_s\":0.000304916359520067,\"records\":[{\"accepted_tick\":1,\"heading_rad\":0.0,\"identities\":{\"course\":{\"format\":\"openrc-ground-course\",\"id\":\"mt8-practice-course-estimate-v1\",\"sha256\":\"fa7601340cb6b444532fd1f16948eb5661824c2c550b85b36313a55a23ec4e62\",\"version\":\"1\"},\"model\":{\"format\":\"openrc-ground-vehicle\",\"id\":\"mt8-bisonte-electric-4wd-estimate-v1\",\"sha256\":\"795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96\",\"version\":\"1\"},\"vehicle_id\":\"mt8-bisonte\"},\"lateral_force_n\":[0.0,0.0,0.0,0.0],\"sweeps\":0,\"travel_acceleration_m_s2\":[0.358159013044933,0.358159013044934,0.358159013044933,0.358159013044934],\"travel_rates_after_m_s\":[0.000503892947474734,0.000503891956256558,0.000503892897321286,0.000503891903513634],\"up_m\":0.174832439435897},{\"accepted_tick\":1,\"heading_rad\":1.5707963267949,\"identities\":{\"course\":{\"format\":\"openrc-ground-course\",\"id\":\"mt8-practice-course-estimate-v1\",\"sha256\":\"39a3964d19d457f580970ea3e7f6a2a6f43fa750cb25c75df5ae146427607949\",\"version\":\"1\"},\"model\":{\"format\":\"openrc-ground-vehicle\",\"id\":\"mt8-bisonte-electric-4wd-estimate-v1\",\"sha256\":\"795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96\",\"version\":\"1\"},\"vehicle_id\":\"mt8-bisonte\"},\"lateral_force_n\":[-0.667622623453677,0.667622926321417,-0.667622845328484,0.667623156695041],\"sweeps\":112,\"travel_acceleration_m_s2\":[0.00000520387373906693,0.00000444149944750813,0.00000507963968771333,0.00000431363627382327],\"travel_rates_after_m_s\":[0.000198976587954667,0.000228462907257268,0.00027443916472255,0.000283762890151115],\"up_m\":0.174832439435897}]}\nPASS stock nitro and practice course load\nPASS elevated practice spawn accepted 0.0\nPASS prepared nitro session is airborne 0.0\nPASS neutral and resume accepted 0.0\nPASS nitro composite policy commits tick 0.0\nPASS session remains airborne and clutch open 0.0\nPASS elevated practice spawn accepted 1.0\nPASS prepared nitro session is airborne 1.0\nPASS neutral and resume accepted 1.0\nPASS nitro composite policy commits tick 1.0\nPASS session remains airborne and clutch open 1.0\nPASS accepted neutral/full session body states are byte-identical\nPASS accepted full-throttle session changes flywheel speed\nR9_NITRO_SESSION={\"body_bytes_equal\":true,\"fixture\":\"stock nitro and practice, +5m public preparation height offset\",\"records\":[{\"accepted_tick\":1,\"body_rates_rad_s\":[0.0100955099863415,-0.00240829388706814,0.000142524783809752],\"final_rpm\":4500.0,\"flywheel_delta_h_nms\":0.0,\"identities\":{\"course\":{\"format\":\"openrc-ground-course\",\"id\":\"mt8-practice-course-estimate-v1\",\"sha256\":\"e73d770799791cf8dafeb22c77c78cfd4d4adca3450093c140cb485233141d1c\",\"version\":\"1\"},\"model\":{\"format\":\"openrc-ground-vehicle\",\"id\":\"monster-car-2\",\"sha256\":\"088a71ccd4988e72a0947a860460d8195463cb3fbff7462033ea0031c713564c\",\"version\":\"1\"},\"vehicle_id\":\"monster-car-2\"},\"initial_rpm\":4500.0,\"throttle\":0.0},{\"accepted_tick\":1,\"body_rates_rad_s\":[0.0100955099863415,-0.00240829388706814,0.000142524783809752],\"final_rpm\":4548.02847172951,\"flywheel_delta_h_nms\":0.000502952979828575,\"identities\":{\"course\":{\"format\":\"openrc-ground-course\",\"id\":\"mt8-practice-course-estimate-v1\",\"sha256\":\"e73d770799791cf8dafeb22c77c78cfd4d4adca3450093c140cb485233141d1c\",\"version\":\"1\"},\"model\":{\"format\":\"openrc-ground-vehicle\",\"id\":\"monster-car-2\",\"sha256\":\"088a71ccd4988e72a0947a860460d8195463cb3fbff7462033ea0031c713564c\",\"version\":\"1\"},\"vehicle_id\":\"monster-car-2\"},\"initial_rpm\":4500.0,\"throttle\":1.0}]}\nR9 SESSION: 39 checks, 0 failed\n"
+    },
+    {
+      "label": "baseline-data",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "91369bf6-1ba0-43cd-9694-c00638d62b0e",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_vehicle_data.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:28.283527+00:00",
+        "label": "a36-r9-baseline-data",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-baseline-data-nd1mieag/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-baseline-data-nd1mieag/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "PASS: invalid axle brake fraction rejected: 0.85"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.464888,
+        "log_bytes": 1745,
+        "log_sha256": "26ae51751dab532b1d963eabbb62b1c0565350f80368b294bedab55451d5b1c2"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS: default vehicle data loads\nPASS: vehicle format is separately versioned\nPASS: identity binds the file bytes\nPASS: geometry conversion yields FRD corner order\nPASS: corner station signs match FRD\nPASS: kernel model has full explicit inertia\nPASS: kernel model includes slip and torque fade\nPASS: practice course loads for the vehicle kernel\nPASS: estimated MT8 model constructs a supported flat-start state\nPASS: initial kernel state is finite and supported\nPASS: identity settings experiment succeeds\nPASS: zero ballast preserves mass and CG\nPASS: experiment identity includes base and settings\nPASS: ballast experiment succeeds\nPASS: ballast updates sprung mass and weighted CG\nPASS: ballast shifts hull probes relative to the new CG\nPASS: ballast updates inertia with parallel-axis terms\nPASS: experiment does not mutate base\nPASS: zero gravity is an intentional experiment setting\nPASS: out-of-range experiment rejected atomically\nPASS: vehicle fixture parses as JSON\nPASS: unknown vehicle fields reject the whole model\nPASS: wrong physical units reject the whole model\nPASS: legacy descriptor defaults to equal axle braking\nPASS: legacy normalization does not mutate authored quantities\nPASS: valid axle brake fraction accepted: 0.0\nPASS: valid axle brake fraction accepted: 0.5\nPASS: valid axle brake fraction accepted: 0.85\nPASS: valid axle brake fraction accepted: 1.0\nPASS: invalid axle brake fraction rejected: -0.01\nPASS: invalid axle brake fraction rejected: 1.01\nPASS: invalid axle brake fraction rejected: nan\nPASS: invalid axle brake fraction rejected: inf\nPASS: invalid axle brake fraction rejected: true\nPASS: invalid axle brake fraction rejected: 0.85\n"
+    },
+    {
+      "label": "baseline-obstacles",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2319c695-721c-4a76-8b02-639f84ca016f",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_obstacle_contacts.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:28.750136+00:00",
+        "label": "a36-r9-baseline-obstacles",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-baseline-obstacles-ubdwof74/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-baseline-obstacles-ubdwof74/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.498113,
+        "log_bytes": 1173,
+        "log_sha256": "0704c5449fad96dcf148f76c678f4a7d11a3f32152e3aadd9bae7e8505fd9426"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   Bisonte contact test model loads  []\nok   flat test state initializes\nok   sphere contacts report tire and hull wall support\nok   wall loads stay separate from terrain tire loads\nok   wall spring energy is included without creating friction power at rest\nok   empty wall samples stay inactive\nok   regularized wall friction dissipates while sliding  friction power -648.000000 W\nok   malformed, inverted, and excessive wall samples fail closed\nok   4 m/s approach reaches a wall contact before crossing it  north -2.682 m, speed 2.545 m/s\nok   wall impact remains finite and loses forward speed  speed -2.487 m/s, peak 4.000 m/s\nok   reverse-speed impact stays finite and does not tunnel through the wall\nok   shared wall response matches the reference backend  max acceleration delta 0.000000000\nok   10 m/s rolling wall impact is detected and stays dissipative at 240 Hz  peak load 3100.0 N, energy 315.286→max 315.286 J\nok   10 m/s rolling wall impact is detected and stays dissipative at 480 Hz  peak load 3037.2 N, energy 315.286→max 315.286 J\nRCV obstacle contacts: 14 checks, 0 failures\n"
+    },
+    {
+      "label": "baseline-nitro-session",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "99df0a2b-048a-441e-b3c3-f6320e1cb91b",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r9-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_nitro_session.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-22T14:23:33.255773+00:00",
+        "label": "a36-r9-baseline-nitro-session",
+        "log": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-baseline-nitro-session-hel2mepk/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r9-final-reproduction/checks/a36-r9-baseline-nitro-session-hel2mepk/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 26.923469,
+        "log_bytes": 109,
+        "log_sha256": "255d6052d43e354e26ba657466bc113ddaf72fdf2bafe26524b8d77e4b5d13f4"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nRCV Nitro session: 28 checks, 0 failed\n"
+    }
+  ],
+  "oracles": [
+    {
+      "command": "ninth_pass_oracles.py --evidence <out>/evidence.json --project <out>/project",
+      "exit_code": 0,
+      "stdout": "R9_ORACLES={\"heading\": {\"independent_zero_heading_patch_acceleration_m_s2\": [5.496608095565215e-19, 0.03032176044820702, 7.997776561685135e-19, -0.030321760448207002, 5.496608095565217e-19, 0.03032176044820702, 7.997776561685136e-19, -0.030321760448207002], \"independent_zero_heading_travel_acceleration_m_s2\": [0.35815901304384634, 0.3581590130438463, 0.35815901304384634, 0.3581590130438463], \"max_travel_acceleration_difference_m_s2\": 0.35815469940757244, \"rotated_patch_residual_m_s2\": 8.037321801287299e-07}, \"nitro\": {\"independent_subdivision_results\": [{\"full_delta_h_nms\": 0.000502952979828575, \"pieces\": 1}, {\"full_delta_h_nms\": 0.0005026354987222306, \"pieces\": 2}, {\"full_delta_h_nms\": 0.0005025555279237722, \"pieces\": 4}, {\"full_delta_h_nms\": 0.0005025354597684952, \"pieces\": 8}], \"no_fuel_delta_h_nms\": -7.124554687500222e-05, \"scope\": \"scalar rotor change; physical shaft conservation inference requires axis, inventory and external-port definitions\"}, \"numpy_version\": \"2.3.5\", \"ok\": true, \"session_max_heading_travel_rate_difference_m_s\": 0.000304916359520067, \"wall\": {\"feasible_constraint_residual\": 4.907185768843192e-14, \"feasible_reactions\": [0.17516013676283082, 0.14508906060223914, 0.1751601367629526, -0.14508906060227517, 0.1751601367630158, -0.14508906060226726, 0.17516013676282666, 0.14508906060230328, 0.017028583226840473, 0.01702858322685266, 0.017028583226858945, 0.017028583226840116], \"independent_relative_wheel_acceleration_rad_s2\": [-0.3139519254897862, -0.31395192548978623, -0.31395192548978623, -0.31395192548978623], \"independent_slip_acceleration_m_s2\": [-0.20215992848748543, 0.005541908435305686, -0.20215992848748543, -0.005541908435305691, -0.20215992848748543, -0.00554190843530569, -0.20215992848748543, 0.005541908435305685], \"normal_load_n_per_tyre\": 13.533176999999998, \"scope\": \"linear zero-velocity frozen-normal stage feasibility, not a trajectory or exact product solve\", \"stock_rest_travel_m\": 0.013075533333333333}}\n",
+      "stderr": ""
+    }
+  ],
+  "ok": true,
+  "all_source_bytes_unchanged_after_execution": true,
+  "evidence_note": "Retained full small logs and original checked reports. Host-specific paths describe this capture; reproduce_ninth_pass.py reconstructs a new independent output directory.",
+  "assertion_counts": {
+    "new_observation_checks": 85,
+    "unchanged_baseline_checks": 77,
+    "breakdown": {
+      "walls": 25,
+      "heading": 7,
+      "nitro": 14,
+      "session": 39,
+      "baseline_data": 35,
+      "baseline_obstacles": 14,
+      "baseline_nitro_session": 28
+    }
+  },
+  "independent_math_families": [
+    "14-DOF wall/contact/brake constraints and feasible reactions",
+    "yaw covariance and extra normal-load dynamics",
+    "disengaged nitro midpoint and rundown; session boundary values"
+  ]
+}
