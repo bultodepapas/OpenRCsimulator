@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-请使用 v0.3.0 或更高版本，并在文件选择器中选择**ClearView 飞机 ZIP**。v0.2.9 只能导入预览，不能试飞或保存。
+自动设置和直升机试飞需要 v0.3.2 或更高版本。在文件选择器中选择 **ClearView 飞行器 ZIP**。v0.3.0 支持固定翼试飞，v0.2.9 支持预览。
 
-**实验性。**模型保留 ClearView 外观，但使用估算的 OpenRC 教练机配置飞行，而不是 ClearView 的飞行模型。已保存的飞机暂时无法从主页启动。
+**实验性。**模型保留 ClearView 外观，但使用 OpenRC 物理而不是 ClearView 的飞行模型飞行：固定翼飞机使用按模型尺寸估算的配置，飞翼使用标准 Skywalker X8 物理，直升机使用 X-Cell .60 参考物理。已保存的飞机暂时无法从主页启动。
 
 ## 下载地址
 
@@ -19,14 +19,14 @@
 
 1. 下载模型的 `.zip` 文件，保持压缩状态。
 2. 打开 **工坊 → 创建飞机… → 导入 → 选择模型…**。选择 ZIP；如果是模型包，请选择一架飞机。
-3. 检查预览和消息。确认审核，选择**创建估算的 OpenRC 配置**，设置方向和尺寸，然后使用**试飞**。为其命名并选择**保存飞机**或**保存草稿**。
+3. 检查预览和消息。选择**自动设置以便飞行**（直升机请选择**作为直升机飞行**），查看估算值，然后使用**试飞**。为其命名并选择**保存飞机**或**保存草稿**。
 
 ## 支持哪些文件？
 
-完整的 **ClearView v5/v6 飞机 ZIP 文件**，最大 **64 MiB**：`params.txt`、它引用的 `.ac` 模型，以及保存在原始文件夹中的纹理。涂装需要完整模型。
+完整的 **ClearView 飞机、VTOL 和直升机 ZIP 文件**，最大 **64 MiB**：`params.txt`、它引用的 `.ac` 模型，以及保存在原始文件夹中的纹理。涂装需要完整模型。
 
 ## 限制
 
-ClearView 飞行物理不会被转移。直升机可导入用于预览、活动部件和草稿，但暂时无法飞行。场景、原始 FMS 文件和 `.lst` 列表不在此流程范围内。纹理可以是 PNG、JPEG、GIF 或 24 位 BMP。缺失文件或不支持的几何体可能会阻止预览；请阅读消息并尝试另一个完整的 ZIP。
+ClearView 飞行物理不会被转移，因此操控手感并非对原版的复现。飞翼和直升机保留自己的外观，但使用标准机型的物理，尺寸和动力也与该机型一致。场景、原始 FMS 文件和 `.lst` 列表不在此流程范围内。纹理可以是 PNG、JPEG、GIF 或 24 位 BMP。缺失文件或不支持的几何体可能会阻止预览；请阅读消息并尝试另一个完整的 ZIP。
 
 请保留作者署名，并遵守每个模型的许可协议。

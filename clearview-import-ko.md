@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-v0.3.0 이상을 사용하고 파일 선택기에서 **ClearView aircraft ZIP**을 고르세요. v0.2.9는 미리보기만 가져오며 시험 비행과 저장은 할 수 없습니다.
+자동 설정과 헬리콥터 시험 비행에는 v0.3.2 이상이 필요합니다. 파일 선택기에서 **ClearView 항공기 ZIP**을 선택하세요. v0.3.0에서는 고정익 시험 비행을, v0.2.9에서는 미리 보기를 지원합니다.
 
-**실험적 기능입니다.** 모델은 ClearView 외관을 유지하지만 ClearView 비행 모델이 아닌 추정 OpenRC 트레이너 구성으로 비행합니다. 저장된 기체는 아직 홈에서 실행할 수 없습니다.
+**실험적 기능입니다.** 모델은 ClearView 외관을 유지하지만 ClearView 비행 모델이 아닌 OpenRC 물리로 비행합니다. 비행기는 모델 크기에 맞춰 추정한 구성으로, 전익기는 기본 Skywalker X8 물리로, 헬리콥터는 X-Cell .60 기준 물리로 비행합니다. 저장된 기체는 아직 홈에서 실행할 수 없습니다.
 
 ## 다운로드 위치
 
@@ -19,14 +19,14 @@ v0.3.0 이상을 사용하고 파일 선택기에서 **ClearView aircraft ZIP**�
 
 1. 모델의 `.zip`을 다운로드하고 압축을 풀지 마세요.
 2. **Workshop → Create aircraft… → Import → Choose model…**을 여세요. ZIP을 선택하고, 팩이면 항공기 하나를 고르세요.
-3. 미리보기와 메시지를 확인하세요. 검토를 확인하고 **Create an estimated OpenRC configuration**을 선택한 뒤 방향과 크기를 설정하고 **Test fly**를 사용하세요. 이름을 정하고 **Save aircraft** 또는 **Save draft**를 선택하세요.
+3. 미리보기와 메시지를 확인하세요. **Set up for flight automatically**를 선택하고(헬리콥터는 **Fly as a helicopter**) 추정값을 검토한 뒤 **Test fly**를 사용하세요. 이름을 정하고 **Save aircraft** 또는 **Save draft**를 선택하세요.
 
 ## 어떤 파일을 사용할 수 있나요?
 
-완전한 **ClearView v5/v6 비행기 ZIP**, 최대 **64 MiB**: `params.txt`, 이 파일이 참조하는 `.ac` 모델, 원래 폴더에 있는 텍스처가 필요합니다. 재도색 파일에는 전체 모델이 필요합니다.
+완전한 **ClearView 비행기, VTOL, 헬리콥터 ZIP**, 최대 **64 MiB**: `params.txt`, 이 파일이 참조하는 `.ac` 모델, 원래 폴더에 있는 텍스처가 필요합니다. 재도색 파일에는 전체 모델이 필요합니다.
 
 ## 제한 사항
 
-ClearView 비행 물리는 옮겨지지 않습니다. 헬리콥터는 미리보기, 움직이는 부품, 초안용으로 가져올 수 있지만 아직 비행할 수 없습니다. 지형, 원본 FMS 파일과 `.lst` 목록은 이 과정에 포함되지 않습니다. 텍스처는 PNG, JPEG, GIF 또는 24비트 BMP를 사용할 수 있습니다. 누락된 파일이나 지원되지 않는 형상은 미리보기를 막을 수 있으니 메시지를 읽고 다른 완전한 ZIP을 시도하세요.
+ClearView 비행 물리는 옮겨지지 않으므로 조종 특성은 원본을 그대로 재현하지 않습니다. 전익기와 헬리콥터는 고유한 외관을 유지한 채 기본 기체의 물리를 사용하며, 크기와 출력도 그 기체를 따릅니다. 지형, 원본 FMS 파일과 `.lst` 목록은 이 과정에 포함되지 않습니다. 텍스처는 PNG, JPEG, GIF 또는 24비트 BMP를 사용할 수 있습니다. 누락된 파일이나 지원되지 않는 형상은 미리보기를 막을 수 있으니 메시지를 읽고 다른 완전한 ZIP을 시도하세요.
 
 제작자 크레딧을 유지하고 각 모델의 라이선스를 지켜 주세요.

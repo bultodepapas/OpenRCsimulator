@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Usa la v0.3.0 o successiva e scegli **ZIP aereo ClearView** nel selettore di file. La v0.2.9 importa solo l’anteprima, senza voli di prova né salvataggio.
+Usa la v0.3.2 o una versione successiva per la configurazione automatica e le prove in elicottero. Nel selettore dei file scegli **ZIP aeromobile ClearView**. La v0.3.0 consente di provare gli aerei in volo e la v0.2.9 offre l’anteprima.
 
-**Sperimentale.** Il modello mantiene l’aspetto di ClearView, ma vola con una configurazione stimata da addestratore OpenRC, non con il modello di volo di ClearView. Gli aerei salvati non si possono ancora avviare dalla Home.
+**Sperimentale.** Il modello mantiene l’aspetto di ClearView, ma vola con la fisica di OpenRC, non con il modello di volo di ClearView: gli aerei con una configurazione stimata dimensionata sul modello, le ali volanti con la fisica standard dello Skywalker X8 e gli elicotteri con la fisica di riferimento X-Cell .60. Gli aerei salvati non si possono ancora avviare dalla Home.
 
 ## Dove scaricare
 
@@ -19,14 +19,14 @@ Esempio testato per l’importazione: [MC Extra 330 Red](https://time2rc.s3.amaz
 
 1. Scarica il `.zip` del modello e lascialo compresso.
 2. Apri **Officina → Crea aereo… → Importazione → Scegli modello…**. Seleziona lo ZIP; per un pacchetto, scegli un aereo.
-3. Controlla l’anteprima e i messaggi. Conferma la revisione, seleziona **Crea una configurazione OpenRC stimata**, imposta orientamento e dimensioni, poi usa **Vola per provare**. Dagli un nome e scegli **Salva aereo** o **Salva bozza**.
+3. Controlla l’anteprima e i messaggi. Seleziona **Imposta automaticamente per il volo** (per un elicottero, **Vola come elicottero**), controlla le stime, poi usa **Vola per provare**. Dagli un nome e scegli **Salva aereo** o **Salva bozza**.
 
 ## Quali file funzionano?
 
-**ZIP completi di aerei ClearView v5/v6**, fino a **64 MiB**: `params.txt`, il modello `.ac` a cui fa riferimento e le texture nelle cartelle originali. Le riverniciature richiedono il modello completo.
+**ZIP completi di aerei, VTOL ed elicotteri ClearView**, fino a **64 MiB**: `params.txt`, il modello `.ac` a cui fa riferimento e le texture nelle cartelle originali. Le riverniciature richiedono il modello completo.
 
 ## Limiti
 
-La fisica di volo di ClearView non viene trasferita. Gli elicotteri si importano per anteprima, parti mobili e bozze, ma non possono ancora volare. Scenari, file FMS grezzi ed elenchi `.lst` sono esclusi da questo flusso. Le texture possono essere PNG, JPEG, GIF o BMP a 24 bit. File mancanti o geometria non supportata possono bloccare l’anteprima; leggi il messaggio e prova un altro ZIP completo.
+La fisica di volo di ClearView non viene trasferita, quindi il comportamento non riproduce quello dell’originale. Le ali volanti e gli elicotteri mantengono il proprio aspetto sulla fisica di un velivolo standard, con le dimensioni e la potenza di quel velivolo. Scenari, file FMS grezzi ed elenchi `.lst` sono esclusi da questo flusso. Le texture possono essere PNG, JPEG, GIF o BMP a 24 bit. File mancanti o geometria non supportata possono bloccare l’anteprima; leggi il messaggio e prova un altro ZIP completo.
 
 Mantieni i crediti dell’autore e rispetta la licenza di ogni modello.

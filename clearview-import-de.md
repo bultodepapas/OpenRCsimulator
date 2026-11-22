@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Verwende v0.3.0 oder neuer und wähle in der Dateiauswahl **ClearView-Flugzeug-ZIP**. v0.2.9 importiert nur die Vorschau, ohne Testflüge oder Speichern.
+Für die automatische Einrichtung und Hubschrauber-Testflüge benötigst du v0.3.2 oder neuer. Wähle im Dateidialog **ClearView-Flugzeug-ZIP**. v0.3.0 erlaubt Testflüge mit Flächenflugzeugen, v0.2.9 bietet eine Vorschau.
 
-**Experimentell.** Das Modell behält sein ClearView-Aussehen, fliegt aber mit einer geschätzten OpenRC-Trainerkonfiguration, nicht mit dem ClearView-Flugmodell. Gespeicherte Flugzeuge können noch nicht vom Startbildschirm gestartet werden.
+**Experimentell.** Das Modell behält sein ClearView-Aussehen, fliegt aber mit der OpenRC-Physik, nicht mit dem ClearView-Flugmodell: Flugzeuge mit einer geschätzten, auf das Modell abgestimmten Konfiguration, Nurflügler mit der Standardphysik des Skywalker X8 und Hubschrauber mit der Referenzphysik des X-Cell .60. Gespeicherte Flugzeuge können noch nicht vom Startbildschirm gestartet werden.
 
 ## Wo herunterladen?
 
@@ -19,14 +19,14 @@ Importgetestetes Beispiel: [MC Extra 330 Red](https://time2rc.s3.amazonaws.com/m
 
 1. Lade die `.zip`-Datei des Modells herunter und entpacke sie nicht.
 2. Öffne **Werkstatt → Flugzeug erstellen… → Import → Modell wählen…**. Wähle die ZIP-Datei; wähle bei einem Paket ein Flugzeug.
-3. Prüfe Vorschau und Meldungen. Bestätige die Prüfung, wähle **Geschätzte OpenRC-Konfiguration erstellen**, lege Ausrichtung und Größe fest und nutze **Probeflug**. Gib einen Namen ein und wähle **Flugzeug speichern** oder **Entwurf speichern**.
+3. Prüfe Vorschau und Meldungen. Wähle **Automatisch für den Flug einrichten** (bei einem Hubschrauber **Als Hubschrauber fliegen**), prüfe die Schätzwerte und nutze **Probeflug**. Gib einen Namen ein und wähle **Flugzeug speichern** oder **Entwurf speichern**.
 
 ## Welche Dateien funktionieren?
 
-Vollständige **ClearView-v5/v6-Flugzeug-ZIPs** bis **64 MiB**: `params.txt`, das darin referenzierte `.ac`-Modell und Texturen in ihren ursprünglichen Ordnern. Neulackierungen benötigen das vollständige Modell.
+Vollständige **ClearView-Flugzeug-, VTOL- und Hubschrauber-ZIPs** bis **64 MiB**: `params.txt`, das darin referenzierte `.ac`-Modell und Texturen in ihren ursprünglichen Ordnern. Neulackierungen benötigen das vollständige Modell.
 
 ## Grenzen
 
-Die ClearView-Flugphysik wird nicht übernommen. Hubschrauber werden für Vorschau, bewegliche Teile und Entwürfe importiert, können aber noch nicht fliegen. Szenerien, rohe FMS-Dateien und `.lst`-Listen gehören nicht zu diesem Ablauf. Texturen können PNG, JPEG, GIF oder 24-Bit-BMP sein. Fehlende Dateien oder nicht unterstützte Geometrie können die Vorschau verhindern; lies die Meldung und versuche ein anderes vollständiges ZIP.
+Die ClearView-Flugphysik wird nicht übernommen, das Flugverhalten ist daher keine Nachbildung des Originals. Nurflügler und Hubschrauber behalten ihr eigenes Aussehen auf der Physik eines Standard-Fluggeräts, mit dessen Größe und Leistung. Szenerien, rohe FMS-Dateien und `.lst`-Listen gehören nicht zu diesem Ablauf. Texturen können PNG, JPEG, GIF oder 24-Bit-BMP sein. Fehlende Dateien oder nicht unterstützte Geometrie können die Vorschau verhindern; lies die Meldung und versuche ein anderes vollständiges ZIP.
 
 Bewahre die Urheberangaben und beachte die Lizenz jedes Modells.

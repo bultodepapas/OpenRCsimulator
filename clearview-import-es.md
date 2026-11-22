@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Usa la v0.3.0 o posterior y elige **ZIP de avión ClearView** en el selector de archivos. La v0.2.9 solo importa la vista previa, sin vuelos de prueba ni guardado.
+Usa la v0.3.2 o posterior para la configuración automática y las pruebas de helicóptero. Elige **ZIP de avión ClearView** en el selector de archivos. La v0.3.0 permite probar aviones en vuelo y la v0.2.9 permite ver la vista previa.
 
-**Experimental.** El modelo conserva su aspecto de ClearView, pero vuela con una configuración estimada de entrenador de OpenRC, no con el modelo de vuelo de ClearView. Los aviones guardados aún no se pueden lanzar desde Inicio.
+**Experimental.** El modelo conserva su aspecto de ClearView, pero vuela con la física de OpenRC, no con el modelo de vuelo de ClearView: los aviones, con una configuración estimada ajustada al modelo; las alas voladoras, con la física estándar del Skywalker X8; y los helicópteros, con la física de referencia del X-Cell .60. Los aviones guardados aún no se pueden lanzar desde Inicio.
 
 ## Dónde descargar
 
@@ -19,14 +19,14 @@ Ejemplo con importación comprobada: [MC Extra 330 Red](https://time2rc.s3.amazo
 
 1. Descarga el `.zip` del modelo y déjalo sin descomprimir.
 2. Abre **Taller → Crear avión… → Importación → Elegir modelo…**. Selecciona el ZIP; si es un pack, elige un avión.
-3. Revisa la vista previa y los mensajes. Confirma la revisión, pulsa **Crear una configuración estimada de OpenRC**, ajusta orientación y tamaño y usa **Probar en vuelo**. Ponle un nombre y elige **Guardar avión** o **Guardar borrador**.
+3. Revisa la vista previa y los mensajes. Pulsa **Configurar para volar automáticamente** (en un helicóptero, **Volar como helicóptero**), revisa las estimaciones y usa **Probar en vuelo**. Ponle un nombre y elige **Guardar avión** o **Guardar borrador**.
 
 ## ¿Qué archivos sirven?
 
-**ZIP completos de aviones ClearView v5/v6**, de hasta **64 MiB**: `params.txt`, el modelo `.ac` que indica y sus texturas, en las carpetas originales. Las pinturas necesitan el modelo completo.
+**ZIP completos de aviones, VTOL y helicópteros de ClearView**, de hasta **64 MiB**: `params.txt`, el modelo `.ac` que indica y sus texturas, en las carpetas originales. Las pinturas necesitan el modelo completo.
 
 ## Limitaciones
 
-La física de vuelo de ClearView no se transfiere. Los helicópteros se importan para vista previa, piezas móviles y borradores, pero aún no pueden volar. Este proceso no admite escenarios, archivos FMS sin convertir ni listas `.lst`. Las texturas pueden ser PNG, JPEG, GIF o BMP de 24 bits. Los archivos faltantes o la geometría incompatible pueden impedir la vista previa; lee el mensaje y prueba otro ZIP completo.
+La física de vuelo de ClearView no se transfiere, así que el manejo no reproduce el del original. Las alas voladoras y los helicópteros conservan su propio aspecto con la física de una aeronave estándar, con el tamaño y la potencia de esa aeronave. Este proceso no admite escenarios, archivos FMS sin convertir ni listas `.lst`. Las texturas pueden ser PNG, JPEG, GIF o BMP de 24 bits. Los archivos faltantes o la geometría incompatible pueden impedir la vista previa; lee el mensaje y prueba otro ZIP completo.
 
 Conserva los créditos del autor y respeta la licencia de cada modelo.
