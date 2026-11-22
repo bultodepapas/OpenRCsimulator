@@ -145,7 +145,7 @@ class FrameCaptureTests(unittest.TestCase):
         self.assertTrue(all("detail" not in m["args"] for m in markers))
         with tempfile.TemporaryDirectory(prefix="openrc-frame-capture-") as temp:
             paths = capture.write_capture(report, Path(temp) / "capture")
-            rendered = Path(paths["html"]).read_text()
+            rendered = Path(paths["html"]).read_text(encoding="utf-8")
             self.assertIn("2 flagged frame(s) have no detail", rendered)
             self.assertIn("headless", rendered)
             self.assertIn("Headless runs cannot establish rendering", rendered)
@@ -157,7 +157,7 @@ class FrameCaptureTests(unittest.TestCase):
         report = make_report(walls=[16_000, 3_000_000_000, 32_000], flags=[0, 1 | 2 | 8, 8])
         with tempfile.TemporaryDirectory(prefix="openrc-frame-capture-") as temp:
             paths = capture.write_capture(report, Path(temp) / "capture")
-            rendered = Path(paths["html"]).read_text()
+            rendered = Path(paths["html"]).read_text(encoding="utf-8")
             self.assertIn('type="checkbox" checked', rendered)
             self.assertIn("Logarithmic vertical scale", rendered)
             self.assertIn("Math.log10(1+v)", rendered)
@@ -177,7 +177,7 @@ class FrameCaptureTests(unittest.TestCase):
             report[collection][0]["log"] = [attack]
         with tempfile.TemporaryDirectory(prefix="openrc-frame-capture-") as temp:
             paths = capture.write_capture(report, Path(temp) / "capture")
-            rendered = Path(paths["html"]).read_text()
+            rendered = Path(paths["html"]).read_text(encoding="utf-8")
             self.assertNotIn('<img src=x onerror=', rendered)
             self.assertIn('&lt;/script&gt;&lt;img src=x onerror=alert(1)&gt;&amp;&#8232;&#8233;@@WORST@@', rendered)
             self.assertEqual(rendered.count('<script'), 2)
@@ -310,7 +310,7 @@ class FrameCaptureTests(unittest.TestCase):
         self.assertEqual((trace_episode["tid"], trace_episode["ts"], trace_episode["dur"]), (4, 16_000, 999_990))
         with tempfile.TemporaryDirectory() as tmp:
             paths = capture.write_capture(report, Path(tmp) / "out")
-            text = Path(paths["html"]).read_text()
+            text = Path(paths["html"]).read_text(encoding="utf-8")
             self.assertIn("Sustained slowdown", text)
             self.assertIn("42–71", text)
             self.assertIn("999.990", text)

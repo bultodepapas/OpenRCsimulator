@@ -1675,7 +1675,7 @@ class FrameDiagnosticsTests(unittest.TestCase):
                     patch.object(debugctl, "show"), contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(debugctl.capture_frames(["window=120", "--out", str(destination)]), 0)
             request.assert_called_once_with("frames", {"window": 120, "samples": True, "events": 200})
-            write.assert_called_once_with(report, destination, sustained_frames=30)
+            write.assert_called_once_with(report, destination.resolve(), sustained_frames=30)
 
     def test_saved_capture_is_reanalyzed_without_discovering_live_sessions(self):
         from tools.debug.test_frame_capture import make_report
@@ -1735,7 +1735,7 @@ class FrameDiagnosticsTests(unittest.TestCase):
                     patch.object(debugctl, "show"), contextlib.redirect_stdout(io.StringIO()):
                 debugctl.capture_frames(["sustained_frames=2", "--out", str(destination)])
             request.assert_called_once_with("frames", {"samples": True, "events": 200})
-            write.assert_called_once_with({}, destination, sustained_frames=2)
+            write.assert_called_once_with({}, destination.resolve(), sustained_frames=2)
 
     def test_existing_capture_is_refused_before_contacting_app(self):
         with tempfile.TemporaryDirectory() as folder, patch.object(debugctl, "result_of") as request:
