@@ -372,6 +372,8 @@ Observer-cost controls and all three real-hardware campaigns remain open.
 
 Use the tour as a repeatable detector, then run the narrow diagnostic indicated by
 the result. Heavy tracing or screenshots are separate from the measured baseline.
+The [2026-11-21 stutter map](../../docs/research/god-test/2026-11-21-stutter-map.md)
+marks the freezes detected on Windows and the M1.
 
 | Observed symptom | Next existing tool | Controlled optimization experiment |
 | --- | --- | --- |
