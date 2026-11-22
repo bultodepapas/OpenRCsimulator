@@ -5,6 +5,7 @@ name: Telemetry contracts
 on:
   push:
     branches: [main]
+    tags: ['**'] # Preserve baseline tag checks; GitHub ignores path filters for tags.
     paths:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
