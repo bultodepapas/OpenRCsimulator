@@ -33,7 +33,7 @@ No DAU, MAU, retention, country, persistent cross-launch individual journey, dev
 
 No client wall-clock timestamps are sent. Receipt day is trusted server metadata. IDs are not proof of authenticity; a modified client can forge any measurement. Controls limit abuse but do not create trusted benchmark evidence.
 
-Retire the active collection epoch at restart, re-enable, day change or the four-hour bound. Queued old-session batches may remain for their existing ten-minute lifetime, including across the four-hour or day boundary, but do not receive new observations or migrate into a new session or consent generation. Cancel an in-flight old-session request at the same original queue deadline and fence its later callback. Session rotation alone does not prevent correlation through hardware or traffic timing.
+Retire the active collection epoch at process restart, re-enable, a UTC day change or the four-hour bound. Check before observing a frame or recording an error or accepted flight event. At a time boundary, discard unsealed data and re-prime measurement under the next token. Queued old-session batches may remain for their existing ten-minute lifetime, including across the four-hour or day boundary, but do not receive new observations or migrate into a new session or consent generation. Cancel an in-flight old-session request at the same original queue deadline and fence its later callback. Session rotation alone does not prevent correlation through hardware or traffic timing.
 
 ## Hardware and effective graphics
 
