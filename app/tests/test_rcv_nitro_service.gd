@@ -88,12 +88,25 @@ func _run() -> void:
 	_check("unsaved recording blocks service", not session.service_nitro("stop"))
 	session.free()
 	var moving = Session.new()
+	_check("unprepared session cannot service", not moving.nitro_service_stationary())
 	_check("moving session prepares", moving.prepare_default({}, "monster-car-2"))
+	_poke(moving, 3, 0.06)
+	for speed_y: float in [0.079999, 0.08, 0.080001]:
+		_poke(moving, 4, speed_y)
+		_check("stationary speed boundary at vy=%s" % speed_y,
+			moving.nitro_service_stationary() == (speed_y <= 0.08))
+	_poke(moving, 4, 0.0)
 	_poke(moving, 3, 2.0)
 	var moving_before: PackedFloat64Array = moving.state_snapshot()
 	_check("paused moving vehicle refuses refuel/stop", not moving.service_nitro("stop")
 		and moving.state_snapshot().to_byte_array() == moving_before.to_byte_array())
 	_poke(moving, 3, 0.0)
+	for wheel in range(21, 25):
+		for rate: float in [-0.500001, -0.5, 0.5, 0.500001]:
+			_poke(moving, wheel, rate)
+			_check("stationary wheel %d at %s" % [wheel, rate],
+				moving.nitro_service_stationary() == (absf(rate) <= 0.5))
+		_poke(moving, wheel, 0.0)
 	_poke(moving, 21, 2.0)
 	_check("spinning wheel refuses service", not moving.service_nitro("stop"))
 	_poke(moving, 21, 0.0)

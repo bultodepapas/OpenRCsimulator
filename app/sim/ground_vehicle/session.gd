@@ -641,11 +641,12 @@ func service_nitro(action: String) -> bool:
 
 func nitro_service_stationary() -> bool:
 	if not prepared or not _uses_nitro(_model): return false
+	var service_state := _state
 	var speed_squared := 0.0
-	for index in range(3, 6): speed_squared += _state[index] * _state[index]
+	for index in range(3, 6): speed_squared += service_state[index] * service_state[index]
 	if speed_squared > 0.01: return false
 	for index in range(21, 25):
-		if absf(_state[index]) > 0.5: return false
+		if absf(service_state[index]) > 0.5: return false
 	return true
 
 
