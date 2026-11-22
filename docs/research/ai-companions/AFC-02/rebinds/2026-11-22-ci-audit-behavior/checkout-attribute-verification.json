@@ -1,0 +1,191 @@
+{
+  "source_commit": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+  "app_tree": "9284e4433667b079d2d29467ca1ce6d7f6bb1ed5",
+  "all_app_files": 6015,
+  "attributes_sources": {
+    ".gitattributes": [
+      "7c38f5545e04d3af0ecfd0efb1bd7aa81175f5be",
+      "572eb6dc50ebb51f6325f7ac0cdf7a5b4ce4464c00fa9c8cd8545b1d27e34018"
+    ]
+  },
+  "core_autocrlf": false,
+  "core_eol": "lf",
+  "changed_raw_to_checkout": {
+    "data/aircraft/battery/moonrunner_x99_6s_pack.json": {
+      "git_blob": "a4070fb7e9fb37bfe1d3f823afb14946eb22a9c4",
+      "checkout_sha256": "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0",
+      "raw_sha256": "5191a47ac6251ae0bf28da78ba30f14ce395f2f90bf09906983211863d398808",
+      "eol": "crlf"
+    },
+    "data/aircraft/battery/stik_electric_6s_pack.json": {
+      "git_blob": "f4540fa0306d07ac0f171c88eec764eaf87f887b",
+      "checkout_sha256": "fbbfd74512b8e3141adc530296687721c5ca7e3d94a38c384fbaf10f03c2c73e",
+      "raw_sha256": "bf35b0df9c51342316305d9de9ebe0900b77b0b94e9cd6e2ce3ef9865c5d4c83",
+      "eol": "crlf"
+    },
+    "data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": {
+      "git_blob": "a7e8a80ad01a9eae2049ea7cbaa70f03e703b301",
+      "checkout_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+      "raw_sha256": "3e075b395c08ff410ff5d9f3666bfd4fd53a68ec0349443037b01bee14c4f15c",
+      "eol": "crlf"
+    },
+    "data/aircraft/f4u_corsair_250.json": {
+      "git_blob": "a2834b496076e0f3f89131bbce0561f80de3a8b1",
+      "checkout_sha256": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10",
+      "raw_sha256": "0f723eb854547f1c1368f15f9a269c7c1da9f38d775dca4410bd0323b4a1cde6",
+      "eol": "crlf"
+    },
+    "data/aircraft/gp_extra_300s_60.json": {
+      "git_blob": "ecfb01ab4288cb7b29637e6b385afec11b80e259",
+      "checkout_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+      "raw_sha256": "97b0636502dceabe209a7c60a84b3dda0d61151311159b53e27aff432672099e",
+      "eol": "crlf"
+    },
+    "data/aircraft/hx700_electric_3d_experimental.json": {
+      "git_blob": "f62ef9d0ba5c4fd4579cd7ac73d66b6a5397f579",
+      "checkout_sha256": "b1d07c3c8a5e9e196f218fa3f049fb084f286dd262ac1aa317408311ecfb115a",
+      "raw_sha256": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+      "eol": "crlf"
+    },
+    "data/aircraft/jensen_ugly_stik_60.json": {
+      "git_blob": "47b1c4686322cda7dac26cd70acfcc9714e43e77",
+      "checkout_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+      "raw_sha256": "46ece9af4381baaef9dfbdc5a1adc2427f4aaf60d250db99ed386e570bd9b4f2",
+      "eol": "crlf"
+    },
+    "data/aircraft/moonrunner_x99.json": {
+      "git_blob": "6a43cbc30df12a524eb0275285bff616b62b7703",
+      "checkout_sha256": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+      "raw_sha256": "8e9314355270d01f023a835907dc5ebed855dc1a395bbd26a48c94daa027df00",
+      "eol": "crlf"
+    },
+    "data/aircraft/p51d_mustang_120.json": {
+      "git_blob": "b29083b336778045cf5637edad242e246aa69794",
+      "checkout_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "raw_sha256": "59d43fa446b8639cc30f8290ba6617e9ddfd5d3f2f90bae2be3e3b6f097bfe25",
+      "eol": "crlf"
+    },
+    "data/aircraft/sebart_avanti_s_a200.json": {
+      "git_blob": "7190ab18d8c6279050afb10afe0e228ad4f100c9",
+      "checkout_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
+      "raw_sha256": "32be5e3a841e9225ffd3ea6c61f0c17e203e3a0c503456c7a2283974fc776caf",
+      "eol": "crlf"
+    },
+    "data/aircraft/stik_electric_6s.json": {
+      "git_blob": "1c01155c432241a93881714bc2049da1ee2d1103",
+      "checkout_sha256": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+      "raw_sha256": "eb5a4e60efeed59638d253d7e49779311912ddf0d2be9086b2ee59e4b1c631c7",
+      "eol": "crlf"
+    },
+    "data/aircraft/stik_glow_55ax_2t.json": {
+      "git_blob": "dc057368b9a31aef0bc416ed0e4727bd57ac7ed8",
+      "checkout_sha256": "a71cf12e61a511a868b6e7ff005e116f1fe6cc57633c47850b9ae02d1838d0b9",
+      "raw_sha256": "396293fc13781f15102736882807ec60253825809f34a671b8445d9673f67c6f",
+      "eol": "crlf"
+    },
+    "data/aircraft/stik_glow_55ax_2t_apc_13x6.json": {
+      "git_blob": "a930b13224dd341bbee7c773591e60c5e4ffe279",
+      "checkout_sha256": "19b319f1e0a2b29112b72fff2f62dac244c8b543ea82437a189e5161f7619e94",
+      "raw_sha256": "4492722e18a42c1814f2ed9766ca7ed23a003c3fe0cf0c414556fa18c581660e",
+      "eol": "crlf"
+    },
+    "data/aircraft/stik_glow_61fx_2t.json": {
+      "git_blob": "b21c135a0820e9c7f01d237e54abb1c9d3fb4c29",
+      "checkout_sha256": "a214c7d144f3b1a978a01f9f52bb80d2ce76de27644c1d8571d669f291a05350",
+      "raw_sha256": "4add8b21af83e4fe62e2e86eed037e1f32417eb49210856775881e9990b2ac46",
+      "eol": "crlf"
+    },
+    "data/aircraft/stik_glow_fs64v_4t.json": {
+      "git_blob": "25e531c035a43f50360b8187050f0aa13c1fc9bc",
+      "checkout_sha256": "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8",
+      "raw_sha256": "d9b7a4c7843c76a24700254b2c97a27e23df5a8da16b76f711e3ba2e1b99b81b",
+      "eol": "crlf"
+    },
+    "data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": {
+      "git_blob": "12f52ef5a07c34a4047d55fddc57eee6531aac28",
+      "checkout_sha256": "877cd05d0669822a2a68021858334d1c73380d95d2d58660be75f655b72c4a0e",
+      "raw_sha256": "053d1533ed8dcc22f6cd8b1c28ca68e3ce969fefa0f892a299d4d2bc48819327",
+      "eol": "crlf"
+    },
+    "data/aircraft/synthetic_stik_electric_4s.json": {
+      "git_blob": "c23aefb59f6ac9bcca723d7654e8b0c205b01be5",
+      "checkout_sha256": "87a182fb8aa68a15d07dd0b20785e8d9ff21f0f30813a17b57533cf53ae24b01",
+      "raw_sha256": "d36f7287b14dec55b6ba7a45673244bb0ffe25cc30c151d51b8ba8a053b6c1b6",
+      "eol": "crlf"
+    },
+    "data/aircraft/synthetic_stik_electric_4s_battery.json": {
+      "git_blob": "6f732fb752d26e16d987057ee262f564212c5ade",
+      "checkout_sha256": "d6efdbba275c3a04755d591ce37ae11a3d1e461fe31de4927fb105cab8f9a0a1",
+      "raw_sha256": "5311340467d7ec1eb749a9c83075163173a5cd4c69568326cfe1e0af11ca0a35",
+      "eol": "crlf"
+    },
+    "data/aircraft/synthetic_stik_electric_6s.json": {
+      "git_blob": "0031b7e5caa3e9f6de7cfbadf6e77aee9314fa62",
+      "checkout_sha256": "4683006bbebeacb1977bff8ac3448ef0b1af995db567df147c9606004785c858",
+      "raw_sha256": "0662215b18afbd9160e85ed79b2157912f5d4c30434471e78ba82ef790a0c793",
+      "eol": "crlf"
+    },
+    "data/aircraft/synthetic_stik_electric_6s_battery.json": {
+      "git_blob": "ac7fd800edbc3a830ff663c4f7d4e05d72500bb1",
+      "checkout_sha256": "0ceb94706dff1414f75bddb58ead3e361c9d316314b699751b93f3b9a8cdb635",
+      "raw_sha256": "1407a3fd52d4fa02968f17b662a12c98db2818d8a049707db96d97646012427b",
+      "eol": "crlf"
+    },
+    "data/aircraft/turbo_lumber_evolution.json": {
+      "git_blob": "b0b5dccd4c721db447088f6e6c4c3312bf66ba49",
+      "checkout_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+      "raw_sha256": "abe8701552711b4e0f04574b873ba43c5bb2937198021ba492397aa28383fcc7",
+      "eol": "crlf"
+    },
+    "data/aircraft/xcell_60_research.json": {
+      "git_blob": "ff1da78330ba71deb39f380a01defb8ba202ca7a",
+      "checkout_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+      "raw_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+      "eol": "crlf"
+    },
+    "data/fields/default.json": {
+      "git_blob": "a631028d482bd77a300496652004fe915c7ae9e3",
+      "checkout_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "raw_sha256": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+      "eol": "crlf"
+    },
+    "data/glow/extra_61fx_2t.json": {
+      "git_blob": "6aa7a0880bbf33e6078287161767dc7a0aa50106",
+      "checkout_sha256": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+      "raw_sha256": "c90a57f6b3100a58cb4a2935c7f60ceadf7dfb8dbfa1712c4c4703500300f119",
+      "eol": "crlf"
+    },
+    "data/glow/stik_55ax_2t.json": {
+      "git_blob": "460af6a1abd0156b4a5cd262e9c529a8d5d720d0",
+      "checkout_sha256": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d",
+      "raw_sha256": "ff7c7c5b67de7c00c5cc5d0eee9e7a0c78d4711236262e044c565af51e4f8278",
+      "eol": "crlf"
+    },
+    "data/glow/stik_55ax_2t_apc_13x6.json": {
+      "git_blob": "a0c258fe605862b16b556c6d3a6b8462484273c5",
+      "checkout_sha256": "eb54135e02036286ea78d5fc8f96bed1b4f58c9aab2aa811377db39dbc08db86",
+      "raw_sha256": "afa04a30e2473a8accd6da89e3ed2d7bd3a59cc2632503864e79364d201e34da",
+      "eol": "crlf"
+    },
+    "data/glow/stik_61fx_2t.json": {
+      "git_blob": "826724d3a21e3ced7fb5c41d50406deb0e5e4578",
+      "checkout_sha256": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+      "raw_sha256": "d0177fc88d1523ab7e08f12e016b201aaa063e824c937ec130c4e1f809a06d40",
+      "eol": "crlf"
+    },
+    "data/glow/stik_fs64v_4t.json": {
+      "git_blob": "87a47518b6787d24555d42c3d8922e1437c3a8c2",
+      "checkout_sha256": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e",
+      "raw_sha256": "b710ea89425b48f815b805788e343e1b4a2b94e2657b408958e14ba514fcc6d2",
+      "eol": "crlf"
+    },
+    "data/glow/stik_fs64v_4t_apc_13x6.json": {
+      "git_blob": "37bd6fa11af28eac1dc1a5e3f5e8a878f06d45db",
+      "checkout_sha256": "18745638156c3981313d6d38fc5b56ce6b87f872aad1d7fe93b9c3eebdabe619",
+      "raw_sha256": "0d011affcb3557110e486ffffdd7a23ac1d9a6497d0088b264c8230401351cd0",
+      "eol": "crlf"
+    }
+  },
+  "source_inventory_sha256": "af42ff3c333f6ede5a3058f23d2a945fe24369908bb8e0d17afed1f29e89eb60",
+  "inventory_encoding": "Path, NUL, mode, NUL, source Git blob, NUL, worktree SHA256, LF per recursive tree listing"
+}

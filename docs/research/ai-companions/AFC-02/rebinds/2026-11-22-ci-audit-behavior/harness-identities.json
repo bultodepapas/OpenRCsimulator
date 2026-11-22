@@ -1,0 +1,30 @@
+{
+  "pinned_check_runner": {
+    "path": "tools/godot/run_checked.py",
+    "git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+    "sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888"
+  },
+  "external_drivers": {
+    "guarded_behavior_manifest.gd": "813afbfbc144d8539bdd2aeefd030883d8a99f2ae9ceda6c1c073815f1435576",
+    "normal_home.gd": "e56f6dc26b269bf53b8505d05c466ae83bb6b5e6f95c08cd3afecf1bb95b1ced",
+    "strict_airspace.gd": "ebde4c7e8c949c313bbf6f0124830cb088213beea1f2d6787c343fb3059f2def",
+    "strict_lifecycle.gd": "c8eb8e7b099a675660d56d9fec1f6c52c4860797b27e790e62af88d5af2bb136",
+    "strict_manager.gd": "b241e5fbad553d0ebf7b9bd5b6a596e4e16cb95678f8da9f40747e209be8d7e0",
+    "strict_observation.gd": "2ee5b1435ddb8c8cb4a4adccdde2d2b6539a327fbe36aac67d3c77c5dfda5769",
+    "strict_presentation.gd": "e5f9969cd0eeec8b6a715f933d9394955d16815a2a5fec68174eda97df5bff96",
+    "strict_restore.gd": "a61aae7c0ae2f823026d6ef105bcc09c48801821a0d5b5dde62001c65741ed52",
+    "strict_shell.gd": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118",
+    "user_profile.gd": "cc3d92a8063d1749ec91c9856b0ec249b829d5906af0c7f8c952c2b8991f1944"
+  },
+  "native_engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9"
+  },
+  "archived_python_harness": {
+    "run.py": "cbdeb32646a1da5d9010b803792e685aae86f07652d404cdeab8578a75ae0c4f",
+    "protocol-complete.py": "44c30142172ae067712b63b30cb4f0ed75f95ea42ce8ea1a9effd3f8367e109a",
+    "external-source.py": "354fffcd6e4f5c1b8bf18dc9d092bd967a16f1d61d9bff0b7b9f747f89427f6f",
+    "prepare.py": "62114f9d2cda78a2ac2b80f8b33d93bc8282afda571ff36b53e611c2d0639e2f",
+    "checkout-filters.py": "b7bc5ae5b1a37c90a059113097a7e9585943c75153a88676bb38ef4bca15c84c"
+  }
+}

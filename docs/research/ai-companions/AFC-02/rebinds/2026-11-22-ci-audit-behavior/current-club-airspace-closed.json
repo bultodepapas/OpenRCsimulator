@@ -1,0 +1,48 @@
+{
+	"format": "openrc-ai-static-airspace-report v1",
+	"report": {
+		"aircraft_radius_m": 0.905097348146863,
+		"center_east_m": 0.0,
+		"center_north_m": 199.0,
+		"collision_enabled": true,
+		"collision_world_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+		"corridors": [
+			{
+				"center_height_m": 35.0,
+				"max_height_m": 39.9050973481469,
+				"min_height_m": 30.0949026518531,
+				"slot": 0
+			},
+			{
+				"center_height_m": 55.0,
+				"max_height_m": 59.9050973481469,
+				"min_height_m": 50.0949026518531,
+				"slot": 1
+			},
+			{
+				"center_height_m": 75.0,
+				"max_height_m": 79.9050973481469,
+				"min_height_m": 70.0949026518531,
+				"slot": 2
+			}
+		],
+		"count": 3,
+		"exclusion_margin_m": 30.0,
+		"geometry_sha256": "a47ebca69c86e72ae9481e024faa109425314a55c8049ae7035acee611f637d6",
+		"ground_upper_m": 0.007,
+		"identity": "0a05a569335a6672aaaeccae60289313cf296c5c59f84400f0835702f39d91c1",
+		"inner_radius_m": 67.0949026518531,
+		"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+		"minimum_vertical_gap_after_allowances_m": 28.2949026518531,
+		"obstacle_clearance_m": 2.0,
+		"outer_radius_m": 92.9050973481469,
+		"policy": "openrc-ai-static-circuit v1",
+		"protected_proxy_count": 72,
+		"proxy_count": 7295,
+		"radial_allowance_m": 10.0,
+		"radius_m": 80.0,
+		"scope": "nominal_circuit_corridor",
+		"surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+		"vertical_allowance_m": 2.0
+	}
+}

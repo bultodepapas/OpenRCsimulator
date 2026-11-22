@@ -1,0 +1,78 @@
+{
+  "solver_source_count": 203,
+  "guard_writers": [
+    [
+      "ai/companions/profile_loader.gd",
+      96,
+      "static var _accept_current_solver := false"
+    ],
+    [
+      "ai/companions/profile_loader.gd",
+      102,
+      "_accept_current_solver = OS.has_feature(\"editor\")"
+    ]
+  ],
+  "call_sites_outside_test_directory": [
+    [
+      "ai/companions/profile_loader.gd",
+      101,
+      "static func accept_current_solver_for_tests() -> bool:"
+    ]
+  ],
+  "call_sites_inside_test_directory": [
+    [
+      "tests/test_companions_shell.gd",
+      29
+    ],
+    [
+      "tests/test_companions_restore.gd",
+      17
+    ],
+    [
+      "tests/test_companions_record.gd",
+      29
+    ],
+    [
+      "tests/test_companions_presentation.gd",
+      16
+    ],
+    [
+      "tests/test_companions_observation.gd",
+      30
+    ],
+    [
+      "tests/test_companions_manager.gd",
+      420
+    ],
+    [
+      "tests/test_companions_lifecycle.gd",
+      268
+    ],
+    [
+      "tests/test_companions_airspace.gd",
+      49
+    ]
+  ],
+  "production_driver_uses": [
+    "res://app_root.tscn",
+    "res://app_state/preferences.gd",
+    "res://ai/companions/config.gd",
+    "res://ai/companions/profile_loader.gd (read-only guard and source identity)",
+    "res://tests/ui_driver.gd (real key-event injection; no override call)",
+    "res://ui/ui_input.gd"
+  ],
+  "direct_runtime_attestation": "The fresh normal Home drivers read the private static guard before loading Home and after flight. They compare the actual current normalized solver digest to the bound profile and the admitted runtime identity.",
+  "independent_solver_digest_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+  "bound_old_and_candidate_solver_digest_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+  "verified_git_tree_for_each_solver_directory": {
+    "physics": "3dc674dd2f0ab3a137326b05e23cd8f03dd9c151",
+    "sim": "d876071904d44df833ba2dba339614b0716b0f96",
+    "failures": "3fbce491e8f11c3da79ec7040004b1518707a106"
+  },
+  "git_revisions": [
+    "85a2475f60029a4b6b09f23f643119bceea84a45",
+    "843f357c07af842054f3ccd6728f93beca9a57ef",
+    "847d8d1a26b885124f6b634ee9badfe6684bef13"
+  ],
+  "canonicalization": "Sort res:// paths then update SHA-256 with each path UTF-8 followed by its UTF-8 LF-normalized file bytes"
+}

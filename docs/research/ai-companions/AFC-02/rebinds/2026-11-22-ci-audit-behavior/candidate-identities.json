@@ -1,0 +1,28 @@
+{
+  "source_sha": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+  "app_tree": "9284e4433667b079d2d29467ca1ce6d7f6bb1ed5",
+  "pins": {
+    "res://app_root.gd": [
+      "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+      "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d"
+    ],
+    "res://scenery/collision_world.gd": [
+      "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+      "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6"
+    ]
+  },
+  "replacements": {
+    "data/ai/companions/behavior-manifest.json": [
+      "29840195ca0f8d31bde7451d2310b4f879ce09654d03a59690e76769d2171e24",
+      "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88"
+    ],
+    "data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": [
+      "1fa049200939c4ad31fb04f30ed3d65053db07bc2817f1a7d394f3e3c71edc9b",
+      "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be"
+    ]
+  },
+  "candidate_changed_blobs": {
+    "data/ai/companions/behavior-manifest.json": "d68b85e7c610fe1d48d3a3ef2c64121c2b65f0ff",
+    "data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "41483d2f25310d8d5c130a16f06a4b90867f8bfb"
+  }
+}

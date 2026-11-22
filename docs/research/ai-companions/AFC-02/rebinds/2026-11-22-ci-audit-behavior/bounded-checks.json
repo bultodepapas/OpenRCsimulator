@@ -1,0 +1,726 @@
+{
+  "source": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+  "external_runtime_source_inventory_sha256": "5c44c2010dc7a315911e4f23d76740551f666214ee47e031f5fccf4489c1ef6b",
+  "external_authoring_file_count": 27,
+  "complete_app_tree": "9284e4433667b079d2d29467ca1ce6d7f6bb1ed5",
+  "cold_import": true,
+  "checkout_inventory_sha256": "af42ff3c333f6ede5a3058f23d2a945fe24369908bb8e0d17afed1f29e89eb60",
+  "checks": [
+    {
+      "label": "checkout-import",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 8,
+      "diagnostic_messages": [
+        "OBJ: Ambient light for material 'Yellow' is ignored in PBR",
+        "OBJ: Ambient light for material 'DarkGreen2' is ignored in PBR",
+        "OBJ: Ambient light for material 'Green' is ignored in PBR",
+        "OBJ: Ambient light for material 'Material.011' is ignored in PBR",
+        "OBJ: Ambient light for material 'Material.014' is ignored in PBR",
+        "OBJ: Ambient light for material 'Material.015' is ignored in PBR",
+        "OBJ: Ambient light for material 'Material.016' is ignored in PBR"
+      ],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 434.007411,
+      "engine_log_sha256": "edd06494eddf31df412e125c87a4b64527863de9b5b9fa8a21f96d82b55ca5a6",
+      "summaries": []
+    },
+    {
+      "label": "external-closure-import",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 8.942871,
+      "engine_log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4",
+      "summaries": []
+    },
+    {
+      "label": "complete-stale-normal",
+      "expected_exit": 1,
+      "observed_exit": 1,
+      "reason": "process_exit",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [
+        "current source set matches the expected admission outcome",
+        "actual profile admission enforces the manifest",
+        "res://app_root.gd",
+        "res://scenery/collision_world.gd"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 7.628956,
+      "engine_log_sha256": "50641a87e545d7bd94d259275679459e499e6a3aa623d516b26df17194e5c125",
+      "summaries": [
+        "companion behavior manifest: 7 checks, 2 failed"
+      ]
+    },
+    {
+      "label": "complete-stale-refusal",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 7.468117,
+      "engine_log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd",
+      "summaries": [
+        "companion behavior manifest: 8 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-club-trajectory",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [
+        "full trajectory context:",
+        "static trajectory oracle:"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 5.062432,
+      "engine_log_sha256": "75eaf51fd7e3612350ad7123b275050cdbeb08e9de904d6256ba5baa9f90968e",
+      "summaries": [
+        "static trajectory oracle: 58 intersections, 0 omissions",
+        "trajectory sparse index: 360 paths, 96 blocked, 264 pruned clear, 0 mismatches",
+        "full trajectory context: 88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3 proxies=7295",
+        "static trajectory: 40 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-gate-collisions",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 4.262642,
+      "engine_log_sha256": "2ba1090fef8d1f6958993a212ac253816c66b5616d50a04e700ea92e4e63c2a8",
+      "summaries": [
+        "scenery destruction: 117 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "complete-behavior-positive",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 8.14068,
+      "engine_log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "summaries": [
+        "companion behavior manifest: 39 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-profiles",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [
+        "ok   current Stik and Club profiles validate"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 5.992855,
+      "engine_log_sha256": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26",
+      "summaries": [
+        "AFC-02 companion profile validation: 95 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-airspace-current-output",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [
+        "ok   all three qualified altitude slots pass the default static world",
+        "ok   production report with real radius, gap, proxy count and hashes is written"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 6.430788,
+      "engine_log_sha256": "64f5309b2f0ef91d9a424441cdd8de4a24cba73f94ec9a160227c1a566aaf024",
+      "summaries": [
+        "AFC-02 static airspace validation: 49 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-shell",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 3,
+      "diagnostic_messages": [
+        "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md"
+      ],
+      "required_markers": [
+        "ok   the manager starts three real AI pilots",
+        "ok   Restart rebuilds the live group from the staged count"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 42.70926,
+      "engine_log_sha256": "e1a83de3b0514f741648262276ae9cb8e14fba61f46f79afb03751d3dbd1dabf",
+      "summaries": [
+        "Companions shell: 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-one-Home",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 2,
+      "diagnostic_messages": [
+        "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md"
+      ],
+      "required_markers": [
+        "ok   unmodified qualified profile admits one actual companion"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 35.201595,
+      "engine_log_sha256": "898e8b3464270e6f9605cb3d9da77512c4262b008d5ff50d95dc50effecea204",
+      "summaries": [
+        "companions draft refresh: 60 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-manager",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 29.52416,
+      "engine_log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+      "summaries": [
+        "companions manager: 53 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-observation",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 19.399755,
+      "engine_log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25",
+      "summaries": [
+        "AFC COMPANION OBSERVATION CHECKS 21 FAILED 0",
+        "AFC COMPANION OBSERVATION TEST COMPLETE"
+      ]
+    },
+    {
+      "label": "complete-strict-presentation",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 8.505423,
+      "engine_log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0",
+      "summaries": [
+        "companion presentation: 13 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-lifecycle",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 70.396193,
+      "engine_log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f",
+      "summaries": [
+        "companions lifecycle: 653 checks, 0 failed; 50 headless cycles, 10 visual/audio cycles"
+      ]
+    },
+    {
+      "label": "complete-strict-seeds",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 10.862043,
+      "engine_log_sha256": "0aab32a4903ffeb66a8d6349273d0ce0cd2097a06636128e3991d4aaf0f4fa17",
+      "summaries": [
+        "companions seeds and timing: 83 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-session",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 6.087564,
+      "engine_log_sha256": "b2eca620bec5c155550811a35d34148c42c0d07594f571e7fb4d6843c38dc7ab",
+      "summaries": [
+        "65 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-strict-restore",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 22.683854,
+      "engine_log_sha256": "744767d7aacb00cf394f815b698ea28e3afa6332870197b6833ab73ef2c6de21",
+      "summaries": [
+        "companion restore lifecycle: 36 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "complete-home-routing",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 1,
+      "diagnostic_messages": [
+        "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md"
+      ],
+      "required_markers": [
+        "ok   route: the dynamic resolution experiment starts at Home",
+        "ok   route: --quick-flight -> direct flight"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 44.94652,
+      "engine_log_sha256": "669cc3f83d6b6812e639b40d1b7a33d3b7b2c2c6ce0820d458f3b77e5bb3b8a3",
+      "summaries": [
+        "all UI home checks passed"
+      ]
+    },
+    {
+      "label": "complete-headless-resolution-policy",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "diagnostic_messages": [],
+      "required_markers": [],
+      "missing_markers": [],
+      "elapsed_seconds": 0.948099,
+      "engine_log_sha256": "76bb6815964835af7dc93b7ff628cb7427fd96e2d57801b0bde69312bc43da2e",
+      "summaries": [
+        "Flight resolution policy: 0 failed"
+      ]
+    },
+    {
+      "label": "complete-normal-home-1",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 1,
+      "diagnostic_messages": [
+        "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md"
+      ],
+      "required_markers": [
+        "Normal Home admitted requested fleet with production guard enabled"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 25.232616,
+      "engine_log_sha256": "3007da45899da3ce4d1e7854f590be18ce9f4c6eb56e695f2ad14babef3cf77b",
+      "summaries": [
+        "Normal Home admitted requested fleet with production guard enabled"
+      ]
+    },
+    {
+      "label": "complete-normal-home-2",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 1,
+      "diagnostic_messages": [
+        "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md"
+      ],
+      "required_markers": [
+        "Normal Home admitted requested fleet with production guard enabled"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 27.248928,
+      "engine_log_sha256": "0b801e0f2f381d16896cefbf24041c45550d68379aa9c297457f9dd0f007c91f",
+      "summaries": [
+        "Normal Home admitted requested fleet with production guard enabled"
+      ]
+    },
+    {
+      "label": "complete-normal-home-3",
+      "expected_exit": 0,
+      "observed_exit": 0,
+      "reason": "passed",
+      "complete": true,
+      "engine_error_count": 0,
+      "engine_warning_count": 1,
+      "diagnostic_messages": [
+        "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md"
+      ],
+      "required_markers": [
+        "Normal Home admitted requested fleet with production guard enabled"
+      ],
+      "missing_markers": [],
+      "elapsed_seconds": 29.322566,
+      "engine_log_sha256": "c608e6c3a81e4124a7c0551ce8c03e7e3ead62f63820c6214823eb841e85fb42",
+      "summaries": [
+        "Normal Home admitted requested fleet with production guard enabled"
+      ]
+    }
+  ],
+  "normal_home_admissions": [
+    {
+      "active": 1,
+      "actual_solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "admitted": 1,
+      "airborne": 1,
+      "airspace": {
+        "aircraft_radius_m": 0.905097348146863,
+        "center_east_m": 0.0,
+        "center_north_m": 199.0,
+        "collision_enabled": true,
+        "collision_world_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+        "corridors": [
+          {
+            "center_height_m": 35.0,
+            "max_height_m": 39.9050973481469,
+            "min_height_m": 30.0949026518531,
+            "slot": 0
+          }
+        ],
+        "count": 1,
+        "exclusion_margin_m": 30.0,
+        "geometry_sha256": "a47ebca69c86e72ae9481e024faa109425314a55c8049ae7035acee611f637d6",
+        "ground_upper_m": 0.007,
+        "identity": "7e8509e8e01958169df548e9ff6a563a8bebcb20d4a646a92bbf6aa7bd003fcf",
+        "inner_radius_m": 67.0949026518531,
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "minimum_vertical_gap_after_allowances_m": 28.2949026518531,
+        "obstacle_clearance_m": 2.0,
+        "outer_radius_m": 92.9050973481469,
+        "policy": "openrc-ai-static-circuit v1",
+        "protected_proxy_count": 72,
+        "proxy_count": 7295,
+        "radial_allowance_m": 10.0,
+        "radius_m": 80.0,
+        "scope": "nominal_circuit_corridor",
+        "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+        "vertical_allowance_m": 2.0
+      },
+      "crashed": 0,
+      "editor_feature": true,
+      "error": "",
+      "expected_solver_pin": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "faulted": 0,
+      "profile": {
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be",
+        "behavior_manifest_format": "openrc-ai-behavior-manifest v1",
+        "behavior_manifest_path": "res://data/ai/companions/behavior-manifest.json",
+        "behavior_manifest_sha256": "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88",
+        "behavior_normalization": "utf8-lf",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+        },
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "field_data_format": "openrc-field v1",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "field_profile_id": "club-default",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+        "format": "openrc-ai-profile-identity v2",
+        "solver_normalization": "utf8-lf",
+        "solver_qualification_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+        "solver_sha256": "ac048194beebfa03f5dd7322ae708f66b30db9c6f36d6fe0f3c07699c264a2ea"
+      },
+      "requested": 1,
+      "solver_override_after": false,
+      "solver_override_before": false,
+      "solver_source_count": 203,
+      "ticks": 240
+    },
+    {
+      "active": 2,
+      "actual_solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "admitted": 2,
+      "airborne": 2,
+      "airspace": {
+        "aircraft_radius_m": 0.905097348146863,
+        "center_east_m": 0.0,
+        "center_north_m": 199.0,
+        "collision_enabled": true,
+        "collision_world_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+        "corridors": [
+          {
+            "center_height_m": 35.0,
+            "max_height_m": 39.9050973481469,
+            "min_height_m": 30.0949026518531,
+            "slot": 0
+          },
+          {
+            "center_height_m": 55.0,
+            "max_height_m": 59.9050973481469,
+            "min_height_m": 50.0949026518531,
+            "slot": 1
+          }
+        ],
+        "count": 2,
+        "exclusion_margin_m": 30.0,
+        "geometry_sha256": "a47ebca69c86e72ae9481e024faa109425314a55c8049ae7035acee611f637d6",
+        "ground_upper_m": 0.007,
+        "identity": "86598d89fb8adcce13552c17dde913b3bdb660c9ef825298fba365fbfebdac3a",
+        "inner_radius_m": 67.0949026518531,
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "minimum_vertical_gap_after_allowances_m": 28.2949026518531,
+        "obstacle_clearance_m": 2.0,
+        "outer_radius_m": 92.9050973481469,
+        "policy": "openrc-ai-static-circuit v1",
+        "protected_proxy_count": 72,
+        "proxy_count": 7295,
+        "radial_allowance_m": 10.0,
+        "radius_m": 80.0,
+        "scope": "nominal_circuit_corridor",
+        "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+        "vertical_allowance_m": 2.0
+      },
+      "crashed": 0,
+      "editor_feature": true,
+      "error": "",
+      "expected_solver_pin": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "faulted": 0,
+      "profile": {
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be",
+        "behavior_manifest_format": "openrc-ai-behavior-manifest v1",
+        "behavior_manifest_path": "res://data/ai/companions/behavior-manifest.json",
+        "behavior_manifest_sha256": "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88",
+        "behavior_normalization": "utf8-lf",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+        },
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "field_data_format": "openrc-field v1",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "field_profile_id": "club-default",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+        "format": "openrc-ai-profile-identity v2",
+        "solver_normalization": "utf8-lf",
+        "solver_qualification_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+        "solver_sha256": "ac048194beebfa03f5dd7322ae708f66b30db9c6f36d6fe0f3c07699c264a2ea"
+      },
+      "requested": 2,
+      "solver_override_after": false,
+      "solver_override_before": false,
+      "solver_source_count": 203,
+      "ticks": 240
+    },
+    {
+      "active": 3,
+      "actual_solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "admitted": 3,
+      "airborne": 3,
+      "airspace": {
+        "aircraft_radius_m": 0.905097348146863,
+        "center_east_m": 0.0,
+        "center_north_m": 199.0,
+        "collision_enabled": true,
+        "collision_world_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+        "corridors": [
+          {
+            "center_height_m": 35.0,
+            "max_height_m": 39.9050973481469,
+            "min_height_m": 30.0949026518531,
+            "slot": 0
+          },
+          {
+            "center_height_m": 55.0,
+            "max_height_m": 59.9050973481469,
+            "min_height_m": 50.0949026518531,
+            "slot": 1
+          },
+          {
+            "center_height_m": 75.0,
+            "max_height_m": 79.9050973481469,
+            "min_height_m": 70.0949026518531,
+            "slot": 2
+          }
+        ],
+        "count": 3,
+        "exclusion_margin_m": 30.0,
+        "geometry_sha256": "a47ebca69c86e72ae9481e024faa109425314a55c8049ae7035acee611f637d6",
+        "ground_upper_m": 0.007,
+        "identity": "0a05a569335a6672aaaeccae60289313cf296c5c59f84400f0835702f39d91c1",
+        "inner_radius_m": 67.0949026518531,
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "minimum_vertical_gap_after_allowances_m": 28.2949026518531,
+        "obstacle_clearance_m": 2.0,
+        "outer_radius_m": 92.9050973481469,
+        "policy": "openrc-ai-static-circuit v1",
+        "protected_proxy_count": 72,
+        "proxy_count": 7295,
+        "radial_allowance_m": 10.0,
+        "radius_m": 80.0,
+        "scope": "nominal_circuit_corridor",
+        "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+        "vertical_allowance_m": 2.0
+      },
+      "crashed": 0,
+      "editor_feature": true,
+      "error": "",
+      "expected_solver_pin": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "faulted": 0,
+      "profile": {
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be",
+        "behavior_manifest_format": "openrc-ai-behavior-manifest v1",
+        "behavior_manifest_path": "res://data/ai/companions/behavior-manifest.json",
+        "behavior_manifest_sha256": "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88",
+        "behavior_normalization": "utf8-lf",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+        },
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "field_data_format": "openrc-field v1",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "field_profile_id": "club-default",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+        "format": "openrc-ai-profile-identity v2",
+        "solver_normalization": "utf8-lf",
+        "solver_qualification_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+        "solver_sha256": "ac048194beebfa03f5dd7322ae708f66b30db9c6f36d6fe0f3c07699c264a2ea"
+      },
+      "requested": 3,
+      "solver_override_after": false,
+      "solver_override_before": false,
+      "solver_source_count": 203,
+      "ticks": 240
+    }
+  ],
+  "scope": "Linux headless official Godot 4.8-beta2 software evidence; staged Stik/Club candidate source and reference backend. Source QA and staged promotion are distinct.",
+  "postflight": {
+    "all_app_paths_verified": 6015,
+    "untracked_files_outside_import_cache": 0,
+    "all_external_authoring_files_verified": 27,
+    "changed_checkout_sha256": {
+      "data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be",
+      "data/ai/companions/behavior-manifest.json": "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88"
+    },
+    "solver_source_count": 203,
+    "solver_qualification_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+    "ordinary_home_counts": [
+      1,
+      2,
+      3
+    ],
+    "software_platform": "Linux x86_64, headless official Godot 4.8.beta2.official.cafc17a19, GDScript reference backend",
+    "bounded_world_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+    "current_geometry_sha256": "a47ebca69c86e72ae9481e024faa109425314a55c8049ae7035acee611f637d6",
+    "user_profiles": "Separate XDG data/config/state/cache for each checked process"
+  },
+  "setup_exclusions": [
+    "Git blob-only materialization preceded application of the 29 CRLF checkout rules. Those initial controls are excluded.",
+    "The first shell trial lacked two repository-relative aircraft model authoring records and timed out after its startup failure. The working project was supplemented with the 27 source records declared by the nine bundled model and overlay manifests.",
+    "The first repeat of airspace refused an already-existing evidence output path as designed. The accepted run used a new path."
+  ],
+  "review_scope": "Narrow ordinary Home/Stik/Club admission, source registration, nominal collision checks, mutation refusals and the explicit lifecycle/software cases recorded here. GPU experiment, native backend behavior, physical qualification, and full simulator CI are separate."
+}

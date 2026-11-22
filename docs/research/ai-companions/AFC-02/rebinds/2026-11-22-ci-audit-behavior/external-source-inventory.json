@@ -1,0 +1,144 @@
+{
+  "source_commit": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+  "collection": "All repository-relative authoring paths declared by the seven bundled model manifests and two overlay manifests",
+  "attribute_sources": {
+    ".gitattributes": "7c38f5545e04d3af0ecfd0efb1bd7aa81175f5be"
+  },
+  "files": {
+    "assets/aircraft/avanti-s-a200/blender-geometry.json": {
+      "git_blob": "fc6dceea7cc3665113cc0aea4e68e89efd146b66",
+      "checkout_sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+      "bytes": 422506
+    },
+    "assets/aircraft/avanti-s-a200/source-manifest.json": {
+      "git_blob": "f48a74b1a25787933299114fe512911475c400e0",
+      "checkout_sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f",
+      "bytes": 1883
+    },
+    "assets/aircraft/extra-300s-60/appearance.json": {
+      "git_blob": "a818ddb2607c1221e5e297dba4bc3708ef866e54",
+      "checkout_sha256": "abdc9227fa87a879486bf056f2953c5d1478bf510182dde0c94a2196538288b3",
+      "bytes": 2055
+    },
+    "assets/aircraft/extra-300s-60/geometry.json": {
+      "git_blob": "576607d3d6105697ea392b01758e1f27eb610d92",
+      "checkout_sha256": "be54601e12f1e774b7e2d06853d139fa465fee36fcadc7313993ece48ee26954",
+      "bytes": 12217
+    },
+    "assets/aircraft/f4u-corsair-250/gear-samples.json": {
+      "git_blob": "b11e053745251e9d5526a9ee15132dfac5c144cd",
+      "checkout_sha256": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
+      "bytes": 421926
+    },
+    "assets/aircraft/f4u-corsair-250/mechanisms-r59.json": {
+      "git_blob": "611ae47df45aa8bec988db42115f4784509385a6",
+      "checkout_sha256": "4aa349793219b077f4f310e232d04e3b6e9fc933e6d492b9479f40f451a561b5",
+      "bytes": 8464
+    },
+    "assets/aircraft/f4u-corsair-250/model-geometry.json": {
+      "git_blob": "eca45e7880d36952e850aa8b899fff54561cb740",
+      "checkout_sha256": "f120733ca8caf18f574f506c908bfb2d7ff975679655fefd6bbbf5d0c16d1f9e",
+      "bytes": 518716
+    },
+    "assets/aircraft/f4u-corsair-250/source-manifest.json": {
+      "git_blob": "17b96f9a12b23d991661dfb686bf17e641711f86",
+      "checkout_sha256": "cc73743db20fdc0112674f76adced87a14675094fcca3aba1add49c433dbaf8f",
+      "bytes": 97885
+    },
+    "assets/aircraft/f4u-corsair-250/wing-fold-r59.json": {
+      "git_blob": "ed763557388c4508a6070851d87b02f173dbcc5e",
+      "checkout_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
+      "bytes": 1645
+    },
+    "assets/aircraft/model-bindings.json": {
+      "git_blob": "87e1841b120708ef56e8db6a27cd284db7ff7c24",
+      "checkout_sha256": "5670bc4def715502007bd06bc2303391da34b7c8866affeb0ae480df6a9682de",
+      "bytes": 25201
+    },
+    "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json": {
+      "git_blob": "654ca3ebd6fb7d87e039491f5876b58272e826d4",
+      "checkout_sha256": "07cd955d8d194cea5b2db7d2a5d3356c5f968bfc96a275f179172178b96ae4e3",
+      "bytes": 2136
+    },
+    "assets/aircraft/moonrunner-x99-overlay/model-bindings.json": {
+      "git_blob": "ffc797a3640934dccddb2de98ab24ebce033be80",
+      "checkout_sha256": "f3bdc537a8d5283e5f678ce83dbed79adb3a22b842d91e72191033e6a4903579",
+      "bytes": 2981
+    },
+    "assets/aircraft/moonrunner-x99-overlay/model-geometry.json": {
+      "git_blob": "cafebe42a18ea8113ee872425805d4bae20892f3",
+      "checkout_sha256": "ca5c9d892d83d401374f8fbfbefffcf4d134f515391a8fad901fea9c3624c9ee",
+      "bytes": 10542
+    },
+    "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json": {
+      "git_blob": "539bb44c044fb474f84c3905ed1443f57431e830",
+      "checkout_sha256": "ffbb91e680d947e2a4f8e9702c3c71f25476fd5ea92daf737a31450528aba69b",
+      "bytes": 1195
+    },
+    "assets/aircraft/p51d-mustang-120/appearance.json": {
+      "git_blob": "9673bf776eb5a7e26a78ed2188c43ddd5061433c",
+      "checkout_sha256": "604ddc69780cb8009fe5f0bb59cf2031d3d5f6fe517f1a940234d607f92299a3",
+      "bytes": 1583
+    },
+    "assets/aircraft/p51d-mustang-120/geometry.json": {
+      "git_blob": "804675bb8302cef24b076f65d808d8513d1ac99b",
+      "checkout_sha256": "7fdac38dd17a8264c06bd211cc643019f06b50046f03b3ed4de2006acd16d7a9",
+      "bytes": 25818
+    },
+    "assets/aircraft/p51d-mustang-120/source.json": {
+      "git_blob": "2063b38de775db3e6efea4b075a4f1354972a589",
+      "checkout_sha256": "efff07d21b2b7c36695c7bf51f155a31e886870eb30b3ad4c65cdb4305f24bee",
+      "bytes": 30569
+    },
+    "assets/aircraft/skywalker-x8/model-geometry.json": {
+      "git_blob": "4250fc0c7a5c92dc8a0b404e898b94d661e4f598",
+      "checkout_sha256": "0fbf3d27b932ec0b477355deabcad724b306e3a5d482d594665b24eb214e6df6",
+      "bytes": 10528
+    },
+    "assets/aircraft/skywalker-x8/source-manifest.json": {
+      "git_blob": "cee4a23c7f035bffd712a6293c8912b09d2251e2",
+      "checkout_sha256": "8d176f1b350debdaf82ded28c76b2b1eb87d0aca068fb2e784e3938872960122",
+      "bytes": 24775
+    },
+    "assets/aircraft/stik-electric-6s/customization-bindings.json": {
+      "git_blob": "8dd66a95eda48cb7481ac2a0d641af57d5130e5d",
+      "checkout_sha256": "7765aae333f1810a4e00d56fc689d3e5f7a3bd136affa45dd676bdff12167164",
+      "bytes": 9618
+    },
+    "assets/aircraft/stik-electric-6s/model-bindings.json": {
+      "git_blob": "3cde47d478e79d158894019ed50ab549105a6462",
+      "checkout_sha256": "0340fca145faf80569a82128f1c510e1528129668b555aad652e2df887096e62",
+      "bytes": 2838
+    },
+    "assets/aircraft/stik-electric-6s/runtime-proof.json": {
+      "git_blob": "70e6879f7ca316553e2e21658a2553d1b2c6482a",
+      "checkout_sha256": "7f7013ce1d6f2d6e1558ed8d1e65002d1442c5056f6b4349b57efe485b8f2b37",
+      "bytes": 1189
+    },
+    "assets/aircraft/turbo-lumber-evolution/geometry.json": {
+      "git_blob": "9149f15108953916e948a6e7e23e50cd1f4053e0",
+      "checkout_sha256": "869abdc54402d8e806a52d6a8099a19a0bc0cf08437a1351cd312235cf581e1e",
+      "bytes": 75409
+    },
+    "assets/aircraft/turbo-lumber-evolution/manual.json": {
+      "git_blob": "7805922183fa471671ba7e63aac9d4f68568036f",
+      "checkout_sha256": "7018fc436d98686a18daa8712b649eb22f216c26b1f97f9a2278e84adddb219d",
+      "bytes": 3326
+    },
+    "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json": {
+      "git_blob": "00334ae4a2d67f825db29cf2966ece93caaae77f",
+      "checkout_sha256": "2aa36bcf56bebe2e60c1d1c493c7317505c1daf198a5efece7fc80879baac59c",
+      "bytes": 464714
+    },
+    "assets/aircraft/turbo-lumber-evolution/source-manifest.json": {
+      "git_blob": "ca1131b2b82325a835167b904316cd67ee09b157",
+      "checkout_sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74",
+      "bytes": 27437
+    },
+    "assets/aircraft/ugly-stik-60/geometry.json": {
+      "git_blob": "acc2510d777991cb9eaed7e844f29e20da00e7fb",
+      "checkout_sha256": "800d58b7e94ff3a4c29a008316dda3bd062f1a79d4ea06bfd529463407552631",
+      "bytes": 14775
+    }
+  }
+}
