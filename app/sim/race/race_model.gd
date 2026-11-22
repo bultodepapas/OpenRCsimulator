@@ -7,7 +7,7 @@
 #   stage:    hands the plant a NEW sampled context whose held motor commands are zero while the race phase inhibits
 #             drive (READY/COUNTDOWN); the commands the controller sampled stay in aux as evidence;
 #   endpoint: runs the plant's physical endpoint first, builds the tick's accepted chord piece (policy
-#             openrc-chord-path-v2, race_director.gd) and lets the director adjudicate; it returns one ordered event list
+#             openrc-chord-path-v3, race_director.gd) and lets the director adjudicate; it returns one ordered event list
 #             (physical and race events) — the plant has no step policy, so the kernel adds no located events of its own;
 #   validator: the plant validator on the plant slices AND the race domains, including the course tag.
 # Every value the race needs between ticks lives in the kernel's checkpointed arrays; nothing on this object changes

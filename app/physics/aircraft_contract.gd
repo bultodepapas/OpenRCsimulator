@@ -190,6 +190,7 @@ static func _validate_relations(root: Dictionary, issues: PackedStringArray) -> 
 
 	_validate_inertia_reference(root, issues)
 	_validate_slipstream_relations(propulsion, issues)
+	_validate_slipstream_coverage(root, propulsion, issues)
 
 
 static func _validate_intended_hull_support_relations(root: Dictionary, issues: PackedStringArray) -> void:
@@ -316,6 +317,111 @@ static func _validate_slipstream_relations(propulsion: Dictionary, issues: Packe
 				_issue(issues, item_path + "/chords", "is required for the legacy piece model")
 			if piece.has("profile"):
 				_issue(issues, item_path + "/profile", "requires edge_fraction")
+
+## A36 R4-F02: each wake piece adds the washed-minus-free load of the tail patch it covers, so one physical patch
+## must be declared once. Pieces may only target a declared tail surface, their areas on one surface may not exceed
+## that surface's area, and collinear pieces on one surface may not overlap along their span. Genuinely overlapping
+## propeller wakes must be combined at the one surface location instead of declaring the patch twice.
+static func _validate_slipstream_coverage(root: Dictionary, propulsion: Dictionary, issues: PackedStringArray) -> void:
+	var propeller: Variant = propulsion.get("propeller", {})
+	if not propeller is Dictionary or not propeller.get("slipstream", null) is Dictionary:
+		return
+	var pieces: Variant = propeller.slipstream.get("pieces", [])
+	if not pieces is Array:
+		return
+	var aero: Variant = root.get("aero", {})
+	var surfaces: Variant = aero.get("surfaces", {}) if aero is Dictionary else {}
+	if not surfaces is Dictionary:
+		return
+	var path := "/propulsion/propeller/slipstream/pieces"
+	# A wake with zero wash and zero swirl puts no load on any patch, so repeated pieces cannot double-count a force
+	# (native admission stress fixtures use thousands of them); the area and overlap rules apply to a loading wake.
+	var loads := _quantity_number(propeller.slipstream.get("swirl_factor")) != 0.0
+	var wash: Variant = propeller.slipstream.get("wash_factor")
+	if wash is Dictionary and wash.get("value") is Array:
+		for value: Variant in wash.value:
+			loads = loads or (_is_number(value) and float(value) != 0.0)
+	else:
+		loads = true
+	var totals := {}
+	var segments: Array[Dictionary] = []
+	for index in pieces.size():
+		var piece: Variant = pieces[index]
+		if not piece is Dictionary:
+			continue
+		var surface := str(piece.get("surface", ""))
+		if surface not in ["horizontal", "vertical"]:
+			continue
+		if not surfaces.get(surface, null) is Dictionary:
+			_issue(issues, "%s/%d/surface" % [path, index], "targets the %s tail, which this airframe does not declare" % surface)
+			continue
+		if not loads:
+			continue
+		var area := _quantity_number(piece.get("area"))
+		if is_finite(area):
+			totals[surface] = float(totals.get(surface, 0.0)) + area
+		var origin := _quantity_vector(piece.get("root"))
+		var direction := _quantity_vector(piece.get("span_dir"))
+		var span := _quantity_number(piece.get("span"))
+		if origin.size() == 3 and direction.size() == 3 and is_finite(span):
+			segments.append({index = index, surface = surface, root = origin, dir = direction, span = span})
+	for surface: String in totals:
+		var declared := _quantity_number(surfaces[surface].get("area"))
+		if is_finite(declared) and float(totals[surface]) > declared * (1.0 + 1.0e-9) + 1.0e-12:
+			_issue(issues, path, "wake pieces on the %s tail cover %.6f m2, more than its %.6f m2 area; each physical patch counts once" \
+				% [surface, float(totals[surface]), declared])
+	for i in segments.size():
+		for j in range(i + 1, segments.size()):
+			var a: Dictionary = segments[i]
+			var c: Dictionary = segments[j]
+			if a.surface != c.surface:
+				continue
+			var overlap := _collinear_overlap(a.root, a.dir, a.span, c.root, c.dir, c.span)
+			if overlap > 1.0e-9:
+				_issue(issues, "%s/%d" % [path, int(c.index)], "overlaps wake piece %d on the %s tail by %.6f m of span; each physical patch counts once" \
+					% [int(a.index), a.surface, overlap])
+
+
+## Shared span length of two pieces lying on one line (parallel or antiparallel unit directions, roots on that line);
+## 0 for pieces that are not collinear.
+static func _collinear_overlap(root_a: PackedFloat64Array, dir_a: PackedFloat64Array, span_a: float,
+		root_b: PackedFloat64Array, dir_b: PackedFloat64Array, span_b: float) -> float:
+	var norm_a := sqrt(dir_a[0] * dir_a[0] + dir_a[1] * dir_a[1] + dir_a[2] * dir_a[2])
+	var norm_b := sqrt(dir_b[0] * dir_b[0] + dir_b[1] * dir_b[1] + dir_b[2] * dir_b[2])
+	if not (norm_a > 0.0) or not (norm_b > 0.0):
+		return 0.0
+	var cosine := (dir_a[0] * dir_b[0] + dir_a[1] * dir_b[1] + dir_a[2] * dir_b[2]) / (norm_a * norm_b)
+	if absf(cosine) < 1.0 - 1.0e-9:
+		return 0.0
+	var along := 0.0
+	var perpendicular := 0.0
+	var offset := PackedFloat64Array([root_b[0] - root_a[0], root_b[1] - root_a[1], root_b[2] - root_a[2]])
+	along = (offset[0] * dir_a[0] + offset[1] * dir_a[1] + offset[2] * dir_a[2]) / norm_a
+	for k in 3:
+		var residual := offset[k] - along * dir_a[k] / norm_a
+		perpendicular += residual * residual
+	if sqrt(perpendicular) > 1.0e-6:
+		return 0.0
+	var b_end := along + signf(cosine) * span_b
+	return maxf(0.0, minf(span_a, maxf(along, b_end)) - maxf(0.0, minf(along, b_end)))
+
+
+static func _quantity_number(node: Variant) -> float:
+	if node is Dictionary and _is_number(node.get("value")):
+		return float(node.value)
+	return NAN
+
+
+static func _quantity_vector(node: Variant) -> PackedFloat64Array:
+	if not node is Dictionary or not node.get("value") is Array or node.value.size() != 3:
+		return PackedFloat64Array()
+	var out := PackedFloat64Array()
+	for value: Variant in node.value:
+		if not _is_number(value) or not is_finite(float(value)):
+			return PackedFloat64Array()
+		out.append(float(value))
+	return out
+
 
 static func _is_number(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT

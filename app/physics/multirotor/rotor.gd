@@ -9,21 +9,29 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 
+## A36 R2-F01: the bench coefficients refer to ISA sea-level density. T = rho n^2 D^4 C_T and Q = rho n^2 D^5 C_Q at a
+## fixed advance ratio, so aerodynamic thrust, drag torque and in-plane rotor drag scale with rho / REFERENCE_DENSITY
+## of the stage's own air. Rotor inertia and motor torque do not. At the reference density the ratio is exactly 1.
+const REFERENCE_DENSITY := 1.225
+const DENSITY_LAW := "multirotor-rotor-coefficients-scaled-by-density-ratio-v1"
+
 
 ## Body loads of one rotor about the CG: {force: float64[3], moment: float64[3], thrust, torque}.
 ## `hub` is the hub position from the CG in FRD; `v_air` the CG air velocity in FRD; `rates` the body rates.
 ## `omega_dot` adds the inertial reaction of the rotor's own acceleration about the thrust axis (drone plan §4.6).
+## `density_ratio` is rho / REFERENCE_DENSITY of the air the rotor works in.
 static func loads(omega: float, spin: float, hub: PackedFloat64Array, v_air: PackedFloat64Array,
-		rates: PackedFloat64Array, omega_dot: float, rotor: Dictionary) -> Dictionary:
+		rates: PackedFloat64Array, omega_dot: float, rotor: Dictionary, density_ratio := 1.0) -> Dictionary:
 	var c_t: float = float(rotor.thrust_coefficient_n_s2)
 	var c_q: float = float(rotor.torque_coefficient_n_m_s2)
 	var k_h: float = float(rotor.rotor_drag_n_s2_per_m)
 	var inertia: float = float(rotor.inertia_kg_m2)
-	var thrust: float = c_t * omega * omega
-	var torque: float = c_q * omega * omega
+	var thrust: float = c_t * omega * omega * density_ratio
+	var torque: float = c_q * omega * omega * density_ratio
 	# Air velocity at the hub: the CG air velocity plus the rotation sweep.
 	var v_hub: PackedFloat64Array = M.add(v_air, M.cross(rates, hub))
-	var force: PackedFloat64Array = M.v3(-k_h * omega * v_hub[0], -k_h * omega * v_hub[1], -thrust)
+	var force: PackedFloat64Array = M.v3(-k_h * omega * v_hub[0] * density_ratio, -k_h * omega * v_hub[1] * density_ratio,
+		-thrust)
 	var moment: PackedFloat64Array = M.cross(hub, force)
 	# Reaction of the aerodynamic torque and of the rotor's inertial acceleration, both about a = [0, 0, −1].
 	moment[2] += spin * torque + spin * inertia * omega_dot

@@ -170,12 +170,35 @@ func _build_valid_models(rng: RandomNumberGenerator) -> Array[Dictionary]:
 				row[1] *= span_scale
 				row[2] *= chord_scale
 				row[3] *= chord_scale
+		_fit_tail_coverage(raw)
 		var loaded: Dictionary = AircraftData.validate_and_derive(raw)
 		if not loaded.get("ok", false):
 			_check("randomized smooth fixture %d validates" % model_index, false, str(loaded.get("errors", [])))
 			return []
 		models.append(loaded.model)
 	return models
+
+
+## A36 R4-F02: one physical tail patch carries one wake load, so the perturbed pieces of a surface may not cover more
+## than its declared area. Shrink only an over-covering surface's pieces (area and profile chords together, keeping
+## each profile integral equal to its area); the random sequence and every other fixture stay unchanged.
+func _fit_tail_coverage(raw: Dictionary) -> void:
+	var pieces: Array = raw.propulsion.propeller.slipstream.pieces
+	for surface: String in ["horizontal", "vertical"]:
+		var declared: float = float(raw.aero.surfaces.get(surface, {}).get("area", {}).get("value", INF))
+		var total := 0.0
+		for piece: Dictionary in pieces:
+			if piece.surface == surface:
+				total += float(piece.area.value)
+		if total <= declared:
+			continue
+		var factor := declared / total * (1.0 - 1.0e-9)
+		for piece: Dictionary in pieces:
+			if piece.surface == surface:
+				piece.area.value = float(piece.area.value) * factor
+				for row: Array in piece.profile.value:
+					row[2] *= factor
+					row[3] *= factor
 
 
 func _case_velocity(case_index: int, model: Dictionary, rpm: float, rng: RandomNumberGenerator) -> PackedFloat64Array:

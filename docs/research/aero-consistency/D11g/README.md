@@ -233,3 +233,7 @@ The baseline passed both guards. The unrenewed candidate refused the three histo
 On Linux under WSL2 with pinned Godot 4.8 beta2, the v0.3.1 tag `caa45cee` and the v0.3.2 candidate `b720a502` yielded identical numerical and provenance results. Of the 152 inventory inputs, only `app/project.godot` changed, with the version going from `0.3.1` to `0.3.2`. The new aggregate is `58c12b9ffad2f269d902fca1970665dc11eadb397c9ab8f762fa4f4bc0606230`.
 
 Both guards passed on the baseline and refused the unrenewed candidate. The renewed guards passed, refused independent physics-comment and version mutations, and passed again after restoration. The [receipt](2026-11-21-release-v032-qualification.json) binds the six reports.
+
+### 2026-11-21 A36 audit-branch renewal
+
+On the A36 audit branch after merging main at v0.3.2, the physics fixes (wake guard, propeller power bound, wake coverage, flap settled wake, ground-effect ailerons, rotorcraft and multirotor admission) change the solver inventory but not the Stik derivation. On Windows with pinned Godot 4.8 beta2 the rounded values stay Cmq -8.082, CLq 2.357 and Cnr -0.136; the aggregate becomes `2977bb7ca7d41a6311453645565fd60cb75476f9de47488d79818e5f67431871`. Both guards report compatible with it. This is a headless Windows check, not a Linux release receipt.

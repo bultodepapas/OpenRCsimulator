@@ -62,6 +62,13 @@ def build_boundary_cases(fleet):
         # Disambiguate shared paths on different propulsion configurations.
         for case in cases[-4:]:
             case.name += ':shaft' if raw is p51 else ':glow'
+    # A36 R6-G01: two in-range last-row values break the loader-owned joint energy rule Cp >= J*Ct (a schema cannot
+    # express it): a +0.5 last Stik Ct makes the extrapolated thrust work unbounded, and a -0.3 last P-51 Cp extracts
+    # more than the air's work. Field bounds stay schema-valid; the loader refuses with its reason.
+    for case in cases:
+        if case.name in ('DATA-4b:bounds:propulsion.propeller.ct_table.value.-1.1:upper:glow',
+                         'DATA-4b:bounds:propulsion.propeller.cp_table.value.-1.1:lower:shaft'):
+            case.loader_ok = False
     for key, lo, hi in [('installed_factor', .5, 1), ('governor_tau', .02, 2),
                         ('rotor_inertia', 0, .01), ('ram_flow', 0, .001)]:
         bounds(jet, ('propulsion', 'engine', key, 'value'), lo, hi)

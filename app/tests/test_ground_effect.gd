@@ -284,7 +284,7 @@ func _banked_and_regimes(session: Node) -> void:
 	var air := Air.compute(state0, ZERO_WIND, RHO)
 	var euler := M.q_to_euler(M.quat(state0[RB.ATT], state0[RB.ATT + 1], state0[RB.ATT + 2], state0[RB.ATT + 3]))
 	var results := {}
-	for bank: float in [20.0, -20.0]:
+	for bank: float in [20.0, -20.0, 0.0]:
 		var s := state0.duplicate()
 		s[RB.POS + 2] = -0.8
 		var q := M.q_from_euler(euler[0], euler[1], deg_to_rad(bank))
@@ -294,8 +294,13 @@ func _banked_and_regimes(session: Node) -> void:
 		var without := Aero.loads(s, air, d, model, RHO)
 		results[bank] = with_ground[3] - without[3]
 	_check("banked 20° right at 0.8 m: the lower right wing gains more lift (roll moment to the left)", results[20.0] < 0.0, "ΔMx %.4f N·m" % results[20.0])
-	_check("mirror bank gives the opposite roll moment of the same size within 1 % (the trim is not symmetric)", results[-20.0] > 0.0
-		and absf(results[-20.0] + results[20.0]) < 0.01 * absf(results[20.0]), "ΔMx %.4f N·m" % results[-20.0])
+	# A36 R5-G01: the trim's aileron offset now has its own bank-independent ground-effect increment (as on the strips),
+	# so the mirror symmetry applies to the bank-induced part: each bank's increment minus the level one. A small
+	# cross term remains (the trim aileron's increment itself grows on the lower wing), about 1.2 % at 20 deg.
+	var right: float = results[20.0] - results[0.0]
+	var left: float = results[-20.0] - results[0.0]
+	_check("mirror bank gives the opposite bank-induced roll moment of the same size within 2 %", left > 0.0
+		and absf(left + right) < 0.02 * absf(right), "ΔMx %.4f / %.4f N·m, level %.4f N·m" % [right, left, results[0.0]])
 	# The oracle (attached regime) and the local strip model carry the same ground-effect increment at the trimmed
 	# state, where the session blends toward the oracle.
 	var s := state0.duplicate()

@@ -14,7 +14,8 @@ const M := preload("res://physics/math3d.gd")
 const FORMAT := "openrc-race-track v1"
 const RULESET := "openrc-local-race-v1"
 ## v2 (DR-19g): a crossing on a graded impact tick is judged on the integrator chord plus the accepted endpoint.
-const PATH_POLICY := "openrc-chord-path-v2"
+## v3 (A36 R5-F02): the chord deviation bound is projected onto each aperture axis by the crossing angle.
+const PATH_POLICY := "openrc-chord-path-v3"
 const ORIGIN_PILOT := "pilot"
 
 const TOP_KEYS := ["format", "id", "name", "field_id", "ruleset", "laps", "origin", "pad", "gates"]

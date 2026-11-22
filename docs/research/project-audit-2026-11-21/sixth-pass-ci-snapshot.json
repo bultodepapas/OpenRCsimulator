@@ -1,0 +1,273 @@
+{
+  "reviewed_commit": "f2d9bf7c0e1fad77158bbadcb99c0c487ddb94ac",
+  "run_id": 44915227344,
+  "run_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44915227344",
+  "conclusion": "failure",
+  "scope": "Snapshot of previous R5 head, not the future R6 commit; first-page latest-attempt jobs and two inspected logs, not exhaustive failure triage.",
+  "jobs": [
+    {
+      "id": 136879951714,
+      "name": "CI selection and release preflight",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136879952986,
+      "name": "Publication source rebind evidence",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075296,
+      "name": "NK-3 native kernel qualification (Linux)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075302,
+      "name": "Godot visual captures",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075306,
+      "name": "RC native Windows build",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075325,
+      "name": "Godot app (integration 0)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075330,
+      "name": "RC native Linux build",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075331,
+      "name": "Website source and download checks",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075357,
+      "name": "NK-4 native kernel qualification (Windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075368,
+      "name": "three.js prototype (archived bake-off build)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881075389,
+      "name": "Godot app (units 1)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075392,
+      "name": "Godot app (units 2)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075418,
+      "name": "Godot app (units 4)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075424,
+      "name": "Godot app (units 3)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075448,
+      "name": "Godot app (units 5)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075467,
+      "name": "Godot app (units 7)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075468,
+      "name": "Godot app (units 0)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075500,
+      "name": "Godot app (units 6)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 136881075737,
+      "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136881076625,
+      "name": "Visual group shadow (${{ matrix.group }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 136881076670,
+      "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 136883346939,
+      "name": "RC native production checks (linux)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136883346957,
+      "name": "RC native production checks (windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 136888121912,
+      "name": "NK-4 Windows package qualification",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 136888121999,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 136919363949,
+      "name": "CI required",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Reject failed, cancelled, missing or unexpected skipped jobs"
+      ]
+    },
+    {
+      "id": 136919365124,
+      "name": "Visual group shadow comparison",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 136919982987,
+      "name": "GitHub release (v* tags)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    }
+  ],
+  "inspected_logs": [
+    {
+      "job_id": 136881075325,
+      "job": "Godot app (integration 0)",
+      "excerpts": [
+        "2026-11-21T15:04:38.6142554Z data check: stale",
+        "2026-11-21T15:04:38.6142942Z ERROR: aero.coefficients.Cmq.source does not match current or qualified historical provenance",
+        "2026-11-21T15:04:38.6145010Z ERROR: aero.coefficients.CLq.source does not match current or qualified historical provenance",
+        "2026-11-21T15:04:38.6147005Z ERROR: aero.coefficients.Cnr.source does not match current or qualified historical provenance",
+        "2026-11-21T15:04:38.6149520Z   log:14 ERROR: aero.coefficients.Cmq.source does not match current or qualified historical provenance",
+        "2026-11-21T15:04:38.6152120Z   log:18 ERROR: aero.coefficients.CLq.source does not match current or qualified historical provenance",
+        "2026-11-21T15:04:38.6153927Z   log:22 ERROR: aero.coefficients.Cnr.source does not match current or qualified historical provenance",
+        "2026-11-21T15:04:38.6206011Z FAILED: D11g: Stik rate derivatives and provenance match the current local law (exit 1)",
+        "2026-11-21T15:06:57.5512700Z physics/hull_contact.gd:189: bare cos( call",
+        "2026-11-21T15:06:57.5512931Z physics/hull_contact.gd:189: bare sin( call",
+        "2026-11-21T15:06:57.5513157Z sim/multirotor/session.gd:939: bare cos( call",
+        "2026-11-21T15:06:57.5513394Z sim/multirotor/session.gd:939: bare sin( call",
+        "2026-11-21T15:06:57.5571549Z FAILED: H6: transcendental calls stay behind math3d (exit 1)",
+        "2026-11-21T15:57:53.7978361Z == 2 failed section(s):",
+        "2026-11-21T15:57:54.0069812Z log:14 ERROR: aero.coefficients.Cmq.source does not match current or qualified historical provenance",
+        "2026-11-21T15:57:54.0072412Z log:18 ERROR: aero.coefficients.CLq.source does not match current or qualified historical provenance",
+        "2026-11-21T15:57:54.0074817Z log:22 ERROR: aero.coefficients.Cnr.source does not match current or qualified historical provenance"
+      ]
+    },
+    {
+      "job_id": 136881075468,
+      "job": "Godot app (units 0)",
+      "excerpts": [
+        "2026-11-21T14:59:37.6188931Z FAIL count-1 player, manager, and companions finish 1200 ticks  manager admitted 0/1 agents: [\"behavior source \\'res://app_root.gd\\': current source does not match the qualified manifest\", \"behavior source \\'res://main.gd\\': current source does not match the qualified manifest\"]",
+        "2026-11-21T14:59:37.6198398Z AFC COMPANION OBSERVATION CHECKS 21 FAILED 14",
+        "2026-11-21T14:59:37.6965293Z 17 invocations: 16 passed, 0 skipped, 1 failed or invalid."
+      ]
+    }
+  ],
+  "other_workflow": {
+    "id": 44915227353,
+    "name": "MetalFX source controls",
+    "conclusion": "success"
+  }
+}

@@ -85,6 +85,22 @@ static func register_derived(id: String, package: Dictionary) -> Dictionary:
 	return R.ok(id)
 
 
+## A36 O1: snapshot of the derived ids registered now, so an owner can tell which ids it created itself.
+static func derived_ids() -> PackedStringArray:
+	return PackedStringArray(_derived_packages.keys())
+
+
+## A36 O1: retire derived packages that their creating owner no longer uses. Only the owner that created an id (it was
+## absent from that owner's earlier snapshot) may retire it; ids already present belong to other drafts or history.
+## Returns the number of packages removed.
+static func retire_derived(ids: Array) -> int:
+	var removed := 0
+	for id: Variant in ids:
+		if typeof(id) == TYPE_STRING and _derived_packages.erase(id):
+			removed += 1
+	return removed
+
+
 static func _resolve(id: Variant, table: Dictionary, format: String, field: String, step: String) -> Dictionary:
 	if typeof(id) == TYPE_STRING and _derived_packages.has(id) and (_derived_packages[id] as Dictionary).get("format") == format:
 		return R.ok((_derived_packages[id] as Dictionary).duplicate(true))
@@ -323,6 +339,16 @@ static func airframe_aero(package: Dictionary, shape: Dictionary) -> Dictionary:
 	var section_moment := number(package, "wing", "section_moment")
 	var cm0 := section_moment * mac / chord + cma * incidence
 	var cd0 := number(package, "wing", "profile_drag")
+	var body_drag: Variant = package.wing.get("body_drag_area")
+	if body_drag != null:
+		if not body_drag is Dictionary:
+			return {}
+		var drag_value: Variant = body_drag.get("value")
+		if typeof(drag_value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(drag_value)) or float(drag_value) < 0.0:
+			return {}
+		# A source-derived dimensional body drag area is independent of the chosen wing reference.
+		# Evaluate against the current wing, including fitted/stacked geometry or a later player edit.
+		cd0 += float(drag_value) / area
 	var k_induced := 1.0 / (PI * number(package, "wing", "oswald_efficiency") * aspect)
 	var clq := tail_lift_rate(h_free, h_ratio, h_arm / chord)
 	var cmq := tail_pitch_damping(h_free, h_ratio, h_arm / chord)
@@ -384,7 +410,8 @@ static func airframe_aero(package: Dictionary, shape: Dictionary) -> Dictionary:
 	var quantities := {}
 	for name: String in borrowed:
 		quantities[name] = _copy_quantity(borrowed[name])
-	quantities.CD0 = _copy_quantity(package.wing.profile_drag)
+	quantities.CD0 = _copy_quantity(package.wing.profile_drag) if body_drag == null else _quantity(
+		_derived(cd0, "source section CD0 + source body drag area / current wing reference area"), "1")
 	quantities.CL_minD = _copy_quantity(package.wing.minimum_drag_lift)
 	quantities.CL0 = _derived(cl0, "wing zero-alpha lift + (S_h/S)·a_h·i_h, i_h the tail's effective incidence under the wing's zero-alpha downwash")
 	quantities.CLa = _derived(cla, "a_w + a_h·S_h/S; a_w = Helmbold(AR) = 2π·AR/(2 + √(AR² + 4)), a_h = η·Helmbold(AR_h)·(1 − dε/dα)")

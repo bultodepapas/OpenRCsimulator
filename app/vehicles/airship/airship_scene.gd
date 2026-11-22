@@ -73,6 +73,8 @@ var _size := 1.0
 var session: Node
 ## BL-08 opt-in black box (F10 start/stop, F11 marker).
 var flight_log: RefCounted
+## A36 G3: how the last recording ended (limit, reset, fault or write failure), kept on the HUD until the next F10.
+var log_status := ""
 var visual: RefCounted
 var hud: CanvasLayer
 var camera: Camera3D
@@ -715,7 +717,7 @@ func _process(delta: float) -> void:
 		# A crash pauses the session; the lens keeps presenting its aftermath, and holds only for a real pause.
 		_lens.advance(delta, session.sim.time(), session.paused and session.crash.is_empty())
 	var t: Dictionary = session.telemetry()
-	hud.update(t, _last_input, CAMERA_NAMES[camera_mode])
+	hud.update(t, _last_input, CAMERA_NAMES[camera_mode], log_line())
 	_update_audio(target, body_basis)
 
 
@@ -839,8 +841,24 @@ func toggle_recording() -> void:
 		hud.flash(str(flight_log.note))
 		return
 	flight_log = AirshipLog.new(session)
+	flight_log.ended.connect(_flight_log_ended)
+	log_status = ""
 	flight_log.start({field_path = field_path})
 	hud.flash(str(flight_log.note))
+
+
+## Any end of a recording reaches the pilot while flying, not only at the next F10 toggle.
+func _flight_log_ended(reason: String, failed: bool) -> void:
+	log_status = ("Log FAILED: %s" % reason) if failed else ("Log stopped: %s" % reason)
+	if hud != null and flight_log != null:
+		hud.flash(str(flight_log.note))
+
+
+## HUD line for the recorder: elapsed time while recording, else the retained end status (empty when never used).
+func log_line() -> String:
+	if flight_log != null and flight_log.recording:
+		return "Log REC %.0f s" % flight_log.seconds()
+	return log_status
 
 
 func _stop_recording(reason: String) -> void:

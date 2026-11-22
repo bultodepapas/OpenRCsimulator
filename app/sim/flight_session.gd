@@ -198,6 +198,9 @@ const ELECTRIC_LAW: String = "electric-fixed-bus-coupled-stop-v1"
 ## Conservative source-only explicit-step envelope, qualified by EL1d scalar refinement.
 ## Propeller/aerodynamic stiffness still needs per-configuration flight evidence.
 const ELECTRIC_MAX_STEP_RATIO: float = 0.25
+## A36 R5-F03: declared cooling-airflow envelope for the launch guard's pack thermal eigenvalue (m/s). The forced term
+## grows with sqrt(speed), so a pack admitted here stays RK4-stable to over 100 times this speed.
+const PACK_COOLING_ENVELOPE_MPS: float = 200.0
 
 const WeatherField = preload("res://physics/wind_field.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
@@ -490,7 +493,9 @@ func _electric_step_supported(model: Dictionary) -> bool:
 
 
 ## BAT-10: conservative sum of the pack's fastest eigenvalues times dt: charge/OCV feedback through Rm on the
-## weakest cell, the shortest RC time constant and the ESC voltage filter. Thermal time constants are minutes.
+## weakest cell, the shortest RC time constant and the ESC voltage filter. A36 R5-F03: plus the passive cooling mode
+## (h_still + h_forced·sqrt(v))/C_th at the declared cooling envelope. Stock packs cool over minutes; admitted custom
+## data can be fast enough that one RK4 step amplifies a temperature excess instead of cooling it.
 func _pack_step_ratio(prop: Dictionary) -> float:
 	var battery: Dictionary = prop.battery
 	var knots: PackedFloat64Array = battery.soc_knots
@@ -508,7 +513,14 @@ func _pack_step_ratio(prop: Dictionary) -> float:
 			tau_min = minf(tau_min, tau)
 	if is_finite(tau_min):
 		ratio += sim.dt() / tau_min
+	ratio += sim.dt() * _pack_thermal_rate(battery)
 	return ratio + sim.dt() / float(battery.lvc_filter_s)
+
+
+## Fastest passive cooling eigenvalue H/C_th (1/s) of a pack_ecm battery within the declared cooling envelope.
+func _pack_thermal_rate(battery: Dictionary) -> float:
+	var transfer: float = float(battery.h_still_w_per_k) + float(battery.h_forced_w_per_k_sqrt_mps) 		* sqrt(PACK_COOLING_ENVELOPE_MPS)
+	return transfer / float(battery.thermal_capacity_j_per_k)
 
 
 ## Configure only at a launch boundary, then reset() to build the selected start in this air mass.

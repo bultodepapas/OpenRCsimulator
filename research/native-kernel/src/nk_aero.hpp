@@ -646,8 +646,21 @@ inline Loads global_loads(const R *s, const Air &air, const Deflections &d, cons
 		const R attached = 1.0 - w;
 		R wing_gain = 0.0;
 		R roll_gain = 0.0;
+		// A36 R5-G01 (mirrors aero.gd): differential aileron incidence and its induced coupling see the ground factor.
+		const R aileron_effect = m.wing_aileron_effectiveness;
+		const bool controlled = aileron_effect != 0.0 && (dar != 0.0 || dal != 0.0);
+		const bool coupled = static_cast<int>(m.induced_map.size()) == stations * stations;
 		for (int i = 0; i < stations; ++i) {
-			const R dcl = a0 * (alpha + alpha_zero) * (1.0 - ge[i]) * (1.0 - m.strip_row_sum[i]);
+			R dcl = a0 * (alpha + alpha_zero) * (1.0 - ge[i]) * (1.0 - m.strip_row_sum[i]);
+			if (controlled) {
+				R control = aileron_effect * (m.ys[i] > 0.0 ? dar : dal);
+				if (coupled) {
+					for (int k = 0; k < stations; ++k) {
+						control -= m.induced_map[i * stations + k] * aileron_effect * (m.ys[k] > 0.0 ? dar : dal);
+					}
+				}
+				dcl += a0 * (1.0 - ge[i]) * control;
+			}
 			wing_gain += dcl / static_cast<double>(stations);
 			roll_gain -= dcl * m.ys[i] / static_cast<double>(stations) / b;
 		}
@@ -961,6 +974,10 @@ inline Loads aero_loads(const R *s, const Air &air, const Deflections &d, const 
 	if (flap_active(d, m)) {
 		Deflections clean_d = d;
 		clean_d.flap = 0.0;
+		// A36 R6-G02 (mirrors aero.gd): the quasi-static route is the settled wake of the flapped wing.
+		if (is_nan(downwash_cl) && m.horizontal.present && m.horizontal.free) {
+			downwash_cl = wing_lift_coefficient_with(s, air, d, m, ge, true);
+		}
 		const R blend_clean = local_flow_weight(s, air, clean_d, m, downwash_cl, ge);
 		if (blend_clean == 1.0) {
 			return local_loads(s, air, d, m, rho, downwash_cl, ge);

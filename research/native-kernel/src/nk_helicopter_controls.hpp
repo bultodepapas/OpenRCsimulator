@@ -128,9 +128,30 @@ inline HeliControlResult heli_trainer_electronics(const HeliTrainerModel &m, con
 		return heli_control_failure("swash mix refused the physical stick commands");
 	}
 	const R root_three = sqrt_(3.0);
-	const R front = clampf(pitch_value + cyclic_longitudinal, -1.0, 1.0);
-	const R rear_right = clampf(pitch_value - 0.5 * cyclic_longitudinal + 0.5 * root_three * cyclic_lateral, -1.0, 1.0);
-	const R rear_left = clampf(pitch_value - 0.5 * cyclic_longitudinal - 0.5 * root_three * cyclic_lateral, -1.0, 1.0);
+	const R front_raw = pitch_value + cyclic_longitudinal;
+	const R rear_right_raw = pitch_value - 0.5 * cyclic_longitudinal + 0.5 * root_three * cyclic_lateral;
+	const R rear_left_raw = pitch_value - 0.5 * cyclic_longitudinal - 0.5 * root_three * cyclic_lateral;
+	// A36 R5-F01 (mirrors electronics.gd): cyclic trim joins the pilot axes before the mixer and servo travel. While
+	// both triples are unclamped the original angle-space trim sum is kept; otherwise the trimmed triple is clamped
+	// per servo and every applied angle, collective included, comes from that one bounded result.
+	const R trimmed_longitudinal = cyclic_longitudinal + trim.cyclic_forward_bias_rad / m.longitudinal_rad_per_unit;
+	const R trimmed_lateral = cyclic_lateral + trim.cyclic_right_bias_rad / m.lateral_rad_per_unit;
+	const bool trim_axis_limited = absf(trimmed_longitudinal) > 1.0 || absf(trimmed_lateral) > 1.0;
+	const R mixed_longitudinal = clampf(trimmed_longitudinal, -1.0, 1.0);
+	const R mixed_lateral = clampf(trimmed_lateral, -1.0, 1.0);
+	const R trimmed_front_raw = pitch_value + mixed_longitudinal;
+	const R trimmed_rear_right_raw = pitch_value - 0.5 * mixed_longitudinal + 0.5 * root_three * mixed_lateral;
+	const R trimmed_rear_left_raw = pitch_value - 0.5 * mixed_longitudinal - 0.5 * root_three * mixed_lateral;
+	const R trimmed_front = clampf(trimmed_front_raw, -1.0, 1.0);
+	const R trimmed_rear_right = clampf(trimmed_rear_right_raw, -1.0, 1.0);
+	const R trimmed_rear_left = clampf(trimmed_rear_left_raw, -1.0, 1.0);
+	const bool pilot_limited = clampf(front_raw, -1.0, 1.0) != front_raw
+		|| clampf(rear_right_raw, -1.0, 1.0) != rear_right_raw || clampf(rear_left_raw, -1.0, 1.0) != rear_left_raw;
+	const bool allocated = pilot_limited || trim_axis_limited || trimmed_front != trimmed_front_raw
+		|| trimmed_rear_right != trimmed_rear_right_raw || trimmed_rear_left != trimmed_rear_left_raw;
+	const R front = allocated ? trimmed_front : front_raw;
+	const R rear_right = allocated ? trimmed_rear_right : rear_right_raw;
+	const R rear_left = allocated ? trimmed_rear_left : rear_left_raw;
 	const R collective_axis = (front + rear_right + rear_left) / 3.0;
 	const R longitudinal_axis = (2.0 * front - rear_right - rear_left) / 3.0;
 	const R lateral_axis = (rear_right - rear_left) / root_three;
@@ -143,8 +164,10 @@ inline HeliControlResult heli_trainer_electronics(const HeliTrainerModel &m, con
 	const R theta0 = clampf(collective_raw, m.collective_min_rad, m.collective_max_rad);
 	const R swash_long = clampf(longitudinal_raw, -m.cyclic_max_rad, m.cyclic_max_rad);
 	const R swash_lateral = clampf(lateral_raw, -m.cyclic_max_rad, m.cyclic_max_rad);
-	const R cyclic_forward = clampf(swash_long + trim.cyclic_forward_bias_rad, -m.cyclic_max_rad, m.cyclic_max_rad);
-	const R cyclic_right = clampf(swash_lateral + trim.cyclic_right_bias_rad, -m.cyclic_max_rad, m.cyclic_max_rad);
+	const R cyclic_forward = allocated ? swash_long
+		: clampf(swash_long + trim.cyclic_forward_bias_rad, -m.cyclic_max_rad, m.cyclic_max_rad);
+	const R cyclic_right = allocated ? swash_lateral
+		: clampf(swash_lateral + trim.cyclic_right_bias_rad, -m.cyclic_max_rad, m.cyclic_max_rad);
 	const R yaw_stick = sticks[2];
 	const R manual_yaw_rate = absf(yaw_stick) > m.yaw_deadzone ? yaw_stick * m.yaw_max_rate_rad_s : R(0.0);
 	const R difference = state[17] - yaw;

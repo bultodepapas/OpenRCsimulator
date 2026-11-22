@@ -109,11 +109,21 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
  for key: String in ["spring_n_m", "damping_n_s_m", "friction", "slip_m_s"]:
   if not skids.has(key) or not skids[key] is float or skids[key] <= 0.0: return {ok=false,errors=["invalid skid parameter: "+key]}
  var reach: float = 0.0
+ # A36 R8-F01: the four contacts also stiffen and damp rotation through their lever arms; the largest arm about each
+ # body axis (roll: y,z; pitch: x,z; yaw: x,y) bounds that axis's contact mode against the same fixed-step limits.
+ var arm_sq := PackedFloat64Array([0.0, 0.0, 0.0])
  for i: int in range(0,12,3):
   var p: PackedFloat64Array=skids.points_body_frd_m.slice(i,i+3)
   reach=maxf(reach,M.norm(p))
+  arm_sq[0]=maxf(arm_sq[0],p[1]*p[1]+p[2]*p[2])
+  arm_sq[1]=maxf(arm_sq[1],p[0]*p[0]+p[2]*p[2])
+  arm_sq[2]=maxf(arm_sq[2],p[0]*p[0]+p[1]*p[1])
  if not is_finite(reach) or reach<=0.0 or sqrt(4.0*skids.spring_n_m/cfg.mass_kg)/Engine.physics_ticks_per_second>.5 or 4.0*skids.damping_n_s_m/(cfg.mass_kg*Engine.physics_ticks_per_second)>1.0:
   return {ok=false,errors=["skid geometry or fixed-step stiffness exceeds the supported envelope"]}
+ var rotational: Dictionary = skid_rotational_step_ratios(skids, cfg.inertia_body_kg_m2, arm_sq)
+ if not rotational.ok:
+  return {ok=false,errors=["skid lever arms make the contact rotation too stiff for the fixed step (stiffness %s > 0.5 or damping %s > 1)" \
+   % [str(snappedf(float(rotational.stiffness),0.001)),str(snappedf(float(rotational.damping),0.001))]]}
  skids.reach_m=reach
  skids.make_read_only()
  var loaded: Dictionary = {ok=true,errors=errors,id=raw.id,context=prepared.context,skids=skids,
@@ -126,6 +136,22 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
    "missing_capabilities": HX700_ACCEPTANCE_BLOCKERS.duplicate(),
   }
  return loaded
+
+## A36 R8-F01: largest per-axis contact rotation ratios, sqrt(4k r^2/J)/hz and 4c r^2/(J hz), with r the largest lever
+## arm about each body axis and J the body inertia diagonal. Admission requires stiffness <= 0.5 and damping <= 1, the
+## translational guard's limits. Wider skids raised the roll damping rate to h*lambda = 4.4 (RK4 gain 7.7 per tick).
+static func skid_rotational_step_ratios(skids: Dictionary, inertia: PackedFloat64Array, arm_sq: PackedFloat64Array) -> Dictionary:
+ var hz: float = Engine.physics_ticks_per_second
+ var stiffness := 0.0
+ var damping := 0.0
+ for axis in 3:
+  var j: float = inertia[axis] if inertia.size() > axis else NAN
+  if not (is_finite(j) and j > 0.0):
+   return {ok=false, stiffness=NAN, damping=NAN}
+  stiffness=maxf(stiffness,sqrt(4.0*float(skids.spring_n_m)*arm_sq[axis]/j)/hz)
+  damping=maxf(damping,4.0*float(skids.damping_n_s_m)*arm_sq[axis]/(j*hz))
+ return {ok=is_finite(stiffness) and is_finite(damping) and stiffness<=0.5 and damping<=1.0, stiffness=stiffness, damping=damping}
+
 
 static func _unpack(raw: Variant, path: String, errors: PackedStringArray) -> Dictionary:
  var out: Dictionary = {}

@@ -17,12 +17,15 @@ const M := preload("res://physics/math3d.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const Data := preload("res://physics/airship/airship_data.gd")
 
-const LAW := "airship-kirchhoff-6dof-v1"
+## v3 (A36 R3-F01): pack draw follows the ESC command (motoring, freewheeling coast, reversing).
+const LAW := "airship-kirchhoff-6dof-v3"
 const MIXER_LAW := "airship-mixer-v1"
 const FRICTION_SPEED := 0.05
 const THRUST_LIMIT := 1.5
 ## Penetration over which contact damping ramps in, so the normal force starts at zero on first touch.
 const CONTACT_DAMPING_DEPTH := 0.005
+## A36 R3-F01: normalized-speed band over which a non-braking ESC fades between motoring and freewheeling.
+const FREEWHEEL_BAND := 0.02
 
 
 ## Actuator targets from the four pilot sticks [roll, pitch, yaw, throttle] (pitch > 0 = stick back = nose up,
@@ -60,6 +63,17 @@ static func mixer_targets(model: Dictionary, inputs: PackedFloat64Array) -> Pack
 		var te_displacement := -deg_to_rad(float(fin.travel)) * demand
 		out[7 + i] = te_displacement * float(fin.te_sign)
 	return out
+
+
+## A36 R3-F01: share of a rotor's aerodynamic shaft power that its non-braking ESC draws from the pack. The ESC
+## motors while its command is at or above the rotor's speed in the same direction (1), freewheels while a lower
+## command lets the rotor coast down on its own stored energy (0), and drives a reversal against the rotation
+## (a reversible motor) in proportion to the reverse command. Both edges ramp over FREEWHEEL_BAND, so the pack
+## current stays continuous. Rotor speed dynamics are unchanged; regeneration and active braking are not modeled.
+static func drive_fraction(command: float, speed: float) -> float:
+	if command * speed < 0.0:
+		return clampf(absf(command) / FREEWHEEL_BAND, 0.0, 1.0)
+	return clampf((absf(command) - absf(speed)) / FREEWHEEL_BAND + 1.0, 0.0, 1.0)
 
 
 ## One joint stage for Simulation: {loads, derivative, rotor_momentum, body_derivative}.
@@ -158,19 +172,28 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		var a_n := -(vfx * n[0] + vfy * n[1] + vfz * n[2])
 		var a_t := -(vfx * aft[0] + vfy * aft[1] + vfz * aft[2])
 		var area: float = fin.area
+		var in_plane_speed := sqrt(a_n * a_n + a_t * a_t)
 		var q_area := half_rho * area * (a_n * a_n + a_t * a_t)
 		var alpha := M.atan2_(a_n, a_t) if q_area > 0.0 else 0.0
 		var delta: float = continuous[Data.FIN + i]
-		var alpha_e: float = alpha - float(fin.flap_tau) * delta * float(fin.te_sign)
+		var flap_angle: float = float(fin.flap_tau) * delta * float(fin.te_sign)
+		var alpha_e: float = alpha - flap_angle
 		var sa := M.sin_(alpha_e)
 		var ca := M.cos_(alpha_e)
-		var cn: float = float(fin.lift_slope) * sa * ca + float(fin.crossflow_drag) * sa * absf(sa)
+		# Lift is perpendicular to the actual local flow, including for a held deflection.
+		# The flat-plate drag acts along the effective flap normal; its work is non-positive.
+		# This remains bounded at zero in-plane speed and keeps the small-angle forward slope.
+		var fin_lift := q_area * float(fin.lift_slope) * sa * ca
+		var crossflow := q_area * float(fin.crossflow_drag) * sa * absf(sa)
+		var lift_normal := fin_lift * a_t / in_plane_speed if in_plane_speed > 0.0 else 0.0
+		var lift_aft := -fin_lift * a_n / in_plane_speed if in_plane_speed > 0.0 else 0.0
+		var normal_force := lift_normal + crossflow * M.cos_(flap_angle)
+		var aft_force := lift_aft - crossflow * M.sin_(flap_angle)
 		var air_speed := sqrt(vfx * vfx + vfy * vfy + vfz * vfz)
 		var drag_k := half_rho * area * float(fin.drag) * air_speed
-		var normal_force := q_area * cn
-		var ffx := n[0] * normal_force - drag_k * vfx
-		var ffy := n[1] * normal_force - drag_k * vfy
-		var ffz := n[2] * normal_force - drag_k * vfz
+		var ffx := n[0] * normal_force + aft[0] * aft_force - drag_k * vfx
+		var ffy := n[1] * normal_force + aft[1] * aft_force - drag_k * vfy
+		var ffz := n[2] * normal_force + aft[2] * aft_force - drag_k * vfz
 		_apply3(force, moment, ffx, ffy, ffz, rf)
 		if detail:
 			fin_detail.append({id = fin.id, alpha_deg = rad_to_deg(alpha), normal_force_n = normal_force,
@@ -188,37 +211,53 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 	var battery: Dictionary = model.battery
 	var soc: float = continuous[Data.SOC]
 	var cells: float = battery.cells
+	# Trial stages may evaluate negative charge while still connected: the event locator
+	# needs the continuous moving-side law. Only its committed transition opens the pack.
+	var connected := continuous[Data.BATTERY_CONNECTED] == 1.0
 	var ocv := cells * _ocv(battery.ocv, soc)
 	var rotors: Array = model.rotors
+	var targets := mixer_targets(model, inputs)
+	# The ESC's commanded speed is target x supply. The open-circuit supply bounds the loaded one from above, so a
+	# rotor settled at its loaded command keeps full motoring share without a circular dependence on the bus voltage.
+	var command_scale := ocv / float(battery.reference_voltage) \
+		* clampf((ocv - cells * float(battery.cutoff_cell)) / float(battery.cutoff_band), 0.0, 1.0)
 	var electrical := 0.0
-	for i in 4:
-		var n_i: float = continuous[Data.MOTOR + i]
-		var rotor: Dictionary = rotors[i]
-		electrical += float(rotor.shaft_power) * absf(n_i * n_i * n_i) / float(rotor.motor_efficiency)
+	if connected:
+		for i in 4:
+			var n_i: float = continuous[Data.MOTOR + i]
+			var rotor: Dictionary = rotors[i]
+			electrical += float(rotor.shaft_power) * absf(n_i * n_i * n_i) / float(rotor.motor_efficiency) \
+				* drive_fraction(targets[i] * command_scale, n_i)
 	var resistance: float = battery.resistance
 	var disc := ocv * ocv - 4.0 * electrical * resistance
 	# Beyond the pack's maximum transferable power (disc <= 0) the bus sits at OCV/2 and delivers only OCV^2/(4R).
-	var volts := 0.5 * (ocv + sqrt(disc)) if disc > 0.0 else 0.5 * ocv
-	var current := electrical / volts if disc > 0.0 and volts > 0.0 else (ocv - volts) / resistance if resistance > 0.0 else 0.0
+	var volts := (0.5 * (ocv + sqrt(disc)) if disc > 0.0 else 0.5 * ocv) if connected else 0.0
+	var current := (electrical / volts if disc > 0.0 and volts > 0.0 else (ocv - volts) / resistance if resistance > 0.0 else 0.0) if connected else 0.0
 	var cutoff := clampf((volts - cells * float(battery.cutoff_cell)) / float(battery.cutoff_band), 0.0, 1.0)
 	var supply := volts / float(battery.reference_voltage) * cutoff
-	# --- actuators: targets, servo and motor responses ---
-	var targets := mixer_targets(model, inputs)
+	# --- actuators: servo and motor responses ---
 	var derivative := PackedFloat64Array()
 	derivative.resize(Data.CONTINUOUS_SIZE)
 	for i in 4:
 		var rotor: Dictionary = rotors[i]
-		derivative[Data.MOTOR + i] = (targets[i] * supply - continuous[Data.MOTOR + i]) / float(rotor.response_time)
+		var n_i: float = continuous[Data.MOTOR + i]
+		# With an open pack supply is zero: retain the original finite exponential
+		# coast response. This estimated lag does not identify physical shaft inertia
+		# or establish a complete propeller/body energy balance.
+		derivative[Data.MOTOR + i] = (targets[i] * supply - n_i) / float(rotor.response_time)
 	var vectors: Array = model.vectors
-	for i in 3:
-		var vec: Dictionary = vectors[i]
-		var rate := deg_to_rad(float(vec.max_rate))
-		derivative[Data.VECTOR + i] = clampf((targets[4 + i] - continuous[Data.VECTOR + i]) / float(vec.response_time), -rate, rate)
-	for i in 3:
-		var fin: Dictionary = fins[i]
-		var rate := deg_to_rad(float(fin.max_rate))
-		derivative[Data.FIN + i] = clampf((targets[7 + i] - continuous[Data.FIN + i]) / float(fin.response_time), -rate, rate)
-	derivative[Data.SOC] = -current / (3600.0 * float(battery.capacity)) if soc > 0.0 else 0.0
+	# No separate receiver/BEC source is modeled. After pack disconnection, hold
+	# achieved positions; this ideal no-power hold omits unpowered blowback.
+	if connected:
+		for i in 3:
+			var vec: Dictionary = vectors[i]
+			var rate := deg_to_rad(float(vec.max_rate))
+			derivative[Data.VECTOR + i] = clampf((targets[4 + i] - continuous[Data.VECTOR + i]) / float(vec.response_time), -rate, rate)
+		for i in 3:
+			var fin: Dictionary = fins[i]
+			var rate := deg_to_rad(float(fin.max_rate))
+			derivative[Data.FIN + i] = clampf((targets[7 + i] - continuous[Data.FIN + i]) / float(fin.response_time), -rate, rate)
+	derivative[Data.SOC] = -current / (3600.0 * float(battery.capacity)) if connected else 0.0
 	# --- propellers ---
 	var thrusts := PackedFloat64Array()
 	var thrust_dirs: Array = []
@@ -307,7 +346,11 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		info.thrust_n = thrusts
 		info.thrust_dirs = thrust_dirs
 		info.targets = targets
-		info.battery = {volts = volts, current_a = current, power_w = electrical, ocv = ocv, cutoff = cutoff, soc = soc}
+		# A36 R2-I01: power_w is what the pack terminals deliver. Beyond the pack's transferable maximum OCV^2/(4R)
+		# the request is not met; report the request, the ceiling and the limit separately.
+		info.battery = {volts = volts, current_a = current, power_w = volts * current, requested_power_w = electrical,
+			max_power_w = ocv * ocv / (4.0 * resistance) if resistance > 0.0 else INF, power_limited = connected and disc <= 0.0,
+			ocv = ocv, cutoff = cutoff, soc = soc, connected = connected}
 		info.contact = contact
 		info.acceleration = nu_dot
 		result.info = info

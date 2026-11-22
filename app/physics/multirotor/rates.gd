@@ -40,11 +40,12 @@ const PINNED_DEFAULTS := {}
 ## ACTUAL: rc_rate and srate up to 200, expo up to 100 (FPV/03 §1). The lower bound 0 is an OpenRC domain (a
 ## negative raw rate has no meaning in the curve). rate_limit: the FPV documents give 200..1998 only for BF 2026.6.2
 ## (FPV/07 SET-01), not for the 4.5.2 pin, so only rate_limit >= 1 is enforced (a zero cap would null the axis).
-## BETAFLIGHT: the FPV documents state no 4.5.2 field constraints for this family, so only the same OpenRC
-## non-negative domain and rate_limit >= 1 are enforced; rc_rate above 200 (r > 2) is legal input to the law.
+## BETAFLIGHT: the same OpenRC non-negative domain and rate_limit >= 1; rc_rate above 200 (r > 2) is legal input to
+## the law. A36 R7-F01: expo is 0..100 as in the Betaflight 4.5 CLI reference. Above 100 the shaping factor
+## (1 - e) + e|x|^3 turns negative for |x| < (1 - 1/e)^(1/3), so partial stick would command the opposite rotation.
 const FIELD_DOMAINS := {
 	"ACTUAL": {rc_rate = [0, 200], srate = [0, 200], expo = [0, 100], rate_limit = [1, -1]},
-	"BETAFLIGHT": {rc_rate = [0, -1], srate = [0, -1], expo = [0, -1], rate_limit = [1, -1]},
+	"BETAFLIGHT": {rc_rate = [0, -1], srate = [0, -1], expo = [0, 100], rate_limit = [1, -1]},
 }
 
 ## Betaflight family constants (FPV/03 §1): r_eff = r + 14.54*(r - 2) above r = 2; denominator clamped to [0.01, 1].

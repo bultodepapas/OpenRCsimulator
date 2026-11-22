@@ -140,3 +140,7 @@ The promoted fixture SHA-256 is `24bffa86e373599f4c105873d8e791d976d793672010a67
 The collision audit changed the pinned `sim/flight_session.gd` file. The [receipt](publication-rebind-2026-11-21.json) binds baseline `b4ae37fd` and candidate `a1663d6b` to [run 44943554546](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44943554546). All eight Windows and Linux shaft and weather captures reproduced their retained hashes. The strict packer verified the complete source inventories, checked reports and unchanged typed frames.
 
 The renewed fixture is `4b11b8e68e82bc264b268cad67be67e75d81d5431a7655ca08dd5acf8c9420f6`. Only the session source pin and overlay, candidate commit and fixture identity changed. The retained weather and shaft cases exercise 25 frames per case.
+
+## 2026-11-21 A36 audit-branch source renewal
+
+The A36 physics fixes changed the pinned `physics/aero.gd`, `physics/aircraft_data.gd` and `sim/flight_session.gd`. The [receipt](publication-rebind-2026-11-21-a36.json) binds baseline `a1663d6b` and candidate `d5f04291` to [run 44959001279](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44959001279). All eight Windows and Linux shaft and weather captures are byte-identical between baseline and candidate, and the strict packer verified them. The renewed fixture is `80653cb72f391f45dd2e11e99da454329119585001547a934f27d45ad9019eb6`; only those three source pins, the session overlay, the candidate commit and the fixture identity changed.

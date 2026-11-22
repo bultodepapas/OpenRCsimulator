@@ -114,7 +114,8 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	# E0b3a: resolve wing downwash once per evaluation, not from the washed flow. The same held/instantaneous
 	# dimensional source must feed the free and washed evaluations. This is E0a2's angle law, not a new wake-transport model.
 	var wing_cl: float = 0.0
-	if surfaces.horizontal.has("free_slope"):
+	# A36 R4-F01: a tailless airframe has no horizontal key at all; only a present free tail law reads wing downwash.
+	if surfaces.get("horizontal", {}).has("free_slope"):
 		wing_cl = Aero.wing_wake_velocity(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
 	var tail_limit: float = surfaces.tail_local_limit
 	var tail_span: float = surfaces.tail_stall_end - surfaces.tail_local_limit

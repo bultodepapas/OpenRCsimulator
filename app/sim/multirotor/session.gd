@@ -278,6 +278,9 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	# the props (electrical law). Part of the model identity, so a log replays with the law it was flown with.
 	if typeof(opts.get("crash_model")) != TYPE_STRING or not str(opts.crash_model) in ["strict", "graded"]:
 		return _refused("option crash_model must be strict or graded")
+	var motor_error: String = Plant.motor_step_error(doc)
+	if not motor_error.is_empty():
+		return _refused(motor_error)
 	var created: Dictionary = Plant.create(doc, profile, policy, 0, float(opts.throttle_limit))
 	if not created.ok:
 		return _refused("; ".join(created.errors))

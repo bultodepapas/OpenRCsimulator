@@ -213,6 +213,23 @@ func _launch_guard_and_weak_cell() -> void:
 	var fast_filter: Dictionary = probe.aircraft.duplicate(true)
 	fast_filter.model.propulsion.battery.lvc_filter_s = 1e-4
 	check("too fast an ESC filter refuses launch", not probe._prepare_aircraft(fast_filter).ok)
+	# A36 R5-F03: admitted custom data (10 g pack, c_p 100 J/(kg·K), 1000 W/K still-air conductance) makes the cooling
+	# mode tau = 1 ms; one 240 Hz RK4 step multiplied a warm excess by 6.0 instead of cooling it. The guard now counts
+	# H/C_th at the declared cooling envelope; the stock pack's thermal term stays negligible.
+	var battery: Dictionary = probe.aircraft.model.propulsion.battery
+	var stock_thermal: float = probe.sim.dt() * probe._pack_thermal_rate(battery)
+	check("stock pack thermal step term is small and included", stock_thermal > 0.0 and stock_thermal < 1.0e-3
+		and probe._pack_step_ratio(probe.aircraft.model.propulsion) <= Flight.ELECTRIC_MAX_STEP_RATIO)
+	var hot: Dictionary = probe.aircraft.duplicate(true)
+	hot.model.propulsion.battery.thermal_capacity_j_per_k = 1.0
+	hot.model.propulsion.battery.h_still_w_per_k = 1000.0
+	hot.model.propulsion.battery.h_forced_w_per_k_sqrt_mps = 0.0
+	check("a 1 ms pack cooling mode refuses launch", not probe._prepare_aircraft(hot).ok)
+	var forced: Dictionary = probe.aircraft.duplicate(true)
+	forced.model.propulsion.battery.thermal_capacity_j_per_k = 1.0
+	forced.model.propulsion.battery.h_still_w_per_k = 0.0
+	forced.model.propulsion.battery.h_forced_w_per_k_sqrt_mps = 10.0
+	check("fast forced cooling within the airflow envelope refuses launch", not probe._prepare_aircraft(forced).ok)
 	probe.free()
 	var aged: Node = flight(variant({"weak_capacity_factor": 0.85, "weak_resistance_factor": 1.6}))
 	aged.engine_running = true

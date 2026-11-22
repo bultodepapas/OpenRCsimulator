@@ -7,10 +7,11 @@
 #     of the accepted path piece, terminal adjudication and ONE ordered event list (physical and race events).
 # No state outside the arguments, no clock other than the supplied times, no randomness.
 #
-# Accepted-path policy `openrc-chord-path-v2` (v2: impact ticks, see _score): the plant integrates each 1/240 s tick with one RK4 step and publishes
+# Accepted-path policy `openrc-chord-path-v3` (v2: impact ticks, see _score; v3: angle-projected bound): the plant integrates each 1/240 s tick with one RK4 step and publishes
 # only accepted endpoints, so the accepted piece of a tick is the straight chord between the previous and the candidate
 # accepted CG positions, valid only when the endpoint did not jump (no legacy body filter, no endpoint body correction).
-# Its in-plane uncertainty is eps = A·dt²/8 with the declared envelope A = 250 m/s² (about 0.54 mm at 240 Hz). A chord
+# Its chord deviation bound is eps = A·dt²/8 with the declared envelope A = 250 m/s² (about 0.54 mm at 240 Hz), projected
+# onto each aperture axis as eps·sqrt(1 + (v_t/v_n)²) for the chord's tangential/normal speed ratio (gate_crossing.gd). A chord
 # whose measured velocity change implies more than A is unqualified: every crossing on it is unresolved. A crossing with
 # normal speed below 1 m/s is unresolved (near grazing). Unresolved crossings never score; they count in a checkpointed
 # counter and never abort the attempt. This is declared, bounded evidence for local practice timing, not a proof that

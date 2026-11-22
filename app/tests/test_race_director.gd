@@ -59,6 +59,7 @@ func _run() -> void:
 	_missed_gate_return()
 	_crash_ties()
 	_unresolved()
+	_curved_crossing_projection()
 	_new_attempt_and_go()
 	_determinism()
 	print("%d checks, %d failed" % [_count, _failures])
@@ -296,6 +297,46 @@ func _unresolved() -> void:
 		clipped.race.modes[Director.D_NEXT_GATE] == 1 and clipped.race.modes[Director.D_UNRESOLVED] == 0
 		and bounced.race.modes[Director.D_NEXT_GATE] == 0 and bounced.race.modes[Director.D_UNRESOLVED] == 1)
 
+
+## A36 R5-F02: a constant-acceleration curve (normal 40 m/s², below the 250 m/s² envelope) whose chord crosses 1 mm inside
+## the aperture edge at tangential/normal speed 40/2 m/s. The curve stays within A·dt²/8 of its chord at equal time, yet
+## its own plane intersection lies 0.735 mm outside the edge. Path policy v3 projects the bound per axis, so the chord
+## crossing is unresolved (never an award). A perpendicular chord at the same point keeps the unprojected band and scores.
+func _curved_crossing_projection() -> void:
+	var gate: Dictionary = _course.gates[0]
+	var a_n := 40.0
+	var v_n := 2.0
+	var v_u := 40.0
+	var y_chord: float = float(gate.w) - 0.001
+	var p0 := PackedFloat64Array()
+	var p1 := PackedFloat64Array()
+	var q0 := PackedFloat64Array()
+	var q1 := PackedFloat64Array()
+	for i in 3:
+		var c: float = float(gate.c[i])
+		p0.append(c - v_n * DT / 2.0 * float(gate.n[i]) + (y_chord - v_u * DT / 2.0) * float(gate.u[i]))
+		p1.append(c + v_n * DT / 2.0 * float(gate.n[i]) + (y_chord + v_u * DT / 2.0) * float(gate.u[i]))
+		q0.append(c - v_n * DT / 2.0 * float(gate.n[i]) + y_chord * float(gate.u[i]))
+		q1.append(c + v_n * DT / 2.0 * float(gate.n[i]) + y_chord * float(gate.u[i]))
+	var epsilon: float = Gates.chord_bound_m(float(_rules.acceleration_envelope_mps2), DT)
+	var initial_v_n: float = v_n - a_n * DT / 2.0
+	var root: float = v_n * DT / (initial_v_n + sqrt(initial_v_n * initial_v_n + a_n * v_n * DT))
+	var curve_u: float = y_chord + v_u * (root - DT / 2.0)
+	var hit: Dictionary = Gates.crossing(gate, p0, 0.0, p1, DT, epsilon)
+	var projected: float = epsilon * sqrt(1.0 + v_u * v_u / (v_n * v_n))
+	_check("R5-F02 the witness curve is inside the envelope yet crosses outside the aperture",
+		a_n * DT * DT / 8.0 < epsilon and initial_v_n > float(_rules.min_normal_speed_mps) and curve_u > float(gate.w),
+		"curve u %.9f m, half width %.3f m" % [curve_u, float(gate.w)])
+	_check("R5-F02 the angled chord crossing is unresolved with the projected per-axis bound",
+		hit.status == Gates.STATUS_UNRESOLVED and absf(float(hit.epsilon_u_m) - projected) < 1.0e-15
+		and float(hit.epsilon_v_m) == epsilon and absf(float(gate.w) - absf(float(hit.u_m))) < projected,
+		"eps_u %.9f m (expected %.9f)" % [float(hit.epsilon_u_m), projected])
+	var race: Dictionary = _racing(3.0)
+	var angled: Dictionary = _advance(race, {p0 = p0, t0 = 900.0 * DT, p1 = p1, t1 = 901.0 * DT, qualified = true})
+	var straight: Dictionary = _advance(race, {p0 = q0, t0 = 900.0 * DT, p1 = q1, t1 = 901.0 * DT, qualified = true})
+	_check("R5-F02 the director never awards the angled chord; the perpendicular chord at the same point scores",
+		angled.race.modes[Director.D_NEXT_GATE] == 0 and angled.race.modes[Director.D_UNRESOLVED] == 1 and angled.valid
+		and straight.race.modes[Director.D_NEXT_GATE] == 1 and straight.race.modes[Director.D_UNRESOLVED] == 0)
 
 func _facts(armed := true, throttle := 0.0, ready := true) -> Dictionary:
 	return {north = -10.0, east = -6.0, down = -0.018, speed_mps = 0.0, terminal = false, armed = armed, throttle = throttle,

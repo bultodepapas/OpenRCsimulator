@@ -1,0 +1,199 @@
+{
+  "format": "openrc-a36-r7-extra-sources v1",
+  "reviewed_commit": "5a93c105be0736d23f52ac9b46812b3a5e358233",
+  "base_manifest": "integration-manifest.json",
+  "base_manifest_sha256": "9b9257242b8873d0045df0abf41aa13ca62dccc6b0a5a925683869152367b9be",
+  "base_count": 432,
+  "extra_files": [
+    {
+      "path": "app/data/multirotors/openrc-fpv5-x1.json",
+      "git_blob_sha1": "348e504445186a5ab51295fff18c68eaaa487da6",
+      "fixture_sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+      "bytes": 27044,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/input/multirotor_input.gd",
+      "git_blob_sha1": "4fee704620e3613a9057d23f2b2cd99dacbbe807",
+      "fixture_sha256": "3a2b50feede35908f2f5a69f42ec66a008b2cf2277b6a409526bac5c129e5d6f",
+      "bytes": 31035,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/actuator_map.gd",
+      "git_blob_sha1": "92ce53a3f6b652d566de6c2a9a03354cd70b3028",
+      "fixture_sha256": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d",
+      "bytes": 3973,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/airframe.gd",
+      "git_blob_sha1": "bdbcf5be619e23f993b4eb84a8439ac6f4248f42",
+      "fixture_sha256": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+      "bytes": 633,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/allocator.gd",
+      "git_blob_sha1": "d10049fe0a661a9aa61b10ad22af94fef890fba8",
+      "fixture_sha256": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+      "bytes": 22485,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "git_blob_sha1": "e0092fedd5dee231f4ac4cb5933158b185d93dfb",
+      "fixture_sha256": "9bddbbc864ef2a68db75350360554e3c7e79d63bd83c7c73ed050d72c713005e",
+      "bytes": 86390,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/electric_bus.gd",
+      "git_blob_sha1": "6e9de195b8b2db8a26ca66f61ad023fc6327b86b",
+      "fixture_sha256": "e7a29eecf04e28b8fcbc1561b36cbc11eda8fb71f09956e58830aaeb58f05839",
+      "bytes": 6018,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/flight_controller.gd",
+      "git_blob_sha1": "36b36010b2eb6127e9baf1a59e516ac38db111c1",
+      "fixture_sha256": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42",
+      "bytes": 26388,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/plant.gd",
+      "git_blob_sha1": "a206d928953e76f118ebb7b645ae68130169a660",
+      "fixture_sha256": "c11a5900c02d311fd8222917123ebcdae931bff25bf861d8a5a1969f4b8a0ce4",
+      "bytes": 6638,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/powertrain.gd",
+      "git_blob_sha1": "0f8718b137503b9be2ee8cce32257c0419319f71",
+      "fixture_sha256": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+      "bytes": 1073,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/rates.gd",
+      "git_blob_sha1": "22383080681066891dcd12bc782d1c31f53759f8",
+      "fixture_sha256": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc",
+      "bytes": 25526,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor/rotor.gd",
+      "git_blob_sha1": "2417111df3eba52670228e1a9f53bfe1b3d7d927",
+      "fixture_sha256": "9210aaf70c8a85d15b378da5594131331e957f20d68741d10f3e7997894abb0e",
+      "bytes": 2394,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/physics/multirotor_data.gd",
+      "git_blob_sha1": "dcecb2b3bd95faf34cf69f7f2cf535ed221a12ea",
+      "fixture_sha256": "b1aa9b31db8cd1d5c6b4109499ec991bb0fcc1a180390d304659973eeee06ffa",
+      "bytes": 55751,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/multirotor/session.gd",
+      "git_blob_sha1": "04e2605c8e699cc55fcd984c38c8e68ee690b2bb",
+      "fixture_sha256": "1eb74e3ba8d13c574a23482b9a9dc1f0b2ec4e3884f303203704f98dd278b549",
+      "bytes": 61410,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/gate_crossing.gd",
+      "git_blob_sha1": "d5658aa13256ab68bb0b26a5f8de0bc8a665843f",
+      "fixture_sha256": "5575efae31f12f3d67b45add7e3b280f717b50b4ac83c4867dcba522a44dffd7",
+      "bytes": 4271,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/race_director.gd",
+      "git_blob_sha1": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf",
+      "fixture_sha256": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+      "bytes": 18391,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/race_model.gd",
+      "git_blob_sha1": "ed25d4b0a039566bd8492dd0fbbca30e810aa8f2",
+      "fixture_sha256": "2762e0882441c1c0b731e56919554afff85f552272f20bc8390754f3089f04f3",
+      "bytes": 20464,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/track.gd",
+      "git_blob_sha1": "23d3104c73c6d6c09ca9a7675c5902d4d81f83d8",
+      "fixture_sha256": "4f6b8d822708b638159b47e5b95a43f15f151b2dd17f324352394e87837fb3e6",
+      "bytes": 28205,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/law_properties.gd",
+      "git_blob_sha1": "0746596e54a312cf6d1845c806b01af8edf7c9b0",
+      "fixture_sha256": "99b8e9bba837b231909b652f5b40f809f1d275422982844d77093909c58d6ba9",
+      "bytes": 8558,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/mr_fixtures.gd",
+      "git_blob_sha1": "537c79c6ddd87559522c03202eb202e232aa79aa",
+      "fixture_sha256": "da5499e05b474375a08f885480123766d49b5a56015e6fbf430b7421984999e4",
+      "bytes": 7844,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_mr_admission.gd",
+      "git_blob_sha1": "850f480f6ada3391dc1dfbaa9ed75e6b0fc29276",
+      "fixture_sha256": "6599d25da539159109fec90125c4d1eb46d16a878c2b1523412aa29692a10b17",
+      "bytes": 10765,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_mr_controlled_plant.gd",
+      "git_blob_sha1": "efb8fd21dc6652298c3ea10e547fb05dafad3945",
+      "fixture_sha256": "b767bc7171c8f308fb9a984104914e4245417349dc588e2c72c630818dd668c9",
+      "bytes": 34298,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_mr_electric_bus.gd",
+      "git_blob_sha1": "316fa3a9d11438acb535d9fb3caa42896523d1f7",
+      "fixture_sha256": "bcc586fa39725d04880fcf006e81a244be6a992ffc7e7a6d4a7ca7098f386814",
+      "bytes": 14587,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_mr_pack_charge.gd",
+      "git_blob_sha1": "6ea2b98f668060222e61a4958062fc8451f067b0",
+      "fixture_sha256": "905689a15548328d43c9361f45ce9f9df6f5ee44eb9a08c72446b88a314451b2",
+      "bytes": 5776,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_mr_rates.gd",
+      "git_blob_sha1": "138737e3eb0527b73f77724f76bfa206ce81aa4a",
+      "fixture_sha256": "e9f88ea5d9d3d3d1dfd8bb4dbec2c5a5e2e68d391a9f40b32f7c8bec47683cdd",
+      "bytes": 28464,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_mr_session.gd",
+      "git_blob_sha1": "d380f856edc5fb0acbd7da709add3382c199d5a7",
+      "fixture_sha256": "60738c8ea8251c88a57f24ec9b47e01a52fa9d26f82bf9169938a809aa97ac91",
+      "bytes": 24837,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/vehicles/multirotor/multirotor_catalog.gd",
+      "git_blob_sha1": "72fb0dfd8c93d6866a64f79315c930c3be0e4b2c",
+      "fixture_sha256": "cd0edf499fbad26472c2870617e791090858c6c033af69c5ecf72a9699791d86",
+      "bytes": 1561,
+      "checkout_bytes": "exact"
+    }
+  ],
+  "source_total": 459
+}

@@ -1,0 +1,22 @@
+{
+  "format": "openrc-a36-r8-reviewed-head-ci v1",
+  "reviewed_commit": "c1eb426900e594c20d095120c149386305afdd4d",
+  "observed_date": "2026-11-21",
+  "reviewed_head_workflow_runs": [],
+  "api_scope": "Pull-request-triggered workflow runs, first page only, returned by GitHub connector. Empty does not establish global absence or CI success.",
+  "prior_head_evidence": "seventh-pass-ci-snapshot.json",
+  "prior_head_commit": "5a93c105be0736d23f52ac9b46812b3a5e358233",
+  "prior_head_ci": {
+    "run_id": 44930766088,
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44930766088"
+  },
+  "prior_head_metalfx": {
+    "run_id": 44930766083,
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44930766083"
+  },
+  "interpretation": "No PR-triggered runs were returned for reviewed c1eb426. Previously retained 5a93c105 CI is completed/failure; its passing native/source and visual jobs do not qualify R8 helicopter experiments. New publication-head required CI and integration with advanced main remain open."
+}

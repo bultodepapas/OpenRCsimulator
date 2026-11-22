@@ -23,8 +23,8 @@ const Rates := preload("res://physics/multirotor/rates.gd")
 const Allocator := preload("res://physics/multirotor/allocator.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 
-## v2 (DR-19e): turtle mode (FLIGHT_TURTLE).
-const LAW := "openrc-fc-acro-angle-turtle-v2"
+## v2 (DR-19e): turtle mode (FLIGHT_TURTLE). v3 (A36 R2-F02): Angle mode uses a heading-free reduced-attitude error.
+const LAW := "openrc-fc-acro-angle-turtle-v3"
 const SAMPLE_HZ := 240
 
 ## Pilot frame, flattened: the kernel's input array. Sticks are calibrated and PRE-expo; the rates law is the only
@@ -444,23 +444,33 @@ static func _turtle(config: Dictionary, frame: Dictionary, input: PackedFloat64A
 	return {aux = aux, modes = modes}
 
 
-## Angle mode outer loop: [p, q] rate targets (rad/s) toward a bounded-tilt attitude at the current heading.
-## The error is the shortest body-frame rotation from the current to the desired attitude, so it is defined at
-## every attitude (inverted and near vertical included); only its roll and pitch components are used.
+## Angle mode outer loop: [p, q] rate targets (rad/s) toward a bounded tilt. A36 R2-F02: the target is a reduced
+## attitude, the direction of world down seen from the body, (-sin pitch, sin roll cos pitch, cos roll cos pitch) for
+## the stick angles; it needs no heading, so a heading reference's switching seam (a 90-degree jump near a vertical
+## nose) cannot enter the error. The error is the body-frame axis-angle rotation carrying the measured down vector to
+## the target, continuous everywhere except exactly opposite the target, where the declared recovery is a rotation
+## about the body roll axis. To first order it equals the previous full-attitude error.
+## A36 R7-G01 contract: angle_max_tilt bounds each stick axis's Euler angle independently (not the resultant cone), so a
+## full diagonal stick asks for a 70.79 deg resultant tilt at the stock 55 deg (cos g = cos roll * cos pitch).
 static func _angle_rate_target(config: Dictionary, body: PackedFloat64Array, roll_stick: float, pitch_stick: float) -> PackedFloat64Array:
 	var attitude: PackedFloat64Array = M.quat(body[RB.ATT], body[RB.ATT + 1], body[RB.ATT + 2], body[RB.ATT + 3])
-	var desired: PackedFloat64Array = M.q_from_euler(heading(attitude), pitch_stick * float(config.angle_max_tilt),
-		roll_stick * float(config.angle_max_tilt))
-	var delta: PackedFloat64Array = M.q_mul(M.q_conj(attitude), desired)
-	var flip: float = -1.0 if delta[0] < 0.0 else 1.0
-	var vector_norm: float = sqrt(delta[1] * delta[1] + delta[2] * delta[2] + delta[3] * delta[3])
-	var scale: float = 2.0 * flip
-	if vector_norm > 1.0e-9:
-		scale = flip * 2.0 * M.atan2_(vector_norm, flip * delta[0]) / vector_norm
+	var down: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), M.v3(0.0, 0.0, 1.0))
+	var pitch: float = pitch_stick * float(config.angle_max_tilt)
+	var roll: float = roll_stick * float(config.angle_max_tilt)
+	var target: PackedFloat64Array = M.v3(-M.sin_(pitch), M.sin_(roll) * M.cos_(pitch), M.cos_(roll) * M.cos_(pitch))
+	var axis: PackedFloat64Array = M.cross(target, down)
+	var axis_norm: float = sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2])
+	var angle: float = M.atan2_(axis_norm, M.dot(target, down))
+	var rotation := PackedFloat64Array([0.0, 0.0])
+	if axis_norm > 1.0e-12:
+		rotation[0] = angle * axis[0] / axis_norm
+		rotation[1] = angle * axis[1] / axis_norm
+	elif M.dot(target, down) < 0.0:
+		rotation[0] = PI
 	var limit: float = config.angle_rate_limit
 	return PackedFloat64Array([
-		clampf(float(config.angle_gain) * scale * delta[1], -limit, limit),
-		clampf(float(config.angle_gain) * scale * delta[2], -limit, limit)])
+		clampf(float(config.angle_gain) * rotation[0], -limit, limit),
+		clampf(float(config.angle_gain) * rotation[1], -limit, limit)])
 
 
 ## Heading (rad) of a body-to-NED attitude, defined at every attitude: the nose's horizontal direction, or near a
