@@ -13,6 +13,11 @@ retains input hashes, transcribed measurements, calculations and verification.
 The [automatic-graphics plan](../../plans/automatic-graphics.md) remains the
 product policy owner.
 
+Follow-up: [sixteen render-internals investigations](2026-11-22-intel-render-internals.md)
+extend the source audit on this branch with auxiliary-target scheduling,
+vegetation/shader costs, pinned-engine readback paths and loading/UI candidates.
+They add hypotheses and acceptance checks, not new Intel benchmark results.
+
 ## 1. Engineering conclusion
 
 The retained evidence supports **a rendering workload that exceeds this UHD

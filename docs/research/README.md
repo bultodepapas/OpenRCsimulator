@@ -71,6 +71,12 @@ Automatic profile from remaining workload, cache, driver and host hypotheses,
 corrects historical evidence ambiguities, and provides a same-hardware test
 protocol and hashed evidence ledger. No new hardware measurement is claimed.
 
+[Sixteen render-internals investigations](god-test/2026-11-22-intel-render-internals.md)
+continue that branch with code-linked primary-source research on auxiliary
+shadow targets, vegetation culling, shader work, GPU readback, loading and UI
+invalidation. The pinned Godot OpenGL implementation was inspected; the report
+ranks same-Intel experiments and records existing guards and rejected shortcuts.
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.

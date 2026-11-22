@@ -1,5 +1,9 @@
 # Existing-Intel experiment protocol — 22 November 2026
 
+The [render-internals follow-up](2026-11-22-intel-render-internals.md#experiment-order-and-acceptance)
+adds sixteen code-linked candidates and a prioritized experiment order. The
+admission, baseline and evidence requirements in this protocol apply to them.
+
 Companion to the [investigation](2026-11-22-intel-gpu-investigation.md), under
 VQ-07h-A2-R1 / PT1h-R15 / GOD-12/13. **Proposed hardware experiments, not completed
 measurements.** Use the same currently owned Intel device for every paired
