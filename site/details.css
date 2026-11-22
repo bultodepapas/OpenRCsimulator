@@ -192,7 +192,7 @@ html[data-theme=night] .donation-button { background:var(--lime); color:var(--in
   align-items: end;
   gap: clamp(24px, 4vw, 64px);
 }
-.vehicle-guide header h2 { font-size: clamp(36px, 4.5vw, 76px); line-height: 1.05; }
+.vehicle-guide header h2 { font-size: clamp(36px, 4.5vw, 76px); line-height: 1.05; hyphens: auto; overflow-wrap: anywhere; }
 .vehicle-guide header p { max-width: 48ch; line-height: 1.6; }
 .vehicle-guide .hangar-stills { margin-block-end: 0; }
 .vehicle-guide kbd { padding: 0 .3em; border: 1px solid currentColor; border-radius: 3px; font-size: .9em; }
