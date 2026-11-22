@@ -64,9 +64,13 @@ lighting Apply, Home, and shutdown remain part of every complete tour case.
 This is the implemented **V1** sequence.
 
 1. Start the real source/debug application through Startup and Home. Wait for a
-   verified frame-watcher cursor before aircraft selection.
+   verified frame-watcher cursor and, for up to 10 s, the focused application
+   window before aircraft selection; a locked desktop or background window fails
+   there with that cause.
 2. Select the required aircraft, Club Field, calm weather, clear sky, day lighting,
-   and the recorded seed through the application. Verify the selected, loaded
+   and the recorded sky seed through the application. Weather keeps its preset's
+   own turbulence seed, so it stays an exact preset that the Mac native domain
+   admits. Verify the selected, loaded
    flight, and model aircraft IDs. Begin with the product's accepted airborne
    start, then stabilize the physical aircraft with ordinary control input.
 3. Fly a clockwise circuit enclosing the loaded runway. The observer uses accepted
@@ -151,7 +155,10 @@ roster into untracked jobs and call them the original complete suite.
 
 ## Target machines and display contract
 
-Run each campaign on its actual OS, physical GPU and visible desktop. Use the
+Run each campaign on its actual OS, physical GPU and visible desktop. The desktop
+must stay unlocked and undisturbed: a flight pauses on any OS focus loss, and the
+case then fails. On macOS a locked screen keeps `loginwindow` in front, so even a
+LaunchServices launch from SSH gets no focus. Use the
 [existing host admission](../testqueue/README.md) on enrolled machines. The CLI
 retains its owning session through cleanup; the checked headless pool is not a
 replacement for a rendered performance run. Use [the Mac guide](../../docs/tools/macos-m1.md)

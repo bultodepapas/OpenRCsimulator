@@ -151,6 +151,7 @@ func _run() -> void:
 	if requested_phases == ["startup"] or requested_phases == ["startup", "shutdown"]:
 		_finish(true)
 		return
+	if not await _require_focused_window(): return
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
 	if not catalog.is_player_selectable(str(config.aircraft)) or not catalog.can_fly(str(config.aircraft)) or catalog.is_rotorcraft(str(config.aircraft)):
 		_fail("this runtime requires a player-selectable fixed-wing aircraft")
@@ -305,8 +306,9 @@ func _configure_home() -> bool:
 		return false
 	dialog.preset_picker.select(preset_index)
 	dialog.preset_picker.item_selected.emit(preset_index)
-	if dialog.turbulence_inputs.has("seed"):
-		dialog.turbulence_inputs.seed.text = str(int(config.get("seed", 20261110)))
+	# Keep the preset's own turbulence seed: an edited seed is no longer an exact
+	# preset, and the Mac native domain then refuses it (reference fallback).
+	# The manifest seed drives the sky; identity.selection records both.
 	dialog.sky_controls.select_preset(str(config.get("sky", "clear")))
 	dialog.sky_controls.draft.seed = int(config.get("seed", 20261110))
 	dialog.apply_button.pressed.emit()
@@ -665,6 +667,21 @@ func _prepare_isolated_approach(session: Node) -> bool:
 		reset_tick = session.sim.tick, wash_enabled = not session.aircraft.model.propulsion.get("slipstream", {}).is_empty()}
 	_event("isolated_fixture_prepared", identity.fixture)
 	return true
+
+
+## Flights pause when the OS window is not focused (a locked screen, or a macOS
+## app launched from SSH while the desktop is locked). Refuse before selection
+## with that cause instead of a later "unexpected pause" at flight start.
+func _require_focused_window() -> bool:
+	if DisplayServer.get_name() == "headless": return true
+	var deadline := Time.get_ticks_usec() + 10000000
+	while running and not DisplayServer.window_is_focused(get_window().get_window_id()):
+		if Time.get_ticks_usec() > deadline:
+			_fail("rendered run needs the focused app window; unlock the desktop and keep the app in front")
+			return false
+		await get_tree().process_frame
+	_event("window_focused", {})
+	return running
 
 
 func _wait_home() -> bool:
