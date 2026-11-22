@@ -256,7 +256,13 @@ The default is uncapped with VSync disabled, so a cap cannot hide available
 capacity. `--max-fps 60 --vsync-mode enabled` defines a separate player-pacing
 campaign. Do not combine these populations. Every launch has fresh preferences
 with the Master bus muted (`master_volume = 0`, recorded in `profile_overrides`);
-audio streams and mixing still run, unlike the Dummy driver. Source copying and prior launches may warm OS/driver caches. These are not proven
+audio streams and mixing still run. On Linux without an accessible ALSA playback
+device (`/dev/snd/pcmC*D*p`; containers can list the host's cards in
+`/proc/asound/cards` without one), the runner launches Godot's Dummy driver, which
+still mixes every period at real-time pace, and records `audio_output` in
+`execution.json`. Do not give such a host a `pcm null` ALSA default: it never
+blocks, so Godot's mix thread spins a full core while holding the audio lock and
+stalls loading (13.6–19.0 s instead of 6.5 s Home → flight on a UHD 630). Source copying and prior launches may warm OS/driver caches. These are not proven
 OS-cold or shader-cold measurements, and the runner does not clear global caches.
 
 ## Metrics, evidence and verdicts

@@ -674,6 +674,26 @@
 				}
 			}
 		},
+		"gp-extra-300s-60": {
+			"default_label": "Factory",
+			"base": {},
+			"skins": [
+				{
+					"id": "jumper_t15",
+					"label": "Jumper RC T15",
+					"covering": "res://assets/vehicle-paints/extra-300s-60/jumper_t15.tres",
+					"materials": {},
+					"nodes": {
+						"spinner": {
+							"*": { "albedo": "#1d2530" }
+						},
+						"wheel_pant_*": {
+							"*": { "albedo": "#0575ad" }
+						}
+					}
+				}
+			]
+		},
 		"jensen-das-ugly-stik-60": {
 			"default_label": "",
 			"base": {},

@@ -7,6 +7,7 @@
 extends RefCounted
 
 const SceneDetail := preload("res://render/scene_detail.gd")
+const ExtraFinish := preload("res://aircraft/extra_300s_finish.gd")
 const DATA_PATH := "res://data/vehicle_paints.json"
 const FORMAT := "openrc-vehicle-paints-v1"
 const ORIGIN_META := "vehicle_paint_origin"
@@ -71,6 +72,12 @@ static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array =
 	var bindings: Dictionary = (entry.get("base", {}) as Dictionary).duplicate()
 	var resolved := resolve(vehicle_id, skin_id)
 	var skin := _skin(vehicle_id, resolved)
+	var covering: ShaderMaterial
+	var stock_covering: Shader
+	if family == "gp-extra-300s-60":
+		stock_covering = ExtraFinish.material(ExtraFinish.WING).shader
+		if skin.has("covering"):
+			covering = load(str(skin.covering)) as ShaderMaterial
 	_merge_materials(bindings, skin.get("materials", {}))
 	var node_lod_bias: Dictionary = skin.get("node_lod_bias", {})
 	var node_layers: Array[Dictionary] = []
@@ -103,8 +110,24 @@ static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array =
 		if mesh_node.mesh == null or mesh_node.material_override != null:
 			continue
 		for surface in mesh_node.mesh.get_surface_count():
-			var active := mesh_node.get_active_material(surface) as StandardMaterial3D
-			if active == null:
+			var active := mesh_node.get_active_material(surface)
+			if active is ShaderMaterial and stock_covering != null:
+				var original := active.get_meta(ORIGIN_META, active) as ShaderMaterial
+				if original != null and original.shader == stock_covering:
+					if covering != null:
+						var id := original.get_instance_id()
+						if not copies.has(id):
+							var clone := covering.duplicate() as ShaderMaterial
+							clone.set_shader_parameter("part", original.get_shader_parameter("part"))
+							clone.set_shader_parameter("cowl_rear_z", original.get_shader_parameter("cowl_rear_z"))
+							clone.set_meta(ORIGIN_META, original)
+							clone.set_meta(COPY_META, clone.get_instance_id())
+							copies[id] = clone
+						mesh_node.set_surface_override_material(surface, copies[id])
+					elif _is_own_copy(active):
+						mesh_node.set_surface_override_material(surface, null)
+				continue
+			if not active is StandardMaterial3D:
 				continue
 			# A second apply (base, then a skin) repaints from the imported material, never from an earlier copy.
 			var source: StandardMaterial3D = active.get_meta(ORIGIN_META, active)

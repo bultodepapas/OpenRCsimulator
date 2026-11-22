@@ -37,6 +37,18 @@ rubber); provenance in shared/LICENSES.txt. The generator does not write them.
 
 Bindings: app/data/vehicle_paints.json. Runtime: app/render/vehicle_paint.gd.
 
+extra-300s-60/jumper_t15_decals.png: Jumper RC T15 tribute. The Cyan Blue,
+Platinum White and Space Gray T15 colours inspire the shader palette:
+https://www.jumper-rc.com/transmitters/t15/
+The official red logo is resized for the decal atlas from the existing
+avanti-s-a200/sponsors/jumper_rc_logo.png (see that folder's SOURCE.txt for
+the original URL and scope of sponsor support). Jumper retains trademark
+rights. Follow the existing written-permission requirement for redistribution.
+The twin-gimbal graphic is original. Lettering uses the bundled Noto
+Sans CJK JP font (SIL OFL 1.1, assets/fonts/OFL-NotoSansCJK.txt).
+Rebuild or verify with tools/skins/build_extra_jumper.py, which pins the
+source hashes. The covering shader uses the Extra's existing UV/UV2 data.
+
 ugly-stik/neon_ronin_*.png: NEON RONIN cyberpunk artwork authored by
 tools/skins/build_stik_cyberpunk.py (verify with --check). Reuses the shared
 ambientCG CC0 twill weave and bundled NotoSansCJKjp-Regular.otf (SIL OFL 1.1).

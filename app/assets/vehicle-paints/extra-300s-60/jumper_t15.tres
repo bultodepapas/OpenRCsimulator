@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://assets/vehicle-paints/extra-300s-60/jumper_t15.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://assets/vehicle-paints/extra-300s-60/jumper_t15_decals.png" id="2"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/red = Color(0.91, 0.95, 0.97, 1)
+shader_parameter/graphite = Color(0.115, 0.145, 0.19, 1)
+shader_parameter/blue = Color(0.018, 0.46, 0.68, 1)
+shader_parameter/cyan = Color(0.10, 0.78, 0.89, 1)
+shader_parameter/decals = ExtResource("2")

@@ -36,6 +36,7 @@ func _run() -> void:
 	_check_cars()
 	_check_stik_cyberpunk()
 	_check_stik_gear()
+	_check_extra_livery()
 	_check_jet_livery()
 	_check_sabre_livery()
 	_check_steam_livery()
@@ -68,6 +69,42 @@ func _check_data() -> void:
 						check("texture exists: " + str(group[material_name][field]), ResourceLoader.exists(str(group[material_name][field])))
 	check("unknown vehicles and skins fall back", VehiclePaint.choices("ugly-stik-60").is_empty()
 		and VehiclePaint.resolve("mt8-bisonte", "nope") == "" and not VehiclePaint.contains("mt8-bisonte", "nope"))
+
+
+func _check_extra_livery() -> void:
+	var family := "gp-extra-300s-60"
+	var skin := "jumper_t15"
+	check("Extra exposes Jumper T15 in the livery picker", AirplaneBuilder.resolve_livery(family, skin) == skin)
+	var previous := SceneDetail._preference
+	SceneDetail.set_preference("low")
+	var built := AirplaneBuilder.build(family, NAN, {}, skin)
+	SceneDetail.set_preference(previous)
+	check("Extra builds with Jumper T15 at Low", not built.is_empty())
+	if built.is_empty():
+		return
+	var airframe: Node3D = built.root
+	var fuselage := airframe.get_node("fuselage") as MeshInstance3D
+	var spinner := airframe.get_node("thrust_frame/spinner") as MeshInstance3D
+	var canopy := airframe.get_node("canopy") as MeshInstance3D
+	var original_mesh := fuselage.mesh
+	var stock_fuselage := original_mesh.surface_get_material(0) as ShaderMaterial
+	var painted := fuselage.get_active_material(0) as ShaderMaterial
+	var atlas: Texture2D = painted.get_shader_parameter("decals") if painted != null else null
+	check("Extra covering retains the model's cowl coordinates and Workshop paint input",
+		painted != null and painted.shader != stock_fuselage.shader
+		and painted.get_shader_parameter("part") == stock_fuselage.get_shader_parameter("part")
+		and painted.get_shader_parameter("cowl_rear_z") == stock_fuselage.get_shader_parameter("cowl_rear_z")
+		and painted.get_shader_parameter("red") is Color and atlas != null and atlas.get_size() == Vector2(1024, 512))
+	check("Jumper T15 changes spinner paint and keeps the canopy finish",
+		spinner.get_surface_override_material(0) != null and canopy.get_surface_override_material(0) == null)
+	VehiclePaint.apply(airframe, family, skin)
+	var repainted := fuselage.get_active_material(0)
+	check("Jumper T15 reapplies from the stock material on the same mesh",
+		repainted.get_meta(VehiclePaint.ORIGIN_META, null) == stock_fuselage and fuselage.mesh == original_mesh)
+	VehiclePaint.apply(airframe, family)
+	check("Extra restores the factory finish", fuselage.get_active_material(0) == stock_fuselage
+		and spinner.get_surface_override_material(0) == null)
+	airframe.free()
 
 
 func _materials_named(root: Node, material_name: String) -> Array[StandardMaterial3D]:

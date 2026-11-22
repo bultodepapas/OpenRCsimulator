@@ -8,7 +8,7 @@ import unittest
 
 import catalog
 from godtest import parser, plan
-from runner import check_frozen, rendering_options
+from runner import audio_output, check_frozen, rendering_options
 from tools.godtest.isolation import prepare_macos_launch
 
 
@@ -22,6 +22,18 @@ class PlatformTests(unittest.TestCase):
             rendering_options(dict(manifest, rendering_driver="metal"), "linux")
         with self.assertRaisesRegex(ValueError, "Compatibility"):
             rendering_options(dict(manifest, rendering_method="gl_compatibility", rendering_driver="vulkan"), "win32")
+
+    def test_linux_without_playback_device_uses_paced_dummy_audio(self):
+        with tempfile.TemporaryDirectory() as raw:
+            sound = Path(raw)
+            self.assertEqual(audio_output("linux", sound / "absent")["driver"], "dummy")
+            (sound / "controlC0").touch()
+            (sound / "pcmC0D0c").touch()  # capture only
+            self.assertEqual(audio_output("linux", sound)["driver"], "dummy")
+            (sound / "pcmC0D0p").touch()
+            self.assertEqual(audio_output("linux", sound)["driver"], "platform_default")
+        for host in ("win32", "darwin"):
+            self.assertEqual(audio_output(host, Path("/nonexistent"))["driver"], "platform_default")
 
     def test_three_aircraft_roster_cannot_be_reduced(self):
         cases = plan(parser().parse_args(["performance-tour", "--repeats", "2", "--dry-run"]))
