@@ -1,0 +1,417 @@
+{
+  "schema": "openrc-vrc-action-consumer-map-v1",
+  "date": "2026-11-21",
+  "source_commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "scope": "Catalog plus bounded examples; not a complete support matrix or executable registry. All proposed witnesses UNRUN.",
+  "catalog_path": "app/input/controller_actions.gd",
+  "catalog": [
+    {
+      "id": "accept",
+      "label": "Accept / launch",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "back",
+      "label": "Back / cancel",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "navigate_up",
+      "label": "Navigate up",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "navigate_down",
+      "label": "Navigate down",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "navigate_left",
+      "label": "Navigate left",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "navigate_right",
+      "label": "Navigate right",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "pause",
+      "label": "Pause / resume",
+      "context": "both",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "restart_flight",
+      "label": "Restart flight",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_cycle",
+      "label": "Cycle camera",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "view_reset",
+      "label": "Reset view",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "trim_left",
+      "label": "Trim left",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "trim_right",
+      "label": "Trim right",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "trim_up",
+      "label": "Trim up",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "trim_down",
+      "label": "Trim down",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "trim_yaw_left",
+      "label": "Rudder trim left",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "trim_yaw_right",
+      "label": "Rudder trim right",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "overlay_preset",
+      "label": "Cycle flight overlays",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "throttle_cut",
+      "label": "Throttle cut (hold)",
+      "context": "flight",
+      "mode": "hold",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "calibrate",
+      "label": "Calibrate controller",
+      "context": "menu",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "smoke_toggle",
+      "label": "Toggle smoke pump",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "flaps_up",
+      "label": "Flaps up",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "flaps_down",
+      "label": "Flaps down",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "flaps_cycle",
+      "label": "Cycle flaps",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "gear_toggle",
+      "label": "Toggle landing gear",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_previous",
+      "label": "Previous camera",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_pilot",
+      "label": "Pilot camera",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_chase",
+      "label": "Chase camera",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_orbit",
+      "label": "Orbit camera",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_zoom_in",
+      "label": "Camera zoom in",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_zoom_out",
+      "label": "Camera zoom out",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "camera_auto_zoom",
+      "label": "Toggle auto camera zoom",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "lights_cycle",
+      "label": "Cycle lights",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "rates_toggle",
+      "label": "Dual rates: normal / high",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "helicopter_arm",
+      "label": "Helicopter: arm / disarm",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "helicopter_hold",
+      "label": "Helicopter: toggle rotor hold",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "helicopter_mode",
+      "label": "Helicopter: normal / idle-up",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    },
+    {
+      "id": "helicopter_trainer",
+      "label": "Helicopter: toggle trainer",
+      "context": "flight",
+      "mode": "press",
+      "consumer_coverage": "uncharacterized across activity/route/form combinations"
+    }
+  ],
+  "aux_channels": [
+    "smoke",
+    "flaps",
+    "gear",
+    "rates",
+    "arm",
+    "flight_mode"
+  ],
+  "matrix_key": [
+    "activity",
+    "route",
+    "action_id",
+    "binding_form",
+    "context",
+    "profile_source"
+  ],
+  "coverage_obligation": "Enumerate every offered row and applicable key/button/axis form, inherited default versus explicit override, AUX and fixed fallback controls for each migrated activity/route. Trace assignment, save/reload or activation, dispatch and command/feedback. Explicit exclusions required; catalog membership is not support.",
+  "examples": [
+    {
+      "activity": "multirotor",
+      "route": "Home Controls to quad activity",
+      "action_id": "throttle_cut",
+      "binding_form": "gamepad button",
+      "context": "flight",
+      "profile_source": "managed V2; explicit binding and inherited default need separate subcases",
+      "ui_offer": "Source-visible applicable row; actual rendered fixture pending",
+      "runtime_observation": "Source-indicated no quad consumer; unique explicit assignment witness required.",
+      "source_ids": [
+        "actions",
+        "setup",
+        "shell",
+        "quad_input",
+        "quad_activity"
+      ],
+      "target": "Dispatch an owned intended command, or disable/refuse current-family assignment with explanation while preserving other-family data.",
+      "cases": [
+        "C24",
+        "C33"
+      ],
+      "execution": {
+        "status": "UNRUN",
+        "receipt": null
+      }
+    },
+    {
+      "activity": "multirotor",
+      "route": "Home Controls to quad activity",
+      "action_id": "pause",
+      "binding_form": "gamepad button",
+      "context": "flight and pause menu",
+      "profile_source": "managed V2; explicit binding and inherited default need separate subcases",
+      "ui_offer": "Source-visible applicable row; actual rendered fixture pending",
+      "runtime_observation": "Source consumes active gamepad Pause if not AUX-owned; not executed.",
+      "source_ids": [
+        "quad_input",
+        "quad_activity"
+      ],
+      "target": "Exactly one pause and guarded explicit resume; foreign/stale source cannot act.",
+      "cases": [
+        "C10",
+        "C24",
+        "C33"
+      ],
+      "execution": {
+        "status": "UNRUN",
+        "receipt": null
+      }
+    },
+    {
+      "activity": "multirotor",
+      "route": "Home Controls to quad activity",
+      "action_id": "pause",
+      "binding_form": "radio button",
+      "context": "flight and pause menu",
+      "profile_source": "managed V2; explicit binding and inherited default need separate subcases",
+      "ui_offer": "Source-visible applicable row; actual rendered fixture pending",
+      "runtime_observation": "General forms admitted; configurable quad consumer gap is GCA-01. Fixed P/Escape are separate fallback cases.",
+      "source_ids": [
+        "actions",
+        "quad_input",
+        "quad_activity"
+      ],
+      "target": "Repair actual consumer or explicitly refuse/disable the activity/form with recovery retained.",
+      "cases": [
+        "C10",
+        "C24",
+        "C33"
+      ],
+      "execution": {
+        "status": "UNRUN",
+        "receipt": null
+      }
+    },
+    {
+      "activity": "multirotor",
+      "route": "Home Controls to quad activity",
+      "action_id": "pause",
+      "binding_form": "learned axis",
+      "context": "flight and pause menu",
+      "profile_source": "managed V2; explicit binding and inherited default need separate subcases",
+      "ui_offer": "Source-visible applicable row; actual rendered fixture pending",
+      "runtime_observation": "General forms admitted; configurable quad consumer gap is GCA-01. Fixed P/Escape are separate fallback cases.",
+      "source_ids": [
+        "actions",
+        "quad_input",
+        "quad_activity"
+      ],
+      "target": "Repair actual consumer or explicitly refuse/disable the activity/form with recovery retained.",
+      "cases": [
+        "C10",
+        "C24",
+        "C33"
+      ],
+      "execution": {
+        "status": "UNRUN",
+        "receipt": null
+      }
+    },
+    {
+      "activity": "multirotor",
+      "route": "Home Controls to quad activity",
+      "action_id": "pause",
+      "binding_form": "custom keyboard key or chord",
+      "context": "flight and pause menu",
+      "profile_source": "managed V2; explicit binding and inherited default need separate subcases",
+      "ui_offer": "Source-visible applicable row; actual rendered fixture pending",
+      "runtime_observation": "General forms admitted; configurable quad consumer gap is GCA-01. Fixed P/Escape are separate fallback cases.",
+      "source_ids": [
+        "actions",
+        "quad_input",
+        "quad_activity"
+      ],
+      "target": "Repair actual consumer or explicitly refuse/disable the activity/form with recovery retained.",
+      "cases": [
+        "C10",
+        "C24",
+        "C33"
+      ],
+      "execution": {
+        "status": "UNRUN",
+        "receipt": null
+      }
+    }
+  ],
+  "uncharacterized": "All other action/activity/route/form combinations; AUX and fixed flight-axis/fallback qualification also need explicit witnesses.",
+  "execution": {
+    "status": "UNRUN",
+    "receipt": null
+  }
+}

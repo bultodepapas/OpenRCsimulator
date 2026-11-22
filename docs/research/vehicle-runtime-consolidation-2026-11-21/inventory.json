@@ -1,0 +1,71 @@
+{
+  "format": "openrc-vrc-source-inventory-v1",
+  "date": "2026-11-21",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "base_commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "method": "UTF-8 decoded source splitlines() count; top-level function declarations match ^(?:static )?func; blob_sha is the Git blob ID. A trailing newline does not create a phantom extra line.",
+  "scope": "read-only source inspection; no runtime/performance test",
+  "files": [
+    {
+      "path": "app/sim/flight_session.gd",
+      "lines": 6697,
+      "top_level_function_count": 339,
+      "blob_sha": "481b67b5766d2c93a8e47d24d68147f86ae08eb7"
+    },
+    {
+      "path": "app/app_root.gd",
+      "lines": 5337,
+      "top_level_function_count": 239,
+      "blob_sha": "c46a57a7ad213427fae6be86d8910b136db67742"
+    },
+    {
+      "path": "app/main.gd",
+      "lines": 4303,
+      "top_level_function_count": 151,
+      "blob_sha": "8f76e4242698f609ef4a3637de0eca8c6faee22f"
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "lines": 2261,
+      "top_level_function_count": 127,
+      "blob_sha": "fa3f872ee54beb76679b5cb2be51dbfe158ea864"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "lines": 1453,
+      "top_level_function_count": 66,
+      "blob_sha": "d24478fefb93cc753a9e203b81543d58d38c2643"
+    },
+    {
+      "path": "app/sim/helicopter_flight_session.gd",
+      "lines": 1444,
+      "top_level_function_count": 80,
+      "blob_sha": "de5b3084ba00b6009a3a7145ba7299e09771a19b"
+    },
+    {
+      "path": "app/sim/multirotor/session.gd",
+      "lines": 1211,
+      "top_level_function_count": 56,
+      "blob_sha": "04e2605c8e699cc55fcd984c38c8e68ee690b2bb"
+    },
+    {
+      "path": "app/helicopter_main.gd",
+      "lines": 694,
+      "top_level_function_count": 36,
+      "blob_sha": "8a38db0d7431e950c3e48b2bf50fda0e2d8562c5"
+    },
+    {
+      "path": "app/sim/airship/session.gd",
+      "lines": 639,
+      "top_level_function_count": 31,
+      "blob_sha": "9fb7c84a72b8b381c8aa375ecf3bc19a4d94415c"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "lines": 234,
+      "top_level_function_count": 2,
+      "blob_sha": "6b6685541ff65d7711da3fabff0f7f946e11802a"
+    }
+  ],
+  "correction": "2026-11-21 adversarial review corrected every line count by minus one; blob IDs and function counts were unchanged. Original published values remain in plan commit 542d92b304fc3b82678c4a90b848a88d82df0b22."
+}

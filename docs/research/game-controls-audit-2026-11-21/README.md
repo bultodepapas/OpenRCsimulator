@@ -2,8 +2,32 @@
 
 Senior engineering review of device ownership, calibration, conditioning, profiles,
 menu routing and activity recovery. Baseline: `main` at
-`57abea025f62b20233ca281d58d2acbee4ab8b8e`. Work branch:
+`57abea025f62b20233ca281d58d2acbee4ab8b8e`. **Final delivery branch:**
 `audit/game-controls-2026-11-21`. Production application files are unchanged.
+
+## Start here — consolidated final delivery
+
+This branch contains the complete controls audit, its diagnostic evidence and
+the latest adversarial implementation plan. Continue development on this branch.
+The original audit at `895dd4352c5191f1539a8b8f4df1996cd33eb86f` and the refined
+plan at `2e812ef2b8184733f7dd45b7bfd50e119c5ae82c` are preserved in its history;
+the latter already includes the original plan and both review refinements.
+
+| Read first | Purpose |
+| --- | --- |
+| [Master implementation plan](../../plans/vehicle-runtime-consolidation.md) | Sole VRC-00…VRC-11 status ledger, sequencing, owners and acceptance gates |
+| [Implementation blueprint](../vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md) | Module ownership, first consumer, persistence, recovery and ordered developer work packages |
+| [Adversarial review and source maps](../vehicle-runtime-consolidation-2026-11-21/README.md) | Opposing reviews, control contract, migration decisions, primary sources and action-consumer coverage |
+| [Controls acceptance matrix](../vehicle-runtime-consolidation-2026-11-21/CONTROL-ACCEPTANCE.md) | Forty proposed cases, all UNRUN; canonical definitions remain in the linked JSON ledger |
+| [Combined-branch plan verification](../vehicle-runtime-consolidation-2026-11-21/consolidated-plan-verification.json) | Fresh static plan/data/reference check; historical runtime receipts below retain their original scope |
+
+The final deliverable is the audit and development plan. The five GCA defects
+remain unfixed and VRC implementation remains open. Consolidation does not turn
+historical diagnostic results or proposed acceptance cases into repaired-control
+qualification. Existing dated receipts retain their original bytes and snapshot
+identities; the combined-branch receipt checks the current plan artifacts only.
+
+## Original audit and evidence
 
 | Deliverable | Purpose |
 | --- | --- |

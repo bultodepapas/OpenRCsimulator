@@ -1,0 +1,1298 @@
+{
+  "schema": "openrc-vrc-organization-map-v1",
+  "date": "2026-11-21",
+  "source_commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "reviewed_plan_commit": "8d61ca900a30686bc00eaf5ce80bee664e592a46",
+  "scope": "Source-checked design only; master plan owns status. No runtime execution or support certification.",
+  "master_plan": "docs/plans/vehicle-runtime-consolidation.md",
+  "sources": [
+    {
+      "id": "shell",
+      "path": "app/app_root.gd",
+      "blob_sha": "c46a57a7ad213427fae6be86d8910b136db67742",
+      "sha256": "33ec47281f812d31b815c87a7d56a264b4617f8c1a1e5009f711a306038664b0",
+      "line_count": 5337,
+      "symbols": [
+        {
+          "name": "_ready",
+          "line": 329,
+          "declaration": "func _ready() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L329"
+        },
+        {
+          "name": "open_controls",
+          "line": 2222,
+          "declaration": "func open_controls(from: Control = null) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L2222"
+        },
+        {
+          "name": "_controls_show_multirotor",
+          "line": 2371,
+          "declaration": "func _controls_show_multirotor() -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L2371"
+        },
+        {
+          "name": "_route_controller_event",
+          "line": 2780,
+          "declaration": "func _route_controller_event(event: InputEvent) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L2780"
+        },
+        {
+          "name": "_finish_controller_launch",
+          "line": 1778,
+          "declaration": "func _finish_controller_launch(target: Node) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L1778"
+        },
+        {
+          "name": "open_pause",
+          "line": 3451,
+          "declaration": "func open_pause() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L3451"
+        },
+        {
+          "name": "continue_flight",
+          "line": 4736,
+          "declaration": "func continue_flight() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L4736"
+        },
+        {
+          "name": "_close_pause",
+          "line": 4953,
+          "declaration": "func _close_pause() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L4953"
+        },
+        {
+          "name": "_start_workshop_trial",
+          "line": 3566,
+          "declaration": "func _start_workshop_trial(payload: Dictionary) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_root.gd#L3566"
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "path": "app/main.gd",
+      "blob_sha": "8f76e4242698f609ef4a3637de0eca8c6faee22f",
+      "sha256": "5ae216f228dbebad4280f843e061c2e9d19a20ede042556f0bcd7d35babce8af",
+      "line_count": 4303,
+      "symbols": [
+        {
+          "name": "_ready",
+          "line": 548,
+          "declaration": "func _ready() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/main.gd#L548"
+        },
+        {
+          "name": "_begin_smoke_assignment",
+          "line": 1671,
+          "declaration": "func _begin_smoke_assignment() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/main.gd#L1671"
+        },
+        {
+          "name": "_on_smoke_connection_changed",
+          "line": 1713,
+          "declaration": "func _on_smoke_connection_changed(_device: int, _connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/main.gd#L1713"
+        },
+        {
+          "name": "controller_action",
+          "line": 1945,
+          "declaration": "func controller_action(action: String) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/main.gd#L1945"
+        }
+      ]
+    },
+    {
+      "id": "pause",
+      "path": "app/ui/pause_menu.gd",
+      "blob_sha": "e0b95964c81a1d3c3c3df4ff17ccfe7ae91b6fc4",
+      "sha256": "227231cc3ead3be8b690d6044dc9e45c8e0c34c89d3be1467db0d517fcacb6dd",
+      "line_count": 676,
+      "symbols": [
+        {
+          "name": "show_for",
+          "line": 244,
+          "declaration": "func show_for(session: Node, failure_config: Dictionary = {}, notifications_enabled := true) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L244"
+        },
+        {
+          "name": "refresh",
+          "line": 326,
+          "declaration": "func refresh() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L326"
+        },
+        {
+          "name": "_process",
+          "line": 432,
+          "declaration": "func _process(delta: float) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L432"
+        },
+        {
+          "name": "controller_attention",
+          "line": 445,
+          "declaration": "func controller_attention(session: Node) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L445"
+        },
+        {
+          "name": "_refresh_controller_recovery",
+          "line": 457,
+          "declaration": "func _refresh_controller_recovery() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L457"
+        },
+        {
+          "name": "_session_status_text",
+          "line": 516,
+          "declaration": "func _session_status_text(session: Node) -> String:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L516"
+        },
+        {
+          "name": "status_text",
+          "line": 492,
+          "declaration": "func status_text(session: Node) -> String:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L492"
+        },
+        {
+          "name": "controller_value_text",
+          "line": 475,
+          "declaration": "func controller_value_text(session: Node) -> String:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L475"
+        },
+        {
+          "name": "_on_back_requested",
+          "line": 410,
+          "declaration": "func _on_back_requested() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L410"
+        },
+        {
+          "name": "_on_joy_changed",
+          "line": 487,
+          "declaration": "func _on_joy_changed(_device: int, _connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/pause_menu.gd#L487"
+        }
+      ]
+    },
+    {
+      "id": "stack",
+      "path": "app/ui/screen_stack.gd",
+      "blob_sha": "5dabffab7fd735241c448b1ad4b28214824897ba",
+      "sha256": "e2065fe6ae21579546a38d9469ba3f94a67bbfc9e1d7c2ce747e83c414b43915",
+      "line_count": 107,
+      "symbols": [
+        {
+          "name": "push",
+          "line": 43,
+          "declaration": "func push(id: String, node: Node, from: Control = null, feedback := true) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/screen_stack.gd#L43"
+        },
+        {
+          "name": "pop",
+          "line": 67,
+          "declaration": "func pop(dispose := true, restore_focus := true) -> Node:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/screen_stack.gd#L67"
+        },
+        {
+          "name": "get_screen",
+          "line": 17,
+          "declaration": "func get_screen(id: String) -> Node:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/screen_stack.gd#L17"
+        },
+        {
+          "name": "_sync_hold",
+          "line": 90,
+          "declaration": "func _sync_hold() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/screen_stack.gd#L90"
+        }
+      ]
+    },
+    {
+      "id": "held_keys",
+      "path": "app/ui/held_keys.gd",
+      "blob_sha": "c8f92d01978bb6025da602bd7e0bb42ffb8be86c",
+      "sha256": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+      "line_count": 28,
+      "symbols": [
+        {
+          "name": "mask",
+          "line": 10,
+          "declaration": "static func mask(session: Node, reader: Callable) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/held_keys.gd#L10"
+        }
+      ]
+    },
+    {
+      "id": "setup",
+      "path": "app/ui/controller_setup.gd",
+      "blob_sha": "cda91b232e507b8fdf7c79dc7a95d9cf183059b2",
+      "sha256": "019dbd765ce780bb56e69ab5ce541fb1ec1fefe5a57de3385dab35cff010a746",
+      "line_count": 6074,
+      "symbols": [
+        {
+          "name": "configure",
+          "line": 320,
+          "declaration": "func configure(controller_registry: Object, store: Object, flight_device_id := -1, ui_device_id := -1,",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L320"
+        },
+        {
+          "name": "connection_leases",
+          "line": 424,
+          "declaration": "func connection_leases() -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L424"
+        },
+        {
+          "name": "_dirty_fingerprint",
+          "line": 429,
+          "declaration": "func _dirty_fingerprint() -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L429"
+        },
+        {
+          "name": "_load_profiles",
+          "line": 2298,
+          "declaration": "func _load_profiles() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L2298"
+        },
+        {
+          "name": "_switch_draft_profile",
+          "line": 2482,
+          "declaration": "func _switch_draft_profile(profile: Dictionary, context_key: String) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L2482"
+        },
+        {
+          "name": "_duplicate_profile",
+          "line": 2858,
+          "declaration": "func _duplicate_profile() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L2858"
+        },
+        {
+          "name": "_action_row_shown",
+          "line": 3585,
+          "declaration": "func _action_row_shown(definition: Dictionary) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L3585"
+        },
+        {
+          "name": "_save_profile",
+          "line": 4136,
+          "declaration": "func _save_profile(close_on_success := true) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L4136"
+        },
+        {
+          "name": "_import_legacy_profiles",
+          "line": 4218,
+          "declaration": "func _import_legacy_profiles() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L4218"
+        },
+        {
+          "name": "_keep_legacy_radio",
+          "line": 4251,
+          "declaration": "func _keep_legacy_radio() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/ui/controller_setup.gd#L4251"
+        }
+      ]
+    },
+    {
+      "id": "registry",
+      "path": "app/input/controller_registry.gd",
+      "blob_sha": "08b2776922a05e8eb8cb31bd58c0539281a84c33",
+      "sha256": "2e5ff50676de07e9ce31b30c8acebb64f387359b60042ecd797ec508d585811b",
+      "line_count": 285,
+      "symbols": [
+        {
+          "name": "update_devices",
+          "line": 18,
+          "declaration": "func update_devices(observations: Array) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_registry.gd#L18"
+        },
+        {
+          "name": "select_device",
+          "line": 116,
+          "declaration": "func select_device(role: String, id: int) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_registry.gd#L116"
+        },
+        {
+          "name": "connection_generation",
+          "line": 149,
+          "declaration": "func connection_generation(id: int) -> int:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_registry.gd#L149"
+        },
+        {
+          "name": "_apply_ambiguity_flags",
+          "line": 199,
+          "declaration": "func _apply_ambiguity_flags() -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_registry.gd#L199"
+        }
+      ]
+    },
+    {
+      "id": "service",
+      "path": "app/input/controller_service.gd",
+      "blob_sha": "7ca9af1f603dc7b266a395ae9580464643e1eb6c",
+      "sha256": "cbd5fca3a719e1734a104b708c6ec4763b7dde345c30ca7d39e63687303bca88",
+      "line_count": 724,
+      "symbols": [
+        {
+          "name": "attach_session",
+          "line": 206,
+          "declaration": "func attach_session(target: Node, initial_start := true) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L206"
+        },
+        {
+          "name": "profile_for_device",
+          "line": 309,
+          "declaration": "func profile_for_device(id: int) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L309"
+        },
+        {
+          "name": "apply_profile",
+          "line": 366,
+          "declaration": "func apply_profile(profile: Dictionary, device_id := -1, runtime_snapshot: Variant = null, defer_rollback_signal := false) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L366"
+        },
+        {
+          "name": "save_calibration",
+          "line": 443,
+          "declaration": "func save_calibration(legacy_profile: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L443"
+        },
+        {
+          "name": "save_profile_and_apply",
+          "line": 460,
+          "declaration": "func save_profile_and_apply(candidate: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L460"
+        },
+        {
+          "name": "save_settings_from_setup",
+          "line": 501,
+          "declaration": "func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_device_id: int, leases: Dictionary = {}) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L501"
+        },
+        {
+          "name": "_setup_leases_current",
+          "line": 509,
+          "declaration": "func _setup_leases_current(leases: Dictionary, flight_id: int, ui_id: int) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L509"
+        },
+        {
+          "name": "_save_settings_from_setup_locked",
+          "line": 524,
+          "declaration": "func _save_settings_from_setup_locked(candidate: Dictionary, flight_device_id: int, ui_device_id: int, leases: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L524"
+        },
+        {
+          "name": "_ui_preference_for_setup",
+          "line": 667,
+          "declaration": "func _ui_preference_for_setup(ui_id: int, flight_id: int, candidate: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L667"
+        },
+        {
+          "name": "_save_and_apply",
+          "line": 683,
+          "declaration": "func _save_and_apply(profile: Dictionary, id: int) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L683"
+        },
+        {
+          "name": "_save_and_apply_locked",
+          "line": 691,
+          "declaration": "func _save_and_apply_locked(profile: Dictionary, id: int) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_service.gd#L691"
+        }
+      ]
+    },
+    {
+      "id": "store",
+      "path": "app/input/controller_profile_store.gd",
+      "blob_sha": "346b06b56a80bf70a00a9d8d6c4f7f7b12fbab53",
+      "sha256": "a781050af58e1e512c5f684e2e024f6714fb9260467b3b6532df1c93403aaab0",
+      "line_count": 544,
+      "symbols": [
+        {
+          "name": "acquire_write",
+          "line": 40,
+          "declaration": "func acquire_write() -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L40"
+        },
+        {
+          "name": "release_write",
+          "line": 82,
+          "declaration": "func release_write() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L82"
+        },
+        {
+          "name": "storage_signature",
+          "line": 102,
+          "declaration": "func storage_signature() -> String:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L102"
+        },
+        {
+          "name": "load_all",
+          "line": 117,
+          "declaration": "func load_all() -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L117"
+        },
+        {
+          "name": "_load_all_locked",
+          "line": 126,
+          "declaration": "func _load_all_locked() -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L126"
+        },
+        {
+          "name": "_save_profile_locked",
+          "line": 165,
+          "declaration": "func _save_profile_locked(candidate: Variant, preference: Variant = null) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L165"
+        },
+        {
+          "name": "restore_snapshot",
+          "line": 196,
+          "declaration": "func restore_snapshot(snapshot: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L196"
+        },
+        {
+          "name": "_restore_snapshot_locked",
+          "line": 205,
+          "declaration": "func _restore_snapshot_locked(snapshot: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L205"
+        },
+        {
+          "name": "import_legacy_radio",
+          "line": 231,
+          "declaration": "func import_legacy_radio(source_path: String = \"\") -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L231"
+        },
+        {
+          "name": "legacy_identity_is_unique",
+          "line": 263,
+          "declaration": "static func legacy_identity_is_unique(info: Dictionary, connected_devices: Array) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L263"
+        },
+        {
+          "name": "legacy_identity_is_unique_for_ids",
+          "line": 282,
+          "declaration": "static func legacy_identity_is_unique_for_ids(id: int, info: Dictionary, ids: Array, read_info: Callable) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L282"
+        },
+        {
+          "name": "profiles_for_device",
+          "line": 302,
+          "declaration": "func profiles_for_device(info: Dictionary) -> Array[Dictionary]:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L302"
+        },
+        {
+          "name": "match_profile",
+          "line": 315,
+          "declaration": "func match_profile(info: Dictionary, connected_devices: Array = []) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L315"
+        },
+        {
+          "name": "_storage_form",
+          "line": 405,
+          "declaration": "func _storage_form(profiles: Array) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L405"
+        },
+        {
+          "name": "_write_transaction",
+          "line": 432,
+          "declaration": "func _write_transaction(candidate_profiles: Array, recovered_from_backup := false, ui_preference: Dictionary = {}) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile_store.gd#L432"
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "path": "app/input/controller_profile.gd",
+      "blob_sha": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+      "sha256": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+      "line_count": 819,
+      "symbols": [
+        {
+          "name": "defaults",
+          "line": 40,
+          "declaration": "static func defaults(kind: String = \"gamepad\", preset: String = \"mode2\") -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile.gd#L40"
+        },
+        {
+          "name": "upgrade_legacy",
+          "line": 136,
+          "declaration": "static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile.gd#L136"
+        },
+        {
+          "name": "validate",
+          "line": 363,
+          "declaration": "static func validate(value: Variant) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile.gd#L363"
+        },
+        {
+          "name": "merge_radio_calibration_result",
+          "line": 239,
+          "declaration": "static func merge_radio_calibration_result(existing: Dictionary, calibration: Dictionary) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_profile.gd#L239"
+        }
+      ]
+    },
+    {
+      "id": "actions",
+      "path": "app/input/controller_actions.gd",
+      "blob_sha": "abbb36c6b386cbca983d276b431eef4eae1029ca",
+      "sha256": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+      "line_count": 774,
+      "symbols": [
+        {
+          "name": "default_bindings",
+          "line": 88,
+          "declaration": "static func default_bindings(_device_id: int = -1) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_actions.gd#L88"
+        },
+        {
+          "name": "effective_bindings",
+          "line": 167,
+          "declaration": "static func effective_bindings(profile: Dictionary, capabilities: Dictionary = AIRPLANE_CAPABILITIES) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_actions.gd#L167"
+        },
+        {
+          "name": "resolve_event",
+          "line": 365,
+          "declaration": "static func resolve_event(event: InputEvent, bindings: Dictionary, selected_device_id: int, context := \"flight\",",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_actions.gd#L365"
+        },
+        {
+          "name": "required_capability",
+          "line": 426,
+          "declaration": "static func required_capability(action_id: String) -> String:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_actions.gd#L426"
+        },
+        {
+          "name": "action_applies",
+          "line": 434,
+          "declaration": "static func action_applies(action_id: String, capabilities: Dictionary) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_actions.gd#L434"
+        },
+        {
+          "name": "valid_binding",
+          "line": 471,
+          "declaration": "static func valid_binding(value: Variant) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/controller_actions.gd#L471"
+        }
+      ]
+    },
+    {
+      "id": "legacy",
+      "path": "app/input/rc_calibration.gd",
+      "blob_sha": "cff43fff3bf968442c74e7da69c1b6a01068be1e",
+      "sha256": "7b424b39e986c2105e6085afacf1c087fe6d2809702fa5be48dada847b9e49d4",
+      "line_count": 445,
+      "symbols": [
+        {
+          "name": "save_profile",
+          "line": 327,
+          "declaration": "static func save_profile(path: String, device_key: String, p: Dictionary) -> Error:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/rc_calibration.gd#L327"
+        },
+        {
+          "name": "load_profile",
+          "line": 343,
+          "declaration": "static func load_profile(path: String, device_key: String) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/rc_calibration.gd#L343"
+        },
+        {
+          "name": "save_smoke_binding",
+          "line": 359,
+          "declaration": "static func save_smoke_binding(path: String, device_key: String, binding: Variant) -> Error:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/rc_calibration.gd#L359"
+        },
+        {
+          "name": "load_smoke_binding",
+          "line": 378,
+          "declaration": "static func load_smoke_binding(path: String, device_key: String) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/rc_calibration.gd#L378"
+        }
+      ]
+    },
+    {
+      "id": "rc_input",
+      "path": "app/input/rc_input.gd",
+      "blob_sha": "bc35edb209238bc0ba313b42ea799b811151b459",
+      "sha256": "261d5df5259b4b142538e61325a42a774d134a405355144ebaec91e60bbc8e46",
+      "line_count": 710,
+      "symbols": [
+        {
+          "name": "poll",
+          "line": 298,
+          "declaration": "func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), integrate: bool = true) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/rc_input.gd#L298"
+        },
+        {
+          "name": "use_profile",
+          "line": 152,
+          "declaration": "func use_profile(candidate: Dictionary, source: String) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/rc_input.gd#L152"
+        }
+      ]
+    },
+    {
+      "id": "fixed_wing",
+      "path": "app/sim/flight_session.gd",
+      "blob_sha": "481b67b5766d2c93a8e47d24d68147f86ae08eb7",
+      "sha256": "77db7fa05e24ca7e3749885000ed32986fc87cf8ee8017b2480d75ef068a014b",
+      "line_count": 6697,
+      "symbols": [
+        {
+          "name": "_on_joy_connection_changed",
+          "line": 1848,
+          "declaration": "func _on_joy_connection_changed(device: int, is_connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/flight_session.gd#L1848"
+        },
+        {
+          "name": "advance_calibration",
+          "line": 1889,
+          "declaration": "func advance_calibration() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/flight_session.gd#L1889"
+        },
+        {
+          "name": "apply_controller_selection",
+          "line": 1975,
+          "declaration": "func apply_controller_selection(device: int, info: Dictionary, profile: Dictionary, initial_start := false) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/flight_session.gd#L1975"
+        },
+        {
+          "name": "resume",
+          "line": 2300,
+          "declaration": "func resume() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/flight_session.gd#L2300"
+        },
+        {
+          "name": "_physics_process",
+          "line": 3102,
+          "declaration": "func _physics_process(_delta: float) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/flight_session.gd#L3102"
+        }
+      ]
+    },
+    {
+      "id": "helicopter",
+      "path": "app/sim/helicopter_flight_session.gd",
+      "blob_sha": "de5b3084ba00b6009a3a7145ba7299e09771a19b",
+      "sha256": "93bf44b972a66de3e04169f6245dd9496ef69f109d5253ce6575c5f8dd959cb7",
+      "line_count": 1444,
+      "symbols": [
+        {
+          "name": "_on_joy_connection_changed",
+          "line": 951,
+          "declaration": "func _on_joy_connection_changed(id: int,connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/helicopter_flight_session.gd#L951"
+        },
+        {
+          "name": "advance_calibration",
+          "line": 1003,
+          "declaration": "func advance_calibration() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/helicopter_flight_session.gd#L1003"
+        },
+        {
+          "name": "apply_controller_selection",
+          "line": 1035,
+          "declaration": "func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/helicopter_flight_session.gd#L1035"
+        },
+        {
+          "name": "resume",
+          "line": 981,
+          "declaration": "func resume() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/helicopter_flight_session.gd#L981"
+        }
+      ]
+    },
+    {
+      "id": "airship_input",
+      "path": "app/input/airship_input.gd",
+      "blob_sha": "9202fea3084fb8c8031204557fed0adfe1e30756",
+      "sha256": "10ce8254fb7f05b0a9c022a7b1d329b1cfa1590cf6216eacf10b50c0f7199e04",
+      "line_count": 117,
+      "symbols": [
+        {
+          "name": "connect_first_device",
+          "line": 26,
+          "declaration": "func connect_first_device() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/airship_input.gd#L26"
+        },
+        {
+          "name": "on_connection_changed",
+          "line": 32,
+          "declaration": "func on_connection_changed(id: int, connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/airship_input.gd#L32"
+        }
+      ]
+    },
+    {
+      "id": "quad_input",
+      "path": "app/input/multirotor_input.gd",
+      "blob_sha": "4fee704620e3613a9057d23f2b2cd99dacbbe807",
+      "sha256": "3a2b50feede35908f2f5a69f42ec66a008b2cf2277b6a409526bac5c129e5d6f",
+      "line_count": 684,
+      "symbols": [
+        {
+          "name": "_refresh_shortcuts",
+          "line": 233,
+          "declaration": "func _refresh_shortcuts() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/multirotor_input.gd#L233"
+        },
+        {
+          "name": "connect_first_device",
+          "line": 261,
+          "declaration": "func connect_first_device() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/multirotor_input.gd#L261"
+        },
+        {
+          "name": "on_connection_changed",
+          "line": 267,
+          "declaration": "func on_connection_changed(id: int, connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/input/multirotor_input.gd#L267"
+        }
+      ]
+    },
+    {
+      "id": "airship_activity",
+      "path": "app/vehicles/airship/airship_scene.gd",
+      "blob_sha": "e7b947e71c8d759efab9363807ace3e65c0e892d",
+      "sha256": "e6c171d5f454d102a56f34fa7154395a8faa81aa5efc857b52c6c7e916194745",
+      "line_count": 923,
+      "symbols": [
+        {
+          "name": "_connect_selected_controller",
+          "line": 384,
+          "declaration": "func _connect_selected_controller() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/airship/airship_scene.gd#L384"
+        },
+        {
+          "name": "_sync_selected_controller",
+          "line": 428,
+          "declaration": "func _sync_selected_controller() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/airship/airship_scene.gd#L428"
+        },
+        {
+          "name": "_route_controller_pause",
+          "line": 504,
+          "declaration": "func _route_controller_pause(event: InputEvent) -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/airship/airship_scene.gd#L504"
+        }
+      ]
+    },
+    {
+      "id": "quad_activity",
+      "path": "app/vehicles/multirotor/multirotor_scene.gd",
+      "blob_sha": "87f6e8fbb84a94f4b7398bdd022cfcdb3768eb6e",
+      "sha256": "98da398e2615befe33d5acd39c39c0e9dd3b3e2ad3e53c917ca655b33050efe8",
+      "line_count": 1663,
+      "symbols": [
+        {
+          "name": "_joy_connection_changed",
+          "line": 441,
+          "declaration": "func _joy_connection_changed(id: int, connected: bool) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L441"
+        },
+        {
+          "name": "_adopt_returning_device",
+          "line": 465,
+          "declaration": "func _adopt_returning_device(id: int) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L465"
+        },
+        {
+          "name": "_adopt_fallback_device",
+          "line": 481,
+          "declaration": "func _adopt_fallback_device(lost_id: int) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L481"
+        },
+        {
+          "name": "_adopt_app_controllers",
+          "line": 538,
+          "declaration": "func _adopt_app_controllers() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L538"
+        },
+        {
+          "name": "_start_direct_controllers",
+          "line": 565,
+          "declaration": "func _start_direct_controllers(parent: Node) -> Node:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L565"
+        },
+        {
+          "name": "_connect_selected_controller",
+          "line": 590,
+          "declaration": "func _connect_selected_controller() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L590"
+        },
+        {
+          "name": "_sync_selected_controller",
+          "line": 648,
+          "declaration": "func _sync_selected_controller() -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L648"
+        },
+        {
+          "name": "_unhandled_input",
+          "line": 736,
+          "declaration": "func _unhandled_input(event: InputEvent) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L736"
+        },
+        {
+          "name": "_can_resume",
+          "line": 835,
+          "declaration": "func _can_resume() -> bool:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L835"
+        },
+        {
+          "name": "_physics_process",
+          "line": 1130,
+          "declaration": "func _physics_process(_delta: float) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/vehicles/multirotor/multirotor_scene.gd#L1130"
+        }
+      ]
+    },
+    {
+      "id": "preferences",
+      "path": "app/app_state/preferences.gd",
+      "blob_sha": "56f598c24df78c2e7117329cf7f8e7bda3fb1896",
+      "sha256": "205652c993c00bfc76fd92f299709ade1b6e09ac8c83e6bd3095b3d182dcb99b",
+      "line_count": 462,
+      "symbols": [
+        {
+          "name": "load_from",
+          "line": 95,
+          "declaration": "static func load_from(path: String) -> Dictionary:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_state/preferences.gd#L95"
+        },
+        {
+          "name": "save_to",
+          "line": 291,
+          "declaration": "static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -> Error:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/app_state/preferences.gd#L291"
+        }
+      ]
+    },
+    {
+      "id": "overlay_settings",
+      "path": "app/render/overlays/overlay_settings.gd",
+      "blob_sha": "45cca802c631e5a4b0a2471bbe477d1ff2dadd91",
+      "sha256": "fbb438c10a356218b1e375a282e9ab71cc09adab570877196b2ce5a0035774eb",
+      "line_count": 155,
+      "symbols": []
+    },
+    {
+      "id": "keyboard",
+      "path": "app/input/keyboard.gd",
+      "blob_sha": "6d3681b43cd6e302172d28107c1c6340aed4d248",
+      "sha256": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+      "line_count": 15,
+      "symbols": []
+    },
+    {
+      "id": "simulation",
+      "path": "app/sim/simulation.gd",
+      "blob_sha": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+      "line_count": 1453,
+      "symbols": [
+        {
+          "name": "_physics_process",
+          "line": 707,
+          "declaration": "func _physics_process(_delta: float) -> void:",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/57abea025f62b20233ca281d58d2acbee4ab8b8e/app/sim/simulation.gd#L707"
+        }
+      ]
+    },
+    {
+      "id": "automation",
+      "path": "app/debug/godtest_driver.gd",
+      "blob_sha": "2089d1da1313f6480fd98e1e23a9e5cae4e45e4a",
+      "sha256": "b1c0215b1ea60bc3bc45ace523942b260cdbca3f0d353da1216e5bdc443d6ec6",
+      "line_count": 705,
+      "symbols": []
+    }
+  ],
+  "proposed_paths": [
+    {
+      "path": "app/ui/fixed_wing_pause_controller_status.gd",
+      "kind": "conditional_projection",
+      "create_only_if": "A named duplicated owner decision or boundary dependency is removed. Default is retain current reads; the flat view alone does not remove PauseMenu's full session dependency.",
+      "owner_steps": [
+        "VRC-01",
+        "VRC-04",
+        "VRC-08"
+      ],
+      "source_ids": [
+        "shell",
+        "pause",
+        "fixed_wing"
+      ]
+    },
+    {
+      "path": "app/input/controller_profile_access.gd",
+      "kind": "conditional_direct_adapter",
+      "create_only_if": "One real route has accepted identity, legacy-origin, publication/activation and old/new coexistence policy.",
+      "owner_steps": [
+        "VRC-03",
+        "VRC-05"
+      ],
+      "source_ids": [
+        "store",
+        "legacy",
+        "fixed_wing",
+        "helicopter",
+        "airship_input",
+        "quad_input"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "id": "home_fixed_wing_helicopter",
+      "authority": "AppRoot managed service plus family session",
+      "storage": "V2 profile and dependent UI preference",
+      "source_ids": [
+        "shell",
+        "service",
+        "fixed_wing",
+        "helicopter"
+      ],
+      "cases": [
+        "C21",
+        "C23",
+        "C24"
+      ]
+    },
+    {
+      "id": "app_direct_fixed_wing_helicopter",
+      "authority": "Early service-free route supported",
+      "storage": "Legacy calibration; fixed-wing gamepad smoke separate",
+      "source_ids": [
+        "shell",
+        "fixed_wing",
+        "helicopter",
+        "main",
+        "legacy"
+      ],
+      "cases": [
+        "C13",
+        "C21",
+        "C23",
+        "C24"
+      ]
+    },
+    {
+      "id": "home_airship",
+      "authority": "Injected registry and resolver; activity admission",
+      "storage": "Managed resolution; GCA-02/03 dependencies",
+      "source_ids": [
+        "shell",
+        "airship_activity",
+        "service"
+      ],
+      "cases": [
+        "C11",
+        "C12",
+        "C24"
+      ]
+    },
+    {
+      "id": "direct_airship_without_registry",
+      "authority": "Airship input connect-first",
+      "storage": "Legacy calibration",
+      "source_ids": [
+        "shell",
+        "airship_activity",
+        "airship_input",
+        "legacy"
+      ],
+      "cases": [
+        "C23",
+        "C24"
+      ]
+    },
+    {
+      "id": "home_quad",
+      "authority": "Injected managed registry and resolver; quad continuity",
+      "storage": "Managed V2",
+      "source_ids": [
+        "shell",
+        "quad_activity",
+        "service"
+      ],
+      "cases": [
+        "C10",
+        "C17",
+        "C24",
+        "C33"
+      ]
+    },
+    {
+      "id": "app_direct_quad",
+      "authority": "Quad creates its own service",
+      "storage": "Managed V2",
+      "source_ids": [
+        "quad_activity",
+        "service",
+        "store"
+      ],
+      "cases": [
+        "C24"
+      ]
+    },
+    {
+      "id": "standalone_quad_without_registry",
+      "authority": "Explicit component fallback; not public-route qualification",
+      "storage": "Legacy calibration",
+      "source_ids": [
+        "quad_activity",
+        "quad_input",
+        "legacy"
+      ],
+      "cases": [
+        "C23",
+        "C24"
+      ]
+    },
+    {
+      "id": "fixed_wing_workshop_trial",
+      "authority": "Existing trial route; service if present; temporary old menu/session may return",
+      "storage": "Existing owner",
+      "source_ids": [
+        "shell",
+        "service",
+        "pause"
+      ],
+      "cases": [
+        "C03",
+        "C24",
+        "C29"
+      ]
+    },
+    {
+      "id": "ground_optional_future_cohort",
+      "authority": "Family owner must characterize before migration",
+      "storage": "Uncharacterized here",
+      "source_ids": [],
+      "cases": [
+        "C24"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "save_compensation",
+      "classification": "source_observed_contract_gap",
+      "summary": "Compensation can fail; in-flight previous-runtime reapply return is unobserved; some UI callers collapse outcomes. No runtime witness.",
+      "source_ids": [
+        "service",
+        "store",
+        "setup",
+        "main"
+      ],
+      "cases": [
+        "C02",
+        "C21",
+        "C22"
+      ]
+    },
+    {
+      "id": "stale_editor",
+      "classification": "source_derived_unexecuted_scenario",
+      "summary": "Serialized whole candidates can replace newer same-profile data. All writers need actual persisted bases and explicit preference intent.",
+      "source_ids": [
+        "setup",
+        "service",
+        "store"
+      ],
+      "cases": [
+        "C22"
+      ]
+    },
+    {
+      "id": "legacy_origin_and_association",
+      "classification": "source_derived_unexecuted_scenario",
+      "summary": "Absent V2 UUID does not bind legacy origin; different UUIDs can change association matching. Concurrent imports need a policy.",
+      "source_ids": [
+        "service",
+        "profile",
+        "store",
+        "setup"
+      ],
+      "cases": [
+        "C22",
+        "C23"
+      ]
+    },
+    {
+      "id": "legacy_import_scope_and_feedback",
+      "classification": "source_observed_contract_gap",
+      "summary": "Radio importer omits gamepad-only smoke; UI importer ignores returned read and skipped-section errors.",
+      "source_ids": [
+        "store",
+        "setup",
+        "legacy",
+        "main"
+      ],
+      "cases": [
+        "C22",
+        "C23"
+      ]
+    },
+    {
+      "id": "deferred_origin",
+      "classification": "source_derived_unexecuted_scenario",
+      "summary": "Distinguish retired-activity commands from legitimate current-state reconciliation; launch already has a target guard.",
+      "source_ids": [
+        "shell",
+        "quad_activity",
+        "pause"
+      ],
+      "cases": [
+        "C01",
+        "C03",
+        "C17"
+      ]
+    },
+    {
+      "id": "quad_action_offer",
+      "classification": "source_derived_unexecuted_scenario",
+      "summary": "Quad throttle_cut appears applicable without a demonstrated consumer; real assignment/save/dispatch witness pending. Pause has GCA-01 scope.",
+      "source_ids": [
+        "actions",
+        "setup",
+        "shell",
+        "quad_input",
+        "quad_activity"
+      ],
+      "cases": [
+        "C10",
+        "C24",
+        "C33"
+      ]
+    },
+    {
+      "id": "direct_smoke_identity",
+      "classification": "source_derived_unexecuted_scenario",
+      "summary": "Direct smoke lacks calibration-equivalent live uniqueness recheck; duplicate arrival witness pending.",
+      "source_ids": [
+        "main",
+        "fixed_wing",
+        "store"
+      ],
+      "cases": [
+        "C21",
+        "C23"
+      ]
+    }
+  ],
+  "work_packages": [
+    {
+      "step": "VRC-00",
+      "deliverable": "Source/route/action/form baseline and test admission",
+      "cases": [
+        "C10",
+        "C24",
+        "C33"
+      ]
+    },
+    {
+      "step": "VRC-01",
+      "deliverable": "Characterize real PauseMenu and existing intent; extraction needs a concrete eliminated decision/dependency",
+      "cases": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C30",
+        "C34"
+      ]
+    },
+    {
+      "step": "VRC-04",
+      "deliverable": "Prove selected fixed-wing consumer; retain existing route if sufficient, add projection/wrapper only when justified",
+      "cases": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C07",
+        "C24",
+        "C30",
+        "C33",
+        "C34"
+      ]
+    },
+    {
+      "step": "VRC-03",
+      "deliverable": "After affected owner repairs, move one input/persistence seam without mixed behavior change",
+      "cases": [
+        "C13",
+        "C14",
+        "C21",
+        "C22",
+        "C23",
+        "C24"
+      ]
+    },
+    {
+      "step": "VRC-05",
+      "deliverable": "Separate helicopter/airship/quad adoption only when useful; ground optional",
+      "cases": [
+        "C10",
+        "C11",
+        "C12",
+        "C17",
+        "C24",
+        "C28"
+      ]
+    },
+    {
+      "step": "VRC-09",
+      "deliverable": "Profile attributed input workload after correctness",
+      "cases": [
+        "C25",
+        "C36"
+      ]
+    },
+    {
+      "step": "VRC-11",
+      "deliverable": "Qualify actual selected cohort and data rollback",
+      "cases": [
+        "C23",
+        "C32",
+        "C35",
+        "C38",
+        "C39"
+      ]
+    }
+  ],
+  "existing_test_starting_points": [
+    "app/tests/test_ui_pause.gd",
+    "app/tests/test_controller_pause_recovery.gd",
+    "app/tests/test_ui_screen_stack.gd",
+    "app/tests/test_radio_menu_journey.gd",
+    "app/tests/test_ui_home.gd",
+    "app/tests/test_ui_pause_responsive.gd",
+    "app/tests/test_ui_pause_physics.gd",
+    "app/tests/test_controller_recovery_focus.gd",
+    "app/tests/test_ui_settings_integration.gd",
+    "app/tests/test_ui_recovery_dead_ends.gd",
+    "app/tests/test_ui_quit.gd",
+    "app/tests/test_ui_help.gd",
+    "app/tests/test_controller_menu.gd",
+    "app/tests/test_controller_settings_save.gd",
+    "app/tests/test_controller_calibration_session.gd",
+    "app/tests/test_controller_calibration_disclosure.gd",
+    "app/tests/test_controller_store.gd",
+    "app/tests/test_controller_persistence.gd",
+    "app/tests/test_controller_audit_concurrency.gd",
+    "app/tests/test_rc_calibration.gd",
+    "app/tests/test_controller_profile_creation.gd",
+    "app/tests/test_controller_auto_defaults.gd",
+    "app/tests/test_controller_audit_vehicle_quad.gd",
+    "app/tests/test_mr_controller_authority.gd",
+    "app/tests/test_controller_extended_actions.gd",
+    "app/tests/test_controller_routing_audit.gd"
+  ],
+  "execution": {
+    "status": "UNRUN",
+    "receipt": null,
+    "limits": "No Godot, replay, native, device, package or CI execution; test names are starting points, not coverage."
+  }
+}
