@@ -242,6 +242,25 @@ jobs:
         run: |
           python3 tools/godot/run_checked.py --timeout "${OPENRC_IMPORT_TIMEOUT:-600}" --out-dir tmp/godot-checks --label ci-resource-import -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
+      - name: Require the real Godot client against the telemetry receiver
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
+        timeout-minutes: 15
+        run: |
+          python3 -m venv "$RUNNER_TEMP/telemetry-e2e-venv"
+          "$RUNNER_TEMP/telemetry-e2e-venv/bin/python" -m pip install --disable-pip-version-check -r services/telemetry/requirements.txt
+          "$RUNNER_TEMP/telemetry-e2e-venv/bin/python" -m pip check
+          godot="$(app/get-godot.sh)"
+          test -x "$godot"
+          OPENRC_GODOT="$godot" OPENRC_REQUIRE_GODOT_E2E=1 \
+            "$RUNNER_TEMP/telemetry-e2e-venv/bin/python" services/telemetry/tests/test_godot_e2e.py -v
+      - name: Retain real-client telemetry diagnostics
+        if: ${{ always() && matrix.part == 'integration' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: telemetry-client-e2e
+          path: tmp/telemetry-e2e/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Aircraft v2 contract and explicit v1 loader compatibility (AS-01, DATA-4a)
         if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |

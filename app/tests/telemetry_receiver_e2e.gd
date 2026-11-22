@@ -8,9 +8,9 @@ extends SceneTree
 const Service := preload("res://telemetry/telemetry_service.gd")
 const Release := preload("res://telemetry/telemetry_release.gd")
 
-const CONSENT := "user://telemetry_e2e_consent.cfg"
 const FRAME_US := 16667
 
+var _consent_path := ""
 var _now := 0
 var _frames := 0
 var _ctx := {"mode": "home", "activity": false, "vehicle": "", "eligible": true, "window_size": Vector2i(1920, 1080), "vsync": 1,
@@ -23,17 +23,24 @@ func _initialize() -> void:
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--url="):
 			url = argument.trim_prefix("--url=")
+		elif argument.begins_with("--consent-file="):
+			_consent_path = argument.trim_prefix("--consent-file=")
+	if _consent_path.is_empty():
+		_consent_path = "user://telemetry_e2e_%d_%d.cfg" % [OS.get_process_id(), Time.get_ticks_usec()]
 	var release := Release.qualification(url, "v0.0.0")
 	if not release.ok:
 		printerr("E2E bad receiver url: ", url)
 		quit(2)
 		return
-	if FileAccess.file_exists(CONSENT):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(CONSENT))
+	for destination: String in [_consent_path, _consent_path + ".tmp"]:
+		if FileAccess.file_exists(destination) or DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(destination)):
+			printerr("E2E consent destination already exists; refusing to overwrite it")
+			quit(2)
+			return
 	var service: Node = Service.new()
 	service.release = release
 	service.interactive = true
-	service.consent_path = CONSENT
+	service.consent_path = _consent_path
 	service.clock_usec = func() -> int: return _now
 	service.frames_drawn = func() -> int: return _frames
 	service.context_provider = func() -> Dictionary: return _ctx
@@ -66,5 +73,5 @@ func _initialize() -> void:
 	var ok: bool = service.queue.sent_ok >= 3 and service.queue.items.is_empty() and service.queue.dropped == 0 \
 		and service.local_drops == 0 and service.state == "on"
 	service.disable()
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(CONSENT))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(_consent_path))
 	quit(0 if ok else 1)
