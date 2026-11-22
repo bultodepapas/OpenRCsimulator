@@ -1,0 +1,168 @@
+{
+  "source_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "method": "Selected top-level functions only; exact source after blank/comment-only line removal, tab expansion, and trailing-whitespace normalization; no identifier renaming; minimum eight retained lines. Not semantic equivalence or whole-project duplication coverage.",
+  "inventory": [
+    {
+      "path": "app/app_root.gd",
+      "lines": 5372,
+      "top_level_functions": 242,
+      "blob": "6eb0621dbc90bed07a83b540d6ec761020216cba"
+    },
+    {
+      "path": "app/main.gd",
+      "lines": 4303,
+      "top_level_functions": 151,
+      "blob": "8f76e4242698f609ef4a3637de0eca8c6faee22f"
+    },
+    {
+      "path": "app/helicopter_main.gd",
+      "lines": 694,
+      "top_level_functions": 36,
+      "blob": "8a38db0d7431e950c3e48b2bf50fda0e2d8562c5"
+    },
+    {
+      "path": "app/vehicles/airship/airship_scene.gd",
+      "lines": 923,
+      "top_level_functions": 47,
+      "blob": "e7b947e71c8d759efab9363807ace3e65c0e892d"
+    },
+    {
+      "path": "app/vehicles/multirotor/multirotor_scene.gd",
+      "lines": 1663,
+      "top_level_functions": 94,
+      "blob": "87f6e8fbb84a94f4b7398bdd022cfcdb3768eb6e"
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "lines": 1317,
+      "top_level_functions": 63,
+      "blob": "34fbbfff8defb68e29e449a1996148bd1914bc67"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "lines": 6697,
+      "top_level_functions": 339,
+      "blob": "481b67b5766d2c93a8e47d24d68147f86ae08eb7"
+    },
+    {
+      "path": "app/sim/helicopter_flight_session.gd",
+      "lines": 1444,
+      "top_level_functions": 80,
+      "blob": "de5b3084ba00b6009a3a7145ba7299e09771a19b"
+    },
+    {
+      "path": "app/sim/airship/session.gd",
+      "lines": 639,
+      "top_level_functions": 31,
+      "blob": "9fb7c84a72b8b381c8aa375ecf3bc19a4d94415c"
+    },
+    {
+      "path": "app/sim/multirotor/session.gd",
+      "lines": 1213,
+      "top_level_functions": 56,
+      "blob": "25737ca91cbcecd9f77f0d5c6f0ec6a9de6080ae"
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "lines": 2261,
+      "top_level_functions": 127,
+      "blob": "fa3f872ee54beb76679b5cb2be51dbfe158ea864"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "lines": 501,
+      "top_level_functions": 34,
+      "blob": "efc778b4fffc89a236591500636df0933b70ae90"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "lines": 351,
+      "top_level_functions": 19,
+      "blob": "d6e070e78c859b0a18563f50234c00172e78bf7a"
+    },
+    {
+      "path": "app/sim/multirotor/flight_log.gd",
+      "lines": 464,
+      "top_level_functions": 21,
+      "blob": "59e2de59aa78675a5b808a4931df3a23d70903cd"
+    },
+    {
+      "path": "app/sim/recorder.gd",
+      "lines": 124,
+      "top_level_functions": 10,
+      "blob": "b1c23e73b4457e5a9ee67594ac20a9a722943b94"
+    },
+    {
+      "path": "app/sim/rotorcraft_recorder.gd",
+      "lines": 281,
+      "top_level_functions": 9,
+      "blob": "2d7143d1b4dcc0be967ca8c9c6eb7048bbff6792"
+    }
+  ],
+  "duplicate_groups": [
+    [
+      {
+        "path": "app/sim/airship/flight_log.gd",
+        "name": "_write_packet",
+        "line": 187,
+        "end": 206,
+        "logical_lines": 18
+      },
+      {
+        "path": "app/sim/multirotor/flight_log.gd",
+        "name": "_write_packet",
+        "line": 212,
+        "end": 231,
+        "logical_lines": 18
+      }
+    ],
+    [
+      {
+        "path": "app/sim/airship/session.gd",
+        "name": "_install_lake",
+        "line": 322,
+        "end": 339,
+        "logical_lines": 15
+      },
+      {
+        "path": "app/sim/multirotor/session.gd",
+        "name": "_install_lake",
+        "line": 366,
+        "end": 383,
+        "logical_lines": 15
+      }
+    ],
+    [
+      {
+        "path": "app/sim/airship/session.gd",
+        "name": "_clearance",
+        "line": 502,
+        "end": 516,
+        "logical_lines": 14
+      },
+      {
+        "path": "app/sim/multirotor/session.gd",
+        "name": "_clearance",
+        "line": 994,
+        "end": 1010,
+        "logical_lines": 14
+      }
+    ],
+    [
+      {
+        "path": "app/sim/airship/flight_log.gd",
+        "name": "_failed",
+        "line": 214,
+        "end": 227,
+        "logical_lines": 11
+      },
+      {
+        "path": "app/sim/multirotor/flight_log.gd",
+        "name": "_failed",
+        "line": 240,
+        "end": 254,
+        "logical_lines": 11
+      }
+    ]
+  ]
+}

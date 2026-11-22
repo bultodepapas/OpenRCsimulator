@@ -19,6 +19,14 @@ repairs and their fresh verification are recorded in the [implemented ledger](CO
 
 ## Contents
 
+**Supplemental architecture review, 2026-11-22:** the
+[vehicle system unification audit](../docs/research/vehicle-system-unification-2026-11-22.md)
+reviews main `7940a408` and refines the existing VRC proposal with concrete
+route/controller ownership findings, recording/environment/presentation
+extractions and family boundaries. It is source evidence and proposed work;
+no runtime repair or performance result is claimed. The historical queue and
+completed-work statuses below are not reclassified by that review.
+
 1. [UI, settings and player flows](#ui-settings-and-player-flows)
 2. [Aircraft and helicopter correctness](#aircraft-and-helicopter-correctness)
 3. [Wind, weather and rotor continuity](#wind-weather-and-rotor-continuity)
