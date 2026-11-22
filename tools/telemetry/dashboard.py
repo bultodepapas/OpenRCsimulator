@@ -363,9 +363,9 @@ def timeline_labels(count):
             for step in range(intervals + 1)}
 
 
-def timeline_date(x, height, date_label, major):
+def timeline_date(x, height, label, major):
     return (f'<text class="tick date-tick{"" if major else " minor-tick"}" x="{x:.1f}" y="{height - 19}" '
-            f'text-anchor="middle">{e(date_label[5:])}</text>')
+            f'text-anchor="middle">{e(label)}</text>')
 
 
 def timeline_tick(value):
@@ -421,7 +421,7 @@ def ingest_chart(rows):
         center = left + (index + 0.5) * slot
         targets.append(timeline_target(center - slot / 2, slot, center, top, plot_h, lines, index == len(rows) - 1))
         if index in labels:
-            parts.append(timeline_date(center, height, row["day"], labels[index]))
+            parts.append(timeline_date(center, height, row["day"][5:], labels[index]))
     return timeline_end(parts, targets, top, plot_h)
 
 
@@ -792,7 +792,7 @@ def download_collection_chart(days, values, notes, title):
         tip = [day, f"Matched counter increase: {value}"] + ([note] if note else [])
         targets.append(timeline_target(center - slot / 2, slot, center, top, plot_height, tip, index == start))
         if index in labels:
-            parts.append(timeline_date(center, height, day, labels[index]))
+            parts.append(timeline_date(center, height, day[5:], labels[index]))
         rows.append(f'<tr><th scope="row">{e(day)}</th><td>{e(value)}</td><td>{e(note)}</td></tr>')
     chart = timeline_end(parts, targets, top, plot_height)
     keys = []
@@ -802,6 +802,40 @@ def download_collection_chart(days, values, notes, title):
         keys.append('<span class="key"><i class="collection-gap-key" aria-hidden="true"></i>No daily value</span>')
     legend_html = f'<div class="legend collection-legend">{"".join(keys)}</div>' if keys else ""
     return chart + legend_html + timeline_table(title, ("Matched counter increase",), rows, "UTC collection day")
+
+
+def download_platform_trends(model, releases):
+    platforms = PLATFORM_SLOTS[:3]
+    keys = legend([(name, name, slot) for name, slot in platforms], lines=True)
+    history = {row["day"]: row["counts"] for row in model.get("platform_history", [])}
+    history_title = "Download counters over time by platform"
+    history_chart = '<p class="empty">No historical package observations are available yet.</p>'
+    if history:
+        first, last = date.fromisoformat(min(history)), date.fromisoformat(max(history))
+        dates = [(first + timedelta(days=offset)).isoformat() for offset in range((last - first).days + 1)]
+        series = [(name, [history.get(day, {}).get(name) for day in dates], slot) for name, slot in platforms]
+        release_notes = {day: "Published: " + ", ".join(tags) for day, tags in release_days(model).items()}
+        history_chart = keys + line_chart(dates, series, history_title, notes=release_notes)
+
+    release_title = "Download totals by release and platform"
+    release_plot = '<p class="empty">No release packages have been observed yet.</p>'
+    if releases:
+        published = {r["tag"]: r["published"] for r in model.get("releases", [])}
+        tags = sorted((tag for tag, _, _ in releases),
+                      key=lambda tag: (published.get(tag, ""), downloads.release_key(tag)))
+        available = {(a["tag"], a["platform"]) for a in model["assets"]}
+        counts = {tag: by_platform for tag, by_platform, _ in releases}
+        series = [(name, [counts[tag][name] if (tag, name) in available else None for tag in tags], slot)
+                  for name, slot in platforms]
+        ticks = {tag: tag if len(tag) <= 8 else tag[:7] + "…" for tag in tags}
+        notes = {tag: f"Published {stamp[:10]} UTC" for tag, stamp in published.items()}
+        release_plot = keys + line_chart(tags, series, release_title, notes=notes, tick_labels=ticks, axis_title="Release")
+
+    return ('<div class="pair">'
+            + panel(history_title, "Last recorded total for each UTC day. Package removals can lower the totals.",
+                    history_chart)
+            + panel(release_title, "Cumulative counts at the latest collection. Older releases have had more time.",
+                    release_plot) + "</div>")
 
 
 def downloads_section(model, now, days):
@@ -852,7 +886,7 @@ def downloads_section(model, now, days):
     keys = legend([(p, p, c) for p, c in PLATFORM_SLOTS if platforms[p]])
     return (f'{head}<p class="sub">GitHub release package counters ({e(model["pattern"])}) from the local history '
             "archive: cumulative and including repeat or automated downloads, not people or installs</p>"
-            f'{tiles_html}<div class="pair"><div class="panel">'
+            f'{tiles_html}{download_platform_trends(model, releases)}<div class="pair"><div class="panel">'
             "<h4>Downloads per collection day</h4><p class=\"sub\">Matched counter increases by collection end day "
             f'(UTC). Long or partial intervals stay in the interval table.</p>{daily_chart}{interval_detail}</div>'
             f'<div class="panel"><h4>Downloads per release</h4>{keys}{chart}'
@@ -878,12 +912,14 @@ def release_days(model):
     return out
 
 
-def line_chart(days, series, aria, markers=None, height=240, notes=None, *, provisional=None, key_html=""):
+def line_chart(days, series, aria, markers=None, height=240, notes=None, *, provisional=None, key_html="",
+               tick_labels=None, axis_title="Day"):
     """Lines on one shared axis. series: [(label, values aligned with days (None = unknown), slot)].
     notes: {day: text} appended to that day's tooltip."""
     markers, notes = markers or {}, notes or {}
     provisional = provisional or {}
-    width, left, right, top, bottom = 640, 82, 46, 25, 44
+    tick_labels = tick_labels or {}
+    width, left, right, top, bottom = 640, 82, 68 if tick_labels else 46, 25, 44
     plot_w, plot_h = width - left - right, height - top - bottom
     known = [v for _, values, _ in series for v in values if v is not None]
     ticks = nice_ticks(max(known, default=0))
@@ -961,9 +997,9 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None, *, prov
         band_right = width - right if index == n - 1 else x + step / 2
         targets.append(timeline_target(band_left, band_right - band_left, x, top, plot_h, tip, index == focus_index))
         if index in labels:
-            parts.append(timeline_date(x, height, day, labels[index]))
+            parts.append(timeline_date(x, height, tick_labels.get(day, day[5:]), labels[index]))
     chart = timeline_end(parts, targets, top, plot_h)
-    return chart + key_html + timeline_table(aria, [label for label, _, _ in series], table_rows_html)
+    return chart + key_html + timeline_table(aria, [label for label, _, _ in series], table_rows_html, axis_title)
 
 
 def timeline_table(title, labels, rows, day_label="Day"):

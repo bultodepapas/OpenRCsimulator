@@ -663,12 +663,22 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(releases[0][2], 13)
         self.assertEqual(downloads.per_day(model), {"2027-01-19": (16, False)})
         self.assertEqual(downloads.recent_increase(model, NOW), 16)
+        self.assertEqual([(row["day"], row["counts"]) for row in model["platform_history"]], [
+            ("2027-01-18", {"Windows": 43, "Linux": 5, "macOS": 2}),
+            ("2027-01-19", {"Windows": 51, "Linux": 9, "macOS": 6}),
+        ])
 
         data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
         data["github"] = model
         page = dashboard.render(data)
         self.assertIn('id="panel-downloads"', page)
         self.assertIn("Latest release v0.3.10", page)
+        tab = page.split('id="panel-downloads"', 1)[1].split('id="panel-github"', 1)[0]
+        self.assertIn('aria-label="Download counters over time by platform"', tab)
+        self.assertIn('aria-label="Download totals by release and platform"', tab)
+        self.assertIn("2027-01-18 · Windows: 43 · macOS: 2 · Linux: 5", tab)
+        self.assertIn("v0.3.10 · Windows: 7 · macOS: 6 · Linux: Unavailable", tab)
+        self.assertLess(tab.index('>v0.3.9</th>'), tab.index('>v0.3.10</th>'))
         rows = dashboard.ingest_rows(data)
         data["github"]["collected_utc"] = dashboard.utc_stamp(NOW - 60)
         titles = [t for _, t, _ in dashboard.alerts(data, rows, dashboard.coverage_model(data, rows)[2])]

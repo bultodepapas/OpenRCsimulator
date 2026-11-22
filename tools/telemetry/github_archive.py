@@ -178,6 +178,7 @@ def load(directory):
                      if not release["prerelease"]}
         milestones = {}
         intervals, previous, assets = [], None, []
+        platform_history = {}
         for observation_id, started, finished in observations:
             rows = connection.execute("SELECT asset_id, tag, name, count, finished_utc FROM asset_counts "
                                       "WHERE observation_id = ?",
@@ -191,6 +192,13 @@ def load(directory):
             assets = [{"id": asset_id, "tag": tag, "name": name,
                        "platform": github_history.asset_platform(name), "count": count}
                       for asset_id, tag, name, count, _ in rows]
+            totals = {}
+            for asset in assets:
+                platform = asset["platform"]
+                totals[platform] = totals.get(platform, 0) + asset["count"]
+            day = _parse(finished).date().isoformat()
+            if day not in platform_history or _parse(finished) >= _parse(platform_history[day]["observed"]):
+                platform_history[day] = {"day": day, "observed": finished, "counts": totals}
             _record_release_milestones(milestones, published, rows)
         observations_utc = dict(connection.execute(
             "SELECT kind, MAX(finished_utc) FROM observations GROUP BY kind"))
@@ -219,7 +227,8 @@ def load(directory):
         "collected_utc": observations[-1][2] if observations else None,
         "last_attempt": attempt, "attempts": attempts,
         "source_utc": source_utc, "source_attempts": source_attempts, "access": access,
-        "assets": assets, "intervals": intervals, "release_age": milestones, **extras,
+        "assets": assets, "intervals": intervals, "release_age": milestones,
+        "platform_history": [platform_history[d] for d in sorted(platform_history)], **extras,
     }
 
 
