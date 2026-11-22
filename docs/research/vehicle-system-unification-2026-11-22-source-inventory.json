@@ -6777,5 +6777,1503 @@
       "cited_source_files_unchanged": 156,
       "result": "Only README and site release presentation changed; all audited cited-source blobs and the application tree are unchanged. No runtime qualification was executed."
     }
+  },
+  "fourth_pass": {
+    "method": "Pinned remote-head survey, selected branch/document/source comparisons, lead integration and independent adversarial review. No runtime tests or branch-code merges.",
+    "audit_parent": "e6dc52ddbf74ed0e421e4d6e0bc305d874c92b7e",
+    "planning_main": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+    "planning_application_tree": "1fd33c6016fd0f6b117c3736b26f4c134808d08b",
+    "local_application_tree_unchanged": "fe6fdf080899707fab1a1dd4118a32481bca5e4c",
+    "canonical_execution_plan": "docs/plans/vehicle-runtime-consolidation.md",
+    "superseded_audit_sequence_sections": [
+      6,
+      10,
+      14
+    ],
+    "remote_heads_recorded": 76,
+    "selected_metadata_refs": 38,
+    "branches": [
+      {
+        "branch": "audit/aircraft-import-closeout-2026-11-17",
+        "commit": "efc93d079fe856fb727f4f7ca7faac9f9f5d56bc",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Reuse current import pipeline; branch-local closeout/eligibility proposals do not authorize flight.",
+        "commit_date": "2026-11-17T13:53:37-05:00",
+        "head_subject": "docs: deepen aircraft import audit and implementation guidance",
+        "head_changed_path_count": 135
+      },
+      {
+        "branch": "audit/collision-damage-2026-11-17",
+        "commit": "8fdb1be6727e0620cdf04df303f3cff4454d6743",
+        "review_level": "overview_or_targeted_identity",
+        "disposition": "Report overview; preserve GP/CR owners and historical scopes, no blanket current defect count.",
+        "commit_date": "2026-11-20T08:08:05-05:00",
+        "head_subject": "docs(CR): integrate twenty game collision studies in two adaptive rounds",
+        "head_changed_path_count": 7
+      },
+      {
+        "branch": "audit/consolidated-review-2026-11-15",
+        "commit": "92e426013ebc5b54eba7c7fe6eb7ab0eb01de38f",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-15T07:29:36-05:00",
+        "head_subject": "docs(audit): integrate both audit rounds and current repository review",
+        "head_changed_path_count": 15
+      },
+      {
+        "branch": "audit/controls-plan-adversarial-2026-11-21",
+        "commit": "2e812ef2b8184733f7dd45b7bfd50e119c5ae82c",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Refinement already included in final controls delivery; no second backlog.",
+        "commit_date": "2026-11-21T16:40:25-05:00",
+        "head_subject": "docs(controls): specify ownership, save recovery and action coverage",
+        "head_changed_path_count": 16
+      },
+      {
+        "branch": "audit/cpu-gpu-optimization-2026-11-19",
+        "commit": "3967f0020145821ea12c357b2f64745aff1a1a7b",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Deduplicate overlapping controls/calibration findings and retain scoped later residuals.",
+        "commit_date": "2026-11-19T21:15:20-05:00",
+        "head_subject": "research: extend CPU/GPU audit with loading and lighting findings",
+        "head_changed_path_count": 81
+      },
+      {
+        "branch": "audit/fpv-drone-racing-2026-11-16",
+        "commit": "a92598fd5c69bde3b9e4edcd5267a0be2e3ba91a",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Nineteen findings recorded repaired on main; retain regression baseline and later distinct follow-ups.",
+        "commit_date": "2026-11-16T09:46:43-05:00",
+        "head_subject": "docs(DR-14/26): deepen FPV audit and remediation plan",
+        "head_changed_path_count": 13
+      },
+      {
+        "branch": "audit/game-controls-2026-11-21",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Adopt refined controls obligations once; historical receipts retained.",
+        "commit_date": "2026-11-21T21:15:34-05:00",
+        "head_subject": "VRC-00: consolidate final controls audit and implementation plan",
+        "head_changed_path_count": 23
+      },
+      {
+        "branch": "audit/godtest-main-2026-11-22",
+        "commit": "cf939b82922ea3ae93e2293d67361640fc476e35",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Carry measurement eligibility/coverage work under GOD-12/13, separate from R16.",
+        "commit_date": "2026-11-22T09:32:07-05:00",
+        "head_subject": "GOD-12-R3: audit main integration and retain offline counterexamples",
+        "head_changed_path_count": 4
+      },
+      {
+        "branch": "audit/graphics-performance-technologies-2026-11-15",
+        "commit": "0ccfa7d11cb5f24f8d84cf71738a7cdd4e8a6836",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-15T20:52:30-05:00",
+        "head_subject": "research: add compiled Vulkan RT prerequisite patches",
+        "head_changed_path_count": 12
+      },
+      {
+        "branch": "audit/impact-scoped-local-tests-20261103",
+        "commit": "031b2888f225c758a4da715a67d72cb97fbdd200",
+        "review_level": "overview_or_targeted_identity",
+        "disposition": "Review selection guidance under current checked-runner and required-gate instructions.",
+        "commit_date": "2026-11-03T15:08:37-05:00",
+        "head_subject": "docs: clarify impact-scoped local test selection for agents",
+        "head_changed_path_count": 4
+      },
+      {
+        "branch": "audit/mcp-queue-resilience-2026-11-15",
+        "commit": "4b4a9fe24b8603f54bb94a4a2e772498cc3979b7",
+        "review_level": "overview_or_targeted_identity",
+        "disposition": "Metadata and owner-path comparison; keep existing TQ admission/qualification authority.",
+        "commit_date": "2026-11-16T10:13:54-05:00",
+        "head_subject": "Preserve the debug CLI executable mode",
+        "head_changed_path_count": 1
+      },
+      {
+        "branch": "audit/performance-consolidation-2026-11-15",
+        "commit": "2961387f105b0c362776d2afdb8236eed1593c6e",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Retain recorded completed/superseded work and its evidence limits.",
+        "commit_date": "2026-11-15T11:00:07-05:00",
+        "head_subject": "docs(perf): consolidate three audit rounds and reconcile current main",
+        "head_changed_path_count": 43
+      },
+      {
+        "branch": "audit/physics-math-aero-2026-11-21",
+        "commit": "09d6fc6b716a714b85d4b04f5f40363cc49d140c",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Reconcile branch-local numerical/control candidate repairs individually against main.",
+        "commit_date": "2026-11-22T09:31:07-05:00",
+        "head_subject": "audit: document R9 car contact defects and nitro coupling evidence",
+        "head_changed_path_count": 12
+      },
+      {
+        "branch": "audit/shadows-2026-11-17",
+        "commit": "f5d3c92059a1de0d5741619e9964449c1cb5f037",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-17T17:53:35-05:00",
+        "head_subject": "docs: audit shadow correctness, coverage and rendering cost",
+        "head_changed_path_count": 25
+      },
+      {
+        "branch": "audit/telemetry-2026-11-22",
+        "commit": "fca0d912991e565b1ae72f121245c4bc4352ef07",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "At planning main, reports/compact evidence integrated without production repairs; publication main0f859b5 subsequently integrates TA22-R01/O01. Retain those fixes and remaining TELEM work.",
+        "commit_date": "2026-11-22T11:37:44-05:00",
+        "head_subject": "TELEM-AUDIT: deepen telemetry correctness and optimization review",
+        "head_changed_path_count": 17
+      },
+      {
+        "branch": "audit/telemetry-release-readiness-20261118",
+        "commit": "e9683dcfc12acce33e5e333a63214adcb58c30f1",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-18T18:49:18-05:00",
+        "head_subject": "docs(telemetry): identify Windows CI toolchain mismatch without misattribution",
+        "head_changed_path_count": 1
+      },
+      {
+        "branch": "audit/ugly-stik-flight-physics-2026-11-15",
+        "commit": "5a37347a7e397d82ff1ebdb97e5dd83fef308bac",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-15T15:42:35-05:00",
+        "head_subject": "Plan five Stik foundations under existing owners",
+        "head_changed_path_count": 10
+      },
+      {
+        "branch": "audit/vehicle-system-unification-2026-11-22",
+        "commit": "e6dc52ddbf74ed0e421e4d6e0bc305d874c92b7e",
+        "review_level": "baseline",
+        "disposition": "Pinned planning source or existing audit evidence baseline.",
+        "commit_date": "2026-11-22T11:42:20-05:00",
+        "head_subject": "VRC: deepen repository consolidation audit and parallel implementation plan",
+        "head_changed_path_count": 3
+      },
+      {
+        "branch": "audit/windows-testqueue-20261114",
+        "commit": "7226470ff3feadd3f9a1df79b5b889b8feeade94",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-14T12:32:48-05:00",
+        "head_subject": "TQ: document Windows queue and MCP audit with evidence and qualification gates",
+        "head_changed_path_count": 2
+      },
+      {
+        "branch": "ci/local-checks",
+        "commit": "d48dbeb9f3fc5ec3d798bf04760d6e90fc17f6c3",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "codex/apple-silicon-native-default-20261113",
+        "commit": "c6e81947b105c6cd0b8797620ce1f3e8cb9a9e75",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "codex/godot-4-8-beta2",
+        "commit": "14a43859f8922c412d3dbd728a8ff56648e7fcd3",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "codex/m1-native-validation-20261106",
+        "commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "codex/tools-review-20261107",
+        "commit": "644f4e7370fc4d0cb4efe254b25cebd4ea329b70",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-07T08:30:27-05:00",
+        "head_subject": "fix(debug): preserve state, outputs and diagnostic evidence",
+        "head_changed_path_count": 25
+      },
+      {
+        "branch": "docs/aeris-120-3d-gas-plan-20261115",
+        "commit": "fb779ba1eefa2c879c5a2891ad4c49a2c38ff0ed",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/agent-instructions-audit-2026-11-19",
+        "commit": "b3ba3656259c2f0f40d47470b12420d1a6a28f95",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/clarify-asset-licenses-2026-11-16",
+        "commit": "71df295b572caa97e33cf11de059a07a07c05ff4",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/clearview-import-guide",
+        "commit": "41f35e59d85c741a937cf260e7664457332f28ce",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/glider-soaring-plan-20261115",
+        "commit": "9cfd3aacfd7fa16cf79ca876465e86a2ce78f059",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/graphics-main-reconciliation-2026-11-22",
+        "commit": "a194e96a1808b137b93da35f1b10c3b7980f2412",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Carry residuals under VQ-07h; retain completed bounded fixes.",
+        "commit_date": "2026-11-22T09:31:45-05:00",
+        "head_subject": "VQ-07h-A1/A3/A5/A7: complete graphics implementation handoff",
+        "head_changed_path_count": 2
+      },
+      {
+        "branch": "docs/senior-agent-orchestration",
+        "commit": "0342765a2b3c49828b3d37705c3fee44129dbf38",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/sun-atmosphere-realism-20261115",
+        "commit": "3c9aa2e981b87349ae3c4c2b4b9e4c60917940d0",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "docs/trailer-v2-preproduction-2026-11-21",
+        "commit": "076456452e597cf00f9fca20452f7a2dbe40ef52",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "dt-mac-04n-r1",
+        "commit": "7dbc30243fd1a9efb5e3152be7ea34011100ca85",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/controller-profile-error-reset",
+        "commit": "f7bb3bdb3e7ed7d2287edcb3ac545589ad1c844c",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Targeted draft-error reset exists on planning main; do not import stale branch.",
+        "commit_date": "2026-10-26T12:18:47Z",
+        "head_subject": "Merge remote-tracking branch 'origin/main' into fix/controller-profile-error-reset",
+        "head_changed_path_count": 26
+      },
+      {
+        "branch": "fix/external-project-audit-20261115",
+        "commit": "85faa626be69a11d1c96f9ed9d4c880b97b7bf0f",
+        "review_level": "overview_or_targeted_identity",
+        "disposition": "Completed ledger blob matches main; preserve completed dispositions.",
+        "commit_date": "2026-11-15T13:22:18-05:00",
+        "head_subject": "GP-10b/UI-FS-03: retain A35 verification and renew source-bound fixtures",
+        "head_changed_path_count": 44
+      },
+      {
+        "branch": "fix/fpv-battery-power-2026-11-16",
+        "commit": "4212dbb1ed518fa30fa5e9dd1529507e92105165",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/openrc-platform-download-history",
+        "commit": "61780739ea1a915491068407b58754c9105f8648",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/openrc-release-watch",
+        "commit": "bd3b27c8eced66bc1087c7d9902ab88493ff9973",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/openrc-stats-audit",
+        "commit": "5e35abbfed8f18002dfd854d87df33ffa87cf27e",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/openrc-stats-operator",
+        "commit": "a3a266688e826c694eb2ca8c9d59775859703866",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/openrc-weekly-cards",
+        "commit": "2a51d26764d87a915acbbe0ee2c6cccbcc8a11f9",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "fix/robust-game-bughunt-20261031",
+        "commit": "da4cff78021a59488ffedee7e0b0d5c3e31d1a13",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-10-31T21:23:12Z",
+        "head_subject": "Implement comprehensive tests and fixes for failure profiles, reset publication, retractable gear input, and UI language handling",
+        "head_changed_path_count": 34
+      },
+      {
+        "branch": "gh-pages",
+        "commit": "47eb6745d7771055ddc9482a1537bb40fc839aad",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "graphics-audit",
+        "commit": "0610f99b184386e378dff5190fa741f9c18c99f1",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "guidance/impact-scoped-agent-tests-20261103",
+        "commit": "83a94873552d00d2109037f03d32a78aacb97785",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-03T13:06:22Z",
+        "head_subject": "Update branding and metadata for Beta release",
+        "head_changed_path_count": 46
+      },
+      {
+        "branch": "heli-native-lake",
+        "commit": "ef87c8b1cbfbc05a82df54e92ccac46b0baea71d",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "improve/automatic-graphics-roi-20261121",
+        "commit": "65496b21acf655bf13bc954d3cc15d01db09aef7",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "integrate/branch-recovery-20261106",
+        "commit": "cef56fa3ad517ec7078bd1eae05cb9693d5d34ec",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "integrate/pr1-controls-and-research",
+        "commit": "8bf96b54e5ac60fdc25c30721cb73e6710ee4309",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Historical integration and assertions, not current controls qualification.",
+        "commit_date": "2026-10-26T13:09:03Z",
+        "head_subject": "test(workshop): verify integration with main preview reuse changes",
+        "head_changed_path_count": 4
+      },
+      {
+        "branch": "main",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "review_level": "baseline",
+        "disposition": "Pinned planning source or existing audit evidence baseline.",
+        "commit_date": "2026-11-22T11:44:03-05:00",
+        "head_subject": "Merge branch 'main' of https://github.com/bultodepapas/OpenRCsimulator",
+        "head_changed_path_count": 28
+      },
+      {
+        "branch": "perf/bounded-memory-reuse-2026-11-07",
+        "commit": "7171aef8111aa7005267d3eb2bff64caa311ffdb",
+        "review_level": "overview_or_targeted_identity",
+        "disposition": "Selected source identity comparison; parked ORM implementation already matches main, no new performance claim.",
+        "commit_date": "2026-11-07T08:55:35-05:00",
+        "head_subject": "perf(memory): bound circuit mesh reuse and share parked ORM reads",
+        "head_changed_path_count": 6
+      },
+      {
+        "branch": "perf/engine-efficiency-20261024",
+        "commit": "2a1f9d410096642af14be2fdb5fdeee50d4e8b4d",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "perf/stutter-diagnostics-2026-11-17",
+        "commit": "6116c77e38d61892e3c70c7bcc409e9df46df2d2",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-19T12:55:01-05:00",
+        "head_subject": "feat(debug): expose sustained slowdowns across existing reports",
+        "head_changed_path_count": 16
+      },
+      {
+        "branch": "perf/three-aircraft-performance-cycle-2026-11-20",
+        "commit": "7a403ea059830913192696138020fd78ec458820",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-21T07:16:10-05:00",
+        "head_subject": "fix(godtest): harden measurement and full-campaign admission",
+        "head_changed_path_count": 29
+      },
+      {
+        "branch": "plan/flight-simulator-aircraft-import-2026-11-16",
+        "commit": "0e8bdd0361e134533d880f967113c8ba137daff0",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Retain source/visual/physical identity separation; reconcile older claims with current resolver.",
+        "commit_date": "2026-11-18T20:21:05-05:00",
+        "head_subject": "research(phoenix): add bounded bulk ZIP census and ClearView reuse audit",
+        "head_changed_path_count": 5
+      },
+      {
+        "branch": "plan/multiplayer-zero-budget-2026-11-15",
+        "commit": "2f656ebf66c450d48cdb1db5e1b3930529f25343",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "plan/photorealistic-flying-sites-2026-11-18",
+        "commit": "7339bcc966bd7311d82bb6e49204f10517d21e80",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "plan/radio-display-edgetx-2026-11-18",
+        "commit": "2e4b6bc06f0519d1ca09afb2d02eba7b4ab0965f",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Branch-local display/spike candidate; share existing authorities and keep route/hardware gates.",
+        "commit_date": "2026-11-19T14:27:55-05:00",
+        "head_subject": "Add radio catalog, simulated LCD readings and EdgeTX observation host",
+        "head_changed_path_count": 38
+      },
+      {
+        "branch": "plan/sponsor-decal-workshop-2026-11-18",
+        "commit": "6ac2f0955aba3420d5c5d04c3e9ea1e9f7ac51f1",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "plan/universal-fpv-gimbal-2026-11-22",
+        "commit": "39420ee71939ba225919ce37ab246809889d4637",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Proposed shared input/presentation/lifecycle consumers, not main implementation.",
+        "commit_date": "2026-11-22T11:42:17-05:00",
+        "head_subject": "CAM-FPV-00b: integrate code research from 20 GitHub repositories",
+        "head_changed_path_count": 4
+      },
+      {
+        "branch": "plan/vehicle-runtime-consolidation-2026-11-21",
+        "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Initial proposal superseded by refined controls delivery.",
+        "commit_date": "2026-11-21T07:45:38-05:00",
+        "head_subject": "docs(vrc): render proposed architecture as a fenced diagram",
+        "head_changed_path_count": 1
+      },
+      {
+        "branch": "plan/vehicle-selector-performance-2026-11-17",
+        "commit": "add7ddaeaa47c333ca15fa79d5edb25bbb8778e1",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Proposed metadata/selection/preparation/launch contracts; separate U04 parity from accepted-intent behavior.",
+        "commit_date": "2026-11-17T21:26:25-05:00",
+        "head_subject": "docs: deepen vehicle selector audit with fourteen code findings",
+        "head_changed_path_count": 9
+      },
+      {
+        "branch": "plan/workshop-aircraft-attachments-2026-11-19",
+        "commit": "6ee8857cec7ebb4cba8c8604d8b7158bca9578b5",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Branch-local internal increment; coordinate presentation/proof versions and strict flight admission.",
+        "commit_date": "2026-11-19T21:20:27-05:00",
+        "head_subject": "Merge main and refresh attachment validation evidence",
+        "head_changed_path_count": 44
+      },
+      {
+        "branch": "ray-tracing",
+        "commit": "47468d9cca1ea22b49569f99aea8a2fb66e00bd6",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "release-check/v0.3.3-d11g",
+        "commit": "69e96093a6a3f558ade881ebf32d7b8890c4f103",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "release-check/v0.3.3-windows",
+        "commit": "375e387a2cd30605b7c5c98ddd8259732e548aa9",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "release/v0.1.0",
+        "commit": "0a631b52242cdc5c243668865d4bed3d1e22aa98",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "release/v0.1.1",
+        "commit": "7302c57242904b014a79084b66011370794a080c",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "release/v0.1.7",
+        "commit": "98d98522aad4aeb33148bdd1c20db0ce5275a0ec",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "research/agent-storage-lifecycle-2026-11-15",
+        "commit": "066b57097f539c6800315c915d1ee29469902bd2",
+        "review_level": "metadata_only",
+        "disposition": "Head metadata/path inventory inspected; no new behavior or qualification claim adopted.",
+        "commit_date": "2026-11-15T12:59:47-05:00",
+        "head_subject": "STOR-00/01: research agent storage and add bounded inspection",
+        "head_changed_path_count": 19
+      },
+      {
+        "branch": "research/edf-propulsion-2026-11-21",
+        "commit": "aaa219960a47eb173a5358b770c3912d570a6647",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "research/github-updates-20261117",
+        "commit": "048e85ede5b660db3a3a905c90db082b9a418e0b",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "research/handheld-controller-automation-2026-11-20",
+        "commit": "a8304a897bb5d6f0500e8e2c9090fa29f1a126d0",
+        "review_level": "reports_and_targeted_source",
+        "disposition": "Proposed provider/compatibility contract; retain existing D6/family ownership.",
+        "commit_date": "2026-11-20T14:12:09-05:00",
+        "head_subject": "docs(D6-HH-00): strengthen handheld plan with 20 studies",
+        "head_changed_path_count": 9
+      },
+      {
+        "branch": "research/jet-afterburner-2026-11-15",
+        "commit": "324416ebbdba0e0246324a951a4331d135054c73",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      },
+      {
+        "branch": "setup/coderabbit-oss-review",
+        "commit": "8a67da2845383cded6fd754e881f27325d9bb35b",
+        "review_level": "not_selected",
+        "disposition": "Not selected for detailed branch comparison in this consolidation pass."
+      }
+    ],
+    "refined_controls_artifacts_identical": [
+      {
+        "path": "docs/plans/vehicle-runtime-consolidation.md",
+        "shared_blob": "a72ca314c1fa019fae09929f08e9edaa49024cd6"
+      },
+      {
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/CONTROL-CONTRACT.md",
+        "shared_blob": "9bffdcdad2ac9a4e1ddfcd8ffa8f243b12f01b3c"
+      },
+      {
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/CONTROL-ACCEPTANCE.md",
+        "shared_blob": "f6f885f3dc5ccc61aec4b18dd6ba75e9934e45c5"
+      },
+      {
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md",
+        "shared_blob": "46db8c263b343557ad79c8a7862cb52550f59390"
+      }
+    ],
+    "retained_control_cases": {
+      "path": "docs/research/vehicle-system-unification-2026-11-22-control-cases.json",
+      "source_commit": "3095afd95220232e8e659d53635acab5104ee94c",
+      "source_path": "docs/research/vehicle-runtime-consolidation-2026-11-21/control-cases.json",
+      "sha256": "1d520aca1d7a536f0956a7a6c094344f28d128ee7e3ec55003917c489e92fc03",
+      "bytes": 54594,
+      "cases": 40,
+      "execution_status": "all UNRUN",
+      "byte_identical_to_source": true
+    },
+    "carried_audit_finding_ids": [
+      "U01",
+      "U02",
+      "U03",
+      "U04",
+      "U05",
+      "U06",
+      "U07",
+      "U08",
+      "U09",
+      "U10",
+      "R01",
+      "R02",
+      "R03",
+      "R04",
+      "R05",
+      "R06",
+      "R07",
+      "R08",
+      "R09",
+      "R10",
+      "R11",
+      "R12",
+      "R13",
+      "R14",
+      "R15",
+      "R16",
+      "R17"
+    ],
+    "vrc_step_ids": [
+      "VRC-00",
+      "VRC-01",
+      "VRC-02",
+      "VRC-03",
+      "VRC-04",
+      "VRC-05",
+      "VRC-06",
+      "VRC-07",
+      "VRC-08",
+      "VRC-09",
+      "VRC-10",
+      "VRC-11"
+    ],
+    "vrc_implementation_status": "all open",
+    "current_source_drift": {
+      "previous_baseline": "7940a4081e10994f34c858c4acac3d7a1a271464",
+      "current_main": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+      "cited_files": 156,
+      "unchanged_cited_files": 155,
+      "changed_cited_files": [
+        {
+          "path": "tools/godtest/runner.py",
+          "previous_blob": "0cbba105709e2b8030f4e60b525d63bb656b04aa",
+          "current_blob": "a7b5df903b0bfa4f7222cdc7069309ce99756bed"
+        }
+      ],
+      "previous_app_tree": "fe6fdf080899707fab1a1dd4118a32481bca5e4c",
+      "current_app_tree": "1fd33c6016fd0f6b117c3736b26f4c134808d08b"
+    },
+    "owner_path_comparisons": [
+      {
+        "branch_commit": "a92598fd5c69bde3b9e4edcd5267a0be2e3ba91a",
+        "path": "docs/research/drone-racing/audit-2026-11-16/README.md",
+        "main_exists": true,
+        "same_blob": false,
+        "branch_blob": "cdab18f834c681bedcf7ee9b8ac70ad1d55689af",
+        "main_blob": "36c18945be33da8889393659f60754954be9bec2"
+      },
+      {
+        "branch_commit": "a92598fd5c69bde3b9e4edcd5267a0be2e3ba91a",
+        "path": "docs/plans/drone-racing.md",
+        "main_exists": true,
+        "same_blob": false,
+        "branch_blob": "df2e06f5ae094e90a44f05446ccd0806ceaebb81",
+        "main_blob": "8bcf5ec31edaa0c7c00a360a8d19eee081445d38"
+      },
+      {
+        "branch_commit": "8fdb1be6727e0620cdf04df303f3cff4454d6743",
+        "path": "docs/plans/crash-realism.md",
+        "main_exists": true,
+        "same_blob": false,
+        "branch_blob": "c856bd9862ddef0672ce97ede4b8aca559aa5af6",
+        "main_blob": "be37b8a3001b0cc24b4afcfde4faef73477f617d"
+      },
+      {
+        "branch_commit": "efc93d079fe856fb727f4f7ca7faac9f9f5d56bc",
+        "path": "docs/plans/aircraft-import-closeout.md",
+        "main_exists": false,
+        "same_blob": false,
+        "branch_blob": "b2c346203ed0f6b95bd8654cb4441a4f87d66df8",
+        "main_blob": null
+      },
+      {
+        "branch_commit": "efc93d079fe856fb727f4f7ca7faac9f9f5d56bc",
+        "path": "docs/plans/aircraft-import-implementation.md",
+        "main_exists": false,
+        "same_blob": false,
+        "branch_blob": "85139d45e30b271c8709a69a9e3f623ebb3ac604",
+        "main_blob": null
+      },
+      {
+        "branch_commit": "7171aef8111aa7005267d3eb2bff64caa311ffdb",
+        "path": "app/vehicles/ground/airfield_track_view.gd",
+        "main_exists": true,
+        "same_blob": false,
+        "branch_blob": "6bfd42e50b0508053447aeebdacbb826e2b52d60",
+        "main_blob": "6787529eeb5be72dd3e206e551c7a9481441ca0f"
+      },
+      {
+        "branch_commit": "7171aef8111aa7005267d3eb2bff64caa311ffdb",
+        "path": "app/scenery/parked_aircraft.gd",
+        "main_exists": true,
+        "same_blob": true,
+        "branch_blob": "d33a67878134b4775e2a0d51fae9b179cda19246",
+        "main_blob": "d33a67878134b4775e2a0d51fae9b179cda19246"
+      },
+      {
+        "branch_commit": "4b4a9fe24b8603f54bb94a4a2e772498cc3979b7",
+        "path": "docs/plans/mcp-queue-resilience.md",
+        "main_exists": true,
+        "same_blob": false,
+        "branch_blob": "10eb2c51772dd083ef76f347537b2135f044981f",
+        "main_blob": "0f1f64fe0c1692389790cb9764da4a2b6107423b"
+      },
+      {
+        "branch_commit": "85faa626be69a11d1c96f9ed9d4c880b97b7bf0f",
+        "path": "external Audits/COMPLETED-AUDIT-WORK.md",
+        "main_exists": true,
+        "same_blob": true,
+        "branch_blob": "7f0f395e9914cb0d81e4067585de9f785e407d4b",
+        "main_blob": "7f0f395e9914cb0d81e4067585de9f785e407d4b"
+      }
+    ],
+    "source_references": [
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/09d6fc6b716a714b85d4b04f5f40363cc49d140c/docs/research/project-audit-2026-11-21/README.md",
+        "commit": "09d6fc6b716a714b85d4b04f5f40363cc49d140c",
+        "path": "docs/research/project-audit-2026-11-21/README.md",
+        "anchor": "",
+        "blob": "566f293db7a59ae62e48bce8828049a52a067cdd",
+        "sha256": "91b891b5ad003f2f411e1511fbb4b0c1fcb4b4c0b014966f65e494cbd2fb98de",
+        "bytes": 36970,
+        "lines": 214
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/09d6fc6b716a714b85d4b04f5f40363cc49d140c/docs/research/project-audit-2026-11-21/README.md#L97-L130",
+        "commit": "09d6fc6b716a714b85d4b04f5f40363cc49d140c",
+        "path": "docs/research/project-audit-2026-11-21/README.md",
+        "anchor": "L97-L130",
+        "blob": "566f293db7a59ae62e48bce8828049a52a067cdd",
+        "sha256": "91b891b5ad003f2f411e1511fbb4b0c1fcb4b4c0b014966f65e494cbd2fb98de",
+        "bytes": 36970,
+        "lines": 214
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/09d6fc6b716a714b85d4b04f5f40363cc49d140c/docs/research/project-audit-2026-11-21/ninth-pass-cars-2026-11-22.md",
+        "commit": "09d6fc6b716a714b85d4b04f5f40363cc49d140c",
+        "path": "docs/research/project-audit-2026-11-21/ninth-pass-cars-2026-11-22.md",
+        "anchor": "",
+        "blob": "54984761ea5464c23be9d39e7263467dbb2cec50",
+        "sha256": "e4cdcf7bca7b7b9ec6a1fde31d46710b05550c8449271061754d6a785993077f",
+        "bytes": 32074,
+        "lines": 223
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0f859b5f358f4807877ec8bd7fe8009bc3856d3f/research/telemetry/reference.py#L18-L43",
+        "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "path": "research/telemetry/reference.py",
+        "anchor": "L18-L43",
+        "blob": "c3d97ad6fbb855894cae5e354b51eb938d7c9a64",
+        "sha256": "2c59681e42a25c6fad73f4d5a3a0827125ca9ff0066ef7bea7a9f480f0314466",
+        "bytes": 21547,
+        "lines": 505
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0f859b5f358f4807877ec8bd7fe8009bc3856d3f/services/telemetry/openrc_telemetry/insights.py",
+        "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "path": "services/telemetry/openrc_telemetry/insights.py",
+        "anchor": "",
+        "blob": "b3edf377deb3f921fd8abd19c6bf0695fb4c94bf",
+        "sha256": "16edcc95992472c40827a8a1a303560db2055de49be377be6eb10b2a8dbdadec",
+        "bytes": 18192,
+        "lines": 351
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0f859b5f358f4807877ec8bd7fe8009bc3856d3f/services/telemetry/openrc_telemetry/rollup.py",
+        "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "path": "services/telemetry/openrc_telemetry/rollup.py",
+        "anchor": "",
+        "blob": "91b4d44c55f310b1b5cf774605f6820b55bc2acd",
+        "sha256": "9908427b1b32d50ab33562f4b084d1d245fb65d32b8b338d58839277e862e225",
+        "bytes": 9307,
+        "lines": 192
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0f859b5f358f4807877ec8bd7fe8009bc3856d3f/services/telemetry/tests/test_equivalence.py",
+        "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "path": "services/telemetry/tests/test_equivalence.py",
+        "anchor": "",
+        "blob": "525253963c9029457f29e02365119bb6f6015bdb",
+        "sha256": "e54d4ff284bc3c5b1d86bbea99552bbbfdfb64e48906466410a5a770baf418a8",
+        "bytes": 18147,
+        "lines": 319
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0f859b5f358f4807877ec8bd7fe8009bc3856d3f/tools/telemetry/dashboard.py",
+        "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "path": "tools/telemetry/dashboard.py",
+        "anchor": "",
+        "blob": "abbded6d340727f0387faecb1e3ceb83c04318bf",
+        "sha256": "699e311a1f755984bbda4e68a8ad180aa1ed2bf77c6649aa6486b05fe95d91c5",
+        "bytes": 142100,
+        "lines": 2412
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0f859b5f358f4807877ec8bd7fe8009bc3856d3f/tools/telemetry/deploy/host/check_dashboard_health.py",
+        "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "path": "tools/telemetry/deploy/host/check_dashboard_health.py",
+        "anchor": "",
+        "blob": "3018849f346cf8db3bdab1fb6c2223993193032c",
+        "sha256": "72b4924e2677d2d50fc4a077064e31beb7795172f8ea348b0616764f663e404e",
+        "bytes": 4120,
+        "lines": 86
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/app_root.gd#L1500-L1562",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/app_root.gd",
+        "anchor": "L1500-L1562",
+        "blob": "6eb0621dbc90bed07a83b540d6ec761020216cba",
+        "sha256": "ab6a1cf7939cd2975fb0219f84f7d9f296048a8903fe1ccac232054cff49da6a",
+        "bytes": 262751,
+        "lines": 5372
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/app_root.gd#L3264-L3319",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/app_root.gd",
+        "anchor": "L3264-L3319",
+        "blob": "6eb0621dbc90bed07a83b540d6ec761020216cba",
+        "sha256": "ab6a1cf7939cd2975fb0219f84f7d9f296048a8903fe1ccac232054cff49da6a",
+        "bytes": 262751,
+        "lines": 5372
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/app_root.gd#L3307-L3319",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/app_root.gd",
+        "anchor": "L3307-L3319",
+        "blob": "6eb0621dbc90bed07a83b540d6ec761020216cba",
+        "sha256": "ab6a1cf7939cd2975fb0219f84f7d9f296048a8903fe1ccac232054cff49da6a",
+        "bytes": 262751,
+        "lines": 5372
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/app_root.gd#L910-L1018",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/app_root.gd",
+        "anchor": "L910-L1018",
+        "blob": "6eb0621dbc90bed07a83b540d6ec761020216cba",
+        "sha256": "ab6a1cf7939cd2975fb0219f84f7d9f296048a8903fe1ccac232054cff49da6a",
+        "bytes": 262751,
+        "lines": 5372
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/app_root.gd#L910-L945",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/app_root.gd",
+        "anchor": "L910-L945",
+        "blob": "6eb0621dbc90bed07a83b540d6ec761020216cba",
+        "sha256": "ab6a1cf7939cd2975fb0219f84f7d9f296048a8903fe1ccac232054cff49da6a",
+        "bytes": 262751,
+        "lines": 5372
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/input/controller_profile.gd#L523-L640",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/input/controller_profile.gd",
+        "anchor": "L523-L640",
+        "blob": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+        "sha256": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+        "bytes": 42962,
+        "lines": 819
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/input/multirotor_input.gd#L233-L251",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/input/multirotor_input.gd",
+        "anchor": "L233-L251",
+        "blob": "4fee704620e3613a9057d23f2b2cd99dacbbe807",
+        "sha256": "3a2b50feede35908f2f5a69f42ec66a008b2cf2277b6a409526bac5c129e5d6f",
+        "bytes": 31035,
+        "lines": 684
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/input/rc_calibration.gd#L327-L374",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/input/rc_calibration.gd",
+        "anchor": "L327-L374",
+        "blob": "cff43fff3bf968442c74e7da69c1b6a01068be1e",
+        "sha256": "7b424b39e986c2105e6085afacf1c087fe6d2809702fa5be48dada847b9e49d4",
+        "bytes": 18656,
+        "lines": 445
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/physics/multirotor/rates.gd#L39-L48",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/physics/multirotor/rates.gd",
+        "anchor": "L39-L48",
+        "blob": "22383080681066891dcd12bc782d1c31f53759f8",
+        "sha256": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc",
+        "bytes": 25526,
+        "lines": 549
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/render/overlays/overlay_manager.gd#L593-L629",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/render/overlays/overlay_manager.gd",
+        "anchor": "L593-L629",
+        "blob": "48091191461040538d367ef2433399958bb4b3f7",
+        "sha256": "314c714284d3c3d931e72dd655cd7cca4e3a0c6fc5e42744d80a3970e9a5e1f8",
+        "bytes": 30693,
+        "lines": 678
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/sim/ground_vehicle/session.gd#L471-L558",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/sim/ground_vehicle/session.gd",
+        "anchor": "L471-L558",
+        "blob": "fa3f872ee54beb76679b5cb2be51dbfe158ea864",
+        "sha256": "5c5bb7c85eff37e1268e43b68e8b3da1206589eb6e1a094885a8177f32d314fe",
+        "bytes": 97356,
+        "lines": 2261
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/sim/ground_vehicle/session.gd#L515-L558",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/sim/ground_vehicle/session.gd",
+        "anchor": "L515-L558",
+        "blob": "fa3f872ee54beb76679b5cb2be51dbfe158ea864",
+        "sha256": "5c5bb7c85eff37e1268e43b68e8b3da1206589eb6e1a094885a8177f32d314fe",
+        "bytes": 97356,
+        "lines": 2261
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/ui/controller_setup.gd#L2482-L2497",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/ui/controller_setup.gd",
+        "anchor": "L2482-L2497",
+        "blob": "cda91b232e507b8fdf7c79dc7a95d9cf183059b2",
+        "sha256": "019dbd765ce780bb56e69ab5ce541fb1ec1fefe5a57de3385dab35cff010a746",
+        "bytes": 288812,
+        "lines": 6074
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/vehicles/airship/airship_scene.gd#L384-L608",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/vehicles/airship/airship_scene.gd",
+        "anchor": "L384-L608",
+        "blob": "e7b947e71c8d759efab9363807ace3e65c0e892d",
+        "sha256": "e6c171d5f454d102a56f34fa7154395a8faa81aa5efc857b52c6c7e916194745",
+        "bytes": 37526,
+        "lines": 923
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/vehicles/airship/airship_scene.gd#L922-L923",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/vehicles/airship/airship_scene.gd",
+        "anchor": "L922-L923",
+        "blob": "e7b947e71c8d759efab9363807ace3e65c0e892d",
+        "sha256": "e6c171d5f454d102a56f34fa7154395a8faa81aa5efc857b52c6c7e916194745",
+        "bytes": 37526,
+        "lines": 923
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/workshop/creator/source_resolver.gd#L119-L210",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/workshop/creator/source_resolver.gd",
+        "anchor": "L119-L210",
+        "blob": "bad855b2d0f9ba58e0e6843fc6273b2ebe81fcc9",
+        "sha256": "fd67fe5906ebfbec7ee01b146c882ec0510cc711e413e191c765d77c3bd54b79",
+        "bytes": 10295,
+        "lines": 237
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/app/workshop/creator/source_resolver.gd#L188-L210",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "app/workshop/creator/source_resolver.gd",
+        "anchor": "L188-L210",
+        "blob": "bad855b2d0f9ba58e0e6843fc6273b2ebe81fcc9",
+        "sha256": "fd67fe5906ebfbec7ee01b146c882ec0510cc711e413e191c765d77c3bd54b79",
+        "bytes": 10295,
+        "lines": 237
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/docs/plans/drone-racing.md#165-repair-status-2026-11-17",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "docs/plans/drone-racing.md",
+        "anchor": "165-repair-status-2026-11-17",
+        "blob": "8bcf5ec31edaa0c7c00a360a8d19eee081445d38",
+        "sha256": "a34818dd206fd53186b32a8c63a54251169aeda6d2628ebb2581a5c2d325bc21",
+        "bytes": 90183,
+        "lines": 665
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/docs/plans/telemetry.md",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "docs/plans/telemetry.md",
+        "anchor": "",
+        "blob": "f0edf6fa2cd386f97088b4d48efe004cec21d5de",
+        "sha256": "76303b4bfcfc965e8642fab84c374f3879509390d8e08e9e27957ec8d0a99b9b",
+        "bytes": 39389,
+        "lines": 187
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/docs/research/telemetry/TELEM-AUDIT-2026-11-22/README.md",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "docs/research/telemetry/TELEM-AUDIT-2026-11-22/README.md",
+        "anchor": "",
+        "blob": "ad1d219783fddd8f33cbdb3a2944a4190bf4ad41",
+        "sha256": "8c97c8f8a75de2fcb1e9fad714da90bc52dabc569066924d4839b4c01b21c286",
+        "bytes": 9791,
+        "lines": 73
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2bfb4dc7b6176a643a0a31d020a5c9f75571a024/docs/research/telemetry/TELEM-AUDIT-2026-11-22/scope-and-remediation.md",
+        "commit": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+        "path": "docs/research/telemetry/TELEM-AUDIT-2026-11-22/scope-and-remediation.md",
+        "anchor": "",
+        "blob": "0898da6eaefd23b74b91e479978f314fbb1119e6",
+        "sha256": "1c3f4b3c69e5d2f0b9f0b2102575bf13a429ce631d27f4c6a076222b9f8c0aa1",
+        "bytes": 13787,
+        "lines": 97
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2e4b6bc06f0519d1ca09afb2d02eba7b4ab0965f/docs/plans/radio-display-edgetx.md",
+        "commit": "2e4b6bc06f0519d1ca09afb2d02eba7b4ab0965f",
+        "path": "docs/plans/radio-display-edgetx.md",
+        "anchor": "",
+        "blob": "cc5eb5ccf8898852331cf296afbebc9f97412ed1",
+        "sha256": "aa368430afef63ecf5b186f8454f7d3ffca07f78d9707bdd36216b15f13dce98",
+        "bytes": 17703,
+        "lines": 272
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/2e812ef2b8184733f7dd45b7bfd50e119c5ae82c/docs/research/vehicle-runtime-consolidation-2026-11-21/EXTERNAL-AUDIT.md",
+        "commit": "2e812ef2b8184733f7dd45b7bfd50e119c5ae82c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/EXTERNAL-AUDIT.md",
+        "anchor": "",
+        "blob": "12e0dd7c56c04f5a7d395030beb339de69b5ff83",
+        "sha256": "7aa1908f7433c0832761057d9855df25ce3ec7e37bff0cb9ade82ca26d02b74d",
+        "bytes": 21405,
+        "lines": 105
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/game-controls-audit-2026-11-21/AUDIT.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/game-controls-audit-2026-11-21/AUDIT.md",
+        "anchor": "",
+        "blob": "d241093eca5f06d09d6e15d7dc05d22db0599fab",
+        "sha256": "06b1de26c58fe6d3b9b25b39f3fb7aa2f1b65c174943b1c3e93a8bc378595b76",
+        "bytes": 33254,
+        "lines": 460
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/game-controls-audit-2026-11-21/README.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/game-controls-audit-2026-11-21/README.md",
+        "anchor": "",
+        "blob": "8ec064b8cde77345f791e33df085166fddec912b",
+        "sha256": "2f1c8822823a41d95e6f006eab1e5cf91f1df5ffb3b469cb95e30d21633baf57",
+        "bytes": 4325,
+        "lines": 56
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/CONTROL-ACCEPTANCE.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/CONTROL-ACCEPTANCE.md",
+        "anchor": "",
+        "blob": "f6f885f3dc5ccc61aec4b18dd6ba75e9934e45c5",
+        "sha256": "d1c9f150bf8f77129d603982bb2eb0e7fb91808eff4d4e0cd20441ca299e0cb5",
+        "bytes": 59016,
+        "lines": 418
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/CONTROL-CONTRACT.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/CONTROL-CONTRACT.md",
+        "anchor": "",
+        "blob": "9bffdcdad2ac9a4e1ddfcd8ffa8f243b12f01b3c",
+        "sha256": "d4c609b021c5e0abaaf38b2d03ca7fcaf2de38d1a67a33a27033dc809480278f",
+        "bytes": 18578,
+        "lines": 107
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md",
+        "anchor": "",
+        "blob": "46db8c263b343557ad79c8a7862cb52550f59390",
+        "sha256": "7559169f52def2089c7802c2e7c47c6d51bd2ac404eefb67304020ae94890953",
+        "bytes": 47832,
+        "lines": 266
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md#3-first-consumer-fixed-wing-pausemenu",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md",
+        "anchor": "3-first-consumer-fixed-wing-pausemenu",
+        "blob": "46db8c263b343557ad79c8a7862cb52550f59390",
+        "sha256": "7559169f52def2089c7802c2e7c47c6d51bd2ac404eefb67304020ae94890953",
+        "bytes": 47832,
+        "lines": 266
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md#5-one-persistence-authority-with-explicit-failure-outcomes",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/IMPLEMENTATION-BLUEPRINT.md",
+        "anchor": "5-one-persistence-authority-with-explicit-failure-outcomes",
+        "blob": "46db8c263b343557ad79c8a7862cb52550f59390",
+        "sha256": "7559169f52def2089c7802c2e7c47c6d51bd2ac404eefb67304020ae94890953",
+        "bytes": 47832,
+        "lines": 266
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/MIGRATION-MATRIX.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/MIGRATION-MATRIX.md",
+        "anchor": "",
+        "blob": "81202aee4fdae157c73b1ed7de951282e90ccc1b",
+        "sha256": "5f51429b97c948c5310649e9e4bd6f3a93cea4d12cd65172862c05bfdc824d4f",
+        "bytes": 7717,
+        "lines": 53
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/PRIMARY-SOURCES.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/PRIMARY-SOURCES.md",
+        "anchor": "",
+        "blob": "ad04b75be3ae32f1d2bae17d7eaf8ba8c6bfa93e",
+        "sha256": "5a3be0476b3a734fe1d57bd19d5e626d55a4ee143dcc11ccae4d3fb6a69cab86",
+        "bytes": 9537,
+        "lines": 47
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q0-baseline-and-test-admission",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "q0-baseline-and-test-admission",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q1-controls-and-transition-contract",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "q1-controls-and-transition-contract",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q2-state-replay-and-lifetime",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "q2-state-replay-and-lifetime",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q3-player-flow-and-device-qualification",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "q3-player-flow-and-device-qualification",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q4-response-and-performance",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "q4-response-and-performance",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q5-promotion-and-rollback",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+        "anchor": "q5-promotion-and-rollback",
+        "blob": "a517873dc456a303e6ce6d17f26fdc705e97d022",
+        "sha256": "6a44e45de47f70359353a6c6fca23099b838e4dcf865906edcc609fd773b2eb2",
+        "bytes": 18345,
+        "lines": 128
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/SOURCE-INVENTORY.md",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/SOURCE-INVENTORY.md",
+        "anchor": "",
+        "blob": "6d8d5fbbb44acc5345f07cf9ebaef8a315952c4a",
+        "sha256": "342c088087d3accafe86739b6c279207edc1e1bd0bb192195ed238d2f2de7e1e",
+        "bytes": 7068,
+        "lines": 46
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/action-consumers.json",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/action-consumers.json",
+        "anchor": "",
+        "blob": "d258d0be128172e44395d7ebf796205e6e03a3e8",
+        "sha256": "5ef344e3e5f1b7a24f0fe08cd43d516def75e1122918700368112678202b3ea1",
+        "bytes": 13315,
+        "lines": 417
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/organization-map.json",
+        "commit": "3095afd95220232e8e659d53635acab5104ee94c",
+        "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/organization-map.json",
+        "anchor": "",
+        "blob": "0793009831ec874bebfeacd7abed47474e5f6bfa",
+        "sha256": "3d1003dd2543804ea10b61bbf9044999d96ea3bb6085695af827433dfc2e4778",
+        "bytes": 53506,
+        "lines": 1298
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/39420ee71939ba225919ce37ab246809889d4637/docs/plans/universal-fpv.md",
+        "commit": "39420ee71939ba225919ce37ab246809889d4637",
+        "path": "docs/plans/universal-fpv.md",
+        "anchor": "",
+        "blob": "bcce5ba5ccf3430cfbe49d2ddc023d3577a7707e",
+        "sha256": "a990281bb4f36329fde15a5766dc6fdecc6595783ee21fbb9f19888f04d6192a",
+        "bytes": 55035,
+        "lines": 339
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/39420ee71939ba225919ce37ab246809889d4637/docs/plans/universal-fpv.md#L95-L118",
+        "commit": "39420ee71939ba225919ce37ab246809889d4637",
+        "path": "docs/plans/universal-fpv.md",
+        "anchor": "L95-L118",
+        "blob": "bcce5ba5ccf3430cfbe49d2ddc023d3577a7707e",
+        "sha256": "a990281bb4f36329fde15a5766dc6fdecc6595783ee21fbb9f19888f04d6192a",
+        "bytes": 55035,
+        "lines": 339
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3967f0020145821ea12c357b2f64745aff1a1a7b/docs/research/performance-audit-2026-11-19/round-2.md",
+        "commit": "3967f0020145821ea12c357b2f64745aff1a1a7b",
+        "path": "docs/research/performance-audit-2026-11-19/round-2.md",
+        "anchor": "",
+        "blob": "f322c59a77a483f465421cb60dce7d0abb57eeb5",
+        "sha256": "b378487d7a14d0eb53400ca3bdbf1cc16cf4ac5c43ac44e672023b9f2be9057b",
+        "bytes": 46492,
+        "lines": 319
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3967f0020145821ea12c357b2f64745aff1a1a7b/docs/research/performance-audit-2026-11-19/round-3.md",
+        "commit": "3967f0020145821ea12c357b2f64745aff1a1a7b",
+        "path": "docs/research/performance-audit-2026-11-19/round-3.md",
+        "anchor": "",
+        "blob": "edf0eb7b6293b210ed09256a73b62cd9760694fa",
+        "sha256": "203052a13c3439d8610d77852b72db991233e5ccebac6c8fe5a8f79dda43f783",
+        "bytes": 43182,
+        "lines": 290
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3967f0020145821ea12c357b2f64745aff1a1a7b/docs/research/performance-audit-2026-11-19/round-3.md#L163-L182",
+        "commit": "3967f0020145821ea12c357b2f64745aff1a1a7b",
+        "path": "docs/research/performance-audit-2026-11-19/round-3.md",
+        "anchor": "L163-L182",
+        "blob": "edf0eb7b6293b210ed09256a73b62cd9760694fa",
+        "sha256": "203052a13c3439d8610d77852b72db991233e5ccebac6c8fe5a8f79dda43f783",
+        "bytes": 43182,
+        "lines": 290
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/3967f0020145821ea12c357b2f64745aff1a1a7b/docs/research/performance-audit-2026-11-19/round-3.md#L40-L80",
+        "commit": "3967f0020145821ea12c357b2f64745aff1a1a7b",
+        "path": "docs/research/performance-audit-2026-11-19/round-3.md",
+        "anchor": "L40-L80",
+        "blob": "edf0eb7b6293b210ed09256a73b62cd9760694fa",
+        "sha256": "203052a13c3439d8610d77852b72db991233e5ccebac6c8fe5a8f79dda43f783",
+        "bytes": 43182,
+        "lines": 290
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/542d92b304fc3b82678c4a90b848a88d82df0b22/docs/plans/vehicle-runtime-consolidation.md",
+        "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+        "path": "docs/plans/vehicle-runtime-consolidation.md",
+        "anchor": "",
+        "blob": "72146f32961d82213aecb4b34a4db93bd555a7e5",
+        "sha256": "dbb0b5f0e6698c77b7f1ce6bb4f577e203477d09cd776996a01e02a50c120338",
+        "bytes": 17506,
+        "lines": 129
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/6ee8857cec7ebb4cba8c8604d8b7158bca9578b5/docs/plans/workshop-aircraft-attachments.md",
+        "commit": "6ee8857cec7ebb4cba8c8604d8b7158bca9578b5",
+        "path": "docs/plans/workshop-aircraft-attachments.md",
+        "anchor": "",
+        "blob": "142c06a2fb44a419db5783e86a004a1cf616eb00",
+        "sha256": "68a9994f99f266091141272b9f15738a1fa47658c5c4c7467446f78477232818",
+        "bytes": 51551,
+        "lines": 518
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/6ee8857cec7ebb4cba8c8604d8b7158bca9578b5/docs/plans/workshop-aircraft-attachments.md#L248-L280",
+        "commit": "6ee8857cec7ebb4cba8c8604d8b7158bca9578b5",
+        "path": "docs/plans/workshop-aircraft-attachments.md",
+        "anchor": "L248-L280",
+        "blob": "142c06a2fb44a419db5783e86a004a1cf616eb00",
+        "sha256": "68a9994f99f266091141272b9f15738a1fa47658c5c4c7467446f78477232818",
+        "bytes": 51551,
+        "lines": 518
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/sim/airship/flight_log.gd#L277-L351",
+        "commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+        "path": "app/sim/airship/flight_log.gd",
+        "anchor": "L277-L351",
+        "blob": "d6e070e78c859b0a18563f50234c00172e78bf7a",
+        "sha256": "adf991b551f42ae867f99c30fa3eab12c0d1988f7109cd479be6cf53b1ecc1c1",
+        "bytes": 14456,
+        "lines": 351
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/app/sim/flight_log.gd#L425-L501",
+        "commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+        "path": "app/sim/flight_log.gd",
+        "anchor": "L425-L501",
+        "blob": "efc778b4fffc89a236591500636df0933b70ae90",
+        "sha256": "42e98ae1cde5054a18a944a1aa411bcd0bdd8bc8a90fff1c045ecdfd43cb6fe6",
+        "bytes": 22076,
+        "lines": 501
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/a194e96a1808b137b93da35f1b10c3b7980f2412/docs/research/visual-quality-implementation/VQ-07/automatic-graphics-main-review-2026-11-22.md",
+        "commit": "a194e96a1808b137b93da35f1b10c3b7980f2412",
+        "path": "docs/research/visual-quality-implementation/VQ-07/automatic-graphics-main-review-2026-11-22.md",
+        "anchor": "",
+        "blob": "1e1dc4bda479a10bb0bf59b6b5bbf3acd51c69b3",
+        "sha256": "0e5ae350f5ff8a1c598556a779f95af192134043df42c73712c07cbdbdc09e55",
+        "bytes": 38650,
+        "lines": 214
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/a8304a897bb5d6f0500e8e2c9090fa29f1a126d0/docs/plans/handheld-controller-automation.md",
+        "commit": "a8304a897bb5d6f0500e8e2c9090fa29f1a126d0",
+        "path": "docs/plans/handheld-controller-automation.md",
+        "anchor": "",
+        "blob": "18362069d27d48cca96bc37e8f8cd89fa2b0cf6b",
+        "sha256": "11b95f1b61f144b35cec23aaab3fc6cd4444d344a05bb9817125db4c479484f1",
+        "bytes": 44460,
+        "lines": 232
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/add7ddaeaa47c333ca15fa79d5edb25bbb8778e1/docs/plans/vehicle-selection-performance.md",
+        "commit": "add7ddaeaa47c333ca15fa79d5edb25bbb8778e1",
+        "path": "docs/plans/vehicle-selection-performance.md",
+        "anchor": "",
+        "blob": "057f755e6296cff6d47d004b864c8844a875c9fa",
+        "sha256": "210a72f98bc0f88d04ad3464c42be2740c90c31426f1557c553b1c7edc566a75",
+        "bytes": 46074,
+        "lines": 268
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/add7ddaeaa47c333ca15fa79d5edb25bbb8778e1/docs/plans/vehicle-selection-performance.md#L48-L58",
+        "commit": "add7ddaeaa47c333ca15fa79d5edb25bbb8778e1",
+        "path": "docs/plans/vehicle-selection-performance.md",
+        "anchor": "L48-L58",
+        "blob": "057f755e6296cff6d47d004b864c8844a875c9fa",
+        "sha256": "210a72f98bc0f88d04ad3464c42be2740c90c31426f1557c553b1c7edc566a75",
+        "bytes": 46074,
+        "lines": 268
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/add7ddaeaa47c333ca15fa79d5edb25bbb8778e1/docs/plans/vehicle-selection-performance.md#L75-L96",
+        "commit": "add7ddaeaa47c333ca15fa79d5edb25bbb8778e1",
+        "path": "docs/plans/vehicle-selection-performance.md",
+        "anchor": "L75-L96",
+        "blob": "057f755e6296cff6d47d004b864c8844a875c9fa",
+        "sha256": "210a72f98bc0f88d04ad3464c42be2740c90c31426f1557c553b1c7edc566a75",
+        "bytes": 46074,
+        "lines": 268
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/cf939b82922ea3ae93e2293d67361640fc476e35/docs/research/god-test/2026-11-22-main-audit.md",
+        "commit": "cf939b82922ea3ae93e2293d67361640fc476e35",
+        "path": "docs/research/god-test/2026-11-22-main-audit.md",
+        "anchor": "",
+        "blob": "8fe007c4a8988c42419ea404699dae75ed779ad3",
+        "sha256": "3ea732a6e982bb2aa955f2a68d79936dd67f6d0ecd24a271916c8688b58796e3",
+        "bytes": 37809,
+        "lines": 515
+      },
+      {
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/efc93d079fe856fb727f4f7ca7faac9f9f5d56bc/docs/plans/aircraft-import-closeout.md",
+        "commit": "efc93d079fe856fb727f4f7ca7faac9f9f5d56bc",
+        "path": "docs/plans/aircraft-import-closeout.md",
+        "anchor": "",
+        "blob": "b2c346203ed0f6b95bd8654cb4441a4f87d66df8",
+        "sha256": "6f44f505b785522730eba5b27bda1f19304aa56daf849b69dcb079c117da9c1c",
+        "bytes": 33313,
+        "lines": 158
+      }
+    ],
+    "cross_branch_decisions": [
+      "Use refined controls delivery once; preserve all case definitions and current-source/historical-run distinction.",
+      "Keep explicit entry arguments and exact current U04 timing; UI-VS immutable accepted intent is a separate behavior change.",
+      "Use actual activity input facts for role consumers and coarse telemetry; retain ground driver ownership.",
+      "Reuse narrow accepted presentation projections; ground final publication follows post-kernel checks; analytics remains separate.",
+      "Coordinate existing catalog/import/Workshop version and proof owners; visual/source admission is not flight permission.",
+      "Collapse F37/R2-F02 and F07/VQ-A5 duplicates while retaining family/numerical and workload gates.",
+      "Keep branch-local physics/radio/attachment candidates separate from main and retain completed FPV/performance repairs.",
+      "Repair GOD/TELEM measurement semantics and R16 provenance before affected stronger evidence claims."
+    ],
+    "adversarial_refinements": [
+      "Center gates same-radio applicable launch/recovery including mouse/keyboard; OFF/rearming applies to radio command actions only.",
+      "Retain trusted same-generation radio verification seed; ordinary unverified polls cannot invent evidence.",
+      "Same-store outer lease spans snapshot/publication/activation/restoration; protect intervening acknowledged updates.",
+      "Legacy calibration/smoke share cooperating transaction; old writers/readers need proven coexistence or exclusion.",
+      "Label original coordinator line counts with historical controls source.",
+      "Preserve explicit launch args, exact post-await defaults and configuration-time preference reads.",
+      "Preserve automatic test discovery, explicit oracle arguments and fixed-brake history prerequisite."
+    ],
+    "evidence_limits": {
+      "engine_runs": 0,
+      "runtime_tests": 0,
+      "replay_runs": 0,
+      "native_or_device_or_package_campaigns": 0,
+      "performance_measurements": 0,
+      "full_ci": false,
+      "production_code_changed": false,
+      "historical_runs_reclassified": false,
+      "other_branches_modified": false
+    },
+    "publication_main_update": {
+      "commit": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+      "compared_to": "2bfb4dc7b6176a643a0a31d020a5c9f75571a024",
+      "changed_paths": [
+        "research/telemetry/reference.py",
+        "services/telemetry/openrc_telemetry/insights.py",
+        "services/telemetry/openrc_telemetry/rollup.py",
+        "services/telemetry/tests/test_equivalence.py",
+        "services/telemetry/tests/test_rollup.py",
+        "tools/telemetry/dashboard.py",
+        "tools/telemetry/deploy/README.md",
+        "tools/telemetry/deploy/host/check_dashboard_health.py",
+        "tools/telemetry/test_dashboard.py"
+      ],
+      "application_tree_unchanged": true,
+      "application_tree": "1fd33c6016fd0f6b117c3736b26f4c134808d08b",
+      "source_integrated_repairs": [
+        "TA22-R01 / TELEM-08",
+        "TA22-O01 / TELEM-20"
+      ],
+      "review": "Actual source diff and commit evidence inspected by lead and related-audit reviewer; no tests rerun. R13 numeric edge invariant and other TELEM packets remain separate. Operator notification qualification remains open.",
+      "remaining_telemetry_qualification": [
+        "Broader admitted-payload-to-rollup property coverage",
+        "Godot bridge qualification",
+        "Live operator notification rehearsal",
+        "Other TA22 and R13 packets retain their own gates"
+      ]
+    }
   }
 }

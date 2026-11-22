@@ -28,6 +28,9 @@ Creator/UI, checked-tooling, qualification/pin ownership and bounded legacy
 retirement findings. A third pass adds numeric-contract consistency, generator
 validation retirement, macOS tool identity closure, deferred overlay cleanup,
 bounded concurrency candidates and a dependency-aware parallel implementation plan.
+The [single repository/VRC consolidation plan](../docs/plans/vehicle-runtime-consolidation.md)
+now incorporates the controls-branch refinements and related audit dependencies;
+the dated audit retains its source evidence and branch reconciliation.
 It is source evidence and proposed work;
 no runtime repair or performance result is claimed. The historical queue and
 completed-work statuses below are not reclassified by that review.
