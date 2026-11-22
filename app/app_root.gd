@@ -294,6 +294,12 @@ var _telemetry_prompted := false
 var _telemetry_home_note := ""
 ## The renderer_unavailable session fact was checked (once per session, when collection is first on).
 var _telemetry_renderer_noted := false
+var _telemetry_graphics_values: Dictionary = {}
+var _telemetry_graphics_profile := "unknown"
+var _telemetry_graphics_revision := 0
+var _telemetry_reset_source: WeakRef
+var _telemetry_reset_signal: StringName
+var _telemetry_activity_revision := 0
 ## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
 var window_minimized_probe: Callable = func() -> bool:
 	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
@@ -2111,6 +2117,7 @@ func _refresh_basic_graphics_notice(config: Dictionary) -> void:
 
 
 func _apply_presentation(config: Dictionary) -> void:
+	_remember_telemetry_graphics(config)
 	_refresh_basic_graphics_notice(config)
 	ShadowSettings.apply(config)
 	AircraftLightingPolicy.apply(config)
@@ -2199,6 +2206,7 @@ func _apply_presentation(config: Dictionary) -> void:
 ## A successful Restore changes Automatic's evidence after its preview was applied. Refresh only the
 ## presentation that follows Scene detail; preserve reconstruction receipts, camera state and window geometry.
 func _apply_calibration_reset(config: Dictionary) -> void:
+	_remember_telemetry_graphics(config, true)
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	_refresh_scene_detail_dependents()
 
@@ -3124,7 +3132,6 @@ func _start_telemetry() -> void:
 	telemetry.consent_path = telemetry_consent_path
 	telemetry.locale = TranslationServer.get_locale()
 	telemetry.context_provider = _telemetry_context
-	telemetry.graphics_profile_provider = _telemetry_graphics_profile
 	add_child(telemetry)
 	telemetry.state_changed.connect(_on_telemetry_state_changed)
 	if statistics_service != null and statistics_service.has_signal("flight_events_accepted"):
@@ -3222,9 +3229,34 @@ func _telemetry_renderer_unavailable() -> bool:
 	return failed is Dictionary and str(failed.get("build", "")) == RendererGuard.build_identity()
 
 
-## "current_default", "custom" or "unknown" for the graphics choices Restore graphics defaults resets.
-func _telemetry_graphics_profile() -> String:
-	return DisplayPreferences.graphics_profile(display_preferences.config) if display_preferences != null else "unknown"
+## Settings can preview and revert a configuration before it is saved. Capture the applied values here.
+func _remember_telemetry_graphics(config: Dictionary, calibration_changed := false) -> void:
+	var values := {"lens": LensSettings.validate(config), "camera": DisplayPreferences.CameraSettings.normalized(config)}
+	for key: String in DisplayPreferences.graphics_default_keys():
+		values[key] = config.get(key)
+	var profile := DisplayPreferences.graphics_profile(config)
+	if calibration_changed or values != _telemetry_graphics_values or profile != _telemetry_graphics_profile:
+		_telemetry_graphics_values = values
+		_telemetry_graphics_profile = profile
+		_telemetry_graphics_revision += 1
+
+
+func _bind_telemetry_reset(source: Object, reset_signal: StringName) -> void:
+	var previous: Object = _telemetry_reset_source.get_ref() if _telemetry_reset_source != null else null
+	if previous == source:
+		return
+	if is_instance_valid(previous):
+		previous.disconnect(_telemetry_reset_signal, _note_telemetry_reset)
+	_telemetry_reset_source = null
+	if is_instance_valid(source) and source.has_signal(reset_signal):
+		source.connect(reset_signal, _note_telemetry_reset)
+		_telemetry_reset_source = weakref(source)
+		_telemetry_reset_signal = reset_signal
+
+
+func _note_telemetry_reset() -> void:
+	# The next observation closes the old window outside the vehicle's reset publication.
+	_telemetry_activity_revision += 1
 
 
 ## Home states the effective telemetry choice on its note line only while that line is free or still shows the
@@ -3266,6 +3298,7 @@ func _telemetry_context() -> Dictionary:
 	var simulated := -1.0
 	var fixed_wing := false
 	var physics_backend := "unknown"
+	var activity_id := 0
 	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
 	# A vehicle activity begins once its session runs: not while it loads behind the loading screen, when neither its
 	# simulated clock nor the statistics classifier exists yet (the summary would be incomplete and unclassified).
@@ -3284,6 +3317,11 @@ func _telemetry_context() -> Dictionary:
 			vehicle = "rc-blimp-5m"
 		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
 		if session is Object and is_instance_valid(session):
+			activity_id = session.get_instance_id()
+			if activity == ground_vehicle:
+				_bind_telemetry_reset(activity, &"activity_reset")
+			else:
+				_bind_telemetry_reset(session, &"resetting")
 			if session.has_method("time_s"):
 				simulated = float(session.call("time_s"))
 			else:
@@ -3299,6 +3337,8 @@ func _telemetry_context() -> Dictionary:
 		mode = "workshop" # editing in the Workshop: measured, but not a vehicle activity
 	elif home != null or home_build_pending:
 		mode = "home"
+	if activity == null and not _loading_active:
+		_bind_telemetry_reset(null, &"")
 	var window := get_window()
 	var minimized := bool(window_minimized_probe.call())
 	var menu_over_activity := activity != null and screens.top() != null
@@ -3316,7 +3356,9 @@ func _telemetry_context() -> Dictionary:
 		"simulated_seconds": simulated, "physics_backend": physics_backend,
 		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
 		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
-		"input_class": input_class}
+		"input_class": input_class, "graphics_profile": _telemetry_graphics_profile,
+		"graphics_revision": _telemetry_graphics_revision, "activity_id": activity_id,
+		"activity_revision": _telemetry_activity_revision}
 
 
 ## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).
