@@ -75,7 +75,17 @@ protocol and hashed evidence ledger. No new hardware measurement is claimed.
 continue that branch with code-linked primary-source research on auxiliary
 shadow targets, vegetation culling, shader work, GPU readback, loading and UI
 invalidation. The pinned Godot OpenGL implementation was inspected; the report
-ranks same-Intel experiments and records existing guards and rejected shortcuts.
+records existing guards and rejected shortcuts. Its original priority ranking
+is superseded by the audit below.
+
+[Adversarial plan audit](god-test/2026-11-22-intel-plan-adversarial-audit.md)
+rechecks current main, challenges unmeasured priorities and inventories existing
+graphics controls. The [corrected low-end execution plan](../plans/low-end-gpu-performance.md)
+puts pixel/ground attribution first, loading in parallel, and additional
+quality controls and automatic adaptation behind scoped evidence. It preserves
+physical scenarios, manual choices and existing release gates; all hardware
+work remains on the existing Intel installation. This revision changes plans,
+not runtime performance.
 
 ### RC airship
 

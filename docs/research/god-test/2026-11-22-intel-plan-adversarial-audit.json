@@ -1,0 +1,1385 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-22",
+  "owner": "VQ-07h-A2-R1 / PT1h-R15 / VQ-06 / DT-11a",
+  "branch": "investigate/intel-gpu-performance-2026-11-22",
+  "audited_main": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "branch_parent": "48395fac4e9ca28111dcc920494000c12142d0af",
+  "original_runtime_source": "91d7d6ddcb2182422a496036825e9113f82d2433",
+  "engine": {
+    "version": "Godot 4.8-beta2",
+    "commit": "cafc17a19",
+    "role": "pinned source, no new execution"
+  },
+  "authoritative_plan": "docs/plans/low-end-gpu-performance.md",
+  "audit_report": "docs/research/god-test/2026-11-22-intel-plan-adversarial-audit.md",
+  "scope": {
+    "documentation_only": true,
+    "runtime_changes": false,
+    "gpu_benchmarks_run": false,
+    "full_ci_run": false,
+    "host_changes": false,
+    "hardware": "existing Intel installation only",
+    "alternative_hardware_required": false,
+    "raw_campaign": "Unavailable here; retained summaries are not new raw measurements.",
+    "qualification": "Open: no admitted live route configured; mandatory Intel monitoring is not implemented."
+  },
+  "current_main_comparison": {
+    "base": "91d7d6ddcb2182422a496036825e9113f82d2433",
+    "head": "85a2475f60029a4b6b09f23f643119bceea84a45",
+    "ahead_by": 14,
+    "changed_paths": [
+      "app/app_root.gd",
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "app/data/ai/companions/behavior-manifest.json",
+      "app/render/overlays/overlay_manager.gd",
+      "app/sim/ground_vehicle/session.gd",
+      "app/telemetry/telemetry_queue.gd",
+      "app/telemetry/telemetry_service.gd",
+      "app/tests/test_rc_track_flight.gd",
+      "app/tests/test_rcv_session.gd",
+      "app/tests/test_telemetry_app.gd",
+      "app/tests/test_telemetry_queue.gd",
+      "app/tests/test_telemetry_service.gd",
+      "app/ui/telemetry_screen.gd",
+      "app/vehicles/ground/ground_scene.gd",
+      "docs/plans/telemetry/architecture.md",
+      "docs/plans/telemetry/consent.md",
+      "docs/plans/telemetry/data-contract.md",
+      "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-339c29ec-to-7e404f01.json",
+      "docs/research/telemetry/TELEM-AUDIT-2026-11-22/scope-and-remediation.md",
+      "research/telemetry/reference.py",
+      "research/telemetry/test_properties.py",
+      "research/telemetry/test_reference.py",
+      "services/telemetry/README.md",
+      "services/telemetry/openrc_telemetry/publisher.py",
+      "services/telemetry/openrc_telemetry/storage.py",
+      "services/telemetry/tests/test_publisher.py",
+      "tools/companions/qualification.json",
+      "tools/telemetry/README.md",
+      "tools/telemetry/deploy/README.md",
+      "tools/telemetry/deploy/ct/backup_archive.py",
+      "tools/telemetry/deploy/ct/openrc-stats-backup.timer",
+      "tools/telemetry/deploy/host/openrc_stats_backup.py",
+      "tools/telemetry/deploy/host/test_openrc_stats_backup.py",
+      "tools/telemetry/deploy/pull_github_backup.py",
+      "tools/telemetry/ga4.py",
+      "tools/telemetry/github_archive.py",
+      "tools/telemetry/test_dashboard.py",
+      "tools/telemetry/test_ga4.py"
+    ],
+    "source": "GitHub compare metadata and exact local Git trees",
+    "relevant_changes": {
+      "app/app_root.gd": "Telemetry context/paused reporting; first-Home construction unchanged.",
+      "app/render/overlays/overlay_manager.gd": "Composed terrain lookup where available."
+    },
+    "merge_performed": false
+  },
+  "historical_evidence": [
+    {
+      "item": "Older ground-heavy Forward+ Home ablation",
+      "reported_hide_ms": 48,
+      "reported_plain_material_ms": 30,
+      "overlapping": true,
+      "additive": false,
+      "limitation": "Summary-only cached-GPU freshness cannot be rechecked; not current Compatibility timing."
+    },
+    {
+      "item": "Older flight one-texture ground",
+      "reported_saved_ms": [
+        1.8,
+        3.7
+      ],
+      "limitation": "Different workload from Home; not a forecast for a product material."
+    },
+    {
+      "item": "Retained current Automatic on megatron",
+      "reported_circuit_fps": [
+        47.4,
+        38.0,
+        38.2
+      ],
+      "reported_simulation_wall": 1.0,
+      "limitation": "Exploratory pass; first Home ineligible, actual drawable/internal pixels unverified."
+    }
+  ],
+  "findings": [
+    {
+      "id": "A01",
+      "severity": "high",
+      "finding": "The prior report ranked windsock scheduling, tree culling and particular shader expressions first without an affected-workload measurement. Source mechanisms establish possible cost, not its magnitude.",
+      "disposition": "Move R01/R03/R04/R06 behind the current pixel/material attribution. Keep them as conditional experiments, not committed speedups.",
+      "phases": [
+        "L0",
+        "L1",
+        "L2",
+        "L4"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A02",
+      "severity": "high",
+      "finding": "The [retained comparison](2026-11-22-linux-uhd630-comparison.md) contains stronger screen-fill evidence: large ground-heavy Home ablations and scale sensitivity, but only 1.8–3.7 ms for a one-texture ground in the flight screen. Raw runs and GPU-poll freshness cannot be rechecked.",
+      "disposition": "Reuse the evidence as a lead, preserve its limits, and separate Home from flight. Never add overlapping ablation estimates or transfer an old Forward+ cost into current Compatibility.",
+      "phases": [
+        "L0",
+        "L2"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A03",
+      "severity": "high",
+      "finding": "[Automatic policy](../../../app/render/auto_graphics_policy.gd), [display preferences](../../../app/app_state/display_preferences.gd) and [reconstruction](../../../app/render/reconstruction.gd) already implement scale choices and the recognized weak-GPU 75%/MSAA-off bundle.",
+      "disposition": "Start from GFX-IGPU-01. Do not list those delivered controls as missing work or count historical gains again.",
+      "phases": [
+        "L1"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A04",
+      "severity": "high",
+      "finding": "[Home budget](../../../app/render/home_render_budget.gd) is an existing independent temporary scale owner, with frame-count settling and two slow windows. Nominal 75% can become 52.5% at its floor.",
+      "disposition": "Record actual state/time-to-adjust; hold it constant for material A/B and verify production adaptation separately. No second scaler.",
+      "phases": [
+        "L1",
+        "L5"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A05",
+      "severity": "high",
+      "finding": "The prior protocol's nine-case native graphical prerequisite conflicts with its own missing enrolled Linux adapter and Intel-utilization validator. No live route is configured in this workspace.",
+      "disposition": "Use the smallest actually admitted existing-Intel comparison when available. Source work continues; formal hardware/presentation qualification stays open rather than being bypassed.",
+      "phases": [
+        "L0",
+        "L6"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A06",
+      "severity": "high",
+      "finding": "New automatic quality fields would exceed [calibration](../../../app/render/auto_calibration.gd)'s current identity/application scope. It samples root timing, can only shift scene level, and Low→lower clamps at Low. Unknown workload fields can match; root timing does not include every secondary pass.",
+      "disposition": "Manual controls first. Extend A5-R2/R3 identity, safe apply/retest and rollback before automatic promotion. A completed verdict is not proof a changed tier works.",
+      "phases": [
+        "L5"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A07",
+      "severity": "high",
+      "finding": "[Display ownership](../../../app/app_state/display_preferences.gd) infers managed values by type/value equality for strings as well as numbers. A user choosing the same value as Auto cannot record distinct manual intent under that heuristic.",
+      "disposition": "New controls and every deliberately set manual-bundle field need explicit intent before shipping. Include equal numeric/string selection, atomic ownership/value persistence, restore/cancel, restart and GPU change.",
+      "phases": [
+        "L2",
+        "L5"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A08",
+      "severity": "medium",
+      "finding": "Photo grass is enabled for the default field by [field setup](../../../app/render/field.gd) → [grass binder](../../../app/render/grass_ground_material.gd), independently of the enhanced research mode. The [fragment path](../../../app/render/ground.gdshader) still fades by distance/footprint.",
+      "disposition": "Reject both extremes: it is neither research-only nor six unconditional samples for every flight pixel. A simple whole material must be attributed before texture repacking.",
+      "phases": [
+        "L2",
+        "L4"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A09",
+      "severity": "medium",
+      "finding": "`scene_detail.gd`'s collision comment is stale. [Collision setup](../../../app/scenery/collision_setup.gd) passes full layout, [collision world](../../../app/scenery/collision_world.gd) builds its inventory and [scenery selection](../../../app/scenery/scenery.gd) retains collidable placements.",
+      "disposition": "Preserve/test the implemented physical contract. Do not create a needless collision-decoupling rewrite from the comment. RC track is a genuine scenario setting and stays outside graphics downgrade/reset.",
+      "phases": [
+        "L2",
+        "L4",
+        "L6"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A10",
+      "severity": "medium",
+      "finding": "Existing Off choices have different lifetimes: built meadow is hidden; an aircraft projector can retain its target; ground cloud-shadow Off leaves legitimate sky cache consumers; lighting VFX still has update work.",
+      "disposition": "Define before-build, live-off, shared-owner, retention, reactivation and cancellation behavior per control. Do not assume Off means zero memory, or that retaining a bounded cache is necessarily a bug.",
+      "phases": [
+        "L2",
+        "L4"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A11",
+      "severity": "medium",
+      "finding": "Stock [lake water](../../../app/render/lake/water.gdshader) uses screen/depth refraction and a [probe](../../../app/render/lake/lake_terrain.gd). [Planar reflection](../../../app/render/lake/lake_planar_reflection.gd) is a High-only technical opt-in.",
+      "disposition": "Test Simple water and actual probe cost in lake-visible views; do not count disabling already-off planar reflection as a win or remove physical water.",
+      "phases": [
+        "L4"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A12",
+      "severity": "medium",
+      "finding": "General smoke quality is not player-facing; [main](../../../app/main.gd) has a technical `--smoke=off` path that avoids visual nodes/subscriptions. `_supports_show_smoke()` also derives input availability from those nodes. Lens, birds, flags, overlays and lighting already have controls.",
+      "disposition": "Add smoke quality only for an attributed active workload. First separate retained equipment capability from render allocation so visual Off preserves AUX assignment, keyboard/radio/controller routing and fuel/sound semantics.",
+      "phases": [
+        "L4"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A13",
+      "severity": "medium",
+      "finding": "The sixteen mechanisms mix first-use, steady rendering, optional features and small CPU work. A lower-fidelity material can improve runtime yet create more cold compilation; a cache can trade time for memory.",
+      "disposition": "Separate loading and flight acceptance, keep variant/caching budgets bounded and reject moving a stall to first visible use.",
+      "phases": [
+        "L3",
+        "L4"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    },
+    {
+      "id": "A14",
+      "severity": "high",
+      "finding": "“Works on low-end GPUs” had no distinct milestone, and the physics catch-up floor could be confused with a satisfactory experience.",
+      "disposition": "Propose per-run 30-FPS median, p95 ≤40 ms, p99 ≤50 ms, pace and readability targets for the owner to freeze. Reproduced >50-ms gameplay stalls still fail even when explained. Retain distinct existing 60-Hz/product/presentation gates; unavailable presentation evidence stays open.",
+      "phases": [
+        "L6"
+      ],
+      "status": "corrected in plan; runtime implementation not claimed"
+    }
+  ],
+  "graphics_controls": [
+    {
+      "area": "Renderer, resolution and main AA",
+      "current_main": "Automatic/Standard/High; native 3D scale 100–50%; MSAA; frame cap; reconstruction provider.",
+      "planned_treatment": "Reuse. Clearly distinguish saved scale, effective scale and provider-owned scale. Keep Compatibility for this Intel baseline.",
+      "delivery": "L1: visibility and matched use of existing controls; no new upscaler.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Ground material",
+      "current_main": "Full procedural/photographic work is not selected by an independent player terrain-quality control. Default club photo maps are bound even without enhanced-grass research mode; execution still fades by distance/footprint.",
+      "planned_treatment": "**Ground detail: Auto / Simple / Full.** Two bounded material variants; Simple preserves the flight surface cues and removes only attributed decorative work.",
+      "delivery": "L2: first new quality control.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Scene geometry and distant trees",
+      "current_main": "Auto/Low/Medium/High/Extreme; Low uses tree cards and coarser LOD.",
+      "planned_treatment": "Keep physical objects represented. First optimize batching internally; add a separate visual distance/LOD choice only if it changes a measured decision.",
+      "delivery": "L4, conditional. No blanket tree deletion.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Near grass and meadow",
+      "current_main": "Meadow Off/On exists. Imported near grass has tier caps; technical grass modes are not a complete player density control.",
+      "planned_treatment": "**Grass density: Auto / Off / Sparse / Standard** only for decorative, non-collidable vegetation. Meadow remains independently controllable. Do not reinterpret weather or surface friction.",
+      "delivery": "L4, after visible coverage/overdraw attribution.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Projected shadows",
+      "current_main": "Technique, quality, distance, softness, aircraft cue and cloud shadows exist. Native atlas quality does not set aircraft mask 256²/4× MSAA or windsock 512²/MSAA-off.",
+      "planned_treatment": "Extend the existing **shadow-quality** resolution to projected targets; investigate a separate aircraft override only if the shared setting cannot express a useful choice. Retain a cheap readable aircraft cue.",
+      "delivery": "L4: bounded resolution/AA experiment before defaults change.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Water",
+      "current_main": "Stock lake uses a refresh-on-change probe. Planar is a High-only technical opt-in. Water shader samples screen/depth for refraction.",
+      "planned_treatment": "**Water quality: Auto / Simple / Full.** Simple keeps the water/shoreline/wave representation, tests a material without refraction screen/depth inputs, and a cheaper reflection representation. Do not disable the lake scenario.",
+      "delivery": "L4 only for a costly lake-visible case.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Sky and clouds",
+      "current_main": "Ground cloud-shadow Off exists. Sky can still own shared cloud-cache tiles. Density-bound variants are research-only.",
+      "planned_treatment": "**Cloud detail: Auto / Simple / Full** only after a supported, measured simple path exists. Preserve cloud coverage/weather cues, sun occlusion and clock. Keep cache mechanics internal.",
+      "delivery": "L4, conditional; not a promised default win.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Lens and aircraft lighting",
+      "current_main": "Lens Auto/Off/Low/Medium/High/Ultra and individual effects; lighting Low/Standard/High and show-VFX switch.",
+      "planned_treatment": "Reuse. Audit inactive processing and release before adding another switch. Preserve essential navigation/landing cues.",
+      "delivery": "L4 internal fast paths if attributed.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Smoke",
+      "current_main": "Pilot show-smoke input and technical `--smoke=off`; no general player smoke-quality selector.",
+      "planned_treatment": "**Smoke: Auto / Off / Low / Full**, controlling visual particles/subscriptions only. Preserve pump inputs, engine/fuel state, sound and aircraft profile.",
+      "delivery": "L4 only with active smoke; not a baseline solo-flight claim.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "Birds, flag motion and HUD",
+      "current_main": "Birds Off/Few/Normal/Many, flags Auto/Static/Basic/Detailed, overlay presets and individual switches.",
+      "planned_treatment": "Reuse. Low Auto flags resolve to Basic, not Static; windsock has a separate motion owner. Prioritize complete-workload cost before micro-optimizing these.",
+      "delivery": "Existing controls; internal work deferred by attribution.",
+      "implementation_status": "proposal unless explicitly existing"
+    },
+    {
+      "area": "RC circuit and lake/world content",
+      "current_main": "Options can change terrain, obstacles and scenario identity.",
+      "planned_treatment": "Keep under scenario selection. Exclude from graphics bundles/calibration, even if disabling them improves a diagnostic frame.",
+      "delivery": "Invariant in every phase.",
+      "implementation_status": "proposal unless explicitly existing"
+    }
+  ],
+  "proposed_bundle": {
+    "status": "manual proposal, not implemented",
+    "dependency": "Current ground attribution and qualified Simple path",
+    "reconstruction": "Explicitly switch to Native; list and reverse provider/settings change.",
+    "scale_percent": 75,
+    "ownership": "Release Automatic ownership for every deliberately set field, even equal numeric/string values; ownership-only changes are dirty.",
+    "transaction": "Keep values and ownership atomically; failed save, Revert, cancel, Close and expiry restore pending state.",
+    "excluded": [
+      "frame cap",
+      "physical RC track/lake/scenario",
+      "weather",
+      "controls",
+      "unrelated accessibility"
+    ]
+  },
+  "phase_plan": [
+    {
+      "id": "L0",
+      "subphases": [
+        "L0.1",
+        "L0.2",
+        "L0.3",
+        "L0.4"
+      ],
+      "purpose": "Reconcile exact source, admitted existing-Intel route and effective workload.",
+      "decision": "Hardware access blocks execution/qualification, not source review or offline prototypes."
+    },
+    {
+      "id": "L1",
+      "subphases": [
+        "L1.1",
+        "L1.2",
+        "L1.3"
+      ],
+      "purpose": "Reuse delivered policy, compare existing scale steps and observe Home ownership.",
+      "decision": "Retain the sharper setting when a lower one gives no useful gain."
+    },
+    {
+      "id": "L2",
+      "subphases": [
+        "L2.1",
+        "L2.2",
+        "L2.3",
+        "L2.4"
+      ],
+      "purpose": "Attribute ground, then qualify a bounded Simple material/control and manual bundle.",
+      "decision": "Negative or inconclusive current attribution stops this candidate and reranks; ownership transaction is required before shipping."
+    },
+    {
+      "id": "L3",
+      "subphases": [
+        "L3.1",
+        "L3.2",
+        "L3.3",
+        "L3.4"
+      ],
+      "purpose": "Separate cold/warm loading and remove one attributed blocking cause.",
+      "decision": "Can proceed in parallel after L0; hardware captures serialize. Moving the stall or growing unbounded residency fails."
+    },
+    {
+      "id": "L4",
+      "subphases": [
+        "L4.1",
+        "L4.2",
+        "L4.3",
+        "L4.4",
+        "L4.5",
+        "L4.6"
+      ],
+      "purpose": "Choose one active residual pass or off-state cost and expose only useful controls.",
+      "decision": "No requirement to execute every research idea. Preserve cues, physical state and accepted clock."
+    },
+    {
+      "id": "L5",
+      "subphases": [
+        "L5.1",
+        "L5.2",
+        "L5.3",
+        "L5.4"
+      ],
+      "purpose": "Extend trustworthy identity and measured/proposed/applied/validated automatic decisions.",
+      "decision": "Manual controls need not wait for global refits; automatic promotion does require affected retest/rollback and explicit intent."
+    },
+    {
+      "id": "L6",
+      "subphases": [
+        "L6.1",
+        "L6.2",
+        "L6.3"
+      ],
+      "purpose": "Focused software verification, admitted performance evidence and bounded adoption.",
+      "decision": "Applies to each selected delivery, not only after every optional phase. Missing qualification remains open; reject and rerank individual candidates."
+    }
+  ],
+  "prior_research": {
+    "path": "docs/research/god-test/2026-11-22-intel-render-internals.json",
+    "source_commit": "48395fac4e9ca28111dcc920494000c12142d0af",
+    "investigations": 16,
+    "distinct_queries": 19,
+    "primary_references": 19,
+    "pinned_engine_sources": 10,
+    "status": "Retained research; original priority field superseded by this ledger and plan.",
+    "remapped_investigations": [
+      {
+        "id": "R01",
+        "title": "Offscreen windsock shadow scheduling",
+        "phases": [
+          "L4.1"
+        ],
+        "reason": "Conditional on actual eligible/rendered shadow work.",
+        "hardware_result": null
+      },
+      {
+        "id": "R02",
+        "title": "Independent aircraft-shadow MSAA",
+        "phases": [
+          "L4.1"
+        ],
+        "reason": "Target-specific quality experiment, separate from root MSAA.",
+        "hardware_result": null
+      },
+      {
+        "id": "R03",
+        "title": "Treeline spatial batching",
+        "phases": [
+          "L4.2"
+        ],
+        "reason": "Conditional on submitted offscreen instances and net draw/CPU tradeoff.",
+        "hardware_result": null
+      },
+      {
+        "id": "R04",
+        "title": "Uniform grass anchor and optional parcel distance arithmetic",
+        "phases": [
+          "L2.1",
+          "L4.6"
+        ],
+        "reason": "Ground attribution before uniform/shader arithmetic.",
+        "hardware_result": null
+      },
+      {
+        "id": "R05",
+        "title": "Derivative-safe terrain relief rectangle rejection",
+        "phases": [
+          "L4.6"
+        ],
+        "reason": "Default has two relief rectangles; minor candidate unless attributed.",
+        "hardware_result": null
+      },
+      {
+        "id": "R06",
+        "title": "Ground detail texture packing",
+        "phases": [
+          "L2.1",
+          "L4.6"
+        ],
+        "reason": "Guarded photo coverage and Simple-material evidence before packing.",
+        "hardware_result": null
+      },
+      {
+        "id": "R07",
+        "title": "Foliage mask channel storage",
+        "phases": [
+          "L4.2"
+        ],
+        "reason": "Only active vegetation; preserve precision/coverage and memory.",
+        "hardware_result": null
+      },
+      {
+        "id": "R08",
+        "title": "Early tree alpha rejection",
+        "phases": [
+          "L4.2"
+        ],
+        "reason": "Only attributed masked grass; added divergent work may regress.",
+        "hardware_result": null
+      },
+      {
+        "id": "R09",
+        "title": "Compatibility sky arithmetic and supported pass structure",
+        "phases": [
+          "L4.4"
+        ],
+        "reason": "Supported Compatibility sky path; strict numerical/visual gates.",
+        "hardware_result": null
+      },
+      {
+        "id": "R10",
+        "title": "Lake probe refresh coalescing",
+        "phases": [
+          "L4.3"
+        ],
+        "reason": "Measure active water/probe separately; planar is already off on stock Intel.",
+        "hardware_result": null
+      },
+      {
+        "id": "R11",
+        "title": "Transmitter static/dynamic draw separation",
+        "phases": [
+          "L4.5"
+        ],
+        "reason": "Small recurring CPU work, not presumed primary Intel GPU cost.",
+        "hardware_result": null
+      },
+      {
+        "id": "R12",
+        "title": "Invisible afterimage presentation work",
+        "phases": [
+          "L4.5"
+        ],
+        "reason": "Off-state fast path only if measurable; retain state and reentry.",
+        "hardware_result": null
+      },
+      {
+        "id": "R13",
+        "title": "Cloud bake texture round trip",
+        "phases": [
+          "L3.2",
+          "L4.4"
+        ],
+        "reason": "First-use bake/readback separate from steady sky.",
+        "hardware_result": null
+      },
+      {
+        "id": "R14",
+        "title": "Mesh extraction before worker and expanded geometry memory",
+        "phases": [
+          "L3.2",
+          "L3.3"
+        ],
+        "reason": "Attribute pre-worker surface reads and peak memory first.",
+        "hardware_result": null
+      },
+      {
+        "id": "R15",
+        "title": "First Home construction and deliberate warmup",
+        "phases": [
+          "L3.2",
+          "L3.3"
+        ],
+        "reason": "Separate construction, deliberate warmup and first draw.",
+        "hardware_result": null
+      },
+      {
+        "id": "R16",
+        "title": "Lighting-skin retrieval guard and bounded intermediate reuse",
+        "phases": [
+          "L3.2",
+          "L4.5"
+        ],
+        "reason": "Optional enabled skin feature, not baseline every-frame work.",
+        "hardware_result": null
+      }
+    ]
+  },
+  "reviewer": {
+    "role": "Independent source-read-only adversarial integrated-plan review",
+    "disposition": "No remaining substantive blocker after corrections.",
+    "excluded_scope": "Reviewer did not verify final JSON or final mechanical documentation checks.",
+    "findings": [
+      {
+        "id": "GE01",
+        "challenge": "A manual Very Low bundle can set the same numeric/string values as Auto and silently keep automatic ownership. Settings currently detects dirty state from values or calibration reset, so an ownership-only change may not enable Keep.",
+        "resolution": "§4.3/L2.4 treats ownership-only edits as dirty and atomically releases ownership of every deliberately set field, with restart/GPU-change and failure/Revert/Close/expiry tests. It does not wait for L5.",
+        "status": "resolved in plan"
+      },
+      {
+        "id": "GE02",
+        "challenge": "A median-only target and “unexplained stalls” wording cannot decide whether low-end usability passed.",
+        "resolution": "§3 states provisional per-run tails, repeatable-stall rejection and cue review; the owner must freeze the checkpoint before acceptance. Physical presentation and 60-Hz release qualification remain separate.",
+        "status": "resolved in plan"
+      },
+      {
+        "id": "GE03",
+        "challenge": "A mandatory Simple-ground delivery could survive negative current attribution; one failed candidate could end the whole investigation.",
+        "resolution": "L2.1 now stops that candidate and reranks if ground cost is inconclusive/negligible; L6.3 rejects individual candidates and preserves unmet release gates.",
+        "status": "resolved in plan"
+      },
+      {
+        "id": "GE04",
+        "challenge": "An “accepted candidate” required the hardware test that was itself needed to accept it.",
+        "resolution": "L6.2 now starts with a software-ready provisional candidate. Offline work can proceed, but performance promotion and qualification require admitted evidence.",
+        "status": "resolved in plan"
+      },
+      {
+        "id": "GE05",
+        "challenge": "Copying technical smoke Off would suppress equipment input availability.",
+        "resolution": "L4 requires capability state independent of visual nodes, with AUX, keyboard/radio/controller and reactivation checks before a smoke-quality option.",
+        "status": "resolved in plan"
+      },
+      {
+        "id": "GE06",
+        "challenge": "Saving 75% while retaining a non-Native provider would not apply that scale.",
+        "resolution": "The explicit bundle selects Native and lists that touched choice; preview/Keep/Revert covers provider settings and actual effective scale.",
+        "status": "resolved in plan"
+      }
+    ]
+  },
+  "source_inputs": [
+    {
+      "path": "app/app_root.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 265970,
+      "sha256": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+      "git_blob_sha": "1eba3fa2baa5bd0c138ede983b22d4ccebbcd5e3",
+      "changed_since_original_runtime": true
+    },
+    {
+      "path": "app/app_state/display_preferences.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 30132,
+      "sha256": "eef892ee3200dda92f9ad8d465ba80ffcaaebf5bbfd2186528eafc4711c15cee",
+      "git_blob_sha": "edca56aa019595c25a44585c108a0e0cd4b99167",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/data/fields/default.json",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 150364,
+      "sha256": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+      "git_blob_sha": "a631028d482bd77a300496652004fe915c7ae9e3",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/get-godot.sh",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 8960,
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "git_blob_sha": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/landscapes/catalog.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 3688,
+      "sha256": "74cd0f840c295ab4081e901363dfc773b16211a872c5008c0c7331f4456b3555",
+      "git_blob_sha": "ab0758b50ad8cd13fe4b3692df466f469542e6f8",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/landscapes/club_field/landscape.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 858,
+      "sha256": "b4b312a21babf005a2f4138386b741b674426c46ec4752f6c3100d7c45b29130",
+      "git_blob_sha": "34470a991af05063c879ed04e941b01a981389b9",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/main.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 218547,
+      "sha256": "5ae216f228dbebad4280f843e061c2e9d19a20ede042556f0bcd7d35babce8af",
+      "git_blob_sha": "8f76e4242698f609ef4a3637de0eca8c6faee22f",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/aircraft_shadow_proxy.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 8473,
+      "sha256": "75005bd8cc28275ab908019fd8ca0c2c858b3f3dd9299f9c2197d8f4614a49a6",
+      "git_blob_sha": "d0b01a7afceb8932fccc056182830c292b065b00",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 54707,
+      "sha256": "a2f2dfc6556f4f3ef0be728b27d65975804114a1c6f053975bd958d96e6827df",
+      "git_blob_sha": "faafcfd6865635bf78e4c1b9ff541913af9be67b",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/auto_calibration.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 23473,
+      "sha256": "1d4127f65dd3ce77953569f9b81b14b7aff690571adbbd9a86b177568a1aea9f",
+      "git_blob_sha": "611353ed9fb62fc9dc21147db60558ab839d569a",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/auto_graphics_policy.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 14649,
+      "sha256": "5aa3e3310dfeab3bc1e89e7b5ef49c23621445f7382e4078f8e1eee7161ac151",
+      "git_blob_sha": "b5ecfe5fd1e797a49b17eea87c564bc287391eec",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/cloud_field.gdshaderinc",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 5898,
+      "sha256": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+      "git_blob_sha": "bbcd7f23c40814e2327445b039f6ed02eb084258",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/cloud_shader_variants.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 1112,
+      "sha256": "09735e06cc1d4055b10303dd2ea5c001d4a403ce7b148f9cd4efb90f9892a6b9",
+      "git_blob_sha": "05361ecde806f6d560314729df3d8113f3bf7892",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 20592,
+      "sha256": "7b2e70be9826b0d3ea9df4e0919ac810c792f98473af0780666b1005258848b6",
+      "git_blob_sha": "d18fda0c4935f53f1277c25c5a6b9bd6d0bff533",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 1214,
+      "sha256": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+      "git_blob_sha": "0069b4e79a182ba64f9de1fe39273596a9d74299",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/crash/director.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 45036,
+      "sha256": "97f5d063a98efd06f7802ce099f64f12e22053072c7d90611bce28baff655f42",
+      "git_blob_sha": "9494c2eaeeafccdf22892cafd669380391c610d0",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/crash/shader_warmup.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 4108,
+      "sha256": "2c351b96131e45a69a6e3752a551670f9db174f15062858a12e40f14133d6697",
+      "git_blob_sha": "c946f969111f2e6a60a25a48429fb65d2be4eceb",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/field.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 26756,
+      "sha256": "8838eac95440080e22153b8da65d7f269c8aa7412a0373c7632d19e9fdb8f10e",
+      "git_blob_sha": "8c2d65a2926bc8b0f1ea0a7d147fede0584db6aa",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/field_projected_shadows.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 11960,
+      "sha256": "14284c42d02af2021818dd579a267dc27a46089dc8a750a0b821d6a5d1fe1534",
+      "git_blob_sha": "d0527457fb15a1403d4c2fdb8606a61272e7e150",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/field_tree_detail.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 2686,
+      "sha256": "8228ba1bc6f9644163bb820f6bbb619f1af69baa5f8506d812f5aedd68ac924f",
+      "git_blob_sha": "74988fdebfc7323cb4476336a66454093d257c35",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/grass_ground_material.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 648,
+      "sha256": "69f067ca5ff95fc9546efc0fa0409eb00165438e576a738d379080cb15030c9e",
+      "git_blob_sha": "3d106f1d6b6749b1eb82fa09cc10bc5daeea5735",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/grass_quality.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 227,
+      "sha256": "2bb90ea1c3d83334a92e45fe5689641301d4e1c5f2b9757bda7e23e95e4aa36d",
+      "git_blob_sha": "716626eafbe2df9dbd5820cb81f4f9f26d1714c8",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 4882,
+      "sha256": "fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127",
+      "git_blob_sha": "433e964b11dc8c84d25a49375df3467505fe48a5",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/ground.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 11549,
+      "sha256": "371a64887f34da10a38b08eb6a1460593ce091bbc91e784c5832324209927d05",
+      "git_blob_sha": "7e6cbd95eed2d831ffdd7893971d8c1957160617",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 21924,
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+      "git_blob_sha": "5680a093dcc31aea56b029273eee5197ab1960fa",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/home_render_budget.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 10694,
+      "sha256": "3863f9f66350c089f9f5917bc35087e6f22ee460648fdd31381ed0d95a7aa3c1",
+      "git_blob_sha": "64da72f7875ec3c66b4d5bed734b16c798a9ab9e",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lake/bank.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 5097,
+      "sha256": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
+      "git_blob_sha": "fad2b9357d7d953abdb72d9afb67dc933ce34380",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lake/lake_planar_reflection.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 7002,
+      "sha256": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+      "git_blob_sha": "c6e13822215ad20f4ea779a9c6ee92731c6d2322",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lake/lake_reflection.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 3869,
+      "sha256": "db692550c9680022d57bbf2ec370fdc32305dfff05017c6d9ab236fd52715e9e",
+      "git_blob_sha": "9d6ca0e1a44d0c2dbfc2754e0d9612b9e7bcb300",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lake/lake_terrain.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 11497,
+      "sha256": "4564088be3fc06e5afe693360703e1998c15bb1c084153c2efdf8b0e7c36de0c",
+      "git_blob_sha": "34b6d6b934aa89ecdd579a4702ca681e792f5619",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lake/lake_world.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 6987,
+      "sha256": "ec143036d1f1dbd2ead38a6f5c3559d160ac5a2c07bf177b79995f97721a663a",
+      "git_blob_sha": "920896548625b40549705e2e0babf2585e2185a4",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lake/water.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 12739,
+      "sha256": "f889ca8b88aef5f8c27e42071105e24272ec096ade47d265327ba041cce99d02",
+      "git_blob_sha": "b4f44999464becc4112bc6b5a8b99be0c8cb6f12",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/landscape_upgrade/sun_glare.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 16203,
+      "sha256": "cc9ac8400abc369704e5978e0ad2e46b446fcec33c39904780cbc64f7cf8b01b",
+      "git_blob_sha": "948628d7c5cccc6a58930a4acf0aa9cf2553e5b6",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lens/lens_settings.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 5151,
+      "sha256": "1ee58936d070be5e4d27d2dd86f04df1fb4c0b7ca9722fd701bef30ec137c1aa",
+      "git_blob_sha": "3892514e6216788cb36e521a98cecd5229c7daf0",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lighting/lighting_skins.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 25150,
+      "sha256": "236251a7c6a185a168a657c20c998cd0b4bc119d1b745740d95065def71721fa",
+      "git_blob_sha": "93c50a3bbf784173e5090c2b8bb2a3805405a673",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/lighting/lighting_vfx.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 48153,
+      "sha256": "9fefdd4e416d2554abbd1f1ff1b59e9a8365b2bd82dd56aa64706353d2f1dfe2",
+      "git_blob_sha": "65c33e532f3b0d95a204bbc63797145f9c447027",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/overlays/overlay_manager.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 30999,
+      "sha256": "e89c2310496a504841a3522c6d53296cbf0f2ebf24b424d7c58f0765c017ceec",
+      "git_blob_sha": "918411abcd0bcedf3226ba5fba669a61c58feacb",
+      "changed_since_original_runtime": true
+    },
+    {
+      "path": "app/render/overlays/overlay_settings.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 7944,
+      "sha256": "fbb438c10a356218b1e375a282e9ab71cc09adab570877196b2ce5a0035774eb",
+      "git_blob_sha": "45cca802c631e5a4b0a2471bbe477d1ff2dadd91",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/overlays/transmitter.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 7330,
+      "sha256": "5d069bc8c6fa046324c3129115c95c958ae4dc2531f6fd747ed597ab60bbfccb",
+      "git_blob_sha": "bb2396d028121a8833f2c4b518a540760505a4b4",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/projected_shadow.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 29363,
+      "sha256": "dfbeba569ef183ba630d98b08f725c74e36268ce4a7d9340f6a96edd488cde8e",
+      "git_blob_sha": "ce7b8c11f55d3d5c86624303275c1567efc8d2ea",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/projected_shadow_receiver.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 645,
+      "sha256": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+      "git_blob_sha": "60e952e1eece914bd67f479db829a6b0a7c07e66",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/rc_ground_detail.gdshaderinc",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 3283,
+      "sha256": "1e0c786ee2096c920beae236d7137c6179930c1f98a87e746e32b13a4ebc92ce",
+      "git_blob_sha": "90f89157d375e8e3c0888b1850337fcc359f3c3b",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 42593,
+      "sha256": "00fbcfa803db33120c7acfa960843ee70b36a44933f80e754176d51c50ca76b0",
+      "git_blob_sha": "149153470300fa9c754cd6af29f111f9d21175b5",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/scene_detail.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 8193,
+      "sha256": "8d91833bef1c71f96a4b17cc40db020cda93cc19dd2b441451b2c652b23e2765",
+      "git_blob_sha": "27e9e3dfb9d4164a123bbc59c048673a4a548746",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/shadow.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 17482,
+      "sha256": "c41a6a18eb4a716315890d026499a9fb3842dd270f69bf3855551e0d3a634797",
+      "git_blob_sha": "35d1efe689d40ecad35245a176ae7c8954411dd1",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/shadow_field_policy.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 16542,
+      "sha256": "8e339339274be935d51c19d084dcc509a34e7a9f25baeb669a32ca1b9995ebee",
+      "git_blob_sha": "7db1fe183c5f221f509ee25f9f6c888a9a82bb59",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 15936,
+      "sha256": "af001e5a3a2b1ef79d567b0b64bab0b8669648e3daa81d9c2b33e848061cc8f9",
+      "git_blob_sha": "125c089f4718425b674fcc4b5affc03f286a8261",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/sky.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 19621,
+      "sha256": "9b6e9835535b526d7328937092393d78fed66f2f9c058e86da39964955996028",
+      "git_blob_sha": "b0ac5dfcee4fe870f0146ab42890f5df006f791f",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/sun/sun_optics.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 21595,
+      "sha256": "a6d19d8258b1aca72d75823e5ff37f19c6b6b944cb2026288cf42371013821af",
+      "git_blob_sha": "bb8dc3bf829c5687efc6ae13219551a585496f2a",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/treeline.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 9199,
+      "sha256": "915d7f83e5872bf830c6e68cfed4eb393febcbbfe7f3c12d37bb0ab8a39c9498",
+      "git_blob_sha": "4f7dd56fd60b7a6923b832d33c49f5f746e6c288",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/treeline.gdshader",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 5936,
+      "sha256": "ac1ee408a766edcbe9d8b63d3d5305715ed6415de0adb5da1dbd7a21f8335c13",
+      "git_blob_sha": "d0224f0df288d0a5769bf1ae0b941b5a180961d1",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/windsock_projected_shadow.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 4561,
+      "sha256": "7bb1faa9febacc76a8e9f62f6d42bc8291f268fb4e76a6a4aa40bcb439ef7d3d",
+      "git_blob_sha": "bf13771a6f0df0082431bd1262044d3fa9da9ccf",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/world/aircraft_lights.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 42434,
+      "sha256": "deddeed684377a97b419d29a211bbc27f1a54779f3fe8cd673a3961901d9ac3a",
+      "git_blob_sha": "8615ecb49e771ad7e2a91d5378e3e2f21c88276f",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/render/world/world.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 73756,
+      "sha256": "9a1e9144ae33172cc30265eefbb64b3ca84a1a645e99818a999e59d2b25e56e8",
+      "git_blob_sha": "d83fe162b954790ee4d37af95f8df7a8592418f4",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/scenery/collision_setup.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 1280,
+      "sha256": "ede20eb77fa7b0e8301c08e8db82cc2b74a29a719d0bb60233fe0ad719727045",
+      "git_blob_sha": "e7e72e96c3af7ae5ffb891d21fd9be6ce830b67f",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/scenery/collision_world.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 52889,
+      "sha256": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+      "git_blob_sha": "ad8b30cd854d3052b4590b40de3ddd1e49557cad",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/scenery/imported_near_grass.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 13776,
+      "sha256": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+      "git_blob_sha": "ee755e53709ad7ff73592a2b66c6e0a07d6c7de8",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/scenery/scenery.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 51893,
+      "sha256": "0a91cea2bfb27e9b673e0df0a8e9d2288e5d8ed40f03ae400146ac46cf409930",
+      "git_blob_sha": "589986f6ef47dc4ef2e8a2101f088553f356e4c8",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/tests/test_grass_ground_material.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 10174,
+      "sha256": "5352a620deeba305886648eb2a2fc919d1fa3b575d09c6458a93e08cd5849634",
+      "git_blob_sha": "7cd6c7b3f9450172919f2615c60cf139d0d5acbc",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/tests/test_lake_probe_ambient.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 2988,
+      "sha256": "179f62af13602d3533f2278fd4e2d40e453aa719fb397bf005a92c818a8c9e97",
+      "git_blob_sha": "d09ca6fcd09cb2d2ac1760186def74ea471de04f",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/tests/test_tree_assets.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 9968,
+      "sha256": "6cc79c5d322b110503e5f01ba4f310f92361c01d68cd7b7dee41f823340882dc",
+      "git_blob_sha": "804f6e22ed4465e3188df65a9d47fab879f95248",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/tests/test_treeline.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 9337,
+      "sha256": "66e4315bf3a1742c9e866d3018655d1515131deb93088edc4882780eefc3d28f",
+      "git_blob_sha": "1c42622054b47b6ce621cc5b6932235dfce93e7f",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/tests/test_windsock_shadow.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 14390,
+      "sha256": "4543490c5b6377c057500fa5db26b126df76af421164697a3aafeaa7deb7d629",
+      "git_blob_sha": "d2eb078ed3ed2232e27d78afad43dfba84de8ffe",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/ui/flight_scene_load.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 1305,
+      "sha256": "bc34ecfe1d30eb23d9647119bebe87c4037563485e01d16ef74f30258c40946c",
+      "git_blob_sha": "14648cc5b7a1ab6f5b65ea0e7ebb49760f5f34b0",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/ui/home_presentation.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 8560,
+      "sha256": "a5e7e81c74fd1d1d9c958f6fe8dddb01fee0d51f76150131dbe8a8b6c9820a3e",
+      "git_blob_sha": "3dd51c5bb099b39aa629baa76bb0e92b24275875",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/ui/home_preview_geometry.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 5141,
+      "sha256": "6a9c1cd02bd0ec2f0971d9121b761d076e6144ff9af3b1e2aad1d22bb40fa7be",
+      "git_blob_sha": "2bd853002327ce8832607bbdb41de7a5b24dc213",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/ui/home_preview_resources.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 6334,
+      "sha256": "73c9f9544fd9394245bd6911a9ee45ee7a553f87842d637ac29f9281d788287e",
+      "git_blob_sha": "6c1ede308ef8d98bfe11ea1c0e94d6dba11a9353",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 28344,
+      "sha256": "36a908f1dfb0d14c853440fffd9f1b116747d715e3ea2dcde42163828dfa6241",
+      "git_blob_sha": "30a29f60b57e031a01641eb4ea1f5b22079b59ca",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 103585,
+      "sha256": "3751fd66068f00198a6d89037a789388dbf2b95dc70276ad7a9803e21af5f856",
+      "git_blob_sha": "e6d90e54caaa46fbbb0af230adcc1ed5b0476103",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "docs/plans/automatic-graphics.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 50239,
+      "sha256": "ba18b257c743e1110e630afdff652d8f4c7b70ebb926c8e3df91adf7a5717f13",
+      "git_blob_sha": "81991cf0082575394e26e852829977539ca39601",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "docs/plans/global-performance-visual-quality.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 47957,
+      "sha256": "036512fda2fdf3b3f3beefafe1b9e17a3cd3de1cf3cc797f638399556e21b34b",
+      "git_blob_sha": "9ca2ca9f458fac10ba40d917fe10cd8084db0b10",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "docs/plans/optimization-priorities.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 26052,
+      "sha256": "f17edf157ff0b4f880eca4434d1f81c64abd7b11b2322be99b5cd937f2ea6397",
+      "git_blob_sha": "cd80f19662e34e5f6168ce15e483db230cdd7dfd",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 82210,
+      "sha256": "5ec8e86874942530ab2bd79bee07ee6e4f696f39d83313b851674821df00fa46",
+      "git_blob_sha": "389f2a9bff7a9cd4048e6a8ca352d522768a9398",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "docs/research/god-test/2026-11-22-linux-uhd630-comparison.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 17546,
+      "sha256": "f304a98e5e59bd3adeb38544cbe6e520a3774bacab8f9ac3c38bd869a782b6bb",
+      "git_blob_sha": "210472e25ef4ee7b90e9eec130873c1c88c9e0d8",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "tools/godtest/PERFORMANCE_TOUR.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 34951,
+      "sha256": "04b48f773ab8e0c7876756ce7e78dfc8aaf3497b5f05915b90cb182a804d4e9b",
+      "git_blob_sha": "a8ba6c03a99880c20a7941a545087752f61f6ec7",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "tools/godtest/runner.py",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 29210,
+      "sha256": "513765f714a823fcb164a1351d959db4a366d5ffc3c9af5fc1b93dcec55bc4b3",
+      "git_blob_sha": "a7b5df903b0bfa4f7222cdc7069309ce99756bed",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "tools/terrain/capture_horizon.gd",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 12272,
+      "sha256": "a85499b4659f59c436b5dfcf6a8771fe8c9a5acfdefaca4eafb8f1303fce5131",
+      "git_blob_sha": "7058939edd1c27d6e91ff252752445e932b3ef68",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "tools/testqueue/README.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 55539,
+      "sha256": "eaaae9e2a5b188a597a850dd632792b579137486db914433b85628c604f173d0",
+      "git_blob_sha": "c400b14810a0289132e74434c139f14078fdeb1c",
+      "changed_since_original_runtime": false
+    },
+    {
+      "path": "tools/trees/README.md",
+      "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "bytes": 38879,
+      "sha256": "cfa74132dafb84d4fbb72432053343224b0c84ad8f337a550ddba2b3d90463c7",
+      "git_blob_sha": "c1331cc62e5377680c5931c2185923fe67d92543",
+      "changed_since_original_runtime": false
+    }
+  ],
+  "prior_branch_evidence": [
+    {
+      "path": "docs/research/god-test/2026-11-22-intel-render-internals.json",
+      "source_commit": "48395fac4e9ca28111dcc920494000c12142d0af",
+      "bytes": 65584,
+      "sha256": "03305ae19cca598f57c6b94e985110c79b09c23c868624600f9f2c52d07bb419",
+      "git_blob_sha": "99959872996845cf5f51219db8a3a76dd20968a8"
+    },
+    {
+      "path": "docs/research/god-test/2026-11-22-intel-gpu-investigation.md",
+      "source_commit": "48395fac4e9ca28111dcc920494000c12142d0af",
+      "bytes": 30884,
+      "sha256": "34df3d66f8ddb833b438e9dcb89b68b5de1174efb6e18f9487a5d18effbd79ba",
+      "git_blob_sha": "c9b3765c7abe192dd481f0f5818359b275646841"
+    },
+    {
+      "path": "docs/research/god-test/2026-11-22-intel-gpu-experiments.md",
+      "source_commit": "48395fac4e9ca28111dcc920494000c12142d0af",
+      "bytes": 14773,
+      "sha256": "279602e4b733c9d05c031891b9536b43e85759b58dbecaede093eb71305c9652",
+      "git_blob_sha": "6c1076dedad09363f791c299e82fefd0dd361a71"
+    },
+    {
+      "path": "docs/research/god-test/2026-11-22-intel-render-internals.md",
+      "source_commit": "48395fac4e9ca28111dcc920494000c12142d0af",
+      "bytes": 38269,
+      "sha256": "1362324702eefed2aed2f049e6b289d8676a4f35492e3db655c6da3209810efc",
+      "git_blob_sha": "bde11010f0adc32118c7adadcebaa449096b0eb1"
+    }
+  ],
+  "calculations": {
+    "native_pixels_at_75_percent": 0.5625,
+    "relative_pixels_67_vs_75": 0.7980444444444446,
+    "fewer_pixels_percent_67_vs_75": 20.195555555555543,
+    "nominal_home_floor_with_75_percent_base": 0.5249999999999999,
+    "first_home_reduction_valid_frames": 270,
+    "interpretation": "Arithmetic and source constants only; no predicted or measured speedup."
+  },
+  "acceptance": {
+    "optimization": "At least 5% of declared affected complete workload beyond paired variation, or named reproducible hitch/memory defect; other relevant views avoid material regression.",
+    "comparison": "At least three alternating pairs, 10 s warmup and 60 s sample, or stricter applicable owner requirement.",
+    "low_end_checkpoint": {
+      "status": "proposed; owner must freeze workload and rule before acceptance",
+      "median_fps_min": 30,
+      "process_p95_ms_max": 40,
+      "process_p99_ms_max": 50,
+      "simulation_wall_range": [
+        0.99,
+        1.01
+      ],
+      "recurring_stall_rule": "Repeated >50 ms gameplay stall in two of three candidate runs fails, even if explained.",
+      "cues": "Moving aircraft, landing and night cues preserve matched-reference readability.",
+      "physical_presentation": "Separate evidence; missing stays open."
+    },
+    "existing_60_hz_gate": {
+      "process_p95_ms_max": 18,
+      "process_p99_ms_max": 25,
+      "changed": false
+    },
+    "physics_hz": 240,
+    "unavailable_fields": "Remain unavailable, never zero or a positive qualification.",
+    "whole_tour": "Conditional on complete three-aircraft scope; never blanket entry prerequisite."
+  },
+  "primary_source_refresh": [
+    {
+      "id": "P01",
+      "question": "How does per-axis resolution scaling affect pixel work, and when is it useful?",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/3d/resolution_scaling.html",
+      "applicability": "Existing bilinear scale and arithmetic; no predicted FPS gain."
+    },
+    {
+      "id": "P02",
+      "question": "Can a bounded compile-time shader variant remove inactive resources/code?",
+      "url": "https://docs.godotengine.org/en/4.4/tutorials/shaders/shader_reference/shader_preprocessor.html",
+      "applicability": "Experimental Simple/Full variant; uniform branches can already optimize, compilation costs count."
+    },
+    {
+      "id": "P03",
+      "question": "How should a hypothesis be profiled and re-evaluated after optimization?",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/performance/general_optimization.html",
+      "applicability": "Bottleneck/retest method within the existing-Intel-only constraint."
+    },
+    {
+      "id": "P04",
+      "question": "What are culling, LOD and overdraw tradeoffs for this code?",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html",
+      "applicability": "Existing instancing remains; added draws can regress CPU cost. Pinned engine decides compatibility support."
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "scope": "Documentation/source integrity; no runtime or performance execution.",
+    "changed_files": 8,
+    "source_fingerprints_verified": 79,
+    "prior_branch_evidence_fingerprints_verified": 4,
+    "main_delta_paths_checked": 38,
+    "main_delta_commits_confirmed_by_github": 14,
+    "new_or_affected_local_links_checked": 60,
+    "new_links_including_external": 61,
+    "inherited_unaffected_links_skipped": 745,
+    "audit_findings": 14,
+    "independent_review_corrections": 6,
+    "current_control_areas": 11,
+    "prior_investigations_remapped": 16,
+    "phases": 7,
+    "arithmetic": "Per-axis pixel ratios, nominal Home floor and first reduction frame constants checked.",
+    "link_checker": "tools/ci/check_docs.py on staged Git tree; new/affected links only.",
+    "git_diff_check": "passed",
+    "independent_substantive_review": "No remaining substantive blocker; mechanical ledger checks performed by lead.",
+    "godot_tests_run": false,
+    "gpu_benchmarks_run": false,
+    "full_ci_run": false,
+    "qualification": "Open; source/docs verification does not establish target hardware or presentation performance."
+  }
+}

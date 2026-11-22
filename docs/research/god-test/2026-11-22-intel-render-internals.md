@@ -14,25 +14,34 @@ performance improvements.** No runtime, graphics preset, driver or host setting
 is changed by this follow-up. All proposed device experiments use the existing
 Intel installation and the [same-hardware protocol](2026-11-22-intel-gpu-experiments.md).
 
+**Priority correction after adversarial review:** the [current-main audit](2026-11-22-intel-plan-adversarial-audit.md)
+and [low-end execution plan](../../plans/low-end-gpu-performance.md) supersede
+this report's original mechanism-first ranking. Existing scale/effective-state
+checks and ground-heavy Home attribution come first; loading runs as a separate
+workstream. R01–R16 remain source-backed hypotheses, selected only when active
+and material to the measured view. The retained ledger describes the original
+research, not a measured ranking or sixteen mandatory implementation tasks.
+
 ## Engineering assessment
 
 There is useful software work left to investigate before assigning the remaining
-cost to the UHD 630 itself. The strongest new finding is that the selected root
+cost to the UHD 630 itself. A significant source finding is that the selected root
 viewport's settings do not describe every render target: the animated windsock
 can request a separate 512×512 mask while its receiver is offscreen, and the
 aircraft silhouette has its own 256×256 target with a default of 4× MSAA. A Low
 scene also retains the default field's distant tree cards in broad batches.
 These mechanisms can matter during ordinary flight, unlike optional lighting
-skin composition or a first-use cloud bake.
+skin composition or a first-use cloud bake. Their source visibility does not
+establish their contribution or priority above pixel/ground attribution.
 
-| Priority to investigate | Source-confirmed mechanism | Scope and principal uncertainty |
+| Corrected placement | Source-confirmed mechanism | Scope and principal uncertainty |
 | --- | --- | --- |
-| First: R01 | A changed windsock pose/clock can schedule `UPDATE_ONCE` without a receiver-frustum test. | Requires an active projected cue and visible source; actual GPU executions and cost need capture. |
-| First: R03 | Low retains tree cards in at most eight sector batches, merging near and far bounds. | A visible batch submits its instances; wasted work depends on the camera and finer batches add draws. |
-| First: R04, R06 | Ground shaders contain uniform anchor arithmetic and six photo-detail sampling expressions. | Existing distance/footprint guards and Mesa compiler optimization reduce the possible saving; R05's loop has only two rectangles in the default field. |
-| Second: R02 | Aircraft shadow MSAA is independent of the root viewport. | Changing it risks thin-wing silhouettes and motion shimmer; four samples do not imply four fragment shader executions. |
-| Loading track: R13–R15 | Some GPU data is copied back before CPU work, and first Home construction has a synchronous phase. | These can explain stalls, not automatically sustained flight FPS. Caches already avoid repeated work. |
-| Small recurring work: R11–R12 | Changing controls rebuild static HUD draw commands; invisible afterimages still prepare arrays. | Likely smaller CPU opportunities; instrumentation must establish whether they matter. |
+| Conditional L4.1: R01 | A changed windsock pose/clock can schedule `UPDATE_ONCE` without a receiver-frustum test. | Requires an active projected cue and visible source; actual GPU executions and cost need capture. |
+| Conditional L4.2: R03 | Low retains tree cards in at most eight sector batches, merging near and far bounds. | A visible batch submits its instances; wasted work depends on the camera and finer batches add draws. |
+| L2 material attribution before L4.6: R04, R06 | Ground shaders contain uniform anchor arithmetic and six photo-detail sampling expressions. | Existing distance/footprint guards and Mesa compiler optimization reduce the possible saving; R05's loop has only two rectangles in the default field. |
+| Conditional L4.1: R02 | Aircraft shadow MSAA is independent of the root viewport. | Changing it risks thin-wing silhouettes and motion shimmer; four samples do not imply four fragment shader executions. |
+| Parallel L3 attribution: R13–R15 | Some GPU data is copied back before CPU work, and first Home construction has a synchronous phase. | These can explain stalls, not automatically sustained flight FPS. Caches already avoid repeated work. |
+| Conditional L4.5: R11–R12 | Changing controls rebuild static HUD draw commands; invisible afterimages still prepare arrays. | Likely smaller CPU opportunities; instrumentation must establish whether they matter. |
 
 The earlier Proxmox/driver conclusion is unchanged: retained evidence identifies
 hardware rendering on the Intel device and specific environment problems, but
@@ -457,12 +466,20 @@ enabled and representative accepted/oversized sources.
 
 Keep the [existing protocol](2026-11-22-intel-gpu-experiments.md) authoritative
 for admission, native backend, effective pixels, raw evidence and paired runs.
+The [corrected plan](../../plans/low-end-gpu-performance.md#5-phases-and-subphases)
+owns order: L0/L1 effective baseline and pixel response, L2 bounded Simple
+ground if attribution supports it, parallel L3 loading, then an active L4
+residual candidate. Automatic promotion and scoped integration are L5/L6;
+a manual candidate does not wait for every policy refactor or another machine.
 Use 1920×1080 output first; record the existing Automatic internal scale and
 every auxiliary target explicitly. A new internal optimization should initially
 change one cause while holding that baseline constant. Native 1080p internal
 qualification remains a separate claim.
 
-| Wave | Questions | Minimal discriminating observation | Reject or deprioritize when |
+The following observations select among residual hypotheses; their row order
+is not an execution schedule or a requirement to run all sixteen candidates.
+
+| Residual area | Questions | Minimal discriminating observation | Reject or deprioritize when |
 | --- | --- | --- | --- |
 | A: inventory | R01–R03, R10 | Root and secondary target sizes/AA, update requests versus actual draws, visible tree batches, actual reflection activity. | The relevant path is inactive in the retained slow phase. |
 | B: recurring GPU work | R01, R03, R04, R06; then R02 and R05 | Paired identical-camera runs, CPU/GPU frame time, tail/stutter behavior, draw/instance counts, motion imagery. | Savings are within run noise, another stage worsens, or visual/cue parity fails. |
