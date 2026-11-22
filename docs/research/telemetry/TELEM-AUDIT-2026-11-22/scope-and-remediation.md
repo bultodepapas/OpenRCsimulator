@@ -78,7 +78,7 @@ Opt-in ephemeral sessions are not unique people or an unbiased sample of all pla
 
 ## Repair sequence and acceptance
 
-The following are proposed ownership areas and acceptance evidence, not tickets already assigned to people or repairs implemented by this branch.
+The table records the audit's proposed order, ownership and acceptance criteria. Repair evidence from `main` follows below.
 
 | Order | Work item | Suggested owner | Evidence required to close |
 | --- | --- | --- | --- |
@@ -94,7 +94,7 @@ The following are proposed ownership areas and acceptance evidence, not tickets 
 | 4 | TA22-L01: clean up failed local metadata export | Ground recording | Injected failure after temporary JSON creation leaves no owned orphan; samples remain available; retry and existing-output preservation verified |
 | 4 | Residual consent, deletion and release qualification | Product + client + DevOps | Explicit persistence decision, all-copy deletion drill, packaged OS admission and current deployment evidence |
 
-After each repair, convert the corresponding counterexample to an assertion of correct behavior. Preserve the baseline evidence and add a new dated closure record referencing the repair commit. Re-run the affected existing suite and actual bridge where a contract or wire behavior changes. Full application tests and deployment gates belong to the eventual repair/release scope; broad test repetition on this documentation branch would not supply the missing native or live-host evidence.
+For each repair, add a regression that asserts the expected behavior and record the repair commit and verification here. Run the affected suites and the Godot-to-receiver bridge when a contract or wire behavior changes. Qualify native packages and deployed operations through their own acceptance gates.
 
 ## Verification on main — 2026-11-22
 
@@ -106,3 +106,9 @@ Both source inventories matched all 137 distinct Git blobs at the audited commit
 | TA22-O01 | Machine health and the independent checker now include warning severity and recovery details. Regression checks cover all six receiver warnings, a recoverable rollup, quiet and suppressed cases, and separation from upstream failures. All 103 operator tests passed on Windows. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/0f859b5f358f4807877ec8bd7fe8009bc3856d3f) | Deploy matching dashboard and checker code and confirm notification delivery before the rollup cutoff |
 
 The hosted telemetry workflow passed schemas, examples, reference, receiver, operator and container-smoke checks for both repairs. [Telemetry contracts run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440057).
+
+### Client implementation dependencies
+
+For TA22-C01, attach the original context to each open window. Compare the actual dimensions, VSync, frame cap and input class before admitting an interval. Surface effective graphics changes at the point where presentation settings are applied so previews and rollbacks split a window as well. Restart warmup on a detected context change or committed reset. Use each vehicle family's lifecycle rather than relying on a backward simulation clock for short or synchronous resets.
+
+For TA22-C02, detect epoch changes before observing frames or accepting activity events. Give an open observation a deliberate disposition under its original epoch. Keep the existing deadlines on sealed data and verify boundary behavior together with TA22-C05. Changes to `app_root.gd` also require the companion behavior manifest and admission checks. [Manifest and profile validation](../../../../app/ai/companions/profile_loader.gd).
