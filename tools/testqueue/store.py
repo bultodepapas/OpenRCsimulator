@@ -63,6 +63,20 @@ class Store:
     def event(self, job: str | None, event: str, data=None):
         self.db.execute("INSERT INTO events(at,job,event,data) VALUES(?,?,?,?)", (time.time(), job, event, json.dumps(data or {})))
 
+    def only_dispatched(self, job: str, attempt: str) -> bool:
+        """The durable launch fence writes RUNNING before the launch gate can start."""
+        try:
+            rows = list(self.db.execute(
+                "SELECT event,data FROM events WHERE job=? AND event IN ('DISPATCHING','RUNNING','CLEANING','UNKNOWN','FINISHED')",
+                (job,),
+            ))
+            if len(rows) != 1 or rows[0]["event"] != "DISPATCHING":
+                return False
+            event = json.loads(rows[0]["data"])
+            return isinstance(event, dict) and event.get("attempt") == attempt
+        except (sqlite3.Error, TypeError, ValueError):
+            return False
+
     def submit(self, request_id: str, payload: dict, request_secret: str) -> dict:
         secret_digest = submission_identity(request_id, request_secret)
         hashed = digest(payload)

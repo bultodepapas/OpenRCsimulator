@@ -641,12 +641,14 @@ Job active-count zero alone are insufficient. Unobserved membership or failed cl
 quarantines the attempt. Direct children and descendants that inherit the Job are
 covered; external broker/service launches are outside that boundary and unsupported.
 
-After a lost supervisor, same-boot reconciliation remains deliberately conservative:
-the old per-process handles cannot be recovered. `testctl reconcile <handle>` releases
-an unknown attempt only after proving that the same physical host has rebooted since
-its durable prelaunch identity. It does not kill by recorded PID. Preserve the journal
-and use an ordinary host reboot when necessary; never delete a stale lock or edit
-claims to manufacture proof of cleanup.
+After a lost supervisor, `testctl reconcile <handle>` normally requires proof that
+the same physical host rebooted since the durable prelaunch identity. On the same
+Windows boot, a drained worker can also reconcile an attempt interrupted during
+preparation. This requires a single durable dispatch event, the original host and
+boot, and only the materialized source and manifest in the attempt directory. A
+launch-fence record or any adapter setup artifacts rule out that recovery. Preserve
+the journal and use an ordinary host reboot when the evidence cannot establish
+recovery.
 
 An operator who explicitly accepts the remaining cleanup uncertainty can close a
 same-boot Windows orphan with `testctl abandon <handle> --reason "owner request"`.

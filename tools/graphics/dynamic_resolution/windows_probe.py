@@ -21,7 +21,8 @@ from tools.godot.run_checked import inspect_log
 def _available(owner: str | None = None) -> bool:
     host = rpc("hosts", timeout=5)
     reservation = host.get("reservation")
-    if (host.get("condition") != "READY" or host.get("claims") != []
+    if (host.get("condition") not in {"READY", "DRAINING"} or host.get("claims") != []
+            or host.get("scheduler", {}).get("state") != "READY"
             or host.get("pending_quarantines") or host.get("pending_journals")
             or not desktop_ready()):
         return False

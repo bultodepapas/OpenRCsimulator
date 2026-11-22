@@ -47,6 +47,7 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 		prop_wood = preset.get_meta(&"wood_propeller") as Texture2D
 	var project_trim := preset != null and (prop_wood != null or bool(preset.get_meta(&"project_trim", false)))
 	var canopy_tint: Color = preset.get_meta(&"canopy_tint", Color.TRANSPARENT) if preset != null else Color.TRANSPARENT
+	var part_overrides: Dictionary = preset.get_meta(&"part_overrides", {}) if preset != null else {}
 	var detail := SceneDetail.level() != "low"
 	var count := 0
 	for mesh_node: MeshInstance3D in root.find_children("*", "MeshInstance3D", true, false):
@@ -71,9 +72,11 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 			if active == null:
 				continue
 			var original := active.get_meta(ORIGINAL, active) as StandardMaterial3D
-			if original == null or (not trim and (original.resource_name not in COVERING or not original.uv1_triplanar)):
+			if original == null:
 				continue
-			if paint_node:
+			var surface_key := "%s/%s" % [name, original.resource_name]
+			var stock_covering := original.resource_name in COVERING and original.uv1_triplanar
+			if paint_node and (trim or stock_covering or part_overrides.has(surface_key)):
 				var key := "%s:%d:%d" % [covering_path, surface, int(detail and part != ROTOR)]
 				if not coats.has(key):
 					if part == ROTOR:
@@ -81,7 +84,8 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 					elif part == CANOPY and canopy_tint.a > 0.0:
 						coats[key] = _canopy(original, canopy_tint)
 					else:
-						coats[key] = _covering(preset, original, part, rest, detail, not project_trim)
+						var surface_part: int = part_overrides.get(surface_key, part_overrides.get(name, part))
+						coats[key] = _covering(preset, original, surface_part, rest, detail, not project_trim)
 					if not retained.has(original):
 						retained.append(original)
 					retained.append(coats[key])
