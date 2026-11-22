@@ -35,6 +35,8 @@ func _run() -> void:
 	ui = UiDriver.new(self)
 	# Route: any user argument keeps the direct flight (traces, captures, --quick-flight); none shows Home.
 	_check("route: no user arguments -> Home", not AppRoot.wants_direct_flight(PackedStringArray()))
+	_check("route: the dynamic resolution experiment starts at Home",
+		not AppRoot.wants_direct_flight(PackedStringArray(["--experimental-dynamic-resolution"])))
 	_check("route: --trace -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--trace=/tmp/t.csv", "--t=3"])))
 	_check("route: --quick-flight -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--quick-flight"])))
 	_check("airplane selection preserves the current flight scene", AppRoot.flight_script_path_for_aircraft(Catalog.DEFAULT_ID) == "res://main.tscn")

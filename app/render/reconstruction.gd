@@ -721,6 +721,8 @@ static func describe(viewport: Viewport) -> Dictionary:
 	var nominal := nominal_input_size(output, viewport.scaling_3d_scale)
 	policy["nominal_3d_size"] = [nominal.x, nominal.y]
 	policy["nominal_3d_size_scope"] = NOMINAL_SIZE_SCOPE
+	if viewport.has_meta(&"openrc_flight_dynamic_resolution"):
+		policy["dynamic_resolution"] = viewport.get_meta(&"openrc_flight_dynamic_resolution").duplicate()
 	return policy
 
 

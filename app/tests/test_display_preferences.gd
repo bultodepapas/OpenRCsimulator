@@ -90,6 +90,13 @@ func _run() -> void:
 	# GFX-IGPU-01: render scale defaults to full resolution, round-trips, and rejects other values.
 	_check("render scale defaults to full resolution", DisplayPreferences.DEFAULTS.render_scale == 100
 		and migrated.render_scale == 100)
+	_check("a legacy profile keeps dynamic resolution off", migrated.dynamic_resolution_fps == 0)
+	var adaptive := DisplayPreferences.DEFAULTS.duplicate()
+	adaptive.dynamic_resolution_fps = 60
+	_check("an explicit dynamic resolution target survives a reload",
+		DisplayPreferences.save_to(PREFS, adaptive) == OK and DisplayPreferences.load_from(PREFS).dynamic_resolution_fps == 60)
+	adaptive.dynamic_resolution_fps = 47
+	_check("an unsupported dynamic resolution target is refused", not DisplayPreferences.validate(adaptive).ok)
 	for percent: int in DisplayPreferences.RENDER_SCALES:
 		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 		candidate.render_scale = percent
