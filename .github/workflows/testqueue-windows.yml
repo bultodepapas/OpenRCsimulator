@@ -68,6 +68,8 @@ jobs:
         with:
           # The actions manifest has no Windows x64 build for 3.12.12.
           python-version: '3.12.10'
+      - name: Install pinned process monitoring dependency
+        run: python -m pip install --disable-pip-version-check -r tools/godot/requirements-resources.txt
       - name: Queue contracts and real Windows process containment
         run: |
           python -m unittest discover -s tools/testqueue -p 'test_*.py' 2>&1 | Tee-Object queue-windows.log
