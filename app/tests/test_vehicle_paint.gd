@@ -516,17 +516,27 @@ func _check_jet_livery() -> void:
 	shell.lod_bias = 1.25
 	VehiclePaint.apply(jet.root, jet_id, "revoc_custom")
 	check("REVOC preserves the narrow fuselage stripe at close range", shell.lod_bias > 1.25)
-	for part in ["fuselage", "wing", "stab", "fin"]:
+	for part in ["fuselage", "wing", "stab"]:
 		var finish := _materials_named(jet.root, "paint_" + str(part))
 		check("REVOC replaces the neon %s paint and glow" % part, finish.size() == 1
 			and finish[0].albedo_texture != null and finish[0].albedo_texture.resource_path.ends_with("revoc_custom_%s.png" % part)
 			and not finish[0].emission_enabled)
+	var fin := _node_material(jet.root, "vertical_tail_fixed", "paint_fin")
+	var rudder := _node_material(jet.root, "rudder", "paint_fin")
+	check("REVOC confines the fin artwork to the fixed fin", fin != null and fin.albedo_texture != null
+		and fin.albedo_texture.resource_path.ends_with("revoc_custom_fin.png") and not fin.emission_enabled)
+	check("REVOC paints the rudder red without inheriting the fixed fin atlas", rudder != null
+		and rudder.albedo_color.is_equal_approx(Color("#e30613")) and rudder.albedo_texture == null
+		and not rudder.emission_enabled)
 	doors = _materials_named(jet.root, "paint_doors_ala")
 	check("REVOC wing doors match the plain graphite underside", doors.size() == 1
 		and doors[0].albedo_color.is_equal_approx(Color("#26282c")) and doors[0].albedo_texture == null and not doors[0].emission_enabled)
 	VehiclePaint.apply(jet.root, jet_id, "revoc_custom")
 	VehiclePaint.apply(jet.root, jet_id, "verde_neon_carbono")
 	check("repainting restores the original fuselage LOD bias", is_equal_approx(shell.lod_bias, 1.25))
+	rudder = _node_material(jet.root, "rudder", "paint_fin")
+	check("repainting restores the selected livery's rudder atlas", rudder != null and rudder.albedo_texture != null
+		and rudder.albedo_texture.resource_path.ends_with("verde_neon_carbono_fin.jpg"))
 	shell.lod_bias = 32.0
 	VehiclePaint.apply(jet.root, jet_id, "revoc_custom")
 	check("REVOC keeps higher instance detail", is_equal_approx(shell.lod_bias, 32.0))

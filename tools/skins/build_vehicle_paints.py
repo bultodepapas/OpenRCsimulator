@@ -418,7 +418,7 @@ def _node_matrix(node: dict) -> np.ndarray:
     return t @ r @ s
 
 
-def scene_primitives(path: Path, materials):
+def scene_primitives(path: Path, materials, *, mesh_nodes=()):
     """Yield (material, scene positions, scene normals, uv, triangles) with every node transform applied."""
     doc, accessor = read_glb(path)
     names = [m["name"] for m in doc["materials"]]
@@ -428,7 +428,7 @@ def scene_primitives(path: Path, materials):
     def walk(index: int, parent: np.ndarray) -> None:
         node = doc["nodes"][index]
         world = parent @ _node_matrix(node)
-        if "mesh" in node:
+        if "mesh" in node and (not mesh_nodes or node.get("name") in mesh_nodes):
             normal_matrix = np.linalg.inv(world[:3, :3]).T
             for prim in doc["meshes"][node["mesh"]]["primitives"]:
                 name = names[prim["material"]]
@@ -450,7 +450,7 @@ def scene_primitives(path: Path, materials):
     return found
 
 
-def bake_scene(path: Path, materials, size, symmetric: bool = False, skin_axis: int = -1):
+def bake_scene(path: Path, materials, size, symmetric: bool = False, skin_axis: int = -1, *, mesh_nodes=()):
     """UV-space rasterisation of several materials sharing one atlas: scene position, normal, material id.
     `symmetric` folds the scene about the X = 0 plane first: left and right parts that share mirrored UVs (the
     jet's wings and stabiliser) then accumulate the same |x| instead of averaging to the centre line.
@@ -462,7 +462,7 @@ def bake_scene(path: Path, materials, size, symmetric: bool = False, skin_axis: 
     mat_map = np.full((height, width), -1, dtype=np.int32)
     weight = np.zeros((height, width))
     best = np.full((height, width), -1.0)
-    for name, pos, nrm, uv, tris in scene_primitives(path, materials):
+    for name, pos, nrm, uv, tris in scene_primitives(path, materials, mesh_nodes=mesh_nodes):
         mat_id = list(materials).index(name)
         if symmetric and pos[:, 0].mean() < 0.0:
             mirror = np.array([-1.0, 1.0, 1.0])
@@ -1089,7 +1089,7 @@ def revoc_body_colours(y, z):
     stripe = smoothstep(0.004, 0.006, d) * (1 - smoothstep(0.003, 0.005, d - width))
     colour = mix(colour, REVOC_GRAPHITE, stripe)
     # Use the same upper sweep on both sides of the fuselage/fin joint.
-    rise = y - 0.245 + 0.23 * (z - 1.025)
+    rise = y - 0.245 + 0.28 * (z - 1.005)
     return mix(colour, REVOC_RED, smoothstep(-0.001, 0.001, rise))
 
 
@@ -1097,19 +1097,20 @@ def revoc_body(atlas, p, logo):
     _, y, z = p.T
     colour = revoc_body_colours(y, z)
     if atlas == "fuselage":
-        # The upper sweep is confined to the tail. Finish the nose with a full cap.
+        # Finish the nose with a full cap.
         colour = mix(colour, REVOC_GRAPHITE, 1 - smoothstep(-0.847, -0.845, z))
         # Follow the lower intake crease on both flanks. At 390 mm wide the midpoint
         # of the clear space between the two lines (source row 277) is 13.1 mm below centre.
         crease_y = np.interp(z, [-0.52, -0.36, -0.205], [0.0128, 0.0097, 0.0091])
         revoc_decal(colour, p, logo, -0.595, -0.205, crease_y + 0.0131)
         return colour
-    cap = y - 0.531 - 0.20 * (z - 1.1)
+    # Curl the cap up to the top edge before the rudder, which shares UVs with
+    # the fixed fin and carries solid red across the whole hinge.
+    cap = y - 0.531 - 0.20 * (z - 1.1) - 0.064 * smoothstep(1.178, 1.218, z)
     colour = mix(colour, REVOC_WHITE, smoothstep(-0.001, 0.001, cap))
     colour = mix(colour, REVOC_GRAPHITE, smoothstep(0.010, 0.012, cap))
-    if atlas == "fin":
-        # The square emblem fits on the fixed fin ahead of the rudder hinge.
-        revoc_decal(colour, p, logo[:, :logo.shape[0]], 0.992, 1.109, 0.376)
+    # The square emblem fits on the fixed fin ahead of the rudder hinge.
+    revoc_decal(colour, p, logo[:, :logo.shape[0]], 0.992, 1.109, 0.376)
     return colour
 
 
@@ -1167,7 +1168,8 @@ def build_revoc(atlas):
     materials = JET_ATLASES[atlas][0]
     # Four samples per delivered texel. Filter the colour after projection and island
     # padding, so a diagonal stripe and a UV seam get the same edge coverage.
-    p, n, material_ids, covered = bake_scene(JET_GLB, materials, sample_size, skin_axis=0)
+    mesh_nodes = ("vertical_tail_fixed",) if atlas == "fin" else ()
+    p, n, material_ids, covered = bake_scene(JET_GLB, materials, sample_size, skin_axis=0, mesh_nodes=mesh_nodes)
     del n, material_ids
     colour = np.zeros(p.shape, dtype=np.uint8)
     for rows in range(0, len(covered), 128):
