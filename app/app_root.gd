@@ -3316,6 +3316,7 @@ func _telemetry_context() -> Dictionary:
 	var vehicle := ""
 	var custom := false
 	var simulated := -1.0
+	var simulation_paused := false
 	var fixed_wing := false
 	var physics_backend := "unknown"
 	var activity_id := 0
@@ -3342,12 +3343,17 @@ func _telemetry_context() -> Dictionary:
 				_bind_telemetry_reset(activity, &"activity_reset")
 			else:
 				_bind_telemetry_reset(session, &"resetting")
+			var sim: Variant = session.get("sim")
+			# Manually stepped ground, multirotor and airship sessions own their pause flag.
+			# Fixed-wing and helicopter sessions let the kernel own it.
+			var paused: Variant = session.get("paused")
+			if not paused is bool and sim is Object and is_instance_valid(sim):
+				paused = sim.get("paused")
+			simulation_paused = paused != false
 			if session.has_method("time_s"):
 				simulated = float(session.call("time_s"))
-			else:
-				var sim: Variant = session.get("sim")
-				if sim is Object and is_instance_valid(sim) and sim.has_method("time"):
-					simulated = float(sim.call("time"))
+			elif sim is Object and is_instance_valid(sim) and sim.has_method("time"):
+				simulated = float(sim.call("time"))
 			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
 				and statistics_service.observing(session)
 			# Telemetry v2: only the backend kind (native_fallback.gd), never the refusal text.
@@ -3363,7 +3369,8 @@ func _telemetry_context() -> Dictionary:
 	var minimized := bool(window_minimized_probe.call())
 	var menu_over_activity := activity != null and screens.top() != null
 	var eligible: bool = not _loading_active and not home_build_pending and not screens.is_top("loading") \
-		and not get_tree().paused and not menu_over_activity and not minimized and bool(window_focus_probe.call())
+		and not get_tree().paused and not simulation_paused and not menu_over_activity \
+		and not minimized and bool(window_focus_probe.call())
 	var input_class := "unknown"
 	if controllers != null and controllers.get("registry") != null:
 		var flight_device: int = controllers.registry.selected_device_id("flight")
