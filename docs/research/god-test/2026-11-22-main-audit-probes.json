@@ -1,0 +1,172 @@
+{
+  "architecture": "x86_64",
+  "audit_date": "2026-11-22",
+  "audited_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "comparison_commit": "7a403ea059830913192696138020fd78ec458820",
+  "format": "openrc-godtest-main-audit-probes-v1",
+  "observed_behavior_matches_audited_defects": true,
+  "platform": "Linux",
+  "probes": [
+    {
+      "evidence_kind": "synthetic_stream_reduction",
+      "finding": "M01",
+      "fixture_selection_interval_usec": [
+        4000000,
+        5000000
+      ],
+      "limit": "The synthetic phase boundary describes the fixture; validate_stream receives only raw phase indices. Actual producer control flow is reviewed separately.",
+      "selection_only_control": {
+        "frame_ms": {
+          "max": 10.0,
+          "p50": 10.0,
+          "p95": 10.0,
+          "p99": 10.0
+        },
+        "pacing": {
+          "assignment": "phase_index at interval end; denominator is assigned wall time",
+          "fps_01pct_low": 100.0,
+          "fps_1pct_low": 100.0,
+          "fps_mean": 100.0,
+          "frames": 100,
+          "low_01pct_frames": 1,
+          "low_01pct_status": "short_sample",
+          "low_1pct_frames": 1,
+          "low_1pct_status": "available",
+          "low_method": "reciprocal of mean slowest tail; floor(N*fraction), at least one sample",
+          "sample_wall_ms": 1000.0
+        },
+        "stream_valid": true
+      },
+      "with_preselection_wait": {
+        "frame_ms": {
+          "max": 1000.0,
+          "p50": 10.0,
+          "p95": 10.0,
+          "p99": 1000.0
+        },
+        "pacing": {
+          "assignment": "phase_index at interval end; denominator is assigned wall time",
+          "fps_01pct_low": 1.0,
+          "fps_1pct_low": 1.0,
+          "fps_mean": 20.8,
+          "frames": 104,
+          "low_01pct_frames": 1,
+          "low_01pct_status": "short_sample",
+          "low_1pct_frames": 1,
+          "low_1pct_status": "available",
+          "low_method": "reciprocal of mean slowest tail; floor(N*fraction), at least one sample",
+          "sample_wall_ms": 5000.0
+        },
+        "stream_valid": true
+      }
+    },
+    {
+      "actual_drawable_intervals": 0,
+      "claimed_raw_receipt": {
+        "frames": 4,
+        "positive_in_phase_intervals": 3,
+        "reasons": [],
+        "scope": "drawable interval endpoints and in-phase draw progress; physical presentation unverified",
+        "segments": 1,
+        "segments_without_draw": 0,
+        "status": "complete",
+        "undrawable_intervals": 0,
+        "window_mode_transition_intervals": 4
+      },
+      "claimed_transition_intervals": 4,
+      "control_without_label_status": "incomplete",
+      "evidence_kind": "synthetic_reducer_counterexample",
+      "finding": "M02",
+      "host": {
+        "platform": "Windows-10-10.0.0"
+      },
+      "limit": "Not a complete campaign or a claim that the producer emitted this contradictory fixture.",
+      "mode_event_supplied": false,
+      "phase": "selection",
+      "rendering_verdict": {
+        "issues": [],
+        "requested_headless": false,
+        "requested_phases": 2,
+        "scope": "per-phase engine draw progress and drawable endpoints; physical presentation unverified",
+        "status": "complete"
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "entry": "isolated",
+      "evidence_kind": "actual_cli_dry_run",
+      "finding": "M04",
+      "limit": "No flight executed. Completion risk additionally follows the pilot's altitude/climb/elapsed predicate.",
+      "phases": [
+        "takeoff"
+      ],
+      "start": "airborne"
+    },
+    {
+      "accepted": true,
+      "evidence_kind": "synthetic_aggregate_receipt",
+      "finding": "M05",
+      "input": {
+        "accepted_samples": 0,
+        "agl_limits_m": [
+          20,
+          140
+        ],
+        "center_east_m": 0,
+        "center_north_m": 0,
+        "clockwise_sweep_rad": 6.283185307179586,
+        "complete": true,
+        "failed": false,
+        "format": "openrc-godtest-runway-circuit-v1",
+        "inner_radius_m": 78,
+        "lap_sim_seconds": 10,
+        "maximum_agl_m": 65,
+        "maximum_radius_m": 120,
+        "minimum_agl_m": 65,
+        "minimum_radius_m": 120,
+        "outer_radius_m": 198,
+        "quadrants_mask": 15,
+        "runway_enclosing_radius_m": 50,
+        "target_radius_m": 120
+      },
+      "limit": "Does not claim the actual observer produced zero samples or that historical flights were invalid.",
+      "zero_winding_control_accepted": false
+    },
+    {
+      "accepted_direct_default_seconds": 3600,
+      "accepted_direct_timeout_seconds": 1,
+      "case_count": 9,
+      "case_timeout_sum_seconds": 8100,
+      "evidence_kind": "actual_offline_preset_validation",
+      "finding": "M06",
+      "job_submitted": false,
+      "managed_cli_budget_seconds": 14924
+    }
+  ],
+  "python": "3.12.14",
+  "qualification": "none; offline counterexamples only",
+  "reproducer_sha256": "32611f883f74105b8dac4127dc74fe8472082275bb2d5f6329b7ef7199efa6b5",
+  "source_sha256": {
+    "app/debug/godtest_driver.gd": "fd198cf550e53005f53bec006f1b5c86838784dda8472222c8ee6e26b6bb262f",
+    "research/performance/godtest/pilot.gd": "bf223b016f7fb74a4f2d26fee95237e5ee01c222f2bde263ce64ede778531569",
+    "research/performance/godtest/runway_circuit.gd": "9d8d6b412f1bb33ed8da11b1704940359e1b2d6c21dc1b2e1f14d7cc22a95103",
+    "tools/godot/resource_samples.py": "5dc82ef9c0875d34addc6a446b58cf3a83b619b8dfaa8d778ad008cf61069a03",
+    "tools/godot/run_checked.py": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+    "tools/godtest/admission.py": "b61efa942e2424b1675a87e293a0f68486e6f2d29ff8d3282068452e73c657c7",
+    "tools/godtest/analysis.py": "cfa56993edc6adf7951e6447d4a0cd33319b0b9d1b6243c0059762c0e7ebff75",
+    "tools/godtest/catalog.py": "9e6a72186329086f94d8188a84ccfe194e8e0016cffa5a5c042af4a048ebe656",
+    "tools/godtest/godtest.py": "2cd1fafa6b08ec21381410e9f99dc906197988a1b50dca6280ca4d306f89ee5d",
+    "tools/godtest/gpu_coverage.py": "d6ff2baf1760094d892c7fcc92f6e97908aff4866313f2e521afa913067b5879",
+    "tools/godtest/hardware.py": "b1470f0c990c6c273c3915f0ae2e3789a25b12b8619cdc89166f4311d7bad4e6",
+    "tools/godtest/isolation.py": "2ce2368119bf11b77a511d819b71cfedd49838d9bac56522efc05a5803ca63c8",
+    "tools/godtest/pace_windows.py": "cc1eb6269346eb682161f8b8efd56a1cf7cfdf9b77c34e84dba11efc2e60884e",
+    "tools/godtest/render_evidence.py": "93235343ef005c089275157e3620faf969f2f7a8d987484b5c2168dfb49de0bb",
+    "tools/godtest/resource_coverage.py": "22fd747bc63ed491b2faff56bf5a1d67bff6598e7078a8ce99896fbfaf2ecde3",
+    "tools/godtest/runner.py": "e2db797afab31b70125d7bedf2dc6f31ef8b16a5e6e43c35c95c934754493568",
+    "tools/godtest/test_render_evidence.py": "a9fd2f9a4e308a368a957d40920ec5fabd218fa55f91778babf0d8f7870a8963",
+    "tools/godtest/tour_report.py": "c895c14ce4edf6f4b7d1eae4a98081cf87a5f1d2ddb683924836b2c36ea461fe",
+    "tools/testqueue/__init__.py": "5baaa9ea0a675272a578afb9ce3b404d079ebbe12062c3a76821264265738c9c",
+    "tools/testqueue/common.py": "d19fb3ecbad3b884689829b76ff0faa0036262c391dfeba6e6781ba76cf2d481",
+    "tools/testqueue/presets.py": "030dd9d534428f4eb92fd94961dd5a139379b2c9d6c4ce522df274cee9b3e7e1"
+  }
+}
