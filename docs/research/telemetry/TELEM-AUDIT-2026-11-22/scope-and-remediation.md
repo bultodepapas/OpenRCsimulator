@@ -110,6 +110,8 @@ Both source inventories matched all 137 distinct Git blobs at the audited commit
 | TA22-C04 | AppRoot uses each installed activity's pause owner to stop cadence and active-time accumulation. The checked macOS AppRoot flow passed a focused hold and resume, a terminal fixed-wing crash and the flight reset boundary. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/1c766b963) | Rendered ordinary-release crash path and per-family runtime checks |
 | TA22-C05 | The ten-minute clock starts at observation, including for open windows, activity slices, error counters and numbered events. Checked macOS queue and service tests passed at the deadline, including late callbacks, out-of-order expiry and active eviction. The AppRoot preview dropped expired data. All 129 reference tests passed, including the retry at 599 seconds. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/fbb08dc5422d90706f56a66b7de784e8d24ef6d0) | OS suspension and live receiver timing |
 
+The AppRoot regression passed again after integrating the graphics and Settings changes already on main. The verified macOS ARM64 job was `855aedaf086f4b0e9ec084b4e908c4de` on source `16580db0506b`. The Linux CI shards containing the AppRoot, queue, service, responsive modal and companion manifest checks passed on the isolated repair candidate. [Candidate CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45057631518).
+
 The hosted telemetry workflow passed schemas, examples, reference, receiver, operator and container-smoke checks for both repairs. [Telemetry contracts run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440057).
 
 ### Client implementation dependencies
