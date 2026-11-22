@@ -8,6 +8,7 @@ const Service := preload("res://telemetry/telemetry_service.gd")
 const Store := preload("res://telemetry/telemetry_consent_store.gd")
 const Contract := preload("res://telemetry/telemetry_contract.gd")
 const Queue := preload("res://telemetry/telemetry_queue.gd")
+const FlightEvent := preload("res://statistics/flight_event.gd")
 
 const PATH := "user://test_telemetry_service_consent.cfg"
 const FRAME_US := 16667
@@ -58,6 +59,7 @@ func _initialize() -> void:
 	_unavailable()
 	_lifecycle()
 	_activities()
+	_crash_revisions_across_slices()
 	_off_switch_and_suspension()
 	_rotation_and_partial_activity()
 	_quit_in_flight_keeps_slices()
@@ -190,7 +192,8 @@ func _activities() -> void:
 	_run(s, 1.0)
 	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true, "simulated_seconds": 0.0}, true)
 	_run(s, 5.0)
-	s.note_flight_events([{"type": "TAKEOFF"}, {"type": "TOUCHDOWN"}, {"type": "LANDING_SUCCESS"}, {"type": "CRASH"}, "x"])
+	var crash := FlightEvent.make({}, "CRASH", 1, 3, "flight", "episode", "accident")
+	s.note_flight_events([{"type": "TAKEOFF"}, {"type": "TOUCHDOWN"}, {"type": "LANDING_SUCCESS"}, crash, "x"])
 	_run(s, 5.0)
 	_ctx.merge({"mode": "home", "activity": false, "vehicle": "", "fixed_wing_accepted": false}, true)
 	_ctx.erase("simulated_seconds")
@@ -227,6 +230,46 @@ func _activities() -> void:
 	_check("Workshop editing: windows with no vehicle and no activity summary", not workshop_windows.is_empty()
 		and workshop_windows.all(func(w: Dictionary) -> bool: return w.vehicle_id == "none")
 		and _events(s, "activity_summary").size() == 4 and not JSON.stringify(_batches(s)).contains("my-draft"), str(workshop_windows))
+	s.queue_free()
+
+
+func _crash_revisions_across_slices() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	var s := _service()
+	_run(s, 1.0)
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true,
+		"simulated_seconds": 0.0}, true)
+	_run(s, 1.0)
+	var first := FlightEvent.make({}, "CRASH", 2, 7, "flight", "episode", "first")
+	var update := FlightEvent.make({}, "CRASH", 3, 8, "flight", "episode", "first", {}, true, 1)
+	var next := FlightEvent.make({}, "CRASH", 4, 12, "flight", "episode-2", "second", {}, true)
+	_check("crash fixtures follow the semantic event contract", FlightEvent.valid(first) and FlightEvent.valid(update)
+		and FlightEvent.valid(next))
+	s.note_flight_events([first, first])
+	_run(s, 300.0)
+	s.note_flight_events([update, first, next, next])
+	# The detector may reset even when the sampled simulated clock changes by less than 0.5 seconds.
+	_ctx.simulated_seconds = float(_ctx.simulated_seconds) - 0.25
+	_run(s, 0.1)
+	var short_restart := FlightEvent.make({"generation_id": "short-reset"}, "CRASH", 1, 1, "new-flight", "episode", "third")
+	s.note_flight_events([short_restart, short_restart])
+	# Statistics can emit the next generation before the telemetry frame sampler sees the reset.
+	var restarted := FlightEvent.make({"generation_id": "reset"}, "CRASH", 2, 1, "new-flight", "episode", "fourth")
+	s.note_flight_events([restarted])
+	_ctx.simulated_seconds = 0.0
+	_run(s, 1.0)
+	s.note_flight_events([restarted])
+	var next_after_reset := FlightEvent.make({"generation_id": "reset"}, "CRASH", 4, 2, "new-flight", "episode", "fifth")
+	s.note_flight_events([next_after_reset])
+	_ctx.merge({"mode": "home", "activity": false}, true)
+	_run(s, 1.0)
+	var summaries := _events(s, "activity_summary")
+	_check("crash counts track initial events across slices and detector generations",
+		summaries.size() == 3 and summaries[0].outcome == "slice" and summaries[1].outcome == "reset"
+		and summaries[2].outcome == "returned_home"
+		and summaries.map(func(a: Dictionary) -> int: return int(a.aircraft_crashes)) == [1, 3, 1], str(summaries))
+	_check("classifier identifiers stay out of the telemetry preview", not s.preview_text().contains("short-reset")
+		and not s.preview_text().contains("generation_id") and not s.preview_text().contains("sequence"))
 	s.queue_free()
 
 
