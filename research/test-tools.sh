@@ -3,15 +3,13 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export PYTHONDONTWRITEBYTECODE=1
+echo "== Native kernel build, installation, and package contracts"
+# Discover unittest fixtures without invoking the CLI entry points that require
+# a built library, an exported executable, or an Apple Silicon editor.
+timeout 300 python3 -m unittest discover -s "$ROOT/research/native-kernel" -p 'test_*.py'
+echo "== Mass, center-of-gravity, and finite-fuel trace contracts"
+timeout 120 python3 "$ROOT/app/tests/test_mass_trace_contract.py"
 for test in \
-  native-kernel/test_verification.py \
-  native-kernel/test_verification_families.py \
-  native-kernel/test_fleet_campaign.py \
-  native-kernel/test_package.py \
-  native-kernel/test_macos_package_promotion.py \
-  native-kernel/test_public_ci_transport.py \
-  native-kernel/test_macos_package_default_probe.py \
-  native-kernel/test_devtools.py \
   performance/test_session_baseline.py \
   performance/test_package_flight_summary.py \
   performance/test_app_cpu_per_sim.py \
