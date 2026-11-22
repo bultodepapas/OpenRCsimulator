@@ -77,6 +77,14 @@ func _run() -> void:
 	_check("production render applies the actual in-transit angle to both flap hinges",
 		_hinge_matches(main.get("_airplane"), "flap_left", float(moving.angle_deg))
 		and _hinge_matches(main.get("_airplane"), "flap_right", float(moving.angle_deg)), str(moving))
+	var accepted_aux: PackedFloat64Array = session.sim.aux.duplicate()
+	var slot: int = session.flap_aux_index()
+	for invalid: float in [-0.1, 1.1, INF, NAN]:
+		session.sim.aux[slot] = invalid
+		_check("invalid AUX fraction gives a neutral flap angle", main._flap_angle_for_render() == 0.0)
+	session.sim.aux.resize(slot)
+	_check("missing AUX slot gives a neutral flap angle", main._flap_angle_for_render() == 0.0)
+	session.sim.aux = accepted_aux
 
 	var speed_before: PackedFloat64Array = session.sim.state.duplicate()
 	session.sim.state[RB.VEL] = 100.0
@@ -99,6 +107,7 @@ func _run() -> void:
 	var fixed: Node = Session.new()
 	fixed.setup()
 	main.set("session", fixed)
+	_check("Stik has zero visual flap angle", main._flap_angle_for_render() == 0.0)
 	_check("fixed-gear Stik does not advertise flaps", not bool(main.controller_capabilities().flaps)
 		and not bool(fixed.flap_state().get("available", false)))
 	main.controller_action("flaps_down")

@@ -57,6 +57,7 @@ const FlightLog := preload("res://sim/flight_log.gd")
 const FlightLogCliHost := preload("res://tools/flight_log_cli_host.gd")
 const NativeQualification := preload("res://tools/native_qualification.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const RetractableGear := preload("res://physics/retractable_gear.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
@@ -3684,6 +3685,16 @@ func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vecto
 	return Atmosphere.sun_direction(_lighting) if snapshot_lighting else cue_direction
 
 
+func _flap_angle_for_render() -> float:
+	if session.sim == null:
+		return 0.0
+	var slot: int = session.flap_aux_index()
+	var aux: PackedFloat64Array = session.sim.aux
+	if slot < 0 or slot >= aux.size() or not RetractableGear.valid_fraction(aux[slot]):
+		return 0.0
+	return aux[slot] * float(session.aircraft.model.flaps.max_angle_deg)
+
+
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_camera_cut := false) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
@@ -3692,7 +3703,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_controls(_airplane, _surface_rotations_for_render(c), float(c.get("throttle", 0.0)))
 	if session != null and session.flaps_available():
-		AirplaneBuilder.apply_flaps(_airplane, session.flap_angle_deg())
+		AirplaneBuilder.apply_flaps(_airplane, _flap_angle_for_render())
 	if AirplaneBuilder.has_folds(_airplane):
 		var fractions := {}
 		for key: String in _airplane.folds:

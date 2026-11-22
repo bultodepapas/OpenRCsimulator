@@ -70,8 +70,6 @@ func _check_avanti_actuator() -> void:
 	var extended: Dictionary = flight.flap_state()
 	_check("extension continues monotonically without an instant jump", extended.actual > first.actual
 		and extended.actual < 1.0 and is_finite(extended.angle_deg))
-	_check("visual flap angle follows the accepted actuator between detents",
-		flight.flap_angle_deg() == extended.angle_deg)
 
 	_check("retraction request is accepted", flight.set_flaps(0.0))
 	_step(flight, 1)
@@ -110,12 +108,6 @@ func _check_avanti_actuator() -> void:
 	_check("resume advances the requested flap slew", flight.sim.tick == before_tick + 1
 		and flight.flap_state().actual > before_pause,
 		"tick %d→%d; flap %.9f→%.9f" % [before_tick, flight.sim.tick, before_pause, flight.flap_state().actual])
-	var slot: int = flight.flap_aux_index()
-	for invalid: float in [-0.1, 1.1, INF, NAN]:
-		flight.sim.aux[slot] = invalid
-		_check("invalid actuator fraction gives a retracted visual", flight.flap_angle_deg() == 0.0)
-	flight.sim.aux.resize(slot)
-	_check("missing actuator slot gives a retracted visual", flight.flap_angle_deg() == 0.0)
 	flight.free()
 
 
@@ -250,7 +242,6 @@ func _check_checkpoint_and_log_replay() -> void:
 func _check_unchanged_other_aircraft() -> void:
 	var flight: Node = Flight.new()
 	flight.setup(Catalog.entry(OTHER).data)
-	_check("aircraft without flaps has zero visual angle", flight.flap_angle_deg() == 0.0)
 	_check("non-flap Extra keeps its original input and AUX layouts",
 		flight.is_flyable() and not flight.flaps_available() and flight.flap_input_index() == -1
 		and flight.flap_aux_index() == -1 and flight.sim.inputs.size() == 4)
