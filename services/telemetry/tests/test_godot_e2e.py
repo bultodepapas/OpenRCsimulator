@@ -3,8 +3,8 @@
 Skipped unless OPENRC_GODOT names a Godot 4.8 executable; CI sets OPENRC_REQUIRE_GODOT_E2E=1 to reject a skip.
 Starts `python -m openrc_telemetry serve` on a free
 loopback port with a temporary data directory, runs app/tests/telemetry_receiver_e2e.gd, then checks that every
-batch the client reported as sent is stored once, passes this receiver's own validation and carries no
-identifying field.
+batch the client reported as sent is stored once, passes this receiver's own validation and omits
+the fixture's specified identifying strings.
 """
 from __future__ import annotations
 

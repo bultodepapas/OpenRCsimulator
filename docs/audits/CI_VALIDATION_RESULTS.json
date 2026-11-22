@@ -1,0 +1,240 @@
+{
+  "format": "openrc-ci-audit-validation-v1",
+  "collected_on": "2026-11-22",
+  "baseline_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "implementation_commits": [
+    "4c13f76b6ddc8e8bdf989100c413584d3e8ecfea",
+    "b36fa60f65eb7d8f39a247bbb7ac0f4bc04b233d",
+    "f1efc0078acf926cddd185ec9943f38bffcc70dc"
+  ],
+  "checks": [
+    {
+      "id": "workflow-static",
+      "result": "passed",
+      "scope": "All eight candidate workflow files",
+      "command": "actionlint -shellcheck= -pyflakes=",
+      "tool": "actionlint 1.7.12 linux_amd64",
+      "archive_sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+      "negative_control": "Corrupt downloaded archive rejected and temporary extraction removed.",
+      "limit": "External ShellCheck and Pyflakes integrations deliberately disabled."
+    },
+    {
+      "id": "ci-tooling",
+      "result": "passed",
+      "tests_run": 139,
+      "elapsed_seconds": 95.889,
+      "command": "python3 -m unittest discover -s tools/ci -p 'test_*.py'",
+      "environment": "Exact sparse job input set: 499 baseline paths plus new linter files; unchanged materialized bytes matched Git objects.",
+      "retained_log_sha256": "09c0ecc030eab63486ed4c89bca43668a7b53bef101f8a8fbf24a8a6fd2e9f9a",
+      "result_excerpt": [
+        "Checked 1 new or potentially affected local document link(s).",
+        "Checked 1 new or potentially affected local document link(s).",
+        "Checked 0 new or potentially affected local document link(s).",
+        "Checked 2 new or potentially affected local document link(s).",
+        "Checked 1 new or potentially affected local document link(s).",
+        "Checked 0 new or potentially affected local document link(s).",
+        "Checked 8 new or potentially affected local document link(s).",
+        "Document link comparison unavailable (tag/manual/other event requires full checks); full scope retained.",
+        "Checked 0 new or potentially affected local document link(s).",
+        "Checked 2 new or potentially affected local document link(s).",
+        "Checked 0 new or potentially affected local document link(s).",
+        "== parse roster receipt: /dev/shm/openrc-architecture-ci-tests/openrc-partitions-ajtz1qze/receipt"
+      ]
+    },
+    {
+      "id": "host-queue",
+      "result": "passed_with_expected_skips",
+      "tests_run": 458,
+      "skipped": 12,
+      "elapsed_seconds": 60.688,
+      "command": "python3 -m unittest discover -s tools/testqueue -p 'test_*.py'",
+      "environment": "Same exact sparse job input set, Linux.",
+      "retained_log_sha256": "a9e168dca0466f1395edfccaa9d2f61f3c63be6cc4df6eea8e73a0a5253a6de8",
+      "result_excerpt": [
+        "  \"summary\": {",
+        "    \"local-snapshot\": {",
+        "      \"reclaim\": 1,",
+        "      \"reclaim_bytes\": 10,",
+        "      \"hold\": 0,",
+        "      \"hold_bytes\": 0",
+        "    }",
+        "  },",
+        "  \"largest_holds\": [],",
+        "  \"reclaim_gb\": 0.0,",
+        "  \"execute\": false",
+        "}"
+      ]
+    },
+    {
+      "id": "aggregate-input-equivalence",
+      "result": "passed",
+      "materialized_baseline_files": 2125,
+      "baseline_tracked_paths": 52627,
+      "parse_paths": 2067,
+      "unit_paths": 1163,
+      "assertion": "Sparse and full discovered script paths, byte digests and seven explicit verifier/runner inputs agree.",
+      "limit": "Source/roster equivalence, not execution of every GDScript."
+    },
+    {
+      "id": "native-portable",
+      "result": "passed",
+      "tests_run": 354,
+      "elapsed_seconds": 18.466,
+      "command": "python3 -m unittest discover -s research/native-kernel -p 'test_*.py'",
+      "limit": "Portable fixtures, not host compiler, installed native runtime or packaged executable qualification.",
+      "retained_log_sha256": "689d55fbed931fa9d36ed910f3141d90a8ee999b6c9ffbcd7ac9175305bdbced",
+      "result_excerpt": [
+        "test_large_aggregate_does_not_hide_a_nearly_empty_case (test_verification_families.FamilyPromotion.test_large_aggregate_does_not_hide_a_nearly_empty_case) ... ok",
+        "test_missing_cases_or_comparisons_cannot_be_disguised_by_a_pass (test_verification_families.FamilyPromotion.test_missing_cases_or_comparisons_cannot_be_disguised_by_a_pass) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 354 tests in 18.466s",
+        "",
+        "OK",
+        "{",
+        "  \"result\": \"detected\",",
+        "  \"fpcr\": {},",
+        "  \"receipt\": \"/dev/shm/openrc-native-contract-checkout/tmp/fpcr-control-tests/tmpq6szaemc/output/control-receipt.json\"",
+        "}"
+      ]
+    },
+    {
+      "id": "mass-traces",
+      "result": "passed",
+      "tests_run": 7,
+      "elapsed_seconds": 0.006,
+      "command": "python3 app/tests/test_mass_trace_contract.py",
+      "retained_log_sha256": "0d6653413f55f7cf64dbfab59b6b29c640ade8e63585414ab2a44a0892a5ed0a",
+      "result_excerpt": [
+        ".......",
+        "----------------------------------------------------------------------",
+        "Ran 7 tests in 0.006s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "id": "receiver-service",
+      "result": "passed_with_optional_engine_skip",
+      "tests_run": 149,
+      "skipped": 1,
+      "elapsed_seconds": 4.279,
+      "command": "python -m unittest discover -s tests -p 'test_*.py'",
+      "working_directory": "services/telemetry",
+      "environment": "Isolated venv installed from services/telemetry/requirements.txt; pip check passed.",
+      "retained_log_sha256": "29e31ff5132ea85ff120b375785246e28b6702c9f8451d0e571771380475614d",
+      "result_excerpt": [
+        "test_pragmas_and_constraints (tests.test_storage.RawStoreTests.test_pragmas_and_constraints) ... ok",
+        "test_purge_boundary_is_exactly_48_hours (tests.test_storage.RawStoreTests.test_purge_boundary_is_exactly_48_hours) ... ok",
+        "test_purge_frees_dedup_keys_and_overwrites_bytes (tests.test_storage.RawStoreTests.test_purge_frees_dedup_keys_and_overwrites_bytes) ... ok",
+        "test_read_only_store_does_not_change_an_unrelated_sqlite_database (tests.test_storage.RawStoreTests.test_read_only_store_does_not_change_an_unrelated_sqlite_database) ... ok",
+        "test_records_for_day_in_ingestion_order (tests.test_storage.RawStoreTests.test_records_for_day_in_ingestion_order) ... ok",
+        "test_unavailable_storage_raises (tests.test_storage.RawStoreTests.test_unavailable_storage_raises) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 149 tests in 4.279s",
+        "",
+        "OK (skipped=1)",
+        "{\"checkpoint_busy\": false, \"deleted_aggregate_rows\": 0, \"deleted_batches\": 0}"
+      ]
+    },
+    {
+      "id": "health-readiness",
+      "result": "passed",
+      "tests_run": 11,
+      "command": "python3 -m unittest tools.telemetry.test_wait_for_health",
+      "cases": [
+        "initial and eventual HTTP 200 / status=ok",
+        "all-failure exhaustion",
+        "other successful status codes expire",
+        "invalid, unhealthy and oversized JSON rejected",
+        "HTTP 503",
+        "process death",
+        "remaining timeout bound",
+        "late positive result rejected",
+        "nonfinite/nonpositive budgets rejected",
+        "real redirect to healthy alternate endpoint refused"
+      ],
+      "limit": "HTTP socket timeout alone is an inactivity limit. Docker and E2E callers also impose process deadlines."
+    },
+    {
+      "id": "real-telemetry-component",
+      "result": "passed",
+      "tests_run": 1,
+      "elapsed_seconds": 1.126,
+      "engine": "4.8.beta2.official.cafc17a19",
+      "sent_batches": 3,
+      "stored_batches": 3,
+      "queued": 0,
+      "dropped": 0,
+      "local_drops": 0,
+      "environment": "Minimal isolated Godot project using byte-identical production telemetry sources and the candidate E2E GDScript; actual receiver and SQLite persistence. Existing checked Godot runner used.",
+      "source_sha256": {
+        "app/telemetry/telemetry_release.gd": "e54a4ce9784e9e934cdc2df99d6fae95718ac41458fd0e2edf0c8057198e8840",
+        "app/telemetry/telemetry_queue.gd": "815823ac524892d315d473f6f668e99d5a165484bcbca510b292762d61d73e81",
+        "app/telemetry/telemetry_frame_window.gd": "1eee31daeb2c0cb3cc49854feff35a38514a4725edd3bd71350863625942db6b",
+        "app/telemetry/telemetry_service.gd": "c7a2b4b87c6bb51b6751921739d2ca9d22888886c60def22426fbc4a744b2b63",
+        "app/telemetry/telemetry_policy.gd": "6c6b10151045c3811e88ef1356c23f24708366c992f41bfc71c5eb37457876ac",
+        "app/telemetry/telemetry_consent_store.gd": "543753ececf5067cb38a3d70888a903a4d4a9a489eae59b55bc3c23f7a9215f7",
+        "app/telemetry/telemetry_sender.gd": "d8e6c266bba24a1881a3de6716d15a41510ab40802cd9aa9727217c0e4d51e3f",
+        "app/telemetry/telemetry_contract.gd": "29b7c02bbf9cb89a573997355f61703115d623aa08f88f8508bb78b385ea797e",
+        "app/telemetry/telemetry_hardware.gd": "95f45bfe8000f8bbf6e7a776df09a3d23ae70bba3e903421f03195c83c19d722",
+        "app/app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+        "app/tests/telemetry_receiver_e2e.gd": "6270f4e33a1fa7c2bd58a3e879537b223f797c309a360bb87131d86ad6d76998"
+      },
+      "limit": "This one case is shared by the Python test and GDScript driver; do not count it twice. Full production app import and GitHub execution were not part of this local result.",
+      "retained_log_sha256": "072edd57319bbbf08bd1842d2fe6c055ba843a0508644a6895369bce7d35ad50",
+      "result_excerpt": [
+        "test_godot_client_batches_are_accepted_and_stored (audit_telemetry_final.GodotClientEndToEnd.test_godot_client_batches_are_accepted_and_stored) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 1 test in 1.126s",
+        "",
+        "OK",
+        "Pre-existing consent rejected with exit2 and unchanged bytes",
+        "Pre-existing consent.tmp rejected with exit2 and unchanged bytes",
+        "Telemetry E2E evidence: <audit-workspace>/telemetry-component-validation/fixture/tmp/telemetry-e2e/run-_djvbvu6"
+      ]
+    },
+    {
+      "id": "telemetry-negative-controls",
+      "result": "passed",
+      "cases": [
+        "Required mode without executable editor fails instead of skipping.",
+        "Optional discovery in service-only sparse tree without tools/godot skips one test and succeeds.",
+        "Real editor refuses existing consent destination with exit 2 and unchanged bytes.",
+        "Real editor refuses existing consent .tmp sibling with exit 2 and unchanged bytes."
+      ]
+    },
+    {
+      "id": "prototype-freshness",
+      "result": "passed",
+      "cases": [
+        "Zero fresh images after cleanup fails.",
+        "Two of three fresh nonempty images fails.",
+        "All three fresh nonempty images passes."
+      ],
+      "environment": "Disposable mutation fixtures initially contained the tracked screenshot outputs.",
+      "limit": "Filename freshness validation, not a Chromium pixel regression run."
+    },
+    {
+      "id": "source-hygiene",
+      "result": "passed",
+      "commands": [
+        "bash -n tools/ci/check-workflows.sh research/test-tools.sh",
+        "git diff --check"
+      ],
+      "scope": "Final candidate source and report review."
+    }
+  ],
+  "hosted_status": "Pending at documentation freeze; consult the audit branch pull request for subsequent GitHub run results.",
+  "not_executed_locally": [
+    "Full asset-bearing application import and all 1163 unit scripts",
+    "Full rendered capture suite or target GPUs",
+    "Windows and macOS native hosts",
+    "Docker container smoke (Docker unavailable)",
+    "Export/package/release artifact round trip",
+    "Deployment or production telemetry operations"
+  ],
+  "interpretation": "Counts describe separate suites with possible overlap. They are not a unique total, coverage percentage or repository-wide pass claim."
+}
