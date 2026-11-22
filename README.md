@@ -40,21 +40,21 @@
 
 *Home with MoonRunner X99, captured in a development build at 1920×1080. [Capture details](docs/media/README.md#readme-gallery).*
 
-> The v0.3.2 download is an early alpha. The flight models still need independent measurements and feedback from RC pilots.
+> The v0.3.3 download is an early alpha. The flight models still need independent measurements and feedback from RC pilots.
 
 ## Download and fly
 
-**Latest release: [v0.3.2](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.2).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
+**Latest release: [v0.3.3](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.3).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
 
 | Platform | Download and launch |
 | --- | --- |
-| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.3.2&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
-| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.3.2&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
-| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.3.2&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
+| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.3.3&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
+| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.3.3&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
+| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.3.3&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
 
-[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.2/SHA256SUMS) · [Release manifest](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.2/release-manifest.json) · [Linux ABI report](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.2/linux-abi.json) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/FIRST-LAUNCH.md) · [Release notes](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/releases/v0.3.2.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.2).
+[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.3/SHA256SUMS) · [Release manifest](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.3/release-manifest.json) · [Linux ABI report](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.3.3/linux-abi.json) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.3/docs/FIRST-LAUNCH.md) · [Release notes](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.3/docs/releases/v0.3.3.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.3).
 
-**New in the v0.3.2 download.** Test-fly supported airplanes from your local Phoenix RC installation. ClearView imports now offer automatic setup for airplanes and helicopter trials using X-Cell .60 physics. You can also import Phoenix panoramas and take off from five calibrated site revisions. [Aircraft Creator](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental) · [Phoenix scenery](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/LANDSCAPES.md#import-phoenix-scenery)
+**New in the v0.3.3 download.** Automatic graphics setup uses the display and GPU selected at startup. You can restore automatic settings. The Avanti S A200 gains the REVOC Custom paint scheme.
 
 **For your first flight**
 
@@ -70,7 +70,7 @@
 | **Gamepad** | Mapped pads have a Mode 2 starting layout. Check the displayed bindings and remap buttons as needed. |
 | **Keyboard** | Arrow keys: pitch/roll; **A / D**: rudder; **W / S**: throttle. **Down** pulls back on the elevator. |
 
-[Radio setup for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.2/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
+[Radio setup for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.3/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
 
 **The hangar and features below describe current source.** The published ZIP can differ from current source. Use the release notes for what your download includes.
 
@@ -139,7 +139,7 @@ At **Club field**, geared airplanes offer runway or airborne starts. At **Green 
 
 ## FPV racing and RC blimp
 
-In v0.3.2, open **Home → Vehicles**, select **ION R5** or **RC blimp**, then choose **Fly**. Both are experimental.
+In v0.3.3, open **Home → Vehicles**, select **ION R5** or **RC blimp**, then choose **Fly**. Both are experimental.
 
 | ION R5 · FPV racing quad | 5 m RC blimp · Tiburón Blanco |
 | --- | --- |
@@ -161,7 +161,7 @@ In v0.3.2, open **Home → Vehicles**, select **ION R5** or **RC blimp**, then c
 | **Hear and see the aircraft** | Positional engine/propeller sounds, field ambience, aircraft lights and supported exhaust/show-smoke effects. |
 | **Choose the graphics** | Automatic graphics recommends settings and shows how much confidence to place in the estimate. Standard and High/Forward+ modes are available. Developers can also build a separate [Windows NVIDIA edition](tools/graphics/native/README.md) with DLSS, DLAA and Reflex. |
 
-The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. The v0.3.2 download includes all nine.
+The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. The v0.3.3 download includes all nine.
 
 ### Make a model your own
 

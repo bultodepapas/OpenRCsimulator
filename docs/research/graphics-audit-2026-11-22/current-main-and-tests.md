@@ -1,5 +1,7 @@
 # Current main, new tests and evidence — 22 November 2026
 
+**Later observations:** main subsequently advanced to `c20a074de` with website/README updates only; the simulator source is unchanged and that new CI is in progress. The [fourth-pass CI receipt](fourth-pass-evidence.json) records exact-main core run `45026329656` completed successfully at 16:18:32 UTC, with 23 successful and five skipped jobs. The [fourth-pass report](fourth-pass.md#current-main-and-ci) explains its scope. The earlier 14:32:10 UTC snapshot below remains historical evidence.
+
 Scope: source-read-only review of main `7940a4081e10994f34c858c4acac3d7a1a271464`, against the earlier graphics-audit branch `2c03b78720c20453d26ca78bc3022dbdd905f00a`. These branches diverged at `57abea025`; the audit branch now integrates main, with application and tool bytes matching `7940a408`. Main did not contain the prior audit directory before integration. Dates below are evidence dates, not claims about today's continuous state. The source reviewers launched no engine, hardware or tests. The lead separately ran the documented offline [phase/focus witness](measurement-integrity.md). GitHub observations were independently fetched and are timestamp-sensitive; the retained snapshot is **2026-11-22 14:32:10 UTC** (09:32 in Colombia).
 
 ## New evidence and its limits

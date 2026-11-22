@@ -1,5 +1,9 @@
 # Graphics and FPS audit — current-main follow-up, 22 November 2026
 
+**Latest: [fourth-pass investigation](fourth-pass.md).** Thirteen further traced items cover cars, drones, helicopters, retractable aircraft, Home and lighting. A source-bound Nitro sampler experiment has byte-identical tested outputs and a 19.6–27.7% median paired component-time reduction across six process/workload summaries; this is not FPS or production visual qualification. The audited simulator-source CI completed successfully; latest main `c20a074de` adds only release/download website content and has a separate in-progress CI run. The branch integrates that latest main. Detailed traces, retained raw timings and native/platform follow-ups are linked there.
+
+## Third-pass snapshot
+
 **The audit branch now includes current main `7940a4081e10994f34c858c4acac3d7a1a271464`.** This pass reviewed the new performance tours, stutter map, measurement-hardening tests, automatic-graphics repairs, release qualification and GitHub CI, then traced additional drone, car, aircraft and menu costs.
 
 The result is **11 additional source-confirmed optimization opportunities and two measurement-integrity findings**. The lead reproduced the phase-attribution defect with the existing reducer. No FPS gain is claimed: the source paths are confirmed, their current end-to-end benefit is unmeasured, and no production optimization or graphics-setting change is implemented here.
@@ -10,6 +14,7 @@ The earlier [audit](../graphics-audit-2026-11-21/README.md) and [second pass](..
 
 | Report | Contents |
 | --- | --- |
+| [Fourth pass and numeric experiment](fourth-pass.md) | U01–U13, deeper source traces, byte parity and component timing, completed CI and platform gates |
 | [Current main and new tests](current-main-and-tests.md) | Source refresh, rendered evidence, CI, repaired/open finding ledger, missing vehicle coverage |
 | [Vehicles and aircraft](vehicles-and-aircraft.md) | Quad telemetry, car surface queries, flap state, wet pools, obstacle indices, signals, fly-by and guarded heli/airship paths |
 | [Menus and transitions](menus-and-transitions.md) | Controls construction, Settings theme/polling, profile storage and correct transition boundaries |
