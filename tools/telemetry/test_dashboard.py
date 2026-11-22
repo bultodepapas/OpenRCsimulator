@@ -512,6 +512,51 @@ class DashboardCase(unittest.TestCase):
         self.assertIn('<div class="tl">Website sessions</div><div class="tv">7</div>', overview)
         self.assertIn("7/7 days observed", overview)
 
+    def test_release_watch_refreshes_once_and_waits_for_complete_packages(self):
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        inbox, www, state = self.dir / "inbox.json", self.dir / "www", self.dir / "state"
+        inbox.write_text(json.dumps(data), encoding="utf-8")
+        args = ["build", "--receiver-snapshot", str(inbox), "--www", str(www), "--state-dir", str(state),
+                "--downloads-dir", str(self.dir / "analytics"), "--no-ga4"]
+        tag, name, stamp = "v0.3.2", "openrc-simulator-v0.3.2-linux-x86_64.zip", "2027-01-19T12:00:00Z"
+        inventory = {tag: (dashboard.datetime.fromisoformat(stamp), False, {(name, 42)})}
+        release = {"tag": tag, "published": stamp, "prerelease": False}
+        archive = {"repo": "bultodepapas/OpenRCsimulator", "releases": [release], "pattern": "*.zip",
+                   "collected_utc": stamp, "assets": [], "intervals": []}
+        with unittest.mock.patch.object(dashboard.time, "time", return_value=NOW), \
+                unittest.mock.patch.object(downloads, "public_release_inventory", return_value=inventory), \
+                unittest.mock.patch.object(downloads, "collect", return_value=(True, "collected")) as collect, \
+                unittest.mock.patch.object(dashboard, "load_downloads", return_value=archive) as load, \
+                unittest.mock.patch("sys.stdout"), unittest.mock.patch("sys.stderr"):
+            self.assertEqual(dashboard.main(args), 0)
+            page, health = (www / "index.html").read_bytes(), (www / "health.json").read_bytes()
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 1)
+            self.assertEqual((www / "index.html").read_bytes(), page)
+            self.assertEqual((www / "health.json").read_bytes(), health)
+            archive["assets"] = [{"id": 42, "tag": tag, "name": name, "platform": "Linux", "count": 0}]
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
+            self.assertIn(f"Latest release {tag}", (www / "index.html").read_text(encoding="utf-8"))
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
+            self.assertEqual(collect.call_count, 2)
+            self.assertEqual(load.call_count, 3)
+
+    def test_public_release_inventory_ignores_counters_and_drafts(self):
+        api = downloads.github_history
+        stamp, tag, name = "2027-01-18T10:00:00Z", "v0.3.2", "openrc-simulator-v0.3.2-linux.zip"
+        rows = [{"draft": False, "published_at": stamp, "tag_name": tag, "prerelease": False,
+                 "assets": [{"name": name, "state": "uploaded", "id": 3, "download_count": 999},
+                            {"name": "SHA256SUMS", "state": "uploaded", "id": 4}]},
+                {"draft": True, "tag_name": "draft"}]
+        model = {"releases": [{"tag": tag, "published": stamp, "prerelease": False}],
+                 "assets": [{"tag": tag, "id": 3, "name": name, "count": 0}]}
+        with unittest.mock.patch.object(api, "public_github_json", return_value=rows) as request:
+            inventory = downloads.public_release_inventory()
+        request.assert_called_once_with(f"repos/{api.DEFAULT_REPO}/releases?per_page=100")
+        self.assertEqual(set(inventory), {tag})
+        self.assertFalse(downloads.release_inventory_changed(inventory, model))
+        model["assets"][0]["id"] = 2
+        self.assertTrue(downloads.release_inventory_changed(inventory, model))
+
     def test_external_monitor_rejects_frozen_ok_and_source_failure(self):
         from datetime import datetime, timezone
 

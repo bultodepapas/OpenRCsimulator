@@ -10,6 +10,7 @@ Proxmox host  openrc-stats-snapshot.timer (:05 hourly)
                                                          │ bind mount, read-only
 Dashboard CT  openrc-stats-build.timer (:12 hourly)     ▼ /var/lib/openrc-stats/inbox
               dashboard.py build ──► /var/lib/openrc-stats/www/{index.html,health.json} (atomic)
+              openrc-stats-release-watch.timer (5 min; builds when public releases or packages change)
               openrc-stats-github.timer (6 h, public fallback), openrc-stats-backup.timer (daily)
               tailscale serve --bg --https=443 /var/lib/openrc-stats/www   (tagged node, owner-only grant)
 ```
@@ -23,6 +24,7 @@ Dashboard CT  openrc-stats-build.timer (:12 hourly)     ▼ /var/lib/openrc-stat
 | `host/check_dashboard_health.py` | Monitoring host `/usr/local/lib/openrc-stats/` |
 | `host/openrc-stats-health.{service,timer}` | Monitoring host `/etc/systemd/system/` |
 | `ct/openrc-stats-{build,github,backup}.{service,timer}` | Container `/etc/systemd/system/` |
+| `ct/openrc-stats-release-watch.{service,timer}` | Container `/etc/systemd/system/` |
 | `ct/nftables.conf` | Container `/etc/nftables.conf` (egress limits; the tailnet policy is the boundary) |
 | `ct/backup_archive.py` | Used in place from the release directory |
 | `pull_github_backup.py` | Operator-owned second host with established Proxmox SSH access |
@@ -47,7 +49,9 @@ cat /var/lib/openrc-stats/www/health.json   # status ok | degraded | stale | err
 journalctl -u openrc-stats-build -n 50
 ```
 
-`health.json` includes the last build time, receiver snapshot age and critical receiver alerts, plus timestamps and status per GitHub and GA4 source. A missing, failed or stale source degrades the report. Invalid inputs and failed renders keep the previous HTML. A failed health write rolls back the page and is also detectable by the external clock check. For production builds use the two systemd units, which share one lock across collection and publication.
+`health.json` includes the last build time, receiver snapshot age and critical receiver alerts, plus timestamps and status per GitHub and GA4 source. A missing, failed or stale source degrades the report. Invalid inputs and failed renders keep the previous HTML. A failed health write rolls back the page and is also detectable by the external clock check. The build, GitHub and release-watch units share one lock across collection and publication.
+
+Enable `openrc-stats-release-watch.timer` after installing its units and the matching dashboard code. Every five minutes it checks the public GitHub catalogue and package identities against the published snapshot. A new release or a package upload triggers an archive refresh and a build. Changes to download counts alone go through the regular six-hour refresh. If GitHub has only returned part of a new release, the watcher keeps the previous page and checks again at the next tick. Use `journalctl -u openrc-stats-release-watch` for check and retry results.
 
 Set `OPENRC_STATS_HEALTH_URL` in `/etc/openrc-stats-health.env` on a host that can reach the private URL. With no tailnet DNS on that host, also set `OPENRC_STATS_HEALTH_OPTIONS="--resolve-address <dashboard-tailnet-IP>"` (requires curl and retains TLS hostname verification). Enable `openrc-stats-health.timer`. The unit fails when HTTPS is unavailable, the served build is older than two hours, or a source is unhealthy. A monitor that only matches a keyword cannot detect a stopped generator. Use a second physical host to detect loss of Proxmox itself and route the failed unit to the operator's monitoring channel.
 

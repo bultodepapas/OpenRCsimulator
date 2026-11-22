@@ -2206,6 +2206,29 @@ def build(args):
     problems, snapshot, note = [], None, None
     combined_path = state / "dashboard.snapshot.json"
     try:
+        previous = read_snapshot(combined_path)
+    except (OSError, ValueError, OverflowError):
+        previous = {}
+    inventory, release_changed = None, False
+    if args.github_on_release:
+        try:
+            previous_github = previous.get("github") or {}
+            pattern = previous_github.get("pattern", downloads.github_history.DEFAULT_ASSET_GLOB)
+            inventory = downloads.public_release_inventory(pattern)
+            release_changed = downloads.release_inventory_changed(inventory, previous_github)
+        except (downloads.github_history.CollectionError, ValueError, KeyError, TypeError, AttributeError) as error:
+            print(f"GitHub release check failed: {error}", file=sys.stderr)
+            return 1
+        if not release_changed:
+            try:
+                report = json.loads((www / "health.json").read_text(encoding="utf-8"))
+                if previous and (www / "index.html").is_file() and isinstance(report, dict) and (
+                        report.get("status") in ("ok", "degraded", "stale")):
+                    print("GitHub release inventory unchanged")
+                    return 0
+            except (OSError, ValueError):
+                pass
+    try:
         snapshot = read_snapshot(args.receiver_snapshot)
     except (OSError, ValueError, OverflowError) as error:
         problems.append(f"receiver snapshot unreadable: {error.__class__.__name__}: {error}"[:300])
@@ -2213,15 +2236,19 @@ def build(args):
         try:
             if snapshot["generated_unix"] > time.time() + 300:
                 raise ValueError("receiver snapshot timestamp is in the future")
-            try:
-                previous = read_snapshot(combined_path)
-            except (OSError, ValueError, OverflowError):
-                previous = {}
             note = previous.get("github_refresh_error")
-            if args.github_collect:
+            if release_changed:
+                ok, message = downloads.collect(args.downloads_dir, public_only=True)
+                if not ok:
+                    print(f"GitHub release refresh failed: {message}", file=sys.stderr)
+                    return 1
+            elif args.github_collect:
                 note = refresh_github(args.downloads_dir)
             snapshot["github_refresh_error"] = note
             snapshot["github"] = load_downloads(args.downloads_dir, note)
+            if inventory is not None and downloads.release_inventory_changed(inventory, snapshot["github"]):
+                print("GitHub release archive has not caught up; retrying on the next check", file=sys.stderr)
+                return 1
             website = None if args.no_ga4 else ga4.fetch(args.days, args.ga4_property, args.ga4_credentials)
             old_website = previous.get("website") or {}
             if website and website.get("error") and old_website.get("daily") and not old_website.get("error"):
@@ -2274,7 +2301,10 @@ def main(argv=None):
     b.add_argument("--receiver-snapshot", required=True, help="JSON written by snapshot.py (pushed by the host)")
     b.add_argument("--www", required=True, help="served directory: index.html and health.json")
     b.add_argument("--state-dir", required=True, help="unserved directory for the combined snapshot")
-    b.add_argument("--github-collect", action="store_true", help="refresh the GitHub archive first (needs gh)")
+    github_mode = b.add_mutually_exclusive_group()
+    github_mode.add_argument("--github-collect", action="store_true", help="refresh the GitHub archive first")
+    github_mode.add_argument("--github-on-release", action="store_true",
+                             help="poll public releases and rebuild only when the published inventory changes")
     b.add_argument("--no-ga4", action="store_true", help="skip the website (GA4) collection")
     b.add_argument("--ga4-property", default=os.environ.get("OPENRC_GA4_PROPERTY"))
     b.add_argument("--ga4-credentials", default=None)

@@ -1,0 +1,24 @@
+[Unit]
+Description=Publish OpenRC Stats when public GitHub releases or packages change (TELEM-24c)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=openrc-stats
+Group=openrc-stats
+EnvironmentFile=/etc/openrc-stats/env
+Environment=HOME=/var/lib/openrc-stats
+ExecStart=/usr/bin/flock --timeout 180 /var/lib/openrc-stats/state/build.lock /usr/bin/python3 /opt/openrc-stats/current/tools/telemetry/dashboard.py build \
+  --receiver-snapshot /var/lib/openrc-stats/inbox/receiver.json \
+  --www /var/lib/openrc-stats/www --state-dir /var/lib/openrc-stats/state \
+  --downloads-dir /var/lib/openrc-stats/github --days 30 --github-on-release
+TimeoutStartSec=10min
+Nice=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/openrc-stats/www /var/lib/openrc-stats/state /var/lib/openrc-stats/github
+CapabilityBoundingSet=
+MemoryMax=192M

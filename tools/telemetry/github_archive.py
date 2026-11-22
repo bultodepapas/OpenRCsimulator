@@ -8,6 +8,7 @@ tool's interval comparison and platform naming, so both reports agree. Standard 
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from fnmatch import fnmatchcase
 import os
 from pathlib import Path
 import re
@@ -56,6 +57,56 @@ def collect(directory, timeout=180, *, public_only=False):
         lines = (result.stderr or result.stdout).strip().splitlines()
         return False, lines[-1] if lines else f"collector exit {result.returncode}"
     return True, "collected"
+
+
+def public_release_inventory(pattern=github_history.DEFAULT_ASSET_GLOB):
+    """Look for public release and package changes without reading download counts."""
+    api = github_history.public_github_json
+    endpoint = f"repos/{github_history.DEFAULT_REPO}/releases"
+    releases = api(f"{endpoint}?per_page=100")
+    error = github_history.CollectionError
+    if not isinstance(releases, list):
+        raise error("Invalid public release list")
+    inventory = {}
+    for release in releases:
+        if not isinstance(release, dict) or type(release.get("draft")) is not bool:
+            raise error("Invalid release in public list")
+        if release["draft"] or release.get("published_at") is None:
+            continue
+        tag = github_history.text_field(release.get("tag_name"), "release tag", 200)
+        if tag in inventory or type(release.get("prerelease")) is not bool:
+            raise error("Invalid or duplicate public release")
+        published = github_history.parse_timestamp(release["published_at"])
+        embedded = release.get("assets")
+        if not isinstance(embedded, list) or len(embedded) >= 100:
+            release_id = github_history.nonnegative_int(release.get("id"), "release ID")
+            embedded = api(f"{endpoint}/{release_id}/assets?per_page=100", paginated=True)
+        assets = set()
+        for asset in embedded:
+            if not isinstance(asset, dict) or not isinstance(asset.get("name"), str) or (
+                    not isinstance(asset.get("state"), str)):
+                raise error("Invalid public release asset")
+            if asset["state"] == "uploaded" and fnmatchcase(asset["name"], pattern):
+                assets.add((asset["name"], github_history.nonnegative_int(asset.get("id"), "asset ID")))
+        inventory[tag] = (published, release["prerelease"], assets)
+    return inventory
+
+
+def release_inventory_changed(inventory, model):
+    """Compare the public page of releases with the last published dashboard snapshot."""
+    model = model or {}
+    releases = {row["tag"]: (_parse(row["published"]), row["prerelease"]) for row in model.get("releases", [])}
+    assets = {}
+    for asset in model.get("assets", []):
+        assets.setdefault(asset["tag"], {})[asset["name"]] = asset.get("id")
+    for tag, (published, prerelease, packages) in inventory.items():
+        if releases.get(tag) != (published, prerelease):
+            return True
+        known = assets.get(tag, {})
+        if known.keys() != {name for name, _ in packages} or any(
+                known[name] is not None and known[name] != asset_id for name, asset_id in packages):
+            return True
+    return False
 
 
 def _parse(stamp):
@@ -124,8 +175,9 @@ def load(directory):
                 intervals.append({"from_end": previous[0], "to_end": finished, "increase": result["increase"],
                                   "status": result["status"]})
             previous = (finished, counts)
-            assets = [{"tag": tag, "name": name, "platform": github_history.asset_platform(name), "count": count}
-                      for _, tag, name, count, _ in rows]
+            assets = [{"id": asset_id, "tag": tag, "name": name,
+                       "platform": github_history.asset_platform(name), "count": count}
+                      for asset_id, tag, name, count, _ in rows]
             _record_release_milestones(milestones, published, rows)
         observations_utc = dict(connection.execute(
             "SELECT kind, MAX(finished_utc) FROM observations GROUP BY kind"))
