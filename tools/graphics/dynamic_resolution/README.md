@@ -39,3 +39,34 @@ Before running the flight, run the [rendered producer probe](../../../app/tests/
 with the patched editor, a visible 1920×1080 window or the native Retina target,
 and the experiment flag. It validates fresh completed frames across a full-size
 draw, an 85% draw and restoration. Use the checked runner on an admitted target.
+
+## Windows RTX 3090 experiment
+
+For an experimental binary on the enrolled Windows host, [windows_probe.py](windows_probe.py)
+uses the documented manual desktop reservation and tracks the owned process tree.
+It reports the experimental binary and patch hashes, logs and teardown in the
+selected output directory. Run with a fresh output path. The probe executes in
+a visible window.
+
+1. Run the producer probe at 1080p and then 4K. Require a new completed
+   generation for each actual size and restoration.
+2. Use `--stress --fps 120 --fixed 100` to set the workload at 1080p, 1440p and
+   4K. Keep the same shader iteration count when measuring the pixel-cost
+   difference across those outputs. Select a separate iteration count at a
+   given output if needed to put the fixed GPU time just above 8.33 ms.
+3. With resolution, workload and target held constant, compare `--fixed 100`,
+   `--fixed 85` and `--fixed 0` (adaptive). Record median and tail frame times,
+   late callbacks, time at each observed 3D size and the first frames after
+   each transition. The high-load phase lasts 18 s. The light phase lasts 16 s
+   so the controller can recover after its dwell. Repeat decisive cases in
+   reverse order. Reject a case when another task uses the host or the probe
+   window loses focus.
+4. Use 60 FPS as a control on a workload with spare capacity. The fixed ceiling
+   should hold. A useful 120 FPS result reduces missed frames during the
+   heavy phase and returns to the ceiling during recovery. Compare the motion
+   and legibility in the real flight before recommending a floor.
+
+The stress probe measures a shader workload and shows the actual 3D size and
+GPU time in its window. Use the same engine and flight configuration for each
+flight comparison. Check the selected physics backend when collecting flight
+evidence.

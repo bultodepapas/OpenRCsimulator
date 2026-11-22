@@ -38,14 +38,25 @@ func _run() -> void:
 		restored = await _next_sample(int(lower.generation), full.output_size)
 	RenderingServer.call(DynamicResolution.SAMPLE_TOGGLE_METHOD, rid, false)
 	TimingLease.release(lease)
-	print(JSON.stringify({driver = RenderingServer.get_current_rendering_driver_name(),
-		full = full, lower = lower, restored = restored}))
-	if restored.is_empty() or int(lower.frame_id) <= int(full.frame_id) or int(restored.frame_id) <= int(lower.frame_id):
+	print(JSON.stringify({format = "openrc-completed-gpu-frame-v1", driver = RenderingServer.get_current_rendering_driver_name(),
+		full = _report_sample(full), lower = _report_sample(lower), restored = _report_sample(restored)}))
+	if restored.is_empty() or lower.output_size != full.output_size or restored.output_size != full.output_size \
+			or int(lower.frame_id) <= int(full.frame_id) or int(restored.frame_id) <= int(lower.frame_id):
 		printerr("Completed GPU frame probe did not observe all three scale generations.")
 		quit(1)
 		return
 	print("Completed GPU frame probe: 0 failed")
 	quit()
+
+
+func _report_sample(sample: Dictionary) -> Dictionary:
+	if sample.is_empty():
+		return {}
+	var data := sample.duplicate()
+	for key: String in ["input_size", "output_size"]:
+		var size: Vector2i = data[key]
+		data[key] = [size.x, size.y]
+	return data
 
 
 func _next_sample(generation: int, expected: Vector2i) -> Dictionary:
