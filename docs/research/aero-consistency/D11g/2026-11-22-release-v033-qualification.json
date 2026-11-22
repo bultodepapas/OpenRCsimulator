@@ -1,0 +1,70 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-22",
+  "baseline_commit": "6b2228c7633a34e38cb05d92e3ca50893810e02b",
+  "candidate_commit": "34617665ad606c6e9211ca86df8f1762297ba1a2",
+  "candidate_overlay": "app/project.godot config/version 0.3.2 to 0.3.3 and the two reviewed D11g inventory guard renewals",
+  "platform": "Linux x86_64 on GitHub Actions Ubuntu 24.04, sequential checked imports and separate profiles",
+  "actions_run_id": 45025156977,
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "inventory": {
+    "source_counts": [
+      152,
+      152
+    ],
+    "unchanged": 151,
+    "qualified_sha256_before": "58c12b9ffad2f269d902fca1970665dc11eadb397c9ab8f762fa4f4bc0606230",
+    "qualified_sha256_after": "3dc6f62398e28b809aa8cfe39398c74d3d408d7d84070cfbb3b7ca2d8be3685f",
+    "added": {},
+    "removed": {},
+    "changed": {
+      "app/project.godot": {
+        "lf_sha256_before": "4ee80b954552e1c6de47b5fe70d3a61f16ab353224278c6b6982dfb5d4075cf7",
+        "lf_sha256_after": "7b103d2a435ccf59c0d4e97e8a219bbe167f73652a144d76c10a574fbdb6b2d2"
+      }
+    }
+  },
+  "numerical_and_provenance_result": "All six reports agree exactly outside the solver source inventory and expected data-check result, including normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance.",
+  "checks": {
+    "baseline": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "e1db9ca3f6b83c6180d93f65e6c49e1e2d7cbc237c699a98f88827d502854be2",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "2268b25f437ec9ece1f64473dfcf256a0fe013bd47c9685414a392f376a7aa56",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "renewed": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "b9824cc43c0f40c6d00033d9b4d247b71a5aa134f530534f2330ddab45c6a834",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "physics-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "b1d25b5663884420656d487009828251b3b6135167799501aeb8c8f6d95ae467",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "version-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "4825b50191cb67689a1c56a4027eb52ce550f2b26572b2eb6fa26c685c445b51",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "restored": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "b9824cc43c0f40c6d00033d9b4d247b71a5aa134f530534f2330ddab45c6a834",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    }
+  },
+  "limits": "Linux software provenance. The additional vehicle-paint test lacked authoring inputs in the reconstruction archive. The complete release checkout supplies those inputs."
+}

@@ -233,3 +233,16 @@ The baseline passed both guards. The unrenewed candidate refused the three histo
 On Linux under WSL2 with pinned Godot 4.8 beta2, the v0.3.1 tag `caa45cee` and the v0.3.2 candidate `b720a502` yielded identical numerical and provenance results. Of the 152 inventory inputs, only `app/project.godot` changed, with the version going from `0.3.1` to `0.3.2`. The new aggregate is `58c12b9ffad2f269d902fca1970665dc11eadb397c9ab8f762fa4f4bc0606230`.
 
 Both guards passed on the baseline and refused the unrenewed candidate. The renewed guards passed, refused independent physics-comment and version mutations, and passed again after restoration. The [receipt](2026-11-21-release-v032-qualification.json) binds the six reports.
+
+### 2026-11-22 v0.3.3 release renewal
+
+The Linux reconstruction used pinned Godot 4.8 beta2 in separate projects.
+Of the 152 qualified files, only `app/project.godot` changed, from version
+`0.3.2` to `0.3.3`. The normalized aggregate is
+`3dc6f62398e28b809aa8cfe39398c74d3d408d7d84070cfbb3b7ca2d8be3685f`.
+
+The baseline and renewed guards passed. Both guards refused the unrenewed
+candidate and the separate physics-source and version mutations, then passed
+again after restoration. The trim, unrounded and rounded derivatives,
+sensitivity rows and generated provenance matched in all six reports.
+The [receipt](2026-11-22-release-v033-qualification.json) binds those reports.
