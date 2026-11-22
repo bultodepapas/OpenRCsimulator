@@ -110,6 +110,29 @@ actual eligible model route establishes that basis. A binding is a copy setting,
 The static `CINEMATIC SIZE COMPARISON` disclosure is implemented. Model-attached 7.62 m / 1.52 m / 15 cm
 labels are still a separate source/tracked-layout requirement; the R6 renderer does not create them.
 
+### Optional zoom-through-text study
+
+```sh
+python3 tools/trailer/text_window_study.py \
+  --word FLY \
+  --out-dir tmp/trailer/text-window-study-01
+```
+
+Use a fresh output directory. This isolated **4 s / 240-frame, 1080p60** synthetic study
+starts black, reveals moving graphics inside the word, and enlarges the text mask until
+the original picture fills the frame. The picture itself keeps its scale and timing.
+It uses the existing verified Barlow font assets, Pillow, FFmpeg and ffprobe.
+
+The generator checks the anchor inside the original glyph raster and requires a fully
+transparent black cover at the end. It compares every uncompressed output pixel with
+the source for frames 191–239 before adding the permanent study watermark and encoding.
+It probes the resulting frame count and performs a full decode with FFmpeg `-xerror`.
+
+The [research note](../../docs/plans/trailer-v2/research-text-window-transition-2026-11-22.md)
+explains the effect, the After Effects workflow and future assembly considerations.
+This tool generates synthetic review material; it is not integrated into the R6 title
+plan or assembler and does not demonstrate the effect over actual game footage.
+
 ### Binding accepted media
 
 A cinema media manifest adds these top-level fields to the existing media format:

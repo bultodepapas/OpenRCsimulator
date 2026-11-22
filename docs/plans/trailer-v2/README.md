@@ -43,6 +43,7 @@ The simulator’s physics, aircraft data and app runtime are unchanged. Capture 
 
 ## Historical work and retained research
 
+- [Zoom-through-text research](research-text-window-transition-2026-11-22.md) explains the video-window lettering, an After Effects workflow and the isolated code prototype. Its [four-second synthetic study](review/text-window-2026-11-22/text-window-study.mp4) demonstrates the effect; this optional treatment is not applied to the R6 master.
 - [R5 script](cinematic-script-r5.md), [R5 plan](shot-plan-r5.json) and [R5 audit](script-audit-r5-2026-11-21.md) preserve the prior staging and initial implementation evidence. R6 is current.
 - [R4](cinematic-script-r4.md), [R3](cinematic-script-r3.md), [R2](cinematic-script-r2.md) and the [90-second storyboard](storyboard-90s.md) remain historical inputs.
 - [AI video skill research](research-ai-video-skills-2026-11-21.md), [vendor manifest](vendor-skills-manifest.json) and [idea bank](ideas-from-ai-film-skills.md) preserve the previously selected skills. No skill files or upstream licensed text change in R6.
