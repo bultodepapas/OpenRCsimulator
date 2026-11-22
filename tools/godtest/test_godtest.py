@@ -152,6 +152,31 @@ class ArtifactTests(unittest.TestCase):
                     self.assertEqual(selection["pacing"]["sample_wall_ms"], 80)
                     self.assertEqual(selection["frame_ms"]["p95"], 40)
 
+    def test_rendered_selection_requires_observed_focus(self):
+        for identity, expected in (({"window_focused_before_selection": True}, "valid"),
+                                   ({"window_focused_before_selection": False}, "ineligible"),
+                                   ({}, "ineligible"), ({"window_focused_before_selection": 1}, "ineligible"),
+                                   ({"window_focused_before_selection": True, "seatless_wayland": True}, "ineligible"),
+                                   ({"window_focused_before_selection": True,
+                                     "window_focus_probe_override": "wayland_without_keyboard_focus"}, "ineligible")):
+            with self.subTest(identity=identity), tempfile.TemporaryDirectory() as root:
+                directory = Path(root) / "run"
+                frames = artifacts(directory)
+                replace_stream(directory, frames, [10_000] * 4, [0, 0, 1, 1])
+                manifest = catalog.scenario("startup", {"phases": ["startup", "selection", "shutdown"]})
+                write_json(directory / "manifest.requested.json", manifest)
+                write_json(directory / "manifest.resolved.json", dict(manifest, output_dir=str(directory)))
+                runtime = json.loads((directory / "runtime.json").read_text())
+                runtime["identity"].update(identity)
+                startup = runtime["phases"][0]
+                startup.update(end_usec=1_020_000, wall_seconds=.02)
+                runtime["phases"].append(dict(startup, name="selection", id="0-1-selection", index=1,
+                                              start_usec=1_020_000, end_usec=1_040_000))
+                write_json(directory / "runtime.json", runtime)
+                result = report(directory, write=False)
+                self.assertEqual(result["data"], expected, result["issues"])
+                self.assertEqual(result["performance"] == "single_run_screen", expected == "valid")
+
     def test_only_focus_losses_after_startup_question_session_equivalence(self):
         message = "native focus loss observed; session equivalence requires diagnosis"
         for total, in_startup, flagged in ((2, 2, False), (3, 2, True), (1, 0, True), (0, 0, False)):

@@ -41,6 +41,7 @@ def flight_artifacts(path: Path, ticks: list[int], *, split=512, channels=True):
     frames["stream"].update(frames=count, chunks=chunks, bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
     write_json(path / "frametimes.json", frames)
     runtime = read_json(path / "runtime.json")
+    runtime["identity"]["window_focused_before_selection"] = True
     runtime["phases"][0].update(name="recover", id="0-0-recover", start_usec=990_000, end_usec=ends[-1],
                                start_tick=ticks[0], end_tick=ticks[-1],
                                wall_seconds=count * .01, sim_seconds=(ticks[-1] - ticks[0]) / 240,

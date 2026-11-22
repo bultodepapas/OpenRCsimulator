@@ -532,6 +532,12 @@ def report(directory: Path, *, write: bool = True) -> dict:
                                    integrity.get("phase_rendering", {}), execution)
     problems.extend(rendering["issues"])
     requested_rendered = rendering["requested_headless"] is False
+    if requested_rendered and manifest_valid and requested_manifest["phases"] not in (["startup"], ["startup", "shutdown"]):
+        identity = runtime.get("identity", {})
+        if identity.get("seatless_wayland") or "window_focus_probe_override" in identity:
+            problems.append("seatless or synthetic window focus: diagnostic run only")
+        elif identity.get("window_focused_before_selection") is not True:
+            problems.append("native window focus before selection was not verified")
     rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True
     if requested_rendered and not display_ok:

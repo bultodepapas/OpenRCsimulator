@@ -110,6 +110,8 @@ def fixture(root: Path, repeats=1, *, headless=False):
                     "effective_lighting": {}, "effective_sky": {},
                     "runtime_display": display(manifest, 1_046_000), "final_display": display(manifest, clock),
                     "effective_display": {key: manifest[key] for key in ("scene_detail", "window_mode", "max_fps", "vsync_mode")}}
+        if not headless:
+            identity["window_focused_before_selection"] = True
         write_json(path / "runtime.json", {"format": "openrc-godtest-runtime-v1", "complete": True,
             "execution": "completed", "data": "complete", "coverage": "complete", "flight": "completed",
             "identity": identity, "phases": phases,

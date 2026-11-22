@@ -64,13 +64,13 @@ lighting Apply, Home, and shutdown remain part of every complete tour case.
 This is the implemented **V1** sequence.
 
 1. Start the real source/debug application through Startup and Home. Wait for a
-   verified frame-watcher cursor before aircraft selection, and record for up to
-   10 s whether the application window is focused. Callbacks during the wait belong
-   to the separate `focus_wait` setup phase. A flight that then starts
-   paused while unfocused (for example on a locked desktop) fails with that cause.
-   A headless Wayland compositor without a keyboard seat never focuses any window;
-   there the driver substitutes AppRoot's focus probe and records
-   `window_focus_probe_override`. Real focus-loss events still pause.
+   verified frame-watcher cursor before aircraft selection, then allow up to
+   10 s to acquire native window focus. Callbacks during that wait belong to the
+   `focus_wait` setup phase. The rendered tour stops if the window stays unfocused.
+   For a diagnostic on a seatless Wayland compositor, explicitly set
+   `OPENRC_GODTEST_SEATLESS_WAYLAND=1` on the launch host. The report marks this
+   mode ineligible for performance comparison. If the driver substitutes AppRoot's
+   focus probe, it also records `window_focus_probe_override`.
 2. Select the required aircraft, Club Field, calm weather, clear sky, day lighting,
    and the recorded sky seed through the application. Weather keeps its preset's
    own turbulence seed, so it stays an exact preset that the Mac native domain
@@ -471,6 +471,9 @@ the [checked runner](../godot/README.md) with completion marker
 fresh directory; require `GOD_MENU_SAFETY_TESTS: 0 failed`. Never point that fixture
 at a player's profile. The fixture validates guards and product settings, not a
 rendered flight.
+The focus-acquisition fixture `research/performance/godtest/test_focus.gd` exercises
+delayed focus, timeout and seatless diagnostics with injected observations. Its
+completion marker is `GOD_FOCUS_TESTS: 0 failed`.
 The Startup refusal fixture `research/performance/godtest/test_startup_guard.gd`
 uses the same checked runner with a fresh redirected profile and completion marker
 `GOD_STARTUP_GUARD_TESTS: 0 failed`.
