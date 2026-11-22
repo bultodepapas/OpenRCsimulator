@@ -3568,6 +3568,7 @@ func _build_world() -> bool:
 	var storm_args: Dictionary = _user_args()
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
+	_rig.flyby.repeatable_obstacles = _camera_clearance
 	_rig.fixed_pilot_eye = not _phoenix_calibration.is_empty()
 	_magnifier = Magnifier.new()
 	_magnifier.name = "MagnifierLayer"

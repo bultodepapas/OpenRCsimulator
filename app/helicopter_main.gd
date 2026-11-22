@@ -149,6 +149,7 @@ func _ready() -> void:
   shadow_cue.attach(self,_airplane.root,_lighting_snapshot,Callable(self,"_ground_height"),shadow_cue.helicopter_rotors(_airplane))
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
+ _rig.flyby.repeatable_obstacles=_camera_clearance
  # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).
  _rig.default_pilot_zoom=.35
  _rig.pilot_zoom=_rig.default_pilot_zoom
