@@ -126,9 +126,17 @@ func _settings_switch_and_language() -> void:
 	var toggle: CheckButton = settings.find_child("ShareTelemetry", true, false)
 	var status: Label = settings.find_child("TelemetryStatus", true, false)
 	_check("Settings shows the saved decline", not toggle.button_pressed and not toggle.disabled and status.text == "Telemetry is off.", status.text)
+	var saved_msaa: int = app.display_preferences.config.msaa_3d
+	settings._draft.msaa_3d = 0 if saved_msaa != 0 else 2
+	settings._emit_presentation()
+	_check("a preview while off leaves the telemetry projection empty", app._telemetry_context().is_empty()
+		and app._telemetry_graphics_values.is_empty() and app._telemetry_graphics_revision == 0)
 	toggle.button_pressed = true
 	await ui.settle()
 	_check("switching on enables and saves", app.telemetry.state == "on" and Store.load_choice(CONSENT).choice == "enabled")
+	_check("admission reads the effective preview before it is saved",
+		app._telemetry_context().graphics_profile == "custom" and app.display_preferences.config.msaa_3d == saved_msaa)
+	settings._revert()
 	_check("Settings reports it", status.text == "Telemetry is on. Batches sent this session: 0.", status.text)
 	app.open_telemetry_info("preview", toggle)
 	await ui.settle()
@@ -150,6 +158,8 @@ func _settings_switch_and_language() -> void:
 	await ui.settle()
 	_check("switching off saves the decline and drops pending data", app.telemetry.state == "off"
 		and Store.load_choice(CONSENT).choice == "disabled" and app.telemetry.queue.items.is_empty() and app.telemetry._pending.is_empty())
+	_check("revocation clears the presentation projection", app._telemetry_graphics_values.is_empty()
+		and app._telemetry_graphics_revision == 0 and app._telemetry_reset_source == null)
 	await ui.close_app(app)
 
 

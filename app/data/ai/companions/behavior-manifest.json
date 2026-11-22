@@ -12,7 +12,7 @@
     "res://ai/companions/profile_loader.gd": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719",
     "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
     "res://ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
-    "res://app_root.gd": "1b6c8591038fefc55a02ef38ffa72e05edf14d1bbc054eb7358fccf0d1bc45da",
+    "res://app_root.gd": "705792640bada31b8c18c58b03365c8fe7b379753ca704aa73042e74aad3067c",
     "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
     "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
     "res://main.gd": "5ae216f228dbebad4280f843e061c2e9d19a20ede042556f0bcd7d35babce8af",
