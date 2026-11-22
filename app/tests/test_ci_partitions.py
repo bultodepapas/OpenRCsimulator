@@ -194,7 +194,9 @@ esac
         repository = Path(__file__).resolve().parents[2]
         workflow = (repository / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         start = workflow.index("      - name: Import resources before schema probes\n")
-        end = workflow.index("      - name: Aircraft v2 contract and explicit v1 loader compatibility", start)
+        schema = workflow.index("      - name: Aircraft v2 contract and explicit v1 loader compatibility")
+        self.assertLess(start, schema)
+        end = workflow.index("\n      - ", start + 1)
         step = workflow[start:end]
         self.assertIn("        id: resource_import\n", step)
         self.assertIn("        if: matrix.part == 'integration'\n", step)

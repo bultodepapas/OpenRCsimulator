@@ -4,9 +4,9 @@
   "inventory_files": 2012,
   "by_status": {
     "archived": 337,
-    "explicit": 1518,
+    "explicit": 1516,
     "not found": 130,
-    "verified": 27
+    "verified": 29
   },
   "scope": "Named executable tests; source in test/tests directories (including helpers); supplemental named entry points and directly invoked checkers. Each path appears once. Archived evidence and delivery copies remain visible. Generated reports, captures, binary fixtures, Godot UID sidecars and data schemas are outside the executable-source census.",
   "status": {
@@ -20,7 +20,7 @@
     "tools/telemetry/test_wait_for_health.py",
     "tools/telemetry/wait_for_health.py"
   ],
-  "candidate_delta": "The candidate discovers native-kernel unittest cases, invokes the mass trace contract, adds tested telemetry health readiness and requires the real client/receiver E2E in app integration. baseline_linux_offline describes only the Linux research runner. The pinned editor and production telemetry components passed a local wire test against the real receiver. Full-project import and hosted CI have separate qualification.",
+  "candidate_delta": "The candidate discovers native-kernel unittest cases, invokes the mass trace contract, adds tested telemetry health readiness and requires the real client/receiver E2E in app integration. baseline_linux_offline describes only the Linux research runner. The pinned editor and production telemetry components passed a local wire test against the real receiver. Hosted run 45075562784 also passed full application import and the real client/receiver check. Its separate offline step failed; the corrected partition fixture passed locally.",
   "languages": {
     "Bash": 10,
     "C++": 2,
@@ -222,7 +222,7 @@
     {"path": "app/tests/slipstream_reference.gd", "language": "GDScript", "family": "app / test support", "role": "test support", "status": "explicit", "routes": ["app-unit-dependency"]},
     {"path": "app/tests/swirl_dense_reference.gd", "language": "GDScript", "family": "app / test support", "role": "test support", "status": "explicit", "routes": ["app-unit-dependency"]},
     {"path": "app/tests/swirl_e0b6_reference.gd", "language": "GDScript", "family": "app / test support", "role": "test support", "status": "explicit", "routes": ["app-unit-dependency"]},
-    {"path": "app/tests/telemetry_receiver_e2e.gd", "language": "GDScript", "family": "app / telemetry and logging", "role": "test support", "status": "verified", "routes": ["workflow-ci"], "baseline_execution": "standalone receiver discovery skips the live client without OPENRC_GODOT", "qualification": "Same local wire test: pinned Godot 4.8-beta2 and real receiver; three batches sent and stored, none queued or dropped. Production telemetry components ran in an isolated project. Full-project and hosted results require separate evidence. Two additional real-editor probes rejected an existing consent file and its .tmp sibling with exit 2, preserving their contents."},
+    {"path": "app/tests/telemetry_receiver_e2e.gd", "language": "GDScript", "family": "app / telemetry and logging", "role": "test support", "status": "verified", "routes": ["workflow-ci"], "baseline_execution": "standalone receiver discovery skips the live client without OPENRC_GODOT", "qualification": "Same local wire test: pinned Godot 4.8-beta2 and real receiver; three batches sent and stored, none queued or dropped. Production telemetry components ran in an isolated project. On ce31055c, PR run 45075562784 job 137372676636 imported the full application in 430 s and passed the mandatory telemetry step in 8 s. Its checked report recorded exit 0 and zero errors/warnings; sent=3, queued=0, dropped=0, local_drops=0. Two additional real-editor probes rejected an existing consent file and its .tmp sibling with exit 2, preserving their contents."},
     {"path": "app/tests/test_accessible_labels.gd", "language": "GDScript", "family": "app / other simulation and application contracts", "role": "named test", "status": "explicit", "routes": ["app-units"]},
     {"path": "app/tests/test_accident_integration.gd", "language": "GDScript", "family": "app / contacts, damage and failure", "role": "named test", "status": "explicit", "routes": ["app-units"]},
     {"path": "app/tests/test_accident_report.gd", "language": "GDScript", "family": "app / contacts, damage and failure", "role": "named test", "status": "explicit", "routes": ["app-units"]},
@@ -325,7 +325,7 @@
     {"path": "app/tests/test_check_math_sensitivity_imports.py", "language": "Python", "family": "app / other simulation and application contracts", "role": "named test", "status": "explicit", "routes": ["app-integration"]},
     {"path": "app/tests/test_checkpoint.gd", "language": "GDScript", "family": "app / native backend and replay", "role": "named test", "status": "explicit", "routes": ["app-units"]},
     {"path": "app/tests/test_checkpoint_integrity.gd", "language": "GDScript", "family": "app / native backend and replay", "role": "named test", "status": "explicit", "routes": ["app-units"]},
-    {"path": "app/tests/test_ci_partitions.py", "language": "Python", "family": "app / other simulation and application contracts", "role": "named test", "status": "explicit", "routes": ["workflow-ci"]},
+    {"path": "app/tests/test_ci_partitions.py", "language": "Python", "family": "app / other simulation and application contracts", "role": "named test", "status": "verified", "routes": ["workflow-ci"], "qualification": "The ce31055c hosted offline step failed. Its first command reproduced locally at 13/14: the import fixture sliced adjacent YAML steps into Bash. Corrected extraction passed 14/14 in 20.019 s and separately rejected a reordered schema. Hosted replacement evidence is tracked per run."},
     {"path": "app/tests/test_classic_instruments.gd", "language": "GDScript", "family": "app / other simulation and application contracts", "role": "named test", "status": "explicit", "routes": ["app-units"]},
     {"path": "app/tests/test_cloud_cache_disable.gd", "language": "GDScript", "family": "app / world, scenery and rendering", "role": "named test", "status": "explicit", "routes": ["app-units"]},
     {"path": "app/tests/test_cloud_shader_variants.gd", "language": "GDScript", "family": "app / world, scenery and rendering", "role": "named test", "status": "explicit", "routes": ["app-units"]},
@@ -1945,7 +1945,7 @@
     {"path": "services/telemetry/tests/__init__.py", "language": "Python", "family": "telemetry / receiver", "role": "test support", "status": "explicit", "routes": ["telemetry-receiver"]},
     {"path": "services/telemetry/tests/support.py", "language": "Python", "family": "telemetry / receiver", "role": "test support", "status": "explicit", "routes": ["telemetry-receiver"]},
     {"path": "services/telemetry/tests/test_equivalence.py", "language": "Python", "family": "telemetry / receiver", "role": "named test", "status": "explicit", "routes": ["telemetry-receiver"]},
-    {"path": "services/telemetry/tests/test_godot_e2e.py", "language": "Python", "family": "telemetry / receiver", "role": "named test", "status": "verified", "routes": ["workflow-ci"], "baseline_execution": "standalone receiver discovery skips the live client without OPENRC_GODOT", "qualification": "Same local wire test: pinned Godot 4.8-beta2 and real receiver; three batches sent and stored, none queued or dropped. Production telemetry components ran in an isolated project. Full-project and hosted results require separate evidence."},
+    {"path": "services/telemetry/tests/test_godot_e2e.py", "language": "Python", "family": "telemetry / receiver", "role": "named test", "status": "verified", "routes": ["workflow-ci"], "baseline_execution": "standalone receiver discovery skips the live client without OPENRC_GODOT", "qualification": "Same local wire test: pinned Godot 4.8-beta2 and real receiver; three batches sent and stored, none queued or dropped. Production telemetry components ran in an isolated project. On ce31055c, PR run 45075562784 job 137372676636 imported the full application in 430 s and passed the mandatory telemetry step in 8 s. Its checked report recorded exit 0 and zero errors/warnings; sent=3, queued=0, dropped=0, local_drops=0."},
     {"path": "services/telemetry/tests/test_ingress.py", "language": "Python", "family": "telemetry / receiver", "role": "named test", "status": "explicit", "routes": ["telemetry-receiver"]},
     {"path": "services/telemetry/tests/test_insights.py", "language": "Python", "family": "telemetry / receiver", "role": "named test", "status": "explicit", "routes": ["telemetry-receiver"]},
     {"path": "services/telemetry/tests/test_observability.py", "language": "Python", "family": "telemetry / receiver", "role": "named test", "status": "explicit", "routes": ["telemetry-receiver"]},
@@ -1974,7 +1974,7 @@
     {"path": "tools/ci/test_docs.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},
     {"path": "tools/ci/test_fixed_fps_digest.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},
     {"path": "tools/ci/test_local.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},
-    {"path": "tools/ci/test_phases.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},
+    {"path": "tools/ci/test_phases.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "verified", "routes": ["docs-ci"], "qualification": "Adjacent phase, keep-going and roster fixtures passed all 14 cases locally in 56.270 s with the corrected partition test."},
     {"path": "tools/ci/test_policy.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},
     {"path": "tools/ci/test_release_preflight.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},
     {"path": "tools/ci/test_visual_workflow.py", "language": "Python", "family": "tools/ci", "role": "named test", "status": "explicit", "routes": ["docs-ci"]},

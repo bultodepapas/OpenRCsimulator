@@ -225,16 +225,207 @@
         "git diff --check"
       ],
       "scope": "Final candidate source and report review."
+    },
+    {
+      "id": "partition-workflow-fixture-correction",
+      "result": "passed",
+      "tests_run": 14,
+      "elapsed_seconds": 20.019,
+      "command": "python3 app/tests/test_ci_partitions.py",
+      "regression": "Before the correction, one of fourteen cases failed because a named-step slice included new intervening YAML and executed it as Bash. The corrected fixture selects exactly one step and separately asserts import-before-schema ordering.",
+      "negative_control": "A disposable schema-before-import mutation still fails the independent ordering assertion.",
+      "limit": "The correction awaits the replacement hosted run at this evidence cutoff."
+    },
+    {
+      "id": "adjacent-phase-fixtures",
+      "result": "passed",
+      "tests_run": 14,
+      "elapsed_seconds": 56.27,
+      "command": "python3 tools/ci/test_phases.py",
+      "scope": "Adjacent app phase, failure propagation and parse-receipt fixtures after the partition-test correction."
+    },
+    {
+      "id": "native-portable-final-source-repeat",
+      "result": "passed",
+      "tests_run": 354,
+      "elapsed_seconds": 21.448,
+      "command": "python3 -m unittest discover -s research/native-kernel -p 'test_*.py'",
+      "scope": "Independent rerun of the actual candidate harness after the first hosted offline step failure; exact tracked fixtures hydrated."
+    },
+    {
+      "id": "mass-traces-final-source-repeat",
+      "result": "passed",
+      "tests_run": 7,
+      "elapsed_seconds": 0.005,
+      "command": "python3 app/tests/test_mass_trace_contract.py",
+      "scope": "Independent rerun through the changed candidate harness."
+    },
+    {
+      "id": "native-install-prelude",
+      "result": "passed",
+      "tests_run": 3,
+      "elapsed_seconds": 1.462,
+      "command": "python3 research/rc-monster-truck/native/test_install_only.py"
+    },
+    {
+      "id": "f4u-identity-prelude",
+      "result": "passed",
+      "tests_run": 1,
+      "elapsed_seconds": 4.622,
+      "command": "python3 research/f4u-corsair/F4U-07/test_generated_identity.py",
+      "scope": "Real tracked JSON identity fixtures, CRLF/LF rejection and clean-checkout behavior."
+    },
+    {
+      "id": "export-identity-prelude",
+      "result": "passed",
+      "tests_run": 45,
+      "elapsed_seconds": 72.576,
+      "command": "python3 app/tests/test_export_identity.py",
+      "scope": "Complete fake-engine/export fixture invocation using exact tracked inputs in a disposable source checkout; not a real simulator export."
     }
   ],
-  "hosted_status": "Pending at documentation freeze; consult the audit branch pull request for subsequent GitHub run results.",
+  "hosted_status": "First PR attempt yielded verified positives and one reproduced offline fixture regression. Correction locally verified; replacement hosted qualification required. See PR #21 for subsequent results.",
   "not_executed_locally": [
-    "Full asset-bearing application import and all 1163 unit scripts",
+    "Full asset-bearing application import and all 1163 unit scripts (full import subsequently passed in hosted CI; full suite still pending at cutoff)",
     "Full rendered capture suite or target GPUs",
     "Windows and macOS native hosts",
     "Docker container smoke (Docker unavailable)",
     "Export/package/release artifact round trip",
     "Deployment or production telemetry operations"
   ],
-  "interpretation": "Counts describe separate suites with possible overlap. They are not a unique total, coverage percentage or repository-wide pass claim."
+  "interpretation": "Counts describe separate suites with possible overlap, not a unique total or coverage percentage. Local results and hosted results are separate; successful steps within a failed/incomplete job do not make the whole run green.",
+  "hosted_validation": [
+    {
+      "head_sha": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "event": "pull_request",
+      "run_id": 45075562688,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562688",
+      "conclusion": "success",
+      "coverage": {
+        "contract_cases": 129,
+        "receiver_cases": 149,
+        "receiver_skips": 1,
+        "operator_cases": 123,
+        "operator_skips": 4,
+        "readiness_cases": 11
+      },
+      "observed": "Container health, HTTP 202 ingest, purge, both SQLite files and UID 10001 checks passed."
+    },
+    {
+      "head_sha": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "event": "pull_request",
+      "run_id": 45075562687,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562687",
+      "conclusion": "success",
+      "coverage": {
+        "linux": {
+          "tooling_cases": 212,
+          "frame_watch_cases": 31
+        },
+        "macos": {
+          "tooling_cases": 212,
+          "frame_watch_cases": 31
+        },
+        "windows": {
+          "tooling_cases": 212,
+          "tooling_skips": 7,
+          "frame_watch_cases": 31
+        }
+      },
+      "observed": "All three hosts also passed the three-aircraft, three-repeat dry-run plan; no GPU or flight qualification claimed."
+    },
+    {
+      "head_sha": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "merge_sha": "02849d7e703cd1ae9fd5307ed8b101cb13f943c1",
+      "event": "pull_request",
+      "run_id": 45075562784,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562784",
+      "conclusion": "Not successful: offline step failed; other jobs still running at follow-up evidence cutoff. Replacement required after correction.",
+      "observations": [
+        {
+          "job": "scope",
+          "job_id": 137371891529,
+          "result": "passed",
+          "elapsed_seconds": 87,
+          "checkout_seconds": 81
+        },
+        {
+          "job": "tooling",
+          "job_id": 137371891289,
+          "result": "passed",
+          "elapsed_seconds": 153,
+          "checkout_seconds": 3,
+          "ci_cases": 139,
+          "ci_seconds": 85.272,
+          "queue_cases": 458,
+          "queue_skips": 12,
+          "queue_seconds": 61.033,
+          "actionlint": "passed"
+        },
+        {
+          "job": "prerequisite graph",
+          "result": "observed",
+          "detail": "Website/prototype started two seconds after scope. All fifteen expensive first-tier jobs started two to three seconds after tooling also passed."
+        },
+        {
+          "job": "site",
+          "job_id": 137372341023,
+          "result": "passed"
+        },
+        {
+          "job": "three",
+          "job_id": 137372341010,
+          "result": "passed",
+          "unit_cases": 17,
+          "browser_e2e": "passed",
+          "artifact_id": 14774169475,
+          "artifact_sha256": "4ba44c41d4691f40a22bfd69cbb3e40a674a9bdbafe386f41949bde882934964",
+          "artifact_bytes": 70034,
+          "download_verification": "Exact SHA-256 and all three expected nonempty, valid 1280x720 PNGs verified after artifact round trip."
+        },
+        {
+          "job": "app integration",
+          "job_id": 137372676636,
+          "step": "Import resources before schema probes",
+          "result": "passed",
+          "elapsed_seconds": 430
+        },
+        {
+          "job": "app integration",
+          "job_id": 137372676636,
+          "step": "Require the real Godot client against the telemetry receiver",
+          "result": "passed",
+          "elapsed_seconds": 8,
+          "artifact_id": 14774544712,
+          "artifact_sha256": "9962bfac09a8e2289c5d05eb6f9c9ba372021dad7a1645a89028ba7224a3dc33",
+          "artifact_bytes": 1399,
+          "engine": "4.8.beta2.official.cafc17a19",
+          "checked_client_elapsed_seconds": 0.723963,
+          "checked_report": {
+            "ok": true,
+            "complete": true,
+            "process_exit": 0,
+            "errors": 0,
+            "warnings": 0,
+            "missing_required_text": []
+          },
+          "client_summary": {
+            "sent": 3,
+            "queued": 0,
+            "dropped": 0,
+            "local_drops": 0
+          },
+          "scope": "Real client and receiver test passed in the full imported application; checked receipt and log independently read after SHA-256-verified artifact download."
+        },
+        {
+          "job": "app integration",
+          "job_id": 137372676636,
+          "step": "Offline measurement and validation tool regressions",
+          "result": "failed",
+          "elapsed_seconds": 14,
+          "diagnosis": "A reproducible import-step extraction failure in the first 14-case partition module. Independent later app sections continued; this is not an aggregate success."
+        }
+      ]
+    }
+  ]
 }
