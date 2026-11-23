@@ -46,7 +46,6 @@ var last_window_mode := -1
 var window_mode_events := 0
 var window_mode_changed_usec := 0
 var transition_undrawable_intervals := 0
-var window_focused_before_selection := false
 const WINDOW_MODE_TRANSITION_USEC := 2000000
 var no_draw_intervals := 0
 var focus_losses := 0
@@ -174,7 +173,8 @@ func _run() -> void:
 	if requested_phases == ["startup"] or requested_phases == ["startup", "shutdown"]:
 		_finish(true)
 		return
-	if not await _observe_window_focus(): return
+	var has_window_focus := DisplayServer.window_is_focused.bind(get_window().get_window_id())
+	if not await _observe_window_focus(DisplayServer.get_name(), has_window_focus): return
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
 	if not catalog.is_player_selectable(str(config.aircraft)) or not catalog.can_fly(str(config.aircraft)) or catalog.is_rotorcraft(str(config.aircraft)):
 		_fail("this runtime requires a player-selectable fixed-wing aircraft")
@@ -727,26 +727,29 @@ func _prepare_isolated_approach(session: Node) -> bool:
 	return true
 
 
-## Record OS window focus before selection (up to 10 s). A flight pauses on a
-## focus loss (a locked screen keeps the window unfocused); a seatless headless
-## compositor never focuses it but sends no loss either, so this only observes.
-## A paused flight later fails with this cause instead of a bare "unexpected pause".
-func _observe_window_focus() -> bool:
-	if DisplayServer.get_name() == "headless": return true
-	var deadline := Time.get_ticks_usec() + 10000000
-	while running and not DisplayServer.window_is_focused(get_window().get_window_id()) and Time.get_ticks_usec() <= deadline:
-		await get_tree().process_frame
-	window_focused_before_selection = DisplayServer.window_is_focused(get_window().get_window_id())
-	identity.window_focused_before_selection = window_focused_before_selection
-	_event("window_focused" if window_focused_before_selection else "window_unfocused", {display_server = DisplayServer.get_name()})
-	# A headless Wayland compositor without a keyboard seat (Weston headless on a
-	# test host) never focuses any window, so AppRoot would open Pause at flight
-	# start. Treat the window as in front there, and record it. Real focus-loss
-	# notifications still pause; Windows, macOS and X11 keep the product probe.
-	if not window_focused_before_selection and DisplayServer.get_name() == "Wayland" and "window_focus_probe" in app:
+## Attribute callbacks during focus acquisition to their own setup phase.
+func _observe_window_focus(display_server: String, has_focus: Callable, timeout_usec: int = 10000000) -> bool:
+	if display_server == "headless": return true
+	var seatless := display_server == "Wayland" and OS.get_environment("OPENRC_GODTEST_SEATLESS_WAYLAND") == "1"
+	if seatless: identity.seatless_wayland = true
+	var deadline := Time.get_ticks_usec() + timeout_usec
+	var focused: bool = has_focus.call()
+	if not focused:
+		_begin("focus_wait")
+		while running and not focused and Time.get_ticks_usec() <= deadline:
+			await get_tree().process_frame
+			if not running: return false
+			focused = has_focus.call()
+	identity.window_focused_before_selection = focused
+	_event("window_focused" if focused else "window_unfocused", {display_server = display_server})
+	if not focused:
+		if not seatless or not "window_focus_probe" in app:
+			_fail("window did not acquire focus before selection")
+			return false
 		app.window_focus_probe = func() -> bool: return true
 		identity.window_focus_probe_override = "wayland_without_keyboard_focus"
 		_event("window_focus_probe_override", {reason = "wayland_without_keyboard_focus"})
+	if not phase.is_empty(): _end()
 	return running
 
 

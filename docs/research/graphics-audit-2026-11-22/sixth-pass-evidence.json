@@ -1,0 +1,756 @@
+{
+  "schema": 1,
+  "audit_pass": 6,
+  "main_sha": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "previous_published_audit_sha": "dc59add8eea374c8d52c3bd0f957ec513f577509",
+  "local_merge_sha": "1762a7691f3a9d39b3f7e8e55905dc984a812a9a",
+  "local_merge_tree": "4108118d1e77108413e0af3a2d5d4197d5d56826",
+  "observed_at_utc": "2026-11-22 21:39:07 UTC",
+  "main_refresh": {
+    "commits": 33,
+    "paths": 113,
+    "scope": "Fetched and reviewed; isolated local main merge retained. Publication does not merge runtime main into concurrently repaired audit branch."
+  },
+  "method": "Pinned source inspection, independent source reviews, primary documentation research, offline descriptive pixel model and normalized solver-source identity witness. No application optimization or new engine/hardware benchmark.",
+  "limitations": [
+    "Source operation counts are not timings, allocations, GPU instructions, transactions, draw counts, residency or FPS gains.",
+    "W01 is a quantified continuation of F17/F14/A6-O5; W04 extends the existing FW-24 catalogue-cache work.",
+    "The paused pixel-fit profile has RC track Off and cannot attribute W02/W03.",
+    "Retained hardware-report bytes are pinned; this is not a fresh full source/engine/driver receipt for each historical run.",
+    "Native requests are not proof of selected native backend; preserve reference fallback and actual admission.",
+    "CI snapshot does not qualify these proposed optimizations or all platforms."
+  ],
+  "execution": {
+    "offline_pixel_model": "completed with final script/report hashes in sixth-pass-pixel-model.json",
+    "engine_runs": 0,
+    "application_tests": 0,
+    "native_builds": 0,
+    "hardware_performance_runs": 0,
+    "workspace_interruption": "Executor briefly disconnected after initial arithmetic; read-only GitHub source/CI access continued; local workspace recovered intact before final verification.",
+    "offline_source_identity_witness": "203 source blobs at each of three pins: two matching accepted controls and ee46d96b mismatch; no engine run",
+    "initial_identity_read_attempt": "Git archive read aborted while fetching unneeded non-source assets; no result used. Final successful witness selects .gd blobs only."
+  },
+  "subagents": {
+    "requested_model": "gpt-6.1-terra",
+    "requested_reasoning_effort": "max",
+    "effective_runtime_settings_verified": false,
+    "profiles": "Source-only bounded research and independent challenge following docs/SUBAGENTS.md; lead owns integration/execution/publication.",
+    "review_corrections": [
+      "W01 novelty corrected to F17 continuation",
+      "Actual product weather default distinguished from technical calm default",
+      "Per-point turbulence callback and signal-reentry guards retained",
+      "Independent shader zero predicates, exact-zero threshold and normal projection retained",
+      "Shared bank consumer and implicit derivative branch qualified",
+      "RC track Off scope and non-independent model holdout explicit",
+      "Star layout is logical payload; existing probe is GDScript with real renderer",
+      "Historical bird/campfire repairs credited; first-enable benchmark gap retained"
+    ],
+    "integrated_review": {
+      "observers_native": "accepted",
+      "shader_math": "accepted after explicit implicit-gradient correction",
+      "scenery": "accepted",
+      "I01": "independent source/admission review accepted; clean-Git-tree and editor-test-override scope explicit"
+    }
+  },
+  "ci": {
+    "id": 45069282280,
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45069282280",
+    "head_sha": "85a2475f60029a4b6b09f23f643119bceea84a45",
+    "status": "in_progress",
+    "conclusion": null,
+    "updated_at": "2026-11-22T21:25:18Z",
+    "jobs_first_page_only": [
+      {
+        "id": 137352386535,
+        "name": "CI selection and release preflight",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137352388025,
+        "name": "Publication source rebind evidence",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 137353503740,
+        "name": "Website source and download checks",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503778,
+        "name": "three.js prototype (archived bake-off build)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503785,
+        "name": "RC native Linux build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503815,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503835,
+        "name": "RC native Windows build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503855,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503923,
+        "name": "Godot app (units 2)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353503926,
+        "name": "Godot visual captures",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137353503972,
+        "name": "Godot app (integration 0)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137353503983,
+        "name": "Godot app (units 1)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353504015,
+        "name": "Godot app (units 0)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353504020,
+        "name": "Godot app (units 5)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353504024,
+        "name": "Godot app (units 3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353504028,
+        "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137353504060,
+        "name": "Godot app (units 6)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353504063,
+        "name": "Godot app (units 7)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353504089,
+        "name": "Godot app (units 4)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137353505927,
+        "name": "Visual group shadow (${{ matrix.group }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 137353506212,
+        "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 137356128551,
+        "name": "RC native production checks (linux)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137356128566,
+        "name": "RC native production checks (windows)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137360806562,
+        "name": "Release builds (Windows, Linux, macOS)",
+        "status": "in_progress",
+        "conclusion": null
+      }
+    ]
+  },
+  "primary_references": [
+    "https://docs.godotengine.org/en/stable/tutorials/3d/resolution_scaling.html",
+    "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html",
+    "https://docs.godotengine.org/en/stable/tutorials/performance/using_multimesh.html",
+    "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shader_functions.html",
+    "https://docs.godotengine.org/en/stable/tutorials/performance/pipeline_compilations.html"
+  ],
+  "source_manifest": [
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/app_root.gd",
+      "git_blob_sha": "1eba3fa2baa5bd0c138ede983b22d4ccebbcd5e3",
+      "sha256": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/app_state/display_preferences.gd",
+      "git_blob_sha": "edca56aa019595c25a44585c108a0e0cd4b99167",
+      "sha256": "eef892ee3200dda92f9ad8d465ba80ffcaaebf5bbfd2186528eafc4711c15cee"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/app_state/preferences.gd",
+      "git_blob_sha": "56f598c24df78c2e7117329cf7f8e7bda3fb1896",
+      "sha256": "205652c993c00bfc76fd92f299709ade1b6e09ac8c83e6bd3095b3d182dcb99b"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/data/sky/stars.json",
+      "git_blob_sha": "a66bff6bc58502fc0a511eecb1a811e5b2e99d9a",
+      "sha256": "67f966951d25ca585eda973af4894b78ce8a08da3a2463dacd3a7afa4b91f023"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/main.gd",
+      "git_blob_sha": "8f76e4242698f609ef4a3637de0eca8c6faee22f",
+      "sha256": "5ae216f228dbebad4280f843e061c2e9d19a20ede042556f0bcd7d35babce8af"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/aero.gd",
+      "git_blob_sha": "d6f266279929e864b2b7744f26f41b06e497653d",
+      "sha256": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/ground_vehicle/airfield_track.gd",
+      "git_blob_sha": "2dcf48c94b5fa54446841169dc3c559972740aa8",
+      "sha256": "8e7098ab347384eef95340f4e6a884930b8e4e5a3f6e48feff488e0c7061a0e2"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/integrator.gd",
+      "git_blob_sha": "83a715a7101a4a8d5657ddbc2d9dde63cd9a7324",
+      "sha256": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/wind_aircraft_flow.gd",
+      "git_blob_sha": "9e8d24563857870cdfc036065400ed0cba84c844",
+      "sha256": "0328fc032c902d959da37d8c72f926785af554b1cea86ef34aa0ed883bc90386"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/wind_config.gd",
+      "git_blob_sha": "4961f1dc7e522e6dd7110cdb4b3214995efcd875",
+      "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/wind_spatial_config.gd",
+      "git_blob_sha": "ac4cac57de7e2fb8a6e05a4d811a707b07a39204",
+      "sha256": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/wind_spatial_field.gd",
+      "git_blob_sha": "6c223c5529d38c825aa2ab5b038b2a727ac8edea",
+      "sha256": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/physics/wind_spatial_presets.gd",
+      "git_blob_sha": "de4260fe2633046154f8455bf8221606cd3d4246",
+      "sha256": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/project.godot",
+      "git_blob_sha": "4e06225d6936a44e8efdfce7f1f1debf21353458",
+      "sha256": "7b103d2a435ccf59c0d4e97e8a219bbe167f73652a144d76c10a574fbdb6b2d2"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/auto_graphics_policy.gd",
+      "git_blob_sha": "b5ecfe5fd1e797a49b17eea87c564bc287391eec",
+      "sha256": "5aa3e3310dfeab3bc1e89e7b5ef49c23621445f7382e4078f8e1eee7161ac151"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/field.gd",
+      "git_blob_sha": "8c2d65a2926bc8b0f1ea0a7d147fede0584db6aa",
+      "sha256": "8838eac95440080e22153b8da65d7f269c8aa7412a0373c7632d19e9fdb8f10e"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/flag.gd",
+      "git_blob_sha": "0cc0d371e58fecbd9ac02695895f13b9445465d8",
+      "sha256": "9d9d23aff72efb9d92f41fdf3551f12b009c6504fa05ace99e6bd1ca12ff1170"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/graphics_preparation.gd",
+      "git_blob_sha": "a1c6b0841f3b7590138e8c11ed1f76a9ccc26b50",
+      "sha256": "9c5c8131bfefd352d0acdd80fb7e17561dc68513dcea9bd7f6fd88bdb24ef622"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/grass_surface.gdshaderinc",
+      "git_blob_sha": "433e964b11dc8c84d25a49375df3467505fe48a5",
+      "sha256": "fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/ground.gdshader",
+      "git_blob_sha": "5680a093dcc31aea56b029273eee5197ab1960fa",
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/lake/bank.gdshader",
+      "git_blob_sha": "fad2b9357d7d953abdb72d9afb67dc933ce34380",
+      "sha256": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/overlays/navigation_data.gd",
+      "git_blob_sha": "961b27666943cd96ae5be2741531b504f50c561e",
+      "sha256": "c35b2ab6634b1804ef9e39fc449bcd6db6f06fc1c644b2f51514e75a13b2c47d"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/overlays/overlay_manager.gd",
+      "git_blob_sha": "918411abcd0bcedf3226ba5fba669a61c58feacb",
+      "sha256": "e89c2310496a504841a3522c6d53296cbf0f2ebf24b424d7c58f0765c017ceec"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/rc_ground_detail.gdshaderinc",
+      "git_blob_sha": "90f89157d375e8e3c0888b1850337fcc359f3c3b",
+      "sha256": "1e0c786ee2096c920beae236d7137c6179930c1f98a87e746e32b13a4ebc92ce"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/rc_ground_material.gd",
+      "git_blob_sha": "400564756a1ceac48a79f5ab41fa3cd680c06493",
+      "sha256": "985d6151c1e3464e6196352f20ff3d185c26f8599b481cc9d13c8ad92ddf9f65"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/rc_track_field.gd",
+      "git_blob_sha": "a9f3681b5eeb65e0ae8a533080f7fec619f11d51",
+      "sha256": "217b42357f513000ed4f2e0e9e0178686369298ac4206cd0f7c11cce312fb6e1"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/reconstruction.gd",
+      "git_blob_sha": "149153470300fa9c754cd6af29f111f9d21175b5",
+      "sha256": "00fbcfa803db33120c7acfa960843ee70b36a44933f80e754176d51c50ca76b0"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/world/campfire.gd",
+      "git_blob_sha": "5b378f9365eb308653dc64690a343176a3b8fc56",
+      "sha256": "763415b254acfc45fb73a4f80283ce59430bc4b0b6952f804accd402583d6cf4"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/world/stars.gd",
+      "git_blob_sha": "af314c842f20620a0bad4b594ec6b32091fb078f",
+      "sha256": "7a4eebba4544befbdec6886b14f355b0a22733106ce15a4d0c78b3920c2ad126"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/render/world/world.gd",
+      "git_blob_sha": "d83fe162b954790ee4d37af95f8df7a8592418f4",
+      "sha256": "9a1e9144ae33172cc30265eefbb64b3ca84a1a645e99818a999e59d2b25e56e8"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/scenery/birds.gd",
+      "git_blob_sha": "cbe0fcb16579146a015f642ff970b18f3ed785c7",
+      "sha256": "cf54fb873717e74e68a051553a2dc46ed08307ee2196ffa69c283ef936a678fc"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/scenery/birds/birds_runtime.gd",
+      "git_blob_sha": "0f5f99c8e871dd7f29a778bc3f33195a4d609d97",
+      "sha256": "07ab2f355d1ab09c573467d043802f2fbe272e548410f0fb7554d7615bae3f39"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/scenery/rc_track_option.gd",
+      "git_blob_sha": "797afa24d5f69752329db4d1969500f0269408d6",
+      "sha256": "0cb5883119c1f192af26d05b82145d8ce35e95bdf07eb91bc3397cab608098e6"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/scenery/scenery.gd",
+      "git_blob_sha": "589986f6ef47dc4ef2e8a2101f088553f356e4c8",
+      "sha256": "0a91cea2bfb27e9b673e0df0a8e9d2288e5d8ed40f03ae400146ac46cf409930"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/sim/environment.gd",
+      "git_blob_sha": "030875ea984475813df78d9a1c05b0a843b77d62",
+      "sha256": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/sim/flight_session.gd",
+      "git_blob_sha": "481b67b5766d2c93a8e47d24d68147f86ae08eb7",
+      "sha256": "77db7fa05e24ca7e3749885000ed32986fc87cf8ee8017b2480d75ef068a014b"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/sim/helicopter_flight_session.gd",
+      "git_blob_sha": "de5b3084ba00b6009a3a7145ba7299e09771a19b",
+      "sha256": "93bf44b972a66de3e04169f6245dd9496ef69f109d5253ce6575c5f8dd959cb7"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/sim/native/helicopter_stage_adapter.gd",
+      "git_blob_sha": "a59dd175bc533795e93f28a9d0b300dcf957f868",
+      "sha256": "e440ba22a367253d0de442ae71732a3f7fe90c863827c1ee94596e9da93d88e5"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/sim/simulation.gd",
+      "git_blob_sha": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/statistics/detector.gd",
+      "git_blob_sha": "3849139d4af7876451265dabfacfe7828dd60fbb",
+      "sha256": "ee5b76a7e50650f1f727fc2cd477848198b61921c3fe610391806772e3745abb"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/statistics/fixed_wing_adapter.gd",
+      "git_blob_sha": "173c2f8080da010f43c89bb8daf798f2ded19d71",
+      "sha256": "f38a8150b2a81a7a0beacab76ccaf6f14069c84b5edaa7836980273f1c3a57a5"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/statistics/service.gd",
+      "git_blob_sha": "dfc3e1057ce6a5f8d1ebefc883a22aabd007791b",
+      "sha256": "45202dd0c666d2a3336c2213f0f9e53ae16a7315b70c33d798085eb694bc407a"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/tests/test_rcv_airfield_track.gd",
+      "git_blob_sha": "42f4540f434706453a01a4c40a26620ca5d677e7",
+      "sha256": "d6b1aa20e804c830b651e3e29b6be96a37fb5b6c5a71c4ce0dfcde0edb575dd0"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/tests/test_world_stars.gd",
+      "git_blob_sha": "0e1ae14e53efdc12cb68117579261460d04026eb",
+      "sha256": "fc14699a4817e674812403c8ff6ee012aae2099b383cd5a4202f08b87e86ebe1"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/vehicles/ground/airfield_track_view.gd",
+      "git_blob_sha": "6787529eeb5be72dd3e206e551c7a9481441ca0f",
+      "sha256": "119442f35d25e6b898d9f8405886e4c9bbc947d187e57c240276c370ebeae9d4"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "git_blob_sha": "cb4cf388bd40c0f23247953618a40e9dd16bc4fb",
+      "sha256": "85c119b12c30f8a78a905110e1f963c11dfa030f9cf1934a913a5fe8d9d43574"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "app/vehicles/ground/track_surface_detail.gdshaderinc",
+      "git_blob_sha": "4c0bfc26a0354079221163eff508fcf8b7291f51",
+      "sha256": "b2d3edeb995e9a2ad2c4c13e78014dcff6bf5db59672ee0172c567669d9d5042"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/WIND-ATMOSPHERE-REFERENCE.md",
+      "git_blob_sha": "57eeb5571ca57e986e67aed23c110d02a0b19931",
+      "sha256": "15391e2c084a95de644eefd5d3f8b6f4ec51d6a514182c2466f4fecf87b5d61d"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/plans/dynamic-resolution.md",
+      "git_blob_sha": "440f164ea2f8e2f457aeca23fb76d3e0ffda772e",
+      "sha256": "facc621bc1d5a1017a8472734087d436f36d0ff93dc8101845d29fb114cb1d85"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/plans/flight-overlays.md",
+      "git_blob_sha": "3474989cb5835e2a7dba1ddd017230dee978e1f4",
+      "sha256": "715c29a28ff82b79068d347be9d326ba0cb123a0a3d3df904392594d6919af5f"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/plans/global-performance-visual-quality.md",
+      "git_blob_sha": "9ca2ca9f458fac10ba40d917fe10cd8084db0b10",
+      "sha256": "036512fda2fdf3b3f3beefafe1b9e17a3cd3de1cf3cc797f638399556e21b34b"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/research/flight-statistics/UI-FS-08-R1/README.md",
+      "git_blob_sha": "cef2c7cda1131d5c7e5b61e30e9168a737ce3a53",
+      "sha256": "60a47fbcd392db6b8c068a8eb19648b5aa33e61f6c72e970461c25d5a9c41f2d"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/research/god-test/2026-11-22-linux-uhd630-comparison.md",
+      "git_blob_sha": "210472e25ef4ee7b90e9eec130873c1c88c9e0d8",
+      "sha256": "f304a98e5e59bd3adeb38544cbe6e520a3774bacab8f9ac3c38bd869a782b6bb"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/research/legacy-modes-audit-2026-11-20/README.md",
+      "git_blob_sha": "3b12fb72ff730b2d4cb86f3e046cc7797e3d703c",
+      "sha256": "c5482bf9086298c9e57b842a4eaa2125098941850e2f9d949d42d7a9178ec971"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "docs/research/performance-audit-2026-11-19/README.md",
+      "git_blob_sha": "22049f8b752539608d8d458ed458c4468b0ab7a5",
+      "sha256": "ae7f17f803a975484249d62b56dcb517488528ea6b9f502aef7915bf32ea16d5"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "external Audits/developer-audit-remediation-2026-11-06.md",
+      "git_blob_sha": "bc44171d141cfb71980cbeec5236762a0f9fecaf",
+      "sha256": "c6edddaad419522f5a8cf7b96731671094626ce99e5fb6eace35a288734087e4"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "external Audits/mathematical-optimization-lab.md",
+      "git_blob_sha": "5c1a24e0b2c09792fbec779d5ea4898796830681",
+      "sha256": "f43f138f605096480e74316bd18131b5d2e99e6e185f1b30f9088f224226e60c"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "external Audits/ram-and-gpu-memory-review-2026-11-07.md",
+      "git_blob_sha": "b01a388f91767c8f723db3098ea66bfdc958d197",
+      "sha256": "b2a3561479fc83722f3120ba83e2ccdfa1f3acd3f7515df8ba19337a474651d0"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "research/native-kernel/src/nk_helicopter_binding.hpp",
+      "git_blob_sha": "2311484ac28eec6e2946224c1003ed7b88936dd9",
+      "sha256": "e228870690c2ef2708edb6111483c6239490dd3273cce42c7ff268e01565a6a0"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "research/native-kernel/src/nk_kernel.cpp",
+      "git_blob_sha": "610210dee25c99831a052edb23ed50b887f07fe4",
+      "sha256": "ef573d46d15235b6c0541e3b955b20a034eeaf1cf5b2d663d1cf581c4ecafec4"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "research/native-kernel/src/nk_spatial_weather.hpp",
+      "git_blob_sha": "a21d14c81ce88b3b0c87c150f2fa1f944a018bb4",
+      "sha256": "d510282ad313b8c7d37d08986747390895d54190c163b9f2a1280c1a0c361746"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "research/native-kernel/src/nk_wake_spatial_flow.hpp",
+      "git_blob_sha": "0a3be0595e2d6aae84d8f04c82a290708c2553cc",
+      "sha256": "657082a464f9a3ac1976edca138a9f3d44d60773dd136c906a6e3e2d30ba2b01"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "research/native-kernel/src/nk_weather_binding.hpp",
+      "git_blob_sha": "58495dfce01437de30a1e2fb645f2c035dd013ae",
+      "sha256": "6c68360eee532b0a8b8c8f6dbd16cbe4c2c90bf9e432d52c41b1937285dc3242"
+    },
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "path": "research/performance/stars_build_probe.gd",
+      "git_blob_sha": "0947d69bc7e9771d1c2f54336584a7a896561fad",
+      "sha256": "37c9fc632f6a19de3e9929d2c345c0192fb1b6893a88cdbb1668bfcadd01d15a"
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "path": "app/ai/companions/profile_loader.gd",
+      "git_blob_sha": "3e13c32a1592dbc5f8904e7ce7c37ef2c9a92e8c",
+      "sha256": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719"
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "git_blob_sha": "254d4c0e7aeb6c7ec7617747557bb5b9d1f090b3",
+      "sha256": "77fa6ec20a686ad11467d8356964ac4fe6685e8dce422e062b3d281260c0306f"
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "path": "app/data/ai/companions/behavior-manifest.json",
+      "git_blob_sha": "f00e5d3ae04857348c72b96232de3f24742d9b3e",
+      "sha256": "258a4f122fa830310a10a7f95b1bf8a9c1926df5564d2fb686262ddf12dc0254"
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "path": "app/main.gd",
+      "git_blob_sha": "c706c4995c1ee39eec69721bc4ea08bf0c78c9f3",
+      "sha256": "63cc9f1e38dfa01bbe6471de7507af79ac29be6c49ac4a7269baf42acd96a3ae"
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "path": "tools/companions/README.md",
+      "git_blob_sha": "e54220739e07c8cc77a8c371afdc79bf53960bfc",
+      "sha256": "fd38915b9c4536c1d9e126bfe452d82bd670e59aab54d80c8aba7b4ea0277138"
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "path": "tools/companions/qualification.json",
+      "git_blob_sha": "e51824ee91036bcb3fb6ab95fe503bdd4bb078b8",
+      "sha256": "5f45d86d1be68e70d9fddfdb1a67cdea8dddfb952af9b3f3f651259de67539f6"
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "path": "app/ai/companions/profile_loader.gd",
+      "git_blob_sha": "3e13c32a1592dbc5f8904e7ce7c37ef2c9a92e8c",
+      "sha256": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719"
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "git_blob_sha": "53c9ffa22f5a99843080e461f11d9461c37c5d5d",
+      "sha256": "d29b0e7ef45207e7de9458d89b01453836dd7217ae10e3743a8b9f0d51f9f4dc"
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "path": "app/data/ai/companions/behavior-manifest.json",
+      "git_blob_sha": "5173e7cdbe5c32169cc7b9fa5eb419cc6549c15f",
+      "sha256": "aa030deb13b65bb088d6c50ef2809439789743580ebfb9a19bd942fb4533aa54"
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "path": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-339c29ec-to-43c52f4e.json",
+      "git_blob_sha": "bf6ff0cc46b4e6dcbbd1d9f49943df922c050e5a",
+      "sha256": "80512f6065f8e434f168a091a75aa18a034506da2afcbe93599b7b36c2f38251"
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "path": "tools/companions/README.md",
+      "git_blob_sha": "e54220739e07c8cc77a8c371afdc79bf53960bfc",
+      "sha256": "fd38915b9c4536c1d9e126bfe452d82bd670e59aab54d80c8aba7b4ea0277138"
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "path": "tools/companions/qualification.json",
+      "git_blob_sha": "e51824ee91036bcb3fb6ab95fe503bdd4bb078b8",
+      "sha256": "5f45d86d1be68e70d9fddfdb1a67cdea8dddfb952af9b3f3f651259de67539f6"
+    }
+  ],
+  "publication_base_sha": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+  "publication_base_tree": "c406fa0265d27c90d6654e4379cd3e612d182aa4",
+  "initial_prepublication_verification": {
+    "status": "completed",
+    "method": "Existing tools/ci/check_docs.py links/check_target on staged tree; new links only for inherited indexes; pinned GitHub object and line anchors checked with Git; JSON parsing, source hashes and diff whitespace check. No application test run.",
+    "new_local_links": 19,
+    "pinned_source_links": 101,
+    "pinned_source_files": 63,
+    "staged_paths": [
+      "docs/research/graphics-audit-2026-11-21/README.md",
+      "docs/research/graphics-audit-2026-11-22/README.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-evidence.json",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-observers-and-native.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-pixel-model.json",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-scenery.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-shaders.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass.md",
+      "research/performance/graphics-audit-2026-11-22/README.md",
+      "research/performance/graphics-audit-2026-11-22/reproduce_pixel_model.py"
+    ],
+    "production_paths_identical_to_main": [
+      "app",
+      "research/native-kernel",
+      "tools",
+      ".github",
+      "services",
+      "assets"
+    ],
+    "pixel_model_final_script_and_report_hashes": "matched",
+    "draft_reference_corrections": "Fixed one flag path and one shader line endpoint found by the first focused link check."
+  },
+  "verification": {
+    "status": "completed",
+    "method": "Existing tools/ci/check_docs.py on staged publication tree relative to ee46d96b; only new links in inherited indexes; pinned Git source objects/line anchors, JSON parsing, source/script/loader hashes and whitespace checked.",
+    "new_local_links": 26,
+    "pinned_source_links": 107,
+    "pinned_source_files": 76,
+    "publication_paths": [
+      "docs/research/graphics-audit-2026-11-21/README.md",
+      "docs/research/graphics-audit-2026-11-22/README.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-evidence.json",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-observers-and-native.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-pixel-model.json",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-scenery.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-shaders.md",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass-solver-pin.json",
+      "docs/research/graphics-audit-2026-11-22/sixth-pass.md",
+      "research/performance/graphics-audit-2026-11-22/README.md",
+      "research/performance/graphics-audit-2026-11-22/reproduce_pixel_model.py",
+      "research/performance/graphics-audit-2026-11-22/reproduce_solver_pin.py"
+    ],
+    "production_paths_identical_to_publication_base": [
+      "app",
+      "research/native-kernel",
+      "tools",
+      ".github",
+      "services",
+      "assets"
+    ],
+    "production_base_sha": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+    "offline_receipt_hashes": "matched",
+    "engine_and_hardware_tests": "not_run"
+  },
+  "integration_boundary": {
+    "remote_commits_preserved": 11,
+    "remote_repaired_findings": [
+      "T04",
+      "T08",
+      "U02",
+      "U03",
+      "U12",
+      "M01",
+      "M02"
+    ],
+    "main_accepted_solver": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+    "remote_accepted_solver": "43c52f4e5b0ed314c7341738f77f22aa24ec383127eba71bc669fbaa5157fa9e",
+    "combined_tree_qualified": false,
+    "decision": "Publish audit-only on remote ee46d96b, preserving its presentation refactor and documenting I01; do not silently rebind or claim old replay evidence covers this source.",
+    "earlier_qualified_audit_sha": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+    "current_source_pin_consistent": false,
+    "current_source_identity": "1bc571466406d8eaa270162691b0cc7c162729f92eb4f8f3080681894df6c086"
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "X01_hedge": {
+    "authored_float64": {
+      "path_length_m": 953.7908710065661,
+      "segment_lengths_m": [
+        8.275868534480235,
+        62.289646009589745,
+        133.63382805263043,
+        169.0,
+        179.0111728356641,
+        141.12760183606892,
+        82.02438661763951,
+        169.04733065032408,
+        3.8078865529319543,
+        5.573149917237109
+      ],
+      "tiers": {
+        "balanced": {
+          "card_mesh_triangles": 1812,
+          "cards": 906,
+          "instance_setter_calls_per_build": 2718,
+          "minimum_distance_to_rounding_half": 0.006172839506206174,
+          "segment_counts": [
+            8,
+            59,
+            127,
+            160,
+            170,
+            134,
+            78,
+            161,
+            4,
+            5
+          ],
+          "spacing_m": 1.0530000000000002
+        },
+        "high": {
+          "card_mesh_triangles": 2046,
+          "cards": 1023,
+          "instance_setter_calls_per_build": 3069,
+          "minimum_distance_to_rounding_half": 0.008992014938087323,
+          "segment_counts": [
+            9,
+            67,
+            143,
+            181,
+            192,
+            152,
+            88,
+            181,
+            4,
+            6
+          ],
+          "spacing_m": 0.9314363974673497
+        },
+        "low": {
+          "card_mesh_triangles": 1536,
+          "cards": 768,
+          "instance_setter_calls_per_build": 2304,
+          "minimum_distance_to_rounding_half": 0.012761741354985645,
+          "segment_counts": [
+            7,
+            50,
+            108,
+            136,
+            144,
+            114,
+            66,
+            136,
+            3,
+            4
+          ],
+          "spacing_m": 1.2420000000000002
+        }
+      }
+    },
+    "vector_float32_model": {
+      "path_length_m": 953.7908811569214,
+      "segment_lengths_m": [
+        8.27586841583252,
+        62.28964614868164,
+        133.6338348388672,
+        169.0,
+        179.01116943359375,
+        141.1276092529297,
+        82.02438354492188,
+        169.04733276367188,
+        3.8078866004943848,
+        5.573150157928467
+      ],
+      "tiers": {
+        "balanced": {
+          "card_mesh_triangles": 1812,
+          "cards": 906,
+          "instance_setter_calls_per_build": 2718,
+          "minimum_distance_to_rounding_half": 0.006172839506206174,
+          "segment_counts": [
+            8,
+            59,
+            127,
+            160,
+            170,
+            134,
+            78,
+            161,
+            4,
+            5
+          ],
+          "spacing_m": 1.0530000000000002
+        },
+        "high": {
+          "card_mesh_triangles": 2046,
+          "cards": 1023,
+          "instance_setter_calls_per_build": 3069,
+          "minimum_distance_to_rounding_half": 0.0089916774742278,
+          "segment_counts": [
+            9,
+            67,
+            143,
+            181,
+            192,
+            152,
+            88,
+            181,
+            4,
+            6
+          ],
+          "spacing_m": 0.931436407379806
+        },
+        "low": {
+          "card_mesh_triangles": 1536,
+          "cards": 768,
+          "instance_setter_calls_per_build": 2304,
+          "minimum_distance_to_rounding_half": 0.012761547561622066,
+          "segment_counts": [
+            7,
+            50,
+            108,
+            136,
+            144,
+            114,
+            66,
+            136,
+            3,
+            4
+          ],
+          "spacing_m": 1.2420000000000002
+        }
+      }
+    }
+  },
+  "X02_race_per_simulated_second": {
+    "assumption": "240 successful wrapped, no-start sampled ticks; endpoint extension additionally requires unfiltered non-RACING candidates and a proven validity guard",
+    "sample_norms": 240,
+    "sample_plus_endpoint_norms": 480,
+    "sample_plus_endpoint_rotations": 720,
+    "sample_rotations": 240
+  },
+  "X03_pack_per_simulated_second": {
+    "actual_equal_weight_hit_rate": null,
+    "assumption": "240 admitted native successful one-piece RK4 ticks, one RC branch, four stages; not event/substep/refusal counts",
+    "candidate_temperature_preparations": 960,
+    "current_table_samples": 7680,
+    "maximum_guarded_sample_reuse": 3840,
+    "temperature_weight_preparations": 1920
+  },
+  "X04_allocator": {
+    "free_rotor_masks": 16,
+    "maximum_active_set_iterations": 16,
+    "maximum_examined_reference_sets": 81,
+    "observed_saturation_fraction": null,
+    "reference_status_codes": 81
+  },
+  "X05_chapa_noble": {
+    "flake_airflow_derivative_threshold_m_per_pixel": 0.0010416666666666667,
+    "hashes_per_mottling": 4,
+    "observed_pixel_coverage": null,
+    "source_hash_expression": "4 * eligible_striation_fragments + 4 * eligible_flake_fragments"
+  },
+  "X06_observation_gap": {
+    "meaning": "The reducer accepts an earlier confirmation with no later observation; it rejects an explicit later fixed state. Source shows an empty status is omitted by the producer. Actual in-flight stop reachability and whole-report outcomes are not executed.",
+    "pure_reducer_results": {
+      "earlier_confirmation_only": "",
+      "explicit_later_fixed_observation": "controller used fixed resolution (controller_stopped)",
+      "missing_all_observations": "missing controller observations"
+    }
+  },
+  "limitations": [
+    "Source arithmetic only: no Godot, GPU, native component, whole-flight or hardware benchmark was executed by this reproducer.",
+    "Both hedge arithmetic models agree on counts. The float32 model is not a Godot execution or proof of backend floating-point behavior.",
+    "Source triangles and setter calls do not equal visible primitives, driver calls, memory allocations, milliseconds or FPS.",
+    "The pack upper bound needs exact-weight guarded reuse; mathematical equality of average and weak SOC is insufficient.",
+    "Cadence is per simulated second and successful eligible ticks. Event trials, substeps, pause and rejected samples change totals."
+  ],
+  "paint_base_texel_totals": {
+    "elan_high_extreme_pair": 100663296,
+    "elan_low_medium_pair": 25165824,
+    "jeti_four_albedos": 41943040,
+    "not_measured": "Imported compression, residency, cache lifetime, RAM/VRAM and FPS."
+  },
+  "paint_source_images": [
+    {
+      "base_texels": 67108864,
+      "height": 8192,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/elan_35_fuselage.png",
+      "sha256": "dda1ef40147b00045286e013b69990a68dd2f76d0ddd1ba509fd5441dc2b9669",
+      "width": 8192
+    },
+    {
+      "base_texels": 16777216,
+      "height": 4096,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_low.png",
+      "sha256": "b2bfbb937f7d9b31ed791a07575540c70401e03c904acfdc420076627abf6bbe",
+      "width": 4096
+    },
+    {
+      "base_texels": 33554432,
+      "height": 4096,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/elan_35_wing.png",
+      "sha256": "b46bc2248612dbb4cb24dc08d12d8cc4f615f490afcd0096623053fb6d4fedb2",
+      "width": 8192
+    },
+    {
+      "base_texels": 8388608,
+      "height": 2048,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/elan_35_wing_low.png",
+      "sha256": "000d070338adf485a0bc1218a056d079b2a633df21c1b80a1c5f589caf9ce931",
+      "width": 4096
+    },
+    {
+      "base_texels": 16777216,
+      "height": 4096,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
+      "sha256": "85c4cc8e2fa71ed1ee472db52051a39a4859d5c31dca6cd69888ced1368e167b",
+      "width": 4096
+    },
+    {
+      "base_texels": 16777216,
+      "height": 4096,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_wing.png",
+      "sha256": "0f871219049fb2055e60b13d081162a966a75c0f9aef1945a889390299e8f54d",
+      "width": 4096
+    },
+    {
+      "base_texels": 4194304,
+      "height": 2048,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fin.png",
+      "sha256": "52ae95c97ef234abe0758ebc7c7950a034ccee29c49eeb0205b30f24fb7cd39c",
+      "width": 2048
+    },
+    {
+      "base_texels": 4194304,
+      "height": 2048,
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_stab.png",
+      "sha256": "df0db6fb656d86e07f1313c19c85be7474befd627c180a927fa0c9682a0601e2",
+      "width": 2048
+    }
+  ],
+  "reproducer_sha256": "d3fed52374dc59cc92976e90f4e72b6c37e6d5275ca7c1843fc3000ab5b12f73",
+  "schema": 1,
+  "source_commit": "843f357c07af842054f3ccd6728f93beca9a57ef",
+  "source_sha256": {
+    "app/assets/vehicle-paints/turbo-lumber-evolution/chapa_noble.gdshader": "490ecd971868d8fae572a849b231df6ccfdd90cacd024e5307277200617e0ffc",
+    "app/data/scenery/default.json": "dc772c84e3efb9cfbae954ba315459ab22fbd9dce23ed41f3f3ef53a90f368d4",
+    "app/data/vehicle_paints.json": "177cb934a218ffc16a718786edbe5fb23660dd11389044a6aec8dfdb0c10de72",
+    "app/debug/godtest_driver.gd": "dc66988281f25af38470dc87437c09b9da12e2abb438cc0dacc54361aca6b302",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/physics/multirotor/allocator.gd": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+    "app/physics/multirotor/flight_controller.gd": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42",
+    "app/render/field.gd": "c1ae001d65f03b5532c02052360d260743e3103d14234ff8ad78ad5bda92ae59",
+    "app/render/flight_dynamic_resolution.gd": "845046c5b6bdc4da9101b9a3ede032adb6facf54ab45a435d6659d8030238ca4",
+    "app/render/timber_stock_paint.gd": "44b7e9c91412c594b055fd6c963eead15756fc63379ce7b4773bfe800fffc635",
+    "app/render/vehicle_paint.gd": "8e291a3fe5dedcbe6bd28e273ded775a8cb9d58280de91a0f0c3120ada940d9e",
+    "app/scenery/imported_hedge.gd": "978979be98f8c0456e145bbfd27c770fbeac0946134e0e36764a5407b7483233",
+    "app/scenery/scenery.gd": "5ab3d24d334051012a44a99facc05244af55425c44610d5ced0cfeb4be5b0aa2",
+    "app/sim/race/race_director.gd": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+    "app/sim/race/race_model.gd": "2762e0882441c1c0b731e56919554afff85f552272f20bc8390754f3089f04f3",
+    "research/native-kernel/src/nk_electric_stage.hpp": "d9b21a302f5e041743f0320a2cfdf76ae0c80c69186099785168d2ee125095ef",
+    "research/native-kernel/src/nk_pack_ecm.hpp": "76f2ab91bdb6684d9677be2b208f7f3a5e91919391b19c4da733c29eba712166",
+    "research/native-kernel/src/nk_stage.hpp": "e994bcbb7b122b5b017a048362fa9a7cc46937edfd01d808f48e1f5f9e36a34f",
+    "tools/godtest/analysis.py": "d4a68b4ad739778fe443d55efb195b91071b2a18beba609087f3cb230a5aeb56"
+  }
+}

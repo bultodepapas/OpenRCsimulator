@@ -544,10 +544,22 @@ def report(directory: Path, *, write: bool = True) -> dict:
             break
         if type(phase.get("requested")) is not bool:
             problems.append("phase requested flags must be explicit booleans")
-        observed = integrity.get("phase_stats", {}).get(str(phase.get("index")))
+        index = str(phase.get("index"))
+        evidence = integrity
+        pacing = integrity.get("phase_pacing", {}).get(index, {})
+        count_mismatch = bool(integrity) and (type(phase.get("frames")) is not int or
+                                               phase["frames"] != pacing.get("frames", 0))
+        if count_mismatch:
+            # Older drivers could tag callbacks between phases with the next
+            # phase index. Keep the raw stream but withhold that phase's metrics.
+            problems.append(f"runtime and stream frame counts differ: {phase.get('id')}")
+            evidence = {}
+        observed = evidence.get("phase_stats", {}).get(index)
         phase["frame_ms"] = observed or {"p50": None, "p95": None, "p99": None, "max": None}
         phase["frame_statistics_status"] = "available" if observed else "unavailable_no_verified_samples"
-        phase["pacing"] = integrity.get("phase_pacing", {}).get(str(phase.get("index")), {})
+        if count_mismatch:
+            phase["frame_statistics_status"] = "unavailable_phase_frame_mismatch"
+        phase["pacing"] = evidence.get("phase_pacing", {}).get(index, {})
         if not observed and phase.get("requested") and phase.get("status") == "complete":
             problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
         measured_flight = (manifest_valid and phase.get("requested") and phase["status"] == "complete"
@@ -565,10 +577,10 @@ def report(directory: Path, *, write: bool = True) -> dict:
                         or not math.isclose(scale, expected_scale, abs_tol=1e-6)
                         or scaling.get("bilinear") is not True):
                     problems.append(f"requested bilinear render scale not verified at {phase.get('id')} {boundary}")
-        phase["hitches"] = integrity.get("phase_hitches", {}).get(str(phase.get("index")), {})
-        phase["engine_counters_at_last_sample"] = integrity.get("phase_final_counters", {}).get(str(phase.get("index")), {})
-        phase["simulation_pace"] = integrity.get("phase_simulation_pace", {}).get(str(phase.get("index")),
-            {"status": "unavailable_stream_evidence", "issues": [integrity.get("simulation_pace_error") or "no_verified_samples"]})
+        phase["hitches"] = evidence.get("phase_hitches", {}).get(index, {})
+        phase["engine_counters_at_last_sample"] = evidence.get("phase_final_counters", {}).get(index, {})
+        phase["simulation_pace"] = evidence.get("phase_simulation_pace", {}).get(index,
+            {"status": "unavailable_stream_evidence", "issues": [evidence.get("simulation_pace_error") or "no_verified_samples"]})
         for key in ("wall_seconds", "sim_seconds"):
             if type(phase.get(key)) not in (float, int) or not math.isfinite(phase[key]) or phase[key] < 0:
                 problems.append(f"invalid phase {key}")
@@ -590,6 +602,12 @@ def report(directory: Path, *, write: bool = True) -> dict:
         if not isinstance(effective, dict) or effective.get("dynamic_resolution_fps") != manifest["dynamic_resolution_fps"]:
             problems.append("runtime dynamic resolution preference differs from the manifest")
     requested_rendered = rendering["requested_headless"] is False
+    if requested_rendered and manifest_valid and requested_manifest["phases"] not in (["startup"], ["startup", "shutdown"]):
+        identity = runtime.get("identity", {})
+        if identity.get("seatless_wayland") or "window_focus_probe_override" in identity:
+            problems.append("seatless or synthetic window focus: diagnostic run only")
+        elif identity.get("window_focused_before_selection") is not True:
+            problems.append("native window focus before selection was not verified")
     rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True
     if requested_rendered and not display_ok:

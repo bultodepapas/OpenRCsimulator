@@ -1,0 +1,4737 @@
+{
+  "schema": "openrc-audit-rig-sampler-evidence-v1",
+  "source": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "qualification": "Linux headless unrendered numeric component, real pinned rig binary, synthetic finite authored control inputs. VM/shared runtime noise; no physical-host admission, GPU, full-scene visual parity or FPS claim. All slow blocks retained.",
+  "attempts": [
+    {
+      "label": "rig-sampler-attempt-01",
+      "manifest": {
+        "source": "7940a4081e10994f34c858c4acac3d7a1a271464",
+        "inputs": [
+          {
+            "path": "app/vehicles/ground/monster_car_2_model.gd",
+            "bytes": 23852,
+            "sha256": "494b91939abc6033f6c36bc013276365bed01ac2c0e38a4cb1d68fbfd465fd99"
+          },
+          {
+            "path": "app/assets/vehicles/monster-car-2/visual_rig.json",
+            "bytes": 186260,
+            "sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57"
+          },
+          {
+            "path": "app/assets/vehicles/monster-car-2/visual_rig.bin",
+            "bytes": 3553104,
+            "sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d"
+          }
+        ],
+        "extracted_blocks": [
+          {
+            "declaration": "class TrackSampler extends RefCounted:",
+            "sha256": "5b1bb86bd7e817e11f2ef9d413a34613ca884e1f900c6d8ecadac84d9e0c5da9"
+          },
+          {
+            "declaration": "static func _compile_track(",
+            "sha256": "9642d2b70874acc5634fd3bf843b88e417854210db49aa2b65b8ef0f0e687bd5"
+          },
+          {
+            "declaration": "static func _sample_compiled_track(",
+            "sha256": "114d633159a11479afa49133c143e2834491e2a6424e6dda1963a33e1e7cd221"
+          },
+          {
+            "declaration": "static func _transform_from_floats(",
+            "sha256": "639d04933054bcfdbebe0cde655c61e5661835553d51a96dfbb6b6e2ecec87f4"
+          }
+        ],
+        "derived_sampler_sha256": "5fea692f85947c43bce8eb2212c5d91fed2e0338680e993ae09366fcf3dffa4c",
+        "case_spec_sha256": "3cb254883f0184378913b81b60ca9d6fcd90be5cb2f557b02af8502f786e33c6",
+        "tracks": 209,
+        "axis_preparations": 247,
+        "groups": 5,
+        "cases": 186,
+        "variant_scope": "valid compiled pinned metadata only; malformed/mutated metadata is not qualified",
+        "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+        "probe_sha256": "bc3114317474f33948aa38d4986cb1bcbe48120edf0c95be912be8a7ebb9a9cd",
+        "reproducer_sha256": "aea2143b5790d9a792e226fca364b06434d1f80e4a1b65c4af369d0a7f80b489",
+        "runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+        "config_sha256": "4c03b9e8ac789257db283697aaad6ad4caa69238a1366c23aaf0018bc1588318",
+        "host": {
+          "system": "Linux",
+          "release": "6.18.57",
+          "machine": "x86_64",
+          "logical_cpu_count": 9
+        },
+        "scope": "unrendered numeric component with real rig bytes and synthetic finite controls; not native vehicle, full draw, full visual parity, GPU, or FPS evidence",
+        "admission": {
+          "queue_enabled": false,
+          "inherited_performance": false,
+          "pool_configured": false
+        }
+      },
+      "summary": {
+        "checks": [
+          {
+            "label": "rig-sampler-import",
+            "exit_code": 0
+          },
+          {
+            "label": "rig-sampler-component",
+            "exit_code": 0
+          }
+        ],
+        "inputs_stable": true,
+        "result_ok": false,
+        "result_sha256": "ad2be8391d028bfb2f595244b1cf0ea0cc7d71e85faf3954614b9c1a43dead9e",
+        "ok": false
+      },
+      "result": {
+        "array_parameter_observed_type": 28,
+        "baseline_output_sha256": "419d35145267ac7ff18b1f2a256e505cc840d53ac23f88da8144d5b4e13c1485",
+        "cases": 186,
+        "complete": true,
+        "engine_info": {
+          "build": "official",
+          "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta2",
+          "string": "4.8-beta2 (official)",
+          "timestamp": 0
+        },
+        "engine_version": "4.8-beta2 (official).cafc17a19",
+        "failures": 0,
+        "packed_argument_type": 32,
+        "rows": [
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 25809,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24236,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 29516,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 39744,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 35243,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 31344,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 32511,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 33843,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19694,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17571,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 33786,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 23596,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20147,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 34252,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 32501,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 25671,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 43310,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 34160,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 29876,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 26805,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 31771,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20430,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17749,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 28619,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 35455,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22879,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 31127,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 37153,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 26780,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 34316,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 37433,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22763,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 35758,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 26451,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20134,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17500,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 26869,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 31468,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 59214,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 106184,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 70165,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17527,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 26407,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22453,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15951,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24269,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 30956,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 34510,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 42360,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28185,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25348,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23386,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28713,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34607,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23134,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31431,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 33351,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 52425,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 39885,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28677,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23708,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34911,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 49562,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 36251,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30572,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30245,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25912,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24191,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28685,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26311,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31273,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 52141,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31174,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34680,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 33887,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30728,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 22821,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32598,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 35936,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31730,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 37380,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 43146,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 39336,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23340,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 27491,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24807,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24248,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 52716,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 33018,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23817,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29313,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29020,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 38204,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 114010,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32507,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30930,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 35392,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31312,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 50679,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 39370,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28988,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24802,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 23251,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 35238,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28532,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28469,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 40033,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 52485,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31239,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 32910,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28141,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31490,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 59647,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 32851,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24966,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25250,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 45069,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27785,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 26923,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 44039,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 44798,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31566,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 34588,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28204,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29219,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 48833,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 49003,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27574,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30004,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 43723,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 54853,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 42767,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 38330,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27453,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 49509,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 36897,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31578,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 26608,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 162131,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 71917,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 33814,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 65431,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 34097,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 54366,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          }
+        ],
+        "schema": "openrc-audit-rig-sampler-v1",
+        "track_cases": 38874,
+        "tracks": 209,
+        "variant_comparisons": 116622,
+        "warmup_batches_per_variant_workload": 54
+      },
+      "checked_runs": [
+        {
+          "report": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "ccde6888-c07a-46ed-be7b-0b03cdc58f03",
+            "command": [
+              "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+              "--headless",
+              "--path",
+              "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-attempt-01/fixture",
+              "--audio-driver",
+              "Dummy",
+              "--script",
+              "res://rig_sampler_probe.gd"
+            ],
+            "cwd": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator",
+            "started_utc": "2026-11-22T16:34:00.053147+00:00",
+            "label": "rig-sampler-component",
+            "log": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-attempt-01/checks/rig-sampler-component-a14uz8xa/engine.log",
+            "report": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-attempt-01/checks/rig-sampler-component-a14uz8xa/report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": true,
+            "required_text": [
+              "RIG_SAMPLER_AUDIT_COMPLETE"
+            ],
+            "process_exit": 0,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "passed",
+            "detail": "",
+            "exit_code": 0,
+            "ok": true,
+            "elapsed_seconds": 8.745634,
+            "log_bytes": 137,
+            "log_sha256": "6adafe086da50bd678d3aa6d2e82d96e771baac47f9e632c11c7128b65fb6b55"
+          },
+          "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nRIG_SAMPLER_AUDIT_COMPLETE tracks=209 cases=186 comparisons=116622\n"
+        },
+        {
+          "report": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "d921adc0-5e18-4818-8706-db33abc1309a",
+            "command": [
+              "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+              "--headless",
+              "--path",
+              "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-attempt-01/fixture",
+              "--audio-driver",
+              "Dummy",
+              "--editor",
+              "--import"
+            ],
+            "cwd": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator",
+            "started_utc": "2026-11-22T16:33:52.748677+00:00",
+            "label": "rig-sampler-import",
+            "log": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-attempt-01/checks/rig-sampler-import-v3s7p15p/engine.log",
+            "report": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-attempt-01/checks/rig-sampler-import-v3s7p15p/report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": true,
+            "required_text": [],
+            "process_exit": 0,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "passed",
+            "detail": "",
+            "exit_code": 0,
+            "ok": true,
+            "elapsed_seconds": 7.233074,
+            "log_bytes": 1291,
+            "log_sha256": "1ea731e5e93c4eaea315e1a22d7fbbac4312fa417ca4c51d06f94e2e9805bbf5"
+          },
+          "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (2 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n"
+        }
+      ],
+      "timing_role": "retained preliminary; excluded from final summary because wrapper version-format assertion failed",
+      "probe_source": "extends SceneTree\n\nconst Sampler = preload(\"res://sampler.gd\")\nconst VARIANTS := [\"baseline\", \"packed_helper\", \"shared_coordinates\", \"combined\"]\nconst ROUNDS := 12\nconst BATCHES := 18\nvar _sets: Array = []\nvar _ids: Array[PackedInt32Array] = []\nvar _groups: Array = []\nvar _low := PackedInt32Array()\nvar _high := PackedInt32Array()\nvar _fraction := PackedFloat64Array()\nvar _bytes := PackedByteArray()\nvar _checks := 0\nvar _failures := 0\n\n\nfunc _initialize() -> void:\n\tcall_deferred(\"_run\")\n\n\nfunc _run() -> void:\n\tvar spec: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(\"res://inputs.json\"))\n\tvar rig: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(\"res://rig.json\"))\n\t_bytes = FileAccess.get_file_as_bytes(\"res://rig.bin\")\n\t_groups = spec.groups\n\t_low.resize(_groups.size())\n\t_high.resize(_groups.size())\n\t_fraction.resize(_groups.size())\n\tfor name: String in spec.names:\n\t\t_ids.append(PackedInt32Array(spec.ids[name]))\n\tfor _variant in VARIANTS:\n\t\tvar samplers: Array = []\n\t\tfor name: String in spec.names:\n\t\t\tsamplers.append(Sampler._compile_track(rig.tracks[name]))\n\t\t_sets.append(samplers)\n\tvar argument_probe := PackedFloat32Array([1.25, -0.0])\n\tvar observed_argument_type := _array_argument_type(argument_probe)\n\tif observed_argument_type != TYPE_ARRAY:\n\t\t_failures += 1\n\tvar baseline_hash := HashingContext.new()\n\tbaseline_hash.start(HashingContext.HASH_SHA256)\n\tfor sample_case: Dictionary in spec.cases:\n\t\tvar inputs: Dictionary = sample_case.inputs\n\t\t_prepare(inputs)\n\t\tfor index in _sets[0].size():\n\t\t\tvar original: Variant = _one(0, index, inputs)\n\t\t\tvar original_bytes := var_to_bytes(original)\n\t\t\tvar values: PackedByteArray = _sets[0][index].values.to_byte_array()\n\t\t\tbaseline_hash.update(original_bytes)\n\t\t\tbaseline_hash.update(values)\n\t\t\tif typeof(original) != TYPE_TRANSFORM3D:\n\t\t\t\t_failures += 1\n\t\t\tfor variant in range(1, VARIANTS.size()):\n\t\t\t\tvar candidate: Variant = _one(variant, index, inputs)\n\t\t\t\tif var_to_bytes(candidate) != original_bytes or _sets[variant][index].values.to_byte_array() != values:\n\t\t\t\t\t_failures += 1\n\t\t\t_checks += 1\n\tvar rows: Array[Dictionary] = []\n\tif _failures == 0:\n\t\tfor workload: Dictionary in spec.workloads:\n\t\t\tfor _warmup in 3:\n\t\t\t\tfor variant in VARIANTS.size():\n\t\t\t\t\t_batch(variant, spec.cases, workload.cases, BATCHES)\n\t\t\tfor round_index in ROUNDS:\n\t\t\t\tfor order_index in VARIANTS.size():\n\t\t\t\t\tvar variant := (round_index + order_index) % VARIANTS.size()\n\t\t\t\t\tvar start := Time.get_ticks_usec()\n\t\t\t\t\tvar checksum := _batch(variant, spec.cases, workload.cases, BATCHES)\n\t\t\t\t\tvar elapsed := Time.get_ticks_usec() - start\n\t\t\t\t\trows.append({\"workload\": workload.name, \"round\": round_index, \"order\": order_index,\n\t\t\t\t\t\t\"variant\": VARIANTS[variant], \"batches\": BATCHES, \"duration_usec\": elapsed, \"checksum\": checksum})\n\tvar version := Engine.get_version_info()\n\tvar report := {\"schema\": \"openrc-audit-rig-sampler-v1\", \"complete\": _failures == 0,\n\t\t\"engine_version\": str(version.string) + \".\" + str(version.hash).left(9), \"engine_info\": version, \"failures\": _failures,\n\t\t\"packed_argument_type\": typeof(argument_probe), \"array_parameter_observed_type\": observed_argument_type,\n\t\t\"track_cases\": _checks, \"variant_comparisons\": _checks * 3, \"tracks\": spec.names.size(),\n\t\t\"cases\": spec.cases.size(), \"baseline_output_sha256\": baseline_hash.finish().hex_encode(),\n\t\t\"warmup_batches_per_variant_workload\": 3 * BATCHES, \"rows\": rows}\n\tvar output := FileAccess.open(\"res://rig-sampler-results.json\", FileAccess.WRITE)\n\tif output == null:\n\t\tquit(1)\n\t\treturn\n\toutput.store_string(JSON.stringify(report, \"\\t\") + \"\\n\")\n\toutput.close()\n\tif _failures == 0:\n\t\tprint(\"RIG_SAMPLER_AUDIT_COMPLETE tracks=%d cases=%d comparisons=%d\" % [spec.names.size(), spec.cases.size(), _checks * 3])\n\tquit(0 if _failures == 0 else 1)\n\n\nfunc _array_argument_type(values: Array) -> int:\n\treturn typeof(values)\n\n\nfunc _prepare(inputs: Dictionary) -> void:\n\tfor index in _groups.size():\n\t\tvar group: Dictionary = _groups[index]\n\t\tvar count := int(group.count)\n\t\tvar grid := clampf((float(inputs.get(str(group.name), 0.0)) - float(group.low)) / float(group.step), 0.0, float(count - 1))\n\t\tvar lower := int(floor(grid))\n\t\t_low[index] = lower\n\t\t_high[index] = mini(lower + 1, count - 1)\n\t\t_fraction[index] = grid - float(lower)\n\n\nfunc _one(variant: int, index: int, inputs: Dictionary) -> Variant:\n\tvar sampler: Sampler.TrackSampler = _sets[variant][index]\n\tmatch variant:\n\t\t0:\n\t\t\treturn Sampler._sample_compiled_track(sampler, _bytes, inputs)\n\t\t1:\n\t\t\treturn Sampler._sample_packed(sampler, _bytes, inputs)\n\t\t2:\n\t\t\treturn Sampler._sample_shared(sampler, _bytes, _ids[index], _low, _high, _fraction)\n\t\t_:\n\t\t\treturn Sampler._sample_combined(sampler, _bytes, _ids[index], _low, _high, _fraction)\n\n\nfunc _batch(variant: int, cases: Array, case_indices: Array, count: int) -> float:\n\tvar checksum := 0.0\n\tfor batch_index in count:\n\t\tvar inputs: Dictionary = cases[int(case_indices[batch_index % case_indices.size()])].inputs\n\t\tif variant >= 2:\n\t\t\t_prepare(inputs)\n\t\tfor index in _sets[variant].size():\n\t\t\tvar value: Transform3D = _one(variant, index, inputs)\n\t\t\tchecksum += value.origin.x\n\treturn checksum\n"
+    },
+    {
+      "label": "rig-sampler-final-01",
+      "manifest": {
+        "source": "7940a4081e10994f34c858c4acac3d7a1a271464",
+        "inputs": [
+          {
+            "path": "app/vehicles/ground/monster_car_2_model.gd",
+            "bytes": 23852,
+            "sha256": "494b91939abc6033f6c36bc013276365bed01ac2c0e38a4cb1d68fbfd465fd99"
+          },
+          {
+            "path": "app/assets/vehicles/monster-car-2/visual_rig.json",
+            "bytes": 186260,
+            "sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57"
+          },
+          {
+            "path": "app/assets/vehicles/monster-car-2/visual_rig.bin",
+            "bytes": 3553104,
+            "sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d"
+          }
+        ],
+        "extracted_blocks": [
+          {
+            "declaration": "class TrackSampler extends RefCounted:",
+            "sha256": "5b1bb86bd7e817e11f2ef9d413a34613ca884e1f900c6d8ecadac84d9e0c5da9"
+          },
+          {
+            "declaration": "static func _compile_track(",
+            "sha256": "9642d2b70874acc5634fd3bf843b88e417854210db49aa2b65b8ef0f0e687bd5"
+          },
+          {
+            "declaration": "static func _sample_compiled_track(",
+            "sha256": "114d633159a11479afa49133c143e2834491e2a6424e6dda1963a33e1e7cd221"
+          },
+          {
+            "declaration": "static func _transform_from_floats(",
+            "sha256": "639d04933054bcfdbebe0cde655c61e5661835553d51a96dfbb6b6e2ecec87f4"
+          }
+        ],
+        "derived_sampler_sha256": "5fea692f85947c43bce8eb2212c5d91fed2e0338680e993ae09366fcf3dffa4c",
+        "case_spec_sha256": "3cb254883f0184378913b81b60ca9d6fcd90be5cb2f557b02af8502f786e33c6",
+        "tracks": 209,
+        "axis_preparations": 247,
+        "groups": 5,
+        "cases": 186,
+        "variant_scope": "valid compiled pinned metadata only; malformed/mutated metadata is not qualified",
+        "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+        "probe_sha256": "d75340f34b5e0154f058fbfd04e0c6c6e82eb3ecf1253c2863cd49ac48edaef9",
+        "reproducer_sha256": "aea2143b5790d9a792e226fca364b06434d1f80e4a1b65c4af369d0a7f80b489",
+        "runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+        "config_sha256": "4c03b9e8ac789257db283697aaad6ad4caa69238a1366c23aaf0018bc1588318",
+        "host": {
+          "system": "Linux",
+          "release": "6.18.57",
+          "machine": "x86_64",
+          "logical_cpu_count": 9
+        },
+        "scope": "unrendered numeric component with real rig bytes and synthetic finite controls; not native vehicle, full draw, full visual parity, GPU, or FPS evidence",
+        "admission": {
+          "queue_enabled": false,
+          "inherited_performance": false,
+          "pool_configured": false
+        }
+      },
+      "summary": {
+        "checks": [
+          {
+            "label": "rig-sampler-import",
+            "exit_code": 0
+          },
+          {
+            "label": "rig-sampler-component",
+            "exit_code": 0
+          }
+        ],
+        "inputs_stable": true,
+        "result_ok": true,
+        "result_sha256": "bf5ad12006981b14eff0cb8d226739b95a8df10fc73df8a602183e97976ddffa",
+        "ok": true
+      },
+      "result": {
+        "array_parameter_observed_type": 28,
+        "baseline_output_sha256": "419d35145267ac7ff18b1f2a256e505cc840d53ac23f88da8144d5b4e13c1485",
+        "cases": 186,
+        "complete": true,
+        "engine_info": {
+          "build": "official",
+          "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta2",
+          "string": "4.8-beta2 (official)",
+          "timestamp": 0
+        },
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "failures": 0,
+        "packed_argument_type": 32,
+        "rows": [
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21720,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20447,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17301,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15354,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20698,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17240,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15653,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21618,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17123,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15356,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21332,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20015,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15580,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21390,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20583,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19042,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22812,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21966,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18087,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15741,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20238,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 16938,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15618,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21400,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19163,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 16063,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22275,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20565,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15641,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21374,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20319,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17523,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21408,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20443,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17286,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15334,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19894,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17314,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15365,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21196,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17327,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15880,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22243,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20497,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 15914,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21458,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20425,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17155,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 33678,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 27400,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26671,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24030,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31063,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24278,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28722,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34980,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25470,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23017,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30277,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29819,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 21907,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31833,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31585,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25772,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 33922,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32642,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28961,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23283,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29091,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28710,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23567,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30836,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26807,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 27998,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 36523,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 35619,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28273,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30305,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29723,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 27598,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32267,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32027,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26945,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24904,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28039,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25785,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23780,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30822,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30095,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25383,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34868,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 27929,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 23746,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31456,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28744,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25010,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30197,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29153,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28082,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25829,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28986,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25667,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24523,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 56734,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 61690,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28625,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31531,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27675,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 23382,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30428,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29550,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25686,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28270,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27031,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24362,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 21925,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27056,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31668,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22089,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28326,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28896,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29423,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 35311,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30407,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22788,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30128,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27045,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24217,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28375,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27865,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24443,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22412,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27192,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24445,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24409,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31499,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24785,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22737,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29030,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 26824,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22569,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28089,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27460,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 23705,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          }
+        ],
+        "schema": "openrc-audit-rig-sampler-v1",
+        "track_cases": 38874,
+        "tracks": 209,
+        "variant_comparisons": 116622,
+        "warmup_batches_per_variant_workload": 54
+      },
+      "checked_runs": [
+        {
+          "report": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "e12a86ff-e4b9-43fe-922d-b21501fda05f",
+            "command": [
+              "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+              "--headless",
+              "--path",
+              "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-01/fixture",
+              "--audio-driver",
+              "Dummy",
+              "--script",
+              "res://rig_sampler_probe.gd"
+            ],
+            "cwd": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator",
+            "started_utc": "2026-11-22T16:35:16.455728+00:00",
+            "label": "rig-sampler-component",
+            "log": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-01/checks/rig-sampler-component-r53qyspb/engine.log",
+            "report": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-01/checks/rig-sampler-component-r53qyspb/report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": true,
+            "required_text": [
+              "RIG_SAMPLER_AUDIT_COMPLETE"
+            ],
+            "process_exit": 0,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "passed",
+            "detail": "",
+            "exit_code": 0,
+            "ok": true,
+            "elapsed_seconds": 6.16346,
+            "log_bytes": 137,
+            "log_sha256": "6adafe086da50bd678d3aa6d2e82d96e771baac47f9e632c11c7128b65fb6b55"
+          },
+          "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nRIG_SAMPLER_AUDIT_COMPLETE tracks=209 cases=186 comparisons=116622\n"
+        },
+        {
+          "report": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "e31c1017-e98d-4b8a-a04c-d600942449b6",
+            "command": [
+              "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+              "--headless",
+              "--path",
+              "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-01/fixture",
+              "--audio-driver",
+              "Dummy",
+              "--editor",
+              "--import"
+            ],
+            "cwd": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator",
+            "started_utc": "2026-11-22T16:35:10.390666+00:00",
+            "label": "rig-sampler-import",
+            "log": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-01/checks/rig-sampler-import-aw1vqx66/engine.log",
+            "report": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-01/checks/rig-sampler-import-aw1vqx66/report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": true,
+            "required_text": [],
+            "process_exit": 0,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "passed",
+            "detail": "",
+            "exit_code": 0,
+            "ok": true,
+            "elapsed_seconds": 6.009794,
+            "log_bytes": 1291,
+            "log_sha256": "1ea731e5e93c4eaea315e1a22d7fbbac4312fa417ca4c51d06f94e2e9805bbf5"
+          },
+          "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (2 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n"
+        }
+      ],
+      "timing_role": "final source; included"
+    },
+    {
+      "label": "rig-sampler-final-02",
+      "manifest": {
+        "source": "7940a4081e10994f34c858c4acac3d7a1a271464",
+        "inputs": [
+          {
+            "path": "app/vehicles/ground/monster_car_2_model.gd",
+            "bytes": 23852,
+            "sha256": "494b91939abc6033f6c36bc013276365bed01ac2c0e38a4cb1d68fbfd465fd99"
+          },
+          {
+            "path": "app/assets/vehicles/monster-car-2/visual_rig.json",
+            "bytes": 186260,
+            "sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57"
+          },
+          {
+            "path": "app/assets/vehicles/monster-car-2/visual_rig.bin",
+            "bytes": 3553104,
+            "sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d"
+          }
+        ],
+        "extracted_blocks": [
+          {
+            "declaration": "class TrackSampler extends RefCounted:",
+            "sha256": "5b1bb86bd7e817e11f2ef9d413a34613ca884e1f900c6d8ecadac84d9e0c5da9"
+          },
+          {
+            "declaration": "static func _compile_track(",
+            "sha256": "9642d2b70874acc5634fd3bf843b88e417854210db49aa2b65b8ef0f0e687bd5"
+          },
+          {
+            "declaration": "static func _sample_compiled_track(",
+            "sha256": "114d633159a11479afa49133c143e2834491e2a6424e6dda1963a33e1e7cd221"
+          },
+          {
+            "declaration": "static func _transform_from_floats(",
+            "sha256": "639d04933054bcfdbebe0cde655c61e5661835553d51a96dfbb6b6e2ecec87f4"
+          }
+        ],
+        "derived_sampler_sha256": "5fea692f85947c43bce8eb2212c5d91fed2e0338680e993ae09366fcf3dffa4c",
+        "case_spec_sha256": "3cb254883f0184378913b81b60ca9d6fcd90be5cb2f557b02af8502f786e33c6",
+        "tracks": 209,
+        "axis_preparations": 247,
+        "groups": 5,
+        "cases": 186,
+        "variant_scope": "valid compiled pinned metadata only; malformed/mutated metadata is not qualified",
+        "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+        "probe_sha256": "d75340f34b5e0154f058fbfd04e0c6c6e82eb3ecf1253c2863cd49ac48edaef9",
+        "reproducer_sha256": "aea2143b5790d9a792e226fca364b06434d1f80e4a1b65c4af369d0a7f80b489",
+        "runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+        "config_sha256": "4c03b9e8ac789257db283697aaad6ad4caa69238a1366c23aaf0018bc1588318",
+        "host": {
+          "system": "Linux",
+          "release": "6.18.57",
+          "machine": "x86_64",
+          "logical_cpu_count": 9
+        },
+        "scope": "unrendered numeric component with real rig bytes and synthetic finite controls; not native vehicle, full draw, full visual parity, GPU, or FPS evidence",
+        "admission": {
+          "queue_enabled": false,
+          "inherited_performance": false,
+          "pool_configured": false
+        }
+      },
+      "summary": {
+        "checks": [
+          {
+            "label": "rig-sampler-import",
+            "exit_code": 0
+          },
+          {
+            "label": "rig-sampler-component",
+            "exit_code": 0
+          }
+        ],
+        "inputs_stable": true,
+        "result_ok": true,
+        "result_sha256": "6a4467e994d23be9c00822ccb9412b5d0586662f6927073fc212825896acb16e",
+        "ok": true
+      },
+      "result": {
+        "array_parameter_observed_type": 28,
+        "baseline_output_sha256": "419d35145267ac7ff18b1f2a256e505cc840d53ac23f88da8144d5b4e13c1485",
+        "cases": 186,
+        "complete": true,
+        "engine_info": {
+          "build": "official",
+          "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta2",
+          "string": "4.8-beta2 (official)",
+          "timestamp": 0
+        },
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "failures": 0,
+        "packed_argument_type": 32,
+        "rows": [
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 37360,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 34427,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21050,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22495,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 46441,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 39407,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20060,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 43726,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 35021,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 32555,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 43027,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 40774,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 31184,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 28265,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 23625,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18434,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 23566,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 23016,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20363,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18182,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 21005,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19491,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18012,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24688,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19014,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17930,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24157,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 23096,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18739,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 26395,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22953,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20411,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24483,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 25756,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 20215,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17075,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24070,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 19427,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18536,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 23246,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18726,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18351,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 24523,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22363,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 17607,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 28510,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 22211,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 13.1849890351295,
+            "duration_usec": 18678,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "neutral"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 33701,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28412,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24706,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26181,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30232,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28527,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24920,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32026,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25042,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24978,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31986,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 35536,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24799,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 32539,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30921,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29509,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30363,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30955,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25690,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24193,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34312,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26318,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29183,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 91155,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28683,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28218,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34322,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 31210,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24618,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30039,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26832,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26183,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29748,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 27260,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24131,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24694,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28047,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25136,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24654,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29928,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 25724,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 24662,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 30421,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29350,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 34271,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 29594,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 28718,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 18.768825061747,
+            "duration_usec": 26049,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "fractional_interior"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 40324,
+            "order": 0,
+            "round": 0,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 28667,
+            "order": 1,
+            "round": 0,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 26564,
+            "order": 2,
+            "round": 0,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24266,
+            "order": 3,
+            "round": 0,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27899,
+            "order": 0,
+            "round": 1,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 23748,
+            "order": 1,
+            "round": 1,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22956,
+            "order": 2,
+            "round": 1,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29231,
+            "order": 3,
+            "round": 1,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24710,
+            "order": 0,
+            "round": 2,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22907,
+            "order": 1,
+            "round": 2,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29947,
+            "order": 2,
+            "round": 2,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29307,
+            "order": 3,
+            "round": 2,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24555,
+            "order": 0,
+            "round": 3,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30638,
+            "order": 1,
+            "round": 3,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27863,
+            "order": 2,
+            "round": 3,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25633,
+            "order": 3,
+            "round": 3,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 35289,
+            "order": 0,
+            "round": 4,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27669,
+            "order": 1,
+            "round": 4,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24925,
+            "order": 2,
+            "round": 4,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24449,
+            "order": 3,
+            "round": 4,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29861,
+            "order": 0,
+            "round": 5,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24699,
+            "order": 1,
+            "round": 5,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 34380,
+            "order": 2,
+            "round": 5,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 32921,
+            "order": 3,
+            "round": 5,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25303,
+            "order": 0,
+            "round": 6,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24204,
+            "order": 1,
+            "round": 6,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30171,
+            "order": 2,
+            "round": 6,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27785,
+            "order": 3,
+            "round": 6,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24312,
+            "order": 0,
+            "round": 7,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29647,
+            "order": 1,
+            "round": 7,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30978,
+            "order": 2,
+            "round": 7,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24334,
+            "order": 3,
+            "round": 7,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 30111,
+            "order": 0,
+            "round": 8,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 31288,
+            "order": 1,
+            "round": 8,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 25492,
+            "order": 2,
+            "round": 8,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 69097,
+            "order": 3,
+            "round": 8,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 39224,
+            "order": 0,
+            "round": 9,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 26243,
+            "order": 1,
+            "round": 9,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 23595,
+            "order": 2,
+            "round": 9,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29514,
+            "order": 3,
+            "round": 9,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 23539,
+            "order": 0,
+            "round": 10,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22604,
+            "order": 1,
+            "round": 10,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29456,
+            "order": 2,
+            "round": 10,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27043,
+            "order": 3,
+            "round": 10,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 22793,
+            "order": 0,
+            "round": 11,
+            "variant": "combined",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 29078,
+            "order": 1,
+            "round": 11,
+            "variant": "baseline",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 27907,
+            "order": 2,
+            "round": 11,
+            "variant": "packed_helper",
+            "workload": "varying_interiors"
+          },
+          {
+            "batches": 18,
+            "checksum": 15.1627190793626,
+            "duration_usec": 24991,
+            "order": 3,
+            "round": 11,
+            "variant": "shared_coordinates",
+            "workload": "varying_interiors"
+          }
+        ],
+        "schema": "openrc-audit-rig-sampler-v1",
+        "track_cases": 38874,
+        "tracks": 209,
+        "variant_comparisons": 116622,
+        "warmup_batches_per_variant_workload": 54
+      },
+      "checked_runs": [
+        {
+          "report": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "6643774f-3fec-4393-ac6b-fb7a92660666",
+            "command": [
+              "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+              "--headless",
+              "--path",
+              "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-02/fixture",
+              "--audio-driver",
+              "Dummy",
+              "--script",
+              "res://rig_sampler_probe.gd"
+            ],
+            "cwd": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator",
+            "started_utc": "2026-11-22T16:36:02.497536+00:00",
+            "label": "rig-sampler-component",
+            "log": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-02/checks/rig-sampler-component-j7alut4y/engine.log",
+            "report": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-02/checks/rig-sampler-component-j7alut4y/report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": true,
+            "required_text": [
+              "RIG_SAMPLER_AUDIT_COMPLETE"
+            ],
+            "process_exit": 0,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "passed",
+            "detail": "",
+            "exit_code": 0,
+            "ok": true,
+            "elapsed_seconds": 7.548802,
+            "log_bytes": 137,
+            "log_sha256": "6adafe086da50bd678d3aa6d2e82d96e771baac47f9e632c11c7128b65fb6b55"
+          },
+          "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nRIG_SAMPLER_AUDIT_COMPLETE tracks=209 cases=186 comparisons=116622\n"
+        },
+        {
+          "report": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "77e99249-ee03-48e1-bffc-a419c2340bdb",
+            "command": [
+              "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+              "--headless",
+              "--path",
+              "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-02/fixture",
+              "--audio-driver",
+              "Dummy",
+              "--editor",
+              "--import"
+            ],
+            "cwd": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator",
+            "started_utc": "2026-11-22T16:35:56.388110+00:00",
+            "label": "rig-sampler-import",
+            "log": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-02/checks/rig-sampler-import-emw6nb12/engine.log",
+            "report": "/workspace/scratch/fe8d89fea8f8/OpenRCsimulator/tmp/graphics-audit-2026-11-22/rig-sampler-final-02/checks/rig-sampler-import-emw6nb12/report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": true,
+            "required_text": [],
+            "process_exit": 0,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "passed",
+            "detail": "",
+            "exit_code": 0,
+            "ok": true,
+            "elapsed_seconds": 6.051038,
+            "log_bytes": 1291,
+            "log_sha256": "1ea731e5e93c4eaea315e1a22d7fbbac4312fa417ca4c51d06f94e2e9805bbf5"
+          },
+          "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (2 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n"
+        }
+      ],
+      "timing_role": "final source; included"
+    }
+  ],
+  "timing_summary": [
+    {
+      "run": "rig-sampler-final-01",
+      "workload": "neutral",
+      "variants": {
+        "baseline": {
+          "median_usec_per_batch": 1190.7222222222222,
+          "min_usec_per_batch": 1177.5555555555557,
+          "max_usec_per_batch": 1267.3333333333333,
+          "median_paired_saved_usec": 0.0,
+          "median_paired_reduction_percent": 0.0,
+          "faster_pairs": 0,
+          "pairs": 12
+        },
+        "packed_helper": {
+          "median_usec_per_batch": 1135.8333333333333,
+          "min_usec_per_batch": 1105.2222222222222,
+          "max_usec_per_batch": 1220.3333333333333,
+          "median_paired_saved_usec": 61.58333333333337,
+          "median_paired_reduction_percent": 5.182904988067435,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "shared_coordinates": {
+          "median_usec_per_batch": 961.5277777777778,
+          "min_usec_per_batch": 941.0,
+          "max_usec_per_batch": 1064.611111111111,
+          "median_paired_saved_usec": 236.4444444444444,
+          "median_paired_reduction_percent": 19.89202386070464,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "combined": {
+          "median_usec_per_batch": 868.3055555555555,
+          "min_usec_per_batch": 851.8888888888889,
+          "max_usec_per_batch": 892.3888888888889,
+          "median_paired_saved_usec": 331.69444444444446,
+          "median_paired_reduction_percent": 27.740256669759862,
+          "faster_pairs": 12,
+          "pairs": 12
+        }
+      }
+    },
+    {
+      "run": "rig-sampler-final-01",
+      "workload": "fractional_interior",
+      "variants": {
+        "baseline": {
+          "median_usec_per_batch": 1780.5555555555557,
+          "min_usec_per_batch": 1682.0555555555557,
+          "max_usec_per_batch": 2029.0555555555557,
+          "median_paired_saved_usec": 0.0,
+          "median_paired_reduction_percent": 0.0,
+          "faster_pairs": 0,
+          "pairs": 12
+        },
+        "packed_helper": {
+          "median_usec_per_batch": 1653.9444444444443,
+          "min_usec_per_batch": 1522.2222222222222,
+          "max_usec_per_batch": 1978.8333333333333,
+          "median_paired_saved_usec": 84.02777777777783,
+          "median_paired_reduction_percent": 4.716166227346327,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "shared_coordinates": {
+          "median_usec_per_batch": 1485.5,
+          "min_usec_per_batch": 1348.7777777777778,
+          "max_usec_per_batch": 1671.9444444444443,
+          "median_paired_saved_usec": 287.75,
+          "median_paired_reduction_percent": 16.41792717577247,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "combined": {
+          "median_usec_per_batch": 1328.0555555555557,
+          "min_usec_per_batch": 1217.0555555555557,
+          "max_usec_per_batch": 1595.6666666666667,
+          "median_paired_saved_usec": 418.69444444444446,
+          "median_paired_reduction_percent": 23.775846998102573,
+          "faster_pairs": 12,
+          "pairs": 12
+        }
+      }
+    },
+    {
+      "run": "rig-sampler-final-01",
+      "workload": "varying_interiors",
+      "variants": {
+        "baseline": {
+          "median_usec_per_batch": 1675.6944444444443,
+          "min_usec_per_batch": 1560.5,
+          "max_usec_per_batch": 3151.8888888888887,
+          "median_paired_saved_usec": 0.0,
+          "median_paired_reduction_percent": 0.0,
+          "faster_pairs": 0,
+          "pairs": 12
+        },
+        "packed_helper": {
+          "median_usec_per_batch": 1531.5277777777778,
+          "min_usec_per_batch": 1490.2222222222222,
+          "max_usec_per_batch": 1689.2777777777778,
+          "median_paired_saved_usec": 96.55555555555566,
+          "median_paired_reduction_percent": 6.041274430235509,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "shared_coordinates": {
+          "median_usec_per_batch": 1401.4444444444443,
+          "min_usec_per_batch": 1316.9444444444443,
+          "max_usec_per_batch": 3427.222222222222,
+          "median_paired_saved_usec": 239.69444444444457,
+          "median_paired_reduction_percent": 15.103567109015074,
+          "faster_pairs": 10,
+          "pairs": 12
+        },
+        "combined": {
+          "median_usec_per_batch": 1282.5,
+          "min_usec_per_batch": 1218.0555555555557,
+          "max_usec_per_batch": 1634.611111111111,
+          "median_paired_saved_usec": 348.05555555555554,
+          "median_paired_reduction_percent": 21.848107520556454,
+          "faster_pairs": 12,
+          "pairs": 12
+        }
+      }
+    },
+    {
+      "run": "rig-sampler-final-02",
+      "workload": "neutral",
+      "variants": {
+        "baseline": {
+          "median_usec_per_batch": 1418.9722222222222,
+          "min_usec_per_batch": 1291.4444444444443,
+          "max_usec_per_batch": 2429.222222222222,
+          "median_paired_saved_usec": 0.0,
+          "median_paired_reduction_percent": 0.0,
+          "faster_pairs": 0,
+          "pairs": 12
+        },
+        "packed_helper": {
+          "median_usec_per_batch": 1297.8055555555557,
+          "min_usec_per_batch": 1166.9444444444443,
+          "max_usec_per_batch": 2580.0555555555557,
+          "median_paired_saved_usec": 122.58333333333326,
+          "median_paired_reduction_percent": 6.543444702989891,
+          "faster_pairs": 9,
+          "pairs": 12
+        },
+        "shared_coordinates": {
+          "median_usec_per_batch": 1102.9444444444443,
+          "min_usec_per_batch": 1024.111111111111,
+          "max_usec_per_batch": 2189.277777777778,
+          "median_paired_saved_usec": 305.388888888889,
+          "median_paired_reduction_percent": 21.170304082703108,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "combined": {
+          "median_usec_per_batch": 1024.638888888889,
+          "min_usec_per_batch": 948.6111111111111,
+          "max_usec_per_batch": 1808.611111111111,
+          "median_paired_saved_usec": 391.22222222222234,
+          "median_paired_reduction_percent": 26.409342537828604,
+          "faster_pairs": 11,
+          "pairs": 12
+        }
+      }
+    },
+    {
+      "run": "rig-sampler-final-02",
+      "workload": "fractional_interior",
+      "variants": {
+        "baseline": {
+          "median_usec_per_batch": 1733.5277777777778,
+          "min_usec_per_batch": 1644.111111111111,
+          "max_usec_per_batch": 5064.166666666667,
+          "median_paired_saved_usec": 0.0,
+          "median_paired_reduction_percent": 0.0,
+          "faster_pairs": 0,
+          "pairs": 12
+        },
+        "packed_helper": {
+          "median_usec_per_batch": 1655.0555555555557,
+          "min_usec_per_batch": 1490.6666666666667,
+          "max_usec_per_batch": 1974.2222222222222,
+          "median_paired_saved_usec": 102.08333333333326,
+          "median_paired_reduction_percent": 5.943391410978174,
+          "faster_pairs": 10,
+          "pairs": 12
+        },
+        "shared_coordinates": {
+          "median_usec_per_batch": 1438.138888888889,
+          "min_usec_per_batch": 1340.611111111111,
+          "max_usec_per_batch": 1639.388888888889,
+          "median_paired_saved_usec": 263.5833333333335,
+          "median_paired_reduction_percent": 15.725876835896468,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "combined": {
+          "median_usec_per_batch": 1381.0833333333333,
+          "min_usec_per_batch": 1344.0555555555557,
+          "max_usec_per_batch": 1903.9444444444443,
+          "median_paired_saved_usec": 340.94444444444434,
+          "median_paired_reduction_percent": 19.6258933884428,
+          "faster_pairs": 11,
+          "pairs": 12
+        }
+      }
+    },
+    {
+      "run": "rig-sampler-final-02",
+      "workload": "varying_interiors",
+      "variants": {
+        "baseline": {
+          "median_usec_per_batch": 1668.2777777777778,
+          "min_usec_per_batch": 1615.4444444444443,
+          "max_usec_per_batch": 2240.222222222222,
+          "median_paired_saved_usec": 0.0,
+          "median_paired_reduction_percent": 0.0,
+          "faster_pairs": 0,
+          "pairs": 12
+        },
+        "packed_helper": {
+          "median_usec_per_batch": 1571.5,
+          "min_usec_per_batch": 1502.388888888889,
+          "max_usec_per_batch": 2179.1111111111113,
+          "median_paired_saved_usec": 103.27777777777783,
+          "median_paired_reduction_percent": 6.232531201528776,
+          "faster_pairs": 9,
+          "pairs": 12
+        },
+        "shared_coordinates": {
+          "median_usec_per_batch": 1386.5555555555557,
+          "min_usec_per_batch": 1307.7222222222222,
+          "max_usec_per_batch": 1475.7777777777778,
+          "median_paired_saved_usec": 293.05555555555554,
+          "median_paired_reduction_percent": 17.70421512450636,
+          "faster_pairs": 12,
+          "pairs": 12
+        },
+        "combined": {
+          "median_usec_per_batch": 1346.388888888889,
+          "min_usec_per_batch": 1255.7777777777778,
+          "max_usec_per_batch": 3838.722222222222,
+          "median_paired_saved_usec": 343.2777777777777,
+          "median_paired_reduction_percent": 20.760912496236024,
+          "faster_pairs": 10,
+          "pairs": 12
+        }
+      }
+    }
+  ],
+  "arithmetic": "Within each process/workload, each of 12 rotating-order rounds contains four blocks of 18 full209-track batches. Report medians of block averages. Paired differences/reductions use same-round baseline; do not pool as independent physical runs.",
+  "final_probe_sha256": "d75340f34b5e0154f058fbfd04e0c6c6e82eb3ecf1253c2863cd49ac48edaef9"
+}

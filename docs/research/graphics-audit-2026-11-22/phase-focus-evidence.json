@@ -1,0 +1,189 @@
+{
+  "boundary_policy": "All fixture intervals align exactly with declared boundaries; no crossing interval ambiguity",
+  "checks": {
+    "benchmark_or_fps_gain_measured": false,
+    "focus_cases_checked": 4,
+    "later_focus_loss_still_rejected": true,
+    "phase_counterexamples_reproduced": 2,
+    "physical_host_failure_observed": false,
+    "source_files_match_frozen_main": true
+  },
+  "focus_cases": [
+    {
+      "case": "focused_control",
+      "reported_data": "valid",
+      "reported_issues": [],
+      "reported_performance": "single_run_screen",
+      "subsequent_focus_losses": 0,
+      "synthetic_display_server": "Wayland",
+      "synthetic_identity_focused": true,
+      "synthetic_identity_override": null,
+      "synthetic_requested_phases": [
+        "startup",
+        "selection",
+        "shutdown"
+      ]
+    },
+    {
+      "case": "initially_unfocused_without_later_loss",
+      "reported_data": "valid",
+      "reported_issues": [],
+      "reported_performance": "single_run_screen",
+      "subsequent_focus_losses": 0,
+      "synthetic_display_server": "Wayland",
+      "synthetic_identity_focused": false,
+      "synthetic_identity_override": null,
+      "synthetic_requested_phases": [
+        "startup",
+        "selection",
+        "shutdown"
+      ]
+    },
+    {
+      "case": "initially_unfocused_wayland_override",
+      "reported_data": "valid",
+      "reported_issues": [],
+      "reported_performance": "single_run_screen",
+      "subsequent_focus_losses": 0,
+      "synthetic_display_server": "Wayland",
+      "synthetic_identity_focused": false,
+      "synthetic_identity_override": "wayland_without_keyboard_focus",
+      "synthetic_requested_phases": [
+        "startup",
+        "selection",
+        "shutdown"
+      ]
+    },
+    {
+      "case": "later_focus_loss_positive_control",
+      "reported_data": "ineligible",
+      "reported_issues": [
+        "native focus loss observed; session equivalence requires diagnosis"
+      ],
+      "reported_performance": "not_qualified",
+      "subsequent_focus_losses": 1,
+      "synthetic_display_server": "Wayland",
+      "synthetic_identity_focused": true,
+      "synthetic_identity_override": null,
+      "synthetic_requested_phases": [
+        "startup",
+        "selection",
+        "shutdown"
+      ]
+    }
+  ],
+  "format": "openrc-graphics-audit-phase-focus-v1",
+  "phase_cases": [
+    {
+      "case": "wait_stall_assigned_to_selection",
+      "declared_selection_end_usec": 3420000,
+      "declared_selection_only": {
+        "fps_mean": 100.0,
+        "frames": 100,
+        "max_ms": 10.0,
+        "over_100ms": 0,
+        "p95_ms": 10.0,
+        "sample_wall_ms": 1000.0
+      },
+      "declared_selection_start_usec": 2420000,
+      "reported_data": "valid",
+      "reported_issues": [],
+      "reported_selection_frame_ms": {
+        "max": 400.0,
+        "p50": 10.0,
+        "p95": 10.0,
+        "p99": 10.0
+      },
+      "reported_selection_over_100ms": 1,
+      "reported_selection_pacing": {
+        "assignment": "phase_index at interval end; denominator is assigned wall time",
+        "fps_01pct_low": 2.5,
+        "fps_1pct_low": 4.878048780487805,
+        "fps_mean": 83.75,
+        "frames": 201,
+        "low_01pct_frames": 1,
+        "low_01pct_status": "short_sample",
+        "low_1pct_frames": 2,
+        "low_1pct_status": "available",
+        "low_method": "reciprocal of mean slowest tail; floor(N*fraction), at least one sample",
+        "sample_wall_ms": 2400.0
+      },
+      "reported_selection_rendering": {
+        "frames": 201,
+        "positive_in_phase_intervals": 200,
+        "reasons": [],
+        "scope": "drawable interval endpoints and in-phase draw progress; physical presentation unverified",
+        "segments": 1,
+        "segments_without_draw": 0,
+        "status": "complete",
+        "undrawable_intervals": 0,
+        "window_mode_transition_intervals": 0
+      },
+      "waiting_frames": 101,
+      "waiting_wall_ms": 1400.0
+    },
+    {
+      "case": "fast_wait_dilutes_slow_selection",
+      "declared_selection_end_usec": 7820000,
+      "declared_selection_only": {
+        "fps_mean": 25.0,
+        "frames": 20,
+        "max_ms": 40.0,
+        "over_100ms": 0,
+        "p95_ms": 40.0,
+        "sample_wall_ms": 800.0
+      },
+      "declared_selection_start_usec": 7020000,
+      "reported_data": "valid",
+      "reported_issues": [],
+      "reported_selection_frame_ms": {
+        "max": 40.0,
+        "p50": 10.0,
+        "p95": 10.0,
+        "p99": 40.0
+      },
+      "reported_selection_over_100ms": 0,
+      "reported_selection_pacing": {
+        "assignment": "phase_index at interval end; denominator is assigned wall time",
+        "fps_01pct_low": 25.0,
+        "fps_1pct_low": 25.0,
+        "fps_mean": 91.17647058823529,
+        "frames": 620,
+        "low_01pct_frames": 1,
+        "low_01pct_status": "short_sample",
+        "low_1pct_frames": 6,
+        "low_1pct_status": "available",
+        "low_method": "reciprocal of mean slowest tail; floor(N*fraction), at least one sample",
+        "sample_wall_ms": 6800.0
+      },
+      "reported_selection_rendering": {
+        "frames": 620,
+        "positive_in_phase_intervals": 619,
+        "reasons": [],
+        "scope": "drawable interval endpoints and in-phase draw progress; physical presentation unverified",
+        "segments": 1,
+        "segments_without_draw": 0,
+        "status": "complete",
+        "undrawable_intervals": 0,
+        "window_mode_transition_intervals": 0
+      },
+      "waiting_frames": 600,
+      "waiting_wall_ms": 6000.0
+    }
+  ],
+  "probe_sha256": "b915a5cd34ca01652627e4e60919d7a199ef2249e5d1d54ee4b7a57302819ac1",
+  "python": "3.12.14",
+  "scope": "Synthetic offline artifact counterexamples using unmodified analysis.report and validate_stream; no engine, GPU, OS focus, or physical presentation observed",
+  "source_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "source_sha256": {
+    "app/debug/godtest_driver.gd": "fd198cf550e53005f53bec006f1b5c86838784dda8472222c8ee6e26b6bb262f",
+    "tools/godtest/analysis.py": "cfa56993edc6adf7951e6447d4a0cd33319b0b9d1b6243c0059762c0e7ebff75",
+    "tools/godtest/catalog.py": "9e6a72186329086f94d8188a84ccfe194e8e0016cffa5a5c042af4a048ebe656",
+    "tools/godtest/gpu_coverage.py": "d6ff2baf1760094d892c7fcc92f6e97908aff4866313f2e521afa913067b5879",
+    "tools/godtest/pace_windows.py": "cc1eb6269346eb682161f8b8efd56a1cf7cfdf9b77c34e84dba11efc2e60884e",
+    "tools/godtest/render_evidence.py": "93235343ef005c089275157e3620faf969f2f7a8d987484b5c2168dfb49de0bb",
+    "tools/godtest/resource_coverage.py": "22fd747bc63ed491b2faff56bf5a1d67bff6598e7078a8ce99896fbfaf2ecde3",
+    "tools/godtest/runner.py": "e2db797afab31b70125d7bedf2dc6f31ef8b16a5e6e43c35c95c934754493568",
+    "tools/godtest/test_godtest.py": "ace38acc98e9f82dea3269c9ef7b64c2ee7840f77815f2d0e684794aa9638422"
+  }
+}

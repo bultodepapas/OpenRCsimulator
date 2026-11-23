@@ -1,0 +1,246 @@
+{
+  "format": "openrc-graphics-audit-main-refresh-v1",
+  "date_local": "2026-11-22",
+  "source_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "previous_audit_commit": "2c03b78720c20453d26ca78bc3022dbdd905f00a",
+  "previous_crosscheck_commit": "6b2228c7633a34e38cb05d92e3ca50893810e02b",
+  "ci_observed_utc": "2026-11-22 14:32:10 UTC",
+  "ci_runs": [
+    {
+      "id": 44949712062,
+      "status": "completed",
+      "conclusion": "success",
+      "sha": "6b2228c7633a34e38cb05d92e3ca50893810e02b",
+      "name": "CI",
+      "updated_at": "2026-11-21T23:31:54Z",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44949712062"
+    },
+    {
+      "id": 45026329530,
+      "status": "completed",
+      "conclusion": "success",
+      "sha": "7940a4081e10994f34c858c4acac3d7a1a271464",
+      "name": "Windows test queue regressions",
+      "updated_at": "2026-11-22T13:16:41Z",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329530"
+    },
+    {
+      "id": 45026329656,
+      "status": "in_progress",
+      "conclusion": null,
+      "sha": "7940a4081e10994f34c858c4acac3d7a1a271464",
+      "name": "CI",
+      "updated_at": "2026-11-22T14:08:35Z",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656"
+    }
+  ],
+  "exact_main_ci_jobs": [
+    {
+      "id": 137220048365,
+      "name": "CI selection and release preflight",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137220049471,
+      "name": "Publication source rebind evidence",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 137221016725,
+      "name": "three.js prototype (archived bake-off build)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016741,
+      "name": "RC native Linux build",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016746,
+      "name": "NK-3 native kernel qualification (Linux)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016754,
+      "name": "RC native Windows build",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016766,
+      "name": "Website source and download checks",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016780,
+      "name": "Godot visual captures",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 137221016786,
+      "name": "NK-4 native kernel qualification (Windows)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016790,
+      "name": "Godot app (units 7)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016805,
+      "name": "Godot app (units 1)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016818,
+      "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016827,
+      "name": "Godot app (integration 0)",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 137221016847,
+      "name": "Godot app (units 6)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016850,
+      "name": "Godot app (units 3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016851,
+      "name": "Godot app (units 5)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016869,
+      "name": "Godot app (units 4)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016881,
+      "name": "Godot app (units 0)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221016906,
+      "name": "Godot app (units 2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137221018080,
+      "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 137221018423,
+      "name": "Visual group shadow (${{ matrix.group }})",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 137223379126,
+      "name": "RC native production checks (linux)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137223379135,
+      "name": "RC native production checks (windows)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137227592196,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 137234927072,
+      "name": "NK-4 Windows package qualification",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "exact_main_windows_fixture_log": {
+    "run_id": 45026329530,
+    "job_id": 137220048199,
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329530/job/137220048199",
+    "groups": [
+      {
+        "group": "testqueue",
+        "ran": 458,
+        "skipped": 32
+      },
+      {
+        "group": "debug",
+        "ran": 182,
+        "skipped": 1
+      },
+      {
+        "group": "checked_runner",
+        "ran": 22,
+        "skipped": 1
+      },
+      {
+        "group": "godtest",
+        "ran": 210,
+        "skipped": 7
+      }
+    ],
+    "scope": "Hosted software and process fixtures; no physical GPU performance qualification"
+  },
+  "existing_production_source_modified_vs_main": false,
+  "production_optimizations_implemented": false,
+  "rendered_campaign_launched": false,
+  "primary_sources": [
+    {
+      "title": "Godot CPU optimization",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/cpu_optimization.html",
+      "retrieved": "2026-11-22",
+      "use": "Profile actual bottlenecks; native engine calls do not become faster solely by changing the calling language"
+    },
+    {
+      "title": "Godot pipeline compilation and stutter",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/pipeline_compilations.html",
+      "retrieved": "2026-11-22",
+      "use": "Distinguish Canvas, Mesh, Surface, Draw and specialization; first-use investigation, not a diagnosis of retained tours"
+    },
+    {
+      "title": "Apple Metal app performance",
+      "url": "https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-metal-app",
+      "retrieved": "2026-11-22",
+      "use": "Use Metal system trace and Game Performance to separate CPU/GPU scheduling and frame time"
+    }
+  ],
+  "limitations": [
+    "Rendered observations are historical receipts from different recorded source snapshots, not new 7940a408 device runs",
+    "Offline phase/focus fixtures have fabricated timestamps and draw counters and are not FPS benchmarks",
+    "Each optimization is a source-confirmed path with unmeasured current benefit",
+    "No local GPU, desktop or shared host was launched"
+  ]
+}

@@ -1,0 +1,509 @@
+{
+  "schema": 1,
+  "audit_date": "2026-11-22",
+  "execution_date_utc": "2026-11-23",
+  "main_commit": "843f357c07af842054f3ccd6728f93beca9a57ef",
+  "audit_parent": "4ed82d3a62503e5fd92c1800dbe7587e76260f38",
+  "merge_commit": "7bad55b34c1fc58bfe2035cbd906c518b6569cbb",
+  "qualification_source": "ee87f8d87fa863da1bc685242adbae76a9867d8a",
+  "qualification_source_tree": "1e9c8a27139d5107d0257d1f4e5f31dd837dfc51",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "workflow_run": 45091339146,
+  "workflow_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45091339146",
+  "workflow_conclusion": "success",
+  "artifact_id": 14781544157,
+  "artifact_zip_sha256": "ad7d5bc473fd03011fdd82ccfb464f08982fbcfbccce3c180e6dccb02b90d707",
+  "generated_source_changes_sha256": {
+    "tools/companions/qualification.json": "556c1e6fa43dea4b53165abc9b6d09f7ac0a5030bcbae0565b0b5ec2798a320d",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "8f355ff5e3822cafe6da96518e3a508c7069f56bbc885aa9f75e60a490c8cf16",
+    "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-1bc57146-to-95d5d31f.json": "28d39144f0bdbb2db396933ab4058365697efa2f9b263612b98c8741c017ebcf",
+    "app/data/ai/companions/behavior-manifest.json": "c022823ee1ec3b60544640cfda21b8eed26f5ef0fc22be52e0cce895240015c1",
+    "app/render/flight_dynamic_resolution.gd.uid": "d4a432a709d2e0f30b532f5ec94ce8e42d6bb612c9b2e38e4a983b25a68f1fc1",
+    "app/render/flight_resolution_policy.gd.uid": "a3a7caeae24d4a24c7272e5ab2a4ee770e6e7fefe83ad97252f34d0cb3cbb33c",
+    "app/tests/probe_completed_gpu_frame.gd.uid": "34944627168eb90e22642f61945829765ad44b5184f50c4376448ab1051caa04",
+    "app/tests/probe_flight_resolution_stress.gd.uid": "3622ed6148d8b2b9923c76c889b9cdff2eaef96b6374597f6b3dadb2abaa4351",
+    "app/tests/test_flight_resolution_policy.gd.uid": "f0cba88a2d346ce9ff8ba4bd44366f79c507081d37cd104352b1c6f98df988ea"
+  },
+  "unexpected_source_changes": [],
+  "source_witness_before_renewal": {
+    "main": {
+      "commit": "843f357c07af842054f3ccd6728f93beca9a57ef",
+      "solver_source_count": 203,
+      "solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "behavior_mismatches_before_renewal": [
+        {
+          "path": "res://app_root.gd",
+          "expected": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+          "actual": "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d"
+        },
+        {
+          "path": "res://scenery/collision_world.gd",
+          "expected": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+          "actual": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6"
+        }
+      ]
+    },
+    "audit_parent": {
+      "commit": "4ed82d3a62503e5fd92c1800dbe7587e76260f38",
+      "solver_source_count": 203,
+      "solver_sha256": "1bc571466406d8eaa270162691b0cc7c162729f92eb4f8f3080681894df6c086",
+      "behavior_mismatches_before_renewal": []
+    },
+    "merged_qualification": {
+      "commit": "ee87f8d87fa863da1bc685242adbae76a9867d8a",
+      "solver_source_count": 203,
+      "solver_sha256": "95d5d31f5b95e96095cd8a103ccf079396c480d6f2f0907ded6e1e25dff9a7c9",
+      "behavior_mismatches_before_renewal": [
+        {
+          "path": "res://app_root.gd",
+          "expected": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+          "actual": "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d"
+        },
+        {
+          "path": "res://scenery/collision_world.gd",
+          "expected": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+          "actual": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6"
+        }
+      ]
+    }
+  },
+  "solver_rebind_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-1bc57146-to-95d5d31f.json",
+  "behavior_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-1bc57146-to-95d5d31f-behavior.json",
+  "candidate_tape_comparisons": {
+    "count": 9,
+    "rows_compared": 25929,
+    "all_csv_bytes_identical": true,
+    "mode": "candidate comparison, not exact replay"
+  },
+  "checked_godot_scripts": 16,
+  "checked_imports": 1,
+  "checks": [
+    {
+      "label": "advanced_graphics_settings",
+      "ok": true,
+      "report_sha256": "c4cf3da73864cb4b93cb00256cf68e91e15f1957a06c70ef11a9c58c70ecd3a2",
+      "log_sha256": "1b40c4f30f53ba1a834f5dc5e4300dd0b65dd600ddb0dcbfbd93ee26cbd87308",
+      "completion_and_skips": [
+        "advanced graphics: 159 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_advanced_graphics_settings.gd"
+      ],
+      "required_text": [
+        "advanced graphics:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "camera_collision",
+      "ok": true,
+      "report_sha256": "4bc36f8297cc3fe848cff62598177cd32f9ec8a342795fe818c09ff439cd9256",
+      "log_sha256": "0d34804ed0da57028e92bfb5e6f20a75120ccc183aaab7dbb51c5ec7a84dbc2c",
+      "completion_and_skips": [
+        "all 31 camera collision checks passed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_camera_collision.gd"
+      ],
+      "required_text": [
+        "camera collision checks passed"
+      ]
+    },
+    {
+      "label": "companions_airspace",
+      "ok": true,
+      "report_sha256": "a96b137bc3c10730fe0f7580c79cf523a111672a0b54b8811ce8205fcb47f25c",
+      "log_sha256": "a63afa86e09a31a486c023dab9ecb73b72f3e07ea31f48ec1cc586acab89e27a",
+      "completion_and_skips": [
+        "AFC-02 static airspace validation: 48 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_airspace.gd"
+      ],
+      "required_text": [
+        "AFC-02 static airspace validation:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_behavior_manifest",
+      "ok": true,
+      "report_sha256": "21c3a736162237dabe6fb998e396226b63626ffd2466c41e5e5102983f5dc0c9",
+      "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "completion_and_skips": [
+        "companion behavior manifest: 39 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "required_text": [
+        "companion behavior manifest:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_draft_refresh",
+      "ok": true,
+      "report_sha256": "07559d23091f0bce6ebfe68f649d91d33ceafbc528c11cd41ad9db83f4504c4c",
+      "log_sha256": "062a77a7d259d7af1d67ec9a9b8df9e88fe7e7d3baf054ae7fb8ec61b9518543",
+      "completion_and_skips": [
+        "companions draft refresh: 60 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_draft_refresh.gd"
+      ],
+      "required_text": [
+        "companions draft refresh:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_manager",
+      "ok": true,
+      "report_sha256": "aa8d68b5f47c9425f323fe872e2c004c4283da5d2d76ca71b34487d5053c625d",
+      "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+      "completion_and_skips": [
+        "companions manager: 53 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ],
+      "required_text": [
+        "companions manager:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_profiles",
+      "ok": true,
+      "report_sha256": "cfc589fbe27e8bfe2ce4db5b67da8a707fc73e80c2c143e62fbc19a5d1fc980c",
+      "log_sha256": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26",
+      "completion_and_skips": [
+        "AFC-02 companion profile validation: 95 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "required_text": [
+        "AFC-02 companion profile validation:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "flaps_ui",
+      "ok": true,
+      "report_sha256": "117248a749752013917870a09efb191beaeffe70d05027341d88d593aa2f4348",
+      "log_sha256": "ee84aa300546267d735308ee8df921c4125186ce2f4a53ff1f49a93d9ea0a3d5",
+      "completion_and_skips": [
+        "flaps UI: 25 checks, 0 failures"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flaps_ui.gd"
+      ],
+      "required_text": [
+        "flaps UI:",
+        "0 failures"
+      ]
+    },
+    {
+      "label": "flight_resolution_policy",
+      "ok": true,
+      "report_sha256": "d7d03f0c290cb40fe6c9d76865271423172f9df1ff16bc06877181f74b895236",
+      "log_sha256": "76bb6815964835af7dc93b7ff628cb7427fd96e2d57801b0bde69312bc43da2e",
+      "completion_and_skips": [
+        "Flight resolution policy: 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_resolution_policy.gd"
+      ],
+      "required_text": [
+        "Flight resolution policy: 0 failed"
+      ]
+    },
+    {
+      "label": "import",
+      "ok": true,
+      "report_sha256": "b75b12e5ab3bda1cd96520ed4f217ccbd8792c2cb6d0d8a967b122ecd5c82d7a",
+      "log_sha256": "cefca1a92678798df7fa830e089581531b3a2cfb181cbefaea2a5f7e4a223f46",
+      "completion_and_skips": [],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "required_text": []
+    },
+    {
+      "label": "lighting_vfx_lod",
+      "ok": true,
+      "report_sha256": "6b5e8e51d7853040dd413a850522ae6718e934de4268bf24f373abc30c2a5537",
+      "log_sha256": "c7e1d40a3e1c85f9af4bfa30da6715aa5a922d7c19289c1b1896ede6ea1a6a5d",
+      "completion_and_skips": [
+        "lighting VFX LOD checks=65 failures=0"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_lighting_vfx_lod.gd"
+      ],
+      "required_text": [
+        "lighting VFX LOD checks=",
+        "failures=0"
+      ]
+    },
+    {
+      "label": "metalfx_policy",
+      "ok": true,
+      "report_sha256": "22ff51affb0eb1fd332f2a3e9a2dce89085e2a4546befc7f3ce4b7497dfd5f2b",
+      "log_sha256": "2a4708bb514505ea7aad7fbcdd42d2252141845c75b32a9f8eec05fe1b6bd573",
+      "completion_and_skips": [
+        "metalfx policy: 126 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_metalfx_policy.gd"
+      ],
+      "required_text": [
+        "metalfx policy:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "rcv_nitro_service",
+      "ok": true,
+      "report_sha256": "224725c984cf96dcdfbfbc04257c677b174a88e1cda97ae1397f0f57ad66fd08",
+      "log_sha256": "af63b26aabd928b0f166989e50068669cb6aeedba457784c0eacbf63ec4aefda",
+      "completion_and_skips": [
+        "RCV Nitro service: 58 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_nitro_service.gd"
+      ],
+      "required_text": [
+        "RCV Nitro service:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "rcv_session",
+      "ok": true,
+      "report_sha256": "6fa8512c33c7a7b274791a2971c436be581f7aaf04a1362060c26db122f5e0a9",
+      "log_sha256": "7d22e888e1d3b339ae8fe53ccc8b32b2068886c808a61fbecdbe60281f63c372",
+      "completion_and_skips": [
+        "SKIP native Session backend-switch guard: pinned native backend is not staged",
+        "RCV session: 177 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_session.gd"
+      ],
+      "required_text": [
+        "RCV session:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "scenery_destruction",
+      "ok": true,
+      "report_sha256": "5ec93189cc8b2a061483f629619da3c0fd56eafa84b2dd6b2f9f1094b5fded01",
+      "log_sha256": "2ba1090fef8d1f6958993a212ac253816c66b5616d50a04e700ea92e4e63c2a8",
+      "completion_and_skips": [
+        "scenery destruction: 117 checks, 0 failures"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_destruction.gd"
+      ],
+      "required_text": [
+        "scenery destruction:",
+        "0 failures"
+      ]
+    },
+    {
+      "label": "settings_ui",
+      "ok": true,
+      "report_sha256": "42bf5063dd88e5dbbd78909e59a72d30d390fc26b57c6a9058cd7d6a7b06a8a9",
+      "log_sha256": "e420e3db3dba8fd5bacbac0e31c7999eb179ccad2b8a21ad237ef89534d84b60",
+      "completion_and_skips": [
+        "all Settings checks passed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_settings_ui.gd"
+      ],
+      "required_text": [
+        "all Settings checks passed"
+      ]
+    },
+    {
+      "label": "ui_settings_integration",
+      "ok": true,
+      "report_sha256": "618831316c788062e54aa7508c33f3b74bd942f59769948fc3125e45a3dc5856",
+      "log_sha256": "df8f1b87e0753d293559578ced08983cdee2c2db5993a31e7ad539c4e52f3268",
+      "completion_and_skips": [
+        "all Settings integration checks passed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_settings_integration.gd"
+      ],
+      "required_text": [
+        "all Settings integration checks passed"
+      ]
+    }
+  ],
+  "portable_python_checks": {
+    "count": 218,
+    "local_pass": true,
+    "same_suite_in_workflow": "success",
+    "initial_local_attempts": "Sparse dependencies were absent; two new scale fixtures also lacked required positive focus evidence. Materialized dependencies and added only that fixture evidence; rejection rules retained."
+  },
+  "initial_remote_attempt": {
+    "run": 45089816443,
+    "source": "7bad55b34c1fc58bfe2035cbd906c518b6569cbb",
+    "conclusion": "failure",
+    "passed": [
+      "pinned import",
+      "218 portable tooling checks",
+      "nine-tape comparison",
+      "39 behavior-manifest checks",
+      "95 profile checks"
+    ],
+    "failure": "Home draft-refresh admission refused three missing aircraft authoring JSON references in the sparse checkout. Added assets/aircraft and reran the complete qualification without relaxing validation."
+  },
+  "full_ci": {
+    "status": "pending final publication and draft PR",
+    "claim": "Focused integration evidence does not establish the full required CI gate."
+  },
+  "hardware_performance": "No new GPU or rendered flight benchmark was performed. Prior hardware observations retain their original source/host scope.",
+  "review": {
+    "helpers_requested": 3,
+    "requested_model": "gpt-6.1-terra",
+    "requested_effort": "max",
+    "effective_routing": "unverified",
+    "roles": [
+      "new graphics paths",
+      "native/control paths",
+      "independent evidence/integration challenge"
+    ],
+    "cross_review": "Graphics and native authors reviewed each others drafts; lead inspected primary code and applied corrections."
+  },
+  "rebind_method_clarification": {
+    "retained_receipt_wording": "two disposable copies",
+    "actual_implementation": "The existing rebind tool creates a disposable baseline from the qualification checkout with accepted solver directories substituted; it executes the candidate side from the qualification checkout (ROOT).",
+    "source": "tools/companions/rebind.py:574,583-586 at ee87f8d87fa863da1bc685242adbae76a9867d8a",
+    "bounds": "Qualification source/tree, tape identities, CSV hashes and the generated-only source-change guard are retained. The original tool-generated receipt is preserved byte-for-byte."
+  }
+}

@@ -1,0 +1,239 @@
+{
+  "frame_budgets_ms": {
+    "120": 8.333333333333334,
+    "30": 33.333333333333336,
+    "60": 16.666666666666668
+  },
+  "limitations": [
+    "No application or hardware was run by this reproducer.",
+    "The source is a summarized experiment, without paired raw samples in these table rows.",
+    "A is an empirical intercept, not measured CPU time or a validated zero-pixel limit.",
+    "The 0.67 point is withheld from fitting, not an independent hardware replication.",
+    "FPS-range endpoint combinations give sensitivity, not a statistical confidence interval.",
+    "Pixel-area ratios are nominal s^2; actual internal drawable dimensions can round.",
+    "The RC track is Off in this experiment; it does not attribute any track shader cost.",
+    "No prediction qualifies live physics, another scene, renderer, device, driver or 60 FPS."
+  ],
+  "method": "T(s)=A+B*s^2; fit 1.0 and 0.75 FPS midpoints after conversion to ms; withhold 0.67",
+  "models": {
+    "compatibility": {
+      "endpoint_sensitivity_not_confidence_interval": {
+        "fixed_term_ms": [
+          8.069792802617226,
+          8.625336927223717
+        ],
+        "native_frame_ms": [
+          37.735849056603776,
+          38.16793893129771
+        ],
+        "pixel_term_at_native_ms": [
+          29.11051212938006,
+          30.098146128680487
+        ],
+        "pixel_term_fraction_at_native": [
+          0.7714285714285715,
+          0.7885714285714287
+        ],
+        "predicted_scale_067_fps": [
+          46.097722200961215,
+          46.337376526303665
+        ],
+        "predicted_scale_067_frame_ms": [
+          21.580850599781897,
+          21.693045822102427
+        ],
+        "scale_075_frame_ms": [
+          25.0,
+          25.0
+        ]
+      },
+      "fit_fps_ranges": {
+        "0.75": [
+          40.0,
+          40.0
+        ],
+        "1.0": [
+          26.2,
+          26.5
+        ]
+      },
+      "midpoint_fit": {
+        "fixed_term_ms": 8.349146110056932,
+        "native_frame_ms": 37.950664136622386,
+        "pixel_term_at_native_ms": 29.601518026565454,
+        "pixel_term_fraction_at_native": 0.7799999999999998,
+        "predicted_scale_067_fps": 46.21655657713341,
+        "predicted_scale_067_frame_ms": 21.637267552182166,
+        "scale_075_frame_ms": 25.0
+      },
+      "scale_067_holdout": null,
+      "source_row": "| Minimal, Compatibility (the product's iGPU renderer) | 26.2\u201326.5 FPS | **40.0 FPS** | \u2014 |"
+    },
+    "forward_plus": {
+      "endpoint_sensitivity_not_confidence_interval": {
+        "fixed_term_ms": [
+          9.29090402774613,
+          9.29090402774613
+        ],
+        "native_frame_ms": [
+          52.63157894736842,
+          52.63157894736842
+        ],
+        "pixel_term_at_native_ms": [
+          43.34067491962229,
+          43.34067491962229
+        ],
+        "pixel_term_fraction_at_native": [
+          0.8234728234728235,
+          0.8234728234728235
+        ],
+        "predicted_scale_067_fps": [
+          34.786803682693204,
+          34.786803682693204
+        ],
+        "predicted_scale_067_frame_ms": [
+          28.74653299916458,
+          28.74653299916458
+        ],
+        "scale_075_frame_ms": [
+          33.67003367003367,
+          33.67003367003367
+        ]
+      },
+      "fit_fps_ranges": {
+        "0.75": [
+          29.7,
+          29.7
+        ],
+        "1.0": [
+          19.0,
+          19.0
+        ]
+      },
+      "midpoint_fit": {
+        "fixed_term_ms": 9.29090402774613,
+        "native_frame_ms": 52.63157894736842,
+        "pixel_term_at_native_ms": 43.34067491962229,
+        "pixel_term_fraction_at_native": 0.8234728234728235,
+        "predicted_scale_067_fps": 34.786803682693204,
+        "predicted_scale_067_frame_ms": 28.74653299916458,
+        "scale_075_frame_ms": 33.67003367003367
+      },
+      "scale_067_holdout": null,
+      "source_row": "| Minimal, Forward+ | 19.0 FPS | 29.7 FPS | \u2014 |"
+    },
+    "mobile": {
+      "endpoint_sensitivity_not_confidence_interval": {
+        "fixed_term_ms": [
+          5.548112964992761,
+          7.525884253994853
+        ],
+        "native_frame_ms": [
+          40.32258064516129,
+          41.15226337448559
+        ],
+        "pixel_term_at_native_ms": [
+          32.796696391166435,
+          35.60415040949283
+        ],
+        "pixel_term_fraction_at_native": [
+          0.8133580705009277,
+          0.8651808549506759
+        ],
+        "predicted_scale_067_fps": [
+          44.94721143831077,
+          46.44505791639525
+        ],
+        "predicted_scale_067_frame_ms": [
+          21.530816083814095,
+          22.248321263989467
+        ],
+        "scale_075_frame_ms": [
+          25.57544757033248,
+          25.974025974025974
+        ]
+      },
+      "fit_fps_ranges": {
+        "0.75": [
+          38.5,
+          39.1
+        ],
+        "1.0": [
+          24.3,
+          24.8
+        ]
+      },
+      "midpoint_fit": {
+        "fixed_term_ms": 6.538908002363613,
+        "native_frame_ms": 40.73319755600814,
+        "pixel_term_at_native_ms": 34.19428955364453,
+        "pixel_term_fraction_at_native": 0.8394698085419733,
+        "predicted_scale_067_fps": 45.68562212057345,
+        "predicted_scale_067_frame_ms": 21.888724582994644,
+        "scale_075_frame_ms": 25.77319587628866
+      },
+      "scale_067_holdout": {
+        "observed_fps_range": [
+          45.6,
+          45.6
+        ],
+        "observed_midpoint_frame_ms": 21.929824561403507,
+        "prediction_minus_observed_fps": 0.08562212057344709,
+        "prediction_minus_observed_ms": -0.04109997840886237,
+        "used_for_fit": false
+      },
+      "source_row": "| Minimal, Mobile | 24.3\u201324.8 FPS | 38.5\u201339.1 FPS | **45.6 FPS** |"
+    }
+  },
+  "pixel_area_ratios": {
+    "0.5": 0.25,
+    "0.67": 0.4489000000000001,
+    "0.75": 0.5625,
+    "0.85": 0.7224999999999999,
+    "1.0": 1.0
+  },
+  "reproducer_sha256": "49aa4f4c799f12c8acf952d7a220b166cc0bc92ca639183ef8f7a2e9f3b5afce",
+  "schema": 1,
+  "scope": "Retained PRIMIS X11 1920x1080 Stik day Club Field minimal paused debug-bridge view, RC track Off; not live tour",
+  "serial_240hz_observer_arithmetic": [
+    {
+      "cpu_ms_per_30hz_frame_at_realtime": 0.2,
+      "cpu_ms_per_60hz_frame_at_realtime": 0.1,
+      "cpu_ms_per_simulated_second": 6.0,
+      "microseconds_per_tick": 25
+    },
+    {
+      "cpu_ms_per_30hz_frame_at_realtime": 0.4,
+      "cpu_ms_per_60hz_frame_at_realtime": 0.2,
+      "cpu_ms_per_simulated_second": 12.0,
+      "microseconds_per_tick": 50
+    },
+    {
+      "cpu_ms_per_30hz_frame_at_realtime": 0.8,
+      "cpu_ms_per_60hz_frame_at_realtime": 0.4,
+      "cpu_ms_per_simulated_second": 24.0,
+      "microseconds_per_tick": 100
+    },
+    {
+      "cpu_ms_per_30hz_frame_at_realtime": 2.0,
+      "cpu_ms_per_60hz_frame_at_realtime": 1.0,
+      "cpu_ms_per_simulated_second": 60.0,
+      "microseconds_per_tick": 250
+    },
+    {
+      "cpu_ms_per_30hz_frame_at_realtime": 4.0,
+      "cpu_ms_per_60hz_frame_at_realtime": 2.0,
+      "cpu_ms_per_simulated_second": 120.0,
+      "microseconds_per_tick": 500
+    },
+    {
+      "cpu_ms_per_30hz_frame_at_realtime": 8.0,
+      "cpu_ms_per_60hz_frame_at_realtime": 4.0,
+      "cpu_ms_per_simulated_second": 240.0,
+      "microseconds_per_tick": 1000
+    }
+  ],
+  "source_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "source_report": "docs/research/god-test/2026-11-22-linux-uhd630-comparison.md",
+  "source_report_sha256": "f304a98e5e59bd3adeb38544cbe6e520a3774bacab8f9ac3c38bd869a782b6bb"
+}

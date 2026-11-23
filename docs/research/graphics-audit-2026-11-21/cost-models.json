@@ -1,0 +1,102 @@
+{
+  "format": "openrc-graphics-audit-arithmetic-v1",
+  "source": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "scope": "Analytical bounds and explicitly invented illustrations; no hardware measurements.",
+  "clock": {
+    "hz": 240,
+    "tick_ms": 4.166666666666667,
+    "max_steps_per_frame": 12,
+    "max_simulated_ms_per_frame": 50.0,
+    "minimum_sustained_engine_fps_for_realtime": 20.0,
+    "ordinary_ticks_per_frame": {
+      "30": 8.0,
+      "60": 4.0,
+      "120": 2.0,
+      "144": 1.6666666666666667
+    },
+    "sim_wall_upper_bound": {
+      "10": 0.5,
+      "15": 0.75,
+      "20": 1.0,
+      "30": 1.0
+    }
+  },
+  "nitro_source_reads": {
+    "bytes_by_path": {
+      "app/physics/ground_vehicle/nitro_dynamics.gd": 21400,
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": 103044
+    },
+    "bytes_per_guard": 124444,
+    "logical_opens_per_second_at_240_successful_guards": 480,
+    "logical_bytes_per_second": 29866560,
+    "logical_mib_per_second": 28.48297119140625,
+    "physical_disk_throughput_measured": false
+  },
+  "cloud_tiles": {
+    "maximum_ready_tiles_assumed": 4,
+    "edge": 2048,
+    "bytes_per_base_texel": 4,
+    "base_texels_bytes_per_tile": 16777216,
+    "four_tiles_mib": 64.0,
+    "driver_or_transient_allocation_included": false
+  },
+  "diagnostic_stream": {
+    "frames_per_chunk": 512,
+    "chunk_seconds_at_retained_process_fps": {
+      "30": 17.066666666666666,
+      "60": 8.533333333333333,
+      "120": 4.266666666666667,
+      "144": 3.5555555555555554
+    },
+    "default_frame_cap": 500000,
+    "minutes_at_144": 57.87037037037037,
+    "frames_in_60_minutes_at_144": 518400,
+    "two_float64_series_mib_at_cap": 7.62939453125
+  },
+  "pixels": {
+    "scale_area_ratios": {
+      "0.5": 0.25,
+      "0.67": 0.4489000000000001,
+      "0.75": 0.5625,
+      "1.0": 1.0
+    },
+    "output_vs_1080p": {
+      "1920x1080": 1.0,
+      "2560x1440": 1.7777777777777777,
+      "2560x1600": 1.9753086419753085,
+      "3840x2160": 4.0
+    }
+  },
+  "amdahl_illustrations": [
+    {
+      "affected_fraction": 0.2,
+      "component_speedup": 2.0,
+      "serial_speedup": 1.1111111111111112
+    },
+    {
+      "affected_fraction": 0.4,
+      "component_speedup": 2.0,
+      "serial_speedup": 1.25
+    },
+    {
+      "affected_fraction": 0.6,
+      "component_speedup": 2.0,
+      "serial_speedup": 1.4285714285714286
+    }
+  ],
+  "smoothed_step_illustration": {
+    "previous_usec": 500,
+    "one_sample_usec": 4000,
+    "alpha": 0.05,
+    "display_after_one_sample_usec": 675.0,
+    "residual_half_life_samples": 13.513407333964874
+  },
+  "rare_hitch_illustration": {
+    "definition": "nearest-rank quantile, invented 6000-frame series",
+    "frames": 6000,
+    "p95_ms": 16.666666666666668,
+    "p99_ms": 16.666666666666668,
+    "maximum_ms": 300.0,
+    "frames_over_33ms": 1
+  }
+}

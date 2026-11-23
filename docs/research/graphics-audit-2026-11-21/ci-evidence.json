@@ -1,0 +1,566 @@
+{
+  "format": "openrc-graphics-audit-ci-evidence-v1",
+  "observed_utc_date": "2026-11-21",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "source": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "main_ci": {
+    "run_id": 44833680915,
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44833680915",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 136624634353,
+        "name": "CI selection and release preflight",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "id": 136624635835,
+        "name": "Publication source rebind evidence",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630689555,
+        "name": "RC native Windows build",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630689697,
+        "name": "Website source and download checks",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630689739,
+        "name": "CI required",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "id": 136630689746,
+        "name": "three.js prototype (archived bake-off build)",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690139,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690398,
+        "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690474,
+        "name": "Godot visual captures",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690523,
+        "name": "Visual group shadow (${{ matrix.group }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690693,
+        "name": "Release builds (Windows, Linux, macOS)",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690804,
+        "name": "NK-3 native kernel qualification (macOS ARM64)",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630690825,
+        "name": "RC native production checks (${{ matrix.platform }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630691021,
+        "name": "Visual group shadow comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630691150,
+        "name": "RC native Linux build",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630691250,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630691353,
+        "name": "NK-4 Windows package qualification",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136630692758,
+        "name": "Godot app (${{ matrix.part }} ${{ matrix.shard }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136632092354,
+        "name": "GitHub release (v* tags)",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "artifacts": [],
+    "preflight_excerpt": [
+      "2026-11-20T23:15:50.3461628Z Release preflight failed: missing or invalid tracked Godot UID sidecars (13): [\"app/landscapes/phoenix_flight.gd.uid\", \"app/landscapes/phoenix_flight.gdshader.uid\", \"app/landscapes/phoenix_images.gd.uid\", \"app/landscapes/phoenix_library.gd.uid\", \"app/landscapes/phoenix_objects.gd.uid\", \"app/landscapes/phoenix_source.gd.uid\", \"app/landscapes/phoenix_zip64.gd.uid\", \"app/tests/test_landscape_import.gd.uid\", \"app/tests/test_landscape_import_images.gd.uid\", \"app/tests/test_landscape_import_zip64.gd.uid\", \"app/tests/test_phoenix_flight_calibrations.gd.uid\", \"app/ui/landscape_import.gd.uid\", \"app/ui/phoenix_panorama.gdshader.uid\"]; generate with the pinned editor and commit them with their scripts/shaders"
+    ]
+  },
+  "older_successful_ci": {
+    "run_id": 44747723262,
+    "source": "5d50481b3e1bd135fa11a9d412d10f581ee48d38",
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44747723262",
+    "jobs": [
+      {
+        "id": 136327256737,
+        "name": "CI selection and release preflight",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136327258866,
+        "name": "Publication source rebind evidence",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136329178106,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178222,
+        "name": "three.js prototype (archived bake-off build)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178228,
+        "name": "Website source and download checks",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178354,
+        "name": "Godot app (units 6)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178357,
+        "name": "Godot app (integration 0)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178365,
+        "name": "RC native Windows build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178390,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178399,
+        "name": "Godot app (units 5)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178428,
+        "name": "Godot app (units 4)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178466,
+        "name": "Godot visual captures",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178475,
+        "name": "Godot app (units 2)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178477,
+        "name": "Godot app (units 7)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178529,
+        "name": "Godot app (units 1)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178540,
+        "name": "Godot app (units 3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178593,
+        "name": "Godot app (units 0)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178598,
+        "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329178599,
+        "name": "RC native Linux build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136329180799,
+        "name": "Visual group shadow (${{ matrix.group }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136340942185,
+        "name": "RC native production checks (windows)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136340942238,
+        "name": "RC native production checks (linux)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136343427811,
+        "name": "Release builds (Windows, Linux, macOS)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136358991463,
+        "name": "NK-4 Windows package qualification",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136407848236,
+        "name": "CI required",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136407851371,
+        "name": "Visual group shadow comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 136444165181,
+        "name": "GitHub release (v* tags)",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "artifact_inventory": [
+      {
+        "id": 14648220260,
+        "name": "captures-app",
+        "size_in_bytes": 2498696567,
+        "digest": "sha256:aec4506c372b5e87918ea624bd7bbad24ebb357bbeaad3893551185d7dd6bf00",
+        "expired": false
+      },
+      {
+        "id": 14648125375,
+        "name": "visual-resource-import",
+        "size_in_bytes": 16790,
+        "digest": "sha256:cc976840405c8bfe7d866e446801bf71dfc240dc8434453e665756fa10861f22",
+        "expired": false
+      },
+      {
+        "id": 14647166408,
+        "name": "capture-diagnostics",
+        "size_in_bytes": 19699035,
+        "digest": "sha256:c5a6de9fe19b66feb56e92f05d755fd902118a67f57d5ce5848a4225bec8a365",
+        "expired": false
+      },
+      {
+        "id": 14642000912,
+        "name": "nk4-package-diagnostics",
+        "size_in_bytes": 201838,
+        "digest": "sha256:9b0ca569b7d6cb4548c7d680cc3631ed4b5f5ed6a62bffeb7dc3ab0f99262d62",
+        "expired": false
+      },
+      {
+        "id": 14641032207,
+        "name": "app-rosters-integration-0",
+        "size_in_bytes": 6977,
+        "digest": "sha256:7bee376981c010028ba4db642c58a632027f4903ac5093e4fd2b7035f5408cd3",
+        "expired": false
+      },
+      {
+        "id": 14640966591,
+        "name": "godot-expected-diagnostics-integration-0",
+        "size_in_bytes": 10136,
+        "digest": "sha256:c60171aa8266529f9c59ad6b6cfc71435fe182e2038c4c9aa7e05f98c5c1e1d4",
+        "expired": false
+      },
+      {
+        "id": 14640931582,
+        "name": "godot-diagnostics-integration-0",
+        "size_in_bytes": 910149,
+        "digest": "sha256:b580000c953b1b1211a670583d34259f11eeb9fb7027472d1ffab25f38e3b9ab",
+        "expired": false
+      },
+      {
+        "id": 14639115850,
+        "name": "native-macos-correctness-44747723262-1",
+        "size_in_bytes": 5780065,
+        "digest": "sha256:fa370414433d20c67a570301437daf6c2d537084f935fa19ec4e9b19c0464fe0",
+        "expired": false
+      },
+      {
+        "id": 14637981503,
+        "name": "release-builds",
+        "size_in_bytes": 4675165562,
+        "digest": "sha256:3b6c39188b9a0c9fcc93eabc6b5715a1cda8217dddd26d0895089782fe4bff25",
+        "expired": false
+      },
+      {
+        "id": 14637442307,
+        "name": "nk3-package-diagnostics",
+        "size_in_bytes": 1083355,
+        "digest": "sha256:9e632563a47e264779236ece6df0bd3fb7d837345bd64de177b1292c9e3eb594",
+        "expired": false
+      },
+      {
+        "id": 14636960906,
+        "name": "godot-diagnostics-units-2",
+        "size_in_bytes": 262895,
+        "digest": "sha256:aaf55fcf1226c2585916c0e52d6d047e43725270955772d7773231266f6471e0",
+        "expired": false
+      },
+      {
+        "id": 14636641887,
+        "name": "fixed-brake-captures-2",
+        "size_in_bytes": 136850,
+        "digest": "sha256:ae674b13eec1b6ae40cd30119dc40b724c721f0a67d1410607a557915ac16575",
+        "expired": false
+      },
+      {
+        "id": 14636556245,
+        "name": "rc-native-production-linux",
+        "size_in_bytes": 22872,
+        "digest": "sha256:3e079702d11491f5122811e5dacb297773581a2ed5d734cf486dfd175e86321c",
+        "expired": false
+      },
+      {
+        "id": 14636375718,
+        "name": "godot-diagnostics-units-4",
+        "size_in_bytes": 217278,
+        "digest": "sha256:1a26b7197eed9ecfdbeb965fc0221df97d374a2c2f4230be976a1dbe53195f8f",
+        "expired": false
+      },
+      {
+        "id": 14636222766,
+        "name": "app-rosters-units-3",
+        "size_in_bytes": 1837,
+        "digest": "sha256:12c38b89971a0dded5555eb559865a81884e75dfa8e61135ae7c18ac3c23776c",
+        "expired": false
+      },
+      {
+        "id": 14636221159,
+        "name": "app-rosters-units-4",
+        "size_in_bytes": 1820,
+        "digest": "sha256:520379f7c6c671625840f6518100624691bf6e5952cd6dec2e5edc982b12acb8",
+        "expired": false
+      },
+      {
+        "id": 14636191460,
+        "name": "nk3-native-linux-diagnostics",
+        "size_in_bytes": 422224,
+        "digest": "sha256:7e4600b6d29c1e064b12aa067d2c15187f46e1a7cdba432ef7d235c32a63b188",
+        "expired": false
+      },
+      {
+        "id": 14636162855,
+        "name": "app-rosters-units-2",
+        "size_in_bytes": 1825,
+        "digest": "sha256:040ae1982e054415ba3e1d0aba17ba5d6a933bda0f9e0073dce19729b7b65c02",
+        "expired": false
+      },
+      {
+        "id": 14636161223,
+        "name": "godot-diagnostics-units-6",
+        "size_in_bytes": 216064,
+        "digest": "sha256:3a073f72d9e6bb3ce495b3e230d552d643fa4872c4d150b8916c3e8d519886f8",
+        "expired": false
+      },
+      {
+        "id": 14636077938,
+        "name": "rc-native-production-windows",
+        "size_in_bytes": 287471,
+        "digest": "sha256:7cea5308601f6aab7e6028f62c8c32386a600059837cf097c4a7a7152d36b9fa",
+        "expired": false
+      },
+      {
+        "id": 14635852063,
+        "name": "app-rosters-units-1",
+        "size_in_bytes": 1830,
+        "digest": "sha256:aef0b7952f5537d2b7027dbd985b43e621a5a0f7c7f9034c2b00d0e4a1b90f8f",
+        "expired": false
+      },
+      {
+        "id": 14635697385,
+        "name": "godot-diagnostics-units-0",
+        "size_in_bytes": 245592,
+        "digest": "sha256:26c3466849db88d0e17852dbe7d083b982481da8979bd4d82f64f4d33eef8b8c",
+        "expired": false
+      },
+      {
+        "id": 14635432745,
+        "name": "godot-diagnostics-units-1",
+        "size_in_bytes": 230262,
+        "digest": "sha256:a282b4628fe34c04a7783e249ae8af6bc52076e3ce3c063b7b09009b3aa5ada5",
+        "expired": false
+      },
+      {
+        "id": 14635424070,
+        "name": "godot-diagnostics-units-3",
+        "size_in_bytes": 218681,
+        "digest": "sha256:8c393e8ef3a66f6c494191316c366fed7565c791cd27beb3a5fffbebdcaeb886",
+        "expired": false
+      },
+      {
+        "id": 14635422633,
+        "name": "godot-diagnostics-units-7",
+        "size_in_bytes": 228638,
+        "digest": "sha256:518c0182cf0483380da987a842bfdfdbebc35c80680ec84499f1624e212a85d3",
+        "expired": false
+      },
+      {
+        "id": 14635286236,
+        "name": "nk4-native-windows-build",
+        "size_in_bytes": 1747340,
+        "digest": "sha256:a9f31b403b7f8d35e8bcbd75a3cb1794ce92bae8b5f8103314985f9ada41451d",
+        "expired": false
+      },
+      {
+        "id": 14635186624,
+        "name": "nk4-native-windows-diagnostics",
+        "size_in_bytes": 668001,
+        "digest": "sha256:9ca3147fa946bb03ccd923729baf0b0f795fd77285f6995807812f2f66dd0136",
+        "expired": false
+      },
+      {
+        "id": 14635153563,
+        "name": "app-rosters-units-0",
+        "size_in_bytes": 1835,
+        "digest": "sha256:fc5a5e298c33599da1b40fc49efb7c25d84782401f7ca82d2b743d5897c67ae2",
+        "expired": false
+      },
+      {
+        "id": 14635138155,
+        "name": "godot-diagnostics-units-5",
+        "size_in_bytes": 235354,
+        "digest": "sha256:f99b81571aa9f1ee3f930cec36b8c47eca0e849c74ba62d9cd9e20c1e15bfe35",
+        "expired": false
+      },
+      {
+        "id": 14635098656,
+        "name": "nk3-native-linux-build",
+        "size_in_bytes": 6788773,
+        "digest": "sha256:36f328cc99afdb4c67bfc7eebd3e14f5357b198e31d83ef49843bce67225f9ae",
+        "expired": false
+      },
+      {
+        "id": 14635033398,
+        "name": "app-rosters-units-6",
+        "size_in_bytes": 1794,
+        "digest": "sha256:644704aa42e490d25872a6b653136b8ca5a9a6b8e1a254bbdba5e2ddba0a96f4",
+        "expired": false
+      },
+      {
+        "id": 14635032972,
+        "name": "rc-native-windows",
+        "size_in_bytes": 208181,
+        "digest": "sha256:9ccadcd4a6987a7df60fa9c795e4d48aba25ff562b5a2c6557a70b375aac2b7b",
+        "expired": false
+      },
+      {
+        "id": 14634974058,
+        "name": "app-rosters-units-7",
+        "size_in_bytes": 1801,
+        "digest": "sha256:71946dce6e9983926d036529059cc7643d4f64a830419aa2466d7fc7cf9634fb",
+        "expired": false
+      },
+      {
+        "id": 14634948706,
+        "name": "app-rosters-units-5",
+        "size_in_bytes": 1850,
+        "digest": "sha256:5263619c15bcecd32912689a945d98702e6f23dae931f6e15b4e075dfc2cd2ab",
+        "expired": false
+      },
+      {
+        "id": 14634456229,
+        "name": "ci-selection",
+        "size_in_bytes": 635,
+        "digest": "sha256:eed3d3474370bf8da7aaf8ab758824d1bc01bc46f23a9f8fb168262baca4fafe",
+        "expired": false
+      },
+      {
+        "id": 14633943120,
+        "name": "rc-native-linux",
+        "size_in_bytes": 356176,
+        "digest": "sha256:666066f6627aca23e0bfdabd14e2c73cdab8c74b0bd40d7944b613a999642328",
+        "expired": false
+      },
+      {
+        "id": 14633054770,
+        "name": "captures-three",
+        "size_in_bytes": 70034,
+        "digest": "sha256:7456d0ee64a2dc71815ca3f9d0e4468b03ec2c6246dd563d558104a4bfd60d68",
+        "expired": false
+      }
+    ],
+    "visual_renderer_excerpt": [
+      "2026-11-20T14:37:23.6973405Z OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "2026-11-20T14:37:25.6101287Z OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)"
+    ]
+  },
+  "scope": "API observations and selected log excerpts. Older software-rendered CI and CPU-only native smoke do not qualify current hardware FPS; no signed download URLs retained."
+}

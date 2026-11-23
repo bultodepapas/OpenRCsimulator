@@ -42,6 +42,7 @@ func _initialize() -> void:
 	_chase()
 	_orbit()
 	_flyby()
+	_flyby_query_contract()
 	_cost()
 	print("all %d camera collision checks passed" % _count if _failures == 0 else "%d of %d failed" % [_failures, _count])
 	quit(1 if _failures > 0 else 0)
@@ -204,6 +205,37 @@ func _flyby() -> void:
 	var spot: Vector3 = view.update(target, Basis.IDENTITY, Vector3(0, 0, -20), 0.0, false, ground, east, clearance).position
 	_check("fly-by: the spot sees the aim point past every proxy, outside the building", CameraCollision.free_fraction(_world, aim, spot) > 0.99
 		and not _inside(building, spot, 0.05), "%s, %.3f" % [spot, CameraCollision.free_fraction(_world, aim, spot)])
+
+
+func _flyby_query_contract() -> void:
+	var target := Vector3(0, 50, 0)
+	for fraction: float in [1.0, 0.4]:
+		var queries: Array[Vector3] = []
+		var clearance := func(_aim: Vector3, end: Vector3) -> float:
+			queries.append(end)
+			return fraction
+		var reference := FlybyView.new()
+		var stable := FlybyView.new()
+		stable.repeatable_obstacles = clearance
+		for dx: float in [0.0, 100.0]: # initial placement and teleport, with the next seeded draws
+			var at := target + Vector3.RIGHT * dx
+			queries.clear()
+			var expected := reference.update(at, Basis.IDENTITY, Vector3.ZERO, 0.016, false, Callable(), Vector3.ZERO, clearance)
+			var reference_queries := queries.duplicate()
+			queries.clear()
+			var placed := stable.update(at, Basis.IDENTITY, Vector3.ZERO, 0.016, false, Callable(), Vector3.ZERO, clearance)
+			var candidates := 1 if fraction == 1.0 else FlybyView.PLACE_TRIES
+			_check("repeatable fly-by queries each candidate once", queries.size() == candidates)
+			_check("fly-by preserves candidate order and the final pose", placed == expected
+				and reference_queries == queries + [queries.back()])
+	var dynamic := FlybyView.new()
+	var endpoints: Array[Vector3] = []
+	var changing := func(_aim: Vector3, end: Vector3) -> float:
+		endpoints.append(end)
+		return 1.0 if endpoints.size() == 1 else 0.25
+	var result := dynamic.update(target, Basis.IDENTITY, Vector3.ZERO, 0.0, true, Callable(), Vector3.ZERO, changing)
+	_check("unregistered fly-by query can change on the final pull-in", endpoints.size() == 2
+		and endpoints.front() == endpoints.back() and result.position == target + (endpoints.back() - target) * 0.25)
 
 
 func _cost() -> void:

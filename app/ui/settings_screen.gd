@@ -244,7 +244,6 @@ func _ready() -> void:
 
 func _build() -> void:
 	_surface = Screen.mount(self)
-	_surface.theme = ScreenTheme.build()
 	_surface.close_requested.connect(close)
 	_surface.dismiss_option_popup_first = true
 	_surface.dim(0.58)
@@ -473,6 +472,7 @@ func _build() -> void:
 		_on_presentation_option_changed())
 	_add_row(lighting_page, "Aircraft show effects", _lighting_vfx_toggle)
 	graphics_page.add_child(_graphics_info)
+	_graphics_info.visibility_changed.connect(_refresh_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
 	defaults_button.tooltip_text = tr("Returns graphics settings to the recommendation for this GPU and measures it again on the next flight.")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
@@ -1187,7 +1187,7 @@ func _refresh_shadow_info() -> void:
 
 
 func _refresh_graphics_info() -> void:
-	if not is_inside_tree() or _graphics_info == null:
+	if not is_inside_tree() or _graphics_info == null or not _graphics_info.is_visible_in_tree():
 		return
 	# SC-BIRD: one line (the renderer name moved to the tooltip) so the Graphics page, with its Birds row, still fits
 	# at 1080p; it ends with the effective VSync state.

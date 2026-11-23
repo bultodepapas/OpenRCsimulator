@@ -28,6 +28,8 @@ const SEED := 20261025
 ## CAM-09: draws tried before a blocked spot is pulled in toward the aim point.
 const PLACE_TRIES := 6
 
+## Read-only scenery adapter whose result is stable for one placement. Other callbacks can change on each call.
+var repeatable_obstacles := Callable()
 var position := Vector3.ZERO
 var zoom := 1.0 # framing multiplier (+/−, wheel): > 1 frames the aircraft larger
 var _span := 1.5
@@ -87,6 +89,7 @@ func _place(target: Vector3, body: Basis, ground_y: Callable, light: Vector3, ob
 	right = right.normalized() if right.length() > 1e-3 else Vector3.RIGHT
 	var up := right.cross(course).normalized()
 	var height := target.y - _ground(ground_y, target)
+	var clear := 1.0
 	for attempt in PLACE_TRIES:
 		var radius := DISTANCE_M * _rng.randf_range(RADIUS_MIN, RADIUS_MAX)
 		# FlightGear: any angle around the track when high, to the side (±90° ± 0.15π) when low.
@@ -98,10 +101,14 @@ func _place(target: Vector3, body: Basis, ground_y: Callable, light: Vector3, ob
 			side = -right * sin(angle) + up * cos(angle)
 		position = aim + side * radius
 		position.y = maxf(position.y, _ground(ground_y, position) + MIN_HEIGHT_M)
-		if not obstacles.is_valid() or float(obstacles.call(aim, position)) >= 1.0:
+		if not obstacles.is_valid():
+			break
+		clear = float(obstacles.call(aim, position))
+		if clear >= 1.0:
 			break
 	if obstacles.is_valid():
-		var clear := float(obstacles.call(aim, position))
+		if obstacles != repeatable_obstacles:
+			clear = float(obstacles.call(aim, position))
 		if clear < 1.0:
 			position = aim + (position - aim) * clear
 			position.y = maxf(position.y, _ground(ground_y, position) + MIN_HEIGHT_M)

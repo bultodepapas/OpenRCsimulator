@@ -23,6 +23,7 @@ class RenderingEvidenceTests(unittest.TestCase):
                 manifest.update(dynamic_resolution_fps=60, render_scale=100, phases=["recover"])
                 write_json(path / name, manifest)
             runtime = json.loads((path / "runtime.json").read_text())
+            runtime["identity"]["window_focused_before_selection"] = True
             runtime["identity"]["effective_display"] = {"dynamic_resolution_fps": 60}
             phase = runtime["phases"][0]
             phase.update(name="recover", id="0-0-recover", start_usec=1, end_usec=100)
@@ -51,6 +52,7 @@ class RenderingEvidenceTests(unittest.TestCase):
                 manifest.update(render_scale=67, phases=["recover"])
                 write_json(path / name, manifest)
             runtime = json.loads((path / "runtime.json").read_text())
+            runtime["identity"]["window_focused_before_selection"] = True
             phase = runtime["phases"][0]
             phase.update(name="recover", id="0-0-recover")
             phase["start_flight_3d_scaling"] = {"bilinear": True, "scale": 0.6700000166893005}

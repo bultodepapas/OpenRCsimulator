@@ -1,5 +1,7 @@
 # Session performance evidence tools
 
+Dated research: [graphics/FPS audit reproductions, 2026-11-21](graphics-audit-2026-11-21/README.md) preserve isolated policy witnesses and arithmetic; see the [report and hardware limits](../../docs/research/graphics-audit-2026-11-21/README.md).
+
 VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inventory.
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.

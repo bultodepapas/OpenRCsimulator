@@ -1,0 +1,45 @@
+{
+  "format": "openrc-graphics-audit-local-preflight-v1",
+  "source": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "started_utc": "2026-11-21T20:24:08.603225+00:00",
+  "command": [
+    "python3",
+    "tools/ci/release_preflight.py",
+    "--root",
+    ".",
+    "--event",
+    "push",
+    "--ref",
+    "refs/heads/graphics-audit",
+    "--sha",
+    "57abea025f62b20233ca281d58d2acbee4ab8b8e"
+  ],
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Release preflight failed: missing or invalid tracked Godot UID sidecars (13): [\"app/landscapes/phoenix_flight.gd.uid\", \"app/landscapes/phoenix_flight.gdshader.uid\", \"app/landscapes/phoenix_images.gd.uid\", \"app/landscapes/phoenix_library.gd.uid\", \"app/landscapes/phoenix_objects.gd.uid\", \"app/landscapes/phoenix_source.gd.uid\", \"app/landscapes/phoenix_zip64.gd.uid\", \"app/tests/test_landscape_import.gd.uid\", \"app/tests/test_landscape_import_images.gd.uid\", \"app/tests/test_landscape_import_zip64.gd.uid\", \"app/tests/test_phoenix_flight_calibrations.gd.uid\", \"app/ui/landscape_import.gd.uid\", \"app/ui/phoenix_panorama.gdshader.uid\"]; generate with the pinned editor and commit them with their scripts/shaders\n",
+  "script_sha256": "f4e83be393f32a0557c0a373f7d999d27983bce99eb956bc5d1522e7d03f388a",
+  "scope": "Clean detached sparse baseline; unchanged preflight and pinned prerequisites plus all tracked UID sidecars materialized. No app/render execution.",
+  "tracked_delta": "",
+  "earlier_dirty_documentation_rerun": {
+    "format": "openrc-graphics-audit-local-preflight-v1",
+    "source": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+    "started_utc": "2026-11-21T20:22:29.461166+00:00",
+    "command": [
+      "python3",
+      "tools/ci/release_preflight.py",
+      "--root",
+      ".",
+      "--event",
+      "push",
+      "--ref",
+      "refs/heads/graphics-audit",
+      "--sha",
+      "57abea025f62b20233ca281d58d2acbee4ab8b8e"
+    ],
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Release preflight failed: tracked source changed after checkout\n",
+    "script_sha256": "f4e83be393f32a0557c0a373f7d999d27983bce99eb956bc5d1522e7d03f388a",
+    "scope": "source preflight only, no app or renderer execution"
+  }
+}

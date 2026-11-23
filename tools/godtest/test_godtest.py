@@ -114,6 +114,69 @@ class ManifestTests(unittest.TestCase):
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_wait_frames_belong_to_focus_acquisition(self):
+        for legacy in (False, True):
+            with self.subTest(legacy=legacy), tempfile.TemporaryDirectory() as root:
+                directory = Path(root) / "run"
+                frames = artifacts(directory)
+                # One stall while waiting, then two slow selection callbacks. The
+                # first selection interval begins before selection and ends in it.
+                indices = [0, 0, 1, 1, 1, 1] if legacy else [0, 0, 1, 1, 2, 2]
+                replace_stream(directory, frames, [10_000, 10_000, 400_000, 10_000, 40_000, 40_000],
+                               indices, split=3)
+                manifest = catalog.scenario("startup", {"phases": ["startup", "selection", "shutdown"]})
+                write_json(directory / "manifest.requested.json", manifest)
+                write_json(directory / "manifest.resolved.json", dict(manifest, output_dir=str(directory)))
+                runtime = json.loads((directory / "runtime.json").read_text())
+                runtime["identity"]["window_focused_before_selection"] = True
+                startup = runtime["phases"][0]
+                startup.update(end_usec=1_020_000, wall_seconds=.02)
+                if not legacy:
+                    runtime["phases"].append(dict(startup, name="focus_wait", requested=False,
+                                                  index=1, id="0-1-focus_wait", start_usec=1_020_000,
+                                                  end_usec=1_435_000, wall_seconds=.415))
+                index = indices[-1]
+                runtime["phases"].append(dict(startup, name="selection", index=index,
+                                              id=f"0-{index}-selection", start_usec=1_435_000,
+                                              end_usec=1_510_000, wall_seconds=.075))
+                write_json(directory / "runtime.json", runtime)
+                result = report(directory, write=False)
+                selection = result["phases"][-1]
+                if legacy:
+                    self.assertEqual(result["data"], "ineligible")
+                    self.assertIsNone(selection["frame_ms"]["p95"])
+                    self.assertEqual(selection["pacing"], {})
+                else:
+                    self.assertEqual(result["data"], "valid", result["issues"])
+                    self.assertEqual(result["phases"][1]["frame_ms"]["max"], 400)
+                    self.assertEqual(selection["pacing"]["sample_wall_ms"], 80)
+                    self.assertEqual(selection["frame_ms"]["p95"], 40)
+
+    def test_rendered_selection_requires_observed_focus(self):
+        for identity, expected in (({"window_focused_before_selection": True}, "valid"),
+                                   ({"window_focused_before_selection": False}, "ineligible"),
+                                   ({}, "ineligible"), ({"window_focused_before_selection": 1}, "ineligible"),
+                                   ({"window_focused_before_selection": True, "seatless_wayland": True}, "ineligible"),
+                                   ({"window_focused_before_selection": True,
+                                     "window_focus_probe_override": "wayland_without_keyboard_focus"}, "ineligible")):
+            with self.subTest(identity=identity), tempfile.TemporaryDirectory() as root:
+                directory = Path(root) / "run"
+                frames = artifacts(directory)
+                replace_stream(directory, frames, [10_000] * 4, [0, 0, 1, 1])
+                manifest = catalog.scenario("startup", {"phases": ["startup", "selection", "shutdown"]})
+                write_json(directory / "manifest.requested.json", manifest)
+                write_json(directory / "manifest.resolved.json", dict(manifest, output_dir=str(directory)))
+                runtime = json.loads((directory / "runtime.json").read_text())
+                runtime["identity"].update(identity)
+                startup = runtime["phases"][0]
+                startup.update(end_usec=1_020_000, wall_seconds=.02)
+                runtime["phases"].append(dict(startup, name="selection", id="0-1-selection", index=1,
+                                              start_usec=1_020_000, end_usec=1_040_000))
+                write_json(directory / "runtime.json", runtime)
+                result = report(directory, write=False)
+                self.assertEqual(result["data"], expected, result["issues"])
+                self.assertEqual(result["performance"] == "single_run_screen", expected == "valid")
+
     def test_only_focus_losses_after_startup_question_session_equivalence(self):
         message = "native focus loss observed; session equivalence requires diagnosis"
         for total, in_startup, flagged in ((2, 2, False), (3, 2, True), (1, 0, True), (0, 0, False)):
@@ -198,7 +261,7 @@ class ArtifactTests(unittest.TestCase):
             directory = Path(root) / "run"
             artifacts(directory)
             runtime = json.loads((directory / "runtime.json").read_text())
-            stop = dict(runtime["phases"][0], name="stop", id="0-1-stop", index=1, requested=False,
+            stop = dict(runtime["phases"][0], name="stop", id="0-1-stop", index=1, requested=False, frames=0,
                         pilot=dict(touchdown={"roll_deg": 2}, minimum_wheel_runway_margin_m=-4.5))
             runtime["phases"].append(stop)
             write_json(directory / "runtime.json", runtime)

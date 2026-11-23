@@ -102,6 +102,7 @@ func _run() -> void:
 	settings._restore_graphics_defaults()
 	settings.keep_changes()
 	_check("graphics defaults restore Reflex On", DisplayPreferences.load_from(PREFS + ".display").nvidia_reflex == "on")
+	settings._show_category(3)
 	# VQ-07h-A7: the info tooltip explains Automatic's choice for this GPU and its measurement state.
 	settings._refresh_graphics_info()
 	var automatic_text: String = settings._graphics_info.tooltip_text

@@ -1,0 +1,789 @@
+{
+  "format": "openrc-graphics-audit-policy-checks-v1",
+  "source": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "runs": [
+    {
+      "run": 1,
+      "summary": {
+        "commands": [
+          {
+            "label": "import",
+            "exit_code": 0
+          },
+          {
+            "label": "policy-witnesses",
+            "exit_code": 1
+          }
+        ],
+        "source_stable": true,
+        "engine_stable": true,
+        "ok": false
+      },
+      "checks": [
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "4a767349-58a3-41f2-9028-3f562adc28fc",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--editor",
+            "--import"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:06:10.677972+00:00",
+          "label": "import",
+          "log": "import-b5333tdp/engine.log",
+          "report": "import-b5333tdp/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 4.023595,
+          "log_bytes": 2046,
+          "log_sha256": "2cfa5b2332b64e199c4f6490761274f42ae2b206ec44b20f51b324782fabccf1",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "32709626-2fbf-4758-a6db-c86cf2ad4ec4",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://calibration_probe.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:06:14.740747+00:00",
+          "label": "policy-witnesses",
+          "log": "policy-witnesses-4rpvrf1x/engine.log",
+          "report": "policy-witnesses-4rpvrf1x/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "graphics audit policy witnesses:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "warning",
+              "kind": "WARNING",
+              "line": 3,
+              "message": "FSR2 3D scaling is only available when using the Forward+ renderer.",
+              "context": [
+                "     at: viewport_set_scaling_3d_mode (servers/rendering/renderer_viewport.cpp:1045)",
+                "     GDScript backtrace (most recent call first):",
+                "         [0] _run (res://calibration_probe.gd:73)"
+              ]
+            }
+          ],
+          "missing_required_text": [],
+          "reason": "warning",
+          "detail": "",
+          "exit_code": 1,
+          "ok": false,
+          "elapsed_seconds": 0.242112,
+          "log_bytes": 1572,
+          "log_sha256": "5eefe5f026f31329abb1ad5b6c3e7bcdcd9d7422c2419a7ded751b6a079857a6",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "WARNING: FSR2 3D scaling is only available when using the Forward+ renderer.",
+            "GRAPHICS_AUDIT_RESULT {\"checks\":24,\"failures\":0,\"high_veto\":{\"changes\":{\"aa_and_scale\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":518400}},\"aa_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":2073600}},\"scale_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":2,\"render_pixels\":518400}}},\"with_veto\":\"standard\",\"without_veto\":\"high\"},\"poll_classifier_only\":{\"device_or_display_performance_measured\":false,\"floor_at_120_hz_ms\":16.666666666666668,\"fresh_gpu_samples_proven\":false,\"verdict\":{\"complete\":true,\"cpu_bound\":false,\"cpu_p95_ms\":1.0,\"gpu_p95_ms\":3.0,\"interval_p95_ms\":16.666666666666668,\"reject_high\":false,\"samples\":300,\"scene_offset\":1,\"subviewports\":false}},\"provider_alias\":{\"fsr_mode\":2,\"fsr_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"native_mode\":0,\"native_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"needs_remeasurement\":false},\"summary_scope\":{\"heuristic_summary\":{\"estimate\":\"unknown\",\"measured_p95_ms\":18.0,\"mode\":\"high\",\"scene_detail\":\"high\"},\"vetoed_plan\":\"standard\"}}",
+            "graphics audit policy witnesses: 24 checks, 0 failed"
+          ]
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "summary": {
+        "commands": [
+          {
+            "label": "import",
+            "exit_code": 0
+          },
+          {
+            "label": "policy-witnesses",
+            "exit_code": 0
+          },
+          {
+            "label": "unchanged-auto-calibration",
+            "exit_code": 1
+          }
+        ],
+        "source_stable": true,
+        "engine_stable": true,
+        "ok": false
+      },
+      "checks": [
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "b26aa0fa-ab3d-41a8-877b-88d492e4cf90",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--editor",
+            "--import"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:09:56.340965+00:00",
+          "label": "import",
+          "log": "import-28qmfcxw/engine.log",
+          "report": "import-28qmfcxw/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 4.091747,
+          "log_bytes": 2046,
+          "log_sha256": "2cfa5b2332b64e199c4f6490761274f42ae2b206ec44b20f51b324782fabccf1",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "0dbec799-7d4d-4748-9b5d-7b91055191c5",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://calibration_probe.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:10:00.476314+00:00",
+          "label": "policy-witnesses",
+          "log": "policy-witnesses-yhi8xjyf/engine.log",
+          "report": "policy-witnesses-yhi8xjyf/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "graphics audit policy witnesses:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.262925,
+          "log_bytes": 1310,
+          "log_sha256": "906691ae3b354adc0d83bd191c160897d08e9f1ed9dca10e586dc2a0b760a298",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "GRAPHICS_AUDIT_RESULT {\"checks\":24,\"failures\":0,\"high_veto\":{\"changes\":{\"aa_and_scale\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":518400}},\"aa_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":2073600}},\"scale_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":2,\"render_pixels\":518400}}},\"with_veto\":\"standard\",\"without_veto\":\"high\"},\"poll_classifier_only\":{\"device_or_display_performance_measured\":false,\"floor_at_120_hz_ms\":16.666666666666668,\"fresh_gpu_samples_proven\":false,\"verdict\":{\"complete\":true,\"cpu_bound\":false,\"cpu_p95_ms\":1.0,\"gpu_p95_ms\":3.0,\"interval_p95_ms\":16.666666666666668,\"reject_high\":false,\"samples\":300,\"scene_offset\":1,\"subviewports\":false}},\"provider_alias\":{\"fsr_mode\":2,\"fsr_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"native_mode\":0,\"native_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"needs_remeasurement\":false},\"summary_scope\":{\"heuristic_summary\":{\"estimate\":\"unknown\",\"measured_p95_ms\":18.0,\"mode\":\"high\",\"scene_detail\":\"high\"},\"vetoed_plan\":\"standard\"}}",
+            "graphics audit policy witnesses: 24 checks, 0 failed"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "b99f6072-7eaf-409a-b9e6-2b3cbaf8e568",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/test_auto_calibration.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:10:00.778606+00:00",
+          "label": "unchanged-auto-calibration",
+          "log": "unchanged-auto-calibration-2_ifj0hr/engine.log",
+          "report": "unchanged-auto-calibration-2_ifj0hr/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "auto calibration:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "warning",
+              "kind": "WARNING",
+              "line": 4,
+              "message": "1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+              "context": [
+                "   at: cleanup (core/object/object.cpp:2609)"
+              ]
+            }
+          ],
+          "missing_required_text": [],
+          "reason": "warning",
+          "detail": "",
+          "exit_code": 1,
+          "ok": false,
+          "elapsed_seconds": 0.242681,
+          "log_bytes": 237,
+          "log_sha256": "a7955dcac7d01e384b9b549258d9ae4465d88d23b79cecb5c507aa60409b1fc2",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "auto calibration: 94 checks, 0 failed",
+            "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+          ]
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "summary": {
+        "commands": [
+          {
+            "label": "import",
+            "exit_code": 0
+          },
+          {
+            "label": "policy-witnesses",
+            "exit_code": 0
+          },
+          {
+            "label": "unchanged-auto-calibration",
+            "exit_code": 1
+          }
+        ],
+        "source_stable": true,
+        "engine_stable": true,
+        "ok": false
+      },
+      "checks": [
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "eb78cdda-6de5-4d99-ba0a-8890ce711929",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--editor",
+            "--import"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:10:53.139403+00:00",
+          "label": "import",
+          "log": "import-18uxxv77/engine.log",
+          "report": "import-18uxxv77/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 4.399706,
+          "log_bytes": 2046,
+          "log_sha256": "2cfa5b2332b64e199c4f6490761274f42ae2b206ec44b20f51b324782fabccf1",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "dfc5cb10-d6c4-4255-8b7b-e992b0a5c091",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://calibration_probe.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:10:57.629678+00:00",
+          "label": "policy-witnesses",
+          "log": "policy-witnesses-z6gadop3/engine.log",
+          "report": "policy-witnesses-z6gadop3/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "graphics audit policy witnesses:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.283314,
+          "log_bytes": 1444,
+          "log_sha256": "b9d206b2b28ef219509cd47866237fa76e70f86f2825519e6ffa5c0b838adc10",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "GRAPHICS_AUDIT_RESULT {\"checks\":24,\"failures\":0,\"high_veto\":{\"changes\":{\"aa_and_scale\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":518400}},\"aa_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":2073600}},\"scale_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":2,\"render_pixels\":518400}}},\"with_veto\":\"standard\",\"without_veto\":\"high\"},\"poll_classifier_only\":{\"device_or_display_performance_measured\":false,\"floor_at_120_hz_ms\":16.666666666666668,\"fresh_gpu_samples_proven\":false,\"verdict\":{\"complete\":true,\"cpu_bound\":false,\"cpu_p95_ms\":1.0,\"gpu_p95_ms\":3.0,\"interval_p95_ms\":16.666666666666668,\"reject_high\":false,\"samples\":300,\"scene_offset\":1,\"subviewports\":false}},\"provider_alias\":{\"fsr_mode\":2,\"fsr_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"native_mode\":0,\"native_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"needs_remeasurement\":false},\"summary_scope\":{\"current_method_record\":{\"complete\":true,\"gpu_p95_ms\":6.0,\"method\":\"gl_compatibility\",\"pixels\":2073600},\"heuristic_summary\":{\"estimate\":\"unknown\",\"measured_p95_ms\":6.0,\"mode\":\"high\",\"scene_detail\":\"high\"},\"runtime_or_ui_executed\":false,\"vetoed_plan\":\"standard\"}}",
+            "graphics audit policy witnesses: 24 checks, 0 failed"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "870bfc7e-34e5-4b5f-b6d7-92a557388c72",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/test_auto_calibration.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:10:57.961635+00:00",
+          "label": "unchanged-auto-calibration",
+          "log": "unchanged-auto-calibration-txbrhgsi/engine.log",
+          "report": "unchanged-auto-calibration-txbrhgsi/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "auto calibration:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "warning",
+              "kind": "WARNING",
+              "line": 4,
+              "message": "1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+              "context": [
+                "   at: cleanup (core/object/object.cpp:2609)"
+              ]
+            }
+          ],
+          "missing_required_text": [],
+          "reason": "warning",
+          "detail": "",
+          "exit_code": 1,
+          "ok": false,
+          "elapsed_seconds": 0.242723,
+          "log_bytes": 237,
+          "log_sha256": "a7955dcac7d01e384b9b549258d9ae4465d88d23b79cecb5c507aa60409b1fc2",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "auto calibration: 94 checks, 0 failed",
+            "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+          ]
+        }
+      ]
+    },
+    {
+      "run": 4,
+      "summary": {
+        "commands": [
+          {
+            "label": "import",
+            "exit_code": 0
+          },
+          {
+            "label": "policy-witnesses",
+            "exit_code": 0
+          },
+          {
+            "label": "unchanged-auto-calibration",
+            "exit_code": 1
+          }
+        ],
+        "source_stable": true,
+        "engine_stable": true,
+        "ok": false
+      },
+      "checks": [
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "da6f5516-492f-47f8-9412-f0e2cb811544",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--editor",
+            "--import"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:11:36.217726+00:00",
+          "label": "import",
+          "log": "import-7pi37rxn/engine.log",
+          "report": "import-7pi37rxn/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 4.888719,
+          "log_bytes": 2046,
+          "log_sha256": "2cfa5b2332b64e199c4f6490761274f42ae2b206ec44b20f51b324782fabccf1",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "560b6763-3380-4b9b-965e-3171a6f76391",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://calibration_probe.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:11:41.151980+00:00",
+          "label": "policy-witnesses",
+          "log": "policy-witnesses-qjhtuy_r/engine.log",
+          "report": "policy-witnesses-qjhtuy_r/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "graphics audit policy witnesses:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.262513,
+          "log_bytes": 1444,
+          "log_sha256": "b9d206b2b28ef219509cd47866237fa76e70f86f2825519e6ffa5c0b838adc10",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "GRAPHICS_AUDIT_RESULT {\"checks\":24,\"failures\":0,\"high_veto\":{\"changes\":{\"aa_and_scale\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":518400}},\"aa_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":0,\"render_pixels\":2073600}},\"scale_only\":{\"high_veto\":true,\"mismatch\":true,\"needs_remeasurement\":true,\"workload\":{\"msaa_3d\":2,\"render_pixels\":518400}}},\"with_veto\":\"standard\",\"without_veto\":\"high\"},\"poll_classifier_only\":{\"device_or_display_performance_measured\":false,\"floor_at_120_hz_ms\":16.666666666666668,\"fresh_gpu_samples_proven\":false,\"verdict\":{\"complete\":true,\"cpu_bound\":false,\"cpu_p95_ms\":1.0,\"gpu_p95_ms\":3.0,\"interval_p95_ms\":16.666666666666668,\"reject_high\":false,\"samples\":300,\"scene_offset\":1,\"subviewports\":false}},\"provider_alias\":{\"fsr_mode\":2,\"fsr_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"native_mode\":0,\"native_workload\":{\"msaa_3d\":0,\"pixels\":2073600,\"render_pixels\":2073600},\"needs_remeasurement\":false},\"summary_scope\":{\"current_method_record\":{\"complete\":true,\"gpu_p95_ms\":6.0,\"method\":\"gl_compatibility\",\"pixels\":2073600},\"heuristic_summary\":{\"estimate\":\"unknown\",\"measured_p95_ms\":6.0,\"mode\":\"high\",\"scene_detail\":\"high\"},\"runtime_or_ui_executed\":false,\"vetoed_plan\":\"standard\"}}",
+            "graphics audit policy witnesses: 24 checks, 0 failed"
+          ]
+        },
+        {
+          "format": "openrc-godot-check v1",
+          "capture_id": "fb2b493b-c25a-4066-9715-daae9489adbe",
+          "command": [
+            "$REPOSITORY/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "$RUN/fixture",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/test_auto_calibration.gd"
+          ],
+          "cwd": "$REPOSITORY",
+          "started_utc": "2026-11-21T20:11:41.452388+00:00",
+          "label": "unchanged-auto-calibration",
+          "log": "unchanged-auto-calibration-6_3hgxby/engine.log",
+          "report": "unchanged-auto-calibration-6_3hgxby/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": true,
+          "required_text": [
+            "auto calibration:"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "warning",
+              "kind": "WARNING",
+              "line": 4,
+              "message": "1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+              "context": [
+                "   at: cleanup (core/object/object.cpp:2609)"
+              ]
+            }
+          ],
+          "missing_required_text": [],
+          "reason": "warning",
+          "detail": "",
+          "exit_code": 1,
+          "ok": false,
+          "elapsed_seconds": 0.242354,
+          "log_bytes": 237,
+          "log_sha256": "a7955dcac7d01e384b9b549258d9ae4465d88d23b79cecb5c507aa60409b1fc2",
+          "retained_log_excerpt": [
+            "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+            "auto calibration: 94 checks, 0 failed",
+            "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+          ]
+        }
+      ],
+      "manifest": {
+        "source": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+        "dependencies": [
+          {
+            "source": "app/app_state/renderer_preference.gd",
+            "sha256": "3b100c76ce90689186ff346ab5069b0f5f143b42660db25b462c2bb519524f19",
+            "bytes": 12103
+          },
+          {
+            "source": "app/app_state/renderer_preference.gd.uid",
+            "sha256": "4dfdd840947ed4b8c0fc4633b7b3ca85d7ded5ad73b22a0941cfd84ea55c6342",
+            "bytes": 20
+          },
+          {
+            "source": "app/data/gpu/capability.json",
+            "sha256": "84edc3050b607045ce9545199cc63d9c8d89f1ef83f198203dfdf563d9d125b3",
+            "bytes": 61323
+          },
+          {
+            "source": "app/render/auto_calibration.gd",
+            "sha256": "739b254adfd7281edc9713fa37dc927005c6937bb8963c989dfc48398bd3f466",
+            "bytes": 21160
+          },
+          {
+            "source": "app/render/auto_calibration.gd.uid",
+            "sha256": "acd8bd1b363e15b825406445c37fc81c7f831b74dd3a21bd5b2e38b8583d417f",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/auto_graphics_policy.gd",
+            "sha256": "acec25d0e3b7e7edab3b0f57a60ad06817f4d0fddfc44e203b8cb5ed9b540c60",
+            "bytes": 12145
+          },
+          {
+            "source": "app/render/auto_graphics_policy.gd.uid",
+            "sha256": "86c511758e65d211db5216a9ddb5d8e5c1973d8bc1421be3f9aecda29aad27ce",
+            "bytes": 19
+          },
+          {
+            "source": "app/render/auto_graphics_report.gd",
+            "sha256": "a93dd40df8787abc214f3cc1c5845f02f5654854da81f61c9f5d32e88187b3dd",
+            "bytes": 4896
+          },
+          {
+            "source": "app/render/auto_graphics_report.gd.uid",
+            "sha256": "51eb3b9e04625b94cfcd7e51ba3b3f4d09149c471989e698dfa8d09a2f104977",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/gpu_capability.gd",
+            "sha256": "0dec2cf434e97eed987935ccad6bf9bcc636d4bd86b702f82488dd8903b02e8a",
+            "bytes": 6430
+          },
+          {
+            "source": "app/render/gpu_capability.gd.uid",
+            "sha256": "1480e43952c97acbb48769f51ae07da015dbd309cdb383e3417c7dd5772a07d8",
+            "bytes": 19
+          },
+          {
+            "source": "app/render/high_graphics_profile.gd",
+            "sha256": "7c000089779c7ea39a1c792f1edd27cc50e1a77381fba73b2b5b1a8998dc47ee",
+            "bytes": 7545
+          },
+          {
+            "source": "app/render/high_graphics_profile.gd.uid",
+            "sha256": "4f55b6e5bd918aefb1b6367208d252ac7f79a0b001c955ccecb3e8c71c630fcf",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/metalfx_policy.gd",
+            "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+            "bytes": 5703
+          },
+          {
+            "source": "app/render/metalfx_policy.gd.uid",
+            "sha256": "ae7110678d38564c996d64fbfcc07315f702d295a5eb2ef583b391770cbc778e",
+            "bytes": 19
+          },
+          {
+            "source": "app/render/nvidia_reflex.gd",
+            "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+            "bytes": 3801
+          },
+          {
+            "source": "app/render/nvidia_reflex.gd.uid",
+            "sha256": "24a663703462bf1be7d926b4c598e1d19ed09e0482a1522e02c7526a02035aed",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/reconstruction.gd",
+            "sha256": "ec9990942fe03ffcf162b03ea2951dd0e9cdde7602924760cf0559bff60f61dd",
+            "bytes": 41690
+          },
+          {
+            "source": "app/render/reconstruction.gd.uid",
+            "sha256": "b3c61fbc2487b08841289c2bcfc9a9ad09915c6c31126a4d6ea41daf65263f6c",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/render_timing_lease.gd",
+            "sha256": "406063ea71136de95fb9411babca1d5623d81d8271aace2f9c306c995df46f42",
+            "bytes": 5123
+          },
+          {
+            "source": "app/render/render_timing_lease.gd.uid",
+            "sha256": "41f27ee993680db64ed3700a151b0595e44b33dbee867eb3a072e314fd2e4156",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/scene_detail.gd",
+            "sha256": "9ae1134df05c268316356c85e260f79e04c2c9ec578e84efd7e68a027fee8831",
+            "bytes": 8758
+          },
+          {
+            "source": "app/render/scene_detail.gd.uid",
+            "sha256": "eeae6bd52a58046d3ad720af2fbc9cb76a59687dd0b3622f9c90ac3f40d8fcfe",
+            "bytes": 20
+          },
+          {
+            "source": "app/render/shadow_settings.gd",
+            "sha256": "af001e5a3a2b1ef79d567b0b64bab0b8669648e3daa81d9c2b33e848061cc8f9",
+            "bytes": 15936
+          },
+          {
+            "source": "app/render/shadow_settings.gd.uid",
+            "sha256": "b6823de918442f01f2f7f985fed5d3536a825585d53abb7909364fcb720e023d",
+            "bytes": 20
+          },
+          {
+            "source": "app/tests/test_auto_calibration.gd",
+            "sha256": "ef317271a958e1717416311a2f6e13132705707a0d5845843fca82fc01d09363",
+            "bytes": 26708
+          },
+          {
+            "source": "app/tests/test_auto_calibration.gd.uid",
+            "sha256": "9984804fdc3ebb0cc8686f9f2277950869744d6cc44df842ba0ced878ed1fa76",
+            "bytes": 20
+          },
+          {
+            "source": "app/ui/ui_scale.gd",
+            "sha256": "e2c26c121a3158c1f25a45cc38c361cf78a707e8d3bbddaf207f1d9fb7b5c6b4",
+            "bytes": 2220
+          },
+          {
+            "source": "app/ui/ui_scale.gd.uid",
+            "sha256": "b45dd6a8a665b840c1a46c9313782da91f412d4a6b372964f89e00841ded2efb",
+            "bytes": 19
+          }
+        ],
+        "dependency_files": 15,
+        "fixture_config_sha256": "b1a7e0d1fb3c927ab3ff82046c879b615830c7403590ba3fba2189690327c702",
+        "probe_sha256": "d8a101b26d7ac7cdd058aef36e52830e56b6e4816faa68e11a09fbc211e7c110",
+        "runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+        "isolated_user_paths_relative_to_output": {
+          "XDG_DATA_HOME": "user-data",
+          "XDG_CONFIG_HOME": "user-config",
+          "XDG_CACHE_HOME": "user-cache"
+        },
+        "scope": "unchanged source in a minimal headless fixture; synthetic policy inputs, no GPU/frame claim"
+      }
+    }
+  ],
+  "final_disposition": {
+    "synthetic_policy": "24 assertions, zero failures, checked pass with zero warnings",
+    "unchanged_regression": "94 assertions, zero failures, checked failure: one ObjectDB Node leaked at exit",
+    "full_app": "not run",
+    "gpu_or_presentation_measurement": "not run",
+    "early_run_limit": "run 1 invalid FSR2 fixture Compatibility warning corrected in run 2; per-run XDG isolation added in run 4; formatter example corrected in run 3"
+  }
+}

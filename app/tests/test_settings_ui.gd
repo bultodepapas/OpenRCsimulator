@@ -10,6 +10,14 @@ const AppRoot := preload("res://app_root.gd")
 const PREFS := "user://test_settings_ui_display.cfg"
 
 
+class CountingGraphicsSettings extends SettingsScreen:
+	var reports := 0
+
+	func _automatic_graphics_text() -> String:
+		reports += 1
+		return super._automatic_graphics_text()
+
+
 class PendingPreviewSettings extends SettingsScreen:
 	var clock_msec := 1000
 	var preview_ready := false
@@ -114,7 +122,7 @@ func _run() -> void:
 	_clean()
 	store = DisplayPreferences.new(PREFS)
 
-	var default_settings := SettingsScreen.new(store, "en")
+	var default_settings := CountingGraphicsSettings.new(store, "en")
 	test_viewport.add_child(default_settings)
 	await process_frame
 	await process_frame
@@ -221,7 +229,21 @@ func _run() -> void:
 		and AudioServer.get_bus_volume_db(master_bus) == 0.0 and not AudioServer.is_bus_mute(master_bus))
 	test_viewport.size_2d_override = Vector2i(960, 540)
 	test_viewport.size_2d_override_stretch = true
-	default_settings._refresh_graphics_info()
+	default_settings._show_category(0)
+	var reports := default_settings.reports
+	default_settings._process(0.5)
+	_check("Display skips the hidden Graphics report", default_settings.reports == reports)
+	default_settings._show_category(3)
+	_check("opening Graphics refreshes immediately", default_settings.reports == reports + 1)
+	reports = default_settings.reports
+	default_settings._process(0.5)
+	_check("visible Graphics still polls", default_settings.reports == reports + 1)
+	default_settings._surface.set_active(false)
+	reports = default_settings.reports
+	default_settings._process(0.5)
+	_check("covered Graphics skips the report", default_settings.reports == reports)
+	default_settings._surface.set_active(true)
+	_check("uncovering Graphics refreshes immediately", default_settings.reports == reports + 1)
 	_check("graphics dimensions use viewport pixels rather than logical canvas units",
 		test_viewport.get_visible_rect().size == Vector2(960, 540)
 		and default_settings._graphics_info.text.contains("Estimated 3D input: 1920 × 1080 → Output: 1920 × 1080"))

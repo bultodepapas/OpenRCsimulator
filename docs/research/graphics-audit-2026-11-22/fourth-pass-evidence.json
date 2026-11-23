@@ -1,0 +1,324 @@
+{
+  "schema": "openrc-graphics-audit-fourth-pass-v1",
+  "observed_utc": "2026-11-22T16:32:38Z",
+  "source": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "prior_published_audit": "b0f0bd17fdc2e2e2944d2cda6765c06bc31f6ac9",
+  "core_ci": {
+    "id": 45026329656,
+    "status": "completed",
+    "conclusion": "success",
+    "sha": "7940a4081e10994f34c858c4acac3d7a1a271464",
+    "updated_at": "2026-11-22T16:18:32Z",
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656",
+    "job_counts": {
+      "success": 23,
+      "skipped": 5
+    },
+    "total_count": 28,
+    "jobs": [
+      {
+        "id": 137220048365,
+        "name": "CI selection and release preflight",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:13:18Z",
+        "completed_at": "2026-11-22T13:16:56Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137220048365"
+      },
+      {
+        "id": 137220049471,
+        "name": "Publication source rebind evidence",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-22T13:13:16Z",
+        "completed_at": "2026-11-22T13:13:15Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137220049471"
+      },
+      {
+        "id": 137221016725,
+        "name": "three.js prototype (archived bake-off build)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:59Z",
+        "completed_at": "2026-11-22T13:19:29Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016725"
+      },
+      {
+        "id": 137221016741,
+        "name": "RC native Linux build",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:57Z",
+        "completed_at": "2026-11-22T13:19:20Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016741"
+      },
+      {
+        "id": 137221016746,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:37:08Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016746"
+      },
+      {
+        "id": 137221016754,
+        "name": "RC native Windows build",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:25:37Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016754"
+      },
+      {
+        "id": 137221016766,
+        "name": "Website source and download checks",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:19:48Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016766"
+      },
+      {
+        "id": 137221016780,
+        "name": "Godot visual captures",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T16:15:53Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016780"
+      },
+      {
+        "id": 137221016786,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:41:27Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016786"
+      },
+      {
+        "id": 137221016790,
+        "name": "Godot app (units 7)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:48:35Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016790"
+      },
+      {
+        "id": 137221016805,
+        "name": "Godot app (units 1)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:44:00Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016805"
+      },
+      {
+        "id": 137221016818,
+        "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:57Z",
+        "completed_at": "2026-11-22T14:02:58Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016818"
+      },
+      {
+        "id": 137221016827,
+        "name": "Godot app (integration 0)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:57Z",
+        "completed_at": "2026-11-22T14:42:15Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016827"
+      },
+      {
+        "id": 137221016847,
+        "name": "Godot app (units 6)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:41:10Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016847"
+      },
+      {
+        "id": 137221016850,
+        "name": "Godot app (units 3)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:42:14Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016850"
+      },
+      {
+        "id": 137221016851,
+        "name": "Godot app (units 5)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:46:08Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016851"
+      },
+      {
+        "id": 137221016869,
+        "name": "Godot app (units 4)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:43:58Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016869"
+      },
+      {
+        "id": 137221016881,
+        "name": "Godot app (units 0)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:40:15Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016881"
+      },
+      {
+        "id": 137221016906,
+        "name": "Godot app (units 2)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:16:58Z",
+        "completed_at": "2026-11-22T13:41:44Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221016906"
+      },
+      {
+        "id": 137221018080,
+        "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-22T13:16:56Z",
+        "completed_at": "2026-11-22T13:16:56Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221018080"
+      },
+      {
+        "id": 137221018423,
+        "name": "Visual group shadow (${{ matrix.group }})",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-22T13:16:56Z",
+        "completed_at": "2026-11-22T13:16:56Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137221018423"
+      },
+      {
+        "id": 137223379126,
+        "name": "RC native production checks (linux)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:25:39Z",
+        "completed_at": "2026-11-22T13:36:16Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137223379126"
+      },
+      {
+        "id": 137223379135,
+        "name": "RC native production checks (windows)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:25:39Z",
+        "completed_at": "2026-11-22T13:39:27Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137223379135"
+      },
+      {
+        "id": 137227592196,
+        "name": "Release builds (Windows, Linux, macOS)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T13:41:30Z",
+        "completed_at": "2026-11-22T14:08:33Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137227592196"
+      },
+      {
+        "id": 137234927072,
+        "name": "NK-4 Windows package qualification",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T14:08:34Z",
+        "completed_at": "2026-11-22T14:20:34Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137234927072"
+      },
+      {
+        "id": 137270886435,
+        "name": "CI required",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T16:15:56Z",
+        "completed_at": "2026-11-22T16:18:31Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137270886435"
+      },
+      {
+        "id": 137270888477,
+        "name": "Visual group shadow comparison",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-22T16:15:54Z",
+        "completed_at": "2026-11-22T16:15:53Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137270888477"
+      },
+      {
+        "id": 137271663644,
+        "name": "GitHub release (v* tags)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-22T16:18:32Z",
+        "completed_at": "2026-11-22T16:18:32Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45026329656/job/137271663644"
+      }
+    ]
+  },
+  "qualification": "GitHub run and latest-attempt job status only; source correctness/build/visual workflow success does not establish device FPS. Artifacts were not redownloaded or adjudicated in this pass.",
+  "delegation": {
+    "requested_profile": "gpt-6.1-terra",
+    "requested_reasoning": "max",
+    "effective_runtime_settings": "unverified",
+    "helpers_launch_engine": false
+  },
+  "component_evidence": "rig-sampler-evidence.json",
+  "production_optimization_implemented": false,
+  "latest_main_observation": {
+    "observed_utc": "2026-11-22T16:43:35Z",
+    "sha": "c20a074ded808c650b56cb19495d1a42fd12d877",
+    "previous_main": "7940a4081e10994f34c858c4acac3d7a1a271464",
+    "commits_ahead": 1,
+    "changed_paths": [
+      "README.md",
+      "site/ar.html",
+      "site/content.js",
+      "site/de.html",
+      "site/en.html",
+      "site/fr.html",
+      "site/index.html",
+      "site/it.html",
+      "site/ja.html",
+      "site/ko.html",
+      "site/locales/ar.json",
+      "site/locales/de.json",
+      "site/locales/fr.json",
+      "site/locales/it.json",
+      "site/locales/ja.json",
+      "site/locales/ko.json",
+      "site/locales/pt.json",
+      "site/locales/ru.json",
+      "site/locales/zh-Hans.json",
+      "site/pt.html",
+      "site/ru.html",
+      "site/zh-Hans.html"
+    ],
+    "scope": "README and release/download website only; simulator, tools, native sources and workflows unchanged from audited source",
+    "runs": [
+      {
+        "id": 45044228684,
+        "name": "CI",
+        "status": "in_progress",
+        "conclusion": null,
+        "sha": "c20a074ded808c650b56cb19495d1a42fd12d877",
+        "updated_at": "2026-11-22T16:42:35Z",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45044228684"
+      }
+    ]
+  }
+}

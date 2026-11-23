@@ -1,0 +1,703 @@
+{
+  "schema": 1,
+  "audit_pass": 5,
+  "observed_at_utc": "2026-11-22T17:12:40.108267+00:00",
+  "main_sha": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+  "local_merge_sha": "e8ad065c4ff0748e2a5d5c02a30c1c6734150dfd",
+  "previous_published_audit_sha": "0610f99b184386e378dff5190fa741f9c18c99f1",
+  "method": "Read pinned Git blobs; parse PNG IHDR and GLB JSON/accessor counts; parse the declared action records; calculate logical payloads from pinned source constants. No engine/import, code execution of the application, GPU capture, hardware performance run or production optimization.",
+  "limitations": [
+    "Source lengths are not allocations, resident bytes, upload traffic or draw counts.",
+    "Conditional operation counts are not timings or FPS gains.",
+    "No current-source platform qualification was performed.",
+    "Texture block layouts are hypothetical alternatives; actual platform formats are unobserved.",
+    "GLB source counts do not measure imported or selected LODs."
+  ],
+  "textures": [
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fin.png",
+      "width": 2048,
+      "height": 2048,
+      "source_bit_depth": 8,
+      "png_color_type": 2,
+      "encoded_source_bytes": 112885,
+      "source_sha256": "2a5ea2a7ffbe0f88c77fa490cf8080bef864a22446ae762d24146a6690d19368",
+      "base_texels": 4194304,
+      "mathematical_full_chain_texels": 5592405,
+      "hypothetical_4x4_8_byte_blocks_full_chain": 2796216,
+      "hypothetical_4x4_16_byte_blocks_full_chain": 5592432,
+      "import_policy": {
+        "compress/mode": "2",
+        "mipmaps/generate": "true"
+      }
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
+      "width": 4096,
+      "height": 4096,
+      "source_bit_depth": 8,
+      "png_color_type": 2,
+      "encoded_source_bytes": 816140,
+      "source_sha256": "809eb00ef703064ecd49a334ded4dbf1a3b7a9a81092360c4079b7ec44c8bd1b",
+      "base_texels": 16777216,
+      "mathematical_full_chain_texels": 22369621,
+      "hypothetical_4x4_8_byte_blocks_full_chain": 11184824,
+      "hypothetical_4x4_16_byte_blocks_full_chain": 22369648,
+      "import_policy": {
+        "compress/mode": "2",
+        "mipmaps/generate": "true"
+      }
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_stab.png",
+      "width": 2048,
+      "height": 2048,
+      "source_bit_depth": 8,
+      "png_color_type": 2,
+      "encoded_source_bytes": 15952,
+      "source_sha256": "bce0d9d78409a0d081399587c0670943b15f1cd89f7a5fc9c87763484b5f96dd",
+      "base_texels": 4194304,
+      "mathematical_full_chain_texels": 5592405,
+      "hypothetical_4x4_8_byte_blocks_full_chain": 2796216,
+      "hypothetical_4x4_16_byte_blocks_full_chain": 5592432,
+      "import_policy": {
+        "compress/mode": "2",
+        "mipmaps/generate": "true"
+      }
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_wing.png",
+      "width": 4096,
+      "height": 4096,
+      "source_bit_depth": 8,
+      "png_color_type": 2,
+      "encoded_source_bytes": 458574,
+      "source_sha256": "8ce422a23db961bfe5457ee7f40ce14c0d73014770a382674231ccb566d572f0",
+      "base_texels": 16777216,
+      "mathematical_full_chain_texels": 22369621,
+      "hypothetical_4x4_8_byte_blocks_full_chain": 11184824,
+      "hypothetical_4x4_16_byte_blocks_full_chain": 22369648,
+      "import_policy": {
+        "compress/mode": "2",
+        "mipmaps/generate": "true"
+      }
+    }
+  ],
+  "texture_totals": {
+    "encoded_source_bytes": 1403551,
+    "base_texels": 41943040,
+    "mathematical_full_chain_texels": 55924052,
+    "hypothetical_4x4_8_byte_blocks_full_chain": 27962080,
+    "hypothetical_4x4_16_byte_blocks_full_chain": 55924160
+  },
+  "jeti_lod_nodes": [
+    {
+      "node": "fuselage_core",
+      "requested_lod_bias": 16.0,
+      "primitives": [
+        {
+          "mode": 4,
+          "position_entries": 16729,
+          "indices": 95856,
+          "base_source_triangles": 31952
+        },
+        {
+          "mode": 4,
+          "position_entries": 141,
+          "indices": 141,
+          "base_source_triangles": 47
+        },
+        {
+          "mode": 4,
+          "position_entries": 1476,
+          "indices": 6888,
+          "base_source_triangles": 2296
+        }
+      ],
+      "base_source_triangles": 34295,
+      "position_entries": 18346
+    },
+    {
+      "node": "vertical_tail_fixed",
+      "requested_lod_bias": 16.0,
+      "primitives": [
+        {
+          "mode": 4,
+          "position_entries": 1284,
+          "indices": 7497,
+          "base_source_triangles": 2499
+        },
+        {
+          "mode": 4,
+          "position_entries": 748,
+          "indices": 2040,
+          "base_source_triangles": 680
+        },
+        {
+          "mode": 4,
+          "position_entries": 128,
+          "indices": 360,
+          "base_source_triangles": 120
+        },
+        {
+          "mode": 4,
+          "position_entries": 432,
+          "indices": 648,
+          "base_source_triangles": 216
+        }
+      ],
+      "base_source_triangles": 3515,
+      "position_entries": 2592
+    }
+  ],
+  "jeti_base_source_triangles_total": 37810,
+  "jeti_position_entries_total": 20938,
+  "complete_action_map": {
+    "declared_actions": 37,
+    "contexts": {
+      "menu": 7,
+      "both": 1,
+      "flight": 29
+    },
+    "metadata_duplicate_calls_per_qualifying_event": 37,
+    "flight_both_binding_duplicate_calls_per_qualifying_event": 30,
+    "conditions": "Initialized controller service, no ground activity, qualifying non-echo key or joy event, complete map; other routing may do more."
+  },
+  "quad_keyboard_arithmetic": {
+    "unused_builtin_axis_key_calls_per_connected_live_sample": 8,
+    "if_callbacks_per_second": 240,
+    "conditional_calls_per_second": 1920,
+    "custom_readers_excluded": true
+  },
+  "fixed_wing_throttle_arithmetic": {
+    "normalizations_per_qualifying_callback": 3,
+    "if_callbacks_per_second": 240,
+    "conditional_normalizations_per_second": 720,
+    "conditions": "Connected configured armed absolute non-gamepad throttle, unchanged valid inputs; no hold/calibration; preserve all intervening callbacks."
+  },
+  "rain_tiers": [
+    {
+      "tier": "low",
+      "declared_streaks": 2000,
+      "instance_capacity": 8000,
+      "final_float32_elements": 96000,
+      "final_logical_bytes": 384000,
+      "largest_doubling_float32_elements": 98304,
+      "largest_doubling_logical_bytes": 393216
+    },
+    {
+      "tier": "medium",
+      "declared_streaks": 5000,
+      "instance_capacity": 20000,
+      "final_float32_elements": 240000,
+      "final_logical_bytes": 960000,
+      "largest_doubling_float32_elements": 393216,
+      "largest_doubling_logical_bytes": 1572864
+    },
+    {
+      "tier": "high",
+      "declared_streaks": 9000,
+      "instance_capacity": 36000,
+      "final_float32_elements": 432000,
+      "final_logical_bytes": 1728000,
+      "largest_doubling_float32_elements": 786432,
+      "largest_doubling_logical_bytes": 3145728
+    },
+    {
+      "tier": "ultra",
+      "declared_streaks": 14000,
+      "instance_capacity": 56000,
+      "final_float32_elements": 672000,
+      "final_logical_bytes": 2688000,
+      "largest_doubling_float32_elements": 786432,
+      "largest_doubling_logical_bytes": 3145728
+    }
+  ],
+  "source_manifest": [
+    {
+      "path": "app/app_root.gd",
+      "git_blob": "6eb0621dbc90bed07a83b540d6ec761020216cba",
+      "sha256": "ab6a1cf7939cd2975fb0219f84f7d9f296048a8903fe1ccac232054cff49da6a",
+      "bytes": 262751
+    },
+    {
+      "path": "app/app_state/display_preferences.gd",
+      "git_blob": "48297e68cc7ffd9793241ce2895b4988c20eba5f",
+      "sha256": "fc24c3af034bb0ae8beb7baa9406fc538c3e06a05db4a75c9d7672231e79f0a6",
+      "bytes": 28790
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb",
+      "git_blob": "cd1f969638f1a312a225632f814cc764cc22c4fc",
+      "sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+      "bytes": 9928440
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb.import",
+      "git_blob": "7e3b1f3742edf2eb65b2e1301dd20cf97f767ec2",
+      "sha256": "129656a31199c912571b0e4ed61084c718f1faca96aee7a36621dec29b28a56e",
+      "bytes": 1221
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fin.png",
+      "git_blob": "4c95d5b5b139e96540105e5051966fe0d4b7bd41",
+      "sha256": "2a5ea2a7ffbe0f88c77fa490cf8080bef864a22446ae762d24146a6690d19368",
+      "bytes": 112885
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fin.png.import",
+      "git_blob": "3b9c9b6663470601bb167db461f6622e1448774e",
+      "sha256": "9907983b494c697cbfc45fbced6c2c171721d7018a61933d29415bb50e53e571",
+      "bytes": 1325
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
+      "git_blob": "89140c5047bab98e0095623225aee3b1ad6483fc",
+      "sha256": "809eb00ef703064ecd49a334ded4dbf1a3b7a9a81092360c4079b7ec44c8bd1b",
+      "bytes": 816140
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png.import",
+      "git_blob": "d4bd86fc0afb9007cb8907c9530cf492983e32f4",
+      "sha256": "c731451ed4dba3517d7ee61b512ee487770281fbfa0d24bd272dab1d4d6a542e",
+      "bytes": 1351
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_stab.png",
+      "git_blob": "61ae8f3a7bd5c5b88bf7896795e2a1350ad56654",
+      "sha256": "bce0d9d78409a0d081399587c0670943b15f1cd89f7a5fc9c87763484b5f96dd",
+      "bytes": 15952
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_stab.png.import",
+      "git_blob": "38a65bc2c2e0cfa245c8bef6b66cc1591309b4f9",
+      "sha256": "fcbc697d9877ccd84a9332f491736b4d49b19c50e1f45af0ab599ee4503ed285",
+      "bytes": 1331
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_wing.png",
+      "git_blob": "8f3e51404b6cb7e37eac6de19c212fad32ef7a45",
+      "sha256": "8ce422a23db961bfe5457ee7f40ce14c0d73014770a382674231ccb566d572f0",
+      "bytes": 458574
+    },
+    {
+      "path": "app/assets/vehicle-paints/avanti-s-a200/jeti_ruby_wing.png.import",
+      "git_blob": "a9b7ee619ec1b3b38ca5971a22cf79967961abee",
+      "sha256": "bc440c50c5ad05d9d3e44daa32e2e06469c68488acdcbe733f6be73e2accc5a7",
+      "bytes": 1330
+    },
+    {
+      "path": "app/audio/flight_audio.gd",
+      "git_blob": "690a9428d2c47d225b9c1eaaab855f0dfc869362",
+      "sha256": "6b7543e6900535160738e649eb95ec510e5f2a7bfc2e7726415267a0ac3a2ee7",
+      "bytes": 24356
+    },
+    {
+      "path": "app/audio/glow_audio_pump.gd",
+      "git_blob": "75441a8ab1d1f4aeab1eac73b3d11dfb1861ee39",
+      "sha256": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+      "bytes": 11564
+    },
+    {
+      "path": "app/audio/mechanical_audio.gd",
+      "git_blob": "80f635ddd4e761100e164048ae3fe010d73c7d6d",
+      "sha256": "a7fd40a6c820d0eca6cd00e636eb06e009a197d667576e5782f5351b6385080c",
+      "bytes": 41341
+    },
+    {
+      "path": "app/audio/mechanical_motion.gd",
+      "git_blob": "33277c9569f302b76344b36fb433d5c4936a6496",
+      "sha256": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+      "bytes": 10534
+    },
+    {
+      "path": "app/audio/soundscape.gd",
+      "git_blob": "57262a6ff9860ed8ef3b17533cb8e6b8fc1e646d",
+      "sha256": "e0b4383575c18ce3f44d25a84b3ee9ff9f8c0fb83f7bc4feab1001a650f81642",
+      "bytes": 32781
+    },
+    {
+      "path": "app/audio/soundscape_model.gd",
+      "git_blob": "8275e484b3b342c8f6ce134c65e06527dfe2f516",
+      "sha256": "7735a18174a3e9e196d2189802053f46b0a9a82c9ecf7459ef6828a59f30cdbe",
+      "bytes": 11828
+    },
+    {
+      "path": "app/data/vehicle_paints.json",
+      "git_blob": "280f2dfb9da5d7a56b027251d96285eff655c4df",
+      "sha256": "697da939eedcff208c2c45b7b3454f9d6644edf7f9f363e3993e9561741d8962",
+      "bytes": 59081
+    },
+    {
+      "path": "app/input/controller_actions.gd",
+      "git_blob": "abbb36c6b386cbca983d276b431eef4eae1029ca",
+      "sha256": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+      "bytes": 38928
+    },
+    {
+      "path": "app/input/controller_profile.gd",
+      "git_blob": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+      "sha256": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+      "bytes": 42962
+    },
+    {
+      "path": "app/input/keyboard.gd",
+      "git_blob": "6d3681b43cd6e302172d28107c1c6340aed4d248",
+      "sha256": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+      "bytes": 489
+    },
+    {
+      "path": "app/input/multirotor_input.gd",
+      "git_blob": "4fee704620e3613a9057d23f2b2cd99dacbbe807",
+      "sha256": "3a2b50feede35908f2f5a69f42ec66a008b2cf2277b6a409526bac5c129e5d6f",
+      "bytes": 31035
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "git_blob": "bc35edb209238bc0ba313b42ea799b811151b459",
+      "sha256": "261d5df5259b4b142538e61325a42a774d134a405355144ebaec91e60bbc8e46",
+      "bytes": 29549
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob": "4e06225d6936a44e8efdfce7f1f1debf21353458",
+      "sha256": "7b103d2a435ccf59c0d4e97e8a219bbe167f73652a144d76c10a574fbdb6b2d2",
+      "bytes": 4350
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "git_blob": "02e0f0dbf793e8edfae15e8e7133794fece3a2f2",
+      "sha256": "3b5daad28aee7e745da9f300e18787db1c8619f843eb83e5ba2f0d0a1d7df9ad",
+      "bytes": 24997
+    },
+    {
+      "path": "app/render/frame_generation_policy.gd",
+      "git_blob": "04e313a56814abbfdbd9e8a19d97fb9866e49081",
+      "sha256": "dc1d7736d449bc77280b04d348df91403d4267a8328102faf51b604cc0edc9fc",
+      "bytes": 30644
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc",
+      "git_blob": "433e964b11dc8c84d25a49375df3467505fe48a5",
+      "sha256": "fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127",
+      "bytes": 4882
+    },
+    {
+      "path": "app/render/lens/lens_settings.gd",
+      "git_blob": "3892514e6216788cb36e521a98cecd5229c7daf0",
+      "sha256": "1ee58936d070be5e4d27d2dd86f04df1fb4c0b7ca9722fd701bef30ec137c1aa",
+      "bytes": 5151
+    },
+    {
+      "path": "app/render/lens/lens_stack.gd",
+      "git_blob": "91de00fdda43b1d118db19ca9a44347c30175837",
+      "sha256": "440ac7d69eca7b6320d2df3a9a51d844a7d7c4eca49b2548f6b573f32691118f",
+      "bytes": 50192
+    },
+    {
+      "path": "app/render/lens/rain_model.gd",
+      "git_blob": "3ca73bf99a6d493672a63959b40f1de803b5c9ed",
+      "sha256": "bb0c303fbe50bab4b510dec759cecbd2d2287c7b54cf1e529d37cb88fe4efc40",
+      "bytes": 4356
+    },
+    {
+      "path": "app/render/lens/rain_streaks.gdshader",
+      "git_blob": "bc811ab27dec03f0789283449a43f6b90ef0b9b8",
+      "sha256": "f8c384e073ee2e862cada8188915984b6889d67b4df3fd553340f71decf9994c",
+      "bytes": 3529
+    },
+    {
+      "path": "app/render/scene_detail.gd",
+      "git_blob": "27e9e3dfb9d4164a123bbc59c048673a4a548746",
+      "sha256": "8d91833bef1c71f96a4b17cc40db020cda93cc19dd2b441451b2c652b23e2765",
+      "bytes": 8193
+    },
+    {
+      "path": "app/render/vehicle_paint.gd",
+      "git_blob": "5c30f1d9996f18037e24da4ff5497ef85712eec6",
+      "sha256": "4dc0a531d17e2b2f54285cc3848f94f301feb68d9bc3aefba1f74c28816a77c9",
+      "bytes": 14306
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "git_blob": "481b67b5766d2c93a8e47d24d68147f86ae08eb7",
+      "sha256": "77db7fa05e24ca7e3749885000ed32986fc87cf8ee8017b2480d75ef068a014b",
+      "bytes": 342011
+    },
+    {
+      "path": "app/ui/home_preview_resources.gd",
+      "git_blob": "6c1ede308ef8d98bfe11ea1c0e94d6dba11a9353",
+      "sha256": "73c9f9544fd9394245bd6911a9ee45ee7a553f87842d637ac29f9281d788287e",
+      "bytes": 6334
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "git_blob": "30a29f60b57e031a01641eb4ea1f5b22079b59ca",
+      "sha256": "36a908f1dfb0d14c853440fffd9f1b116747d715e3ea2dcde42163828dfa6241",
+      "bytes": 28344
+    },
+    {
+      "path": "docs/plans/apple-silicon-performance.md",
+      "git_blob": "57551845baa3ecd08f3edf27827bfc421b6db43d",
+      "sha256": "7563e43ef23b3336155d816bba779ef660d2c08fd431bd72369842a58a795076",
+      "bytes": 122206
+    },
+    {
+      "path": "docs/plans/lens-screen-effects.md",
+      "git_blob": "28b7a424f5479fe0d84eb0baa7a7f9d9f2314bb1",
+      "sha256": "657209664823d3ffdb5bbc9a5d41b41117ef82db682496b9859b487627f0f40d",
+      "bytes": 67953
+    },
+    {
+      "path": "docs/research/god-test/2026-11-22-linux-uhd630-comparison.md",
+      "git_blob": "4a8f29c9f4a9bf323230e1ca3243ebf76d5a1d1e",
+      "sha256": "32b2aae0ec9fb4ac196563d7525c30bba2d07c50163f9af9a7923170e712ffe0",
+      "bytes": 7555
+    },
+    {
+      "path": "tools/godtest/runner.py",
+      "git_blob": "a7b5df903b0bfa4f7222cdc7069309ce99756bed",
+      "sha256": "513765f714a823fcb164a1351d959db4a366d5ffc3c9af5fc1b93dcec55bc4b3",
+      "bytes": 29210
+    },
+    {
+      "path": "tools/lens/bench.py",
+      "git_blob": "eb476fe27031df3a751757cd8aab53b26a92fd2c",
+      "sha256": "9d5e3ff2c1f91f7960a2613c71260df33829ff9534d4977a7fe3da27e51a4308",
+      "bytes": 3442
+    }
+  ],
+  "subagents": {
+    "requested_profile": "gpt-6.1-terra",
+    "requested_reasoning_effort": "max",
+    "effective_runtime_model_effort": "unverified",
+    "independent_reviews": [
+      "assets investigator challenged input and root lens",
+      "input investigator challenged audio and terrain novelty",
+      "audio investigator challenged root lens and dry-path shortcut"
+    ]
+  },
+  "new_findings": [
+    "V01",
+    "V02",
+    "V03",
+    "V04",
+    "V05",
+    "V06",
+    "V07",
+    "V08",
+    "V09"
+  ],
+  "not_counted_as_new": [
+    "glow worker full-queue snapshot duplication: existing DT-MAC-04b/08 + AUD",
+    "terrain pilot anchor: existing DT-MAC-06b",
+    "240 Hz / 12-step slow-motion ceiling: existing N8"
+  ],
+  "rejected_shortcuts": [
+    "skip dry wind/streak travel without an equivalent phase integral",
+    "reuse raw throttle across throttle cut/rate callbacks unconditionally",
+    "replace propagation search with binary search or fewer refinements without parity",
+    "eagerly allocate full rain tier on every dry flight"
+  ],
+  "verification": {
+    "status": "passed",
+    "checked_at_utc": "2026-11-22T17:21:15.411224+00:00",
+    "changed_files": 9,
+    "markdown_files": 8,
+    "added_local_links_checked": 27,
+    "pinned_github_source_links_checked": 41,
+    "source_manifest_entries_verified": 42,
+    "runtime_sources_equal_main": true,
+    "git_diff_check_exit": 0,
+    "independent_final_review": "accepted; lens pause, engine cadence, warm-up submission wording and prior-work novelty corrections incorporated",
+    "application_test_suites_run": false,
+    "engine_or_hardware_performance_run": false,
+    "errors": []
+  },
+  "github_observation": {
+    "main_ref_observed_at_utc": "2026-11-22 17:11:50 UTC",
+    "main_sha": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+    "workflow_runs_observed_at_utc": "2026-11-22 17:11:50 UTC",
+    "workflow_runs": [
+      {
+        "id": 45047913046,
+        "name": "Telemetry receiver health",
+        "head_sha": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "head_branch": "main",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-22T17:10:13Z",
+        "updated_at": "2026-11-22T17:10:20Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45047913046"
+      },
+      {
+        "id": 45046440057,
+        "name": "Telemetry contracts",
+        "head_sha": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "head_branch": "main",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-22T16:54:41Z",
+        "updated_at": "2026-11-22T16:55:21Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440057"
+      },
+      {
+        "id": 45046440150,
+        "name": "CI",
+        "head_sha": "0f859b5f358f4807877ec8bd7fe8009bc3856d3f",
+        "head_branch": "main",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "created_at": "2026-11-22T16:54:41Z",
+        "updated_at": "2026-11-22T17:06:01Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440150"
+      }
+    ],
+    "core_job_observed_at_utc": "2026-11-22 17:16:13 UTC",
+    "core_run_id": 45046440150,
+    "core_jobs": [
+      {
+        "id": 137281982216,
+        "name": "CI selection and release preflight",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137281983512,
+        "name": "Publication source rebind evidence",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 137283221736,
+        "name": "RC native Linux build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137283221769,
+        "name": "RC native Windows build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137283221797,
+        "name": "three.js prototype (archived bake-off build)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137283221820,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221823,
+        "name": "Godot visual captures",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221850,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221877,
+        "name": "Website source and download checks",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 137283221879,
+        "name": "Godot app (units 1)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221906,
+        "name": "Godot app (units 2)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221923,
+        "name": "Godot app (units 6)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221929,
+        "name": "Godot app (integration 0)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221935,
+        "name": "Godot app (units 7)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221941,
+        "name": "Godot app (units 3)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221945,
+        "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221963,
+        "name": "Godot app (units 5)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221964,
+        "name": "Godot app (units 0)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283221977,
+        "name": "Godot app (units 4)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137283223328,
+        "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 137283223686,
+        "name": "Visual group shadow (${{ matrix.group }})",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "id": 137285204862,
+        "name": "RC native production checks (windows)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 137285204971,
+        "name": "RC native production checks (linux)",
+        "status": "in_progress",
+        "conclusion": null
+      }
+    ],
+    "limits": "API state observation only, not full log/artifact adjudication or target-hardware FPS qualification. Scheduled health and telemetry contracts are not graphics qualification."
+  }
+}
