@@ -261,3 +261,12 @@ physics-source and version mutations, and passed again after restoration.
 The trim, unrounded and rounded derivatives, sensitivity rows and generated
 provenance matched across all six reports. The [receipt](2026-11-23-release-v034-qualification.json) binds
 the reports and the checked run.
+
+### 2026-11-23 v0.3.5 release renewal
+
+The hosted Linux check reconstructed the v0.3.4 tag and the v0.3.5 candidate with
+pinned Godot 4.8 beta2. The only change to the 152 qualified inputs was the
+project version. Both guards passed after renewal and rejected separate source
+and version mutations. The derivatives, trim, sensitivity and provenance
+matched across all six reports. The [receipt](2026-11-23-release-v035-qualification.json) records the
+run and aggregate `ad4b79e1b0b3e868c2da770b09ba6e98284abe4c011a047092bf041ea54058b0`.
