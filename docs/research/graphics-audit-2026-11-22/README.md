@@ -1,5 +1,15 @@
 # Graphics and FPS audit — current-main follow-up, 22 November 2026
 
+## X01–X03 follow-up from `caaf80aee`
+
+| Finding | Change and verification |
+| --- | --- |
+| [X01](seventh-pass-rendering.md#x01--the-default-planted-hedge-is-one-long-multimesh) | The hedge builder publishes its own placement records while filling the existing MultiMesh. This removes one deep dictionary copy per card, including 768, 906 and 1,023 copies per stock planted build at Low, Balanced and High. The hedge test compares every metadata field in layout order and the countryside test checks the stock batch. Spatial partitioning still needs a matched GPU comparison. |
+| [X02](seventh-pass-native.md#x02--a-drone-race-wrapper-calculates-speed-without-a-consumer) | The race wrapper computes world speed only for START from IDLE, FINISHED or ABORTED. The ordinary 240 Hz path avoids one rotation and norm per accepted sample. The existing calculation stays at the pad gate, with coverage for the strict threshold and its adjacent lower float64 value. Race session, replay and golden checks passed in Linux headless, with endpoint chord qualification unchanged. |
+| [X03](seventh-pass-native.md#x03--duplicate-interpolation-inside-an-already-native-battery-stage) | A standalone Windows check found different OCV bits in 4,739 of 70,007 balanced-pack grid evaluations when substituting the average-cell sample for the weak-cell sample. The native implementation keeps both SOC evaluations. |
+
+The checked Linux run used Godot 4.8 beta2. The editor import completed with eight OBJ ambient-material warnings, and all 12 application scripts passed without errors or warnings. The companion rebind matched all 25,929 CSV rows across nine retained tapes and renewed the source identity at `efe1814f7`. The source reductions have no measured frame-time result. [Checked run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45194177148) · [Companion receipt](../ai-companions/AFC-02/rebinds/2026-11-23-c06bc9c8-to-54bb51ae.json).
+
 ## Implementation follow-up from `dc59add8e`
 
 The [sixth pass](sixth-pass.md#remote-repairs-and-integration-boundary) recorded the I01 companion solver mismatch at `ee46d96b7`. The final solver qualification below resolves I01. All eleven [Linux application checks](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45073693572) passed with the renewed profile.
