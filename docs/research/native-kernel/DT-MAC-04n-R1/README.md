@@ -95,3 +95,21 @@ and the telemetry Settings overflow in `test_ui_modal_responsive.gd`, fixed by
 
 - Physical M1 default-route run. On 2026-11-18 ANGEL was running another track's
   rendered campaign and ANGELA_AIR had 1.4 GiB free.
+
+## Club collision world (2026-11-22)
+
+On `graphics-audit` at `1858352ca`, the club generated 7,295 collision proxies.
+The portable world test and the hosted Mac domain guard both rejected the
+previous 6,139-proxy world. [Failing CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45097617517)
+
+| Measurement | Value |
+| --- | --- |
+| Hosted M1 stock world identity | `7e5fcff5098591708406da39142768107a594eac142b3862c2f684695876cc64` |
+| Linux quantized geometry fingerprint | `f020b4c86b7e98df77eacc2a35e2a95a3fc17a046e2cb9b5d719ac82abfd16a2` |
+
+The domain renewal in `8756d93e5` uses both observations and retains the
+custom-spawn refusal. On Linux the portable world test passed all 9 checks.
+The nine companion replays matched across all 25,929 CSV rows. The behavior
+manifest and profile checks also passed (39 and 95 checks).
+[Solver receipt](../../ai-companions/AFC-02/rebinds/2026-11-23-95d5d31f-to-c06bc9c8.json)
+and [qualification run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45101860898).
