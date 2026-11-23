@@ -351,8 +351,18 @@ func _configure_home() -> bool:
 	if not app.controllers.select_devices(-1, -1):
 		_fail("ordinary keyboard selection was refused")
 		return false
-	if not app.set_aircraft(str(config.aircraft)) or not app.set_landscape(str(config.landscape)) or not app.set_start_choice(str(config.start)):
-		_fail("Home refused aircraft, landscape or start; no fallback credited")
+	var landscape := str(config.landscape)
+	if not app.set_aircraft(str(config.aircraft)) or not app.set_landscape(landscape):
+		_fail("Home refused aircraft or landscape; no fallback credited")
+		return false
+	# Changing landscapes can rebuild the Home backdrop under the loading screen.
+	if not await _wait_home(true): return false
+	if app.landscape_id != landscape or not is_instance_valid(app.home_scene) \
+			or not app.home_scene.can_refresh_presentation(app.field_path, landscape):
+		_fail("Home did not build the requested landscape")
+		return false
+	if not app.set_start_choice(str(config.start)):
+		_fail("Home refused the requested start")
 		return false
 	var wind: Script = load("res://physics/wind_config.gd")
 	var weather_id := str(config.get("weather", "calm"))
@@ -760,13 +770,14 @@ func _observe_window_focus() -> bool:
 	return running
 
 
-func _wait_home() -> bool:
+func _wait_home(wait_for_rebuild: bool = false) -> bool:
 	var deadline := Time.get_ticks_usec() + int(float(config.get("phase_timeout_s", 180)) * 1000000)
 	while running:
 		var candidate: Node = get_tree().root.get_node_or_null("AppRoot")
 		if candidate != null and candidate.is_node_ready() and candidate.process_mode != Node.PROCESS_MODE_DISABLED:
 			app = candidate
-			if app.home != null and app.screens.is_top("home") and app.flight == null:
+			if app.home != null and app.screens.is_top("home") and app.flight == null and not app.home_build_pending \
+					and (not wait_for_rebuild or not app._home_rebuild_queued):
 				return true
 		if Time.get_ticks_usec() > deadline:
 			_fail("Home readiness deadline reached")

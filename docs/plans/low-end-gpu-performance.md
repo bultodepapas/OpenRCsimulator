@@ -1,12 +1,12 @@
 # Intel UHD 630 performance plan
 
-**Next action.** On one existing UHD 630, compare a warmed Home view on Green Paradise, Club Field and Green Paradise again. Repeat with the same aircraft airborne on both landscapes. Use the result to choose one change. The first deliverable is a comparison that explains where to spend engineering time.
+**Current evidence.** The Green → Club → Green screen on PRIMIS found higher Club frame times in both Home and native flight at fixed 75% scale. The grouped ground-material test improved the Home median and worsened its p99. A second Club flight in the same process had much shorter stalls at similar median cost. The next priority is L3 attribution across Fly and the opening flight view, with L2/L4 steady-rendering candidates tied to separate measurements. [PRIMIS measurements and limits](../research/god-test/2026-11-22-intel-green-club-screen.md)
 
 VQ-07h-A2-R1 owns this investigation. L0–L6 retain the external study's substep IDs. PT1h-R15 and GOD own measurement, VQ-06/UI own player settings, scenery/render owners own their materials, and UI-05/DT-11a own loading. The [Automatic graphics plan](automatic-graphics.md) owns shared policy. [External study at e23822431](https://github.com/bultodepapas/OpenRCsimulator/tree/e23822431/docs/research/god-test) · [Research and sources](../research/god-test/2026-11-22-intel-gpu-investigation.md)
 
 ## Starting point on main
 
-Reviewed 22 November 2026 against `f2f473a69`. The external investigation used earlier source revisions. Its Green/Club comparison and material experiments remain open.
+The external investigation used earlier source revisions. The PRIMIS Home screen used `bfbad6726`. Paired product acceptance remains open.
 
 | What we know | Consequence for the next run |
 | --- | --- |
