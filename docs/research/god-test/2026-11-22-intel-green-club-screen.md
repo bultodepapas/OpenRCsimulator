@@ -159,3 +159,59 @@ The R13 measurements timed the cloud cache's `get_image()` and observed successf
 Within the sampled steady circuit windows, median render-engine time on the Godot i915 client was 93.7% at the first 75% run and 94.3% at 67%, with 17 sample pairs per run. The restored 75% circuit lacks host samples. Device-wide and completed per-frame GPU timings remain unmeasured. The host-memory samples reached 1387 MiB available and 5121 MiB charged to the 6144 MiB container, including cache. No swap usage, limit hits, OOM events or cgroup CPU throttling appeared in the retained samples. Every experiment finished with the watchdog active.
 
 The Home and flight evidence supports keeping the 67% setting as a flight candidate and testing a focused parcel/photo material change for Home. Adoption requires three alternating pairs and visual checks. The leading opening-flight question is the first-use render or driver work around tick 391. The scoped masks and cloud readback instrumentation were restored. Raw intervals, cache logs, host counters, verification receipts and the private experiment scripts are retained under `U:/OpenRC-intel-matrix-20261123`.
+
+## 23 November · Which Club features cost the most?
+
+G3 changed one visual family at a time in an installed Club Field. The app inputs match `main` at `64920d74e`. PRIMIS used the pinned Godot 4.8 beta 2, Mesa 25.0.7, Compatibility/OpenGL on UHD 630, a 1920×1080 virtual output, Low detail, Native bilinear at 75%, and main MSAA, VSync and frame cap off. The Home preview used stock daytime Classic sky. The private probe preserved the field instance and camera inside each comparison. It held the Home render budget during the comparisons and restored it before exit.
+
+### Default Home view
+
+Each variant was bracketed by restored stock. Windows used an 8 s settle and 12 s of complete process intervals. Runtime readback verified the camera, viewport settings and active masks at both boundaries.
+
+| Visual change | Variant p50 ms | Variant p99 ms | p50 gain vs adjacent stock |
+| --- | ---: | ---: | ---: |
+| Replace rough-field shader with a flat lit material on the same mesh | 31.22 | 32.66 | **9.21 ms** |
+| Hide field treeline and imported tree batches | 36.44 | 72.27 | **3.78 ms** |
+| Zero the solar disc uniform | 37.55 | 38.74 | 2.85 ms |
+| Replace the sky background with a color | 38.68 | 40.34 | 1.76 ms |
+| Hide the directional sun light | 39.06 | 40.25 | 1.34 ms |
+| Zero visible clouds and hide the storm bank | 39.25 | 41.03 | 1.16 ms |
+| Hide both bird groups | 40.20 | 41.80 | 0.13 ms |
+| Hide and suspend the lake reflection probe | 40.47 | 41.52 | −0.07 ms |
+
+Stock p50 ranged from 40.19 to 40.44 ms. The terrain replacement cut the median by 22.8% and held the viewport's draw count at 360. It changes the visual result and screens the material as a whole. The 9.21 ms difference is larger than the earlier parcel/photo subset, which saved about 2.15 ms. Those measurements overlap. The tree test changed 360 draws to 347 and recorded five intervals above 50 ms. The probe selected the field treeline and children tagged as trees by the vegetation catalog. Hedges and other vegetation kept their original visibility.
+
+The i915 client counters support the ranking. Across three roughly 3 s intervals per Home arm, the sampled aggregate render-engine time divided by process frames was 37.7–37.8 ms for the controls around flat ground and 28.9 ms for flat ground. The tree comparison gave 37.5–37.6 ms for its controls and 34.0 ms with trees hidden. This estimates render-engine work over each sampled interval. Individual GPU frame completion remains unobserved.
+
+The disc switch can also change the source of the glare effect. Turning off the directional light changes the scene's lighting. The sky background comparison can affect its lighting and reflection contribution. Each timing is the net effect of that diagnostic state in this view. The lake's entire tested bounding box was behind the default camera.
+
+### Home view toward the lake
+
+The second lens kept the same camera position and turned it toward the lake. All nine tested lake-bounds points were in the frustum. The water mask removed one viewport draw. Stock p50 was 25.21–25.44 ms. Each variant had its own adjacent controls at the same pose.
+
+| Visual change | Variant p50 ms | Variant p99 ms | p50 gain vs adjacent stock |
+| --- | ---: | ---: | ---: |
+| Replace the sky background with a color | 22.48 | 23.96 | 2.94 ms |
+| Zero visible clouds and hide the storm bank | 23.31 | 24.22 | 2.10 ms |
+| Hide the water surface | 24.51 | 25.42 | 0.86 ms |
+| Hide field treeline and imported tree batches | 24.74 | 25.90 | 0.51 ms |
+| Hide both bird groups | 25.27 | 26.06 | 0.08 ms |
+| Hide and suspend the lake reflection probe | 25.30 | 26.24 | −0.02 ms |
+
+The lake basin and field were present in every arm. The reflection probe reported one refresh throughout the warmed windows. Its result covers a settled reflection. A weather change or a new capture has a separate cost. Cloud savings increased as the frame showed more sky. The sky, clouds and solar-disc measurements overlap.
+
+### Native pilot flight · trees and terrain
+
+Five circuits used one process, the airborne Ugly Stik, the pilot view, calm weather and Classic sky. Each cycle rebuilt the same Club scene. Both visual masks were applied after the flight was ready, checked at both ends of their respective circuit and restored before returning to Home. The native simulation ran at 240 Hz. The validated stream supplied 60 s of complete process intervals per cycle after a 10 s warmup. The earlier scale matrix used Clear sky and represents a separate workload.
+
+| Run order | p50 ms | p95 ms | p99 ms | Over 50 ms | Sim/wall |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Stock | 30.03 | 36.55 | 39.30 | 9 | 0.995 |
+| Trees hidden | 28.48 | 33.01 | 34.54 | 2 | 1.000 |
+| Stock restored | 30.12 | 36.66 | 38.13 | 4 | 1.000 |
+| Flat terrain material | 28.72 | 33.89 | 35.66 | 1 | 1.000 |
+| Stock restored | 30.05 | 36.58 | 38.12 | 4 | 1.000 |
+
+In flight, the trees and ground masks reduced p95 by 3.60 ms and 2.73 ms, respectively, relative to the average of their adjacent controls. The terrain shader is the largest measured Home cost and the tree family is the larger of the two flight leads. Prioritize simpler base-grass shading for a terrain detail setting. For trees, split field cards from imported batches before selecting a reduction that preserves collision cues. These masks change the visual result. Adoption and Automatic selection require repeated paired measurements and image, readability and cue checks.
+
+Both sessions completed with clean exit. Raw intervals, timings, i915 samples, mask script and source receipts are retained under `U:/OpenRC-intel-club-ablation-20261123`.
