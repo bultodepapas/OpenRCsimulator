@@ -57,6 +57,12 @@ and kept it at its fixed Quality scale with a 2560×1600 Retina viewport. This
 smoke verifies selection and initial GPU feedback. Loaded-flight transitions and
 pilot readability remain open.
 
+A matched synthetic load on the same Primis output exercised the adjusted floor
+without the flag. With 270 shader iterations and an 18 s heavy phase, the
+adaptive 85% ceiling averaged 36.84 FPS and fixed 85% averaged 30.94 FPS.
+Both had zero late callbacks in that phase. Adaptive confirmed 1025×576 at the
+floor and restored 1161×652 in recovery. The output stayed at 1366×768.
+
 GOD TEST now accepts `--dynamic-resolution-fps 0|30|60|90|120`. A positive request enables the experiment in the isolated profile and records phase transitions with the controller target, actual input and output pixels and completed-frame generation. The reducer requires completed evidence and rejects a fallback as an adaptive result. The tour retains its native physics requirement. [Operating guide](../../../../tools/godtest/PERFORMANCE_TOUR.md)
 
 ## Windows flight integration screen
