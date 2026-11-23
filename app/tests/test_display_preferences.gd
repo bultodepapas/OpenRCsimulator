@@ -12,6 +12,7 @@ var _failures := 0
 func _initialize() -> void:
 	_run()
 	_test_gpu_defaults()
+	_test_dynamic_resolution_gpu_defaults()
 	_reset()
 	print("display preferences checks=%d failures=%d" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -512,6 +513,64 @@ func _test_gpu_defaults() -> void:
 	var kept := DisplayPreferences.new(PREFS)
 	_check("a profile without ownership metadata keeps full render scale",
 		kept.apply_gpu_defaults(false) == OK and kept.config.render_scale == 100)
+	DisplayPreferences.first_run_defaults = previous
+
+
+func _test_dynamic_resolution_gpu_defaults() -> void:
+	_reset()
+	var previous := DisplayPreferences.first_run_defaults
+	var supported := {dynamic_resolution_supported = true}
+	var uhd := "Intel(R) UHD Graphics 630"
+	for adapter: String in [uhd, "NVIDIA GeForce GT 1030", "Apple M1"]:
+		var settings := AutoGraphicsPolicy.first_run(adapter, "", 1.0, 60.0, supported)
+		_check("%s gets the adaptive target, Native and a usable ceiling" % adapter,
+			settings.get("dynamic_resolution_fps") == 30 and settings.get("render_scale") == 85
+			and settings.get("reconstruction") == "native")
+	for adapter: String in ["NVIDIA GeForce RTX 3090", "llvmpipe", "Unknown adapter"]:
+		var settings := AutoGraphicsPolicy.first_run(adapter, "", 1.0, 60.0, supported)
+		_check("%s keeps a fixed scale by default" % adapter, not settings.has("dynamic_resolution_fps"))
+	var fixed := AutoGraphicsPolicy.first_run(uhd, "Linux")
+	_check("UHD 630 with unavailable GPU timing keeps the fixed 75% recommendation",
+		fixed.get("render_scale") == 75 and not fixed.has("dynamic_resolution_fps"))
+	var metalfx := {dynamic_resolution_supported = true, metalfx_spatial_available = true}
+	_check("Retina with MetalFX available keeps the automatic upscaler",
+		not AutoGraphicsPolicy.first_run("Apple M1", "macOS", 2.0, 60.0, metalfx).has("dynamic_resolution_fps"))
+	_check("Apple M1 on a standard screen remains eligible for the adaptive default",
+		AutoGraphicsPolicy.first_run("Apple M1", "macOS", 1.0, 60.0, metalfx).get("dynamic_resolution_fps") == 30)
+	DisplayPreferences.first_run_defaults = fixed
+	var store := DisplayPreferences.new(PREFS)
+	_check("a first run without native timing persists the fixed profile",
+		store.apply_gpu_defaults(true) == OK and store.config.dynamic_resolution_fps == 0)
+	var adaptive := AutoGraphicsPolicy.first_run(uhd, "Linux", 1.0, 60.0, supported)
+	DisplayPreferences.first_run_defaults = adaptive
+	_check("gaining native timing leaves the existing Off and 75% ceiling intact",
+		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 0
+		and store.config.render_scale == 75)
+	_check("Restore opts the existing profile into the new adaptive recommendation",
+		store.save_gpu_defaults(DisplayPreferences.recommended_defaults()) == OK
+		and store.config.dynamic_resolution_fps == 30 and store.config.render_scale == 85)
+	_reset()
+	store = DisplayPreferences.new(PREFS)
+	_check("fresh supported profiles persist the full adaptive bundle",
+		store.apply_gpu_defaults(true) == OK and DisplayPreferences.new(PREFS).config == store.config
+		and store.config.dynamic_resolution_fps == 30 and store.config.render_scale == 85
+		and store.config.reconstruction == "native")
+	DisplayPreferences.first_run_defaults = fixed
+	_check("loss of native timing preserves the saved target and its ceiling",
+		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 30
+		and store.config.render_scale == 85)
+	DisplayPreferences.first_run_defaults = adaptive
+	store = DisplayPreferences.new(PREFS)
+	_check("restored timing retains a working range after reload",
+		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 30
+		and store.config.render_scale == 85)
+	var manual := store.config.duplicate()
+	manual.dynamic_resolution_fps = 0
+	manual.render_scale = 100
+	manual.reconstruction = "auto"
+	_check("saved Off, ceiling and upscaler survive supported launch and reload",
+		store.save(manual) == OK and store.apply_gpu_defaults(false) == OK
+		and DisplayPreferences.new(PREFS).config == manual)
 	DisplayPreferences.first_run_defaults = previous
 
 

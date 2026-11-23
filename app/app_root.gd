@@ -462,7 +462,9 @@ func _ready() -> void:
 			{screen = DisplayServer.screen_get_size(screen), usable = DisplayServer.screen_get_usable_rect(screen).size,
 			cpu_threads = OS.get_processor_count(), arm64 = OS.has_feature("arm64"),
 			forward_plus = RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD,
-			output_pixels = AutoGraphicsPolicy.startup_output_pixels})
+			output_pixels = AutoGraphicsPolicy.startup_output_pixels,
+			dynamic_resolution_supported = FlightDynamicResolution.supports(ui_window),
+			metalfx_spatial_available = OS.get_name() == "macOS" and Reconstruction.runtime_capabilities().metalfx_spatial})
 		if display_preferences.apply_gpu_defaults(fresh_install) != OK:
 			push_warning("Could not store the recommended display settings; they apply to this session only.")
 	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
