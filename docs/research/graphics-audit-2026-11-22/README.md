@@ -1,5 +1,14 @@
 # Graphics and FPS audit — current-main follow-up, 22 November 2026
 
+## X04 and X05 follow-up from `084eec533`
+
+| Finding | Change and verification |
+| --- | --- |
+| [X04](seventh-pass-native.md#x04--precomputed-matrix-work-for-saturated-drone-allocation) | The three-free-rotor solve computes the single fixed index once and uses the current matrix for the RHS. All 2,000 complete allocations and 56 reduced systems with mutated matrices matched byte for byte. Isolated paired timings improved about 1.2–1.3% for the mixed and mostly saturated requests. |
+| [X05](seventh-pass-rendering.md#x05--optional-chapa-noble-detail-with-zero-remaining-contribution) | Chapa Noble skips striation or flake noise when the original weight is exactly zero and the noise coordinates are in a finite bounded domain. All seven 1080p studio pairs matched in software OpenGL, including deflected panels. Mobile and Forward+ matched in a separate Vulkan fixture. The paint suite passed all 2,079 checks. |
+
+The checked Linux run passed nine application suites, including multirotor crash handling, flight logs, race replay and four golden flights. The editor import completed with eight OBJ ambient-material warnings. All 25,929 CSV rows from nine companion tapes matched byte for byte, qualifying the solver at `1fd603c60`. [Checked run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45202023191) · [Companion receipt](../ai-companions/AFC-02/rebinds/2026-11-23-54bb51ae-to-16976da3.json).
+
 ## X01–X03 follow-up from `caaf80aee`
 
 | Finding | Change and verification |

@@ -171,9 +171,7 @@ func _saturation() -> void:
 			ref.ok and ref.thrusts == case[0].thrusts and ref.saturated == case[0].saturated)
 
 
-## FPV/03 §2 airmode example: corrections [-.2, -.2, +.2, +.2] at collective .02 per motor in [.05, 1]. With moment
-## rows weighted 1e4 above collective, the weighted solution is [.05, .05, a, a] with the closed form below and tends
-## to FPV/03's lexicographic answer [.05, .05, .45, .45] (collective raised to .25 per motor).
+## Each fixed rotor contributes its current column to the reduced system.
 func _three_free_reduction() -> void:
 	var g := PackedFloat64Array([4.0, 8.0, 12.0, 16.0])
 	var f := PackedFloat64Array([1.0, 2.0, 3.0, 4.0])
@@ -195,6 +193,9 @@ func _three_free_reduction() -> void:
 				solved.to_byte_array() == expected.to_byte_array())
 
 
+## FPV/03 §2 airmode example: corrections [-.2, -.2, +.2, +.2] at collective .02 per motor in [.05, 1]. With moment
+## rows weighted 1e4 above collective, the weighted solution is [.05, .05, a, a] with the closed form below and tends
+## to FPV/03's lexicographic answer [.05, .05, .45, .45] (collective raised to .25 per motor).
 func _airmode() -> void:
 	var scales := PackedFloat64Array([1.0, 0.1, 0.1, 0.01])
 	var weights := PackedFloat64Array([1.0e-3, 1.0, 1.0, 1.0])
