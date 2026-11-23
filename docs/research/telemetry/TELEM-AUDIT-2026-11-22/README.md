@@ -8,6 +8,10 @@ This is an evidence-backed code and operational-design audit of OpenRC Simulator
 
 The [second pass](second-pass.md) adds **five correctness/recovery findings, two validation gaps and three optimization opportunities** against the same runtime baseline. It includes [client](second-pass-client.md) and [operations](second-pass-operations.md) detail, six new behavioral counterexample cases, two measured optimization paths and two source-level entries. These categories are separate from the 13 first-pass findings below. The [round-two package](../../../../research/telemetry/audit-2026-11-22/round2/README.md) retains the new probes, measurements and provenance; the original verification totals are not presented as rerun results.
 
+## Current-main follow-up — 23 November 2026
+
+The [dated follow-up](follow-up-2026-11-23.md) separately reviews current `main` at pinned `85fc06ff3ed0074586691c1a7fce70687ea1558a` (98 commits past the original baseline). Its source review found targeted implementation/test changes for the **two original High findings**, plus several client, publisher, credential and backup findings; **the original November 22 counts below describe the original baseline**, not confirmed defects in the newer head. The follow-up also traces a **new conditional dynamic-internal-resolution measurement gap** and retains a **bounded SQL quota-threshold demonstration** with exact limits and caveats. Its [round-three evidence](../../../../research/telemetry/audit-2026-11-22/round3/README.md) is documentation and one synthetic SQLite probe only; it does not verify production fixes or rerun the Python/Godot suites.
+
 ## Source identity and deliverables
 
 | Item | Identity |
