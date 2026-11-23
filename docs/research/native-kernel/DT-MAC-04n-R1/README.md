@@ -113,3 +113,9 @@ The nine companion replays matched across all 25,929 CSV rows. The behavior
 manifest and profile checks also passed (39 and 95 checks).
 [Solver receipt](../../ai-companions/AFC-02/rebinds/2026-11-23-95d5d31f-to-c06bc9c8.json)
 and [qualification run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45101860898).
+
+The hosted virtual M1 reproduced the 7,295-proxy identity and passed all
+74 installed default-route checks, including native Quick Flight and the
+custom-spawn reference control.
+[Mac source qualification](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45101860898/job/137454306870)
+and [combined revision CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45105065689).

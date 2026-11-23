@@ -153,6 +153,39 @@ python3 tools/scenery/attribution_report.py /tmp/scene-report/views  # summarize
 
 Use a new output folder. `capture.sh` remains the SC-03 scenery-on/off and byte-repeat check.
 
+## Club perimeter and furniture (2026-11-22)
+
+The club at `1858352ca` exceeded two source-triangle limits. The same
+scene counter on `graphics-audit` measured the following changes. All six
+other categories retained their original counts.
+
+| Category | Before | After | Limit |
+| --- | ---: | ---: | ---: |
+| Merged static cells | 178,746 | 174,762 | 175,000 |
+| Other | 9,365 | 7,918 | 8,000 |
+
+The meshes for 1,447 bush impostors now use one triangle each. All four
+atlas views and their bilinear footprints fit inside that triangle. The
+mapping from UV to world coordinates and the MultiMesh culling bounds
+match the old quad. The woodland habitat renders its own quads and its
+four generated patches still total 472 triangles in card mode.
+[Baseline attribution](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45101990716)
+
+The final candidate passed 32 hedge checks. Its two sampled MultiMesh bounds
+agreed with the old quad within 0.00001 m in OpenGL. Of the 2,073,600 pixels
+per view, 36 at the gate, one in the hedge close-up and 280 in the aerial view
+differed by more than 8/255 in any RGB channel. The comparison used the paired
+PNG files locally because the capture runner lacked Pillow.
+[Hedge checks and captures](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45103557852)
+
+The furniture saves 3,984 triangles by interpolating grain over longer
+intervals on the 3 mm timber bevels. The wide faces keep every sample.
+Four paired 1920×1080 OpenGL captures on a Linux software renderer showed
+538, 2,539, 729 and 1,295 pixels with a channel difference above 8/255 in the
+table, table close-up, bench front and bench back views. The same
+job passed furniture, vegetation, tractor, destruction and scene assembly checks.
+[Geometry checks and captures](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45103215501)
+
 ## Open
 
 - Frame-time calibration on DT-01a hardware, then scaling of the class totals.
