@@ -7,16 +7,18 @@ const Wood = preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg
 static var _wood: Image
 const SEGMENTS := 16
 const BENCH_SEGMENTS := 14
+# The 3 mm bevels have a constant section; reserve the fine timber samples for broad faces.
+const FURNITURE_BEVEL_STRIDE := 2
 
 static func picnic(k: MeshKit) -> void:
 	for i in 5:
-		_plank(k, 1.8, 0.142, 0.05, Vector3(0,0.735,-0.304+i*0.152), 0.0, i, Palette.col("wood_light"))
+		_plank(k, 1.8, 0.142, 0.05, Vector3(0,0.735,-0.304+i*0.152), 0.0, i, Palette.col("wood_light"), SEGMENTS, FURNITURE_BEVEL_STRIDE)
 		for x: float in [-0.65,0.65]:
 			_bolt(k, Vector3(x,0.7602,-0.304+i*0.152), Vector3.UP, 0.005)
 	for side: float in [-1.0,1.0]:
 		for i in 2:
 			var z := side*0.6 + (float(i)-0.5)*0.131
-			_plank(k, 1.8,0.119,0.05,Vector3(0,0.445,z),0.0,6+i+int(side),Palette.col("wood_light"))
+			_plank(k, 1.8,0.119,0.05,Vector3(0,0.445,z),0.0,6+i+int(side),Palette.col("wood_light"), SEGMENTS, FURNITURE_BEVEL_STRIDE)
 			for x: float in [-0.65,0.65]:
 				_bolt(k,Vector3(x,0.4702,z),Vector3.UP,0.005)
 	for x: float in [-0.65,0.65]:
@@ -32,7 +34,7 @@ static func picnic(k: MeshKit) -> void:
 
 static func bench(k: MeshKit) -> void:
 	for i in 3:
-		_plank(k,1.8,0.13,0.05,Vector3(0,0.455,-0.145+i*0.145),0.0,i+12,Palette.col("wood_light"),BENCH_SEGMENTS)
+		_plank(k,1.8,0.13,0.05,Vector3(0,0.455,-0.145+i*0.145),0.0,i+12,Palette.col("wood_light"),BENCH_SEGMENTS, FURNITURE_BEVEL_STRIDE)
 		for x: float in [-0.76,0.76]:
 			_bolt(k,Vector3(x,0.4802,-0.145+i*0.145),Vector3.UP,0.005)
 	var angle := -PI*0.5+atan(0.06/0.35)
@@ -40,7 +42,7 @@ static func bench(k: MeshKit) -> void:
 	for i in 3:
 		var y := 0.554+float(i)*0.117
 		var centre := Vector3(0,y,0.22+(y-0.5)/0.35*0.06)
-		_plank(k,1.8,0.105,0.035,centre,angle,i+22,Palette.col("wood_light"),BENCH_SEGMENTS)
+		_plank(k,1.8,0.105,0.035,centre,angle,i+22,Palette.col("wood_light"),BENCH_SEGMENTS, FURNITURE_BEVEL_STRIDE)
 		for x: float in [-0.76,0.76]:
 			_bolt(k,centre+Vector3(x,0,0)+front*0.0177,front,0.005)
 	for x: float in [-0.76,0.76]:
@@ -64,7 +66,7 @@ static func board(k: MeshKit, length_m: float, width: float, thickness: float,
 
 
 static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
-		centre: Vector3, angle: float, seed: int, tone: Color, segments: int = SEGMENTS) -> void:
+		centre: Vector3, angle: float, seed: int, tone: Color, segments: int = SEGMENTS, bevel_stride: int = 1) -> void:
 	var saved := k.xf
 	k.xf = saved*Transform3D(Basis(Vector3.RIGHT,angle),centre)
 	var bevel := 0.003
@@ -88,9 +90,14 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
 		colors.append(color_ring)
 	for r in rings.size()-1:
 		for j in 8:
+			var end_ring := r + 1
+			if bevel_stride > 1 and j % 2 == 0 and r >= 1 and r <= segments:
+				if (r - 1) % bevel_stride != 0:
+					continue
+				end_ring = mini(r + bevel_stride, segments + 1)
 			var next := (j+1)%8
-			_face(k,rings[r][next],rings[r+1][next],rings[r+1][j],rings[r][j],tone,
-				colors[r][next],colors[r+1][next],colors[r+1][j],colors[r][j])
+			_face(k,rings[r][next],rings[end_ring][next],rings[end_ring][j],rings[r][j],tone,
+				colors[r][next],colors[end_ring][next],colors[end_ring][j],colors[r][j])
 	# Cross-section faces positive X; reverse only the negative-X cap.
 	var cap := rings[0]
 	cap.reverse()

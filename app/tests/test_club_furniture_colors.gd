@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Kit = preload("res://scenery/mesh_kit.gd")
+const Palette = preload("res://scenery/palette.gd")
 const Wood = preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg")
 var _checks := 0
 var _failures := 0
@@ -56,8 +57,39 @@ func _initialize() -> void:
 			_check("fixture %d preserved prefix and damage ranges" % fixture,
 				var_to_bytes([kit.verts.slice(0, first), kit.norms.slice(0, first),
 					kit.cols.slice(0, first), kit.damage_ranges]) == prefix)
+	_check_furniture_plank(builder, "picnic", 16, 0.142, Vector3(0, 0.735, -0.304), 0, 3228)
+	_check_furniture_plank(builder, "bench", 14, 0.13, Vector3(0, 0.455, -0.145), 12, 2116)
 	print("club furniture colors: %d checks, %d failures" % [_checks, _failures])
 	quit(0 if _failures == 0 else 1)
+
+
+## Inspect the first painted plank in each production prefab against its full-detail timber.
+func _check_furniture_plank(builder: Script, id: String, segments: int, width: float, centre: Vector3,
+		seed: int, triangles: int) -> void:
+	var actual := Kit.new()
+	builder.call(id, actual)
+	_check(id + " retains its furniture within the fitted triangle count", actual.triangle_count() == triangles)
+	var reference := Kit.new()
+	builder.board(reference, 1.8, width, 0.05, centre, Basis.IDENTITY, seed, Palette.col("wood_light"), segments)
+	var cursor := 0
+	var valid := true
+	for ring in segments + 2:
+		for face in 8:
+			var narrow := face % 2 == 0 and ring >= 1 and ring <= segments
+			if narrow and ring % 2 == 0:
+				continue
+			var first := 6 * (8 * ring + face)
+			var last := first + 48 if narrow else first
+			# Adjacent strips retain the four outer corners of the two source quads.
+			for source: int in [first, last + 1, last + 2, first + 3, first + 4, last + 5]:
+				valid = valid and actual.verts[cursor] == reference.verts[source] \
+					and actual.cols[cursor] == reference.cols[source] \
+					and actual.norms[cursor].is_equal_approx(reference.norms[source])
+				cursor += 1
+	var caps := reference.verts.size() - 36
+	_check(id + " preserves plank broad faces, chamfer corners, normals and sampled grain", valid)
+	_check(id + " retains both original plank end caps", actual.verts.slice(cursor, cursor + 36) == reference.verts.slice(caps)
+		and actual.cols.slice(cursor, cursor + 36) == reference.cols.slice(caps))
 
 
 func _sample(wood: Image, point: Vector3, seed: int, tone: Color) -> Color:

@@ -10,7 +10,9 @@ const MANIFEST_PATH := "res://assets/landscape/vegetation/impostors/bush_common_
 const BUSH_SOURCE_ID := "bush_common_flowers"
 const BUSH_ATLAS_ASSET_ID := "bush_common_flowers_4view_impostor"
 const TREE_SOURCE_ID := "common_tree_3"
-const CARD_TRIANGLES := 2
+const CARD_TRIANGLES := 1
+# A single triangle encloses the nontransparent bilinear footprint in all four atlas views.
+const CARD_UVS := [Vector2(-0.203125, 0.125), Vector2(1.203125, 0.125), Vector2(0.5, 1.3125)]
 const CARD_SPACING_M := 1.35
 const PLANTED_CARD_LIMIT := 1024
 const CARD_INSTANCE_LIMITS := {"low": 64, "balanced": 128, "high": 256}
@@ -47,21 +49,28 @@ static func build(
 	if not placements.is_empty():
 		var atlas_material := _impostor_material()
 		var frame_size := _frame_size(atlas_manifest)
-		var card_mesh := QuadMesh.new()
-		card_mesh.size = Vector2(frame_size, frame_size)
+		var card_mesh := _bush_card(frame_size)
+		var card_triangles := card_mesh.surface_get_array_len(0) / 3
 		var multi_mesh := MultiMesh.new()
 		multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
 		multi_mesh.mesh = card_mesh
 		multi_mesh.use_colors = true
 		multi_mesh.use_custom_data = true
 		multi_mesh.instance_count = placements.size()
+		var bounds := AABB()
 		for instance_index: int in range(placements.size()):
 			var placement: Dictionary = placements[instance_index]
 			var transform: Transform3D = placement.get("transform", Transform3D.IDENTITY)
 			multi_mesh.set_instance_transform(instance_index, transform)
+			# The camera turns these uniformly scaled cards and tilts planted crowns on flyovers.
+			# Every filtered silhouette fits within half a frame of its center in all four views.
+			var radius := frame_size * transform.basis.x.length() * 0.5
+			var box := AABB(transform.origin - Vector3.ONE * radius, Vector3.ONE * 2.0 * radius)
+			bounds = box if instance_index == 0 else bounds.merge(box)
 			multi_mesh.set_instance_color(instance_index, Color.WHITE)
 			var yaw := float(placement.get("yaw_rad", 0.0))
 			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, float(planted), 0.0, 1.0))
+		multi_mesh.custom_aabb = bounds
 		var cards := MultiMeshInstance3D.new()
 		cards.name = "Bush_Common_Flowers_4View"
 		cards.multimesh = multi_mesh
@@ -78,10 +87,10 @@ static func build(
 			record["type"] = "source_impostor"
 			record["source_asset_id"] = BUSH_SOURCE_ID
 			record["asset_id"] = BUSH_ATLAS_ASSET_ID
-			record["source_triangles"] = CARD_TRIANGLES
+			record["source_triangles"] = card_triangles
 			card_records.append(record)
 		all_cpu_placements.append_array(card_records)
-		var bush_triangles := placements.size() * CARD_TRIANGLES
+		var bush_triangles := placements.size() * card_triangles
 		source_triangles += bush_triangles
 		group_stats[BUSH_ATLAS_ASSET_ID] = {
 			"source_asset_id": BUSH_SOURCE_ID,
@@ -150,6 +159,21 @@ static func build(
 	root.set_meta("source_geometry_sha256", str(atlas_manifest.get("source_geometry_sha256", "")))
 	root.set_meta("atlas_sha256", str(atlas_manifest.get("atlas_sha256", "")))
 	return root
+
+
+## Preserve the original quad's UV-to-position map and drop its always-transparent corners.
+static func _bush_card(frame_size: float) -> ArrayMesh:
+	var positions := PackedVector3Array()
+	for uv: Vector2 in CARD_UVS:
+		positions.append(Vector3(uv.x - 0.5, 0.5 - uv.y, 0.0) * frame_size)
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = positions
+	arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3.BACK, Vector3.BACK, Vector3.BACK])
+	arrays[Mesh.ARRAY_TEX_UV] = PackedVector2Array(CARD_UVS)
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
 
 
 ## Convenience wrapper for existing packed scenery polylines.

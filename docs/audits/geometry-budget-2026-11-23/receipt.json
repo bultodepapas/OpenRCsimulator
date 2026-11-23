@@ -1,0 +1,579 @@
+{
+  "date_utc": "2026-11-23",
+  "geometry_reference": "8ce11eb2a22eec1d647c85a2fb48cbd674d7f7d5",
+  "historical_scenery_reference": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "historical_reproduction": "Isolated current hydrated runtime with historical app/scenery and app/data/scenery changes, app/render/field.gd, bush impostor shader and woodland recipe restored from the historical commit. Aggregate exactly reproduces its hosted result.",
+  "scenery_authoring_commit": "843f357c07af842054f3ccd6728f93beca9a57ef",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "binary_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+    "platform": "Linux x86_64, headless Dummy renderer"
+  },
+  "app_fixture": {
+    "count": 6015,
+    "digest_algorithm": "SHA-256 of sorted (path TAB byte-level SHA-256 LF) records for git-tracked app files",
+    "inventory_sha256": "174484e79e7d47e3b9d195e5013dcd1f812c8ed5acbda24ca5883a6ef6f44545",
+    "reference_commit": "8ce11eb2a22eec1d647c85a2fb48cbd674d7f7d5",
+    "reference_policy": "Compare every unchanged file byte-for-byte by Git blob identity or, for explicit eol=crlf paths, its exact git cat-file --filters checkout SHA-256. Verified the same .gitattributes, matching Git blob IDs, complete crlf path roster and retained filtered checkout record. The six modified files were separately matched to the actual working-file bytes.",
+    "attributes_sha256": "572eb6dc50ebb51f6325f7ac0cdf7a5b4ce4464c00fa9c8cd8545b1d27e34018",
+    "filtered_checkout_sha256": "bc00c997e9405c1cdcad50df28724d064eb09dbe16d4f4df9398d03706b129e7",
+    "reference_comparison_counts": {
+      "git_blob_bytes": 5980,
+      "git_filtered_checkout_bytes": 29,
+      "candidate_modified_working_files": 6
+    },
+    "modified_files_sha256": {
+      "app/data/woodland_edges.json": "fb9c3800ae242975c731cdf7ad43f6853a0c1a8eba751d3da4da38a7947742a6",
+      "app/scenery/club_furniture.gd": "0b4684cc4fd2e28276e043c4d3c3f04502fea2cdf71bce4cd4cc874cb899c67d",
+      "app/scenery/imported_hedge.gd": "57bb053b77d05b403b65d02c4ffd4eb1cd95d2518760a96da5d0526cb31c6b87",
+      "app/tests/telemetry_receiver_e2e.gd": "8a41df896d8dee789a49ae8be3df57fede6600d70b4fca4a3dea1479dab095d3",
+      "app/tests/test_club_furniture_colors.gd": "20c58f7e9d37bf2423a3f69e64efa3728cfabe77fa0364a486bf88c7b6fedae7",
+      "app/tests/test_imported_hedge.gd": "fabcf7525053f76ab1f483572f9589e0974f4061811062cc866fac40202610c7"
+    }
+  },
+  "geometry_source_sha256": {
+    "app/scenery/club_furniture.gd": "0b4684cc4fd2e28276e043c4d3c3f04502fea2cdf71bce4cd4cc874cb899c67d",
+    "app/scenery/imported_hedge.gd": "57bb053b77d05b403b65d02c4ffd4eb1cd95d2518760a96da5d0526cb31c6b87",
+    "app/tests/test_club_furniture_colors.gd": "20c58f7e9d37bf2423a3f69e64efa3728cfabe77fa0364a486bf88c7b6fedae7",
+    "app/tests/test_imported_hedge.gd": "fabcf7525053f76ab1f483572f9589e0974f4061811062cc866fac40202610c7",
+    "app/data/woodland_edges.json": "fb9c3800ae242975c731cdf7ad43f6853a0c1a8eba751d3da4da38a7947742a6",
+    "tools/trees/place_woodland_edges.py": "94d9af1c4f40c242d37f441a686e16cfe2c5e32fffce2881a5b98c9c9f471419",
+    "tools/scenery/bake_farm_tractor.gd": "4731ace0775fea022561a3d0ef2d796945732b1051f243470598fba720535871",
+    "tools/scenery/attribute_views.gd": "bb2546db421cb9b4c343429011978f3060fb51ec74d7af9dd89535c23fa5a3ed",
+    "app/tests/scene_source_budget.gd": "1346e4e23e777208a87b06fff2367a973293485d24b84c22b2c7a33a0530fb70",
+    "app/scenery/collision_world.gd": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6",
+    "app/scenery/damage_batches.gd": "58f0be70d5f6efba4db2cc5cf81e53d8450bab5446b124e86c7e7511707c57a1",
+    "app/render/crash/scenery_damage.gd": "ed01ace30eb672612e68a8c7b1e9cd91e912708abb1d031d6ba89b6d2d225d58",
+    "app/scenery/woodland_edge_habitat.gd": "82449bef97d797abc1c76922b6f3f5d185d57ce8870374a39868868ed292e6e9",
+    "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.png": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d",
+    "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.png.import": "265f330eb47dbfdb342d1acc91e75c9b115f0e7698fc792b96906267a3c1cd69",
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.gdshader": "6a3b51d9e65d50940cb57348ec6c527e3b2f7d375b5461ed9412c86fabb38e68",
+    "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61"
+  },
+  "allowances": {
+    "population": 380000,
+    "parked_aircraft": 350000,
+    "cells": 175000,
+    "vegetation": 150000,
+    "botanical": 90000,
+    "pit_shelters": 13000,
+    "airfield_detail": 5000,
+    "other": 8000
+  },
+  "measurements": {
+    "historical": {
+      "buckets": {
+        "airfield_detail": 4482,
+        "botanical": 63315,
+        "cells": 171785,
+        "other": 7268,
+        "parked_aircraft": 267988,
+        "pit_shelters": 12096,
+        "population": 373656,
+        "vegetation": 132457
+      },
+      "total": 1033047,
+      "scene_json_sha256": "60922a011ad30c8ce61231dc07a13340bf3d3ca20383fd269a672cf397a4f3c9"
+    },
+    "before": {
+      "buckets": {
+        "airfield_detail": 4482,
+        "botanical": 63315,
+        "cells": 178746,
+        "other": 9365,
+        "parked_aircraft": 267988,
+        "pit_shelters": 12096,
+        "population": 373656,
+        "vegetation": 149260
+      },
+      "total": 1058908,
+      "scene_json_sha256": "70bc8985ba31c9ab4f27ff733d40345790a9175e060c7f77ed79b09791dadd5b"
+    },
+    "after": {
+      "buckets": {
+        "airfield_detail": 4482,
+        "botanical": 63315,
+        "cells": 174762,
+        "other": 7918,
+        "parked_aircraft": 267988,
+        "pit_shelters": 12096,
+        "population": 373656,
+        "vegetation": 149260
+      },
+      "total": 1053477,
+      "scene_json_sha256": "9ad763c1224d9ead7941ff35e7861b284f6e30db98bcd69edd03622b5a30cebd"
+    }
+  },
+  "historical_to_before": {
+    "cell_damage_group_delta": {
+      "club-entrance": 1442,
+      "countryside-cows-paddock-fence": -936,
+      "countryside-east-farm-fence-gate-north": -240,
+      "countryside-east-farm-fence-south": -272,
+      "countryside-east-farm-fence-west-north": -544,
+      "countryside-existing-farm-fence-gate-north": -54,
+      "countryside-existing-farm-fence-gate-south": -144,
+      "countryside-existing-farm-fence-south": -450,
+      "countryside-existing-farm-fence-west-north": -738,
+      "fence-north": -3600,
+      "grazing-north-rails": 1384,
+      "grazing-south-rails": 1524,
+      "hay-east-wire": 2222,
+      "hay-west-wire": 2316,
+      "lane-side-wire": 4337,
+      "lane-stock-gate": 218,
+      "paddock-fence": -1272,
+      "paddock-stock-gate": 218
+    },
+    "cell_damage_group_total_delta": 5411,
+    "untagged_cell_delta": 1550,
+    "miscellaneous_node_delta": {
+      "ImportedHedge_club-perimeter": 2046,
+      "shadows_-2_-2": 33,
+      "shadows_-3_-2": 18
+    },
+    "woodland_triangles_each": 2656
+  },
+  "before_to_after": {
+    "groups_with_changed_damage_range_costs": {
+      "benches": -1344,
+      "pavilion": -336,
+      "picnic": -2304
+    },
+    "hedge_triangles_saved": {
+      "ImportedHedge_club-perimeter": 1023,
+      "ImportedHedge_hedge-north-e": 168,
+      "ImportedHedge_hedge-north-w": 256
+    },
+    "mesh_area_fraction_of_original_billboard": 0.8349609375,
+    "billboard_inputs": {
+      "atlas_dimensions": [
+        1024,
+        256
+      ],
+      "frames": 4,
+      "mipmaps": false,
+      "filter": "linear with per-frame half-texel clamp",
+      "UVs": [
+        [
+          -0.203125,
+          0.125
+        ],
+        [
+          1.203125,
+          0.125
+        ],
+        [
+          0.5,
+          1.3125
+        ]
+      ],
+      "maximum_bilinear_footprint_radius_in_frame_units": 0.466344,
+      "culling_radius_in_frame_units": 0.5
+    },
+    "furniture": [
+      {
+        "prefab": "picnic",
+        "before": 3804,
+        "after": 3228,
+        "bit_identical_unmodified_triangles": 2652,
+        "total_area_m2": 8.4552901969,
+        "affected_area_m2": 0.2740051488,
+        "affected_area_fraction": 0.0324063565,
+        "max_abs_rgb_255": [
+          29.9999982119,
+          24.0000061691,
+          17.9999989271
+        ],
+        "preupload_max_abs_rgb_255": [
+          29.3647027016,
+          24.0423510969,
+          17.4352922291
+        ],
+        "area_rms_rgb_255_affected": [
+          4.3547269136,
+          3.5469533256,
+          2.599599844
+        ],
+        "area_rms_rgb_255_whole": [
+          0.7839277324,
+          0.6385142244,
+          0.467973871
+        ],
+        "max_normal_difference_degrees": 2.4149e-06
+      },
+      {
+        "prefab": "bench",
+        "before": 2452,
+        "after": 2116,
+        "bit_identical_unmodified_triangles": 1780,
+        "total_area_m2": 4.3965260206,
+        "affected_area_m2": 0.1826713163,
+        "affected_area_fraction": 0.0415490129,
+        "max_abs_rgb_255": [
+          33.4999968985,
+          27.5000012885,
+          19.4999981981
+        ],
+        "preupload_max_abs_rgb_255": [
+          33.1882388662,
+          27.1728692417,
+          19.7055177767
+        ],
+        "area_rms_rgb_255_affected": [
+          4.9009294254,
+          3.9648151746,
+          2.8952345175
+        ],
+        "area_rms_rgb_255_whole": [
+          0.9989846242,
+          0.808171074,
+          0.5901522988
+        ],
+        "max_normal_difference_degrees": 4.8297e-06
+      }
+    ]
+  },
+  "buffer_sha256": {
+    "before": {
+      "bench-cols.bin": "fc214b844eb0d68e5ad8bd7addd43489c19ebf05b7a64c53f752534739cd886f",
+      "bench-norms.bin": "2c8365737296b3dc06d125ea8b03764c7ec75cad8d60d7a9396fb99a419c64fb",
+      "bench-rendercols.bin": "b6029f3e2fd4c71da2efcbeb8f27ab68681626524466f96e3300f1066fe49a57",
+      "bench-verts.bin": "4bb0c7a1e3e41f07e63a94e41f2b3e28c4dc046462610644c715f1593f630824",
+      "picnic-cols.bin": "01176a0025824ebe2507d910f4b0a147d0513c5293884bc4518d9d50c107536c",
+      "picnic-norms.bin": "36d83125aaaa086070ac10598439809a83d82288f02b2af886d821d0b233ffe3",
+      "picnic-rendercols.bin": "009fbbc97ae87d9f4a0e8aa6b11f92de887abbff12674cf2d235177db00b9f7f",
+      "picnic-verts.bin": "fc0468c29879e41148e0ed3be3994c8df20b684cda51c94d38d202009877b71f"
+    },
+    "after": {
+      "bench-cols.bin": "10ba586985b3a107cf6740a4dc375b338ac8b1808b7f214237658df351463182",
+      "bench-norms.bin": "3ce49b7fc1afe7c77ec37804683eacf12a63c9e90a68fdab16d54ed7f796a6d2",
+      "bench-rendercols.bin": "44c260bfdc368ce72ed57dd08f7e95ac24239059179a72616b124220b16140ad",
+      "bench-verts.bin": "2a8c07640669bef922fdef571096b785f3a487946d8682aefea464adcf3b0e87",
+      "picnic-cols.bin": "06d4b63cc410602808544382f2f7ecec59e224d95c8315c9f3860120f958e5b8",
+      "picnic-norms.bin": "90ab611d26153bbbf63102525f44dc47127285885444229d234cb23526358651",
+      "picnic-rendercols.bin": "b084debf09aab766f4258ce5538c636e522a6a21fda4c405c88233e92ea5139e",
+      "picnic-verts.bin": "74abf339f63dab5ae36f1b5a23cc17cfd76d5a1b3d5707a0a8a6eab3e4df570d"
+    }
+  },
+  "checked_runs": [
+    {
+      "check": "scenery",
+      "capture_id": "33751bdc-f5cb-4dc9-a077-9ca43aeddf3d",
+      "started_utc": "2026-11-23T03:33:41.533287+00:00",
+      "elapsed_seconds": 13.454901,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_scenery_build.gd"
+      ],
+      "script_sha256": "afb0e874f847b626e0aaa26c5cc8a70d357220f93b63f3f12372e488ef59eea4",
+      "verified_marker": "all scenery build checks passed",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "9406374a3602c256830f526de2f26179d3e59cdf544aee58ea9edae21464479a"
+    },
+    {
+      "check": "vegetation",
+      "capture_id": "23caf6fb-6ba9-42a0-8dbb-a2ca462d6d59",
+      "started_utc": "2026-11-23T03:33:55.061903+00:00",
+      "elapsed_seconds": 7.617562,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_landscape_vegetation.gd"
+      ],
+      "script_sha256": "a33833e2fd6fb1d8552764cc9762611a609c3d8046e4597f94ffce332a136eec",
+      "verified_marker": "LU-17 vegetation: 38 checks, 0 failures",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "1909fdfb0b82f7c550c18295ef2b83721135f343fb5aec9202e99a52db721b4a"
+    },
+    {
+      "check": "tractor-source",
+      "capture_id": "afe7668d-4073-426e-9082-f32e9fd8527f",
+      "started_utc": "2026-11-23T03:37:15.650205+00:00",
+      "elapsed_seconds": 9.232619,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_farm_tractor.gd"
+      ],
+      "script_sha256": "0af51a2ff5d03427f1eaa25bf9d5bef1b590149611f3c121bddb84b792af26a4",
+      "verified_marker": "Farm tractor: 81 checks, 0 failed",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "45ccee2eda6ce9124ac56b0508c80bb3e157180a2d31578f84b43691a70bf19d"
+    },
+    {
+      "check": "furniture",
+      "capture_id": "2dfdfe09-7997-4d09-b840-f7d6b35054ab",
+      "started_utc": "2026-11-23T03:33:40.512436+00:00",
+      "elapsed_seconds": 0.967753,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_club_furniture_colors.gd"
+      ],
+      "script_sha256": "20c58f7e9d37bf2423a3f69e64efa3728cfabe77fa0364a486bf88c7b6fedae7",
+      "verified_marker": "club furniture colors: 90 checks, 0 failures",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "bb267fd991cf686abcf5d668a9794c50a764134f089924b38bf366046bfbb6c5"
+    },
+    {
+      "check": "hedge",
+      "capture_id": "cc04012d-3188-4bb1-9176-a9e8e0175a31",
+      "started_utc": "2026-11-23T03:33:38.795569+00:00",
+      "elapsed_seconds": 1.654926,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_imported_hedge.gd"
+      ],
+      "script_sha256": "fabcf7525053f76ab1f483572f9589e0974f4061811062cc866fac40202610c7",
+      "verified_marker": "40 imported-hedge checks, 0 failed",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "2819d0dd9849fd9f108880f5fd0493348d039efb4aa45175b6be73a2746291a2"
+    },
+    {
+      "check": "habitat",
+      "capture_id": "55254af0-8ac9-466b-99f5-6cb5dd1ee055",
+      "started_utc": "2026-11-23T03:34:07.846307+00:00",
+      "elapsed_seconds": 2.471761,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_woodland_edge_habitat.gd"
+      ],
+      "script_sha256": "635dbdf970110bbf9ca830c4fd159cc5c5c144d4a2d538f493037f89f672a00b",
+      "verified_marker": "woodland-edge habitat: 54 checks, 0 failures",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "64083d74e1743f11e8f7733ad9175e6d5cd155478b915d241b899e5068adea82"
+    },
+    {
+      "check": "damage",
+      "capture_id": "38377652-71d6-4f91-a5ac-fcd803fdeb6c",
+      "started_utc": "2026-11-23T03:34:10.385469+00:00",
+      "elapsed_seconds": 3.850788,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_scenery_destruction.gd"
+      ],
+      "script_sha256": "32eb57f472b7f487a8393fe255d2d3d1eda039683b51dd063e24d3bb9db2e647",
+      "verified_marker": "scenery destruction: 117 checks, 0 failures",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "2ba1090fef8d1f6958993a212ac253816c66b5616d50a04e700ea92e4e63c2a8"
+    },
+    {
+      "check": "damage-runtime",
+      "capture_id": "5be478d5-4757-4809-9cac-ecfe0d28055b",
+      "started_utc": "2026-11-23T03:34:14.292373+00:00",
+      "elapsed_seconds": 19.062648,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_scenery_destruction_runtime.gd"
+      ],
+      "script_sha256": "1cfc51dd391d77f7039e0ae95b903e69f5a5c0d509928e6a074e2e12344ca4ee",
+      "verified_marker": "scenery destruction runtime: 8 checks, 0 failures",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "engine_log_sha256": "c522733d99f91333b7ef87f591ac08d860d1a759ba2b7efe68783179ca8e51e9"
+    },
+    {
+      "check": "airspace",
+      "capture_id": "dad1acf8-f99a-4f1b-aa04-70d383ba17e5",
+      "started_utc": "2026-11-23T03:34:33.416541+00:00",
+      "elapsed_seconds": 5.441688,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/companion-qualification-review-ORfFOSqG/drivers/strict_airspace.gd",
+        "--",
+        "--out=/dev/shm/lu34-profiler/final-airspace.json"
+      ],
+      "script_sha256": "ebde4c7e8c949c313bbf6f0124830cb088213beea1f2d6787c343fb3059f2def",
+      "verified_marker": "AFC-02 static airspace validation: 49 checks, 0 failed",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "0825626f9e0ad10dc6f64fc903aeae87c2e586b1b1ebb50e97e22bd500159457"
+    },
+    {
+      "check": "fingerprint",
+      "capture_id": "209b2de8-9ad9-41f9-a3ee-90ed3c127cb7",
+      "started_utc": "2026-11-23T03:34:39.018526+00:00",
+      "elapsed_seconds": 5.291279,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/dev/shm/lu34-profiler/candidate/app/tests/test_native_macos_domain_world.gd"
+      ],
+      "script_sha256": "e5fde49caade7bf88ac1f1c043c77b5411885d028f18dd701585bc211446e0d9",
+      "verified_marker": "native macOS domain world: 9 checks, 0 failures",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "fc2e921f30927067f709bdbb01420c04023bc3036248d4d97f2aa5289d645c89"
+    },
+    {
+      "check": "dump-before",
+      "capture_id": "868e6576-6855-4782-bbab-2bcb1805c7f8",
+      "started_utc": "2026-11-23T03:37:24.990622+00:00",
+      "elapsed_seconds": 5.356764,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/current/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/docs/audits/geometry-budget-2026-11-23/dump_geometry.gd",
+        "--",
+        "/dev/shm/lu34-profiler/retained/before"
+      ],
+      "script_sha256": "7a03b3684806c6f863f81fd974d64eb38407409b7d38b5932c47aa20c26cbc77",
+      "verified_marker": "Geometry evidence written",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "8c0a7c908b5623c636fcd83c0242414736aea88c39971f971f43d419a5c13b18"
+    },
+    {
+      "check": "dump-after",
+      "capture_id": "ec4d3220-8b09-4e7e-a6a2-c09e5f1a07fb",
+      "started_utc": "2026-11-23T03:37:30.413970+00:00",
+      "elapsed_seconds": 5.158723,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/docs/audits/geometry-budget-2026-11-23/dump_geometry.gd",
+        "--",
+        "/dev/shm/lu34-profiler/retained/after"
+      ],
+      "script_sha256": "7a03b3684806c6f863f81fd974d64eb38407409b7d38b5932c47aa20c26cbc77",
+      "verified_marker": "Geometry evidence written",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "8c0a7c908b5623c636fcd83c0242414736aea88c39971f971f43d419a5c13b18"
+    },
+    {
+      "check": "dump-historical",
+      "capture_id": "d304408e-de82-4f95-986b-a96deab18c76",
+      "started_utc": "2026-11-23T03:37:35.636856+00:00",
+      "elapsed_seconds": 5.235242,
+      "engine_command": [
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/dev/shm/lu34-profiler/baseline/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/workspace/scratch/eba78909e368/OpenRCsimulator/docs/audits/geometry-budget-2026-11-23/dump_geometry.gd",
+        "--",
+        "/dev/shm/lu34-profiler/retained/historical"
+      ],
+      "script_sha256": "7a03b3684806c6f863f81fd974d64eb38407409b7d38b5932c47aa20c26cbc77",
+      "verified_marker": "Geometry evidence written",
+      "exit": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "engine_log_sha256": "8c0a7c908b5623c636fcd83c0242414736aea88c39971f971f43d419a5c13b18"
+    }
+  ],
+  "negative_control": {
+    "change": "left fitted UV from -0.203125 to +0.2",
+    "actual_failure": "all four views preserve the bilinear support of every nontransparent atlas texel",
+    "engine_exit": 1,
+    "runner_accepted": false,
+    "engine_log_sha256": "7e0c769da1604613715d06d8572396757e710429390d3af955f94a8b81bc3702"
+  },
+  "woodland_generation": {
+    "test_cases_passed": 6,
+    "check": "4 patches, 472 card-only source triangles",
+    "only_changed_leaf": "source_sha256_normalized_text/app/scenery/imported_hedge.gd",
+    "new_value": "57bb053b77d05b403b65d02c4ffd4eb1cd95d2518760a96da5d0526cb31c6b87"
+  },
+  "physical_boundaries": {
+    "airspace_report_sha256": "b60cbdd05fcce933399296fbf1d42bf50e52c2d7157c5963430acc7628d73d7f",
+    "identical_to_previous_checked_airspace": true,
+    "collision_proxies": 7295,
+    "linux_world_id": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+    "quantized_fingerprint": "f020b4c86b7e98df77eacc2a35e2a95a3fc17a046e2cb9b5d719ac82abfd16a2"
+  },
+  "excluded_attempts": {
+    "earlier_profiler": "The November 22 preliminary current-areas node profiler was terminated with signal 9 and produced no measurements. Node data here comes from the completed dump_geometry.gd runs.",
+    "incomplete_farm_tractor_fixture": "Two preliminary checked runs correctly failed on missing external tools/scenery/bake_farm_tractor.gd and tools/scenery/attribute_views.gd. Only the source-complete 81-case run with both files present is credited."
+  }
+}

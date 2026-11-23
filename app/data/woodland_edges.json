@@ -2286,7 +2286,7 @@
     "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
     "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
     "app/render/treeline.gd": "915d7f83e5872bf830c6e68cfed4eb393febcbbfe7f3c12d37bb0ab8a39c9498",
-    "app/scenery/imported_hedge.gd": "978979be98f8c0456e145bbfd27c770fbeac0946134e0e36764a5407b7483233",
+    "app/scenery/imported_hedge.gd": "57bb053b77d05b403b65d02c4ffd4eb1cd95d2518760a96da5d0526cb31c6b87",
     "app/scenery/imported_vegetation.gd": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
     "app/scenery/models.gd": "72daff888627ac0839246777fb2aec49ef33a0a4403cd1ae4fa6ba0c49f4f703",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",

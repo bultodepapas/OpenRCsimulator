@@ -145,6 +145,7 @@ func _test_batched_build() -> void:
 		and bool(root.get_meta("source_only", false)))
 	_check("bush cards use one batched source atlas and no per-plant nodes", _has_card_batch(root)
 		and int(root.get_meta("bush_cards", 0)) > 0)
+	_test_fitted_card(root)
 	_check("sparse canopy trees use imported CommonTree_3 geometry", int(root.get_meta("trees", 0)) > 0
 		and _has_source_tree_batch(root))
 	_check("CPU placements retain stable IDs, source assets, transforms and source triangle counts",
@@ -162,6 +163,72 @@ func _test_batched_build() -> void:
 	_check("tree meshes can be omitted while retaining the imported hedge card batch",
 		int(no_tree_root.get_meta("trees", -1)) == 0 and int(no_tree_root.get_meta("bush_cards", 0)) > 0)
 	no_tree_root.free()
+
+
+func _test_fitted_card(root: Node3D) -> void:
+	var cards := root.get_node("Bush_Common_Flowers_4View") as MultiMeshInstance3D
+	var material := cards.material_override as ShaderMaterial
+	_check("the billboard discards fully transparent atlas samples", material != null
+		and float(material.get_shader_parameter("alpha_cutoff")) > 0.0)
+	var mesh := cards.multimesh.mesh as ArrayMesh
+	_check("hedge billboards use one non-indexed triangle per instance", mesh != null
+		and mesh.get_surface_count() == 1 and mesh.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES
+		and mesh.surface_get_array_len(0) == 3 and mesh.surface_get_array_index_len(0) == 0
+		and cards.multimesh.instance_count == int(root.get_meta("bush_cards")))
+	if mesh == null or mesh.get_surface_count() != 1 or mesh.surface_get_array_len(0) != 3:
+		return
+	var arrays := mesh.surface_get_arrays(0)
+	var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var positions: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var side := ImportedHedge._frame_size(ImportedHedge._manifest())
+	var aligned := uv.size() == 3
+	for i in uv.size():
+		aligned = aligned and positions[i].is_equal_approx(Vector3(uv[i].x - 0.5, 0.5 - uv[i].y, 0.0) * side)
+	_check("fitted card preserves the source square's UV-to-position mapping", aligned)
+	if not aligned:
+		return
+	var area := (uv[1] - uv[0]).cross(uv[2] - uv[0]) * 0.5
+	_check("fitted card preserves front winding and covers less area than the square", area > 0.0 and area < 1.0)
+	var bounds_valid := true
+	for placement: Dictionary in root.get_meta("cpu_placements", []):
+		if placement.type == "source_impostor":
+			var xf: Transform3D = placement.transform
+			var radius := side * xf.basis.x.length() * 0.5
+			var box := AABB(xf.origin - Vector3.ONE * radius, Vector3.ONE * 2.0 * radius)
+			# Merging float32 AABBs rounds the far endpoint at outdoor coordinates.
+			bounds_valid = bounds_valid and cards.multimesh.custom_aabb.grow(0.0001).encloses(box)
+	_check("batch culling encloses all card bounds through camera turns and flyover tilt", bounds_valid)
+	var atlas := (load(ATLAS_PATH) as Texture2D).get_image()
+	var frames := 4
+	_check("atlas supplies four square frames without mipmaps", atlas != null and not atlas.has_mipmaps()
+		and atlas.get_width() == frames * atlas.get_height())
+	if atlas == null:
+		return
+	var width := atlas.get_height()
+	var supported := true
+	var inside_cull_radius := true
+	var transparent_border := true
+	for frame in frames:
+		for y in width:
+			var left := width
+			var right := -1
+			for x in width:
+				if atlas.get_pixel(frame * width + x, y).a > 0.0:
+					transparent_border = transparent_border and x > 0 and x < width - 1 and y > 0 and y < width - 1
+					left = mini(left, x)
+					right = x
+			if right < left:
+				continue
+			# A nonzero texel contributes up to one texel either side of its center
+			# under bilinear filtering. Convexity covers the whole row between the extremes.
+			for x: float in [left - 0.5, right + 1.5]:
+				for v: float in [y - 0.5, y + 1.5]:
+					var corner := Vector2(x, v) / width
+					supported = supported and Geometry2D.point_is_inside_triangle(corner, uv[0], uv[1], uv[2])
+					inside_cull_radius = inside_cull_radius and corner.distance_to(Vector2(0.5, 0.5)) <= 0.5
+	_check("clamped samples outside the original square remain transparent in every atlas frame", transparent_border)
+	_check("all four views preserve the bilinear support of every nontransparent atlas texel", supported)
+	_check("every filtered silhouette fits the camera-independent culling radius", inside_cull_radius)
 
 
 func _layout_signature(placements: Array) -> String:
@@ -196,7 +263,7 @@ func _all_source_cards(placements: Array[Dictionary]) -> bool:
 	for placement: Dictionary in placements:
 		if str(placement.get("asset_id", "")) != "bush_common_flowers_4view_impostor" \
 			or str(placement.get("source_asset_id", "")) != "bush_common_flowers" \
-			or int(placement.get("source_triangles", -1)) != 2:
+			or int(placement.get("source_triangles", -1)) != 1:
 			return false
 	return not placements.is_empty()
 
