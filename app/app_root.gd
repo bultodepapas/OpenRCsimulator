@@ -210,6 +210,7 @@ var _loading_retained_home: Control
 var _loading_retained_random: CanvasLayer
 var _loading_started_usec := 0
 var _loading_phase_usec := 0
+var _loading_stage_started_usec := 0
 var _loading_phase := ""
 var _loading_resource_done := false
 var _loading_resource_ok := false
@@ -1892,15 +1893,26 @@ func _flight_loading_checkpoint(stage: String) -> bool:
 	if _loading_cancelled or not is_inside_tree():
 		return false
 	var now := Time.get_ticks_usec()
-	if not _loading_phase.is_empty():
-		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
+	_record_flight_loading_stage(now)
 	_loading_phase = stage
+	_loading_stage_started_usec = now
 	_loading_screen.set_stage(stage)
 	await _flight_loading_draw()
 	if not last_flight_loading.has("feedback_usec"):
 		last_flight_loading.feedback_usec = Time.get_ticks_usec() - _loading_started_usec
 	_loading_phase_usec = Time.get_ticks_usec()
 	return not _loading_cancelled and is_inside_tree()
+
+
+func _record_flight_loading_stage(ended_usec: int) -> void:
+	if _loading_phase.is_empty():
+		return
+	last_flight_loading.phases.append({
+		stage = _loading_phase,
+		started_usec = _loading_stage_started_usec,
+		checkpoint_wait_usec = _loading_phase_usec - _loading_stage_started_usec,
+		work_usec = ended_usec - _loading_phase_usec,
+	})
 
 
 func _prepare_flight_resource(path: String) -> bool:
@@ -1986,8 +1998,7 @@ func _remove_flight_loading_screen() -> void:
 func _finish_flight_loading(outcome: String) -> void:
 	_loading_scene_resource = null
 	var now := Time.get_ticks_usec()
-	if not _loading_phase.is_empty():
-		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
+	_record_flight_loading_stage(now)
 	last_flight_loading.status = outcome
 	last_flight_loading.total_usec = now - _loading_started_usec
 	_loading_phase = ""
