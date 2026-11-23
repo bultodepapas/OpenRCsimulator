@@ -71,7 +71,7 @@ class SceneryPlaceTests(unittest.TestCase):
             self.assertTrue(place.clear_of_trees(trees, north, east, 15.75),
                             "Maple should clear the existing treeline and its 3 m buffer")
 
-    def test_tree_placement_count_stays_flat_and_sapling_mix_keeps_one_common_tree_1(self):
+    def test_tree_placement_count_stays_flat_and_sapling_mix(self):
         tree_groups = [group for group in self.data["groups"] if group.get("prefab") in ("shade_tree", "sapling")]
         tree_count = sum(len(group["placements"]["value"]) for group in tree_groups)
         self.assertEqual(tree_count, 17)
@@ -81,7 +81,7 @@ class SceneryPlaceTests(unittest.TestCase):
         seed = place.loader_seed(group["id"]) & 0x7FFFFFFF
         resolved = [choices[((seed + index * 7919) & 0x7FFFFFFF) % len(choices)]
                     for index in range(len(group["placements"]["value"]))]
-        self.assertEqual(resolved.count("common_tree_1"), 1)
+        self.assertCountEqual(resolved, ["landscapelab_quercus2", "landscapelab_pine"] * 2)
 
 
 if __name__ == "__main__":
