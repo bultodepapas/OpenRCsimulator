@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode cull_disabled, depth_draw_opaque;
 
-uniform sampler2D impostor_atlas : source_color, filter_linear, repeat_disable;
+uniform sampler2D impostor_atlas : source_color, filter_linear_mipmap, repeat_disable;
 uniform float alpha_cutoff : hint_range(0.0, 1.0) = 0.32;
 uniform float atlas_frames = 4.0;
 

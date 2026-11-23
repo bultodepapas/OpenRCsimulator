@@ -20,8 +20,8 @@ const PROFILE_KEYS: Array[String] = ["pits_min_behind_m", "spectators_min_behind
 	"approach_slope", "tree_clearance_m", "runway_margin_m"]
 const FENCE_STYLES: Array[String] = ["wire", "rail", "barbed", "gate", "stock_gate"]
 const SURFACES: Array[String] = ["gravel", "dirt", "worn"]
-const FIELD_COVERS: Array[String] = ["pasture", "hay", "grazed", "close_grazed"]
-const MAX_MEADOW_PARCELS := 4 # Ground shader uniform capacity.
+const FIELD_COVERS: Array[String] = ["pasture", "hay", "grazed", "close_grazed", "row_crop"]
+const MAX_MEADOW_PARCELS := 5 # Ground shader uniform capacity.
 const MAX_POINTS := 4096
 
 
@@ -100,7 +100,7 @@ static func validate(raw: Variant, field: Dictionary) -> Dictionary:
 					if gtype == "patch" and group.get("surface", "") in FIELD_COVERS:
 						meadow_count += 1
 						if meadow_count > MAX_MEADOW_PARCELS:
-							errors.append(path + ": field supports at most four meadow parcels")
+							errors.append(path + ": field supports at most %d meadow parcels" % MAX_MEADOW_PARCELS)
 				"flowers":
 					_flowers(errors, path, gd, group, geometry)
 			groups.append(group)

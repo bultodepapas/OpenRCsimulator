@@ -905,6 +905,41 @@
    }
   },
   {
+   "id": "south-forage-crop",
+   "type": "patch",
+   "zone": "countryside",
+   "surface": "row_crop",
+   "collides": false,
+   "points": {
+    "value": [
+     [-76, 119],
+     [-78, 201],
+     [-158, 203],
+     [-164, 107]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Agricultural cover inside the shared property lines"
+   }
+  },
+  {
+   "id": "forage-boundary-wire",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "wire",
+   "collides": false,
+   "points": {
+    "value": [
+     [-164, 107],
+     [-158, 203],
+     [-84, 201.15]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Forage plot boundary with tractor access at the northeast headland"
+   }
+  },
+  {
    "id": "lane-side-wire",
    "type": "fence",
    "zone": "countryside",
