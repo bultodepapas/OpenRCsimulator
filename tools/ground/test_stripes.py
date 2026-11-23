@@ -11,7 +11,7 @@ import numpy as np
 from PIL import Image
 import check_stripes as stripes
 from check_stripes import errors, mask_for, SIZE, verify_projection
-from check_surfaces import checked_run, import_mutation_project, parse_args
+from check_surfaces import APP_DEFAULT, checked_run, import_mutation_project, make_mutation_app, parse_args
 
 
 class StripeLinearRgbTests(unittest.TestCase):
@@ -169,6 +169,44 @@ class StripeAcceptanceTests(unittest.TestCase):
         with patch("check_stripes.assess", side_effect=unrelated_failure):
             with self.assertRaisesRegex(RuntimeError, "unexpected reason: unrelated failure"):
                 stripes.verify_negative_controls(self.filtered, self.raw, self.reference8, self.reference16)
+
+
+class RunwayMutationTests(unittest.TestCase):
+    shader = Path("render/ground.gdshader")
+    meadow = Path("render/meadow_surface.gdshaderinc")
+    filtered = b"float stripe = square_filtered(u, (along_x ? footprint.y : footprint.x) / (2.0 * stripe_m));"
+    raw = b"float stripe = fract(u) < 0.5 ? 1.0 : -1.0;"
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.source = Path(temporary.name) / "app"
+        self.target = Path(temporary.name) / "mutant"
+        (self.source / "render").mkdir(parents=True)
+        self.ground_bytes = (APP_DEFAULT / self.shader).read_bytes()
+        self.meadow_bytes = (APP_DEFAULT / self.meadow).read_bytes()
+        (self.source / self.shader).write_bytes(self.ground_bytes)
+        (self.source / self.meadow).write_bytes(self.meadow_bytes)
+
+    def test_raw_runway_mutation_changes_only_one_assignment(self):
+        self.assertEqual(self.ground_bytes.count(self.filtered), 1)
+        self.assertIn(b"square_filtered(phase, pixel)", self.meadow_bytes)
+        make_mutation_app(self.source, self.target, "unfiltered")
+        self.assertEqual((self.target / self.shader).read_bytes(), self.ground_bytes.replace(self.filtered, self.raw))
+        self.assertEqual((self.target / self.meadow).read_bytes(), self.meadow_bytes)
+        self.assertEqual((self.source / self.shader).read_bytes(), self.ground_bytes)
+        self.assertEqual((self.source / self.meadow).read_bytes(), self.meadow_bytes)
+
+    def test_missing_and_duplicate_runway_assignments_are_rejected(self):
+        for matches, replacement in ((0, b"// " + self.filtered), (2, self.filtered + b"\n" + self.filtered)):
+            with self.subTest(matches=matches):
+                ground = self.ground_bytes.replace(self.filtered, replacement)
+                (self.source / self.shader).write_bytes(ground)
+                target = self.target.with_name(f"mutant-{matches}")
+                with self.assertRaisesRegex(RuntimeError, f"expected one filtered runway stripe assignment, found {matches}"):
+                    make_mutation_app(self.source, target, "unfiltered")
+                self.assertEqual((target / self.shader).read_bytes(), ground)
+                self.assertEqual((self.source / self.shader).read_bytes(), ground)
 
 
 class MutationImportRetryTests(unittest.TestCase):

@@ -208,7 +208,8 @@ def main() -> int:
         raise RuntimeError("independent repeat images or render metadata differ")
     metrics = assess(records["filtered"], records["raw"], records["reference8"], records["reference16"])
     rejected = verify_negative_controls(records["filtered"], records["raw"], records["reference8"], records["reference16"])
-    sources = [app / "render/ground.gdshader", CAPTURE_SCRIPT, Path(__file__).resolve()]
+    sources = [app / "render/ground.gdshader", app / "render/meadow_surface.gdshaderinc",
+               CAPTURE_SCRIPT, Path(__file__).resolve(), Path(__file__).with_name("check_surfaces.py").resolve()]
     summary = {"format": "openrc-l9c-stripe-reference v1", "complete": True,
                "scope": "stripe-only error against a 16x reference, separated from measured 8x/16x disagreement; not proven convergence or perceptual shimmer closure",
                "metrics": metrics, "reference_margin": REFERENCE_MARGIN,
