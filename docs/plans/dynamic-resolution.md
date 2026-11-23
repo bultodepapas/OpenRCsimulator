@@ -57,8 +57,9 @@ and 4 have native evidence.
 For a fresh profile or Restore graphics defaults, a renderer with completed
 viewport GPU timing enables a 30 FPS default on identified integrated GPUs and
 identified discrete or laptop GPUs below 0.15× RTX 3090 estimated throughput.
-The bundle uses Native bilinear reconstruction and a 75–85% internal 3D range.
-Retina configurations with MetalFX Spatial support keep Automatic reconstruction.
+The bundle allows a 75–85% internal 3D range while Automatic reconstruction
+resolves to Native bilinear. Retina configurations with MetalFX Spatial support
+keep fixed scaling and Automatic reconstruction.
 Existing profiles retain their saved target and reconstruction. Compatibility
 and stock builds use fixed scale, with a 75% recommendation on a fresh UHD 630.
 Manual targets remain available on other supported GPUs. Renderer selection

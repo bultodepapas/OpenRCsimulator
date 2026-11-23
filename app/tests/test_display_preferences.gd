@@ -523,9 +523,8 @@ func _test_dynamic_resolution_gpu_defaults() -> void:
 	var uhd := "Intel(R) UHD Graphics 630"
 	for adapter: String in [uhd, "NVIDIA GeForce GT 1030", "Apple M1"]:
 		var settings := AutoGraphicsPolicy.first_run(adapter, "", 1.0, 60.0, supported)
-		_check("%s gets the adaptive target, Native and a usable ceiling" % adapter,
-			settings.get("dynamic_resolution_fps") == 30 and settings.get("render_scale") == 85
-			and settings.get("reconstruction") == "native")
+		_check("%s gets the adaptive target and a usable ceiling" % adapter,
+			settings.get("dynamic_resolution_fps") == 30 and settings.get("render_scale") == 85)
 	for adapter: String in ["NVIDIA GeForce RTX 3090", "llvmpipe", "Unknown adapter"]:
 		var settings := AutoGraphicsPolicy.first_run(adapter, "", 1.0, 60.0, supported)
 		_check("%s keeps a fixed scale by default" % adapter, not settings.has("dynamic_resolution_fps"))
@@ -554,7 +553,7 @@ func _test_dynamic_resolution_gpu_defaults() -> void:
 	_check("fresh supported profiles persist the full adaptive bundle",
 		store.apply_gpu_defaults(true) == OK and DisplayPreferences.new(PREFS).config == store.config
 		and store.config.dynamic_resolution_fps == 30 and store.config.render_scale == 85
-		and store.config.reconstruction == "native")
+		and store.config.reconstruction == "auto")
 	DisplayPreferences.first_run_defaults = fixed
 	_check("loss of native timing preserves the saved target and its ceiling",
 		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 30
@@ -567,7 +566,7 @@ func _test_dynamic_resolution_gpu_defaults() -> void:
 	var manual := store.config.duplicate()
 	manual.dynamic_resolution_fps = 0
 	manual.render_scale = 100
-	manual.reconstruction = "auto"
+	manual.reconstruction = "native"
 	_check("saved Off, ceiling and upscaler survive supported launch and reload",
 		store.save(manual) == OK and store.apply_gpu_defaults(false) == OK
 		and DisplayPreferences.new(PREFS).config == manual)

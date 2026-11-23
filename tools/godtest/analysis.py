@@ -30,9 +30,14 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
         return "missing controller observations"
     target = manifest["dynamic_resolution_fps"]
     output = manifest["resolution"]
-    ceiling = manifest.get("render_scale", 100)
-    sizes = {tuple(axis * percent // 100 for axis in output): percent / 100
-             for percent in (75, 85, ceiling) if percent <= ceiling}
+    ceiling = manifest.get("render_scale", 100) / 100
+    # Mirror the flight viewport's half-pixel adjustment when an exact 75% scalar rounds below the floor.
+    floor = 0.75
+    minimum_size = tuple((axis * 75 + 99) // 100 for axis in output)
+    if tuple(axis * 75 // 100 for axis in output) != minimum_size:
+        floor = max((pixels + 0.5) / axis for pixels, axis in zip(minimum_size, output))
+    sizes = {tuple(int(axis * scale) for axis in output): scale
+             for scale in (floor, 0.85, ceiling) if floor <= scale <= ceiling}
     confirmed = False
     when = phase.get("start_usec", 0)
     end = phase.get("end_usec", -1)

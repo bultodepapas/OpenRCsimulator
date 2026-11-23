@@ -7,13 +7,30 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from analysis import report
+from analysis import _dynamic_resolution_problem, report
 from godtest import _case_success, _tour_success
 from runner import write_json
 from test_godtest import artifacts, replace_stream
 
 
 class RenderingEvidenceTests(unittest.TestCase):
+    def test_dynamic_resolution_uses_a_pixel_safe_floor_on_retina(self):
+        output = [3456, 2234]
+        scale = 1676.5 / 2234
+        frame = {"frame_id": 4, "generation": 3, "recorded_usec": 3,
+                 "input_size": [2593, 1676], "output_size": output}
+        status = {"target_fps": 30, "configured_scale": scale, "state": "observing",
+                  "completed_frame": frame}
+        phase = {"id": "recover", "start_usec": 1, "end_usec": 100,
+                 "dynamic_resolution": [{"phase_id": "recover", "observed_usec": 5, "status": status}],
+                 "dynamic_resolution_end": dict(frame, frame_id=6, recorded_usec=99)}
+        manifest = {"dynamic_resolution_fps": 30, "resolution": output, "render_scale": 85}
+        self.assertEqual(_dynamic_resolution_problem(phase, manifest), "")
+        frame["input_size"] = [2592, 1675]
+        status["configured_scale"] = 0.75
+        self.assertEqual(_dynamic_resolution_problem(phase, manifest),
+                         "completed pixels do not match an allowed scale")
+
     def test_dynamic_resolution_requires_a_confirmed_frame_and_allows_holding_the_ceiling(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "run"

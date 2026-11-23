@@ -201,8 +201,7 @@ static func first_run(adapter: String, os_name: String = "", screen_scale: float
 	var uses_retina_metalfx := retina and bool(facts.get("metalfx_spatial_available", false))
 	if bool(facts.get("dynamic_resolution_supported", false)) and not uses_retina_metalfx \
 			and (gpu_class == "integrated" or low_end_discrete):
-		settings.merge({"dynamic_resolution_fps": LOW_GPU_DYNAMIC_TARGET, "render_scale": LOW_GPU_DYNAMIC_CEILING,
-			"reconstruction": "native"})
+		settings.merge({"dynamic_resolution_fps": LOW_GPU_DYNAMIC_TARGET, "render_scale": LOW_GPU_DYNAMIC_CEILING})
 	if needs_fallback(gpu) or gpu_class == "software" or float(gpu.rel) < SCENE_LOW_BELOW:
 		settings.merge(BASIC_SETTINGS)
 		# A recognized shared-memory GPU this slow is pixel-bound; an unknown GPU keeps full resolution.
