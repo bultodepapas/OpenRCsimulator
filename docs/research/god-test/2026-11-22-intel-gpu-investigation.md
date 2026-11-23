@@ -4,6 +4,8 @@ Owner: VQ-07h-A2-R1 (renderer/workload), PT1h-R15 (measurement) and GOD-12/13
 (tour evidence). Source reviewed: `91d7d6ddcb2182422a496036825e9113f82d2433`.
 Branch: `investigate/intel-gpu-performance-2026-11-22`.
 
+This report records the external review at that revision. For today's source, the next experiment and the decision after each outcome, use the [Intel performance plan](../../plans/low-end-gpu-performance.md).
+
 This is a source, retained-evidence and primary-source investigation. **No new
 Intel benchmark was run for this branch.** The reviewed code already contains
 GFX-IGPU-01/02. Their earlier results are not improvements made by this branch.

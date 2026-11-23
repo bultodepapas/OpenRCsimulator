@@ -62,6 +62,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Entry points per track
 
+### Intel UHD 630
+
+The [22 November external investigation](god-test/2026-11-22-intel-gpu-investigation.md) revisited the [Linux tour results](god-test/2026-11-22-linux-uhd630-comparison.md). The [render-internals study](god-test/2026-11-22-intel-render-internals.md) identified sixteen hypotheses. The [adversarial audit](god-test/2026-11-22-intel-plan-adversarial-audit.md) checked their evidence and the [experiment design](god-test/2026-11-22-intel-gpu-experiments.md) describes the proposed Green/Club comparisons. Each study links its original inputs where available. The current execution order and acceptance criteria live in the [Intel performance plan](../plans/low-end-gpu-performance.md).
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.

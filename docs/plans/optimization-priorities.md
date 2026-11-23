@@ -2,6 +2,8 @@
 
 Reviewed **2026-10-28**, source `f1e877d54`. Planning only: this review ran no new benchmarks.
 
+**Intel UHD 630, 22 November.** The next decision is whether the current Club field adds a repeatable cost in Home or airborne flight relative to Green Paradise. The VQ-07h-A2-R1 plan gives the baseline, isolation sequence and conditions for accepting a single optimization. [Intel performance plan](low-end-gpu-performance.md)
+
 **Audit follow-up, 2026-11-19:** the [CPU/GPU source audit](../research/performance-audit-2026-11-19/README.md) adds reproducible event/calibration defects and a 35-item register of current CPU, GPU, native, memory and measurement work. It distinguishes known fixes and policy tradeoffs from defects; performance candidates still require complete-workload profiling under the gates below. The event-ordering, airship-restore, calibration-identity, cloud-cache and zero-opacity-sky items are repaired ([resolution](../research/performance-audit-2026-11-19/README.md#resolution-status-2026-11-19)).
 
 **Implementation follow-up, 2026-10-28:** immediate Fly now overlaps numeric launch preparation with world construction. Five alternating native 1080p pairs reduce median first readiness from **3.789 to 3.531 s (6.8%)** on the measured Windows host; warm readiness is essentially unchanged. [UI-34c / DT-11a evidence and limits](../research/menu-investigations/UI-34c-R5/immediate-fly-2026-10-28/README.md). This is editor loading evidence, not release or flight-performance qualification.

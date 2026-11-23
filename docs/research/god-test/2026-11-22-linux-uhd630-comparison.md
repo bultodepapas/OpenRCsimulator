@@ -85,10 +85,10 @@ On megatron (8192 MiB, X11) it ran as follows:
 | Worst startup / loading frame | 30.9 / 10.6 s | 5.5 / 2.1 s | 3.5 / 2.4 s |
 | Case data | ineligible (first Home) | ineligible (first Home) | **valid** |
 
-Every circuit completes on that path, so the jet and Corsair tour can pass there.
-The large first-case freezes are synchronous OpenGL shader compiles at first use with
-a cold Mesa disk cache (later cases reuse it). They are real stalls on a player's first
-launch, and they leave the first Home phase without enough drawn frames.
+All three circuits completed. The first Home had too few drawn frames in the Stik
+and jet cases. The original study suspected first-use OpenGL compilation because
+later cases reused Mesa's cache. Isolating that cost from scene construction and
+first draw requires matched cold and warm runs.
 
 ## Is the GPU underperforming?
 
@@ -215,24 +215,25 @@ and 75 % scale, as recorded in `identity.graphics`:
 | Jet | 40.7 FPS, 1 % low 27.3 | 38.0 FPS, 1 % low 26.6 | 1.00 | **valid** |
 | Corsair | 40.2 FPS, 1 % low 27.0 | 38.2 FPS, 1 % low 26.5 | 1.00 | **valid** |
 
-Every circuit finished in real time, and all six cases exited cleanly. Peak RSS was
-2.0–2.5 GB, so Compatibility now fits PRIMIS. Home ran at 22–30 FPS against 6 FPS for
-the fixed workload. The remaining defect is first-use OpenGL shader compilation with
-a cold Mesa cache. The first case froze for 8.8–12.3 s at startup and 6.9–7.4 s while
-loading; later cases froze for 1.0–4.9 s. That freeze also starves the first Home
-phase of drawn frames.
+The report records real-time circuits and clean exits for all six cases. Peak RSS
+was 2.0–2.5 GB in this host configuration. Home ran at 22–30 FPS with the
+Automatic bundle and about 6 FPS in the earlier fixed workload. Several settings
+changed between those runs. The first case froze for 8.8–12.3 s at startup and
+6.9–7.4 s while loading. Later cases froze for 1.0–4.9 s. Too few drawn frames
+made the first Stik Home ineligible.
 
 ## First-use freezes: cause and GFX-IGPU-02
 
-The long freezes are a first-launch cost. Godot's Compatibility renderer caches
+The largest observed freezes occurred on first launch. Godot's Compatibility renderer caches
 compiled programs in `user://shader_cache` (83 MB here), and Mesa keeps its own disk
 cache. Each tour case starts with a fresh profile, so it always measures Godot's cache
 cold. A second launch with Godot's cache warm took 18.6 s to Home and 7.6 s
 Home → flight, against 19.1 s and 8.4 s cold; Mesa's cache was already warm in both.
-A timestamped verbose launch with warm caches showed no freeze above 3.5 s: the
-first 3D Home draw. The remaining time is CPU work spread over script, resource and
-shader loading on the 35 W i5. OpenGL compiles on the main thread, so a loading
-thread or warm-up pass cannot hide the cold-cache compile; it can only move it.
+A timestamped verbose launch with warm caches still showed a 3.5 s block at the
+first 3D Home draw. The individual contributions of Mesa compilation, resource
+loading and scene construction remain open. The loading comparison in the
+[current plan](../../plans/low-end-gpu-performance.md) separates those stages and
+records the worst frame as well as time to readiness.
 
 GFX-IGPU-02 explains the wait instead
 ([graphics_preparation.gd](../../../app/render/graphics_preparation.gd)). The
@@ -245,12 +246,7 @@ them changes. A rendered PRIMIS session showed both notices and wrote both marke
 
 ## Follow-ups
 
-1. Product: investigate a bounded Low terrain-shader variant (`ground.gdshader`);
-   the exploratory Home ablation suggests substantial cost, pending repeated
-   matched measurements and visual acceptance.
-2. Product: split the first Home's indivisible frame (3.5 s with warm caches on PRIMIS).
-3. Product: let the first-flight calibration also lower the render scale when even Low
-   misses its budget, covering weak GPUs missing from the capability table.
-4. Test pool: rendered pool checks on PRIMIS still use Godot's Wayland backend and
-   can hit the same shutdown join.
-5. Report the Wayland shutdown join upstream with a reproducer.
+The [Intel performance plan](../../plans/low-end-gpu-performance.md) owns product
+follow-up for terrain, loading and graphics settings. The PRIMIS checked pool
+uses Godot's Wayland backend. Reproducing and reporting its shutdown join is a
+separate host/tooling follow-up. [Host guide](../../tools/primis-testlab.md)

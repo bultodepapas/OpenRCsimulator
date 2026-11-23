@@ -34,7 +34,9 @@ These mechanisms can matter during ordinary flight, unlike optional lighting
 skin composition or a first-use cloud bake. Their source visibility does not
 establish their contribution or priority above pixel/ground attribution.
 
-| Corrected placement | Source-confirmed mechanism | Scope and principal uncertainty |
+Substep numbers in this table refer to the [external plan](https://github.com/bultodepapas/OpenRCsimulator/blob/e23822431/docs/plans/low-end-gpu-performance.md). On main, phase 3 groups the remaining render-pass candidates under L4. [Current plan](../../plans/low-end-gpu-performance.md)
+
+| Placement in external plan | Source-confirmed mechanism | Scope and principal uncertainty |
 | --- | --- | --- |
 | Conditional L4.1: R01 | A changed windsock pose/clock can schedule `UPDATE_ONCE` without a receiver-frustum test. | Requires an active projected cue and visible source; actual GPU executions and cost need capture. |
 | Conditional L4.2: R03 | Low retains tree cards in at most eight sector batches, merging near and far bounds. | A visible batch submits its instances; wasted work depends on the camera and finer batches add draws. |
@@ -466,7 +468,7 @@ enabled and representative accepted/oversized sources.
 
 Keep the [existing protocol](2026-11-22-intel-gpu-experiments.md) authoritative
 for admission, native backend, effective pixels, raw evidence and paired runs.
-The [corrected plan](../../plans/low-end-gpu-performance.md#5-phases-and-subphases)
+The [current plan](../../plans/low-end-gpu-performance.md)
 owns order: L0/L1 effective baseline and pixel response, L2 bounded Simple
 ground if attribution supports it, parallel L3 loading, then an active L4
 residual candidate. Automatic promotion and scoped integration are L5/L6;

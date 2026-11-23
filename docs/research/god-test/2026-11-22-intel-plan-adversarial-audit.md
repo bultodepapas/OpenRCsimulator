@@ -110,8 +110,10 @@ candidate and return to the current baseline without expanding scope.
 
 ## 5. Independent integrated-plan review
 
-The final reviewer found six implementation/acceptance gaps in the first draft.
-The corrected plan resolves them as follows:
+The reviewer found six gaps in the external draft. Section and substep numbers in
+the table refer to the [reviewed branch plan](https://github.com/bultodepapas/OpenRCsimulator/blob/e23822431/docs/plans/low-end-gpu-performance.md).
+The [plan on main](../../plans/low-end-gpu-performance.md) groups this work into
+four phases and makes new settings conditional on measurement.
 
 | Review ID | Challenge | Required correction in the plan |
 | --- | --- | --- |
@@ -153,7 +155,7 @@ specialists rechecked the landscape builders and actual diagnostic controls
 against main, then refreshed the relevant changes after main advanced from
 `85a2475f60029a4b6b09f23f643119bceea84a45` to
 `843f357c07af842054f3ccd6728f93beca9a57ef` (17 intervening commits).
-The [plan](../../plans/low-end-gpu-performance.md#11-test-the-dominant-feature-hypothesis-with-green-paradise)
+The [plan](../../plans/low-end-gpu-performance.md#phase-2--locate-the-cost-l1)
 now begins attribution with the [G0–G6 isolation sequence](2026-11-22-intel-gpu-experiments.md#green-paradise-and-club-field-isolation).
 
 The main corrections are:

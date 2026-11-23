@@ -6,7 +6,7 @@ VQ-07h-A2-R1 owns this investigation. L0–L6 retain the external study's subste
 
 ## Starting point on main
 
-Reviewed 22 November 2026 against `2f49e3e5a`. The external investigation used earlier source revisions. Its Green/Club comparison and material experiments remain open.
+Reviewed 22 November 2026 against `f2f473a69`. The external investigation used earlier source revisions. Its Green/Club comparison and material experiments remain open.
 
 | What we know | Consequence for the next run |
 | --- | --- |
@@ -16,6 +16,8 @@ Reviewed 22 November 2026 against `2f49e3e5a`. The external investigation used e
 | Club now paints five managed parcels and the enclosed infield on the ground. Worn-path shoulders can share the treatment. The runway meadow switch controls plant colonies. Green retains shared ground, sky and aircraft work with a simpler field. | Capture the current field and material identities. Switching meadow or hiding scenery leaves painted terrain in place. Earlier captures predate the current shader and hedges. [Field data](../../app/data/scenery/default.json) · [Field binding](../../app/render/field.gd) · [Worn-path binding](../../app/render/worn_ground_material.gd) |
 
 ## Phase 1 · Establish the baseline (L0)
+
+PRIMIS has since verified first-run selection in a small scene on a patched engine. Mobile/Vulkan selected 30 FPS and received a completed frame at its 85% ceiling on a 1366×768 virtual output. The Compatibility control held 75% fixed. Use the latter configuration for the Intel product comparison at 1920×1080. [First-run observations](../research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md#rollout-decision)
 
 1. **L0.1 · Select the workload.** Use the stock Ugly Stik, daylight, calm weather, the same camera, 1920×1080 output and a private profile. For the historical Automatic configuration select Compatibility/OpenGL and Low explicitly. The Linux GOD TEST renderer option `auto` resolves to Forward+. Verify the effective renderer, adapter, AA, reconstruction and scale after startup. [Tour guide](../../tools/godtest/PERFORMANCE_TOUR.md)
 2. **L0.2 · Confirm what the run can measure.** Record source, engine, active native flight backend, Mesa version, cap/VSync, cache and host load. Record output, drawable and internal pixels separately, labelling unavailable dimensions. Use an admitted session for performance work. PRIMIS's normal rendered queue supports light and medium functional checks under a shared virtual display. [PRIMIS operating guide](../tools/primis-testlab.md)

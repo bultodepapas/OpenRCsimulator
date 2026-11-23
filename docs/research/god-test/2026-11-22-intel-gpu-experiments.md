@@ -180,8 +180,8 @@ separate override to record. Thus the Green/Club difference includes material,
 geometry, coverage, scene and physical differences. It is a diagnostic screen,
 not a one-variable speedup or a proposal to replace the principal landscape.
 
-The refreshed [Club field builder](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/field.gd)
-also binds four authored pasture/hay/grazing parcels into the existing ground
+At the external review revision the [Club field builder](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/field.gd)
+bound four authored pasture/hay/grazing parcels into the existing ground
 draw; [worn-path materials](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/worn_ground_material.gd)
 can copy the same data when enabled and bound (normally inactive at Low).
 Green uses the shared revised shader but leaves this
@@ -193,6 +193,8 @@ adds hedges, fences/gates, trees and trails. Its physical obstacle inventory als
 changes through the separate collision builder; a visual object's
 `collides: false` is not evidence of no physical proxy. Preserve the actual
 world identity within Club tests. No source change establishes its own cost.
+
+For a current run, include the fifth painted parcel, enclosed infield and current hedge materials in the frozen workload. Check the material bound to both turf and enabled worn shoulders. [Current field binder](../../../app/render/field.gd) · [Infield shader](../../../app/render/club_infield.gdshaderinc)
 
 #### Cases and order
 
@@ -234,18 +236,7 @@ it or match a stable state, mark the Home comparison inconclusive and use the
 matched flight screen, or add a bounded reversible diagnostic hold to that
 owner. Test production adaptation separately after attribution.
 
-**Flight scale also needs an explicit owner check.** New main exposes
-Settings → Display → Dynamic resolution (experimental), with saved targets
-Off/30/60/90/120 and Off by default. The
-[controller](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/flight_dynamic_resolution.gd)
-only starts with the explicit experiment argument, supported patched-engine
-completed-frame API, Native/bilinear, a usable scale ladder above the 75% floor,
-and an active focused/drawable unpaused flight. Compatibility/OpenGL is
-unsupported; an unavailable option or absent controller metadata does not
-establish a successful adaptive run. Keep Off for G0–G5, record engine support
-and the actual viewport scalar during each window, and preserve the player's
-original choice for restoration. Treat computed nominal dimensions as computed;
-an actual-size receipt is a separate observation.
+**Flight scale also needs an explicit owner check.** On current main a fresh eligible profile can request 30 FPS automatically when the renderer supports completed GPU timing. Compatibility/OpenGL uses fixed scale. For G0–G5 explicitly select Off, record the actual viewport scale throughout each window and restore the player's prior choice. Label dimensions calculated from the scalar as estimates until observed. [Current controller and defaults](../../plans/dynamic-resolution.md)
 
 Do not run `@half_res` against an active flight controller. Both write the same
 scale. A frozen ablation also suspends flight and can restore the controller's
@@ -253,7 +244,7 @@ ceiling, with a new evidence window on resume. Probe and controller restoration
 can therefore change the intended A/B state. Disable adaptation first, inspect
 scale/status after each phase, and reject ownership conflicts. Test adaptive
 production behavior separately after fixed attribution through its
-[existing owner](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/docs/plans/dynamic-resolution.md).
+[existing owner](../../plans/dynamic-resolution.md).
 
 The normal Home path loads saved preferences. A direct `--scripted` launch is a
 different technical route and bypasses that first-run settings initialization.
