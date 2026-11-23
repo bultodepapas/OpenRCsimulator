@@ -1,0 +1,15 @@
+{
+  "baseline_live_bytes": 32768,
+  "configured_limit_bytes": 36864,
+  "durability_mode": "WAL_and_FULL_sync",
+  "kind": "synthetic_sql_equivalent_not_actual_RawStore_or_HTTP",
+  "limitation": "Does not exercise upstream JSON/schema validation; shows the SQL admission boundary only. No production capacity or filesystem usage measured.",
+  "overshoot_bytes": 4096,
+  "page_size_bytes": 4096,
+  "post_insert_above_quota": true,
+  "post_insert_live_bytes": 40960,
+  "pre_insert_quota_check_passed": true,
+  "sqlite_version": "3.46.1",
+  "stored_rows": 1,
+  "synthetic_body_bytes": 8192
+}
