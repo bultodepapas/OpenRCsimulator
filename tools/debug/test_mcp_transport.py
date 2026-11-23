@@ -19,9 +19,11 @@ import mcp_server  # noqa: E402
 from tools.testqueue import pool_mcp  # noqa: E402
 
 
-def request(request_id, name, arguments=None):
-    return {"jsonrpc": "2.0", "id": request_id, "method": "tools/call",
-            "params": {"name": name, "arguments": arguments or {}}}
+def request(request_id, name, arguments=None, *, progress_token=None):
+    params = {"name": name, "arguments": arguments or {}}
+    if progress_token is not None:
+        params["_meta"] = {"progressToken": progress_token}
+    return {"jsonrpc": "2.0", "id": request_id, "method": "tools/call", "params": params}
 
 
 class PipeServer:
@@ -276,10 +278,14 @@ mcp_server.serve()
                     {"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": "launch"}},
                     {"jsonrpc": "2.0", "id": "ping", "method": "ping"},
                     request("status", "sim_test_status", {"request_id": "batch"}),
-                    request("stop", "sim_stop"),
+                    request("stop", "sim_stop", progress_token=0),
                 )
-                early = {reply["id"]: reply for reply in (server.get(), server.get())}
+                early_messages = [server.get() for _ in range(3)]
+                early = {reply["id"]: reply for reply in early_messages if "id" in reply}
                 self.assertEqual(set(early), {"ping", "status"})
+                queued, = [reply for reply in early_messages if "id" not in reply]
+                self.assertEqual(queued, {"jsonrpc": "2.0", "method": "notifications/progress", "params": {
+                    "progressToken": 0, "progress": 0, "message": "Queued sim_stop"}})
                 self.assertEqual(early["ping"]["result"], {})
                 cached = json.loads(early["status"]["result"]["content"][0]["text"])
                 self.assertEqual(cached["phase"], "cached")
@@ -289,7 +295,11 @@ mcp_server.serve()
                 server.thread.join(0.1)
                 self.assertTrue(server.thread.is_alive())
                 release.set()
-                later = {reply["id"]: reply for reply in (server.get(), server.get())}
+                completed, executing, stopped = server.get(), server.get(), server.get()
+                self.assertEqual(executing, {"jsonrpc": "2.0", "method": "notifications/progress", "params": {
+                    "progressToken": 0, "progress": 1, "message": "Executing sim_stop"}})
+                later = {reply["id"]: reply for reply in (completed, stopped)}
+                self.assertEqual((completed["id"], stopped["id"]), ("launch", "stop"))
                 self.assertEqual(set(later), {"launch", "stop"})
                 self.assertFalse(later["launch"]["result"]["isError"])
                 self.assertFalse(later["stop"]["result"]["isError"])
@@ -355,8 +365,8 @@ mcp_server.serve()
                 server.send(request(1, "sim_command", {"command": "first"}))
                 self.assertTrue(entered.wait(3))
                 server.send(request(2, "sim_command", {"command": "second"}),
-                            request(1, "sim_command", {"command": "duplicate"}),
-                            request(3, "sim_command", {"command": "rejected"}),
+                            request(1, "sim_command", {"command": "duplicate"}, progress_token="duplicate"),
+                            request(3, "sim_command", {"command": "rejected"}, progress_token="busy"),
                             {"jsonrpc": "2.0", "id": 4, "method": "ping"},
                             {"jsonrpc": "2.0", "method": "tools/call",
                              "params": {"name": "sim_stop"}})
@@ -418,6 +428,18 @@ mcp_server.serve()
         self.assertEqual(replies[0]["error"]["code"], -32600)
         self.assertEqual(replies[1], {"jsonrpc": "2.0", "id": "after", "result": {}})
         self.assertEqual(len(replies), 2)
+
+    def test_progress_is_optional_and_never_uses_a_final_reply_slot(self):
+        for token, slots in (("stop-status", 0), (True, 2), (["invalid"], 2)):
+            with self.subTest(token=token, slots=slots), \
+                    patch.object(mcp_server, "OUTPUT_QUEUE_LIMIT", 1), \
+                    patch.object(mcp_server, "PROGRESS_QUEUE_LIMIT", slots), \
+                    patch.object(mcp_server, "call_tool", return_value=[]) as tool:
+                output = io.StringIO()
+                mcp_server.serve(io.StringIO(json.dumps(request(1, "sim_stop", progress_token=token))), output)
+                self.assertEqual(json.loads(output.getvalue()), {"jsonrpc": "2.0", "id": 1,
+                                                                 "result": {"content": [], "isError": False}})
+                tool.assert_called_once_with("sim_stop", {})
 
     def test_broken_output_does_not_cancel_accepted_actions(self):
         entered, release, ping_seen = threading.Event(), threading.Event(), threading.Event()

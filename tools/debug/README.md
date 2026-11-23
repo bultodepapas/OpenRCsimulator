@@ -120,8 +120,13 @@ $ debugctl.py press text="Keep changes"
 `sim_sticks`, `sim_key`, `sim_screenshot` (an inline JPEG), `sim_bugit`, `sim_stop`, and `sim_command`, which reaches
 any other bridge command.
 
-- Every interactive action returns the fresh snapshot.
-- `sim_fly` closes the launch menu and resumes, so the aircraft is flying when it returns.
+- Actions that refresh the UI return their acknowledgement and a fresh snapshot. If only the refresh fails,
+  the tool still succeeds. Its JSON text contains `acknowledged_result`, `failed_stage: "look"`, `detail`
+  and `next_action`. Call `sim_look` to refresh after an acknowledged action.
+- `sim_fly` with the default `ready=true` confirms the flight is unpaused. If flight creation succeeds and
+  screen inspection, closing the launch menu or resuming then fails, the tool returns `isError=true` with
+  the creation acknowledgement, failing stage and diagnostic. Use `sim_state` to inspect that flight.
+  `ready=false` returns the initial flight state and leaves its launch menu and pause state alone.
 - `sim_launch` points that server at its own session.
 
 The same server exposes `sim_test_run` (launch and wait in one call), `sim_test_launch`,
@@ -132,7 +137,12 @@ status and recovery are separate from interactive session handles and `sim_stop`
 
 The interactive bridge uses MCP over stdio, the standard library and `debugctl.py`.
 Protocol intake and cached batch status can progress during an ordered simulator
-call; `sim_stop` still executes in that ordered lane. See the
+call. Clients can supply `params._meta.progressToken` on an interactive tool request,
+including `sim_stop`, to receive best-effort queued and executing notifications. The
+executing notification marks the start of the tool call. Its final reply reports the
+result. A slow reader can miss progress updates. [MCP progress format](https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/progress)
+
+See the
 [queue operating contract](../testqueue/README.md#mcp-checked-batches) for overload,
 EOF reply loss, recovery IDs and observation limits.
 The checked-batch tools also use the configured [test pool](../testqueue/README.md).

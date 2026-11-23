@@ -102,6 +102,66 @@ class McpServerTests(unittest.TestCase):
         self.assertTrue(unnamed["result"]["isError"])
         self.assertIn("ref", unnamed["result"]["content"][0]["text"])
 
+    def test_press_preserves_acknowledgement_when_snapshot_fails(self):
+        applied = {"pressed": "e5", "value": True}
+        for look in (TimeoutError("reply lost"), debugctl.Refused("session busy"), {"route": "flight"}):
+            with self.subTest(look=look), patch.object(debugctl, "result_of", side_effect=[applied, look]) as bridge:
+                result = self.rpc("tools/call", {"name": "sim_press", "arguments": {"ref": "e5"}})["result"]
+                self.assertEqual([call.args[0] for call in bridge.call_args_list], ["press", "look"])
+                self.assertFalse(result["isError"])
+                partial = json.loads(result["content"][0]["text"])
+                self.assertEqual(partial["acknowledged_result"], applied)
+                self.assertEqual(partial["failed_stage"], "look")
+                self.assertIn("sim_look", partial["next_action"])
+
+    def test_fly_readiness_failures_preserve_created_flight(self):
+        flown = {"aircraft": "trainer", "paused": True, "tick": 1}
+        menu, clear = {"screens": ["launch_review"]}, {"screens": []}
+        for stage, commands, responses in (
+            ("state", ["state"], [TimeoutError("lost state")]),
+            ("close", ["state", "close"], [menu, debugctl.Refused("menu held")]),
+            ("close", ["state", "close"], [menu, TimeoutError("lost close reply")]),
+            ("close", ["state", "close"] * 3 + ["state"], [menu, {}] * 3 + [menu]),
+            ("resume", ["state", "resume"], [clear, debugctl.Refused("still paused: launch hold")]),
+            ("resume", ["state", "resume"], [clear, TimeoutError("lost resume reply")]),
+            ("resume", ["state", "resume"], [clear, {"paused": True}]),
+        ):
+            with self.subTest(stage=stage, responses=responses), \
+                    patch.object(debugctl, "result_of", side_effect=[flown, *responses]) as bridge:
+                result = self.rpc("tools/call", {"name": "sim_fly"})["result"]
+                self.assertTrue(result["isError"])
+                partial = json.loads(result["content"][0]["text"])
+                self.assertEqual(partial["acknowledged_result"], flown)
+                self.assertEqual(partial["failed_stage"], stage)
+                self.assertIn("sim_state", partial["next_action"])
+                if isinstance(responses[-1], Exception):
+                    self.assertIn(str(responses[-1]), partial["detail"])
+                self.assertEqual([call.args[0] for call in bridge.call_args_list], ["fly", *commands])
+
+    def test_fly_returns_requested_flight_state_and_snapshot(self):
+        flown = {"aircraft": "trainer", "paused": True}
+        resumed = {"aircraft": "trainer", "paused": False}
+        for ready, replies, commands, expected in (
+            (False, [flown, LOOK], ["fly", "look"], flown),
+            (True, [flown, {"screens": ["pause"]}, {}, {"screens": []}, resumed, LOOK],
+             ["fly", "state", "close", "state", "resume", "look"], resumed),
+        ):
+            with self.subTest(ready=ready), patch.object(debugctl, "result_of", side_effect=replies) as bridge:
+                result = self.rpc("tools/call", {"name": "sim_fly", "arguments": {"ready": ready}})["result"]
+                self.assertFalse(result["isError"])
+                summary, snapshot = result["content"][0]["text"].split("\n\n", 1)
+                self.assertEqual(json.loads(summary), expected)
+                self.assertIn("# route", snapshot)
+                self.assertEqual([call.args[0] for call in bridge.call_args_list], commands)
+
+    def test_fly_pending_timeout_requires_observing_the_existing_session(self):
+        with patch.object(debugctl, "result_of", side_effect=debugctl.Refused("timed out")) as bridge:
+            result = self.rpc("tools/call", {"name": "sim_fly"})["result"]
+            self.assertTrue(result["isError"])
+            self.assertIn("timed out", result["content"][0]["text"])
+            self.assertIn("sim_state", result["content"][0]["text"])
+            self.assertEqual([call.args[0] for call in bridge.call_args_list], ["fly"])
+
     def test_serve_speaks_newline_delimited_json_and_survives_garbage(self) -> None:
         stdin = io.StringIO('not json\n{"jsonrpc":"2.0","id":7,"method":"ping"}\n'
                             '{"jsonrpc":"2.0","method":"notifications/initialized"}\n')

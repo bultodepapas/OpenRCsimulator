@@ -33,7 +33,8 @@ INSTRUCTIONS = (
     "Drives the running OpenRC RC-flight simulator. Start with sim_launch (unless one is running), then sim_look: "
     "it lists every visible control with a ref, its role, name, value and options, plus suggested next steps. Act "
     "with sim_press / sim_choose (by ref from the latest look, or by field/text), sim_close, sim_open, sim_setup + "
-    "sim_fly, sim_sticks, sim_key. Each action returns the new snapshot. sim_catalog lists valid ids. "
+    "sim_fly, sim_sticks, sim_key. Actions return a snapshot or their acknowledgement plus a follow-up "
+    "diagnostic. Use sim_look or sim_state to inspect the existing session after a partial result. sim_catalog lists valid ids. "
     "sim_command reaches any other bridge command (help lists them). Stop the app with sim_stop when done.")
 INSTRUCTIONS += (" On an enrolled shared host, launch and control use the host test queue. This server retains "
                  "its own session handle; a fresh client must launch its own session or explicitly provide "
@@ -185,6 +186,7 @@ TEST_QUEUE_LIMIT = 16
 TEST_LANE = {"sim_test_launch", "sim_test_recover", "sim_test_run", "sim_fleet", "sim_test_list"}
 TEST_WORKERS = 4
 OUTPUT_QUEUE_LIMIT = 64
+PROGRESS_QUEUE_LIMIT = 8
 MAX_INPUT_CHARS = 1024 * 1024
 OUTPUT_ENQUEUE_SECONDS = 0.2
 OUTPUT_DRAIN_SECONDS = 0.5
@@ -227,12 +229,8 @@ def _bridge(command: str, args: dict | None = None, timeout: float = 600.0):
         return debugctl.result_of(command, args or {}, timeout=timeout)
     except debugctl.Refused as error:
         raise ToolError(f"{command} refused: {error}") from None
-    except (OSError, TimeoutError) as error:
-        raise ToolError(f"no simulator answers ({error}); call sim_launch first") from None
-
-
-def _look_text() -> str:
-    return debugctl.format_look(_bridge("look"))
+    except OSError as error:
+        raise ToolError(f"{command} has no confirmed reply ({error}). Inspect the existing session with sim_state.") from None
 
 
 def _lookup(args: dict) -> dict:
@@ -249,9 +247,41 @@ def _captured(function, argv: list[str]) -> tuple[int, str]:
     return status, out.getvalue()
 
 
+def _partial_result(summary, stage: str, error: Exception, next_action: str) -> str:
+    return json.dumps({"acknowledged_result": summary, "failed_stage": stage, "detail": str(error),
+                       "next_action": next_action}, ensure_ascii=False)
+
+
 def _then_look(summary) -> list[dict]:
+    try:
+        snapshot = debugctl.format_look(_bridge("look"))
+    except Exception as error:  # A missing or malformed snapshot cannot undo the acknowledged action.
+        return [_text(_partial_result(summary, "look", error, "Call sim_look to refresh this session."))]
     head = summary if isinstance(summary, str) else json.dumps(summary, ensure_ascii=False)
-    return [_text(head + "\n\n" + _look_text())]
+    return [_text(head + "\n\n" + snapshot)]
+
+
+def _ready_flight(flown):
+    stage = "state"
+    try:
+        for closed in range(4):
+            stage = "state"
+            screens = _bridge("state", {"fresh": True})["screens"]
+            if not isinstance(screens, list):
+                raise ToolError("invalid screens list")
+            if all(screen == "home" for screen in screens):
+                break
+            stage = "close"
+            if closed == 3:
+                raise ToolError(f"launch screens remain open: {screens}")
+            _bridge("close")
+        stage = "resume"
+        resumed = _bridge("resume")
+        if not isinstance(resumed, dict) or resumed.get("paused") is not False:
+            raise ToolError(f"bridge did not confirm an unpaused flight: {resumed}")
+        return resumed
+    except Exception as error:  # fly already acknowledged creation, even if the readiness sequence failed.
+        raise ToolError(_partial_result(flown, stage, error, "Call sim_state to inspect the existing flight.")) from None
 
 
 def _text(text: str) -> dict:
@@ -333,15 +363,12 @@ def call_tool(name: str, args: dict) -> list[dict]:
     if name == "sim_setup":
         return _then_look(_bridge("setup", {k: v for k, v in args.items() if v is not None}))
     if name == "sim_fly":
-        flown = _bridge("fly", {k: args[k] for k in ("aircraft", "start") if args.get(k)}, timeout=300.0)
+        try:
+            flown = _bridge("fly", {k: args[k] for k in ("aircraft", "start") if args.get(k)}, timeout=300.0)
+        except ToolError as error:  # Godot can time out waiting for its already-started loading screen.
+            raise ToolError(f"{error} Inspect the route with sim_state before requesting a flight again.") from None
         if args.get("ready", True):
-            for _ in range(3):  # the launch review / pause menu holds a new flight
-                if not [s for s in _bridge("state", {"fresh": True}).get("screens", []) if s != "home"]:
-                    break
-                with contextlib.suppress(ToolError):
-                    _bridge("close")
-            with contextlib.suppress(ToolError):
-                flown = _bridge("resume")
+            flown = _ready_flight(flown)
         return _then_look(flown)
     if name == "sim_home":
         return _then_look(_bridge("home", timeout=120.0))
@@ -464,8 +491,8 @@ def _input_lines(stdin):
 def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
     """Read requests independently of ordered tools; drain accepted work on EOF.
 
-    Only cached sim_test_status uses the separate status lane. Other tools stay
-    in one FIFO because session environment and _captured() are process-global.
+    Cached status and pool tools use independent lanes. Simulator tools stay in
+    one FIFO because session environment and _captured() are process-global.
     The explicit stdout reference is never replaced by a tool's redirection.
     Once accepted calls finish, pending reply delivery has a bounded drain time;
     a slow or disconnected reader can lose complete or partial replies.
@@ -473,11 +500,15 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
     ordered = queue.Queue(TOOL_QUEUE_LIMIT)
     status = queue.Queue(STATUS_QUEUE_LIMIT)
     tests = queue.Queue(TEST_QUEUE_LIMIT)
-    outgoing = queue.Queue(OUTPUT_QUEUE_LIMIT)
+    # One writer preserves wire order. Optional notifications have their own
+    # small allowance so they never consume a slot reserved for final replies.
+    outgoing = queue.Queue(OUTPUT_QUEUE_LIMIT + PROGRESS_QUEUE_LIMIT)
+    reply_slots = threading.BoundedSemaphore(OUTPUT_QUEUE_LIMIT)
+    progress_slots = threading.BoundedSemaphore(PROGRESS_QUEUE_LIMIT)
     finished = object()
     disconnected = threading.Event()
     id_lock = threading.Lock()
-    in_flight = set()
+    in_flight = {}  # request id -> active progress token, or None
 
     # Bypass the TextIOWrapper for real stdio: a blocked pipe write must not
     # hold its buffered-I/O lock during Python interpreter shutdown.
@@ -489,7 +520,7 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
     def release_id(tracked_id):
         if tracked_id is not None:
             with id_lock:
-                in_flight.discard(tracked_id)
+                in_flight.pop(tracked_id, None)
 
     def abandon_output():
         # Atomic with the final admission decision; never held across I/O.
@@ -500,13 +531,20 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
         if disconnected.is_set():
             release_id(tracked_id)
             return
-        try:
-            outgoing.put((reply, tracked_id), timeout=OUTPUT_ENQUEUE_SECONDS)
-        except queue.Full:
+        if reply_slots.acquire(timeout=OUTPUT_ENQUEUE_SECONDS):
+            outgoing.put_nowait((reply, tracked_id, reply_slots))
+        else:
             # An unavailable observer cannot stop already accepted side effects.
             # No further input is accepted after delivery is abandoned.
             abandon_output()
             release_id(tracked_id)
+
+    def progress(token, value, message):
+        if disconnected.is_set() or not progress_slots.acquire(blocking=False):
+            return
+        params = {"progressToken": token, "progress": value, "message": message}
+        outgoing.put_nowait(({"jsonrpc": "2.0", "method": "notifications/progress", "params": params},
+                             None, progress_slots))
 
     def write_line(data):
         if output_fd is None:
@@ -526,7 +564,8 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
             item = outgoing.get()
             if item is finished:
                 return
-            reply, tracked_id = item
+            reply, tracked_id, slots = item
+            slots.release()
             try:
                 if not disconnected.is_set():
                     try:
@@ -549,7 +588,11 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
             item = work.get()
             if item is finished:
                 return
-            reply, invocation, tracked_id = item
+            reply, invocation, tracked_id, token = item
+            if token is not None:
+                # Admission publishes the queued notification under this lock.
+                with id_lock:
+                    progress(token, 1, f"Executing {invocation[0]}")
             try:
                 response = _invoke(reply, invocation)
             except BaseException:
@@ -594,14 +637,22 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
                 if tracked_id is not None:
                     duplicate = tracked_id in in_flight
                     if not duplicate:
-                        in_flight.add(tracked_id)
+                        in_flight[tracked_id] = None
                 if not duplicate and invocation is not None:
                     work = (status if invocation[0] == "sim_test_status"
                             else tests if invocation[0] in TEST_LANE else ordered)
+                    meta = message["params"].get("_meta")
+                    token = meta.get("progressToken") if work is ordered and isinstance(meta, dict) else None
+                    if type(token) not in (int, str) or token in in_flight.values():
+                        token = None
                     try:
-                        work.put_nowait((reply, invocation, tracked_id))
+                        work.put_nowait((reply, invocation, tracked_id, token))
                     except queue.Full:
                         busy = True
+                    else:
+                        if token is not None:
+                            in_flight[tracked_id] = token
+                            progress(token, 0, f"Queued {invocation[0]}")
             if duplicate:
                 error = _rpc_error(None, -32600, "request id is already in flight; duplicate not accepted")
                 error["error"]["data"] = {"requestId": tracked_id}
