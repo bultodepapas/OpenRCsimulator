@@ -705,3 +705,10 @@ owns thresholds, hardware examples and evidence limits. **GFX-IGPU-01, 2026-11-2
 recognized integrated or software GPUs below the Low threshold also start at a 75 %
 3D render scale. Lowering pixels was the largest measured gain on a UHD 630; driver
 tuning offered none.
+
+**VQ-07d, 2026-11-22.** Following the owner's low-end default request, enable
+dynamic resolution for eligible new profiles and graphics restores when the
+current renderer exposes completed GPU timing. Keep saved targets and ceilings
+across renderer changes. Preserve the Retina MetalFX Spatial policy and fixed
+fallbacks. The [dynamic resolution plan](plans/dynamic-resolution.md#phase-3--implement-the-controller-and-player-controls-m2)
+owns the starting range, capability checks and remaining qualification.
