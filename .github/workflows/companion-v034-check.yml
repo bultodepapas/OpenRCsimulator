@@ -1,0 +1,20 @@
+name: AFC companion and scenery release checks
+on:
+  push:
+    branches: [release-check/v0.3.4-companions]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Check source-bound companion admission and Club collision
+        run: bash .github/companion-v034-check.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: companion-release-checks
+          path: ${{ runner.temp }}/companion-v034/evidence/
+          if-no-files-found: error
