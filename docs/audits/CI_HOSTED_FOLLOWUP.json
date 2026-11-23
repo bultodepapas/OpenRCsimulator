@@ -168,7 +168,7 @@
     "disk_backed_attempt_limit": "GOD TEST snapshot fixtures require 512 MiB free; host had 236 MiB. Two cases failed on that limit. All 212 passed separately on tmpfs; final 105 release cases passed separately.",
     "physical_io_limit": "Checked-runner physical-write measurement required a disk-backed TMPDIR. That suite passed 328 cases with 26 skips on disk."
   },
-  "latest_head_status": "Follow-up source0e57e797 passed bounded local renewals and final Home1/2/3. New hosted results remain pending. LU-34 source-geometry limits still fail independently; thresholds remain unchanged.",
+  "latest_head_status": "Bounded renewals and final Home1/2/3 passed locally; Linux and Windows native qualification passed on 3cc86387. Source/dispatch repair e47284bb is locally validated, with rendered acceptance and final aggregate pending. LU-34 geometry limits remain failing and unchanged.",
   "third_hosted_attempt": {
     "head": "847d8d1a26b885124f6b634ee9badfe6684bef13",
     "merge": "22a1ae368a75b94977d8dfa46cc4888499424ce7",
@@ -597,6 +597,437 @@
     "actionlint_version": "1.7.12",
     "shellcheck_and_pyflakes_enabled": false,
     "application_tree": "44faebf550d6257ef086760c2f50662faaf82957",
+    "workflow_lint": "pass",
+    "shell_syntax": "pass",
+    "git_diff_check": "pass"
+  },
+  "visual_mutation_repair": {
+    "finding": "CI-19",
+    "commit": "e47284bb2f8750ad10fdd53519e84ab837353236",
+    "tree": "0617c17127fe8a8e050efb2a7cae1ab617186990",
+    "failed_hosted_run": 45079559400,
+    "failed_hosted_job": 137385028425,
+    "failure_head": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+    "failure_at_utc": "2026-11-22T23:56:18.6025073Z",
+    "failure": "L9c surface review failed: cannot apply no-filter mutation to the current ground shader",
+    "affected_helper_and_shader_inputs_identical_at_3cc": true,
+    "root_cause": "The analytic square_filtered body moved from ground.gdshader into shared meadow_surface.gdshaderinc; the negative-control helper still searched the former file for its definition.",
+    "mutation": "Change exactly one complete active runway stripe assignment in the disposable copy to the original raw +/-1 square wave. Reject zero or multiple active targets before writing the copied shader.",
+    "unchanged_production_sha256": {
+      "app/render/ground.gdshader": "f5dcdb248629fa637d5b99dd95f9b77c7929245b5e4645a731c4f7a12482cd38",
+      "app/render/meadow_surface.gdshaderinc": "25822760eee329a2a1ab103ace832d5bb7b714bd09f3c179447a8bf11e338e0e"
+    },
+    "changed_files_sha256": {
+      "app/capture.sh": "f4b46f39241be2362a1d791aea950efdce110b5230446573c34a06010646b27b",
+      "tools/ci/capture_groups.py": "30657d43ff59c56726857c8998e1b20e6afed4302d4ecb98a57a99370bffbf58",
+      "tools/ci/test_capture_groups.py": "d278102eb2f9585d9511f0ab641b8eaf1a3eb29f7c501154154983fdbdc08cba",
+      "tools/ground/check_stripes.py": "c38ecb7ddb49cbb02a5ba72c7da867cc271c4d361f93841c1ff8dba0b8858bb5",
+      "tools/ground/check_surfaces.py": "024a5d0f8ce9cb880436f0fccde14a1cc0dfe9513cd43819b584dc0dd7886bb2",
+      "tools/ground/test_stripes.py": "bb5e58059789dd4f8f77287d0d971071a40c7af7108a79fa94330ecdc989295a"
+    },
+    "receipt_changes": [
+      "Both ground receipts bind shared meadow_surface.gdshaderinc",
+      "Stripe-reference receipt also binds check_surfaces.py mutation helper"
+    ],
+    "dispatch": "Full/all and ground-only run ground:stripe-tests after required import and before production captures. Strict ordered roster updated; other groups retain their checks.",
+    "checks": [
+      {
+        "command": "env PYTHONDONTWRITEBYTECODE=1 python tools/ground/test_stripes.py",
+        "cases": 21,
+        "passed": 21,
+        "unittest_seconds": 0.419,
+        "process_seconds": 0.752
+      },
+      {
+        "command": "env PYTHONDONTWRITEBYTECODE=1 python tools/ci/test_capture_groups.py",
+        "cases": 24,
+        "passed": 24,
+        "unittest_seconds": 41.346,
+        "process_seconds": 41.555
+      },
+      {
+        "control": "Historical 3cc helper with actual shader fixtures and new source tests",
+        "result": "Expected failure; original mutation-anchor error reproduced"
+      },
+      {
+        "control": "Zero and duplicate runway assignments",
+        "result": "Both refused; original and copied shader bytes unchanged"
+      },
+      {
+        "control": "CRLF input for raw-runway and disabled-surface mutations",
+        "result": "Bytes equal source with only the target statement replaced; original input unchanged"
+      },
+      {
+        "control": "Source-suite exit 12 in full and ground-only captures",
+        "result": "Stops during setup before rendering; no group or full success receipt"
+      },
+      {
+        "command": "bash -n app/capture.sh",
+        "result": "pass"
+      },
+      {
+        "command": "git diff --check",
+        "result": "pass"
+      }
+    ],
+    "local_environment": {
+      "interpreter": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "python": "3.12.14",
+      "numpy": "2.3.5",
+      "pillow": "13.0.0",
+      "xvfb_available": false
+    },
+    "hosted_visual_lock": {
+      "numpy": "2.5.3",
+      "pillow": "12.3.0"
+    },
+    "raw_suite_logs": "Session tool output only; no durable raw suite log or UTC suite-start timestamp recorded.",
+    "independent_review": "Six files independently reviewed; no blocker. No production shader change, broadened mutation, weakened rendered predicate, missing group check or invalid success receipt identified.",
+    "previous_home_verified_app_tree": "44faebf550d6257ef086760c2f50662faaf82957",
+    "repaired_app_tree": "dc5e9586d1ca8486e468e13d32ea897f98e7c573",
+    "complete_app_tree_delta": [
+      "capture.sh"
+    ],
+    "runtime_gdscript_shaders_solver_unchanged": true,
+    "home_rerun_at_repaired_tree": false,
+    "rendered_l9c_l9c_r1_pass_claimed": false,
+    "full_aggregate_pass_claimed": false,
+    "hosted_speedup_claimed": false
+  },
+  "renewed_source_hosted_observation": {
+    "head": "3cc863879f4e088e50efd0768e2a6f3edaaaa607",
+    "tree": "283112606f25e728c3b6543848bd9e2953994c48",
+    "merge": "c25851c0a5a87b9831af380924c9c7d2fa755fa0",
+    "merge_parents": [
+      "843f357c07af842054f3ccd6728f93beca9a57ef",
+      "3cc863879f4e088e50efd0768e2a6f3edaaaa607"
+    ],
+    "merge_tree_equals_audit_tree": true,
+    "run_id": 45087773718,
+    "observed_at_utc": "2026-11-23 00:40:14 UTC",
+    "jobs": [
+      {
+        "id": 137410189211,
+        "name": "CI orchestration and host regressions",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:16:19Z",
+        "completed_at": "2026-11-23T00:18:22Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410189211"
+      },
+      {
+        "id": 137410189487,
+        "name": "CI selection and release preflight",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:16:19Z",
+        "completed_at": "2026-11-23T00:17:44Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410189487"
+      },
+      {
+        "id": 137410190963,
+        "name": "Publication source rebind evidence",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-23T00:16:18Z",
+        "completed_at": "2026-11-23T00:16:17Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410190963"
+      },
+      {
+        "id": 137410630395,
+        "name": "three.js prototype (archived bake-off build)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:17:46Z",
+        "completed_at": "2026-11-23T00:20:16Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410630395"
+      },
+      {
+        "id": 137410630426,
+        "name": "Website source and download checks",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:17:46Z",
+        "completed_at": "2026-11-23T00:21:04Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410630426"
+      },
+      {
+        "id": 137410819726,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": "2026-11-23T00:38:33Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819726"
+      },
+      {
+        "id": 137410819737,
+        "name": "Godot visual captures",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819737"
+      },
+      {
+        "id": 137410819756,
+        "name": "RC native Linux build",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:18:25Z",
+        "completed_at": "2026-11-23T00:21:34Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819756"
+      },
+      {
+        "id": 137410819772,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": "2026-11-23T00:33:04Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819772"
+      },
+      {
+        "id": 137410819853,
+        "name": "Godot app (integration 0)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819853"
+      },
+      {
+        "id": 137410819858,
+        "name": "Godot app (units 0)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819858"
+      },
+      {
+        "id": 137410819886,
+        "name": "Godot app (units 7)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819886"
+      },
+      {
+        "id": 137410819899,
+        "name": "Godot app (units 1)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819899"
+      },
+      {
+        "id": 137410819904,
+        "name": "Godot app (units 4)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819904"
+      },
+      {
+        "id": 137410819909,
+        "name": "RC native Windows build",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:18:25Z",
+        "completed_at": "2026-11-23T00:27:01Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819909"
+      },
+      {
+        "id": 137410819931,
+        "name": "Godot app (units 2)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:25Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819931"
+      },
+      {
+        "id": 137410819965,
+        "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:25Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819965"
+      },
+      {
+        "id": 137410819973,
+        "name": "Godot app (units 5)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:25Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819973"
+      },
+      {
+        "id": 137410820135,
+        "name": "Godot app (units 6)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:25Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410820135"
+      },
+      {
+        "id": 137410820165,
+        "name": "Godot app (units 3)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:18:24Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410820165"
+      },
+      {
+        "id": 137410821544,
+        "name": "Visual group shadow (${{ matrix.group }})",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-23T00:18:23Z",
+        "completed_at": "2026-11-23T00:18:22Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410821544"
+      },
+      {
+        "id": 137410823369,
+        "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-23T00:18:23Z",
+        "completed_at": "2026-11-23T00:18:22Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410823369"
+      },
+      {
+        "id": 137413523336,
+        "name": "RC native production checks (linux)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-23T00:27:03Z",
+        "completed_at": "2026-11-23T00:36:39Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137413523336"
+      },
+      {
+        "id": 137413523337,
+        "name": "RC native production checks (windows)",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-11-23T00:27:03Z",
+        "completed_at": null,
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137413523337"
+      },
+      {
+        "id": 137417050455,
+        "name": "Release builds (Windows, Linux, macOS)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-23T00:38:34Z",
+        "completed_at": "2026-11-23T00:38:33Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137417050455"
+      },
+      {
+        "id": 137417050956,
+        "name": "NK-4 Windows package qualification",
+        "status": "completed",
+        "conclusion": "skipped",
+        "started_at": "2026-11-23T00:38:34Z",
+        "completed_at": "2026-11-23T00:38:33Z",
+        "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137417050956"
+      }
+    ],
+    "tooling": {
+      "job_id": 137410189211,
+      "ci_cases": 141,
+      "ci_seconds": 61.538,
+      "queue_cases": 459,
+      "queue_skips": 12,
+      "queue_seconds": 55.736,
+      "verified_linter_checksum": true
+    },
+    "linux_native": {
+      "job_id": 137410819726,
+      "job_seconds": 1209,
+      "runtime_domain_step_seconds": 51,
+      "fleet_checks": 634,
+      "fleet_failures": 0,
+      "required_marker": "NK3_RUNTIME_DOMAIN_NATIVE verdict=pass",
+      "marker_observed_at_utc": "2026-11-23T00:38:09.1720203Z",
+      "deliberate_stage_mutant_rejected": true
+    },
+    "windows_native": {
+      "job_id": 137410819772,
+      "job_seconds": 880,
+      "native_stage_session_replay_helicopter_markers": "pass",
+      "stage_checks": 104,
+      "stage_failures": 0,
+      "oracle_invocations_passed": 18,
+      "deliberate_stage_mutant_rejected": true
+    },
+    "telemetry": {
+      "run_id": 45087773694,
+      "job_id": 137410188464,
+      "conclusion": "success",
+      "seconds": 44
+    },
+    "portable_godtest": {
+      "run_id": 45087773669,
+      "jobs": [
+        {
+          "platform": "linux",
+          "id": 137410188813,
+          "conclusion": "success",
+          "seconds": 30
+        },
+        {
+          "platform": "macos",
+          "id": 137410189109,
+          "conclusion": "success",
+          "seconds": 26
+        },
+        {
+          "platform": "windows",
+          "id": 137410189125,
+          "conclusion": "success",
+          "seconds": 33
+        }
+      ]
+    },
+    "full_aggregate_pass": false,
+    "scope": "These completed jobs apply to 3cc86387 and its identical merge tree. The visual helper is still old at this source. Later repaired heads require their own selected results; supersession/cancellation does not qualify unfinished jobs.",
+    "pending_at_cutoff": [
+      "macOS native/default route",
+      "app integration",
+      "all unit shards",
+      "full visual",
+      "RC native Windows production"
+    ],
+    "later_integration_step_observation": {
+      "observed_at_utc": "2026-11-23T00:41:14Z",
+      "job_id": 137410819853,
+      "full_import": "success",
+      "mandatory_real_client_telemetry": "success",
+      "offline_measurement_validation": "failure",
+      "trajectory_v7_fleet_policy": "success",
+      "app_checks": "in_progress",
+      "unit_shards": "all eight in progress",
+      "failed_offline_subcommand": "not identified by available step metadata; archived log attribution pending"
+    }
+  },
+  "visual_repair_static_validation": {
+    "code_commit": "e47284bb2f8750ad10fdd53519e84ab837353236",
+    "markdown_files": 10,
+    "local_links_checked": 244,
+    "local_link_errors": [],
+    "audit_json_files_parsed": 5,
+    "workflow_blob_identities_verified": 8,
+    "actionlint_version": "1.7.12",
+    "shellcheck_and_pyflakes_enabled": false,
     "workflow_lint": "pass",
     "shell_syntax": "pass",
     "git_diff_check": "pass"
