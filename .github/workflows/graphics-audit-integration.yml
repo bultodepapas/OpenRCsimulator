@@ -22,6 +22,7 @@ jobs:
           sparse-checkout: |
             app
             tools
+            assets/aircraft
             docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes
             docs/research/ai-companions/AFC-02/rebinds
       - name: Fetch the accepted solver baseline
@@ -131,7 +132,7 @@ jobs:
           assert set(changed + added) <= allowed, {"unexpected": sorted(set(changed + added) - allowed)}
           for check in checks:
               log = (check.parent / "engine.log").read_text()
-              if check.parent.name.endswith("import"):
+              if json.loads(check.read_bytes())["label"] == "import":
                   continue
               counts = [int(n) for match in re.findall(r"(?:^|\s)(\d+) checks|checks=(\d+)", log) for n in match if n]
               if counts:
