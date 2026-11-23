@@ -516,6 +516,12 @@ def build():
 
     south_far_w, south_far_e = [-145, -65], [-164, 107]
     meadow("lane-side-pasture", "pasture", [south_w, south_e, south_far_e, south_far_w])
+    # The grower shares the hedge and the pasture wire. Leave a six-metre
+    # tractor opening at the hedge end of the new outer wire.
+    crop_corner = [-158, 203]
+    meadow("south-forage-crop", "row_crop", [south_e, east, crop_corner, south_far_e])
+    fence("forage-boundary-wire", "wire", [south_far_e, crop_corner, [-84, 201.15]],
+          "Forage plot boundary with tractor access at the northeast headland")
     fence("lane-side-wire", "barbed", [south_e, south_far_e, south_far_w, [-77.35, -51.1]],
           "Three wire boundaries meeting the lane-side gate strainer")
     lane_gate = [[-77, -51.03], [-72.55, -50.11]]

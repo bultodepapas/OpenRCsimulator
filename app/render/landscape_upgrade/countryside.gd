@@ -44,7 +44,8 @@ static func _load() -> bool:
 		var uv := PackedVector2Array()
 		var uv2 := PackedVector2Array()
 		for item: Variant in cell.vertices:
-			if not item is Array or item.size() != 10:
+			# Older fields and the road/yard vertices have no per-parcel style byte.
+			if not item is Array or (item.size() != 10 and item.size() != 11):
 				push_error("Countryside: invalid vertex")
 				return false
 			for value: Variant in item:
@@ -55,7 +56,7 @@ static func _load() -> bool:
 			normals.append(Vector3.UP)
 			uv.append(Vector2(item[3], item[4]))
 			uv2.append(Vector2(item[5], item[6]))
-			colors.append(Color(item[7], item[8], item[9]))
+			colors.append(Color(item[7], item[8], item[9], item[10] if item.size() == 11 else 0.0))
 		var indices := PackedInt32Array()
 		for index: Variant in cell.indices:
 			if not (index is float or index is int) or index != floor(float(index)) \

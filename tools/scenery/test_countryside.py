@@ -162,10 +162,33 @@ class CountrysideTest(unittest.TestCase):
             n0, e0, n1, e1 = parcel["bounds_ne_m"]
             length = e1 - e0 if parcel["row_axis"] == 0 else n1 - n0
             style = self.data["surface_style"]
-            expected = 0 if parcel["cover"] == "pasture" else min(style["headland_m"], length * style["headland_fraction"])
+            expected = 0 if parcel["cover"] in ("pasture", "resting_meadow") else min(style["headland_m"], length * style["headland_fraction"])
             self.assertEqual(parcel["headland_m"], expected)
             if parcel["cover"] == "wheat_harvest":
                 self.assertEqual(parcel["harvested_length_m"], style["harvested_length_m"])
+
+    def test_parcel_styles_continue_across_batches(self):
+        parcels = self.data["parcels"]
+        styles = [set() for _ in parcels]
+        for cell in self.data["cells"].values():
+            for vertex in cell["vertices"]:
+                if len(vertex) == 10:  # An unseeded road, yard or drainage margin.
+                    continue
+                u, v = vertex[3:5]
+                for idx, p in enumerate(parcels):
+                    n0, e0, n1, e1 = p["bounds_ne_m"]
+                    dn, de = (u, v) if p["row_axis"] == 0 else (v, u)
+                    north, east = n0 + dn, e0 + de + (dn - (n1 - n0) * 0.5) * p["shear"]
+                    if abs(north + vertex[2]) < .001 and abs(east - vertex[0]) < .001:
+                        self.assertEqual(round(vertex[10] * 255), p["surface_seed"])
+                        styles[idx].add((vertex[5], *(round(c * 255) for c in vertex[7:])))
+                        break
+                else:
+                    self.fail("Styled vertex lost its parent parcel")
+        self.assertTrue(all(len(style) == 1 for style in styles))
+        self.assertEqual(len(set.union(*styles)), len(parcels))
+        self.assertTrue({"cut_hay", "resting_meadow", "pasture", "wheat", "maize", "soil", "stubble"}
+                        <= {p["cover"] for p in parcels})
 
     def test_geometry_budget_winding_and_flight_area(self):
         self.assertLessEqual(len(self.data["cells"]), 40)

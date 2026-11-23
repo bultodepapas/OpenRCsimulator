@@ -8,6 +8,7 @@ const PARAMETERS: Array[StringName] = [
 	&"grass", &"tile_m", &"anti_tiling", &"macro_amp", &"dry_amount", &"pilot_xz", &"pilot_pin_m",
 	&"club_field_detail", &"turf_detail", &"turf_detail_strength", &"grass_photo_enabled", &"rc_grass_albedo",
 	&"meadow_count", &"meadow_extent", &"meadow_bounds", &"meadow_edges",
+	&"club_infield_edge_count", &"club_infield_bounds", &"club_infield_core", &"club_infield_edges", &"club_infield_apron",
 ]
 
 

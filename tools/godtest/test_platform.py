@@ -68,7 +68,7 @@ class PlatformTests(unittest.TestCase):
         self.assertTrue(all(case["require_native"] for case in cases))
         for overrides in ({"headless": True}, {"render_scale": 75}, {"max_fps": 30},
                           {"rendering_method": "gl_compatibility"}, {"phases": ["startup", "shutdown"]},
-                          {"dynamic_resolution_fps": True}):
+                          {"graphics": "automatic"}, {"dynamic_resolution_fps": True}):
             with self.subTest(overrides=overrides), self.assertRaisesRegex(ValueError, "dynamic resolution|dynamic_resolution_fps"):
                 catalog.scenario("runway-menus", {"dynamic_resolution_fps": 60, **overrides})
 

@@ -46,6 +46,12 @@ func _initialize() -> void:
 	_check(wrong_size.retired and wrong_size.reason == "apply_unverified", "a new generation with the wrong dimensions retires")
 	if DisplayServer.get_name() == "headless":
 		_check(not DynamicResolution.supports(root), "the headless renderer stays fixed")
+	_check(DynamicResolution._minimum_scale(FULL) == 0.75, "1080p preserves the exact 75 percent rung")
+	for output: Vector2i in [Vector2i(1366, 768), Vector2i(1365, 767)]:
+		var minimum_scale := DynamicResolution._minimum_scale(output)
+		var size := Vector2i(Vector2(output) * minimum_scale)
+		_check(minimum_scale < 0.85 and size.x >= ceili(output.x * 0.75) and size.y >= ceili(output.y * 0.75),
+			"%s retains a lower rung covering at least 75 percent of both axes" % output)
 	print("Flight resolution policy: %d failed" % failures)
 	quit(failures)
 

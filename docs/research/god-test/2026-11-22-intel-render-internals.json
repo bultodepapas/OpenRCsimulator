@@ -1,0 +1,1613 @@
+{
+  "schema": "openrc-intel-render-internals-research-v1",
+  "date": "2026-11-22",
+  "owners": [
+    "VQ-07h-A2-R1",
+    "PT1h-R15",
+    "GOD-12/13"
+  ],
+  "branch": "investigate/intel-gpu-performance-2026-11-22",
+  "source_commit": "81b48307c36323ac007a282183db63da81433764",
+  "report": "docs/research/god-test/2026-11-22-intel-render-internals.md",
+  "engine": {
+    "version": "4.8-beta2",
+    "revision": "cafc17a19"
+  },
+  "scope": {
+    "target": "Existing Intel UHD 630 installation from retained campaign",
+    "status": "Source and online research; no runtime modification or new device experiment",
+    "new_hardware_runs": 0,
+    "runtime_changes": false,
+    "host_changes": false,
+    "raw_campaign_access": "Retained summaries only; original GPU run.json/engine.log bundle outside Git",
+    "live_service": "Existing workspace has no configured test pool; no new submission or bypass attempted",
+    "conclusion": "Candidate mechanisms are established by source; contribution to measured slow phases is not established."
+  },
+  "count_definitions": {
+    "investigations": 16,
+    "recorded_distinct_search_queries": 19,
+    "primary_reference_pages": 19,
+    "pinned_engine_files": 10,
+    "note": "Questions may share a primary source/query. Search count is not a benchmark or independent confirmation count."
+  },
+  "searches": [
+    {
+      "id": "Q01",
+      "performed_by": "shader helper",
+      "query": "site:cdrdv2-public.intel.com 671201 Intel graphics API performance guide Gen9 textureGrad register pressure alpha shader",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S04"
+      ]
+    },
+    {
+      "id": "Q02",
+      "performed_by": "shader helper",
+      "query": "site:docs.godotengine.org \"GPU optimization\" \"fragment\" \"overdraw\" texture bandwidth",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S06"
+      ]
+    },
+    {
+      "id": "Q03",
+      "performed_by": "shader helper",
+      "query": "site:docs.godotengine.org texture mipmaps anisotropic filtering performance shader sampling",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S07"
+      ]
+    },
+    {
+      "id": "Q04",
+      "performed_by": "shader helper",
+      "query": "site:registry.khronos.org \"textureGrad\" \"non-uniform control flow\" derivatives shader",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S05"
+      ],
+      "followup": "Initial ES/nonuniform results were followed by lead reading desktop GLSL 3.30, the relevant contract."
+    },
+    {
+      "id": "Q05",
+      "performed_by": "shader helper",
+      "query": "site:docs.godotengine.org sky shader radiance update modes process half resolution quarter resolution",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S09"
+      ]
+    },
+    {
+      "id": "Q06",
+      "performed_by": "shader helper",
+      "query": "site:docs.godotengine.org optimizing 3d performance transparent opaque overdraw alpha scissor grass",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S08"
+      ]
+    },
+    {
+      "id": "Q07",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot SubViewport UPDATE_ALWAYS UPDATE_WHEN_VISIBLE UPDATE_ONCE rendering update mode",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S01"
+      ]
+    },
+    {
+      "id": "Q08",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org stable optimizing 3D performance MultiMesh culling visibility ranges batches draw calls",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S03"
+      ]
+    },
+    {
+      "id": "Q09",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot rendering visibility Node3D hide processing _process visible",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S12"
+      ]
+    },
+    {
+      "id": "Q10",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot custom drawing cache redraw CanvasItem split static dynamic drawing",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S11"
+      ]
+    },
+    {
+      "id": "Q11",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot ReflectionProbe update once move refresh expensive six faces compatibility rendering",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S10"
+      ]
+    },
+    {
+      "id": "Q12",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot renderingserver frame timestamps gpu viewport other viewports rendering time",
+      "date": "2026-11-22",
+      "supporting_source_ids": [],
+      "disposition": "Investigated diagnostic semantics; no new assertion that one viewport GPU timer measures all auxiliary work. Existing experiment protocol remains authoritative."
+    },
+    {
+      "id": "Q13",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot 4 optimizing GPU performance fragment overdraw MSAA viewport resolution",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S02"
+      ]
+    },
+    {
+      "id": "Q14",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org stable visibility ranges HLOD fade margins MultiMesh automatic mesh LOD",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S03"
+      ]
+    },
+    {
+      "id": "Q15",
+      "performed_by": "render-work helper",
+      "query": "site:docs.godotengine.org Godot shader material get_shader_parameter get cached rendering server performance",
+      "date": "2026-11-22",
+      "supporting_source_ids": [],
+      "disposition": "No pinned getter proof of GPU readback found; explicitly rejected getter/setter equals GPU barrier inference."
+    },
+    {
+      "id": "Q16",
+      "performed_by": "lead",
+      "query": "site:docs.godotengine.org Texture2D get_image fetching texture data GPU performance ImageTexture update",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S13",
+        "S19"
+      ]
+    },
+    {
+      "id": "Q17",
+      "performed_by": "lead",
+      "query": "site:registry.khronos.org glMapBufferRange GL_MAP_READ_BIT pending operations synchronization buffer",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S14"
+      ]
+    },
+    {
+      "id": "Q18",
+      "performed_by": "lead",
+      "query": "site:docs.godotengine.org background_loading thread_safe_apis GPU synchronization loading",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S16",
+        "S17"
+      ]
+    },
+    {
+      "id": "Q19",
+      "performed_by": "lead",
+      "query": "site:docs.godotengine.org pipeline_compilations Compatibility OpenGL shader compilation warmup",
+      "date": "2026-11-22",
+      "supporting_source_ids": [
+        "S18"
+      ]
+    }
+  ],
+  "primary_sources": [
+    {
+      "id": "S01",
+      "title": "Godot SubViewport",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_subviewport.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Update-mode semantics; paired with the pinned scheduler."
+    },
+    {
+      "id": "S02",
+      "title": "Godot Viewports",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/rendering/viewports.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Independent render targets and camera/layer context."
+    },
+    {
+      "id": "S03",
+      "title": "Godot MultiMesh optimization",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/using_multimesh.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Whole-batch culling; page carries an update notice, and local source confirms grouping."
+    },
+    {
+      "id": "S04",
+      "title": "Intel Graphics API Performance Guide 2.5",
+      "url": "https://cdrdv2-public.intel.com/671201/graphics-api-performance-guide-2-5.pdf",
+      "accessed": "2026-11-22",
+      "publisher": "Intel",
+      "use_and_limit": "Gen9/OpenGL architecture motivation; 2017, no Linux-driver implementation coverage."
+    },
+    {
+      "id": "S05",
+      "title": "Khronos GLSL 3.30 specification",
+      "url": "https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.3.30.pdf",
+      "accessed": "2026-11-22",
+      "publisher": "Khronos",
+      "use_and_limit": "Derivatives, divergent control flow and discard."
+    },
+    {
+      "id": "S06",
+      "title": "Godot 4.3 GPU optimization",
+      "url": "https://docs.godotengine.org/en/4.3/tutorials/performance/gpu_optimization.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "General fragment/bandwidth tradeoffs only; no old backend-specific assertion imported."
+    },
+    {
+      "id": "S07",
+      "title": "Godot 4.7 image import",
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Mipmaps, storage/compression and format tradeoffs."
+    },
+    {
+      "id": "S08",
+      "title": "Godot 3D optimization",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Visibility, overdraw and transparency concepts."
+    },
+    {
+      "id": "S09",
+      "title": "Godot 4.7 sky shaders",
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/sky_shader.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Candidate discovery; renderer support checked in pinned GLES3."
+    },
+    {
+      "id": "S10",
+      "title": "Godot 4.6 ReflectionProbe",
+      "url": "https://docs.godotengine.org/en/4.6/classes/class_reflectionprobe.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Refresh behavior and Compatibility support; actual activity still requires capture."
+    },
+    {
+      "id": "S11",
+      "title": "Godot custom 2D drawing",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/2d/custom_drawing_in_2d.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Draw-command caching and invalidation."
+    },
+    {
+      "id": "S12",
+      "title": "Godot Node",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_node.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Processing lifecycle, separate from visual visibility."
+    },
+    {
+      "id": "S13",
+      "title": "Godot Texture2D",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_texture2d.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Image extraction; actual backend path checked separately."
+    },
+    {
+      "id": "S14",
+      "title": "Khronos OpenGL 3.3 core specification",
+      "url": "https://registry.khronos.org/OpenGL/specs/gl/glspec33.core.pdf",
+      "accessed": "2026-11-22",
+      "publisher": "Khronos",
+      "use_and_limit": "Buffer mapping, ordered resource access and readback semantics."
+    },
+    {
+      "id": "S15",
+      "title": "Khronos Pixel Buffer Object guidance",
+      "url": "https://wikis.khronos.org/opengl/Pixel_Buffer_Object",
+      "accessed": "2026-11-22",
+      "publisher": "Khronos",
+      "use_and_limit": "Asynchronous-transfer design limits; search-readable primary wiki page."
+    },
+    {
+      "id": "S16",
+      "title": "Godot thread-safe APIs",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Scene/resource ownership and GPU synchronization limitations."
+    },
+    {
+      "id": "S17",
+      "title": "Godot background loading",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/io/background_loading.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Completion polling and retrieval; does not eliminate later construction."
+    },
+    {
+      "id": "S18",
+      "title": "Godot pipeline compilations",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/pipeline_compilations.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Compatibility limitations and first-use/warmup distinction."
+    },
+    {
+      "id": "S19",
+      "title": "Godot ImageTexture",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_imagetexture.html",
+      "accessed": "2026-11-22",
+      "publisher": "Godot Engine",
+      "use_and_limit": "Allocation versus compatible in-place updates."
+    }
+  ],
+  "pinned_engine_sources": [
+    {
+      "path": "scene/resources/mesh.cpp",
+      "blob_sha": "0b90b09a8d910c92b9134d0ae89ff9db20b95860",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/scene/resources/mesh.cpp",
+      "characters": 86194,
+      "id": "G01",
+      "revision": "cafc17a19",
+      "retrieval_scope": "full_file",
+      "line_range": null,
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "servers/rendering/rendering_server.cpp",
+      "blob_sha": "319e83c72b3c67b0b682089f0c20370ba2ec0e77",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/servers/rendering/rendering_server.cpp",
+      "characters": 199455,
+      "id": "G02",
+      "revision": "cafc17a19",
+      "retrieval_scope": "full_file",
+      "line_range": null,
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/storage/mesh_storage.cpp",
+      "blob_sha": "e61e4215002a7b05947f4a40534a4c41bdb8b38d",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/storage/mesh_storage.cpp",
+      "characters": 98648,
+      "id": "G03",
+      "revision": "cafc17a19",
+      "retrieval_scope": "full_file",
+      "line_range": null,
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/storage/utilities.cpp",
+      "blob_sha": "c03bc933388f657afbb3eb24e824d48ff4d1c4cb",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/storage/utilities.cpp",
+      "characters": 19344,
+      "id": "G04",
+      "revision": "cafc17a19",
+      "retrieval_scope": "full_file",
+      "line_range": null,
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/storage/texture_storage.cpp",
+      "blob_sha": "3cda29daddf44d165f26fea0565a790d94d4277b",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/storage/texture_storage.cpp",
+      "characters": 151006,
+      "id": "G05",
+      "revision": "cafc17a19",
+      "retrieval_scope": "full_file",
+      "line_range": null,
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/rasterizer_scene_gles3.cpp",
+      "blob_sha": "a3843b58abef6ed7a382edf9df47f1d429d75ec1",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/rasterizer_scene_gles3.cpp",
+      "characters": 220607,
+      "id": "G06",
+      "revision": "cafc17a19",
+      "retrieval_scope": "full_file",
+      "line_range": null,
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/storage/material_storage.cpp",
+      "blob_sha": "ec4cfe450e47b4f3632fe57106dac77ecc7afe30",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/storage/material_storage.cpp",
+      "characters": 658,
+      "id": "G07",
+      "revision": "cafc17a19",
+      "retrieval_scope": "line_range",
+      "line_range": [
+        2840,
+        2865
+      ],
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/shaders/scene.glsl",
+      "blob_sha": "b885f33b20f9b5a5a01889ef33a17d968b8e600f",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/shaders/scene.glsl",
+      "characters": 1137,
+      "id": "G08",
+      "revision": "cafc17a19",
+      "retrieval_scope": "line_range",
+      "line_range": [
+        2358,
+        2410
+      ],
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "drivers/gles3/shaders/sky.glsl",
+      "blob_sha": "90b94c659cf0cf06aebe51dc749880cfdd9aa57a",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/shaders/sky.glsl",
+      "characters": 683,
+      "id": "G09",
+      "revision": "cafc17a19",
+      "retrieval_scope": "line_range",
+      "line_range": [
+        1,
+        40
+      ],
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    },
+    {
+      "path": "servers/rendering/renderer_viewport.cpp",
+      "blob_sha": "5c2eedfc37309ce928b1b965ef7415e82a8d48dc",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/servers/rendering/renderer_viewport.cpp",
+      "characters": 2399,
+      "id": "G10",
+      "revision": "cafc17a19",
+      "retrieval_scope": "line_range",
+      "line_range": [
+        810,
+        890
+      ],
+      "identity_note": "blob_sha identifies the whole upstream file; characters counts the retrieved content only."
+    }
+  ],
+  "investigations": [
+    {
+      "id": "R01",
+      "title": "Offscreen windsock shadow scheduling",
+      "priority": "first recurring-GPU investigation",
+      "reachability": "Normal projected-shadow path, conditional on visible source, cue/light and changing accepted pose/clock.",
+      "search_ids": [
+        "Q07"
+      ],
+      "primary_source_ids": [
+        "S01",
+        "G10"
+      ],
+      "code_paths": [
+        "app/render/field_projected_shadows.gd",
+        "app/render/windsock_projected_shadow.gd",
+        "app/render/projected_shadow.gd",
+        "app/render/shadow_field_policy.gd",
+        "app/tests/test_windsock_shadow.gd"
+      ],
+      "symbols": [
+        "add_caster",
+        "refresh",
+        "_same_pose",
+        "redraw_count"
+      ],
+      "source_finding": "Moving socks receive a 512-square target with MSAA disabled. Changed pose/clock invalidates the projector signature. Source/tree visibility is checked, but receiver-frustum visibility is not. Pinned UPDATE_ONCE scheduling does not require render_target_was_used.",
+      "existing_guards": [
+        "Projected policy and illumination govern shown state.",
+        "Near-zero inflation suppresses clock-only flutter.",
+        "Unchanged/frozen poses reuse the mask.",
+        "Release-when-hidden, source lifetime and bounds/signature checks already exist."
+      ],
+      "proposed_experiment": "Defer mask updates only while the receiver cannot be seen by any relevant consumer; retain newest accepted pose and refresh before first visible use.",
+      "acceptance_checks": [
+        "Actual target draws and timing, separately from request count.",
+        "Low sun, offscreen caster with onscreen receiver, reentry, zoom and camera cuts.",
+        "Pause/replay and multiple consumers; unchanged physics and accepted clock."
+      ],
+      "falsifier_or_deprioritization": "Path inactive or few eligible offscreen updates; no repeatable timing saving; stale visible shadow.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R02",
+      "title": "Independent aircraft-shadow MSAA",
+      "priority": "second recurring-GPU investigation",
+      "reachability": "Enabled aircraft cue with a nonempty installed shape; auxiliary settings are independent of root settings.",
+      "search_ids": [
+        "Q13"
+      ],
+      "primary_source_ids": [
+        "S02",
+        "S04"
+      ],
+      "code_paths": [
+        "app/render/shadow.gd",
+        "app/render/projected_shadow.gd",
+        "app/render/aircraft_shadow_proxy.gd",
+        "app/render/projected_shadow_receiver.gdshader",
+        "app/render/shadow_settings.gd"
+      ],
+      "symbols": [
+        "_install_shape",
+        "Projected.setup",
+        "refresh"
+      ],
+      "source_finding": "The aircraft call uses the default 256-square target with MSAA_4X. The receiver applies its own softening samples. Root MSAA disabled does not override this argument.",
+      "existing_guards": [
+        "Cue-off defers binding; empty shape retains legacy mask.",
+        "Pose, part-transform and visibility signatures already suppress unchanged draws.",
+        "Qualified aircraft proxy is already implemented."
+      ],
+      "proposed_experiment": "Compare target-specific 4x, 2x and disabled MSAA while preserving main view settings.",
+      "acceptance_checks": [
+        "Thin-wing, propeller/gear, motion and zoom silhouettes.",
+        "Height cue and low-sun visual acceptance.",
+        "Auxiliary GPU cost and allocation; do not infer 4x fragment invocations."
+      ],
+      "falsifier_or_deprioritization": "Negligible saving, shimmer, silhouette loss, or changed grounding cue.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R03",
+      "title": "Treeline spatial batching",
+      "priority": "first recurring-GPU investigation",
+      "reachability": "Stock field with Low/Medium detailed-tree angle zero; actual submitted instances depend on camera.",
+      "search_ids": [
+        "Q08",
+        "Q14"
+      ],
+      "primary_source_ids": [
+        "S03",
+        "S08"
+      ],
+      "code_paths": [
+        "app/data/fields/default.json",
+        "app/render/treeline.gd",
+        "app/render/treeline.gdshader",
+        "app/render/scene_detail.gd",
+        "app/render/field_tree_detail.gd",
+        "tools/terrain/capture_horizon.gd",
+        "app/tests/test_treeline.gd"
+      ],
+      "symbols": [
+        "build",
+        "sector",
+        "detail_asset",
+        "near_instance_count",
+        "far_tree"
+      ],
+      "source_finding": "Stock positions total 1680 (480 <=600 m, 1200 >600 m), merged into eight nonempty near-plus-far sector batches with wind-expanded AABBs. MultiMesh visibility is whole-batch.",
+      "existing_guards": [
+        "Already instanced and alpha scissored.",
+        "Detailed High trees already use 256-m cells.",
+        "Collision selection is independent of visual presets.",
+        "Near prefix supports horizon capture and tests; exactly 600 m has near-prefix/far-alpha boundary semantics."
+      ],
+      "proposed_experiment": "Compare existing eight sectors against separate near/far sectors or bounded grid, with identical scenery and materials.",
+      "acceptance_checks": [
+        "Submitted instances, draw calls, CPU culling and GPU timing on matched views.",
+        "Wind bounds, skyline, placement, collision invariance and capture prefix consumers.",
+        "Preserve exactly-600-m shader treatment."
+      ],
+      "falsifier_or_deprioritization": "Additional culling/draw CPU cost exceeds saving or no significant invisible submission exists.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R04",
+      "title": "Uniform grass anchor and optional parcel distance arithmetic",
+      "priority": "first shader investigation; parcel idea secondary",
+      "reachability": "Anchor only in pilot pin region; shared by ground, near grass and lake bank. Parcel is a guarded far-distance path.",
+      "search_ids": [
+        "Q01",
+        "Q02"
+      ],
+      "primary_source_ids": [
+        "S04",
+        "S06"
+      ],
+      "code_paths": [
+        "app/render/grass_surface.gdshaderinc",
+        "app/render/field.gd",
+        "app/render/ground.gdshader",
+        "app/render/lake/bank.gdshader"
+      ],
+      "symbols": [
+        "rough_grass_colour",
+        "_build_ground_setup",
+        "parcel"
+      ],
+      "source_finding": "Three noise octaves at uniform pilot_xz are expressed in the fragment include under pin != 1. Parcel compares nine distances to keep two nearest.",
+      "existing_guards": [
+        "Anchor already excluded outside pin region.",
+        "Shader compiler may already optimize uniform arithmetic.",
+        "Parcel has a nonzero-weight/distance guard."
+      ],
+      "proposed_experiment": "Compute a render-only anchor per pilot/material recipe; separately compare squared-distance selection followed by two square roots for parcel finalists.",
+      "acceptance_checks": [
+        "GPU-float precision and image parity, translated/negative coordinates, pin boundaries and all grass consumers.",
+        "Correct material copies and invalidation; no simulation feedback.",
+        "For parcel, preserve ties and border width; inspect actual active shader cost."
+      ],
+      "falsifier_or_deprioritization": "Compiler already removes cost, float differences break appearance, or far path is absent from slow phase.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R05",
+      "title": "Derivative-safe terrain relief rectangle rejection",
+      "priority": "secondary shader investigation",
+      "reachability": "Relief enabled, within default 80-m end and footprint/distance gate; default field has two eligible rectangles.",
+      "search_ids": [
+        "Q01",
+        "Q04"
+      ],
+      "primary_source_ids": [
+        "S04",
+        "S05"
+      ],
+      "code_paths": [
+        "app/render/ground.gdshader",
+        "app/render/ground.gd",
+        "app/data/fields/default.json"
+      ],
+      "symbols": [
+        "terrain_amplitude",
+        "terrain_rect_mask",
+        "terrain_edge",
+        "fragment"
+      ],
+      "source_finding": "Relief evaluates masks for configured rectangles up to capacity 32; unlike the colour loop it lacks a bounds guard. Stock field has only runway and rotorpad eligible.",
+      "existing_guards": [
+        "Enabled, distance and footprint gates already limit relief.",
+        "Colour loop already has union and rectangle guards.",
+        "Required derivatives are already evaluated before relevant branches."
+      ],
+      "proposed_experiment": "Skip only provably zero masks and gradients using conservative rectangle bounds.",
+      "acceptance_checks": [
+        "Preserve ordered overlaps, cubic feather, signed-zero/rounding edges and runway/rotorpad precedence.",
+        "Keep derivatives outside divergent control flow.",
+        "Compare normals and valid translated/custom layouts; separate two-rectangle stock from larger custom fields."
+      ],
+      "falsifier_or_deprioritization": "Extra branch/divergence outweighs two-rectangle saving or boundaries differ.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R06",
+      "title": "Ground detail texture packing",
+      "priority": "first texture-sampling investigation",
+      "reachability": "Default field configures photo detail independently of enhanced near grass; active only at positive photo weight.",
+      "search_ids": [
+        "Q02",
+        "Q03",
+        "Q04"
+      ],
+      "primary_source_ids": [
+        "S06",
+        "S07",
+        "S05"
+      ],
+      "code_paths": [
+        "app/render/rc_ground_detail.gdshaderinc",
+        "app/render/grass_ground_material.gd",
+        "app/render/ground.gdshader",
+        "app/render/field.gd",
+        "app/tests/test_grass_ground_material.gd"
+      ],
+      "symbols": [
+        "rc_grass_sample",
+        "rc_near_weight",
+        "configure",
+        "fragment"
+      ],
+      "source_finding": "Two UVs each sample albedo, normal and roughness, yielding six textureGrad expressions on the active path.",
+      "existing_guards": [
+        "Distance and footprint fades already restrict sampling.",
+        "Existing import formats, compression and mipmaps are not missing.",
+        "Low alone does not remove the default-field binding."
+      ],
+      "proposed_experiment": "Evaluate a linear normal-RG plus roughness map, keeping albedo colour space separate, to reduce six source sampling expressions to four.",
+      "acceptance_checks": [
+        "Normal reconstruction/precision and compression tradeoffs.",
+        "Mip/filter/UV/export parity and source provenance.",
+        "Close, grazing and fade-band imagery; timing on existing Intel."
+      ],
+      "falsifier_or_deprioritization": "Format cost or register pressure offsets fewer expressions; visible normal or roughness degradation.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R07",
+      "title": "Foliage mask channel storage",
+      "priority": "conditional format investigation",
+      "reachability": "Treeline mask sampling; source and runtime import contracts must remain qualified.",
+      "search_ids": [
+        "Q03"
+      ],
+      "primary_source_ids": [
+        "S07"
+      ],
+      "code_paths": [
+        "app/render/treeline.gdshader",
+        "app/render/treeline.gd",
+        "tools/trees/README.md",
+        "app/tests/test_tree_assets.gd"
+      ],
+      "symbols": [
+        "fragment",
+        "foliage_mask"
+      ],
+      "source_finding": "The shader uses the mask red channel. Source assets intentionally retain lossless RGBA8 with atlas-matching alpha at every mip.",
+      "existing_guards": [
+        "Textures already have mipmaps.",
+        "Lossless and matching-alpha rules are intentional.",
+        "Mask shares atlas UVs and carries fractional edge coverage."
+      ],
+      "proposed_experiment": "Investigate a deliberate one-channel runtime representation with unchanged validated source assets and sampled values.",
+      "acceptance_checks": [
+        "Preserve every mip, linear mask values, coverage, far-alpha compensation and foliage-only tint.",
+        "Measure source texture lifetime plus conversion/readback peak, not only destination bytes.",
+        "Do not break existing RGBA8 alpha validation without equivalent deliberate contract work."
+      ],
+      "falsifier_or_deprioritization": "Both old and new textures remain resident, conversion peak harms loading, or foliage/coverage changes.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R08",
+      "title": "Early tree alpha rejection",
+      "priority": "conditional higher-risk shader investigation",
+      "reachability": "Actual treeline shader variants and applicable passes; alpha scissor already enabled.",
+      "search_ids": [
+        "Q04",
+        "Q06"
+      ],
+      "primary_source_ids": [
+        "S05",
+        "S08",
+        "G08"
+      ],
+      "code_paths": [
+        "app/render/treeline.gdshader"
+      ],
+      "symbols": [
+        "fragment",
+        "ALPHA_SCISSOR_THRESHOLD"
+      ],
+      "source_finding": "Pinned GLES3 inserts custom fragment code before generated scissor discard; the custom code samples/tints first. RENDER_MATERIAL uses different alpha semantics.",
+      "existing_guards": [
+        "Already uses alpha scissor, not ordinary alpha blending.",
+        "Compiler can reorder/optimize; overdraw is not measured.",
+        "Derivative and engine pass contracts constrain manual discard."
+      ],
+      "proposed_experiment": "Measure overdraw then compare an early atlas-alpha reject before remaining mask/shading, with gradients prepared before divergence.",
+      "acceptance_checks": [
+        "All applicable material/depth variants and generated code.",
+        "Leaf edges, wind, mips, silhouettes and far compensation.",
+        "CPU/GPU timing and depth/SIMD effects."
+      ],
+      "falsifier_or_deprioritization": "Discard breaks pass behavior or derivative validity, harms depth efficiency, or costs more than it saves.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R09",
+      "title": "Compatibility sky arithmetic and supported pass structure",
+      "priority": "secondary higher-risk shader investigation",
+      "reachability": "Visible sky colour transform plus separately scheduled radiance and cloud cache consumers.",
+      "search_ids": [
+        "Q01",
+        "Q05"
+      ],
+      "primary_source_ids": [
+        "S04",
+        "S09",
+        "G06",
+        "G07",
+        "G09"
+      ],
+      "code_paths": [
+        "app/render/sky.gdshader",
+        "app/render/atmosphere.gd",
+        "app/render/cloud_shader_variants.gd",
+        "app/render/cloud_field.gdshaderinc",
+        "docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md"
+      ],
+      "symbols": [
+        "encode_for_engine",
+        "density_mode",
+        "update_clouds"
+      ],
+      "source_finding": "Compatibility colour encoding contains pow plus three Newton steps. Pinned GLES3 recognizes reduced-resolution sky flags but does not schedule half/quarter passes.",
+      "existing_guards": [
+        "Incremental radiance and cloud-drift throttling already exist; other appearance edits can refresh.",
+        "Cloud cache already avoids some analytic work.",
+        "Density-bound experiments already exist, are off by default and have prior strict numerical failures."
+      ],
+      "proposed_experiment": "Measure bounded colour approximation or iteration reduction; optionally reevaluate existing density-bound variants with their original gates.",
+      "acceptance_checks": [
+        "Night/twilight/bright sun and horizon/fog/radiance consistency.",
+        "Numerical and moving-cloud imagery; no generic sRGB replacement.",
+        "Treat visible background, radiance and cache bake separately."
+      ],
+      "falsifier_or_deprioritization": "Unsupported mode, colour/numerical regression or no measurable cost reduction.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R10",
+      "title": "Lake probe refresh coalescing",
+      "priority": "inventory first; conditional optimization",
+      "reachability": "Only an installed and actually used lake reflection probe; GL support exists but actual activity is unmeasured.",
+      "search_ids": [
+        "Q11",
+        "Q12",
+        "Q15"
+      ],
+      "primary_source_ids": [
+        "S10",
+        "G06"
+      ],
+      "code_paths": [
+        "app/render/lake/lake_terrain.gd",
+        "app/render/lake/lake_reflection.gd",
+        "app/render/lake/lake_world.gd",
+        "app/render/world/world.gd",
+        "app/tests/test_lake_probe_ambient.gd"
+      ],
+      "symbols": [
+        "_process",
+        "request_refresh",
+        "describe"
+      ],
+      "source_finding": "UPDATE_ONCE probe is nudged on changed water-lighting signature; ordinary world lighting updates already step at 30 sky seconds. Pinned GL contains a reflection-probe rendering path.",
+      "existing_guards": [
+        "Signature skips unchanged captures.",
+        "Normal lighting cadence is 1.5 flight seconds at x20, not every frame.",
+        "Explicit sky-edit refresh and Compatibility night-ambient handling already exist."
+      ],
+      "proposed_experiment": "Count actual probe activity, then coalesce refreshes only while no visible reflective consumer requires them.",
+      "acceptance_checks": [
+        "All reflective consumers and masks, reentry freshness, paused edits and changing sun/night.",
+        "Actual capture time separate from requested refreshes.",
+        "Treat signature serialization as CPU work; parameter getters are not evidence of GPU readback."
+      ],
+      "falsifier_or_deprioritization": "Probe absent/inactive, other visible consumers need freshness or reflected scene pops.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R11",
+      "title": "Transmitter static/dynamic draw separation",
+      "priority": "small recurring CPU investigation",
+      "reachability": "Pilot transmitter visible and control input changes; identical inputs already skip redraw.",
+      "search_ids": [
+        "Q10"
+      ],
+      "primary_source_ids": [
+        "S11"
+      ],
+      "code_paths": [
+        "app/render/overlays/transmitter.gd",
+        "app/render/overlays/overlay_settings.gd"
+      ],
+      "symbols": [
+        "refresh",
+        "_draw_gimbals",
+        "_draw_display"
+      ],
+      "source_finding": "Changed controls redraw one CanvasItem containing static artwork and moving gimbals; LCD display can change on a separate useful cadence.",
+      "existing_guards": [
+        "Unchanged inputs are already filtered.",
+        "Godot caches draw commands between redraws."
+      ],
+      "proposed_experiment": "Separate static artwork, dynamic controls and displayed LCD-value invalidation without reducing input responsiveness.",
+      "acceptance_checks": [
+        "Command-build CPU time and draw calls for still, moving and noisy controls.",
+        "Trim/mode/model updates, resizing/scaling and pixel parity."
+      ],
+      "falsifier_or_deprioritization": "Extra CanvasItems/draw calls outweigh rebuilding or CPU effect is negligible.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R12",
+      "title": "Invisible afterimage presentation work",
+      "priority": "small recurring CPU investigation",
+      "reachability": "Perspective eye-view path with valid camera/sky, including an inactive/rested afterimage.",
+      "search_ids": [
+        "Q09",
+        "Q15"
+      ],
+      "primary_source_ids": [
+        "S12"
+      ],
+      "code_paths": [
+        "app/render/landscape_upgrade/sun_glare.gd",
+        "app/render/sun/sun_optics.gd"
+      ],
+      "symbols": [
+        "_process",
+        "_show_afterimage",
+        "_advance_afterimage",
+        "afterimage_alphas"
+      ],
+      "source_finding": "Eight patch records, packed arrays and two setters are prepared before deciding whether any alpha exceeds 0.002.",
+      "existing_guards": [
+        "Camera/sky guards already exist.",
+        "Afterimage state follows the accepted simulation clock.",
+        "Setter calls do not establish a GPU upload or barrier each call."
+      ],
+      "proposed_experiment": "Decide visibility before presentation-array preparation, while advancing state and diagnostics and publishing a complete payload before reappearance.",
+      "acceptance_checks": [
+        "Inactive versus active allocation/CPU counts.",
+        "Exposure threshold, cloud/skyline, recovery, eyewear and camera-mode transitions.",
+        "Pause/replay; retain diagnostic metadata and state evolution."
+      ],
+      "falsifier_or_deprioritization": "No measurable CPU saving or skipped state causes incorrect recovery/first visible frame.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R13",
+      "title": "Cloud bake texture round trip",
+      "priority": "first-use/loading investigation",
+      "reachability": "Bounded cache miss or seed/owner transition; not a steady every-frame bake.",
+      "search_ids": [
+        "Q16",
+        "Q17",
+        "Q18"
+      ],
+      "primary_source_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "G05"
+      ],
+      "code_paths": [
+        "app/render/cloud_shadow_map.gd",
+        "app/render/atmosphere.gd",
+        "app/render/cloud_shadow_map.gdshader"
+      ],
+      "symbols": [
+        "_create",
+        "_bake",
+        "_validate_image",
+        "_complete_bake"
+      ],
+      "source_finding": "A 2048-square HDR viewport bake is read after three process frames, validated at 16 seed-specific points, converted to RGH and uploaded to an ImageTexture. Desktop GL readback uses client-memory glGetTexImage; fallback uses glReadPixels.",
+      "existing_guards": [
+        "At most four entries including pending/failed; at most two attempts.",
+        "Weak consumers, generation tokens, rebind-before-evict, release and analytic fallback already exist.",
+        "Sky can retain a tile with ground shadows off.",
+        "Process-frame delay is not evidence of a measured GPU fence."
+      ],
+      "proposed_experiment": "Compare validated 1024/2048 tiles or stagger owned completions; larger optional design retains GPU output with smaller validation transfer.",
+      "acceptance_checks": [
+        "First-use and steady-state timing kept separate.",
+        "Validation, seed/lifetime/capacity/fallback and moving-cloud image parity.",
+        "Peak staging/render-target/image memory; four final logical tiles alone are 64 MiB.",
+        "PBO must avoid immediate wait; no unimplemented RenderingDevice drop-in assumption."
+      ],
+      "falsifier_or_deprioritization": "Cache already warm, no attributed readback stall, memory grows or numerical/image parity fails.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R14",
+      "title": "Mesh extraction before worker and expanded geometry memory",
+      "priority": "loading attribution investigation",
+      "reachability": "ArrayMesh surface snapshots and geometry cache misses; Home night-layout path is conditional.",
+      "search_ids": [
+        "Q17",
+        "Q18"
+      ],
+      "primary_source_ids": [
+        "S14",
+        "S16",
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "code_paths": [
+        "app/ui/home_preview_geometry.gd",
+        "app/ui/home_scene.gd",
+        "app/render/projected_shadow.gd",
+        "app/render/world/aircraft_lights.gd"
+      ],
+      "symbols": [
+        "Snapshot.advance",
+        "compute",
+        "surface_get_arrays",
+        "layout_from_geometry"
+      ],
+      "source_finding": "Pinned ArrayMesh extraction reaches GLES3 buffer mapping with GL_MAP_READ_BIT and copies before worker computation. A 3-ms snapshot budget is checked between indivisible surface reads. Worker expands indices to triangle vertices.",
+      "existing_guards": [
+        "96-MiB input count already exists but is not a peak-allocation cap.",
+        "Authored light anchors, bounded caches and cancellation already exist.",
+        "Mesh.get_faces has a valid triangle_mesh cache; not every call rereads GPU data."
+      ],
+      "proposed_experiment": "Reuse compact derived geometry/layout with revision/pose keys inside bounded ownership; investigate indexed worker processing without full triangle expansion.",
+      "acceptance_checks": [
+        "Read count for first use and cache hits; maximum main-thread chunk and peak memory.",
+        "Anchors, caster filters, articulation and triangle-strip fallback.",
+        "Livery/revision invalidation, worker ownership and cancellation; layout parity."
+      ],
+      "falsifier_or_deprioritization": "Extraction already cached, allocation not material, invalidation incorrect or output changes.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R15",
+      "title": "First Home construction and deliberate warmup",
+      "priority": "loading attribution investigation",
+      "reachability": "First Home and conditional aircraft/crash setup; cold and warm population must be separate.",
+      "search_ids": [
+        "Q18",
+        "Q19"
+      ],
+      "primary_source_ids": [
+        "S16",
+        "S17",
+        "S18"
+      ],
+      "code_paths": [
+        "app/app_root.gd",
+        "app/ui/home_scene.gd",
+        "app/ui/home_preview_resources.gd",
+        "app/ui/flight_scene_load.gd",
+        "app/ui/home_presentation.gd",
+        "app/render/crash/shader_warmup.gd",
+        "app/render/crash/director.gd"
+      ],
+      "symbols": [
+        "_build_home_staged",
+        "finish_construction",
+        "show_aircraft",
+        "_build_requested_preview",
+        "force_draw"
+      ],
+      "source_finding": "First Home calls synchronous finish_construction/show_aircraft after resource/world stages. Later selection has phased broker work. Compatibility crash warmup explicitly draws twice without/with extra Omni fire light; directional sun may be present in both.",
+      "existing_guards": [
+        "Flight joins only after worker completion.",
+        "Home resource retrieval checks status and uses a two-resource LRU.",
+        "Later Home uses three-model cache and phased work.",
+        "Gearless placement scans are conditional; warmup exists to avoid later crash stalls."
+      ],
+      "proposed_experiment": "Attribute resource, validation/build, geometry, image work, warmup and first draw, then stage accepted construction or reuse derived data without weakening validation.",
+      "acceptance_checks": [
+        "Cold versus warm phase spans, first visible use and crash behavior.",
+        "Thread/scene ownership and warmup variant coverage.",
+        "Latest intent, cancellation, livery and bounded cache behavior."
+      ],
+      "falsifier_or_deprioritization": "Stall merely moves later, unsafe threading or lost coverage/validation.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    },
+    {
+      "id": "R16",
+      "title": "Lighting-skin retrieval guard and bounded intermediate reuse",
+      "priority": "optional-feature loading investigation",
+      "reachability": "Supported aircraft and enabled lighting-skin zones/materials; not baseline every-frame work.",
+      "search_ids": [
+        "Q16",
+        "Q18"
+      ],
+      "primary_source_ids": [
+        "S13",
+        "S16",
+        "S19",
+        "G05"
+      ],
+      "code_paths": [
+        "app/render/lighting/lighting_skins.gd",
+        "app/render/ground.gd"
+      ],
+      "symbols": [
+        "_emission_texture_for",
+        "_structural_mask_image",
+        "_default_grass_bytes"
+      ],
+      "source_finding": "get_image occurs before the 2048 input-dimension guard. Cache key includes texture plus tint. Accepted sources are converted, sampled into a 512-square mask, mipped and uploaded.",
+      "existing_guards": [
+        "Per-rig composition cache, aircraft/material/zone selection and target caps already exist.",
+        "Editor texture image cache may alter extraction cost.",
+        "Ground deliberately shares cached bytes rather than mutable per-world textures."
+      ],
+      "proposed_experiment": "Where metadata represents actual stored size, reject early; share source-image/tint-independent work within a bounded configuration operation.",
+      "acceptance_checks": [
+        "Texture size overrides, accepted/oversized sources and enabled-feature timing.",
+        "Colour/UV/mips and livery/material isolation.",
+        "Source lifetime and peak memory; ImageTexture.update only with matching format/dimensions/mips and ownership."
+      ],
+      "falsifier_or_deprioritization": "Feature absent, metadata size is misleading, shared texture mutation leaks, or no saving.",
+      "hardware_result": null,
+      "status": "researched; proposed experiment not executed"
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "app/app_root.gd",
+      "bytes": 265318,
+      "sha256": "705792640bada31b8c18c58b03365c8fe7b379753ca704aa73042e74aad3067c",
+      "git_blob_sha": "2029607089d4a4ff426dcf3eb9bb513fcbf9855b"
+    },
+    {
+      "path": "app/data/fields/default.json",
+      "bytes": 150364,
+      "sha256": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+      "git_blob_sha": "a631028d482bd77a300496652004fe915c7ae9e3"
+    },
+    {
+      "path": "app/get-godot.sh",
+      "bytes": 8960,
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "git_blob_sha": "9ff9550706730730d1a5ac79f827b70cdc5f02f9"
+    },
+    {
+      "path": "app/render/aircraft_shadow_proxy.gd",
+      "bytes": 8473,
+      "sha256": "75005bd8cc28275ab908019fd8ca0c2c858b3f3dd9299f9c2197d8f4614a49a6",
+      "git_blob_sha": "d0b01a7afceb8932fccc056182830c292b065b00"
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "bytes": 54707,
+      "sha256": "a2f2dfc6556f4f3ef0be728b27d65975804114a1c6f053975bd958d96e6827df",
+      "git_blob_sha": "faafcfd6865635bf78e4c1b9ff541913af9be67b"
+    },
+    {
+      "path": "app/render/auto_graphics_policy.gd",
+      "bytes": 14649,
+      "sha256": "5aa3e3310dfeab3bc1e89e7b5ef49c23621445f7382e4078f8e1eee7161ac151",
+      "git_blob_sha": "b5ecfe5fd1e797a49b17eea87c564bc287391eec"
+    },
+    {
+      "path": "app/render/cloud_field.gdshaderinc",
+      "bytes": 5898,
+      "sha256": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+      "git_blob_sha": "bbcd7f23c40814e2327445b039f6ed02eb084258"
+    },
+    {
+      "path": "app/render/cloud_shader_variants.gd",
+      "bytes": 1112,
+      "sha256": "09735e06cc1d4055b10303dd2ea5c001d4a403ce7b148f9cd4efb90f9892a6b9",
+      "git_blob_sha": "05361ecde806f6d560314729df3d8113f3bf7892"
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gd",
+      "bytes": 20592,
+      "sha256": "7b2e70be9826b0d3ea9df4e0919ac810c792f98473af0780666b1005258848b6",
+      "git_blob_sha": "d18fda0c4935f53f1277c25c5a6b9bd6d0bff533"
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gdshader",
+      "bytes": 1214,
+      "sha256": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+      "git_blob_sha": "0069b4e79a182ba64f9de1fe39273596a9d74299"
+    },
+    {
+      "path": "app/render/crash/director.gd",
+      "bytes": 45036,
+      "sha256": "97f5d063a98efd06f7802ce099f64f12e22053072c7d90611bce28baff655f42",
+      "git_blob_sha": "9494c2eaeeafccdf22892cafd669380391c610d0"
+    },
+    {
+      "path": "app/render/crash/shader_warmup.gd",
+      "bytes": 4108,
+      "sha256": "2c351b96131e45a69a6e3752a551670f9db174f15062858a12e40f14133d6697",
+      "git_blob_sha": "c946f969111f2e6a60a25a48429fb65d2be4eceb"
+    },
+    {
+      "path": "app/render/field.gd",
+      "bytes": 26756,
+      "sha256": "8838eac95440080e22153b8da65d7f269c8aa7412a0373c7632d19e9fdb8f10e",
+      "git_blob_sha": "8c2d65a2926bc8b0f1ea0a7d147fede0584db6aa"
+    },
+    {
+      "path": "app/render/field_projected_shadows.gd",
+      "bytes": 11960,
+      "sha256": "14284c42d02af2021818dd579a267dc27a46089dc8a750a0b821d6a5d1fe1534",
+      "git_blob_sha": "d0527457fb15a1403d4c2fdb8606a61272e7e150"
+    },
+    {
+      "path": "app/render/field_tree_detail.gd",
+      "bytes": 2686,
+      "sha256": "8228ba1bc6f9644163bb820f6bbb619f1af69baa5f8506d812f5aedd68ac924f",
+      "git_blob_sha": "74988fdebfc7323cb4476336a66454093d257c35"
+    },
+    {
+      "path": "app/render/grass_ground_material.gd",
+      "bytes": 648,
+      "sha256": "69f067ca5ff95fc9546efc0fa0409eb00165438e576a738d379080cb15030c9e",
+      "git_blob_sha": "3d106f1d6b6749b1eb82fa09cc10bc5daeea5735"
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc",
+      "bytes": 4882,
+      "sha256": "fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127",
+      "git_blob_sha": "433e964b11dc8c84d25a49375df3467505fe48a5"
+    },
+    {
+      "path": "app/render/ground.gd",
+      "bytes": 11549,
+      "sha256": "371a64887f34da10a38b08eb6a1460593ce091bbc91e784c5832324209927d05",
+      "git_blob_sha": "7e6cbd95eed2d831ffdd7893971d8c1957160617"
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "bytes": 21924,
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+      "git_blob_sha": "5680a093dcc31aea56b029273eee5197ab1960fa"
+    },
+    {
+      "path": "app/render/lake/bank.gdshader",
+      "bytes": 5097,
+      "sha256": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
+      "git_blob_sha": "fad2b9357d7d953abdb72d9afb67dc933ce34380"
+    },
+    {
+      "path": "app/render/lake/lake_reflection.gd",
+      "bytes": 3869,
+      "sha256": "db692550c9680022d57bbf2ec370fdc32305dfff05017c6d9ab236fd52715e9e",
+      "git_blob_sha": "9d6ca0e1a44d0c2dbfc2754e0d9612b9e7bcb300"
+    },
+    {
+      "path": "app/render/lake/lake_terrain.gd",
+      "bytes": 11497,
+      "sha256": "4564088be3fc06e5afe693360703e1998c15bb1c084153c2efdf8b0e7c36de0c",
+      "git_blob_sha": "34b6d6b934aa89ecdd579a4702ca681e792f5619"
+    },
+    {
+      "path": "app/render/lake/lake_world.gd",
+      "bytes": 6987,
+      "sha256": "ec143036d1f1dbd2ead38a6f5c3559d160ac5a2c07bf177b79995f97721a663a",
+      "git_blob_sha": "920896548625b40549705e2e0babf2585e2185a4"
+    },
+    {
+      "path": "app/render/landscape_upgrade/sun_glare.gd",
+      "bytes": 16203,
+      "sha256": "cc9ac8400abc369704e5978e0ad2e46b446fcec33c39904780cbc64f7cf8b01b",
+      "git_blob_sha": "948628d7c5cccc6a58930a4acf0aa9cf2553e5b6"
+    },
+    {
+      "path": "app/render/lighting/lighting_skins.gd",
+      "bytes": 25150,
+      "sha256": "236251a7c6a185a168a657c20c998cd0b4bc119d1b745740d95065def71721fa",
+      "git_blob_sha": "93c50a3bbf784173e5090c2b8bb2a3805405a673"
+    },
+    {
+      "path": "app/render/overlays/overlay_settings.gd",
+      "bytes": 7944,
+      "sha256": "fbb438c10a356218b1e375a282e9ab71cc09adab570877196b2ce5a0035774eb",
+      "git_blob_sha": "45cca802c631e5a4b0a2471bbe477d1ff2dadd91"
+    },
+    {
+      "path": "app/render/overlays/transmitter.gd",
+      "bytes": 7330,
+      "sha256": "5d069bc8c6fa046324c3129115c95c958ae4dc2531f6fd747ed597ab60bbfccb",
+      "git_blob_sha": "bb2396d028121a8833f2c4b518a540760505a4b4"
+    },
+    {
+      "path": "app/render/projected_shadow.gd",
+      "bytes": 29363,
+      "sha256": "dfbeba569ef183ba630d98b08f725c74e36268ce4a7d9340f6a96edd488cde8e",
+      "git_blob_sha": "ce7b8c11f55d3d5c86624303275c1567efc8d2ea"
+    },
+    {
+      "path": "app/render/projected_shadow_receiver.gdshader",
+      "bytes": 645,
+      "sha256": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+      "git_blob_sha": "60e952e1eece914bd67f479db829a6b0a7c07e66"
+    },
+    {
+      "path": "app/render/rc_ground_detail.gdshaderinc",
+      "bytes": 3283,
+      "sha256": "1e0c786ee2096c920beae236d7137c6179930c1f98a87e746e32b13a4ebc92ce",
+      "git_blob_sha": "90f89157d375e8e3c0888b1850337fcc359f3c3b"
+    },
+    {
+      "path": "app/render/scene_detail.gd",
+      "bytes": 8193,
+      "sha256": "8d91833bef1c71f96a4b17cc40db020cda93cc19dd2b441451b2c652b23e2765",
+      "git_blob_sha": "27e9e3dfb9d4164a123bbc59c048673a4a548746"
+    },
+    {
+      "path": "app/render/shadow.gd",
+      "bytes": 17482,
+      "sha256": "c41a6a18eb4a716315890d026499a9fb3842dd270f69bf3855551e0d3a634797",
+      "git_blob_sha": "35d1efe689d40ecad35245a176ae7c8954411dd1"
+    },
+    {
+      "path": "app/render/shadow_field_policy.gd",
+      "bytes": 16542,
+      "sha256": "8e339339274be935d51c19d084dcc509a34e7a9f25baeb669a32ca1b9995ebee",
+      "git_blob_sha": "7db1fe183c5f221f509ee25f9f6c888a9a82bb59"
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "bytes": 15936,
+      "sha256": "af001e5a3a2b1ef79d567b0b64bab0b8669648e3daa81d9c2b33e848061cc8f9",
+      "git_blob_sha": "125c089f4718425b674fcc4b5affc03f286a8261"
+    },
+    {
+      "path": "app/render/sky.gdshader",
+      "bytes": 19621,
+      "sha256": "9b6e9835535b526d7328937092393d78fed66f2f9c058e86da39964955996028",
+      "git_blob_sha": "b0ac5dfcee4fe870f0146ab42890f5df006f791f"
+    },
+    {
+      "path": "app/render/sun/sun_optics.gd",
+      "bytes": 21595,
+      "sha256": "a6d19d8258b1aca72d75823e5ff37f19c6b6b944cb2026288cf42371013821af",
+      "git_blob_sha": "bb8dc3bf829c5687efc6ae13219551a585496f2a"
+    },
+    {
+      "path": "app/render/treeline.gd",
+      "bytes": 9199,
+      "sha256": "915d7f83e5872bf830c6e68cfed4eb393febcbbfe7f3c12d37bb0ab8a39c9498",
+      "git_blob_sha": "4f7dd56fd60b7a6923b832d33c49f5f746e6c288"
+    },
+    {
+      "path": "app/render/treeline.gdshader",
+      "bytes": 5936,
+      "sha256": "ac1ee408a766edcbe9d8b63d3d5305715ed6415de0adb5da1dbd7a21f8335c13",
+      "git_blob_sha": "d0224f0df288d0a5769bf1ae0b941b5a180961d1"
+    },
+    {
+      "path": "app/render/windsock_projected_shadow.gd",
+      "bytes": 4561,
+      "sha256": "7bb1faa9febacc76a8e9f62f6d42bc8291f268fb4e76a6a4aa40bcb439ef7d3d",
+      "git_blob_sha": "bf13771a6f0df0082431bd1262044d3fa9da9ccf"
+    },
+    {
+      "path": "app/render/world/aircraft_lights.gd",
+      "bytes": 42434,
+      "sha256": "deddeed684377a97b419d29a211bbc27f1a54779f3fe8cd673a3961901d9ac3a",
+      "git_blob_sha": "8615ecb49e771ad7e2a91d5378e3e2f21c88276f"
+    },
+    {
+      "path": "app/render/world/world.gd",
+      "bytes": 73756,
+      "sha256": "9a1e9144ae33172cc30265eefbb64b3ca84a1a645e99818a999e59d2b25e56e8",
+      "git_blob_sha": "d83fe162b954790ee4d37af95f8df7a8592418f4"
+    },
+    {
+      "path": "app/scenery/imported_near_grass.gd",
+      "bytes": 13776,
+      "sha256": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+      "git_blob_sha": "ee755e53709ad7ff73592a2b66c6e0a07d6c7de8"
+    },
+    {
+      "path": "app/tests/test_grass_ground_material.gd",
+      "bytes": 10174,
+      "sha256": "5352a620deeba305886648eb2a2fc919d1fa3b575d09c6458a93e08cd5849634",
+      "git_blob_sha": "7cd6c7b3f9450172919f2615c60cf139d0d5acbc"
+    },
+    {
+      "path": "app/tests/test_lake_probe_ambient.gd",
+      "bytes": 2988,
+      "sha256": "179f62af13602d3533f2278fd4e2d40e453aa719fb397bf005a92c818a8c9e97",
+      "git_blob_sha": "d09ca6fcd09cb2d2ac1760186def74ea471de04f"
+    },
+    {
+      "path": "app/tests/test_tree_assets.gd",
+      "bytes": 9968,
+      "sha256": "6cc79c5d322b110503e5f01ba4f310f92361c01d68cd7b7dee41f823340882dc",
+      "git_blob_sha": "804f6e22ed4465e3188df65a9d47fab879f95248"
+    },
+    {
+      "path": "app/tests/test_treeline.gd",
+      "bytes": 9337,
+      "sha256": "66e4315bf3a1742c9e866d3018655d1515131deb93088edc4882780eefc3d28f",
+      "git_blob_sha": "1c42622054b47b6ce621cc5b6932235dfce93e7f"
+    },
+    {
+      "path": "app/tests/test_windsock_shadow.gd",
+      "bytes": 14390,
+      "sha256": "4543490c5b6377c057500fa5db26b126df76af421164697a3aafeaa7deb7d629",
+      "git_blob_sha": "d2eb078ed3ed2232e27d78afad43dfba84de8ffe"
+    },
+    {
+      "path": "app/ui/flight_scene_load.gd",
+      "bytes": 1305,
+      "sha256": "bc34ecfe1d30eb23d9647119bebe87c4037563485e01d16ef74f30258c40946c",
+      "git_blob_sha": "14648cc5b7a1ab6f5b65ea0e7ebb49760f5f34b0"
+    },
+    {
+      "path": "app/ui/home_presentation.gd",
+      "bytes": 8560,
+      "sha256": "a5e7e81c74fd1d1d9c958f6fe8dddb01fee0d51f76150131dbe8a8b6c9820a3e",
+      "git_blob_sha": "3dd51c5bb099b39aa629baa76bb0e92b24275875"
+    },
+    {
+      "path": "app/ui/home_preview_geometry.gd",
+      "bytes": 5141,
+      "sha256": "6a9c1cd02bd0ec2f0971d9121b761d076e6144ff9af3b1e2aad1d22bb40fa7be",
+      "git_blob_sha": "2bd853002327ce8832607bbdb41de7a5b24dc213"
+    },
+    {
+      "path": "app/ui/home_preview_resources.gd",
+      "bytes": 6334,
+      "sha256": "73c9f9544fd9394245bd6911a9ee45ee7a553f87842d637ac29f9281d788287e",
+      "git_blob_sha": "6c1ede308ef8d98bfe11ea1c0e94d6dba11a9353"
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "bytes": 28344,
+      "sha256": "36a908f1dfb0d14c853440fffd9f1b116747d715e3ea2dcde42163828dfa6241",
+      "git_blob_sha": "30a29f60b57e031a01641eb4ea1f5b22079b59ca"
+    },
+    {
+      "path": "docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md",
+      "bytes": 82210,
+      "sha256": "5ec8e86874942530ab2bd79bee07ee6e4f696f39d83313b851674821df00fa46",
+      "git_blob_sha": "389f2a9bff7a9cd4048e6a8ca352d522768a9398"
+    },
+    {
+      "path": "tools/terrain/capture_horizon.gd",
+      "bytes": 12272,
+      "sha256": "a85499b4659f59c436b5dfcf6a8771fe8c9a5acfdefaca4eafb8f1303fce5131",
+      "git_blob_sha": "7058939edd1c27d6e91ff252752445e932b3ef68"
+    },
+    {
+      "path": "tools/trees/README.md",
+      "bytes": 38879,
+      "sha256": "cfa74132dafb84d4fbb72432053343224b0c84ad8f337a550ddba2b3d90463c7",
+      "git_blob_sha": "c1331cc62e5377680c5931c2185923fe67d92543"
+    }
+  ],
+  "calculations": {
+    "stock_tree_census": {
+      "source": "app/data/fields/default.json",
+      "profile": "Low; detailed-tree half angle 0",
+      "positions": 1680,
+      "near_radius_le_m": 600,
+      "near": 480,
+      "far": 1200,
+      "per_sector_near_far": [
+        [
+          35,
+          81
+        ],
+        [
+          17,
+          197
+        ],
+        [
+          76,
+          68
+        ],
+        [
+          101,
+          78
+        ],
+        [
+          33,
+          84
+        ],
+        [
+          88,
+          340
+        ],
+        [
+          54,
+          84
+        ],
+        [
+          76,
+          268
+        ]
+      ],
+      "nonempty_batches": 8,
+      "method": "Raw positions.value, atan2(east,north) modulo tau / (tau/8), radius <= 600.",
+      "limit": "Source placements and grouping, not observed GPU submission or wasted work."
+    },
+    "stock_relief_rectangles": {
+      "count": 2,
+      "types": [
+        "runway",
+        "rotorpad"
+      ],
+      "capacity": 32,
+      "limit": "Runtime field identity and enabled path must be recorded."
+    },
+    "cloud_final_tile": {
+      "width": 2048,
+      "height": 2048,
+      "channels": 2,
+      "bytes_per_channel": 2,
+      "format": "Image.FORMAT_RGH",
+      "bytes": 16777216,
+      "mib": 16,
+      "four_ready_tiles_mib": 64,
+      "limit": "Logical final texture payload without mips; excludes staging, render targets, transient images and allocator overhead. Four cache entries include pending/failed, not always four ready tiles."
+    },
+    "photo_detail": {
+      "source_sampling_expressions": 6,
+      "proposed_packed_expressions": 4,
+      "limit": "Source expressions only, not hardware taps, bandwidth reduction or measured performance."
+    },
+    "snapshot_input": {
+      "max_bytes": 100663296,
+      "budget_usec": 3000,
+      "input_formula": "12 * vertex_count + 4 * index_count",
+      "expanded_triangle_bytes": "12 * index_count for indexed surfaces",
+      "limit": "Accounting excludes concurrent engine arrays/copies/transformed points; budget checks occur between indivisible surface reads."
+    }
+  },
+  "review": {
+    "status": "passed; no blocking findings after integrated corrections",
+    "roles": [
+      "Shader specialist (source-read-only)",
+      "Render-work specialist (source-read-only)",
+      "Independent Good Enemy",
+      "Lead integration and pinned-engine checks"
+    ],
+    "corrections_already_integrated": [
+      "Requests are not GPU completions; pinned UPDATE_ONCE eligibility adds evidence but no timing.",
+      "Windsock 512-square MSAA-off is distinct from aircraft 256-square MSAA4x.",
+      "Default relief has two rectangles, not maximum 32; lower priority.",
+      "Treeline prefix, exact-600-m alpha boundary, wind bounds and collision remain protected.",
+      "Grass include has ground, near-grass and lake-bank consumers.",
+      "Cloud cache is bounded, validated and first-use; logical final bytes are not peak residency.",
+      "Mesh get_faces caches triangles; only relevant cache-miss extraction follows GL buffer readback.",
+      "Crash warmup toggles extra Omni light; first draw can already contain directional sun.",
+      "Runtime R8 conversion must price the original RGBA source and transition peak, not only destination bytes."
+    ],
+    "independent_verification": {
+      "application_source_inputs": 55,
+      "checks": [
+        "SHA-256, Git blob SHA and bytes against source commit",
+        "All ten pinned engine blob identities and retrieved lengths",
+        "Investigation/search/source references and counts",
+        "Integrated report/ledger guard and caveat consistency"
+      ],
+      "remaining_findings": []
+    }
+  },
+  "verification": {
+    "status": "passed",
+    "scope": "Documentation, source identities, research-reference consistency and calculations only",
+    "changed_files": 5,
+    "new_or_affected_local_links_checked": 64,
+    "new_links_including_external": 120,
+    "unchanged_legacy_links_skipped": 591,
+    "application_source_fingerprints_verified": 55,
+    "research_investigations": 16,
+    "distinct_recorded_search_queries": 19,
+    "reference_integrity": "All topic search/source/code IDs resolve; all R01-R16 report headings present",
+    "calculation_checks": [
+      "Stock treeline grouping",
+      "Two default relief rectangles",
+      "16 MiB logical RGH tile / 64 MiB for four",
+      "Six versus four source texture-sampling expressions"
+    ],
+    "link_checker": "tools/ci/check_docs.py links, GitObjects and check_target on staged Git tree",
+    "git_diff_check": "passed",
+    "godot_tests_run": false,
+    "gpu_benchmarks_run": false,
+    "full_ci_run": false,
+    "instruction_imports_changed": false
+  }
+}

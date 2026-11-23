@@ -1,4 +1,4 @@
-## Source-only hedgerows: a Bush_Common impostor atlas plus sparse imported canopy trees.
+## Source-derived shrub cards for wild and planted hedges, with optional sparse canopy trees.
 extends RefCounted
 
 const Vegetation := preload("res://scenery/imported_vegetation.gd")
@@ -7,12 +7,11 @@ const ImpostorShader := preload("res://assets/landscape/vegetation/impostors/bus
 
 const ATLAS_PATH := "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png"
 const MANIFEST_PATH := "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.json"
+const PLANTED_MANIFEST_PATH := "res://assets/landscape/vegetation/impostors/forest_leafy_shrub_4view.json"
 const BUSH_SOURCE_ID := "bush_common_flowers"
 const BUSH_ATLAS_ASSET_ID := "bush_common_flowers_4view_impostor"
 const TREE_SOURCE_ID := "common_tree_3"
-const CARD_TRIANGLES := 1
-# A single triangle encloses the nontransparent bilinear footprint in all four atlas views.
-const CARD_UVS := [Vector2(-0.203125, 0.125), Vector2(1.203125, 0.125), Vector2(0.5, 1.3125)]
+const CARD_TRIANGLES := 2
 const CARD_SPACING_M := 1.35
 const PLANTED_CARD_LIMIT := 1024
 const CARD_INSTANCE_LIMITS := {"low": 64, "balanced": 128, "high": 256}
@@ -22,8 +21,7 @@ const TREE_TRIANGLE_BUDGET := 16000
 const TOTAL_TRIANGLE_BUDGET := 20000
 
 static var _manifest_cache: Dictionary = {}
-static var _atlas_texture: Texture2D
-static var _shader_material: ShaderMaterial
+static var _shader_materials: Dictionary = {}
 
 
 ## Build a batched hedgerow from render-XZ points. `include_trees` adds sparse CommonTree_3 meshes.
@@ -45,39 +43,34 @@ static func build(
 	var source_triangles := 0
 	var batch_count := 0
 	var asset_batches := 0
-	var atlas_manifest := _manifest()
+	var atlas_manifest := _manifest(planted)
+	var source_id := str(atlas_manifest.get("derived_from_asset_id", ""))
+	var atlas_id := str(atlas_manifest.get("asset_id", ""))
 	if not placements.is_empty():
-		var atlas_material := _impostor_material()
+		var atlas_material := _impostor_material(atlas_manifest)
 		var frame_size := _frame_size(atlas_manifest)
-		var card_mesh := _bush_card(frame_size)
-		var card_triangles := card_mesh.surface_get_array_len(0) / 3
+		var card_mesh := QuadMesh.new()
+		card_mesh.size = Vector2(frame_size, frame_size)
 		var multi_mesh := MultiMesh.new()
 		multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
 		multi_mesh.mesh = card_mesh
 		multi_mesh.use_colors = true
 		multi_mesh.use_custom_data = true
 		multi_mesh.instance_count = placements.size()
-		var bounds := AABB()
 		for instance_index: int in range(placements.size()):
 			var placement: Dictionary = placements[instance_index]
 			var transform: Transform3D = placement.get("transform", Transform3D.IDENTITY)
 			multi_mesh.set_instance_transform(instance_index, transform)
-			# The camera turns these uniformly scaled cards and tilts planted crowns on flyovers.
-			# Every filtered silhouette fits within half a frame of its center in all four views.
-			var radius := frame_size * transform.basis.x.length() * 0.5
-			var box := AABB(transform.origin - Vector3.ONE * radius, Vector3.ONE * 2.0 * radius)
-			bounds = box if instance_index == 0 else bounds.merge(box)
 			multi_mesh.set_instance_color(instance_index, Color.WHITE)
 			var yaw := float(placement.get("yaw_rad", 0.0))
 			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, float(planted), 0.0, 1.0))
-		multi_mesh.custom_aabb = bounds
 		var cards := MultiMeshInstance3D.new()
-		cards.name = "Bush_Common_Flowers_4View"
+		cards.name = "Forest_Leafy_Shrub_4View" if planted else "Bush_Common_Flowers_4View"
 		cards.multimesh = multi_mesh
 		cards.material_override = atlas_material
 		cards.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		cards.set_meta("source_asset_id", BUSH_SOURCE_ID)
-		cards.set_meta("atlas_asset_id", BUSH_ATLAS_ASSET_ID)
+		cards.set_meta("source_asset_id", source_id)
+		cards.set_meta("atlas_asset_id", atlas_id)
 		root.add_child(cards)
 		batch_count += 1
 		asset_batches += 1
@@ -85,15 +78,13 @@ static func build(
 		for placement: Dictionary in placements:
 			var record := placement.duplicate(true)
 			record["type"] = "source_impostor"
-			record["source_asset_id"] = BUSH_SOURCE_ID
-			record["asset_id"] = BUSH_ATLAS_ASSET_ID
-			record["source_triangles"] = card_triangles
+			record["source_triangles"] = CARD_TRIANGLES
 			card_records.append(record)
 		all_cpu_placements.append_array(card_records)
-		var bush_triangles := placements.size() * card_triangles
+		var bush_triangles := placements.size() * CARD_TRIANGLES
 		source_triangles += bush_triangles
-		group_stats[BUSH_ATLAS_ASSET_ID] = {
-			"source_asset_id": BUSH_SOURCE_ID,
+		group_stats[atlas_id] = {
+			"source_asset_id": source_id,
 			"instances": placements.size(),
 			"triangles": bush_triangles,
 			"draw_batches": 1,
@@ -142,7 +133,7 @@ static func build(
 	root.set_meta("imported", true)
 	root.set_meta("source_only", true)
 	root.set_meta("quality", quality_id)
-	root.set_meta("source_assets", [BUSH_SOURCE_ID] if not placements.is_empty() else [])
+	root.set_meta("source_assets", [source_id] if not placements.is_empty() else [])
 	if not tree_records.is_empty() and group_stats.has(TREE_SOURCE_ID):
 		(root.get_meta("source_assets") as Array).append(TREE_SOURCE_ID)
 	root.set_meta("asset_batches", asset_batches)
@@ -159,21 +150,6 @@ static func build(
 	root.set_meta("source_geometry_sha256", str(atlas_manifest.get("source_geometry_sha256", "")))
 	root.set_meta("atlas_sha256", str(atlas_manifest.get("atlas_sha256", "")))
 	return root
-
-
-## Preserve the original quad's UV-to-position map and drop its always-transparent corners.
-static func _bush_card(frame_size: float) -> ArrayMesh:
-	var positions := PackedVector3Array()
-	for uv: Vector2 in CARD_UVS:
-		positions.append(Vector3(uv.x - 0.5, 0.5 - uv.y, 0.0) * frame_size)
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = positions
-	arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3.BACK, Vector3.BACK, Vector3.BACK])
-	arrays[Mesh.ARRAY_TEX_UV] = PackedVector2Array(CARD_UVS)
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return mesh
 
 
 ## Convenience wrapper for existing packed scenery polylines.
@@ -200,6 +176,10 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 	var clean_points := _clean_points(points)
 	if clean_points.size() < 2:
 		return output
+	var manifest := _manifest(planted)
+	if manifest.is_empty():
+		return output
+	var source_height := _source_height(manifest)
 	var candidates: Array[Dictionary] = []
 	var candidate_id := 0
 	# Maintained hedges need cover along every bay. Scale spacing, keeping the
@@ -233,15 +213,15 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 			var yaw := atan2(-direction.y, direction.x) + (Palette.hash01(seed, candidate_id, 47) - 0.5) * 0.28
 			var height_scale := height * (0.82 + 0.30 * Palette.hash01(seed, candidate_id, 53))
 			var rank := Palette.hash01(seed, candidate_id, 59)
-			var scale := height_scale / _source_height(_manifest())
+			var scale := height_scale / source_height
 			var transform := Transform3D(
 				Basis(Vector3.UP, yaw).scaled(Vector3.ONE * scale),
 				Vector3(position.x, height_scale * 0.5, position.y)
 			)
 			candidates.append({
 				"id": "hedge:%d:bush:%d" % [seed, candidate_id],
-				"asset_id": BUSH_ATLAS_ASSET_ID,
-				"source_asset_id": BUSH_SOURCE_ID,
+				"asset_id": manifest.asset_id,
+				"source_asset_id": manifest.derived_from_asset_id,
 				"candidate_index": candidate_id,
 				"rank": rank,
 				"position": position,
@@ -365,35 +345,38 @@ static func _sample_path(points: Array[Vector2], distance: float) -> Dictionary:
 	return {"position": points[points.size() - 1], "direction": Vector2.RIGHT}
 
 
-static func _manifest() -> Dictionary:
-	if not _manifest_cache.is_empty():
-		return _manifest_cache
-	var file := FileAccess.open(MANIFEST_PATH, FileAccess.READ)
+static func _manifest(planted: bool = false) -> Dictionary:
+	var path := PLANTED_MANIFEST_PATH if planted else MANIFEST_PATH
+	if _manifest_cache.has(path):
+		return _manifest_cache[path]
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		push_error("Bush_Common impostor manifest is missing: %s" % MANIFEST_PATH)
+		push_error("Hedge impostor manifest is missing: %s" % path)
 		return {}
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
 	if parsed is Dictionary:
-		_manifest_cache = parsed
-	return _manifest_cache
+		_manifest_cache[path] = parsed
+		return parsed
+	return {}
 
 
+## Woodland habitat batches share the flowering shrub texture.
 static func _atlas() -> Texture2D:
-	if _atlas_texture == null:
-		_atlas_texture = load(ATLAS_PATH) as Texture2D
-	return _atlas_texture
+	return load(ATLAS_PATH) as Texture2D
 
 
-static func _impostor_material() -> ShaderMaterial:
-	if _shader_material != null:
-		return _shader_material
-	_shader_material = ShaderMaterial.new()
-	_shader_material.shader = ImpostorShader
-	_shader_material.set_shader_parameter("impostor_atlas", _atlas())
-	_shader_material.set_shader_parameter("alpha_cutoff", 0.32)
-	_shader_material.set_shader_parameter("atlas_frames", 4.0)
-	return _shader_material
+static func _impostor_material(manifest: Dictionary = {}) -> ShaderMaterial:
+	var path := str(manifest.get("atlas_path", ATLAS_PATH))
+	if _shader_materials.has(path):
+		return _shader_materials[path]
+	var material := ShaderMaterial.new()
+	material.shader = ImpostorShader
+	material.set_shader_parameter("impostor_atlas", load(path) as Texture2D)
+	material.set_shader_parameter("alpha_cutoff", 0.32)
+	material.set_shader_parameter("atlas_frames", 4.0)
+	_shader_materials[path] = material
+	return material
 
 
 static func _source_height(manifest: Dictionary) -> float:

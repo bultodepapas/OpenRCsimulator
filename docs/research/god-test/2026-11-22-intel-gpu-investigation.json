@@ -1,0 +1,413 @@
+{
+  "format": "openrc-intel-gpu-investigation-v1",
+  "date": "2026-11-22",
+  "base_commit": "91d7d6ddcb2182422a496036825e9113f82d2433",
+  "branch": "investigate/intel-gpu-performance-2026-11-22",
+  "owning_steps": [
+    "VQ-07h-A2-R1",
+    "PT1h-R15",
+    "GOD-12",
+    "GOD-13"
+  ],
+  "scope": {
+    "type": "retained_report_and_source_audit",
+    "new_hardware_runs": 0,
+    "runtime_changes": false,
+    "host_configuration_changes": false,
+    "alternative_hardware_required": false,
+    "raw_benchmark_artifacts_available": false,
+    "performance_qualification": "not_claimed"
+  },
+  "evidence": {
+    "november20": {
+      "source": "docs/research/visual-quality-implementation/VQ-07/igpu-uhd630-2026-11-20/README.md",
+      "source_revision_reported": "e9fe3f92",
+      "engine_reported": "4.8.beta2.official.cafc17a19",
+      "device_reported": "Intel UHD Graphics 630 CML GT2",
+      "host_reported": "megatron CT206",
+      "driver_reported": "Mesa25.0.7 iris/ANV",
+      "output_reported": [
+        1920,
+        1080
+      ],
+      "scene_detail_reported": "high",
+      "route_reported": "scripted",
+      "repeats_reported": 3,
+      "effective_msaa_samples": "not_verified_from_raw_identity",
+      "raw_location_as_reported": "U:\\OpenRC\\tmp\\igpu-bench\\final/<renderer>-<n>/{run.json,engine.log}",
+      "rows": [
+        {
+          "renderer": "gl_compatibility",
+          "reported_run_frame_p50_ms": [
+            47.6,
+            48.1,
+            47.8
+          ],
+          "reported_run_gpu_poll_p50_ms": [
+            46.1,
+            46.5,
+            46.2
+          ],
+          "reported_render_cpu_p50_ms": 1.5,
+          "reported_engine_video_memory_mib": 737,
+          "derived_median_of_frame_medians_ms": 47.8,
+          "derived_reciprocal_of_median_frame_ms_fps": 20.92050209205021,
+          "derived_median_of_gpu_poll_medians_ms": 46.2,
+          "derived_gpu_median_increase_vs_gl_percent": 0.0,
+          "gpu_poll_freshness": "unverified",
+          "raw_artifacts_reviewed": false
+        },
+        {
+          "renderer": "mobile",
+          "reported_run_frame_p50_ms": [
+            58.4,
+            57.6,
+            58.0
+          ],
+          "reported_run_gpu_poll_p50_ms": [
+            56.3,
+            56.1,
+            56.3
+          ],
+          "reported_render_cpu_p50_ms": 0.5,
+          "reported_engine_video_memory_mib": 1046,
+          "derived_median_of_frame_medians_ms": 58.0,
+          "derived_reciprocal_of_median_frame_ms_fps": 17.24137931034483,
+          "derived_median_of_gpu_poll_medians_ms": 56.3,
+          "derived_gpu_median_increase_vs_gl_percent": 21.86147186147185,
+          "gpu_poll_freshness": "unverified",
+          "raw_artifacts_reviewed": false
+        },
+        {
+          "renderer": "forward_plus",
+          "reported_run_frame_p50_ms": [
+            75.4,
+            76.3,
+            76.0
+          ],
+          "reported_run_gpu_poll_p50_ms": [
+            73.9,
+            74.6,
+            74.1
+          ],
+          "reported_render_cpu_p50_ms": 0.8,
+          "reported_engine_video_memory_mib": 1234,
+          "derived_median_of_frame_medians_ms": 76.0,
+          "derived_reciprocal_of_median_frame_ms_fps": 13.157894736842104,
+          "derived_median_of_gpu_poll_medians_ms": 74.1,
+          "derived_gpu_median_increase_vs_gl_percent": 60.38961038961037,
+          "gpu_poll_freshness": "unverified",
+          "raw_artifacts_reviewed": false
+        }
+      ]
+    },
+    "november22_automatic": {
+      "source": "docs/research/god-test/2026-11-22-linux-uhd630-comparison.md",
+      "raw_artifacts_reviewed": false,
+      "configuration_reported": {
+        "renderer": "gl_compatibility",
+        "driver": "opengl3",
+        "scene_detail": "low",
+        "render_scale_percent": 75,
+        "msaa": "off",
+        "shadow": "projected low",
+        "birds": "few",
+        "runway_meadow": "off",
+        "display": "X11 through headless Weston",
+        "weston_window_size_as_reported": [
+          1920,
+          1080
+        ],
+        "actual_drawable_and_internal_pixels": "not_independently_verified_from_raw_receipts"
+      },
+      "repeats_per_aircraft_reported": 1,
+      "rows": [
+        {
+          "aircraft": "jensen-das-ugly-stik-60",
+          "circuit_fps": 47.4,
+          "one_percent_low_fps": 33.7,
+          "simulation_wall_ratio": 1.0,
+          "case_data_as_reported": "ineligible_first_home"
+        },
+        {
+          "aircraft": "sebart-avanti-s-a200-p100rx",
+          "circuit_fps": 38.0,
+          "one_percent_low_fps": 26.6,
+          "simulation_wall_ratio": 1.0,
+          "case_data_as_reported": "valid"
+        },
+        {
+          "aircraft": "f4u-corsair-250",
+          "circuit_fps": 38.2,
+          "one_percent_low_fps": 26.5,
+          "simulation_wall_ratio": 1.0,
+          "case_data_as_reported": "valid"
+        }
+      ],
+      "source_identity_limit": "report begins with 7f4db1b1b plus harness changes; later GFX-IGPU results are not independently bound to a raw source receipt here"
+    },
+    "m1_comparison": "historical context only; source, backend, effective settings and display differ; no cross_device_speed_ratio_derived"
+  },
+  "derived_theory": {
+    "scale_75_nominal_internal_pixels": [
+      1440,
+      810
+    ],
+    "scale_75_pixel_fraction": 0.5625,
+    "scale_75_pixel_reduction_percent": 43.75,
+    "scale_75_ideal_pixel_only_throughput_multiplier": 1.7777777777777777,
+    "physics_hz": 240,
+    "max_physics_steps_per_frame": 12,
+    "necessary_ideal_realtime_floor_fps": 20.0,
+    "frequency_1100_to_1150_ideal_throughput_gain_percent": 4.545454545454541,
+    "limits": "theoretical arithmetic; not measured performance or a guarantee"
+  },
+  "source_inputs": [
+    {
+      "path": "AGENTS.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "e178867a04448758450de032e14e7210242c9f9a2403c264ff19872f67f9459e",
+      "bytes": 12668
+    },
+    {
+      "path": "docs/SUBAGENTS.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "6959348bfb75d11783c6eabde1aed29569eff68b1569755eb9be276d1e6d3765",
+      "bytes": 31773
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-07/igpu-uhd630-2026-11-20/README.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "942513e71a01a4eea87db47b07879a8a76b08deebf8d60f617339341cd947c22",
+      "bytes": 4186
+    },
+    {
+      "path": "docs/research/god-test/2026-11-22-linux-uhd630-comparison.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "f304a98e5e59bd3adeb38544cbe6e520a3774bacab8f9ac3c38bd869a782b6bb",
+      "bytes": 17546
+    },
+    {
+      "path": "docs/research/god-test/2026-11-21-stutter-map.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "d4e832837757399ed4ceef02531239a04c712a3dfcbfbc73408e1a7ce4c22764",
+      "bytes": 7362
+    },
+    {
+      "path": "docs/research/desktop-delivery-investigations/DT-MAC-03b/README.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "8662eef86e6561436d9efc0e25ae76c88aee37fb855128b768957fc280ffe316",
+      "bytes": 12013
+    },
+    {
+      "path": "docs/plans/primis-intel-test-host.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "877caa6e6db057faf84af12c654a5cc2e41da611e5f2516dd082c61b5c9fa70f",
+      "bytes": 19262
+    },
+    {
+      "path": "app/project.godot",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "7b103d2a435ccf59c0d4e97e8a219bbe167f73652a144d76c10a574fbdb6b2d2",
+      "bytes": 4350
+    },
+    {
+      "path": "app/app_root.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "705792640bada31b8c18c58b03365c8fe7b379753ca704aa73042e74aad3067c",
+      "bytes": 265318
+    },
+    {
+      "path": "app/render/auto_graphics_policy.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "5aa3e3310dfeab3bc1e89e7b5ef49c23621445f7382e4078f8e1eee7161ac151",
+      "bytes": 14649
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "00fbcfa803db33120c7acfa960843ee70b36a44933f80e754176d51c50ca76b0",
+      "bytes": 42593
+    },
+    {
+      "path": "app/render/viewport_color.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "2cf819867bd3323e0b2f94496b680f744d8b37bc049a6ed25a50b6222141e4ad",
+      "bytes": 1165
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+      "bytes": 21924
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127",
+      "bytes": 4882
+    },
+    {
+      "path": "app/render/home_render_budget.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "3863f9f66350c089f9f5917bc35087e6f22ee460648fdd31381ed0d95a7aa3c1",
+      "bytes": 10694
+    },
+    {
+      "path": "app/render/graphics_preparation.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "9c5c8131bfefd352d0acdd80fb7e17561dc68513dcea9bd7f6fd88bdb24ef622",
+      "bytes": 2990
+    },
+    {
+      "path": "app/render/auto_calibration.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "1d4127f65dd3ce77953569f9b81b14b7aff690571adbbd9a86b177568a1aea9f",
+      "bytes": 23473
+    },
+    {
+      "path": "app/render/scene_detail.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "8d91833bef1c71f96a4b17cc40db020cda93cc19dd2b441451b2c652b23e2765",
+      "bytes": 8193
+    },
+    {
+      "path": "app/render/frame_diagnostics.gd",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "3481005b06d1c9cea0c0d0e1e7c000ce4a10610e840c42964396799164bf30d5",
+      "bytes": 10429
+    },
+    {
+      "path": "tools/godtest/runner.py",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "513765f714a823fcb164a1351d959db4a366d5ffc3c9af5fc1b93dcec55bc4b3",
+      "bytes": 29210
+    },
+    {
+      "path": "tools/godtest/hardware.py",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "b1470f0c990c6c273c3915f0ae2e3789a25b12b8619cdc89166f4311d7bad4e6",
+      "bytes": 36056
+    },
+    {
+      "path": "tools/godtest/PERFORMANCE_TOUR.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "04b48f773ab8e0c7876756ce7e78dfc8aaf3497b5f05915b90cb182a804d4e9b",
+      "bytes": 34951
+    },
+    {
+      "path": "research/performance/frame_diagnose.py",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "7d4872c35453734bd540bb337367885ddc2924f90b3aa2e0604b8ebc705dc17a",
+      "bytes": 34654
+    },
+    {
+      "path": "research/performance/README.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "1270e004062d18dc4225bb103fc4905a45c71727564f8d11f2257cdabf879616",
+      "bytes": 91194
+    },
+    {
+      "path": "research/performance/graphics_ladder/ladder.py",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "5fcaa6a2d592324b4c62ba854d7c248937fca576c7ed9496fe8c508496f6f749",
+      "bytes": 49856
+    },
+    {
+      "path": "tools/debug/README.md",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "a094e69dbf2ae5a347fccd65ccbe8eb6a586a5d27d3bd0d1773cacf3add9cdc3",
+      "bytes": 82888
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "revision": "91d7d6ddcb2182422a496036825e9113f82d2433",
+      "sha256": "9a88d844a467553db8ba82f08a14621a1e28c1cc9ebfd9699f05ed444425ba8e",
+      "bytes": 73121
+    }
+  ],
+  "upstream_pinned_source": {
+    "godot_ref": "cafc17a19",
+    "checked_blobs": [
+      {
+        "path": "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h",
+        "git_blob_sha": "77f306b0d62e71d5fd616031e1fb736d0667370f",
+        "finding": "get_base_data_format selects R16G16B16A16_SFLOAT when force_hdr"
+      },
+      {
+        "path": "servers/rendering/renderer_rd/forward_mobile/render_forward_mobile.cpp",
+        "git_blob_sha": "77b26d2b1320a3aef2dc27aa6f910eed48af3b1b",
+        "finding": "preferred A2B10G10R10_UNORM_PACK32; HDR pipeline selects R16G16B16A16_SFLOAT"
+      }
+    ]
+  },
+  "verification": [
+    {
+      "command": "python3 tools/testqueue/testctl.py pool hosts",
+      "exit_code": 2,
+      "result": "unavailable_configuration",
+      "detail": "/tmp/OpenRC/testpool/config.json absent; no retry or hardware launch"
+    },
+    {
+      "command": "python3 tools/godtest/godtest.py performance-tour --dry-run --repeats 3 --graphics automatic --resolution 1920x1080 --window-mode borderless --rendering-method gl_compatibility --rendering-driver opengl3 --scene-detail low",
+      "exit_code": 0,
+      "case_count": 9,
+      "case_timeout_sum_seconds": 8100,
+      "managed_admission": {
+        "status": "fits_queue_limit",
+        "execution_budget_seconds": 14924
+      },
+      "stdout_sha256": "8d35d3a5cd48afdb1e1d4579db04dc88ced6e326241624a92d2258988c8d5637",
+      "result": "nine planned complete cases; no engine launch; explicit identities asserted"
+    },
+    {
+      "kind": "documentation_local_links_and_whitespace",
+      "result": "passed",
+      "local_link_occurrences_checked": 52,
+      "fragment_occurrences_checked": 6,
+      "implementation": "Existing tools/ci/check_docs.py parser and Git-object target/anchor checks against staged candidate; git diff --cached --check",
+      "scope": "New local links in the five changed Markdown files, plus inherited links targeting changed paths; no GitHub event receipt or full CI claimed"
+    },
+    {
+      "kind": "evidence_provenance_and_arithmetic",
+      "result": "passed",
+      "base_source_sha256_and_byte_counts_checked": 27,
+      "renderer_median_rows_recomputed": 3,
+      "dry_run_stdout_sha256_rechecked": true
+    }
+  ],
+  "review": {
+    "assignments": [
+      "Intel/Proxmox primary-source research",
+      "render-path and controls audit",
+      "Good Enemy evidence review"
+    ],
+    "accepted": [
+      "newer automatic result precedes older heavy-workload screen",
+      "missing raw series and Intel utilization stay unavailable",
+      "explicit GL renderer required for automatic tour",
+      "memory/clock/cache/HDR contradictions narrowed",
+      "no cross_machine_speed_ratio",
+      "no speculative driver or hardware replacement",
+      "historical ablation estimates remain exploratory and non-additive",
+      "warmup may move synchronous stalls rather than guarantee their removal",
+      "reported window dimensions distinguished from verified drawable/internal pixels",
+      "no cross-host statistical equivalence or blanket VSync inference"
+    ],
+    "integrated_candidate_review": {
+      "result": "passed_no_blocking_findings",
+      "scope": "All six changed/new files; evidence attribution, source controls, protocol, hashes and user hardware constraint",
+      "independent_source_hashes_verified": 27,
+      "findings": "Ablation, warmup, clock/VSync, host equivalence and pixel-dimension overstatements corrected before publication"
+    }
+  },
+  "pending": [
+    "raw bundle recovery and re-reduction",
+    "admitted repeated Intel baseline",
+    "effective AA/cache/current host receipt",
+    "Intel utilization coverage",
+    "matched terrain/HDR/Mesa experiments",
+    "physical presentation if an existing display path is available; not required for offscreen throughput screen",
+    "full CI not run for this documentation branch"
+  ]
+}

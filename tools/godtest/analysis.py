@@ -30,15 +30,21 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
         return "missing controller observations"
     target = manifest["dynamic_resolution_fps"]
     output = manifest["resolution"]
-    ceiling = manifest.get("render_scale", 100)
-    sizes = {tuple(axis * percent // 100 for axis in output): percent / 100
-             for percent in (75, 85, ceiling) if percent <= ceiling}
+    ceiling = manifest.get("render_scale", 100) / 100
+    # Mirror the flight viewport's half-pixel adjustment when an exact 75% scalar rounds below the floor.
+    floor = 0.75
+    minimum_size = tuple((axis * 75 + 99) // 100 for axis in output)
+    if tuple(axis * 75 // 100 for axis in output) != minimum_size:
+        floor = max((pixels + 0.5) / axis for pixels, axis in zip(minimum_size, output))
+    sizes = {tuple(int(axis * scale) for axis in output): scale
+             for scale in (floor, 0.85, ceiling) if floor <= scale <= ceiling}
     confirmed = False
     when = phase.get("start_usec", 0)
     end = phase.get("end_usec", -1)
     if type(when) is not int or type(end) is not int:
         return "invalid phase timing"
     previous: dict = {}
+    controller_seen = False
     for row in trace:
         if not isinstance(row, dict) or row.get("phase_id") != phase.get("id"):
             return "observation belongs to another phase"
@@ -49,14 +55,19 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
         state = row.get("status")
         if not isinstance(state, dict) or state.get("target_fps") != target:
             return "controller target differs from the manifest"
+        if state.get("state") == "awaiting_controller" and not controller_seen and "completed_frame" not in state:
+            continue
         if state.get("state") not in ("observing", "apply_pending"):
-            return f"controller used fixed resolution ({state.get('reason', 'unknown')})"
+            return f"controller inactive ({state.get('reason', state.get('state', 'unknown'))})"
+        if not controller_seen and at - phase["start_usec"] > 100_000:
+            return "controller activation did not cover the start of the phase"
+        controller_seen = True
         frame = state.get("completed_frame")
         if frame is None:
             continue
         if not isinstance(frame, dict) or state["state"] != "observing" or frame.get("output_size") != output:
             return "completed frame does not identify the active output"
-        if any(type(frame.get(key)) is not int or frame[key] < 0 for key in ("frame_id", "generation")):
+        if any(type(frame.get(key)) is not int or frame[key] < 0 for key in ("frame_id", "generation", "recorded_usec")) or frame["recorded_usec"] > at:
             return "invalid completed frame identity"
         size = frame.get("input_size")
         scale = state.get("configured_scale")
@@ -68,7 +79,16 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
             return "completed scale identity did not advance"
         previous = frame
         confirmed = True
-    return "" if confirmed else "no completed frame confirmed an active scale"
+    if not confirmed:
+        return "no completed frame confirmed an active scale"
+    closing = phase.get("dynamic_resolution_end")
+    if not isinstance(closing, dict) or any(type(closing.get(key)) is not int for key in ("frame_id", "generation", "recorded_usec")):
+        return "missing fresh completed frame at phase end"
+    if (closing["recorded_usec"] < max(phase["start_usec"], end - 100_000, previous["recorded_usec"])
+            or closing["recorded_usec"] > end or closing["frame_id"] < previous["frame_id"]
+            or any(closing.get(key) != previous[key] for key in ("generation", "input_size", "output_size"))):
+        return "phase-end frame is stale or differs from the confirmed scale"
+    return ""
 
 
 def validate_stream(directory: Path, frames: dict) -> dict:
@@ -589,6 +609,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
         effective = runtime.get("identity", {}).get("effective_display", {})
         if not isinstance(effective, dict) or effective.get("dynamic_resolution_fps") != manifest["dynamic_resolution_fps"]:
             problems.append("runtime dynamic resolution preference differs from the manifest")
+        elif manifest["dynamic_resolution_fps"] and effective.get("render_scale") != manifest.get("render_scale", 100):
+            problems.append("runtime adaptive ceiling differs from the manifest")
     requested_rendered = rendering["requested_headless"] is False
     rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True

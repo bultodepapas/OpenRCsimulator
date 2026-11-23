@@ -28,8 +28,7 @@ var _confirmed_frame: Dictionary = {}
 
 
 static func supports(viewport: Viewport) -> bool:
-	if not EXPERIMENT_FLAG in OS.get_cmdline_user_args() \
-			or DisplayServer.get_name() == "headless" or not is_instance_valid(viewport):
+	if DisplayServer.get_name() == "headless" or not is_instance_valid(viewport):
 		return false
 	return RenderingServer.has_method(SAMPLE_METHOD) and RenderingServer.has_method(SUPPORT_METHOD) \
 		and RenderingServer.has_method(SAMPLE_TOGGLE_METHOD) \
@@ -77,7 +76,7 @@ func tick(viewport: Viewport, flight_id: int, active: bool, config: Dictionary) 
 	if not sample.is_empty() and _policy.pending_level < 0 and sample.generation == _policy.generation \
 			and sample.generation != _confirmed_frame.get("generation", -1):
 		var input: Vector2i = sample.input_size
-		_confirmed_frame = {frame_id = sample.frame_id, generation = sample.generation,
+		_confirmed_frame = {frame_id = sample.frame_id, generation = sample.generation, recorded_usec = sample.recorded_usec,
 			input_size = [input.x, input.y], output_size = [_output.x, _output.y]}
 	if next >= 0:
 		_written = _scales[next]
@@ -117,12 +116,11 @@ func _begin(viewport: Viewport) -> bool:
 		return false
 	var ladder: Array[Vector2i] = []
 	_scales.clear()
-	var floor_scale := MIN_SCALE_PERCENT / 100.0
-	var floor_size := Vector2i(ceili(_output.x * floor_scale), ceili(_output.y * floor_scale))
+	var floor_scale := _minimum_scale(_output)
 	for scale: float in [floor_scale, 0.85, _fixed]:
 		# The server scales a Vector2 using its real_t precision and truncates per axis.
 		var size := Vector2i(Vector2(_output) * scale)
-		if scale > _fixed or size.x < floor_size.x or size.y < floor_size.y or size in ladder:
+		if scale < floor_scale or scale > _fixed or size in ladder:
 			continue
 		ladder.append(size)
 		_scales.append(scale)
@@ -137,6 +135,17 @@ func _begin(viewport: Viewport) -> bool:
 	_policy = Policy.new(ladder, _target, Time.get_ticks_usec())
 	_publish(viewport, "observing", "warming")
 	return true
+
+
+static func _minimum_scale(output: Vector2i) -> float:
+	var scale := MIN_SCALE_PERCENT / 100.0
+	if output.x <= 0 or output.y <= 0:
+		return scale
+	var minimum := Vector2i(ceili(output.x * scale), ceili(output.y * scale))
+	if Vector2i(Vector2(output) * scale) == minimum:
+		return scale
+	# Aim half a pixel above each integer floor to survive the engine's truncation and float rounding.
+	return maxf((minimum.x + 0.5) / output.x, (minimum.y + 0.5) / output.y)
 
 
 func _fail(viewport: Viewport, reason: String) -> void:

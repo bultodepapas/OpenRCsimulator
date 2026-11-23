@@ -31,8 +31,52 @@ Freeze the scene, source, engine, native evaluator, aircraft, route, input, came
 
 Run the first native comparisons at 1080p and 4K on the RTX 3090, 2560×1600 Retina on Angela, and 1080p on Primis. Primis currently recommends Compatibility/OpenGL and a 75% fixed scale. That configuration has unavailable feedback and no adaptive range at its saved ceiling. Compare Mobile/Vulkan as a distinct candidate with the same readable workload and within Primis's available memory. On Angela compare the product reconstruction selection separately, including MetalFX Spatial when available. Keep synthetic and product measurements associated with their actual provider.
 
+### E2 pulse screen on Angela
+
+On the M1 at 2560×1600, Mobile/Metal, the controlled shader switched between 1 and 56 iterations with a 60 FPS target. Each pulse had a light gap before the next pulse. The 5 s pulse had a 13 s gap afterward so the controller could restore its ceiling before the sustained load.
+
+| Pressure interval | Observed adaptive behavior | Late callbacks, adaptive | Late callbacks, fixed 85% |
+| --- | --- | ---: | ---: |
+| 0.5 s | Full throughout | 25 / 27 | 1 / 36 |
+| 2 s | Full throughout | 105 / 106 | 1 / 142 |
+| 5 s | 85% confirmed at 3.92 s, full again 10.93 s into the gap | 204 / 283 | 1 / 355 |
+| 18 s | 85% confirmed at 4.30 s, full again 10.44 s into recovery | 224 / 1197 | 1 / 1274 |
+
+The 5 s case spent about 1.1 s at the lower scale before the pulse ended and another 10.9 s there in the light gap. Fixed 85% was considerably steadier in this sequence and spent every gap at the lower scale. Score that tradeoff in flight. Keep the current dwell as the control. Compare a shorter fast-down path for persistent GPU-only misses and a recovery rule that estimates the next rung's cost from fixed-scale data. Adopt either change only after measuring transition tails, useful time at higher scale and aircraft readability. The display was restored after both runs. Receipts are under `U:/OpenRC-drs-godtest-flight-20261122/mac-bursts`.
+
 ## Rollout decision
 
-The current option is an explicit experiment with a supported renderer and a patched engine. Keep Off as the product default while native flight and package evidence are open. A future Auto mode can select a qualified combination of GPU, driver, renderer, provider, display and saved ceiling, then use observed GPU pressure and measured fixed-scale response. A GPU name alone supplies a starting hypothesis. Preserve manual Off, manual target and the saved fixed ceiling. Treat unavailable timing, mismatched targets and an unreadable floor as fixed cases. Recheck changed renderer, driver and package identities before enabling further rows.
+The [current first-run policy](../../../plans/dynamic-resolution.md#phase-3--implement-the-controller-and-player-controls-m2) applies a conservative low-end default when the viewport supports completed GPU timing. Native flight and package evidence are still open. Qualification covers the GPU, driver, renderer, provider, display and fixed ceiling, with observed GPU pressure and measured fixed-scale response. A GPU name supplies a starting hypothesis. Preserve manual Off, manual targets and the saved fixed ceiling. Treat unavailable timing, mismatched targets and an unreadable floor as fixed cases. Recheck changed renderer, driver and package identities before qualifying further rows.
+
+The first-run smoke used the same patched engines on Primis and Angela with a
+small 3D scene and no experimental argument. Primis Mobile/Vulkan on the UHD 630
+selected 30 FPS at an 85% ceiling on a 1366×768 virtual output. The controller
+received a completed 1161×652 frame at that ceiling. The Compatibility/OpenGL
+control held a fixed 75%. Angela Mobile/Metal on the M1 detected MetalFX Spatial
+and kept it at its fixed Quality scale with a 2560×1600 Retina viewport. This
+smoke verifies selection and initial GPU feedback. Loaded-flight transitions and
+pilot readability remain open.
+
+On Primis Mobile/Vulkan the display store persisted and reloaded the new bundle.
+A simulated loss of timing support preserved its ceiling. Saving Off and a
+manual ceiling then preserved both across reload.
+
+A matched synthetic load on the same Primis output exercised the adjusted floor
+without the flag. With 270 shader iterations and an 18 s heavy phase, the
+adaptive 85% ceiling averaged 36.84 FPS and fixed 85% averaged 30.94 FPS.
+Both had zero late callbacks in that phase. Adaptive confirmed 1025×576 at the
+floor and restored 1161×652 in recovery. The output stayed at 1366×768.
 
 GOD TEST now accepts `--dynamic-resolution-fps 0|30|60|90|120`. A positive request enables the experiment in the isolated profile and records phase transitions with the controller target, actual input and output pixels and completed-frame generation. The reducer requires completed evidence and rejects a fallback as an adaptive result. The tour retains its native physics requirement. [Operating guide](../../../../tools/godtest/PERFORMANCE_TOUR.md)
+
+## Windows flight integration screen
+
+An isolated Windows debug export with the experiment and the GOD TEST pilot completed the Ugly Stik recovery and runway circuit on the RTX 3090 at 1920×1080, Forward+/Vulkan and a 60 FPS target. The native preflight identified a different verified executable. The debug flight selected the GDScript reference backend and its performance is outside the native benchmark comparison.
+
+The Automatic High startup calibration owned the timing window throughout `recover`. It finished during `runway_circuit`, about 61 s of wall time after the first measured flight callback. The controller began observing and retired with `stale_gpu_feedback` about 0.16 s later. The scale stayed configured at 100%, with no verified adaptive extent during either phase. The case completed its flight but fails the adaptive evidence gate.
+
+That calibration recorded 1.63 ms root-viewport GPU p95 and 122.32 ms callback p95 with active subviewports. This difference makes per-stage and per-viewport attribution essential before choosing a scale response. A CPU or pacing diagnosis also needs matching native-physics and display evidence.
+
+Fixed comparison profiles now explicitly choose the renderer in their isolated settings. This gives fixed and adaptive runs the same renderer startup and removes the Automatic High calibration from those trials. It remains measurable in the automatic profile experiment. In the controlled repeat, the profile recorded High and the controller began observing 58 ms after the `recover` phase opened. It retired on `stale_gpu_feedback` 102 ms later. Recovery and return Home completed. This separates the calibration delay from the stale-feedback problem. Keep the freshness bound for this experiment. Native validation needs the qualified engine/kernel pair and current gameplay workloads.
+
+Windows diagnostic receipts, including the native mismatch, incomplete attempts and flight record, are under `U:/OpenRC-drs-godtest-flight-20261122`. These runs used private profiles and the shared worker's desktop reservation. Post-run inspection found executables from earlier debug attempts still alive after their launcher reported cleanup. Their start times overlap the diagnostic flights, so use the Windows records for controller state and integration only. The controlled case returned exit zero and acknowledged quit. The remaining task-owned processes were stopped by their verified executable identities.

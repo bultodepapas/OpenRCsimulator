@@ -54,7 +54,18 @@ each additional step. Start the experiment on a compatible renderer and test
 the option through Settings. Keep release qualification open until phases 1, 2
 and 4 have native evidence.
 
-1. **3.1 Port the policy behind an opt-in.** Use bounded, non-overlapping windows of unique completed samples. The branch starts with at least 120 samples spanning two seconds and evaluates the 90th percentile of GPU time in each window. It steps down after two windows above 90% of budget and at least 5 s of dwell. It steps up after 10 s below 75% and at least 10 s of dwell. These are tuning hypotheses. Use the real-frame target, excluding generated frames. Permit a reduction only while fresh samples show sustained GPU pressure and the run remains pixel-sensitive. Hold during pacing or CPU stalls. Allow one rung per decision, honour dwell times and report a target miss at the floor. Test sustained load, alternating load, isolated spikes, recovery, stale data and CPU/cap-limited controls with the branch traces.
+For a fresh profile or Restore graphics defaults, a renderer with completed
+viewport GPU timing enables a 30 FPS default on identified integrated GPUs and
+identified discrete or laptop GPUs below 0.15× RTX 3090 estimated throughput.
+The bundle allows a 75–85% internal 3D range while Automatic reconstruction
+resolves to Native bilinear. Retina configurations with MetalFX Spatial support
+keep fixed scaling and Automatic reconstruction.
+Existing profiles retain their saved target and reconstruction. Compatibility
+and stock builds use fixed scale, with a 75% recommendation on a fresh UHD 630.
+Manual targets remain available on other supported GPUs. Renderer selection
+continues to follow the automatic graphics policy.
+
+1. **3.1 Port the policy with capability checks.** Use bounded, non-overlapping windows of unique completed samples. The branch starts with at least 120 samples spanning two seconds and evaluates the 90th percentile of GPU time in each window. It steps down after two windows above 90% of budget and at least 5 s of dwell. It steps up after 10 s below 75% and at least 10 s of dwell. These are tuning hypotheses. Use the real-frame target, excluding generated frames. Permit a reduction only while fresh samples show sustained GPU pressure and the run remains pixel-sensitive. Hold during pacing or CPU stalls. Allow one rung per decision, honour dwell times and report a target miss at the floor. Test sustained load, alternating load, isolated spikes, recovery, stale data and CPU/cap-limited controls with the branch traces.
 2. **3.2 Serialize scale changes.** Give one flight owner a single outstanding request tied to its viewport and generation. Confirm it only after observing the intended provider, extent and required history state. On timeout, rejection or loss of feedback, retire pending work, restore and verify the fixed selection, then require a fresh observation window. Drive the timeout even if drawing stops. Test late acknowledgements after owner replacement.
 3. **3.3 Integrate Settings and scene lifetime.** Expose Off and the qualified target only for eligible combinations. Persist the player's intent and fixed choice. Keep the live scale transient and show the reason when the target is unavailable. Suspend on pause, focus loss, minimize, resize, loading and settings preview. Exercise Keep, Revert, timeout, renderer restart and Flight → Home → Flight. Confirm that Off restores the saved scale and AA, releases timing and ends controller work. [Display preferences](../../app/app_state/display_preferences.gd) · [Settings tests](../../app/tests/test_settings_ui.gd)
 
@@ -69,4 +80,4 @@ Mark each matrix row **qualified opt-in**, **fixed only** or **unmeasured**. For
 
 The [RTX 3090 Windows screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-rtx3090-2026-11-22.md), [Primis UHD 630 screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-primis-2026-11-22.md) and [Angela M1 Retina screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-angela-2026-11-22.md) record completed sizes and controlled pixel-load comparisons ahead of flight qualification.
 
-The [flight experiment design and rollout decision](../research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md) binds those screens to the GOD TEST opt-in and to the measurements required for a future automatic setting.
+The [flight experiment design](../research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md) binds those screens to the explicitly configured GOD TEST and to the remaining native qualification.

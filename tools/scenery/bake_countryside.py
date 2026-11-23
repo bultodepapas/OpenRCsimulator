@@ -17,9 +17,18 @@ FIELD = ROOT / "app/data/fields/default.json"
 SCENERY = ROOT / "app/data/scenery/default.json"
 HORIZON = ROOT / "app/data/fields/horizon.json"
 KINDS = {"crop": 0, "soil": 1, "highway": 2, "road": 3, "track": 4, "yard": 5}
-KINDS.update({"wheat": 0, "maize": 6, "pasture": 7, "stubble": 8, "wheat_harvest": 9})
-PALETTE = ["#687242", "#8c8248", "#536638", "#99884e", "#716648", "#9a8c60"]
-FIELD_COVERS = ["pasture", "wheat", "maize", "wheat", "soil", "stubble"]
+KINDS.update({"wheat": 0, "maize": 6, "pasture": 7, "stubble": 8, "wheat_harvest": 9,
+              "cut_hay": 10, "resting_meadow": 11})
+# A mix of managed grass and arable land. Endpoints within each cover represent
+# differences in growth, moisture and harvest stage, not different crops.
+FIELD_COVERS = ("pasture", "wheat", "cut_hay", "maize", "resting_meadow",
+                "soil", "pasture", "stubble", "cut_hay", "wheat", "resting_meadow")
+FIELD_TINTS = {
+    "pasture": ("#4f7048", "#79834e"), "resting_meadow": ("#476a47", "#798657"),
+    "cut_hay": ("#73834b", "#99915e"), "wheat": ("#77834e", "#ac9a60"),
+    "maize": ("#466941", "#778345"), "soil": ("#6a5e4c", "#866e50"),
+    "stubble": ("#938361", "#ad986e"),
+}
 HEADLAND_M = 6.0
 HEADLAND_FRACTION = .18
 HARVESTED_LENGTH_M = 24.0  # First passes across the wheat field's southern headland.
@@ -95,7 +104,7 @@ def generate():
         cell = cells.setdefault(key, {"vertices": [], "indices": []})
         start = len(cell["vertices"])
         for (n, e), (u, v) in zip(points, uvs):
-            # [render xyz, UV metres, material kind/width, RGB]; normals are up.
+            # [render xyz, UV metres, material kind/width, RGB, optional field seed]; normals are up.
             cell["vertices"].append([round(e, 4), round(height(n, e) + lift, 4), round(-n, 4),
                                      round(u, 4), round(v, 4), kind, width, *[round(c, 5) for c in tint]])
         # Correct both input orientations; Godot front faces are clockwise.
@@ -120,12 +129,25 @@ def generate():
                 extent = (e1 - e0 if rotate else n1 - n0) if kind < 2 or kind >= 6 else e1 - e0
                 quad(points, uvs, kind, extent, tint, lift)
 
-    def field_parcel(bounds, cover, tint, rotate=False, shear=0.0):
-        rectangle(bounds, KINDS[cover], color(tint), rotate=rotate, shear=shear)
+    def field_parcel(bounds, cover=None, tint=None, rotate=False, shear=0.0):
+        # Use the parcel's corner as its identity, independent of emission order or mesh cells.
+        signature = hashlib.sha256(f"{bounds[0]},{bounds[1]}".encode("ascii")).digest()
+        cover = cover or FIELD_COVERS[signature[0] % len(FIELD_COVERS)]
+        if tint:
+            rgb = color(tint)
+        else:
+            first, last = map(color, FIELD_TINTS[cover])
+            # Moist soil and shaded grass darken independently of crop maturity.
+            value = 0.94 + 0.12 * signature[3] / 255
+            rgb = [value * (a + (b - a) * signature[1] / 255) for a, b in zip(first, last)]
+        # The last colour component is a constant pattern seed, not transparency.
+        seed = 1 + signature[2] % 255
+        rectangle(bounds, KINDS[cover], [*rgb, seed / 255], rotate=rotate, shear=shear)
         row_length = bounds[3] - bounds[1] if rotate else bounds[2] - bounds[0]
         parcels.append({"bounds_ne_m": bounds, "kind": KINDS[cover], "cover": cover,
                         "row_axis": 0 if rotate else 1, "shear": shear,
-                        "headland_m": 0 if cover == "pasture" else min(HEADLAND_M, row_length * HEADLAND_FRACTION),
+                        "surface_seed": seed,
+                        "headland_m": 0 if cover in ("pasture", "resting_meadow") else min(HEADLAND_M, row_length * HEADLAND_FRACTION),
                         "harvested_length_m": HARVESTED_LENGTH_M if cover == "wheat_harvest" else 0})
 
     # Keep the club, lake, flight box and wooded ring intact. Fields occupy clear
@@ -144,11 +166,10 @@ def generate():
                 continue
             if any(n0 < a1 and n1 > a0 and e0 < b1 and e1 > b0 for a0, b0, a1, b1 in compounds):
                 continue
-            index = (ni * 7 + ei * 11) % len(PALETTE)
             bounds = [n0, e0, n1, e1]
             shear = [-0.075, 0.035, 0.08, -0.025][(ni * 3 + ei) % 4]
             pivot = (n0 + n1) / 2
-            field_parcel(bounds, FIELD_COVERS[index], PALETTE[index], rotate=(ni + ei) % 2 == 0, shear=shear)
+            field_parcel(bounds, rotate=(ni + ei) % 2 == 0, shear=shear)
             # Narrow grass headlands and dark drainage margins form readable boundaries.
             rectangle([n0 - 2, e0, n0, e1], KINDS["pasture"], color("#394729"), rotate=True, shear=shear, pivot=pivot)
             rectangle([n0, e0 - 2, n1, e0], KINDS["pasture"], color("#435033"), shear=shear, pivot=pivot)

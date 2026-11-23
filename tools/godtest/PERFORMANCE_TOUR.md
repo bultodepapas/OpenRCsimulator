@@ -289,6 +289,13 @@ Pair it with `--dynamic-resolution-fps 0 --render-scale 100` and a readable
 fixed scale such as 85 on the same engine, aircraft workload and display.
 Use the qualified native kernel for that exact engine. The registered stock
 engine lacks the completed-frame API and the runtime rejects a positive request.
+Pass zero explicitly for the fixed controls so every case has the same startup
+argument. These cases use the technical startup route. Keep startup timing
+separate from ordinary product measurements.
+With `--graphics fixed`, these cases save a deliberate renderer profile in
+the isolated settings so the first-flight Automatic renderer calibration does
+not take the viewport timing window. Keep `--graphics automatic` as a separate
+experiment that retains calibration and records any inactive interval.
 
 Each measured flight phase records controller state changes, the requested FPS,
 the configured scale and completed-frame input and output sizes with the frame

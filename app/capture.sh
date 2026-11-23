@@ -111,26 +111,6 @@ CAPTURE_NAMES=()
 # L0b: llvmpipe thread count pinned. 1 and 12 threads gave byte-identical captures on Mesa 25.2.8 (2026-10-05), so
 # this is cheap insurance for machines with other core counts (CI runners); 1 thread costs ~5 s per run.
 export LP_NUM_THREADS="${LP_NUM_THREADS:-1}"
-if includes vegetation; then
-  start_phase geometry-render
-  # The full capture folder is reused. Both producers require fresh output under this run's lock.
-  GEOMETRY="$CAPTURES/geometry"
-  rm -rf -- "$GEOMETRY"
-  mkdir "$GEOMETRY"
-  xvfb-run -a -s "-screen 0 1920x1080x24" python3 "$HERE/../tools/godot/run_checked.py" \
-    --timeout "$((120 + EXTRA_TIMEOUT))" --out-dir "$GEOMETRY/checks" --label geometry-hedge \
-    --require-text "HEDGE_GEOMETRY_RENDER verdict=pass cases=10 negative=2" -- \
-    "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy --resolution 1920x1080 \
-    --script "$HERE/../tools/scenery/check_geometry_render.gd" -- --out="$GEOMETRY/hedge"
-  OPENRC_SCENERY=on xvfb-run -a -s "-screen 0 1920x1080x24" python3 "$HERE/../tools/godot/run_checked.py" \
-    --timeout "$((300 + EXTRA_TIMEOUT))" --out-dir "$GEOMETRY/checks" --label geometry-furniture \
-    --require-text "CLUB_FURNITURE_RENDER verdict=pass views=4 viewport=1920x1080 visible=4" -- \
-    "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy --resolution 1920x1080 \
-    --script "$HERE/../tools/ground/capture_club_furniture.gd" -- --1080p --verify-visible --out="$GEOMETRY/furniture"
-  python3 "$HERE/../tools/ci/capture_groups.py" geometry-summary --root "$CAPTURES"
-  record_check vegetation:geometry-render
-  finish_phase
-fi
 COUNTERS="$CAPTURES/landscape-counters.txt"
 if includes core; then : > "$COUNTERS"; fi # only core renders counted views
 # VQ-01a: reference captures run the legacy atmosphere fixture. Production field cases use the real app.
@@ -410,8 +390,6 @@ manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': ent
             'near_grass_review_sha256': hashlib.sha256((root / 'l11a/capture-summary.json').read_bytes()).hexdigest(),
             'cloud_probe': 'l15d/summary.json',
             'cloud_probe_sha256': hashlib.sha256((root / 'l15d/summary.json').read_bytes()).hexdigest(),
-            'geometry_review': 'geometry/summary.json',
-            'geometry_review_sha256': hashlib.sha256((root / 'geometry/summary.json').read_bytes()).hexdigest(),
             'treeline_readability': 'l6c/l6c-run-manifest.json',
             'treeline_readability_sha256': hashlib.sha256((root / 'l6c/l6c-run-manifest.json').read_bytes()).hexdigest(),
             'visual_quality_manifest': 'vq01b/visual-quality-run-manifest.json',

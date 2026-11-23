@@ -20,9 +20,11 @@ func _run() -> void:
 	var previous_file := OS.get_environment("OPENRC_SCENERY_FILE")
 	var previous_detail := OS.get_environment("OPENRC_SCENE_DETAIL")
 	var previous_turf := OS.get_environment("OPENRC_WORN_PATH_TURF")
+	var previous_landscape := OS.get_environment("OPENRC_LANDSCAPE_UPGRADE")
 	OS.set_environment("OPENRC_SCENERY", "on")
 	OS.set_environment("OPENRC_SCENE_DETAIL", "high")
 	OS.set_environment("OPENRC_WORN_PATH_TURF", "auto")
+	OS.set_environment("OPENRC_LANDSCAPE_UPGRADE", "on")
 	OS.unset_environment("OPENRC_SCENERY_FILE")
 	_test_default_surface_is_consolidated()
 	_test_explicit_scenery_keeps_legacy_shoulder()
@@ -39,6 +41,7 @@ func _run() -> void:
 	_restore_environment("OPENRC_SCENERY_FILE", previous_file)
 	_restore_environment("OPENRC_SCENE_DETAIL", previous_detail)
 	_restore_environment("OPENRC_WORN_PATH_TURF", previous_turf)
+	_restore_environment("OPENRC_LANDSCAPE_UPGRADE", previous_landscape)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -62,6 +65,7 @@ func _test_default_surface_is_consolidated() -> void:
 			and detail.get_shader_parameter("field_turf_enabled") == true
 			and detail.get_shader_parameter("grass") == material.get_shader_parameter("grass")
 			and detail.get_shader_parameter("tile_m") == material.get_shader_parameter("tile_m"))
+		_check_infield_boundary(material, detail, scenery)
 		var other: Node3D = Builder.build(loaded.field)
 		var other_ground: ShaderMaterial = other.get_node("rough").material_override as ShaderMaterial
 		var other_scenery: Node = other.get_node("Scenery")
@@ -90,6 +94,33 @@ func _test_default_surface_is_consolidated() -> void:
 	field.free()
 
 
+func _check_infield_boundary(ground: ShaderMaterial, shoulder: ShaderMaterial, scenery: Node) -> void:
+	if scenery == null or not ground.get_shader_parameter("club_infield_edge_count"):
+		_check("club infield has an authored boundary", false)
+		return
+	var edges: PackedVector4Array = ground.get_shader_parameter("club_infield_edges")
+	var count := int(ground.get_shader_parameter("club_infield_edge_count"))
+	var boundary := PackedVector2Array()
+	var definition: Dictionary = scenery.get_meta("source_definition")
+	for group: Dictionary in definition.groups:
+		if group.id == "club-perimeter":
+			boundary = PackedVector2Array(group.points)
+	var closed := count == boundary.size() and count <= edges.size() and count >= 3
+	if closed:
+		for i in count:
+			var a := Vector2(edges[i].x, edges[i].y)
+			var b := a + Vector2(edges[i].z, edges[i].w)
+			closed = closed and a.is_equal_approx(boundary[i]) and b.is_equal_approx(boundary[(i + 1) % count])
+	_check("the mowing outline follows every hedge segment and closes across the gate", closed)
+	_check("the lane outside the recessed gate is outside the club cut",
+		not Geometry2D.is_point_in_polygon(Vector2(-70, -57), boundary)
+		and Geometry2D.is_point_in_polygon(Vector2(-66, -57), boundary))
+	_check("the club's own apron has a separate mowing treatment",
+		ground.get_shader_parameter("club_infield_apron") == Vector4(15.0, 0.0, 13.0, 55.0))
+	_check("worn shoulders use the same infield mowing boundary", shoulder != null
+		and edges == shoulder.get_shader_parameter("club_infield_edges"))
+
+
 func _test_explicit_scenery_keeps_legacy_shoulder() -> void:
 	OS.set_environment("OPENRC_SCENERY_FILE", SceneryData.DEFAULT_PATH)
 	var loaded: Dictionary = Loader.load_from()
@@ -98,6 +129,8 @@ func _test_explicit_scenery_keeps_legacy_shoulder() -> void:
 	var detail: ShaderMaterial = scenery.get_meta(WornGroundMaterial.MATERIAL_META, null) as ShaderMaterial if scenery != null else null
 	_check("an explicit scenery file retains its existing shoulder treatment", detail != null
 		and detail.get_shader_parameter("field_turf_enabled") != true)
+	var ground: ShaderMaterial = field.get_node("rough").material_override
+	_check("custom scenery does not inherit the stock infield cut", not ground.get_shader_parameter("club_infield_edge_count"))
 	field.free()
 	OS.unset_environment("OPENRC_SCENERY_FILE")
 

@@ -66,8 +66,6 @@ PATCHES = (
 SHRUB_WIDTH_M = 0.90
 GRASS_HEIGHT_M = 0.25
 FLOOR_HALF_SIZE_M = 2.0
-# WoodlandEdgeHabitat._merge_shrubs uses one QuadMesh per shrub or grass placement.
-WOODLAND_CARD_TRIANGLES = 2
 FLOOR_TRIANGLES_PER_PATCH = 8
 SHRUB_SPECIES_COUNTS = {"grass_common_tall": 4, "bush_common_flowers": 2, "fern_1": 6}
 SHRUB_CENTER_JITTER_AXIS_M = 0.24
@@ -546,6 +544,7 @@ def _groundcover_cards(
 
 def _parse_hedge_contract(source: str, palette_source: str) -> dict[str, float | int]:
     number_specs = {
+        "card_triangles": (r"const\s+CARD_TRIANGLES\s*:=\s*(\d+)", int),
         "card_spacing_m": (r"const\s+CARD_SPACING_M\s*:=\s*([-+0-9.eE]+)", float),
         "card_jitter_m": (r"minf\(\s*([-+0-9.eE]+)\s*,\s*minf\(along", float),
         "lateral_jitter_scale": (r"minf\(width\s*\*\s*([-+0-9.eE]+)\s*,\s*1\.0\)", float),
@@ -940,6 +939,9 @@ def build_document() -> dict[str, Any]:
         raise ValueError("hedge impostor source asset is missing from vegetation catalog")
     if int(hedge_manifest.get("source_triangles", -1)) != int(hedge_asset.get("source_triangles", -2)):
         raise ValueError("hedge impostor manifest/catalog source triangle counts disagree")
+    card_triangles = int(hedge_source.split("const CARD_TRIANGLES :=", 1)[1].splitlines()[0].strip())
+    if card_triangles <= 0:
+        raise ValueError("hedge card triangle count is invalid")
     hedge_asset_id_match = re.search(r'const\s+BUSH_ATLAS_ASSET_ID\s*:=\s*"([^"]+)"', hedge_source)
     if hedge_asset_id_match is None:
         raise ValueError("could not read shrub-card runtime asset id")
@@ -1057,7 +1059,7 @@ def build_document() -> dict[str, Any]:
     if layout_card_count > high_cap:
         raise ValueError("woodland-edge card count exceeds current ImportedHedge high-quality cap")
     floor_triangles = len(floor_centers) * FLOOR_TRIANGLES_PER_PATCH
-    source_triangle_budget = ((layout_card_count + grass_count) * WOODLAND_CARD_TRIANGLES
+    source_triangle_budget = (layout_card_count * card_triangles + grass_count * card_triangles
                              + floor_triangles)
 
     all_margins: dict[str, list[float]] = {}
@@ -1193,7 +1195,7 @@ def build_document() -> dict[str, Any]:
             "shrub_card_asset_id": hedge_asset_id_match.group(1),
             "shrub_source_triangles": int(hedge_asset["source_triangles"]),
             "shrub_species_source_metadata": shrub_species_source_metadata,
-            "shrub_card_triangles_per_instance": WOODLAND_CARD_TRIANGLES,
+            "shrub_card_triangles_per_instance": card_triangles,
             "shrub_card_instance_count": layout_card_count,
             "shrub_species_source_ids": list(SHRUB_SPECIES_COUNTS),
             "shrub_species_instances_per_patch": dict(SHRUB_SPECIES_COUNTS),
@@ -1203,7 +1205,7 @@ def build_document() -> dict[str, Any]:
             "grass_source_triangles": grass_triangles,
             "grass_card_asset_id": str(grass_manifest["asset_id"]),
             "grass_card_atlas_sha256": str(grass_manifest["atlas_sha256"]),
-            "grass_card_triangles_per_instance": WOODLAND_CARD_TRIANGLES,
+            "grass_card_triangles_per_instance": card_triangles,
             "grass_card_instance_count": grass_count,
             "grass_card_source_height_m": round(grass_source_height, 9),
             "grass_card_frame_world_size_m": [round(value, 9) for value in grass_frame_size],

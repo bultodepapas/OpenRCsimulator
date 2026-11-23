@@ -198,7 +198,11 @@ func apply_gpu_defaults(fresh_install: bool) -> Error:
 	if fresh_install:
 		owned = _matching_gpu_defaults(recommended, recommended)
 	else:
+		var adaptive_ceiling := int(recommended.dynamic_resolution_fps) > 0 or int(config.dynamic_resolution_fps) > 0
 		for key: String in owned:
+			# Preserve the adaptive ceiling with its saved target, across renderer changes.
+			if key == "render_scale" and adaptive_ceiling:
+				continue
 			updated[key] = recommended[key]
 			owned[key] = recommended[key]
 	if not fresh_install and updated == config:
@@ -287,6 +291,8 @@ static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
 		elif key == "window_resolution" and value in WINDOW_RESOLUTIONS:
 			result[key] = value
 		elif key == "window_mode" and value in WINDOW_MODES:
+			result[key] = value
+		elif key == "dynamic_resolution_fps" and typeof(value) == TYPE_INT and value in DYNAMIC_RESOLUTION_FPS_VALUES:
 			result[key] = value
 	return result
 

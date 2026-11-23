@@ -259,7 +259,7 @@ void fragment() {
 	col = club_turf(col, world_pos.xz, club_field_detail);
 	// Evaluate derivatives before the terrain branch; suppress subpixel relief and skip all wave work beyond 80 m.
 	vec2 footprint = fwidth(world_pos.xz);
-	if (meadow_count > 0) {
+	if (meadow_count > 0 || club_infield_edge_count > 0) {
 		col = meadow_colour(col, vec2(-world_pos.z, world_pos.x), footprint.yx);
 	}
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;

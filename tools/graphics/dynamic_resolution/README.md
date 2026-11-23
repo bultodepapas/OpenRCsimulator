@@ -21,12 +21,12 @@ counter support and a verified GPU receipt for the actual driver.
 The Linux adaptive candidate uses Mobile/Vulkan. Keep the product's
 Compatibility row for fixed-scale measurements and the unavailable-option test.
 
-Start the patched editor binary in game mode with the project and
-`-- --experimental-dynamic-resolution`. Use a fresh test profile. From Home,
-open Settings → Display, select a fixed ceiling above 75%, then choose Native
-reconstruction and a Dynamic resolution target. Keep the settings and start a
-flight. The 75% minimum is an experiment threshold. Measure pilot readability
-before qualifying a floor for a device and display.
+Start the patched editor binary in game mode with a fresh test profile. Settings
+→ Display shows the default chosen from the actual renderer and detected GPU.
+To configure a manual run, select Native reconstruction, a ceiling above 75%
+and a Dynamic resolution target. Keep the settings and start a flight. The
+75% minimum is an experiment threshold. Measure pilot readability before
+qualifying a floor for a device and display.
 
 The reconstruction diagnostic reports the controller's state, reason, target
 and configured scalar. A completed frame in a new generation confirms a step.

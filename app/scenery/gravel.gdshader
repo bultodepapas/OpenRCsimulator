@@ -65,7 +65,7 @@ void fragment() {
 	// These detail fetches use explicit gradients and have no internal derivatives.
 	// Skip them on gravel/access surfaces and the fully worn center of the tread.
 	if (field_turf_enabled && worn_mask > 0.01 && worn_shoulder > 0.0) {
-		if (meadow_count > 0) {
+		if (meadow_count > 0 || club_infield_edge_count > 0) {
 			field_color = meadow_colour(field_color, vec2(-p.y, p.x), (abs(turf_dx) + abs(turf_dy)).yx);
 		}
 		float camera_distance = length(VERTEX);

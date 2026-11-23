@@ -12,6 +12,6 @@ func _initialize() -> void:
 			if DirAccess.dir_exists_absolute(checked_dir):
 				out = checked_dir.path_join("club-properties")
 				break
-	args = {cases = "club_gate,stock_gate,stock_paddocks,club_properties,pasture_wire,pilot_north", frames = 8,
+	args = {cases = "club_gate,stock_gate,stock_paddocks,club_properties,forage_rows,plain_farm,plain_overview,pasture_wire,pilot_north", frames = 8,
 		width = 1920, height = 1080, out = out}
 	super()

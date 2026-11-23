@@ -66,7 +66,7 @@ func _initialize() -> void:
 	ground.set_shader_parameter("macro_amp", 0.17)
 	ground.set_shader_parameter("pilot_xz", Vector2(19, -7))
 	var boundaries := PackedVector4Array()
-	boundaries.resize(16)
+	boundaries.resize(Loader.MAX_MEADOW_PARCELS * 4)
 	boundaries[0] = Vector4(1.0, 0.0, 20.0, 3.0)
 	ground.set_shader_parameter("meadow_count", 1)
 	ground.set_shader_parameter("meadow_edges", boundaries)

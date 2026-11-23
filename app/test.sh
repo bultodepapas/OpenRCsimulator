@@ -327,6 +327,12 @@ python3 "$HERE/../tools/scenery/test_attribution_report.py"
 section "SC-HUM-07 field-people outfits, shipped variants and manifests agree; scenery layout matches its generator"; section_body() {
 python3 "$HERE/../tools/scenery/population/test_outfits.py"
 python3 "$HERE/../tools/scenery/place.py" --check
+(cd "$HERE/.." && python3 -m unittest tools.scenery.test_place)
+}; end_section
+
+section "LU-28 countryside bake and parcel geometry"; section_body() {
+python3 "$HERE/../tools/scenery/bake_countryside.py" --check
+python3 "$HERE/../tools/scenery/test_countryside.py"
 }; end_section
 
 section "L11a offline grass placement matches committed offsets"; section_body() {

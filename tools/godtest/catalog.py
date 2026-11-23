@@ -107,6 +107,8 @@ def validate(value: dict, *, resolved: bool = False) -> None:
                    or value.get("rendering_driver") in {"opengl3", "d3d12"}
                    or 0 < value.get("max_fps", 0) < target):
         raise ValueError("dynamic resolution requires a rendered Vulkan/Metal workload, a ceiling above 75%, and a compatible frame cap")
+    if target and value.get("graphics") == "automatic" and "render_scale" not in value:
+        raise ValueError("dynamic resolution with automatic graphics requires an explicit render_scale ceiling")
     for key, (minimum, maximum, integer) in NUMBERS.items():
         item = value[key]
         if type(item) not in (float, int) or not math.isfinite(item) or not minimum <= item <= maximum or (integer and int(item) != item):

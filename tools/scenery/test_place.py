@@ -40,6 +40,19 @@ class SceneryPlaceTests(unittest.TestCase):
             turns = [place._cross(corners[i-2], corners[i-1], corners[i]) for i in range(4)]
             self.assertTrue(all(t > 0 for t in turns) or all(t < 0 for t in turns), name)
 
+    def test_forage_rows_share_the_hedge_and_pasture_wire(self):
+        groups = {g["id"]: g for g in self.data["groups"]}
+        crop = groups["south-forage-crop"]
+        corners = crop["points"]["value"]
+        self.assertEqual(crop["surface"], "row_crop")
+        self.assertTrue(all(p in groups["club-perimeter"]["points"]["value"] for p in corners[:2]))
+        self.assertEqual([corners[0], corners[-1]], groups["lane-side-wire"]["points"]["value"][:2])
+        boundary = groups["forage-boundary-wire"]["points"]["value"]
+        self.assertEqual(boundary[:2], [corners[3], corners[2]])
+        self.assertAlmostEqual(math.dist(boundary[-1], corners[1]), 6.0, places=2)
+        _, trees, _ = place.load_field()
+        self.assertFalse(any(place._point_in_polygon(tree[:2], corners) for tree in trees))
+
     def test_stock_trails_and_gates_connect_the_pastures(self):
         groups = {g["id"]: g for g in self.data["groups"]}
         def points(name):
