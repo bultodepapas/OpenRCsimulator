@@ -376,6 +376,12 @@ report rebuilds child reports and verifies roster, source bytes, settings and
 ordered phase coverage; it does not trust a cached `complete` flag. Do not remove
 the referenced frozen source/import directory while reports need revalidation.
 
+For a staged Fly, `flight_ready.data.loading` in `events.jsonl` records the
+accepted launch and its stage timings. Each stage has a monotonic `started_usec`,
+elapsed `checkpoint_wait_usec` and `work_usec`. Rendered checkpoints wait for a
+post-draw signal. Headless checkpoints wait for process frames. These wall
+durations align with the frame stream and can include scheduling and I/O.
+
 `data`, `coverage`, `monitoring` and `performance` are independent. A useful frame
 recording can survive an unavailable GPU counter or a failed maneuver. A rendered
 tour requires valid complete recordings and complete monitoring for successful

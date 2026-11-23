@@ -425,7 +425,11 @@ func _load_flight(pilot_script: Script) -> bool:
 		_fail("loaded flight/model aircraft does not match the selected aircraft")
 		return false
 	identity.flight_aircraft = {requested = selected_aircraft, flight = flight_aircraft, model = model_aircraft}
-	_event("flight_ready", {tick = session.sim.tick, paused = session.sim.paused, holds = session.holds.keys()})
+	var ready := {tick = session.sim.tick, paused = session.sim.paused, holds = session.holds.keys()}
+	var loading: Dictionary = app.last_flight_loading
+	if loading.get("status") == "ready" and int(loading.get("accepted_usec", -1)) >= int(phase.start_usec):
+		ready.loading = loading
+	_event("flight_ready", ready)
 	if session.sim.paused or not session.holds.is_empty():
 		if not DisplayServer.window_is_focused(get_window().get_window_id()):
 			_fail("flight became ready paused: the app window is not focused; unlock the desktop and keep the app in front")

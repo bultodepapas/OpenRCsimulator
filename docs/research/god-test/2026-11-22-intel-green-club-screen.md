@@ -54,3 +54,18 @@ Two additional Club circuits with the final driver used the same process and pro
 The second entry shortened loading by about 5 s and sharply reduced the largest flight interval, with similar median flight cost. Prioritize tracing first-use work in Club through Fly and the opening pilot-view draw. Isolate private cache state and record construction and rendering stages before choosing a change. Steady rendering still needs its own pass attribution.
 
 Raw streams, engine logs, manifests, runtime identities, teardown receipts and the reducer are retained under `U:/OpenRC-intel-green-club-20261122`. The Python suite ran 217 tests with 7 skips. These exploratory runs used a virtual output. Product adoption still requires the affected-workload gate and visual checks.
+
+## 23 November · Loading and first-use trace
+
+The follow-up used `64b73545a` on PRIMIS with the same 1080p virtual output, 75% fixed scale, Compatibility/OpenGL and native flight. A private diagnostic copy recorded the wall interval between Godot's pre-draw and post-draw signals, existing load stages, and the duration of the crash-effect warmup. Godot and Mesa used campaign-owned caches. The watchdog stopped both attempts when host MemAvailable stayed below 1536 MiB for 15 s, at 1131 MiB and 1464 MiB. The frame streams are incomplete prefixes. The recovered data supports the observations below.
+
+| Attempt | Retained observation |
+| --- | --- |
+| Both caches cold | The longest observed draw spanned 36.92 s during startup. Another draw spanned 9.62 s at Home. The watchdog stopped the case during Fly, before flight readiness. |
+| Fresh Godot profile, Mesa cache reused from the interrupted attempt | Startup's longest observed draw spanned 6.35 s. Fly reached readiness in 17.91 s. Its longest checkpoint wait was 4.26 s at Preparing instruments. Preparing sound took 3.83 s of work elapsed, including 3.63 s in the crash-effect shader warmup's two forced draws. The first circuit retained a 6.81 s process interval near 1.35 s of simulation before the watchdog stopped the run. |
+
+The startup draw was shorter in the partially warmed attempt. The restart and uncontrolled filesystem cache limit that comparison. The opening-flight hitch recurred at the same point after the partial warmup. No matching draw signal span survived for that flight interval. Two consecutive draws during Preparing sound took 2.34 s and 1.28 s. Their sum is close to the separately recorded 3.63 s warmup duration. [Mesa cache controls](https://docs.mesa3d.org/envvars.html#envvar-MESA_SHADER_CACHE_DIR) · [Godot Compatibility loading guidance](https://docs.godotengine.org/en/latest/tutorials/performance/pipeline_compilations.html)
+
+GOD TEST now retains the flight loading receipt with per-stage timestamps and checkpoint waits, so future trials can match it to the frame stream. The next hardware comparison needs enough memory headroom to complete the cold test. Attribute work inside the two crash-warmup draws before choosing a change and keep the first-crash path in the comparison. [Loading receipt format](../../../tools/godtest/PERFORMANCE_TOUR.md#metrics-evidence-and-verdicts)
+
+The checked Linux loading regression passed 57 checks, including stage order and the sum through readiness, on the headless reference route. The Python tool suite passed 210 tests with 7 skipped. The interrupted streams, watchdog observations and private instrumentation are retained under `U:/OpenRC-intel-l3-20261123`.
