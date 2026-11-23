@@ -292,8 +292,8 @@ Use the qualified native kernel for that exact engine. The registered stock
 engine lacks the completed-frame API and the runtime rejects a positive request.
 
 Each measured flight phase records controller state changes, the requested FPS,
-the configured scale and completed-frame input and output sizes with the frame
-and configuration generation. After the first controller observation, the driver
+the configured scale and completed-frame input and output sizes with the frame ID,
+configuration generation and recording time. After the first controller observation, the driver
 also samples at phase close. An empty status records that the controller
 disappeared and disqualifies the phase even if it returns. Repeated identical
 samples occupy one trace entry. Older traces cannot show an omitted loss.
@@ -303,8 +303,18 @@ adaptive evidence. After a scale request, the phase needs a completed frame
 at the requested scale. Its generation and frame ID must advance beyond any
 previous confirmation in that phase. A request still pending at phase close
 disqualifies that phase. The driver records the controller status at phase close
-even when the last trace entry is unchanged. Older adaptive captures without
-this closing receipt can still be inspected but cannot qualify a comparison.
+even when the last trace entry is unchanged. A separate closing read proves
+completed work for the final confirmed generation and extents. The engine
+records the CPU timestamp at the start of that draw and makes the result
+available after the GPU interval completes. The recording time must be within
+the phase and no more than 100 ms before its end. A later frame in the same
+generation leaves the scale-transition trace intact.
+
+The ladder requires at least two distinct legal extents. The viewport truncates
+the scaled size and the 75% per-axis minimum rounds up. At 3456×2234 this
+excludes the nominal 75% rung and leaves an 85% ceiling without a second rung.
+Historical adaptive captures remain available to inspect. Adaptive comparisons
+require the phase-local completed-frame receipt.
 Compare retained phases and route landmarks using the
 [experiment design](../../docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md).
 The existing `compare` command's whole-flight geometry gate still applies.

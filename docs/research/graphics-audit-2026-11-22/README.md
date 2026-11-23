@@ -1,5 +1,16 @@
 # Graphics and FPS audit — current-main follow-up, 22 November 2026
 
+## X06 follow-up from `6043b7e70`
+
+| Finding | Reproduction and change |
+| --- | --- |
+| Pixel floor | The reducer accepted 2592×1675 as a 75% rung for the admitted 3456×2234 panel. The controller requires at least 1676 rows. The reducer now rejects that rung and an 85% ceiling that leaves only one legal extent. The 85% and 100% extents still qualify when both are available. |
+| Phase-local completed work | A phase accepted a cached frame recorded before its start. It also accepted a frame more than 100 ms old at close. The driver now takes one closing read and records its original timestamp separately. The reducer checks the phase interval, age, frame identity, generation and final extents. A fresh frame at the same scale preserves the deduplicated change trace. |
+
+An offline float32 check reproduced all 48 extent calculations for the 16 admitted outputs and found the same dropped floor at 3456×2234. [Adaptive evidence contract](../../../tools/godtest/PERFORMANCE_TOUR.md#dynamic-resolution-flight-comparisons).
+
+The 220-case GOD TEST fixture suite passed on Linux, Windows and macOS. Godot 4.8 beta2 passed the headless policy, settings, MetalFX and focus checks. The frame collector passed separately after receiving its required fresh output argument. The closing GPU report was injected for the producer test. A rendered tour on the patched engine remains open. [Portable and headless checks](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45212458523) · [Frame collector check](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45214568441).
+
 ## X04 and X05 follow-up from `084eec533`
 
 | Finding | Change and verification |
