@@ -246,3 +246,18 @@ candidate and the separate physics-source and version mutations, then passed
 again after restoration. The trim, unrounded and rounded derivatives,
 sensitivity rows and generated provenance matched in all six reports.
 The [receipt](2026-11-22-release-v033-qualification.json) binds those reports.
+
+### 2026-11-23 v0.3.4 release renewal
+
+GitHub Actions reconstructed `v0.3.3` and the v0.3.4 candidate on Linux with
+the pinned Godot 4.8 beta2. Of 152 qualified inputs, only `app/project.godot`
+changed. It gained the low-detail ground shader setting and advanced to version
+`0.3.4`. The normalized aggregate is
+`087df168cefe80a55126fb571281f586f8c7189baedaf22dcd3fdfd5c6114430`.
+
+Both guards passed on the baseline and rejected the initial candidate's three
+historical-source leaves. Both passed after renewal, rejected separate
+physics-source and version mutations, and passed again after restoration.
+The trim, unrounded and rounded derivatives, sensitivity rows and generated
+provenance matched across all six reports. The [receipt](2026-11-23-release-v034-qualification.json) binds
+the reports and the checked run.
