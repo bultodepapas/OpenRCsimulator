@@ -2,6 +2,7 @@
 """GPU-independent regression checks for L9c measurements and import recovery."""
 from io import BytesIO
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -11,7 +12,29 @@ import numpy as np
 from PIL import Image
 import check_stripes as stripes
 from check_stripes import errors, mask_for, SIZE, verify_projection
-from check_surfaces import checked_run, import_mutation_project, parse_args
+from check_surfaces import checked_run, import_mutation_project, make_mutation_app, parse_args
+
+
+class RunwayMutationTests(unittest.TestCase):
+    def test_only_the_runway_stripe_changes_in_the_raw_project(self):
+        render = stripes.APP_DEFAULT / "render"
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "app"
+            raw = Path(tmp) / "raw"
+            (source / "render").mkdir(parents=True)
+            for name in ("ground.gdshader", "meadow_surface.gdshaderinc"):
+                shutil.copyfile(render / name, source / "render" / name)
+            make_mutation_app(source, raw, "unfiltered")
+            ground = Path("render/ground.gdshader")
+            before = (source / ground).read_text().splitlines()
+            after = (raw / ground).read_text().splitlines()
+            self.assertEqual(len(before), len(after))
+            edits = [(a.strip(), b.strip()) for a, b in zip(before, after) if a != b]
+            self.assertEqual(len(edits), 1)
+            self.assertTrue(edits[0][0].startswith("float stripe = square_filtered(u,"))
+            self.assertEqual(edits[0][1], "float stripe = fract(u) < 0.5 ? 1.0 : -1.0;")
+            self.assertEqual((raw / "render/meadow_surface.gdshaderinc").read_bytes(),
+                             (render / "meadow_surface.gdshaderinc").read_bytes())
 
 
 class StripeLinearRgbTests(unittest.TestCase):

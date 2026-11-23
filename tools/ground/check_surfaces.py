@@ -531,7 +531,7 @@ def main() -> int:
         "sources_sha256": {
             relative: sha256(app / relative) for relative in (
                 "render/field.gd", "render/ground.gd", "render/ground.gdshader",
-                "render/atmosphere.gd", "data/fields/default.json",
+                "render/meadow_surface.gdshaderinc", "render/atmosphere.gd", "data/fields/default.json",
             )
         } | {
             "tools/ground/capture_surfaces.gd": sha256(CAPTURE_SCRIPT),
@@ -569,10 +569,11 @@ def make_mutation_app(source: Path, target: Path, mutation: str) -> None:
             raise RuntimeError("cannot apply disabled-surface mutation to the current ground shader")
         shader = shader.replace(needle, "} else if (false) {", 1)
     elif mutation == "unfiltered":
-        pattern = re.compile(r"float square_filtered\(float u, float du\)\s*\{.*?\n\}", re.S)
-        if len(pattern.findall(shader)) != 1:
+        # The meadow uses the same filter. Change only the runway sample.
+        needle = "float stripe = square_filtered(u, (along_x ? footprint.y : footprint.x) / (2.0 * stripe_m));"
+        if shader.count(needle) != 1:
             raise RuntimeError("cannot apply no-filter mutation to the current ground shader")
-        shader = pattern.sub("float square_filtered(float u, float du) {\n\treturn fract(u) < 0.5 ? 1.0 : -1.0;\n}", shader, count=1)
+        shader = shader.replace(needle, "float stripe = fract(u) < 0.5 ? 1.0 : -1.0;", 1)
     else:
         raise RuntimeError(f"unknown shader mutation: {mutation}")
     shader_path.write_text(shader)
