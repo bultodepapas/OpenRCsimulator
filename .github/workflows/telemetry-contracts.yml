@@ -1,21 +1,23 @@
 name: Telemetry contracts
 
-# Offline contract and receiver checks only; not a required check. Path filters keep it off unrelated PRs.
-# The Godot client's own tests run in the app suite (app/tests/test_telemetry_*.gd).
+# Offline contracts and container checks; path filters keep this off unrelated PRs.
+# The real Godot-to-receiver check is required in ci.yml's app integration lane.
 on:
   push:
+    branches: [main]
+    tags: ['**'] # Preserve baseline tag checks; GitHub ignores path filters for tags.
     paths:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
       - 'tools/telemetry/**'
-      - 'tools/analytics/github_history.py'
+      - 'tools/analytics/**'
       - '.github/workflows/telemetry-contracts.yml'
   pull_request:
     paths:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
       - 'tools/telemetry/**'
-      - 'tools/analytics/github_history.py'
+      - 'tools/analytics/**'
       - '.github/workflows/telemetry-contracts.yml'
   workflow_dispatch:
 
@@ -65,17 +67,24 @@ jobs:
         run: |
           "$RUNNER_TEMP/receiver-venv/bin/python" -m unittest -v \
             tools/telemetry/test_dashboard.py tools/telemetry/test_ga4.py tools/telemetry/test_release_metrics.py \
+            tools/telemetry/test_wait_for_health.py \
             tools/telemetry/deploy/host/test_openrc_stats_backup.py tools/telemetry/deploy/test_sync_private_github.py \
             tools/analytics/test_github_history.py
       - name: Build and smoke-test the receiver container
         run: |
           docker build -f services/telemetry/Dockerfile -t openrc-telemetry:ci .
+          cleanup() {
+            result=$?
+            if [ "$result" -ne 0 ]; then docker logs telemetry || true; fi
+            docker rm -f telemetry >/dev/null 2>&1 || true
+            exit "$result"
+          }
+          trap cleanup EXIT
           docker run -d --name telemetry -p 127.0.0.1:8787:8787 -e OPENRC_TELEMETRY_RELEASES=v0.2.7 openrc-telemetry:ci
-          for attempt in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/healthz && break; sleep 1; done
-          status=$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' \
+          timeout 45 python3 tools/telemetry/wait_for_health.py http://127.0.0.1:8787/healthz --timeout 30
+          status=$(curl --silent --show-error --connect-timeout 5 --max-time 20 -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' \
             --data-binary @research/telemetry/examples/batch.json http://127.0.0.1:8787/v1/batches)
           echo "canonical example: HTTP $status"
           test "$status" = 202
           docker exec telemetry python -m openrc_telemetry purge
           docker exec telemetry sh -c 'test -f /data/raw/raw.sqlite && test -f /data/aggregates/aggregates.sqlite && test "$(id -u)" = 10001'
-          docker rm -f telemetry

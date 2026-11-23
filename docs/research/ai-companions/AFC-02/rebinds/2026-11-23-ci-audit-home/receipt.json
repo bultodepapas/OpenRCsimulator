@@ -1,0 +1,162 @@
+{
+  "utc_date": "2026-11-23",
+  "purpose": "Verify ordinary Home admission with the newly accepted macOS-domain solver identity using the unchanged archived Home driver. Each process used a fresh user directory, selected an actual fleet size and drove the production Home and Flight UI.",
+  "source": {
+    "tested_source_commit": "0e57e797c5acc7a664ec8d4478838641c16276cc",
+    "app_tree": "44faebf550d6257ef086760c2f50662faaf82957",
+    "preflight_base_commit": "93657c77c375fd1d63996f2b53aa414a975381f2",
+    "preflight_source": "Exact base app plus the one profile written by official --accept. Its full 6,015-file inventory equals the final committed app inventory byte-for-byte.",
+    "worktree_before_and_after_sha256": "bb8c9289fb1137f1fea5d949d2b2e2f8a363bb82c7512e84b67e9fcbb50b40b3",
+    "inventory_encoding": "canonical Git path, mode, blob, checked-out file SHA256; fields NUL-delimited with a terminating LF per record in Git traversal order",
+    "baseline_for_changed_paths": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+    "baseline_source_inventory_sha256": "af42ff3c333f6ede5a3058f23d2a945fe24369908bb8e0d17afed1f29e89eb60",
+    "changed_files_against_baseline": {
+      "data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+        "git_blob": "60f8c84e3e64c0dc962b0fb1ff8eec35d7e7e655",
+        "checkout_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8"
+      },
+      "data/ai/companions/behavior-manifest.json": {
+        "git_blob": "d68b85e7c610fe1d48d3a3ef2c64121c2b65f0ff",
+        "checkout_sha256": "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88"
+      },
+      "data/woodland_edges.json": {
+        "git_blob": "a7e010e9c83715cbc7f50181619463fc230065c5",
+        "checkout_sha256": "d840ec9bb2a6d08fbcf9b3c647b3e30fc7f61dc6df8ae4083f5ff9b76f50b2ea"
+      },
+      "sim/native_macos_domain.gd": {
+        "git_blob": "17da89ae3fa71b82372347e73f5f4a2f9d98c5a6",
+        "checkout_sha256": "8501a3dd924d97b0efe870040fefa3890fe08a5b0a964620c56b0b3d3b4233b5"
+      },
+      "test.sh": {
+        "git_blob": "dab3141d10e7608b2975ee3c88c2e1b45b4077e5",
+        "checkout_sha256": "577725904c7b880154f8b901bba4c092adcdb1d1129443fb94038eefdd031439"
+      },
+      "tests/test_ci_partitions.py": {
+        "git_blob": "b8fb16e3c95c7224058b399b28d87edc94ea4ac0",
+        "checkout_sha256": "3c4b4a9cd6db99861f71dd9f2bf440a187d1c330cdf096561e450844ba3e7622"
+      },
+      "tests/test_companions_behavior_manifest.gd": {
+        "git_blob": "036248d6f2541715ab672b0e26685cb0060adac6",
+        "checkout_sha256": "813afbfbc144d8539bdd2aeefd030883d8a99f2ae9ceda6c1c073815f1435576"
+      },
+      "tests/test_native_macos_domain_world.gd": {
+        "git_blob": "2828be486ad2760b5850c95a0938b7837666107c",
+        "checkout_sha256": "e5fde49caade7bf88ac1f1c043c77b5411885d028f18dd701585bc211446e0d9"
+      }
+    },
+    "app_files": 6015,
+    "untracked_source_after": 0,
+    "external_authoring_records": 27,
+    "external_record_inventory_sha256": "5c44c2010dc7a315911e4f23d76740551f666214ee47e031f5fccf4489c1ef6b"
+  },
+  "official_profile": {
+    "before_sha256": "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be",
+    "after_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+    "blob": "60f8c84e3e64c0dc962b0fb1ff8eec35d7e7e655",
+    "solver_files": 203,
+    "old_solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+    "accepted_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b"
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "platform": "Linux x86_64 headless editor, GDScript reference backend"
+  },
+  "runner": {
+    "path": "tools/godot/run_checked.py",
+    "git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+    "sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888"
+  },
+  "driver_sha256": "e56f6dc26b269bf53b8505d05c466ae83bb6b5e6f95c08cd3afecf1bb95b1ced",
+  "launches": [
+    {
+      "requested": 1,
+      "admitted": 1,
+      "active": 1,
+      "airborne": 1,
+      "ticks": 240,
+      "crashed": 0,
+      "faulted": 0,
+      "solver_override_before": false,
+      "solver_override_after": false,
+      "solver_files": 203,
+      "runtime_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+      "observed_aircraft_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+      "airspace_identical_to_prior_for_this_count": true,
+      "elapsed_seconds": 25.260655,
+      "started_utc": "2026-11-23T00:09:04.036268+00:00",
+      "checked_process_exit": 0,
+      "engine_counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "missing_required_markers": [],
+      "engine_log_sha256": "8f860ef1be1c9751c39a97d244df4119dee7770ff125befca8e9cbbb0a31e6d0"
+    },
+    {
+      "requested": 2,
+      "admitted": 2,
+      "active": 2,
+      "airborne": 2,
+      "ticks": 240,
+      "crashed": 0,
+      "faulted": 0,
+      "solver_override_before": false,
+      "solver_override_after": false,
+      "solver_files": 203,
+      "runtime_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+      "observed_aircraft_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+      "airspace_identical_to_prior_for_this_count": true,
+      "elapsed_seconds": 27.582668,
+      "started_utc": "2026-11-23T00:09:29.373528+00:00",
+      "checked_process_exit": 0,
+      "engine_counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "missing_required_markers": [],
+      "engine_log_sha256": "39579e21e385d491305b67582a22355d360f81bb2b7de0db054e3c598fd01c11"
+    },
+    {
+      "requested": 3,
+      "admitted": 3,
+      "active": 3,
+      "airborne": 3,
+      "ticks": 240,
+      "crashed": 0,
+      "faulted": 0,
+      "solver_override_before": false,
+      "solver_override_after": false,
+      "solver_files": 203,
+      "runtime_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+      "observed_aircraft_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+      "airspace_identical_to_prior_for_this_count": true,
+      "elapsed_seconds": 29.782174,
+      "started_utc": "2026-11-23T00:09:57.101185+00:00",
+      "checked_process_exit": 0,
+      "engine_counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "missing_required_markers": [],
+      "engine_log_sha256": "84b7e2e5b9fbfcdc4066bce4143b5dc8a2bd1df23eeabe3567b66e8de26b1d73"
+    }
+  ],
+  "unchanged_club_world": {
+    "proxy_count": 7295,
+    "world_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+    "geometry_sha256": "a47ebca69c86e72ae9481e024faa109425314a55c8049ae7035acee611f637d6"
+  },
+  "warnings": "Each checked process emitted one diagnostic because the optional native physics library was absent and the GDScript reference backend was selected.",
+  "scope": "Three independent Linux software launches with the renewed profile on the nominal Stik/Club course. No target Mac native physics, GPU quality, retained tape replay or full-project CI result is inferred from this check.",
+  "archive_sha256": "c3b32fb024df218a9e23d7e3cc604a8473c6259abf0922d244bf305b2a3bdca6",
+  "archive_members_sha256": {
+    "final-home-1/engine.log": "8f860ef1be1c9751c39a97d244df4119dee7770ff125befca8e9cbbb0a31e6d0",
+    "final-home-1/report.json": "86ab6429c387a4c0a70249cac62760e0391b3e545e60742a1f83d0dac6433452",
+    "final-home-2/engine.log": "39579e21e385d491305b67582a22355d360f81bb2b7de0db054e3c598fd01c11",
+    "final-home-2/report.json": "285f280eab7daac2a43524e3775aa6f100cd4a8e6ed55336aa6774f2980ecda7",
+    "final-home-3/engine.log": "84b7e2e5b9fbfcdc4066bce4143b5dc8a2bd1df23eeabe3567b66e8de26b1d73",
+    "final-home-3/report.json": "1c3345245157dd451c35795c67416a953802139b2fcbd30784be7586c818c51a",
+    "normal_home.gd": "e56f6dc26b269bf53b8505d05c466ae83bb6b5e6f95c08cd3afecf1bb95b1ced"
+  }
+}

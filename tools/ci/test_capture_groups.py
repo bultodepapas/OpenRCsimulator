@@ -27,10 +27,10 @@ EXPECTED_IMAGES += [f"capture-land-{name}.png" for name in ("30m", "low3m", "sun
 EXPECTED_IMAGES += [f"field/capture-land-az{az}-el{el}.png" for az in (0, 90, 180, 270) for el in (0, 10)]
 EXPECTED_IMAGES += ["field/capture-land-top.png"]
 EXPECTED_IMAGES += [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
-EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "compare_captures.py",
+EXPECTED_CHECKERS = ["test_capture_runner.py", "test_stripes.py", "check_landscape_captures.py", "compare_captures.py",
                      "check_trimmed_flight.py", "test_visual_quality_cases.py", "visual_quality_cases.py",
                      "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "capture_groups.py", "check_review.py", "check_horizon.py", "check_phase6.py",
-                     "check_cloud_probe.py", "check_surfaces.py", "test_stripes.py", "check_stripes.py",
+                     "check_cloud_probe.py", "check_surfaces.py", "check_stripes.py",
                      "check_windsock.py", "check_windsock.py", "check_windsock.py", "check_windsock.py",
                      "check_grass.py", "check_grass_seam.py", "check_wind.py", "test_treeline_readability.py",
                      "treeline_readability.py", "scenario.sh"]
@@ -415,6 +415,23 @@ class CaptureGroupsTests(unittest.TestCase):
         self.assertFalse((output / 'run-manifest.json').exists())
         self.assertIn('ground\t', (output / 'timings.tsv').read_text())
         self.assertIn('fail (12)', (output / 'timings.tsv').read_text())
+
+    def test_stripe_test_failure_stops_full_and_ground_before_rendering(self):
+        self.prepare_receipts()
+        for group in (None, 'ground'):
+            with self.subTest(group=group):
+                result, output, calls = self.run_capture(self.current, group, failure='test_stripes.py',
+                                                         run_id='early-failure' if group else None)
+                self.assertEqual(result.returncode, 12, result.stdout + result.stderr)
+                self.assertEqual(Path(calls[-1][1]).name, 'test_stripes.py')
+                self.assertTrue(all('--import' in call for call in calls if call[0] == 'godot'))
+                self.assertFalse(any(Path(call[1]).name == 'capture_runner.py' for call in calls))
+                self.assertRegex((output / 'timings.tsv').read_text(), r'setup\t\d+\tfail \(12\)')
+                self.assertFalse((output / receipts.RECEIPT).exists())
+                self.assertFalse((output / 'run-manifest.json').exists())
+                if group:
+                    self.assertEqual((output / receipts.CHECKS).read_text().splitlines(),
+                                     ['setup:import', 'setup:capture-runner-tests'])
 
     def test_pixel_suite_with_zero_checks_fails_the_quality_group(self):
         self.env['FAKE_PIXEL_CHECKS'] = '0'

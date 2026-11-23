@@ -357,6 +357,22 @@ class PolicyTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         self.verify(receipt, broken)
 
+    def test_tooling_runs_in_parallel_and_is_required_even_for_docs(self):
+        receipt = self.receipt(self.commit("docs/TOOLS.md", "doc"))
+        self.assertIs(receipt["required"]["tooling"], True)
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        jobs = dict(re.findall(r"^  ([\w-]+):\n(.*?)(?=^  [\w-]+:|\Z)", workflow, re.M | re.S))
+        self.assertNotRegex(jobs["tooling"], r"(?m)^    (?:if|needs|continue-on-error):")
+        for suite in ("tools/ci", "tools/testqueue"):
+            command = f"python3 -m unittest discover -s {suite} -p 'test_*.py'"
+            self.assertIn(command, jobs["tooling"])
+            self.assertNotIn(command, jobs["scope"])
+        for job in ("app", "visuals", "native-linux", "native-windows", "native-kernel-linux",
+                    "native-kernel-windows", "native-kernel-macos", "visual-groups", "vulkan-captures"):
+            self.assertRegex(jobs[job], r"(?m)^    needs: \[scope, tooling\]$", job)
+        required = re.search(r"(?m)^    needs: \[([^\]]+)\]$", jobs["required"]).group(1)
+        self.assertEqual({name.strip() for name in required.split(",")}, {"scope", *policy.JOBS})
+
     def test_macos_native_gate_is_required_and_cannot_be_removed_or_skipped(self):
         receipt = self.receipt(self.commit("app/change.gd", "runtime"))
         self.assertIn("native-kernel-macos", policy.PRODUCTION)
@@ -379,7 +395,7 @@ class PolicyTests(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         jobs = dict(re.findall(r"^  ([\w-]+):\n(.*?)(?=^  [\w-]+:|\Z)", workflow, re.M | re.S))
         gate = jobs["native-kernel-macos"]
-        self.assertRegex(gate, r"(?m)^    needs: scope$")
+        self.assertRegex(gate, r"(?m)^    needs: \[scope, tooling\]$")
         self.assertRegex(gate, r"(?m)^    if: needs\.scope\.outputs\.app == 'true'$")
         self.assertRegex(gate, r"(?m)^    uses: \./\.github/workflows/native-macos\.yml$")
         self.assertNotRegex(gate, r"(?m)^\s*continue-on-error:")

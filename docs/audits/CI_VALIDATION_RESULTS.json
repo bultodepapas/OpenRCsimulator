@@ -1,0 +1,447 @@
+{
+  "format": "openrc-ci-audit-validation-v1",
+  "collected_on": "2026-11-22",
+  "baseline_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "implementation_commits": [
+    "4c13f76b6ddc8e8bdf989100c413584d3e8ecfea",
+    "b36fa60f65eb7d8f39a247bbb7ac0f4bc04b233d",
+    "f1efc0078acf926cddd185ec9943f38bffcc70dc"
+  ],
+  "checks": [
+    {
+      "id": "workflow-static",
+      "result": "passed",
+      "scope": "All eight candidate workflow files",
+      "command": "actionlint -shellcheck= -pyflakes=",
+      "tool": "actionlint 1.7.12 linux_amd64",
+      "archive_sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+      "negative_control": "Corrupt downloaded archive rejected and temporary extraction removed.",
+      "limit": "External ShellCheck and Pyflakes integrations deliberately disabled."
+    },
+    {
+      "id": "ci-tooling",
+      "result": "passed",
+      "tests_run": 139,
+      "elapsed_seconds": 95.889,
+      "command": "python3 -m unittest discover -s tools/ci -p 'test_*.py'",
+      "environment": "Exact sparse job input set: 499 baseline paths plus new linter files; unchanged materialized bytes matched Git objects.",
+      "retained_log_sha256": "09c0ecc030eab63486ed4c89bca43668a7b53bef101f8a8fbf24a8a6fd2e9f9a",
+      "result_excerpt": [
+        "Checked 1 new or potentially affected local document link(s).",
+        "Checked 1 new or potentially affected local document link(s).",
+        "Checked 0 new or potentially affected local document link(s).",
+        "Checked 2 new or potentially affected local document link(s).",
+        "Checked 1 new or potentially affected local document link(s).",
+        "Checked 0 new or potentially affected local document link(s).",
+        "Checked 8 new or potentially affected local document link(s).",
+        "Document link comparison unavailable (tag/manual/other event requires full checks); full scope retained.",
+        "Checked 0 new or potentially affected local document link(s).",
+        "Checked 2 new or potentially affected local document link(s).",
+        "Checked 0 new or potentially affected local document link(s).",
+        "== parse roster receipt: /dev/shm/openrc-architecture-ci-tests/openrc-partitions-ajtz1qze/receipt"
+      ]
+    },
+    {
+      "id": "host-queue",
+      "result": "passed_with_expected_skips",
+      "tests_run": 458,
+      "skipped": 12,
+      "elapsed_seconds": 60.688,
+      "command": "python3 -m unittest discover -s tools/testqueue -p 'test_*.py'",
+      "environment": "Same exact sparse job input set, Linux.",
+      "retained_log_sha256": "a9e168dca0466f1395edfccaa9d2f61f3c63be6cc4df6eea8e73a0a5253a6de8",
+      "result_excerpt": [
+        "  \"summary\": {",
+        "    \"local-snapshot\": {",
+        "      \"reclaim\": 1,",
+        "      \"reclaim_bytes\": 10,",
+        "      \"hold\": 0,",
+        "      \"hold_bytes\": 0",
+        "    }",
+        "  },",
+        "  \"largest_holds\": [],",
+        "  \"reclaim_gb\": 0.0,",
+        "  \"execute\": false",
+        "}"
+      ]
+    },
+    {
+      "id": "aggregate-input-equivalence",
+      "result": "passed",
+      "materialized_baseline_files": 2125,
+      "baseline_tracked_paths": 52627,
+      "parse_paths": 2067,
+      "unit_paths": 1163,
+      "assertion": "Sparse and full discovered script paths, byte digests and seven explicit verifier/runner inputs agree.",
+      "limit": "Source/roster equivalence, not execution of every GDScript."
+    },
+    {
+      "id": "native-portable",
+      "result": "passed",
+      "tests_run": 354,
+      "elapsed_seconds": 18.466,
+      "command": "python3 -m unittest discover -s research/native-kernel -p 'test_*.py'",
+      "limit": "Portable fixtures, not host compiler, installed native runtime or packaged executable qualification.",
+      "retained_log_sha256": "689d55fbed931fa9d36ed910f3141d90a8ee999b6c9ffbcd7ac9175305bdbced",
+      "result_excerpt": [
+        "test_large_aggregate_does_not_hide_a_nearly_empty_case (test_verification_families.FamilyPromotion.test_large_aggregate_does_not_hide_a_nearly_empty_case) ... ok",
+        "test_missing_cases_or_comparisons_cannot_be_disguised_by_a_pass (test_verification_families.FamilyPromotion.test_missing_cases_or_comparisons_cannot_be_disguised_by_a_pass) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 354 tests in 18.466s",
+        "",
+        "OK",
+        "{",
+        "  \"result\": \"detected\",",
+        "  \"fpcr\": {},",
+        "  \"receipt\": \"/dev/shm/openrc-native-contract-checkout/tmp/fpcr-control-tests/tmpq6szaemc/output/control-receipt.json\"",
+        "}"
+      ]
+    },
+    {
+      "id": "mass-traces",
+      "result": "passed",
+      "tests_run": 7,
+      "elapsed_seconds": 0.006,
+      "command": "python3 app/tests/test_mass_trace_contract.py",
+      "retained_log_sha256": "0d6653413f55f7cf64dbfab59b6b29c640ade8e63585414ab2a44a0892a5ed0a",
+      "result_excerpt": [
+        ".......",
+        "----------------------------------------------------------------------",
+        "Ran 7 tests in 0.006s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "id": "receiver-service",
+      "result": "passed_with_optional_engine_skip",
+      "tests_run": 149,
+      "skipped": 1,
+      "elapsed_seconds": 4.279,
+      "command": "python -m unittest discover -s tests -p 'test_*.py'",
+      "working_directory": "services/telemetry",
+      "environment": "Isolated venv installed from services/telemetry/requirements.txt; pip check passed.",
+      "retained_log_sha256": "29e31ff5132ea85ff120b375785246e28b6702c9f8451d0e571771380475614d",
+      "result_excerpt": [
+        "test_pragmas_and_constraints (tests.test_storage.RawStoreTests.test_pragmas_and_constraints) ... ok",
+        "test_purge_boundary_is_exactly_48_hours (tests.test_storage.RawStoreTests.test_purge_boundary_is_exactly_48_hours) ... ok",
+        "test_purge_frees_dedup_keys_and_overwrites_bytes (tests.test_storage.RawStoreTests.test_purge_frees_dedup_keys_and_overwrites_bytes) ... ok",
+        "test_read_only_store_does_not_change_an_unrelated_sqlite_database (tests.test_storage.RawStoreTests.test_read_only_store_does_not_change_an_unrelated_sqlite_database) ... ok",
+        "test_records_for_day_in_ingestion_order (tests.test_storage.RawStoreTests.test_records_for_day_in_ingestion_order) ... ok",
+        "test_unavailable_storage_raises (tests.test_storage.RawStoreTests.test_unavailable_storage_raises) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 149 tests in 4.279s",
+        "",
+        "OK (skipped=1)",
+        "{\"checkpoint_busy\": false, \"deleted_aggregate_rows\": 0, \"deleted_batches\": 0}"
+      ]
+    },
+    {
+      "id": "health-readiness",
+      "result": "passed",
+      "tests_run": 11,
+      "command": "python3 -m unittest tools.telemetry.test_wait_for_health",
+      "cases": [
+        "initial and eventual HTTP 200 / status=ok",
+        "all-failure exhaustion",
+        "other successful status codes expire",
+        "invalid, unhealthy and oversized JSON rejected",
+        "HTTP 503",
+        "process death",
+        "remaining timeout bound",
+        "late positive result rejected",
+        "nonfinite/nonpositive budgets rejected",
+        "real redirect to healthy alternate endpoint refused"
+      ],
+      "limit": "HTTP socket timeout alone is an inactivity limit. Docker and E2E callers also impose process deadlines."
+    },
+    {
+      "id": "real-telemetry-component",
+      "result": "passed",
+      "tests_run": 1,
+      "elapsed_seconds": 1.126,
+      "engine": "4.8.beta2.official.cafc17a19",
+      "sent_batches": 3,
+      "stored_batches": 3,
+      "queued": 0,
+      "dropped": 0,
+      "local_drops": 0,
+      "environment": "Minimal isolated Godot project using byte-identical production telemetry sources and the candidate E2E GDScript; actual receiver and SQLite persistence. Existing checked Godot runner used.",
+      "source_sha256": {
+        "app/telemetry/telemetry_release.gd": "e54a4ce9784e9e934cdc2df99d6fae95718ac41458fd0e2edf0c8057198e8840",
+        "app/telemetry/telemetry_queue.gd": "815823ac524892d315d473f6f668e99d5a165484bcbca510b292762d61d73e81",
+        "app/telemetry/telemetry_frame_window.gd": "1eee31daeb2c0cb3cc49854feff35a38514a4725edd3bd71350863625942db6b",
+        "app/telemetry/telemetry_service.gd": "c7a2b4b87c6bb51b6751921739d2ca9d22888886c60def22426fbc4a744b2b63",
+        "app/telemetry/telemetry_policy.gd": "6c6b10151045c3811e88ef1356c23f24708366c992f41bfc71c5eb37457876ac",
+        "app/telemetry/telemetry_consent_store.gd": "543753ececf5067cb38a3d70888a903a4d4a9a489eae59b55bc3c23f7a9215f7",
+        "app/telemetry/telemetry_sender.gd": "d8e6c266bba24a1881a3de6716d15a41510ab40802cd9aa9727217c0e4d51e3f",
+        "app/telemetry/telemetry_contract.gd": "29b7c02bbf9cb89a573997355f61703115d623aa08f88f8508bb78b385ea797e",
+        "app/telemetry/telemetry_hardware.gd": "95f45bfe8000f8bbf6e7a776df09a3d23ae70bba3e903421f03195c83c19d722",
+        "app/app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+        "app/tests/telemetry_receiver_e2e.gd": "6270f4e33a1fa7c2bd58a3e879537b223f797c309a360bb87131d86ad6d76998"
+      },
+      "limit": "This one case is shared by the Python test and GDScript driver; do not count it twice. Full production app import and GitHub execution were not part of this local result.",
+      "retained_log_sha256": "072edd57319bbbf08bd1842d2fe6c055ba843a0508644a6895369bce7d35ad50",
+      "result_excerpt": [
+        "test_godot_client_batches_are_accepted_and_stored (audit_telemetry_final.GodotClientEndToEnd.test_godot_client_batches_are_accepted_and_stored) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 1 test in 1.126s",
+        "",
+        "OK",
+        "Pre-existing consent rejected with exit2 and unchanged bytes",
+        "Pre-existing consent.tmp rejected with exit2 and unchanged bytes",
+        "Telemetry E2E evidence: <audit-workspace>/telemetry-component-validation/fixture/tmp/telemetry-e2e/run-_djvbvu6"
+      ]
+    },
+    {
+      "id": "telemetry-negative-controls",
+      "result": "passed",
+      "cases": [
+        "Required mode without executable editor fails instead of skipping.",
+        "Optional discovery in service-only sparse tree without tools/godot skips one test and succeeds.",
+        "Real editor refuses existing consent destination with exit 2 and unchanged bytes.",
+        "Real editor refuses existing consent .tmp sibling with exit 2 and unchanged bytes."
+      ]
+    },
+    {
+      "id": "prototype-freshness",
+      "result": "passed",
+      "cases": [
+        "Zero fresh images after cleanup fails.",
+        "Two of three fresh nonempty images fails.",
+        "All three fresh nonempty images passes."
+      ],
+      "environment": "Disposable mutation fixtures initially contained the tracked screenshot outputs.",
+      "limit": "Filename freshness validation, not a Chromium pixel regression run."
+    },
+    {
+      "id": "source-hygiene",
+      "result": "passed",
+      "commands": [
+        "bash -n tools/ci/check-workflows.sh research/test-tools.sh",
+        "git diff --check"
+      ],
+      "scope": "Final candidate source and report review."
+    },
+    {
+      "id": "partition-workflow-fixture-correction",
+      "result": "passed",
+      "tests_run": 14,
+      "elapsed_seconds": 20.019,
+      "command": "python3 app/tests/test_ci_partitions.py",
+      "regression": "Before the correction, one of fourteen cases failed because a named-step slice included new intervening YAML and executed it as Bash. The corrected fixture selects exactly one step and separately asserts import-before-schema ordering.",
+      "negative_control": "A disposable schema-before-import mutation still fails the independent ordering assertion.",
+      "limit": "The correction awaits the replacement hosted run at this evidence cutoff."
+    },
+    {
+      "id": "adjacent-phase-fixtures",
+      "result": "passed",
+      "tests_run": 14,
+      "elapsed_seconds": 56.27,
+      "command": "python3 tools/ci/test_phases.py",
+      "scope": "Adjacent app phase, failure propagation and parse-receipt fixtures after the partition-test correction."
+    },
+    {
+      "id": "native-portable-final-source-repeat",
+      "result": "passed",
+      "tests_run": 354,
+      "elapsed_seconds": 21.448,
+      "command": "python3 -m unittest discover -s research/native-kernel -p 'test_*.py'",
+      "scope": "Independent rerun of the actual candidate harness after the first hosted offline step failure; exact tracked fixtures hydrated."
+    },
+    {
+      "id": "mass-traces-final-source-repeat",
+      "result": "passed",
+      "tests_run": 7,
+      "elapsed_seconds": 0.005,
+      "command": "python3 app/tests/test_mass_trace_contract.py",
+      "scope": "Independent rerun through the changed candidate harness."
+    },
+    {
+      "id": "native-install-prelude",
+      "result": "passed",
+      "tests_run": 3,
+      "elapsed_seconds": 1.462,
+      "command": "python3 research/rc-monster-truck/native/test_install_only.py"
+    },
+    {
+      "id": "f4u-identity-prelude",
+      "result": "passed",
+      "tests_run": 1,
+      "elapsed_seconds": 4.622,
+      "command": "python3 research/f4u-corsair/F4U-07/test_generated_identity.py",
+      "scope": "Real tracked JSON identity fixtures, CRLF/LF rejection and clean-checkout behavior."
+    },
+    {
+      "id": "export-identity-prelude",
+      "result": "passed",
+      "tests_run": 45,
+      "elapsed_seconds": 72.576,
+      "command": "python3 app/tests/test_export_identity.py",
+      "scope": "Complete fake-engine/export fixture invocation using exact tracked inputs in a disposable source checkout; not a real simulator export."
+    }
+  ],
+  "hosted_status": "First PR attempt yielded verified positives and one reproduced offline fixture regression. Correction locally verified; replacement hosted qualification required. See PR #21 for subsequent results.",
+  "not_executed_locally": [
+    "Full asset-bearing application import and all 1163 unit scripts (full import subsequently passed in hosted CI; full suite still pending at cutoff)",
+    "Full rendered capture suite or target GPUs",
+    "Windows and macOS native hosts",
+    "Docker container smoke (Docker unavailable)",
+    "Export/package/release artifact round trip",
+    "Deployment or production telemetry operations"
+  ],
+  "interpretation": "Counts describe separate suites with possible overlap, not a unique total or coverage percentage. Local results and hosted results are separate; successful steps within a failed/incomplete job do not make the whole run green.",
+  "hosted_validation": [
+    {
+      "head_sha": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "event": "pull_request",
+      "run_id": 45075562688,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562688",
+      "conclusion": "success",
+      "coverage": {
+        "contract_cases": 129,
+        "receiver_cases": 149,
+        "receiver_skips": 1,
+        "operator_cases": 123,
+        "operator_skips": 4,
+        "readiness_cases": 11
+      },
+      "observed": "Container health, HTTP 202 ingest, purge, both SQLite files and UID 10001 checks passed."
+    },
+    {
+      "head_sha": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "event": "pull_request",
+      "run_id": 45075562687,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562687",
+      "conclusion": "success",
+      "coverage": {
+        "linux": {
+          "tooling_cases": 212,
+          "frame_watch_cases": 31
+        },
+        "macos": {
+          "tooling_cases": 212,
+          "frame_watch_cases": 31
+        },
+        "windows": {
+          "tooling_cases": 212,
+          "tooling_skips": 7,
+          "frame_watch_cases": 31
+        }
+      },
+      "observed": "All three hosts also passed the three-aircraft, three-repeat dry-run plan; no GPU or flight qualification claimed."
+    },
+    {
+      "head_sha": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "merge_sha": "02849d7e703cd1ae9fd5307ed8b101cb13f943c1",
+      "event": "pull_request",
+      "run_id": 45075562784,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562784",
+      "conclusion": "Not successful: offline step failed; other jobs still running at follow-up evidence cutoff. Replacement required after correction.",
+      "observations": [
+        {
+          "job": "scope",
+          "job_id": 137371891529,
+          "result": "passed",
+          "elapsed_seconds": 87,
+          "checkout_seconds": 81
+        },
+        {
+          "job": "tooling",
+          "job_id": 137371891289,
+          "result": "passed",
+          "elapsed_seconds": 153,
+          "checkout_seconds": 3,
+          "ci_cases": 139,
+          "ci_seconds": 85.272,
+          "queue_cases": 458,
+          "queue_skips": 12,
+          "queue_seconds": 61.033,
+          "actionlint": "passed"
+        },
+        {
+          "job": "prerequisite graph",
+          "result": "observed",
+          "detail": "Website/prototype started two seconds after scope. All fifteen expensive first-tier jobs started two to three seconds after tooling also passed."
+        },
+        {
+          "job": "site",
+          "job_id": 137372341023,
+          "result": "passed"
+        },
+        {
+          "job": "three",
+          "job_id": 137372341010,
+          "result": "passed",
+          "unit_cases": 17,
+          "browser_e2e": "passed",
+          "artifact_id": 14774169475,
+          "artifact_sha256": "4ba44c41d4691f40a22bfd69cbb3e40a674a9bdbafe386f41949bde882934964",
+          "artifact_bytes": 70034,
+          "download_verification": "Exact SHA-256 and all three expected nonempty, valid 1280x720 PNGs verified after artifact round trip."
+        },
+        {
+          "job": "app integration",
+          "job_id": 137372676636,
+          "step": "Import resources before schema probes",
+          "result": "passed",
+          "elapsed_seconds": 430
+        },
+        {
+          "job": "app integration",
+          "job_id": 137372676636,
+          "step": "Require the real Godot client against the telemetry receiver",
+          "result": "passed",
+          "elapsed_seconds": 8,
+          "artifact_id": 14774544712,
+          "artifact_sha256": "9962bfac09a8e2289c5d05eb6f9c9ba372021dad7a1645a89028ba7224a3dc33",
+          "artifact_bytes": 1399,
+          "engine": "4.8.beta2.official.cafc17a19",
+          "checked_client_elapsed_seconds": 0.723963,
+          "checked_report": {
+            "ok": true,
+            "complete": true,
+            "process_exit": 0,
+            "errors": 0,
+            "warnings": 0,
+            "missing_required_text": []
+          },
+          "client_summary": {
+            "sent": 3,
+            "queued": 0,
+            "dropped": 0,
+            "local_drops": 0
+          },
+          "scope": "Real client and receiver test passed in the full imported application; checked receipt and log independently read after SHA-256-verified artifact download."
+        },
+        {
+          "job": "app integration",
+          "job_id": 137372676636,
+          "step": "Offline measurement and validation tool regressions",
+          "result": "failed",
+          "elapsed_seconds": 14,
+          "diagnosis": "A reproducible import-step extraction failure in the first 14-case partition module. Independent later app sections continued; this is not an aggregate success."
+        }
+      ]
+    }
+  ],
+  "later_evidence": {
+    "final_home_record": "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-ci-audit-home/receipt.json",
+    "macos_world_and_solver_record": "docs/research/native-kernel/DT-MAC-04n-R1/2026-11-22-ci-audit/domain-validation.json",
+    "woodland_and_geometry_record": "docs/research/visual-quality-implementation/L6c/tree-completion/woodland-edges/2026-11-22-ci-audit/receipt.json",
+    "unit_keep_going_record": "CI_HOSTED_FOLLOWUP.json#unit_keep_going",
+    "visual_mutation_record": "CI_HOSTED_FOLLOWUP.json#visual_mutation_repair",
+    "renewed_hosted_record": "CI_HOSTED_FOLLOWUP.json#renewed_source_hosted_observation",
+    "record": "docs/audits/CI_HOSTED_FOLLOWUP.json",
+    "interpretation": "The original census and initial validation records above retain their stated source cutoffs. Later merged-source execution, additional product qualification and test-diagnostic corrections are recorded separately; they do not silently redefine the original case totals.",
+    "native_reset_record": "docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-22/source-validation.json",
+    "companion_behavior_record": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-ci-audit-behavior/bounded-checks.json",
+    "completed_8ce_record": "CI_HOSTED_FOLLOWUP.json#completed_8ce_hosted_run",
+    "telemetry_clock_record": "telemetry-clock-2026-11-23/receipt.json",
+    "current_source_checkpoint": "CI_AUDIT_CHECKPOINT.json",
+    "current_source_status": "Preserved code and observed local results; final qualification incomplete after executor loss. No new behavior pins or fresh Home acceptance."
+  }
+}

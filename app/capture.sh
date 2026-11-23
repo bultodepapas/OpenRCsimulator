@@ -96,6 +96,10 @@ record_check setup:import
 VPY="$("$HERE/tests/visual-env.sh")"
 "$VPY" "$HERE/tests/test_capture_runner.py"
 record_check setup:capture-runner-tests
+if includes ground; then
+  "$VPY" "$HERE/../tools/ground/test_stripes.py"
+  record_check ground:stripe-tests
+fi
 finish_phase
 # A dirty checkout is identified by revision plus per-file hashes in native evidence.
 if [ -z "${OPENRC_CODE_REVISION:-}" ]; then
@@ -296,8 +300,6 @@ start_phase ground
 # L9c: ground-pass runway/mown coverage, repeated frames, overlap priority and filtering controls.
 "$VPY" "$HERE/../tools/ground/check_surfaces.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l9c"
 record_check ground:surfaces
-"$VPY" "$HERE/../tools/ground/test_stripes.py"
-record_check ground:stripe-tests
 "$VPY" "$HERE/../tools/ground/check_stripes.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l9c/stripes"
 record_check ground:stripes
 "$VPY" "$HERE/../tools/ground/check_windsock.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l10a"

@@ -1,0 +1,149 @@
+{
+  "format": "openrc-nk3-runway-source-validation-v1",
+  "baseline": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "upstream": "843f357c07af842054f3ccd6728f93beca9a57ef",
+  "pre_renewal_audit_head": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+  "observed_hosted_merge": "22a1ae368a75b94977d8dfa46cc4888499424ce7",
+  "pre_renewal_audit_tree": "b9866328c22696399e3a53d423c3679cba8a9f2e",
+  "tested_inputs": {
+    "baseline": {
+      ".gd": 2067,
+      ".tscn": 5,
+      ".json": 211,
+      ".gdshader": 86
+    },
+    "candidate": {
+      ".gd": 2073,
+      ".tscn": 5,
+      ".json": 211,
+      ".gdshader": 88
+    }
+  },
+  "input_method": "Matched all tracked app GDScripts, scene files, JSON and GDShader sources in the two focused projects against Git, applying the checked-out revision’s declared EOL for JSON. Loaded required real models, textures, fonts and translations with the pinned editor. The project fixtures did not import the entire shipped asset collection.",
+  "linux_editor": {
+    "engine_commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "version": "4.8-beta2 (official)",
+    "binary_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "capture": {
+    "original_observer_path": "docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-18/fleet_capture.gd",
+    "original_observer_blob": "c3cd2b0aa2ee8930dab076a81924a6086ad01710",
+    "observer": "fleet_capture.gd",
+    "observer_blob": "c2a18ae2d2ecab210d7101f8f29fedc7285cc23d",
+    "observer_change": "Free the temporary Fleet SceneTree after writing. Only its lifecycle cleanup changed. Both checked outputs are byte-identical to the original observer’s captures.",
+    "comparator_path": "docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-18/compare_fleet.gd",
+    "comparator_blob": "5de6b3cb59df429284b5cc1c7b6943394bf99c94",
+    "paired_files": {
+      "baseline-fleet.json.gz": {
+        "gzip_sha256": "e0c245a66d8aac6fe7964595163bb1d9fb3b591a43783a022a548a2db9c7d33e",
+        "uncompressed_sha256": "d2972b4df08025b99a7da17135d64b1da906f5893f2e5587093fb87c02886d9e"
+      },
+      "candidate-fleet.json.gz": {
+        "gzip_sha256": "d7f09d7b93d32189332027422927433167815ffca2c2a4b55bf6df016ce01d9d",
+        "uncompressed_sha256": "cd73d89e57953a47140e09980694aadb7e422cf3148e72ba5b9396ee204b0472"
+      }
+    },
+    "receipt": "fleet-comparison.json",
+    "receipt_sha256": "8cec0550a5f5ab35c913957a86d5eb3713195d43e3c37f7dd8e60ddd70e451a0"
+  },
+  "code_review": {
+    "research/native-kernel/fleet.gd": {
+      "pre_renewal_blob": "8f48be462cba255f208b13e5cff0bcc8afc08be1",
+      "validated_v7_blob": "1c89b444cffad0d982fb40f01aaf13f70a5e3de5"
+    },
+    "research/native-kernel/fleet_campaign.py": {
+      "pre_renewal_blob": "681159b05af56b9848b96ffcece012d3b616c988",
+      "validated_v7_blob": "68a0bfae270f81a825ce4b3ecc6a1bc56303625a"
+    },
+    "research/native-kernel/test_fleet_campaign.py": {
+      "pre_renewal_blob": "22d8f69c0fc1e5f4fefe0af7d8c17e32fdefba5b",
+      "validated_v7_blob": "a7a5cb815b373d06d9f1a833c28416f0c455e667"
+    }
+  },
+  "unchanged_policy_test_blob": "ead803ae8e01f716fc21cbc753ef7129de28e671",
+  "results": {
+    "unmodified_fleet_policy": {
+      "baseline": {
+        "checks": 598,
+        "failed": 0,
+        "ok": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "elapsed_seconds": 24.403564
+      },
+      "pre_renewal_candidate": {
+        "checks": 598,
+        "failed": 16,
+        "ok": false,
+        "reason": "process_exit",
+        "exit_code": 1,
+        "elapsed_seconds": 23.427624
+      },
+      "v7_candidate": {
+        "checks": 598,
+        "failed": 0,
+        "ok": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "elapsed_seconds": 24.98583
+      }
+    },
+    "v7_trajectory_policy": {
+      "checks": 130,
+      "failed": 0,
+      "ok": true,
+      "reason": "passed",
+      "exit_code": 0,
+      "elapsed_seconds": 7.188685
+    },
+    "capture_order_and_identity": "Eight unique expected aircraft, battery and hull keys. Each baseline digest matches its original V6 table entry. All candidate digests differ from V6.",
+    "paired_check": {
+      "checks": 460,
+      "failed": 0,
+      "ok": true,
+      "reason": "passed",
+      "exit_code": 0,
+      "elapsed_seconds": 1.143741,
+      "per_case_unchanged_proof_fields": 28,
+      "per_case_proof_field_count": 31,
+      "changed_live_indices": [
+        2,
+        7
+      ]
+    },
+    "checked_observers": {
+      "baseline": {
+        "ok": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "elapsed_seconds": 11.875349
+      },
+      "candidate": {
+        "ok": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "elapsed_seconds": 12.269672
+      }
+    },
+    "python_campaign": {
+      "command": "python3 research/native-kernel/test_fleet_campaign.py -v",
+      "tests": 67,
+      "failures": 0,
+      "elapsed_seconds": 3.106,
+      "forged_input_control": "Matching, rehashed frame, setup, outcome and live-configuration values must still match the independent observed pins."
+    },
+    "python_full_native_discovery": {
+      "command": "python3 -m unittest discover -s research/native-kernel -p 'test_*.py'",
+      "tests": 354,
+      "failures": 0,
+      "elapsed_seconds": 27.674
+    },
+    "python_capture_probe": {
+      "matched_v7": 8,
+      "v6_rejected": 8,
+      "coherently_rehashed_frame_changes_rejected": 8,
+      "method": "Consumer-only probe combining the actual captured reference reset with synthetic native-request receipt metadata. It exercises the reset-proof consumer and does not record a native execution."
+    }
+  },
+  "coverage": "Linux reference-owned pre-native reset on the eight named crosswind cases. No flight, native execution, companion-route clearance or hardware validation is claimed."
+}

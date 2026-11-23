@@ -1,0 +1,161 @@
+{
+  "format": "openrc-macos-stock-world-renewal-v1",
+  "method": "DT-MAC-04n-R1",
+  "upstream": "843f357c07af842054f3ccd6728f93beca9a57ef",
+  "audit_head_before": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+  "hosted_merge_before": "22a1ae368a75b94977d8dfa46cc4888499424ce7",
+  "renewed_source": "c320d34d77197d2a34a5e41feced445a80f51712",
+  "renewed_tree": "ebc38ece19ae49436277c0e2a92db5e4bc62feaf",
+  "editor": {
+    "version": "Godot 4.8.beta2.official",
+    "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b"
+  },
+  "superseded": {
+    "macos_arm64_identity": "4077c4fd3e1d78ef8bb2d612c7206bc397c06df8261b69c3d6b3ca23a8e12d55",
+    "portable_fingerprint": "2cfce9a5108d593befbfb58f4b57cbf97a48859458989a576468e72dad741ad2",
+    "proxy_count": 6139
+  },
+  "hosted_pre_renewal": {
+    "run_id": 45079559400,
+    "job_id": 137385028494,
+    "conclusion": "failure",
+    "elapsed_seconds": 2401,
+    "first_unexpected_failure": "stock collision identity and proxy count match the screened world",
+    "verdict": "MACOS_DOMAIN_GUARD verdict=fail checks=72 failures=1",
+    "observed_domain": {
+      "all_match": true,
+      "calls": 2400,
+      "cpu": "Apple M1 (Virtual)",
+      "elapsed_usec": 63401,
+      "mean_usec": 26.4170833333333,
+      "model": "VirtualMac2,1",
+      "nodes": 183127,
+      "packed_bytes": 90568,
+      "packed_leaves": 1202,
+      "proxies": 7295,
+      "scope": "isolated guard-call loop only; not inclusive tick or product performance",
+      "warmup_calls": 16,
+      "world_identity": "7e5fcff5098591708406da39142768107a594eac142b3862c2f684695876cc64"
+    },
+    "packed_resize_controls": [
+      {
+        "alias_resized": true,
+        "kind": "byte",
+        "live_changed": true
+      },
+      {
+        "alias_resized": true,
+        "kind": "int32",
+        "live_changed": true
+      },
+      {
+        "alias_resized": true,
+        "kind": "int64",
+        "live_changed": true
+      },
+      {
+        "alias_resized": true,
+        "kind": "float32",
+        "live_changed": true
+      },
+      {
+        "alias_resized": true,
+        "kind": "float64",
+        "live_changed": true
+      }
+    ],
+    "direct_resize": {
+      "live_changed": true,
+      "size": 1024
+    },
+    "artifact": {
+      "id": 14777799215,
+      "name": "native-macos-correctness-45079559400-1",
+      "zip_bytes": 5169269,
+      "sha256": "e56f604d36eecd760f508a8b56cf131cb6e83a56224deb4e589518d44b004e79",
+      "digest_source": "GitHub Actions artifact metadata"
+    },
+    "unreached": [
+      "install",
+      "prepare-after",
+      "import-after",
+      "installed-stage",
+      "installed-lifecycle",
+      "installed-replay",
+      "installed-default-route"
+    ]
+  },
+  "linux_portable": {
+    "tracked_app_inputs": 6015,
+    "runtime": "complete imported application with the recorded Git checkout attributes",
+    "before": {
+      "checks": 9,
+      "failed": 2,
+      "measurement": {
+        "architecture": "x86_64",
+        "fingerprint": "f020b4c86b7e98df77eacc2a35e2a95a3fc17a046e2cb9b5d719ac82abfd16a2",
+        "os": "Linux",
+        "platform_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+        "proxies": 7295
+      },
+      "ok": false,
+      "exit_code": 1,
+      "reason": "process_exit",
+      "elapsed_seconds": 5.815258
+    },
+    "after": {
+      "checks": 9,
+      "failed": 0,
+      "measurement": {
+        "architecture": "x86_64",
+        "fingerprint": "f020b4c86b7e98df77eacc2a35e2a95a3fc17a046e2cb9b5d719ac82abfd16a2",
+        "os": "Linux",
+        "platform_identity": "88079614a399d2f6dd0abacf6f0f21e630e5f68f61ff54183b32bdbc0dccd4e3",
+        "proxies": 7295
+      },
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "elapsed_seconds": 6.158453
+    },
+    "woodland_recipe_crosscheck": {
+      "git_blob": "a7e010e9c83715cbc7f50181619463fc230065c5",
+      "before_pin_result": "Independent run on the regenerated woodland recipe reproduced the same count, Linux identity and quantized fingerprint with the two expected stale-pin assertions."
+    }
+  },
+  "qualification_limits": "The 2,400 Mac guard calls measure repeated matching on the current frozen world. The Mac digest comes from the hosted ARM64 editor. A new hosted run must build/install its receipts and exercise stage, lifecycle, replay and the normal no-flag route. The geometry fingerprint and these guard observations do not establish flight performance, physical validation or scene budget acceptance.",
+  "solver_rebind": {
+    "tool": "tools/companions/rebind.py",
+    "normalized_solver_before": {
+      "solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "rev": "70ee7e647d0a54c73a48fd60e934ad3091d19e8f"
+    },
+    "normalized_solver_after": {
+      "solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+      "rev": "c320d34d77197d2a34a5e41feced445a80f51712"
+    },
+    "actual_changed_solver_sources": [
+      "app/sim/native_macos_domain.gd"
+    ],
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-7e404f01-to-0954434e.json",
+    "receipt_sha256": "adc8b98128779b408680be358e4e49954b29035af1deb7652473bc5966d24932",
+    "qualified_tapes": 9,
+    "rows_per_side": 25929,
+    "all_csv_byte_hashes_equal": true,
+    "all_gzip_and_orfl_identities_reverified": true,
+    "final_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+    "source_materialization": "The private head contained every one of the 6,015 tracked app files at c320, checked against Git with the original checkout attributes. The historical solver archive contained exactly the 408 paths and bytes in the accepted app/physics, app/sim and app/failures trees. No export attributes applied to these files. The partial Git object database reported unavailable unrelated source during its preliminary index scan. The scoped archive returned success and each exported file was checked independently.",
+    "cache_method": "The first duplicate-cache attempt exhausted local memory before any verdict. The completed comparison used the standard solver-mode tool with one replay at a time. Independent app and solver sources and project metadata shared only the pinned runtime\u2019s immutable imported resource directory. Its ordered path/content-SHA-256 manifest matched before and after all replays.",
+    "immutable_import_cache": {
+      "count": 1433,
+      "bytes": 2392284441,
+      "sha256": "0277f387a7f19d0910d76ed5f2fddd02fb3609a978140430e8ca14dee47f240e"
+    },
+    "effective_options": {
+      "accept": true,
+      "jobs": 1,
+      "baseline": "solver",
+      "copy_mode": "copy"
+    }
+  }
+}

@@ -55,6 +55,12 @@ func _initialize() -> void:
 		print("companion behavior manifest: %d checks, %d failed" % [checks, failures])
 		quit(1 if failures else 0)
 		return
+	# Report a genuine admission failure before inspecting its success-only fields.
+	# Otherwise a stale qualification raises a script error and hangs until timeout.
+	if not admission.get("ok", false):
+		print("companion behavior manifest: %d checks, %d failed" % [checks, failures])
+		quit(1)
+		return
 	_check("returned identity is versioned and binds the exact manifest", admission.identity.format == Loader.IDENTITY_FORMAT
 		and admission.identity.behavior_manifest_sha256 == admission.profile.behavior_manifest.sha256)
 	var player := Session.new()

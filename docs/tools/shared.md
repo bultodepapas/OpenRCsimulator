@@ -55,6 +55,8 @@ For focused diagnosis, `OPENRC_TEST_PART=integration-source`, `integration-parse
 
 Each integration gate is an isolated section: `section "label"; section_body() {` … `}; end_section`. Add new gates in that form; the body runs in its own subshell with errexit, so it cannot change later gates' variables or directory. Locally the first failed gate stops the run. `OPENRC_KEEP_GOING=1` (set by CI) records it and continues through the remaining gates and phases, then lists every failed gate and exits nonzero. Isolation is per gate: inside one gate (for example `check-sources.sh`) the first failing command still ends that gate, so keep unrelated checks in separate gates.
 
+Unit scripts use the same checked section boundary. Default local execution stops at the first failure. With `OPENRC_KEEP_GOING=1`, later selected scripts run and the invocation remains nonzero if any unit failed. Only successful scripts enter the completed roster; a failed unit run never publishes a complete unit receipt. Shared project/cache state can still cause secondary failures, so attribute later diagnostics before treating them as independent defects.
+
 - Use a stable checkout for a long run. A detached worktree at `HEAD` **does not contain uncommitted changes**; ensure the snapshot contains the intended edits and generated outputs, then record its identity. Changes during a run invalidate that result.
 - Use separate checkouts and isolated `user://` profiles for concurrent suites. Serialize imports in one checkout; Windows native-extension hot-reload DLLs can contend even with separate profiles.
 - Install integration dependencies from the manifests used by [CI](../../.github/workflows/ci.yml), including the X8 generator's requirements. Use a tool-specific environment; do not reuse an incompatible visual/audio environment.
@@ -135,5 +137,6 @@ These are operational caveats, not a saved inventory of one machine. Recheck aga
 | `research/aircraft-standardization/conformance.py` | Can overwrite `--out`; use a fresh path. [Contract](physics.md#aircraft-conformance-and-unchanged-behavior). |
 | `research/validation/dashboard.py --check` | Recomputes a source-bound snapshot, including a Godot collector; stale results need investigation, not an automatic refresh. |
 | Audio generators/importers | Install each tool's requirements from [the audio guide](../../tools/audio/README.md); the visual environment is not interchangeable. |
-| `app/tests/test_mass_trace_contract.py`, `tools/night-lighting/build.py --check` | Run explicitly for their affected area; not covered by `app/test.sh` or `research/test-tools.sh`. |
+| `app/tests/test_mass_trace_contract.py` | Included in `research/test-tools.sh`, which CI runs in the app integration job's offline tooling step. Run directly for focused trace-contract diagnosis. |
+| `tools/night-lighting/build.py --check` | Run explicitly for its affected area; not covered by `app/test.sh` or `research/test-tools.sh`. |
 | `app/tests/capture_ground_terrain.gd` | Writes `res://../ground_terrain_probe.png` (repository root with `--path app`); prefer [current area checkers](graphics.md#area-capture-checkers) with explicit scratch outputs. |

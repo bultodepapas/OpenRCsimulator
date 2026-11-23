@@ -31,7 +31,7 @@ GROUP_CHECKS = {
     "ui": ["captures"],
     "quality": ["tests", "cases", "aircraft-lights", "field-failures", "lighting-pixels"],
     "terrain-atmosphere": ["tree-review", "horizon", "phase6", "cloud-probe"],
-    "ground": ["surfaces", "stripe-tests", "stripes", "windsock", "pilot-station",
+    "ground": ["stripe-tests", "surfaces", "stripes", "windsock", "pilot-station",
                "flightline-barrier", "contact-shadows"],
     "vegetation": ["grass", "grass-seam", "tree-wind", "treeline-tests", "treeline"],
     "scenario": ["run"],

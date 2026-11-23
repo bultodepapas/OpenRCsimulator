@@ -12,7 +12,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const CollisionSetup := preload("res://scenery/collision_setup.gd")
 
 ## Renew together with Domain.STOCK_WORLD and Domain.STOCK_WORLD_PROXIES; see RENEWAL.
-const STOCK_WORLD_PORTABLE_FINGERPRINT := "2cfce9a5108d593befbfb58f4b57cbf97a48859458989a576468e72dad741ad2"
+const STOCK_WORLD_PORTABLE_FINGERPRINT := "f020b4c86b7e98df77eacc2a35e2a95a3fc17a046e2cb9b5d719ac82abfd16a2"
 const RENEWAL := "the stock collision world changed. Renew Domain.STOCK_WORLD from the macOS CI line " \
 	+ "MACOS_DOMAIN_STOCK_GUARD_DIAGNOSTIC (world_identity), Domain.STOCK_WORLD_PROXIES and this test's " \
 	+ "fingerprint, following docs/plans/apple-silicon-performance.md (DT-MAC-04n-R1)"

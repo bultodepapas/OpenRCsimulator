@@ -225,6 +225,31 @@ class PhaseRouting(unittest.TestCase):
         self.assertIn("parse error in", result.stdout)
         self.assertFalse(list((self.app.parent / "outputs/parse-failed").glob("roster-*.json")))
 
+    def test_keep_going_all_reaches_runtime_after_source_and_unit_failures(self):
+        result = self.run_part("all", "all-failed", OPENRC_KEEP_GOING="1", FAIL_SOURCE="1",
+                               PROBE_FAIL=self.fixture.names[0], FAIL_RUNTIME="1")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        for name in self.fixture.names:
+            self.assertIn("VISITED " + name, result.stdout)
+        self.assertIn("RUNTIME_PHASE", result.stdout)
+        self.assertIn("== 3 failed section(s):", result.stdout)
+        self.assertIn("  " + self.fixture.names[0] + " (exit 7)", result.stdout)
+        output = self.app.parent / "outputs/all-failed"
+        self.assertEqual(len(list(output.glob("roster-parse-*.json"))), 1)
+        self.assertFalse(list(output.glob("roster-units-*.json")))
+
+    def test_keep_going_prior_source_failure_preserves_valid_unit_receipt(self):
+        result = self.run_part("all", "source-failed", OPENRC_KEEP_GOING="1", FAIL_SOURCE="1")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("RUNTIME_PHASE", result.stdout)
+        self.assertIn("== 1 failed section(s):", result.stdout)
+        receipts = list((self.app.parent / "outputs/source-failed").glob("roster-units-*.json"))
+        self.assertEqual(len(receipts), 1, result.stdout)
+        receipt = json.loads(receipts[0].read_text())
+        self.assertIs(receipt["complete"], True)
+        self.assertEqual(receipt["expected"], receipt["completed"])
+        self.assertCountEqual([Path(name).name for name in receipt["completed"]], self.fixture.names)
+
     def test_keep_going_rejects_invalid_values(self):
         for value in ("", "2", "true"):
             with self.subTest(value=value):

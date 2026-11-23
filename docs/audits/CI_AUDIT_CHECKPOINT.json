@@ -1,0 +1,165 @@
+{
+  "format": "openrc-ci-audit-execution-checkpoint-v1",
+  "recorded_on_utc": "2026-11-23",
+  "branch": "audit/ci-quality-performance-overhaul-2026-11-22",
+  "pull_request": 21,
+  "implementation_head": "2485e36e90f6c6ee155592b8da70dd65c3663ffd",
+  "application_tree": "8eecf1ffd605a97f4fbf956772a0396e358fb9c6",
+  "integrated_main": "bfbad672617ef2bc8b3065ac0e81bbd10fd2a5ab",
+  "upstream_integration": {
+    "commits_since_843": 12,
+    "changed_paths": 59,
+    "changed_app_paths": 30
+  },
+  "qualification_state": "blocked; no candidate behavior pins updated, no fresh post-bfb Home acceptance",
+  "verified_source": {
+    "app_paths": 6020,
+    "external_aircraft_records": 27,
+    "explicit_crlf_paths": 29,
+    "reconstructed_application_tree": "8eecf1ffd605a97f4fbf956772a0396e358fb9c6",
+    "normalized_solver_inputs": 203,
+    "solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b"
+  },
+  "behavior_source_drift": {
+    "path": "res://app_root.gd",
+    "previous_normalized_sha256": "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d",
+    "current_normalized_sha256": "a34c738b48f52f2ac64f60a3230a77de22b2a901fe1cc9013937060a2171cac2",
+    "changed_manifest_entries": 1,
+    "pins_updated": false
+  },
+  "execution_failure": {
+    "environment": "unavailable",
+    "cold_import": {
+      "process_exit": -9,
+      "elapsed_seconds": 153.31474,
+      "engine_errors": 0,
+      "ambient_obj_warnings": 8,
+      "completed": false
+    },
+    "recovery": {
+      "original_exec_session": 7967,
+      "verified_private_scene_pairs": 64,
+      "verified_external_model_references": 112,
+      "checked_final_exit": null,
+      "complete": false,
+      "last_observation": "Editor scan 99%; exec transport disconnected. No usable execution environment on reconciliation."
+    },
+    "limitations": [
+      "Recovery final exit, runtime negative controls and fresh Home1/2/3 flights are unobserved.",
+      "No new collision world identity or native platform acceptance is inferred.",
+      "The cause of the external kill is unknown. It is not classified as a flake or successful cold import."
+    ]
+  },
+  "retained_changes": {
+    "telemetry_commit": "438e3aa3d9b7e09558edc93d3c379253c3eba020",
+    "upstream_and_generator_commit": "220e6493aa5995ef6b8fc1c11e8c16b866b0f3f5",
+    "woodland_commit": "e6a7f82426729995fca6608210f17cc99b30de51",
+    "diagnostic_deferral_commit": "2485e36e90f6c6ee155592b8da70dd65c3663ffd"
+  },
+  "withdrawn_experiments": {
+    "geometry_commit": "a0474179efe023658461547dc01c4d4fdcc33eaa",
+    "capture_commit": "45df88480c396453aa3d3a76a31d1728ef4ae5b4",
+    "net_product_geometry_change": false,
+    "default_capture_gate_added": false,
+    "optional_tools_shipped": false,
+    "reason": "Remaining reductions do not resolve current caps or establish a GPU gain; forest mips invalidate the planted triangle. Optional tools lack framebuffer acceptance and need report-write integrity checks."
+  },
+  "observed_geometry": {
+    "allowances": {
+      "cells": 175000,
+      "other": 8000
+    },
+    "upstream": {
+      "cells": 180468,
+      "other": 9365
+    },
+    "furniture_experiment": {
+      "cells": 176484,
+      "other": 9365
+    },
+    "furniture_and_wild_experiment": {
+      "cells": 176484,
+      "other": 8941
+    },
+    "new_forage_fence_triangles": 1722,
+    "checked_failed_consumers": [
+      {
+        "script": "app/tests/test_scenery_build.gd",
+        "failed_budget_assertions": 1,
+        "process_exit": 1,
+        "engine_errors": 0,
+        "engine_warnings": 0
+      },
+      {
+        "script": "app/tests/test_landscape_vegetation.gd",
+        "failed_budget_assertions": 1,
+        "process_exit": 1,
+        "engine_errors": 0,
+        "engine_warnings": 0
+      },
+      {
+        "script": "app/tests/test_farm_tractor.gd",
+        "failed_budget_assertions": 1,
+        "process_exit": 1,
+        "engine_errors": 0,
+        "engine_warnings": 0
+      }
+    ],
+    "original_measurements_sha256": {
+      "raw": "61d1f7b5d93ef7f0d538e6f3433689368de99c86546b0e5d133f583e87e7a87e",
+      "stride2": "b9f0aefeefdee4b2cea8a1ccda43af9a0e58eae5c3dccf7fe5b6f5ace3e596d9",
+      "stride2_and_wild": "396cdfb3a9ef20ead71b2098a6dce0fd1d1cbaae0985971d86935a88d8b22972"
+    },
+    "original_unrecovered_receipt_sha256": "c65807717518b899cbf38ceb9b91e65b5f0e115503caa14cfaaceea5681ce93e",
+    "scope": "Observed complete local field probes and independently checked session results. The full post-bfb raw proof packet remained in the unavailable workspace; this checkpoint is a summary, not a replacement raw receipt."
+  },
+  "woodland": {
+    "output_sha256": "a6987f9cb9457c71027ea60765f169381c52883ed4b42fe73bfd30f0668b077c",
+    "generator_git_blob": "f2c035a40080dc534c90a5f83b4bfbd88766d7e0",
+    "test_sha256": "8563f884ac05da7747c4745f0e6740b4d27a7dea7fc92841329db4dbae56834e",
+    "python_cases": 6,
+    "check": "passed",
+    "patches": 4,
+    "source_triangles": 472,
+    "comparison": "Against qualified 8ce, exactly two source hashes, segment census44→46 and polygon census5→6 changed. All placements, footprints, rules and prior margins unchanged."
+  },
+  "generator_enrollment": {
+    "app_test_sha256": "bf5203372cb510e69a1af19271aa4e2f4bcdb6ef4bf58fe100053f7f7bdbbb4c",
+    "placement_cases": 11,
+    "countryside_cases": 11,
+    "byte_for_byte_bake": "passed",
+    "extra_newline_control": {
+      "expected_exit": 1,
+      "observed_exit": 1
+    },
+    "partition_cases": 16,
+    "partitions": [
+      "all",
+      "integration",
+      "integration-source"
+    ],
+    "dependencies": "Python standard library"
+  },
+  "portable_godtest": {
+    "linux_cases": 217,
+    "frame_watch_cases": 31,
+    "dry_run_cases": 9,
+    "other_os": "pending at this source"
+  },
+  "audit_source_tests": {
+    "stripe_cases": 21,
+    "elapsed_seconds": 0.612,
+    "scope": "Current bfb shader/source mutation controls; no renderer execution."
+  },
+  "evidence_preservation": "Immutable GitHub commits retain the implementation, earlier telemetry controls and historical geometry/capture packets. New bfb local measurements and the interrupted qualification are transcribed here from observed session outputs. Workspace-only raw logs and final report draft could not be recovered after disconnection.",
+  "next_required": [
+    "Recover or reconstruct exact source with pinned editor and qualified imports.",
+    "Run normal stale-refusal, intended-refusal and tamper controls before any behavior pin renewal.",
+    "Renew only the app_root behavior entry and profile manifest identity after bounded current-source qualification.",
+    "Verify fresh Home1/2/3 admission and actual collision identity without overrides; preserve unchanged solver digest.",
+    "Resolve current geometry allowance failures through an evidenced product or allocation decision.",
+    "Run and inspect the exact final selected GitHub gate; keep the PR in draft while any required check fails."
+  ],
+  "default_branch_modified": false,
+  "release_published": false
+}
