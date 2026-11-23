@@ -24,7 +24,9 @@ U12 also required regenerating the presentation registry for seven aircraft fami
 
 ## Audit record
 
-**Latest: [sixth pass, native boundaries and old-hardware cost models](sixth-pass.md).** The latest-main source review pins `85a2475f60029a4b6b09f23f643119bceea84a45`, including fixed render scale and newer UHD 630 evidence. Publication preserves the concurrently updated audit branch through `ee46d96b`; its runtime is not combined with main without a fresh companion rebind. The latest presentation refactor also exposes a pinned source-identity mismatch, recorded as I01. This pass traces two RC shader experiments, residual star-buffer construction, and a quantified continuation of F17 spatial-weather statistics. The reproducible paused-view pixel model withholds the 67% observation and explicitly excludes track cost. Independent reviews preserve derivative, normal, validity, callback and lifetime contracts; smaller native/Off-path ideas remain a watchlist. No production optimization or new measured FPS gain is claimed.
+**Latest: [seventh pass — main integration and further FPS opportunities](seventh-pass.md).** This pass combines main `843f357c` with the audit repairs through `4ed82d3a`, reconciles resolved findings, and reviews the new experimental dynamic-resolution evidence. It finds default-hedge batching and construction work, drone race calculations without a consumer, repeated native battery interpolation, saturated allocator preparation, optional shader work filtered to zero, and a conditional controller-observation gap. Source arithmetic and a pure reducer witness are reproducible. The [integration evidence](seventh-pass-integration.json) owns the exact merged source, generated UID/companion records, actual checked results and remaining CI/hardware scope. No new FPS improvement is claimed.
+
+**Sixth-pass record: [native boundaries and old-hardware cost models](sixth-pass.md).** Its review remains pinned to main `85a2475f` and the then-current audit source `ee46d96b`. It quantified F17 spatial-weather statistics, traced RC shader and star-buffer candidates, and fitted the paused-view pixel-scaling model. Its I01 mismatch was subsequently repaired on the audit branch; the seventh pass addresses the new combined source separately.
 
 **Fifth-pass record: [previous uncovered paths](fifth-pass.md).** At main `0f859b5f358f4807877ec8bd7fe8009bc3856d3f`, nine conditional investigations covered paint loading/residency/LOD, input dispatch, quad sampling, throttle decoding, propagation search, mechanical audio and first-rain warm-up. Its asset counts and measurements retain that source identity.
 
@@ -42,6 +44,9 @@ The earlier [audit](../graphics-audit-2026-11-21/README.md) and [second pass](..
 
 | Report | Contents |
 | --- | --- |
+| [Seventh pass and integration](seventh-pass.md) | Current main, repaired findings, new DRS evidence, X01–X06 and actual qualification scope |
+| [Seventh-pass rendering](seventh-pass-rendering.md) / [native paths](seventh-pass-native.md) | New scenery, optional paint, race lifecycle, native pack and allocator traces |
+| [Seventh-pass arithmetic](seventh-pass-arithmetic.json) / [integration](seventh-pass-integration.json) | Reproduced bounds, reducer witness and source-bound checked results |
 | [Fourth pass and numeric experiment](fourth-pass.md) | U01–U13, deeper source traces, byte parity and component timing, completed CI and platform gates |
 | [Current main and new tests](current-main-and-tests.md) | Source refresh, rendered evidence, CI, repaired/open finding ledger, missing vehicle coverage |
 | [Vehicles and aircraft](vehicles-and-aircraft.md) | Quad telemetry, car surface queries, flap state, wet pools, obstacle indices, signals, fly-by and guarded heli/airship paths |
@@ -51,9 +56,11 @@ The earlier [audit](../graphics-audit-2026-11-21/README.md) and [second pass](..
 | [CI evidence](main-refresh-evidence.json) / [offline witness evidence](phase-focus-evidence.json) | Source-bound, machine-readable observations |
 | [Reproducer](../../../research/performance/graphics-audit-2026-11-22/README.md) | Repeatable offline witness against the unmodified current reducer |
 
-## Strongest new opportunities
+## Third-pass opportunity snapshot
 
-| ID | Confirmed current work | Smallest useful candidate | Scope / limiting condition |
+These rows retain the original third-pass source findings. The implementation ledger above and the latest pass own their current disposition.
+
+| ID | Work recorded on the third-pass source | Smallest useful candidate | Scope / limiting condition |
 | --- | --- | --- | --- |
 | T01 | Electric quad telemetry evaluates forces, contacts, all rotor loads and derivatives to read two bus values | Shared exact bus-input/solve helper and accepted-frame bus-only projection | Existing tick cache; GDScript plant with ordinary or scripted pilots; race/invalid bus/fingerprint contracts |
 | T02 | Car presentation normally performs center + four wheel full road queries, including physics wall fields | Exact presentation surface projection | Effects/input/pause guards; distinct positions; observable diagnostics and course identity |

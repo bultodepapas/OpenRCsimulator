@@ -54,3 +54,13 @@ python3 research/performance/graphics-audit-2026-11-22/reproduce_rig_sampler.py 
 The output directory must be new or empty. The script verifies the pinned engine hash, extracts source and assets from Git at `7940a408`, checks the actual binary against its manifest, isolates XDG state and uses `tools/godot/run_checked.py` for a checked import and component run. It refuses an enrolled or pool-configured performance launch without inherited performance admission. Use the repository's existing performance admission route on shared hosts; the reproducer neither creates a lease nor submits a pool job.
 
 The four original declarations/bodies are unchanged apart from trailing separator whitespace. Experimental alternatives exist only in the disposable fixture. The script retains manifests, raw blocks, byte parity, engine diagnostics and before/after identity checks. Timing measures the 209-track numeric batch, including candidate per-batch coordinate preparation, dispatch and checksum consumption. It is not full visual parity, native vehicle qualification, GPU timing or FPS. Valid pinned metadata is the candidate's only qualified input domain; live scene mutation/reentry and fallback behavior need separate production tests.
+
+
+## Seventh pass: source arithmetic and controller-observation witness
+
+```sh
+python3 research/performance/graphics-audit-2026-11-22/reproduce_seventh_pass.py \
+  --repo . --out tmp/graphics-audit-2026-11-22/seventh-pass-fresh.json
+```
+
+The output must be new. This uses committed Git blobs at main `843f357c07af842054f3ccd6728f93beca9a57ef`, computes planted-hedge counts in two arithmetic models, reads eight pinned PNG headers for the current paint comparison, records conditional race/native-pack/allocator/shader bounds, and executes only the pinned pure dynamic-resolution reducer function against three synthetic observation traces. It does not import or run Godot, a GPU workload, a native component, or the full report pipeline. Read [the report](../../../docs/research/graphics-audit-2026-11-22/seventh-pass.md) and [retained output](../../../docs/research/graphics-audit-2026-11-22/seventh-pass-arithmetic.json) for assumptions and actual scope.

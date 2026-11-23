@@ -1,0 +1,191 @@
+{
+  "format": "openrc-afc-02-behavior-requalification v1",
+  "date": "2026-11-23",
+  "platform": "GitHub Actions ubuntu-24.04 x86_64; pinned Godot 4.8 beta2; headless; native extension not staged",
+  "head_at_collection": "ee87f8d87fa863da1bc685242adbae76a9867d8a",
+  "source_tree": "1e9c8a27139d5107d0257d1f4e5f31dd837dfc51",
+  "solver_rebind_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-1bc57146-to-95d5d31f.json",
+  "solver_rebind_receipt_sha256": "28d39144f0bdbb2db396933ab4058365697efa2f9b263612b98c8741c017ebcf",
+  "scope": "Qualified-source rebind and bounded behavior/admission checks for the existing companion profile. Nine candidate comparisons are byte-identical; this is not exact replay, new physical validation or hardware performance qualification.",
+  "behavior_manifest": {
+    "changes": {
+      "res://app_root.gd": {
+        "old": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+        "candidate": "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d"
+      },
+      "res://scenery/collision_world.gd": {
+        "old": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+        "candidate": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6"
+      }
+    },
+    "manifest_before": "0b5bf056d23cef5d516120f8abc9ca547277aad2b02a4e4e8e5f78280b9512f9",
+    "manifest_candidate": "c022823ee1ec3b60544640cfda21b8eed26f5ef0fc22be52e0cce895240015c1",
+    "all_declared_sources": {
+      "res://ai/companions/agent.gd": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+      "res://ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+      "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+      "res://ai/companions/config.gd": "42abf6800d3d98d5e0dba5ef88d420d2f64ffb77c0990cea0ea29194a78c5bd4",
+      "res://ai/companions/manager.gd": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+      "res://ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+      "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+      "res://ai/companions/profile_loader.gd": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719",
+      "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+      "res://ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+      "res://app_root.gd": "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d",
+      "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+      "res://main.gd": "ee6ae5b9826ef104be24ac8a5e1f2da2fbcda8e43953361f234a8f0e342c290e",
+      "res://scenery/collision_world.gd": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6",
+      "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+    }
+  },
+  "checked_run": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45091339146",
+  "artifact_id": 14781544157,
+  "artifact_zip_sha256": "ad7d5bc473fd03011fdd82ccfb464f08982fbcfbccce3c180e6dccb02b90d707",
+  "checks": [
+    {
+      "label": "companions_airspace",
+      "ok": true,
+      "report_sha256": "a96b137bc3c10730fe0f7580c79cf523a111672a0b54b8811ce8205fcb47f25c",
+      "log_sha256": "a63afa86e09a31a486c023dab9ecb73b72f3e07ea31f48ec1cc586acab89e27a",
+      "completion_and_skips": [
+        "AFC-02 static airspace validation: 48 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_airspace.gd"
+      ],
+      "required_text": [
+        "AFC-02 static airspace validation:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_behavior_manifest",
+      "ok": true,
+      "report_sha256": "21c3a736162237dabe6fb998e396226b63626ffd2466c41e5e5102983f5dc0c9",
+      "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "completion_and_skips": [
+        "companion behavior manifest: 39 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "required_text": [
+        "companion behavior manifest:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_draft_refresh",
+      "ok": true,
+      "report_sha256": "07559d23091f0bce6ebfe68f649d91d33ceafbc528c11cd41ad9db83f4504c4c",
+      "log_sha256": "062a77a7d259d7af1d67ec9a9b8df9e88fe7e7d3baf054ae7fb8ec61b9518543",
+      "completion_and_skips": [
+        "companions draft refresh: 60 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_draft_refresh.gd"
+      ],
+      "required_text": [
+        "companions draft refresh:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_manager",
+      "ok": true,
+      "report_sha256": "aa8d68b5f47c9425f323fe872e2c004c4283da5d2d76ca71b34487d5053c625d",
+      "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+      "completion_and_skips": [
+        "companions manager: 53 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ],
+      "required_text": [
+        "companions manager:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "companions_profiles",
+      "ok": true,
+      "report_sha256": "cfc589fbe27e8bfe2ce4db5b67da8a707fc73e80c2c143e62fbc19a5d1fc980c",
+      "log_sha256": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26",
+      "completion_and_skips": [
+        "AFC-02 companion profile validation: 95 checks, 0 failed"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "required_text": [
+        "AFC-02 companion profile validation:",
+        "0 failed"
+      ]
+    },
+    {
+      "label": "scenery_destruction",
+      "ok": true,
+      "report_sha256": "5ec93189cc8b2a061483f629619da3c0fd56eafa84b2dd6b2f9f1094b5fded01",
+      "log_sha256": "2ba1090fef8d1f6958993a212ac253816c66b5616d50a04e700ea92e4e63c2a8",
+      "completion_and_skips": [
+        "scenery destruction: 117 checks, 0 failures"
+      ],
+      "command": [
+        "/home/runner/work/OpenRCsimulator/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_destruction.gd"
+      ],
+      "required_text": [
+        "scenery destruction:",
+        "0 failures"
+      ]
+    }
+  ],
+  "promotion_contract": "Apply the nine generated files byte-for-byte; keep all other tracked app sources equal to the collected source. The workflow checked that no unexpected tracked or untracked source inputs changed. Normal Home admission ran without the solver-test override. The accepted source commit remains an ancestor.",
+  "limitations": [
+    "Linux headless checks only; no new rendered Windows/macOS/GPU qualification.",
+    "The RCV session suite explicitly skipped its native backend-switch guard because the pinned extension was not staged.",
+    "Required full CI and exported-package/native gates are separate from these focused checks."
+  ]
+}
