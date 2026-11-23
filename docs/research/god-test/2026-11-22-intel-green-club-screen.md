@@ -69,3 +69,23 @@ The startup draw was shorter in the partially warmed attempt. The restart and un
 GOD TEST now retains the flight loading receipt with per-stage timestamps and checkpoint waits, so future trials can match it to the frame stream. The next hardware comparison needs enough memory headroom to complete the cold test. Attribute work inside the two crash-warmup draws before choosing a change and keep the first-crash path in the comparison. [Loading receipt format](../../../tools/godtest/PERFORMANCE_TOUR.md#metrics-evidence-and-verdicts)
 
 The checked Linux loading regression passed 57 checks, including stage order and the sum through readiness, on the headless reference route. The Python tool suite passed 210 tests with 7 skipped. The interrupted streams, watchdog observations and private instrumentation are retained under `U:/OpenRC-intel-l3-20261123`.
+
+## 23 November · Crash warmup viewport isolation
+
+The PRIMIS container had 6 GiB of RAM and 512 MiB of swap for this follow-up. The host watchdog now allows 45 s of continuous node memory pressure below 1536 MiB and stops the container after 10 s below 768 MiB. The installed policy was checked for recovery, sustained pressure and critical pressure. The cold baseline completed even after the journal recorded 1285 MiB of node memory available. [Current PRIMIS operating guide](../../tools/primis-testlab.md#when-primis-is-offline-or-refuses-work)
+
+On `0659c9a78`, a private candidate suppressed updates to the main viewport during the two forced crash warmup draws. It left the isolated 64×64 viewport eligible for both light variants and restored the main viewport's update mode afterward. The pinned engine still emits global frame signals and visits other eligible viewports during each forced draw. [Pinned draw dispatch](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_server_default.cpp) · [Pinned viewport traversal](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp)
+
+The loading probe used the real Home Fly button for a Club airborne Ugly Stik with keyboard selected. Each pair used fresh processes, a copy of the same initialized Godot shader cache and a shared campaign Mesa cache. It verified Compatibility/OpenGL on UHD 630, native physics, 1920×1080 viewport coordinates, 75% render scale and main MSAA off. It measured the opening 480 physics ticks after the first draw. The window was virtual and the shared node remained in normal use.
+
+| Pair and order | Fly to first draw, A / B | Warmup, A / B | Longest opening interval, A / B |
+| --- | ---: | ---: | ---: |
+| 1 · A then B | 8530 / 8143 ms | 214 / 145 ms | 276 / 283 ms |
+| 2 · B then A | 8229 / 8174 ms | 214 / 149 ms | 290 / 278 ms |
+| 3 · A then B | 8229 / 8184 ms | 222 / 149 ms | 290 / 279 ms |
+
+A is the stock warmup. B saves 65–73 ms inside the warmup, with a median paired gain of about 0.7% through the first flight draw. The opening peaks stayed near 280 ms.
+
+The separate caches-cold runs reached the first flight draw in 23.40 s on stock and 22.32 s on the candidate. Warmup took 3.70 s and 3.44 s. The opening peaks were 6.89 s and 6.72 s, respectively. The candidate's draw signals bracketed 6.70 s of its 6.72 s peak, starting at physics tick 392. That locates the dominant wait between renderer signals in this run. A pass, shader compile or driver call still needs attribution. These two cases ran in sequence, with independent empty shader caches and uncontrolled filesystem and host cache state. Only the candidate recorded individual draw intervals.
+
+Stock remains in use. The viewport isolation fell short of the L6 adoption gate and left the cold opening stall reproducible. Both cold runs and all six warm runs completed without a watchdog stop. Impact and package acceptance were outside the screen. Run reports, logs, the isolated candidate and trace are retained under `U:/OpenRC-intel-warmup-20261123`.
