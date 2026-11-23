@@ -168,5 +168,437 @@
     "disk_backed_attempt_limit": "GOD TEST snapshot fixtures require 512 MiB free; host had 236 MiB. Two cases failed on that limit. All 212 passed separately on tmpfs; final 105 release cases passed separately.",
     "physical_io_limit": "Checked-runner physical-write measurement required a disk-backed TMPDIR. That suite passed 328 cases with 26 skips on disk."
   },
-  "latest_head_status": "Awaiting the branch-only merge/UID-repair PR run. Do not interpret earlier cancelled or failed runs as a complete pass."
+  "latest_head_status": "Follow-up source0e57e797 passed bounded local renewals and final Home1/2/3. New hosted results remain pending. LU-34 source-geometry limits still fail independently; thresholds remain unchanged.",
+  "third_hosted_attempt": {
+    "head": "847d8d1a26b885124f6b634ee9badfe6684bef13",
+    "merge": "22a1ae368a75b94977d8dfa46cc4888499424ce7",
+    "tree": "b9866328c22696399e3a53d423c3679cba8a9f2e",
+    "run_id": 45079559400,
+    "full_aggregate_pass": false,
+    "scope_seconds": 91,
+    "tooling_seconds": 129,
+    "ci_cases": 139,
+    "queue_cases": 459,
+    "queue_skips": 12,
+    "full_project_import_seconds": 353,
+    "required_telemetry_seconds": 6,
+    "offline_step_seconds": 132,
+    "telemetry_artifact": {
+      "id": 14777221087,
+      "zip_bytes": 1398,
+      "sha256": "d83e955801b6023bbc3b9b2d016341e4d30a3e6b0f8254ac342fdd73f9a737f3",
+      "sent": 3,
+      "queued": 0,
+      "dropped": 0,
+      "local_drops": 0,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    "subsequent_failures": {
+      "companion_shards": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fleet_policy_step": true,
+      "linux_native_runtime_domain": {
+        "job_id": 137385028507,
+        "checks": 634,
+        "failures": 25,
+        "attribution": {
+          "reference_assertions": 16,
+          "paired_reset_assertions": 8,
+          "accumulated_failure_assertion": 1
+        },
+        "earlier_native_gates": "passed",
+        "corrected_hosted_result": "pending"
+      },
+      "macos_stock_domain": {
+        "job_id": 137385028494,
+        "checks": 72,
+        "failures": 1,
+        "guard_calls": 2400,
+        "guard_mismatches": 0,
+        "observed_proxies": 7295,
+        "observed_world_sha256": "7e5fcff5098591708406da39142768107a594eac142b3862c2f684695876cc64",
+        "native_default_route_verified": false
+      },
+      "woodland_recipe": {
+        "job_id": 137385028525,
+        "section": "L7-R1 woodland-edge recipe and full-envelope exclusions stay current",
+        "failure": "app/data/woodland_edges.json differs from the deterministic woodland-edge recipe",
+        "only_failed_app_test_integration_section": true
+      }
+    },
+    "interpretation": "Observed passed steps remain source-bound. Later completed app integration and macOS jobs failed independent upstream consistency gates. The workflow is not a successful full qualification.",
+    "queue_passes": 447
+  },
+  "companion_manifest_drift": {
+    "manifest_unchanged_between_baseline_upstream_and_audit": true,
+    "sources": [
+      {
+        "path": "app/app_root.gd",
+        "accepted_sha256": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+        "upstream_sha256": "75626bac8dfacf87bddb436520a0f3370a97714595a142f4bf3c6fb076a9cc7d"
+      },
+      {
+        "path": "app/scenery/collision_world.gd",
+        "accepted_sha256": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+        "upstream_sha256": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6"
+      }
+    ],
+    "source_bodies_match_upstream": true,
+    "normal_home_profiles_manager_observation_before_integration": [
+      60,
+      95,
+      53,
+      21
+    ],
+    "renewal_requires": "Actual Club-world route clearance and production admission; solver replay does not renew the behavior manifest."
+  },
+  "manifest_fixture_diagnostic_control": {
+    "changed_script_sha256": "813afbfbc144d8539bdd2aeefd030883d8a99f2ae9ceda6c1c073815f1435576",
+    "effective_git_checkout_files": 6015,
+    "normal_stale_mode": {
+      "checks": 7,
+      "failures": 2,
+      "exit": 1,
+      "elapsed_seconds": 7.628956,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    "expected_refusal_mode": {
+      "checks": 8,
+      "failures": 0,
+      "exit": 0,
+      "elapsed_seconds": 7.468117,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    "excluded": "Preliminary raw-blob fixture did not reproduce declared CRLF checkout bytes; its results receive no qualification credit.",
+    "positive_candidate_mode": {
+      "checks": 39,
+      "failures": 0,
+      "exit": 0,
+      "elapsed_seconds": 8.14068,
+      "expected_diagnostics": "Two decoder messages from the deliberate invalid-UTF-8 rejection case; checked engine error/warning counts remain zero."
+    },
+    "commit": "d04eda4197c102b86a724be0cf4ef5c0b21c5499",
+    "accepted_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-ci-audit-behavior/bounded-checks.json"
+  },
+  "native_reset_renewal": {
+    "commit": "7aa7e270e20f5687962ca3e5d36e6852feb27e23",
+    "evidence": "docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-22/source-validation.json",
+    "version": "V7",
+    "rows": 8,
+    "comparison_checks": 460,
+    "comparison_failures": 0,
+    "fleet_checks": 598,
+    "fleet_failures": 0,
+    "trajectory_checks": 130,
+    "trajectory_failures": 0,
+    "native_python_cases": 354,
+    "campaign_cases_included": 67,
+    "old_proofs_rejected": 8,
+    "coherently_rehashed_physical_mutations_rejected": 8,
+    "limits": "Linux reference-owned pre-native resets only; no companion, native-flight or hardware qualification.",
+    "required_hosted_followup": {
+      "checks": 634,
+      "failures": 0,
+      "marker": "NK3_RUNTIME_DOMAIN_NATIVE verdict=pass"
+    }
+  },
+  "telemetry_event_correction": {
+    "branch_pushes": [
+      "main"
+    ],
+    "tag_pushes": [
+      "**"
+    ],
+    "same_pr_path_filters": true,
+    "manual_dispatch": true,
+    "lint": "pass",
+    "actual_tag_created": false,
+    "reason": "Preserve baseline all-tag execution after limiting branch pushes; GitHub ignores paths for tags.",
+    "commit": "d04eda4197c102b86a724be0cf4ef5c0b21c5499"
+  },
+  "companion_behavior_renewal": {
+    "commit": "50a63d290d97d89b708f2a32289cc5182781963f",
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-ci-audit-behavior/bounded-checks.json",
+    "receipt_sha256": "c7deb56b2dd6cea3c9de725a902f6e0530c8770b6b011a4dcc4e044adb48abe0",
+    "app_files": 6015,
+    "external_authoring_files": 27,
+    "checked_processes": 23,
+    "successful_exits": 22,
+    "intentional_stale_rejection": 1,
+    "manifest_sha256": "e4a313309845c057d7de6c229bcdf07503351967068468003c3984c7ec25ed88",
+    "profile_sha256": "16ce0fa0f049841bc14ca04c99de7f3bed2560ab4e2f6d31616a0017d48e24be",
+    "production_solver_override": false,
+    "unchanged_solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+    "normal_home_counts": [
+      1,
+      2,
+      3
+    ],
+    "accepted_ticks": 240,
+    "proxy_count": 7295,
+    "protected_proxy_count": 72,
+    "minimum_gap_after_allowances_m": 28.2949026518531,
+    "warnings": {
+      "obj_ambient_material_import": 8,
+      "reference_backend": 9
+    },
+    "excluded_setup_attempts": [
+      "Git blob-only materialization preceded application of the 29 CRLF checkout rules. Those initial controls are excluded.",
+      "The first shell trial lacked two repository-relative aircraft model authoring records and timed out after its startup failure. The working project was supplemented with the 27 source records declared by the nine bundled model and overlay manifests.",
+      "The first repeat of airspace refused an already-existing evidence output path as designed. The accepted run used a new path."
+    ],
+    "scope": "Narrow ordinary Home/Stik/Club admission, source registration, nominal collision checks, mutation refusals and the explicit lifecycle/software cases recorded here. GPU experiment, native backend behavior, physical qualification, and full simulator CI are separate.",
+    "independent_review": "Verified all source/pin identities, exact proposed three digest replacements, all archived exits/logs/markers and fresh production admission receipts."
+  },
+  "woodland_renewal": {
+    "commit": "e02863c0957c3501dc53df0a3bdeb5624f931d17",
+    "receipt": "docs/research/visual-quality-implementation/L6c/tree-completion/woodland-edges/2026-11-22-ci-audit/receipt.json",
+    "receipt_sha256": "a1e886bcb6e1090c090f71b1204e6cccd60d6f2a56451be66be1badb6c0cb4fb",
+    "input_files": 24,
+    "json_leaf_changes": 8,
+    "fixture_count_updates": 4,
+    "python_cases": 6,
+    "headless_habitat_assertions": 54,
+    "airspace_report_unchanged": true,
+    "home_three_structured_record_unchanged": true,
+    "encroaching_patch_rejected": true,
+    "plant_geometry_changed": false
+  },
+  "unresolved_scenery_budget": {
+    "prior_pass": {
+      "source": "ce31055c494a969092e5deaf3aae686aace8796c",
+      "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562784/job/137372676695",
+      "source_triangles_total": 1033047,
+      "individual_old_bucket_counts": "Not printed on pass"
+    },
+    "before_and_after_recipe": {
+      "identical_subsystem_counts": {
+        "population": 373656,
+        "parked_aircraft": 267988,
+        "cells": 178746,
+        "vegetation": 149260,
+        "botanical": 63315,
+        "pit_shelters": 12096,
+        "airfield_detail": 4482,
+        "other": 9365
+      },
+      "exceeded": {
+        "cells": {
+          "budget": 175000,
+          "excess": 3746
+        },
+        "other": {
+          "budget": 8000,
+          "excess": 1365
+        }
+      }
+    },
+    "measurement": "Full-detail source triangles, with MultiMesh instances multiplied. Source allowances bound geometry and memory work. Frame time, draw calls, and target-GPU performance require separate measurements.",
+    "remediation": "Identify the added cell props and miscellaneous meshes, reduce the authored or generated source geometry, and pass both test_scenery_build.gd and test_landscape_vegetation.gd with their current LU-34 allowances. Keep the failing checks visible until resolved.",
+    "controlled_attribution": {
+      "pre_upstream_job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562784/job/137372676695",
+      "source_matching": "Scenery builder, data, full-scene test and allowances at the pre-upstream hosted job match audit baseline 85a2475. Upstream data and procedural scene assets changed independently of the later woodland receipt.",
+      "geometry_totals": {
+        "before_upstream": 1033047,
+        "after_upstream_with_either_recipe": 1058908,
+        "change": 25861
+      },
+      "close_vegetation": {
+        "instances_before": 42,
+        "instances_after": 45,
+        "triangles_before": 132457,
+        "triangles_after": 149260,
+        "allowance": 150000,
+        "change": 16803
+      },
+      "woodland_in_all_three_worlds": {
+        "plants": 220,
+        "source_triangles": 2656,
+        "batches": 13
+      },
+      "classification": "The upstream scene authoring adds three placed trees, tracks, hedges, fences and patches. The production renderer routes per-member fence geometry into merged cells at app/scenery/scenery.gd:567 and attaches hedge and road nodes at app/scenery/scenery.gd:587. The pre-upstream job did not print exact passing per-category counts. Per-group attribution is narrower than assigning all geometric growth to a single model.",
+      "thresholds_changed": false,
+      "unresolved_next_step": "Profile individual high-triangle nodes in both failing subsystems before choosing a geometry reduction. Data changes and renderer routing identify candidate objects, but the evidence does not assign the entire overrun to a specific mesh.",
+      "remaining_non_vegetation_growth": {
+        "triangles": 9058,
+        "calculation": "Total scene growth of 25,861 less the 16,803 added close-vegetation triangles. The pre-upstream pass did not print separate merged-cell and miscellaneous values."
+      }
+    }
+  },
+  "unit_keep_going": {
+    "commit": "93657c77c375fd1d63996f2b53aa414a975381f2",
+    "partition_cases": 16,
+    "partition_seconds": 33.782,
+    "phase_cases": 16,
+    "phase_seconds": 63.355,
+    "default_original_failure_status_preserved": true,
+    "all_selected_probes_visited": 19,
+    "failed_unit_complete_receipt": false,
+    "prior_valid_receipts_preserved": true,
+    "all_mode_runtime_continues": true,
+    "solver_or_physics_changes": false,
+    "controls": [
+      "process exit 7",
+      "exit-zero engine error",
+      "exit-zero shader error",
+      "historical-brake wrapper exit 9",
+      "all-mode source/unit/runtime failures",
+      "valid unit-only receipt after independent source failure"
+    ],
+    "limits": "Disposable real shell-runner fixtures use a fake engine; later hosted diagnoses may cascade through shared project state. Keep-going can increase failed-run work."
+  },
+  "macos_world_renewal": {
+    "source_commit": "c320d34d77197d2a34a5e41feced445a80f51712",
+    "record": "docs/research/native-kernel/DT-MAC-04n-R1/2026-11-22-ci-audit/domain-validation.json",
+    "record_sha256": "c0d7dda2f85b65296af02f494057a7578789d0dfa07f3570eea81065cfd34259",
+    "literal_changes": 3,
+    "portable_checks": 9,
+    "portable_failures": 0,
+    "actual_hosted_native_default": "pending"
+  },
+  "solver_rebind": {
+    "tool": "tools/companions/rebind.py",
+    "normalized_solver_before": {
+      "solver_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "rev": "70ee7e647d0a54c73a48fd60e934ad3091d19e8f"
+    },
+    "normalized_solver_after": {
+      "solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+      "rev": "c320d34d77197d2a34a5e41feced445a80f51712"
+    },
+    "actual_changed_solver_sources": [
+      "app/sim/native_macos_domain.gd"
+    ],
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-7e404f01-to-0954434e.json",
+    "receipt_sha256": "adc8b98128779b408680be358e4e49954b29035af1deb7652473bc5966d24932",
+    "qualified_tapes": 9,
+    "rows_per_side": 25929,
+    "all_csv_byte_hashes_equal": true,
+    "all_gzip_and_orfl_identities_reverified": true,
+    "final_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+    "source_materialization": "The private head contained every one of the 6,015 tracked app files at c320, checked against Git with the original checkout attributes. The historical solver archive contained exactly the 408 paths and bytes in the accepted app/physics, app/sim and app/failures trees. No export attributes applied to these files. The partial Git object database reported unavailable unrelated source during its preliminary index scan. The scoped archive returned success and each exported file was checked independently.",
+    "cache_method": "The first duplicate-cache attempt exhausted local memory before any verdict. The completed comparison used the standard solver-mode tool with one replay at a time. Independent app and solver sources and project metadata shared only the pinned runtime\u2019s immutable imported resource directory. Its ordered path/content-SHA-256 manifest matched before and after all replays.",
+    "immutable_import_cache": {
+      "count": 1433,
+      "bytes": 2392284441,
+      "sha256": "0277f387a7f19d0910d76ed5f2fddd02fb3609a978140430e8ca14dee47f240e"
+    },
+    "effective_options": {
+      "accept": true,
+      "jobs": 1,
+      "baseline": "solver",
+      "copy_mode": "copy"
+    },
+    "commit": "0e57e797c5acc7a664ec8d4478838641c16276cc"
+  },
+  "final_home_admission": {
+    "source_commit": "0e57e797c5acc7a664ec8d4478838641c16276cc",
+    "app_tree": "44faebf550d6257ef086760c2f50662faaf82957",
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-ci-audit-home/receipt.json",
+    "receipt_sha256": "8b4330e36ae86f26e94ddb6c0e137aa420837dffbae6ee95954d9587b684be9e",
+    "tracked_app_files": 6015,
+    "external_authoring_records": 27,
+    "before_after_source_inventory_sha256": "bb8c9289fb1137f1fea5d949d2b2e2f8a363bb82c7512e84b67e9fcbb50b40b3",
+    "launches": [
+      {
+        "requested": 1,
+        "admitted": 1,
+        "active": 1,
+        "airborne": 1,
+        "ticks": 240,
+        "crashed": 0,
+        "faulted": 0,
+        "solver_override_before": false,
+        "solver_override_after": false,
+        "solver_files": 203,
+        "runtime_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+        "observed_aircraft_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+        "airspace_identical_to_prior_for_this_count": true,
+        "elapsed_seconds": 25.260655,
+        "started_utc": "2026-11-23T00:09:04.036268+00:00",
+        "checked_process_exit": 0,
+        "engine_counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "missing_required_markers": [],
+        "engine_log_sha256": "8f860ef1be1c9751c39a97d244df4119dee7770ff125befca8e9cbbb0a31e6d0"
+      },
+      {
+        "requested": 2,
+        "admitted": 2,
+        "active": 2,
+        "airborne": 2,
+        "ticks": 240,
+        "crashed": 0,
+        "faulted": 0,
+        "solver_override_before": false,
+        "solver_override_after": false,
+        "solver_files": 203,
+        "runtime_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+        "observed_aircraft_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+        "airspace_identical_to_prior_for_this_count": true,
+        "elapsed_seconds": 27.582668,
+        "started_utc": "2026-11-23T00:09:29.373528+00:00",
+        "checked_process_exit": 0,
+        "engine_counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "missing_required_markers": [],
+        "engine_log_sha256": "39579e21e385d491305b67582a22355d360f81bb2b7de0db054e3c598fd01c11"
+      },
+      {
+        "requested": 3,
+        "admitted": 3,
+        "active": 3,
+        "airborne": 3,
+        "ticks": 240,
+        "crashed": 0,
+        "faulted": 0,
+        "solver_override_before": false,
+        "solver_override_after": false,
+        "solver_files": 203,
+        "runtime_solver_sha256": "0954434e94c8dd31cb6183c8de34da00c81736545228a95249e899a936ef617b",
+        "observed_aircraft_profile_sha256": "299c9cbd29869a1fa65f52f1ec6890076a2bf60c022ea97bc0178dee56c5adf8",
+        "airspace_identical_to_prior_for_this_count": true,
+        "elapsed_seconds": 29.782174,
+        "started_utc": "2026-11-23T00:09:57.101185+00:00",
+        "checked_process_exit": 0,
+        "engine_counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "missing_required_markers": [],
+        "engine_log_sha256": "84b7e2e5b9fbfcdc4066bce4143b5dc8a2bd1df23eeabe3567b66e8de26b1d73"
+      }
+    ],
+    "platform": "Linux x86_64 headless editor, GDScript reference backend",
+    "native_macos_verdict_inferred": false,
+    "full_ci_verdict_inferred": false
+  },
+  "publication_static_validation": {
+    "source_commit": "0e57e797c5acc7a664ec8d4478838641c16276cc",
+    "markdown_files": 10,
+    "local_links_checked": 234,
+    "local_link_errors": 0,
+    "audit_json_files_parsed": 5,
+    "workflow_blob_identities_verified": 8,
+    "actionlint_version": "1.7.12",
+    "shellcheck_and_pyflakes_enabled": false,
+    "application_tree": "44faebf550d6257ef086760c2f50662faaf82957",
+    "workflow_lint": "pass",
+    "shell_syntax": "pass",
+    "git_diff_check": "pass"
+  }
 }

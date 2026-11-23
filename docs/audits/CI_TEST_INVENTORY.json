@@ -2152,5 +2152,15 @@
     {"path": "tools/trees/test_place_woodland_edges.py", "language": "Python", "family": "tools/trees", "role": "named test", "status": "explicit", "routes": ["app-integration"]},
     {"path": "tools/trees/test_process_atlas.py", "language": "Python", "family": "tools/trees", "role": "named test", "status": "not found", "routes": []},
     {"path": "tools/trees/test_verify_bakes.py", "language": "Python", "family": "tools/trees", "role": "named test", "status": "not found", "routes": []}
-  ]
+  ],
+  "later_evidence": {
+    "final_home_record": "docs/research/ai-companions/AFC-02/rebinds/2026-11-23-ci-audit-home/receipt.json",
+    "macos_world_and_solver_record": "docs/research/native-kernel/DT-MAC-04n-R1/2026-11-22-ci-audit/domain-validation.json",
+    "woodland_and_geometry_record": "docs/research/visual-quality-implementation/L6c/tree-completion/woodland-edges/2026-11-22-ci-audit/receipt.json",
+    "unit_keep_going_record": "CI_HOSTED_FOLLOWUP.json#unit_keep_going",
+    "record": "docs/audits/CI_HOSTED_FOLLOWUP.json",
+    "interpretation": "The original census and initial validation records above retain their stated source cutoffs. Later merged-source execution, additional product qualification and test-diagnostic corrections are recorded separately; they do not silently redefine the original case totals.",
+    "native_reset_record": "docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-22/source-validation.json",
+    "companion_behavior_record": "docs/research/ai-companions/AFC-02/rebinds/2026-11-22-ci-audit-behavior/bounded-checks.json"
+  }
 }

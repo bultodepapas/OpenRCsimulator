@@ -39,7 +39,7 @@
         ".github/workflows/metalfx-source.yml": "c0f943117fdbb63f5cfc380ac768426bcd75d339",
         ".github/workflows/native-macos.yml": "e6ce28679bfd3ccd4dd9ef0151bf2ddb0b136a39",
         ".github/workflows/publication-rebind.yml": "02ad22ee48b8e3b7548d0e58839bdfdebe31bff8",
-        ".github/workflows/telemetry-contracts.yml": "45a3d47faa784ed3766ac69026aa11527dbaad5a",
+        ".github/workflows/telemetry-contracts.yml": "635e0e2620c9f347ab8b2da584b5015b8c25f4fe",
         ".github/workflows/telemetry-health.yml": "5582fe64c072ddbd6faa8e5639b17f4540917b7c",
         ".github/workflows/testqueue-windows.yml": "4c40d2927c7364c734944e3c838c92d0639efcd8"
       },
@@ -5752,7 +5752,7 @@
         "local_reusable_calls": 0
       }
     },
-    "45a3d47faa784ed3766ac69026aa11527dbaad5a": {
+    "635e0e2620c9f347ab8b2da584b5015b8c25f4fe": {
       "path": ".github/workflows/telemetry-contracts.yml",
       "configuration": {
         "name": "Telemetry contracts",
@@ -5760,6 +5760,9 @@
           "push": {
             "branches": [
               "main"
+            ],
+            "tags": [
+              "**"
             ],
             "paths": [
               "research/telemetry/**",
@@ -5833,21 +5836,21 @@
         "workflow_fields": {
           "name": 1,
           "on": 5,
-          "permissions": 23,
-          "concurrency": 26,
-          "jobs": 30
+          "permissions": 24,
+          "concurrency": 27,
+          "jobs": 31
         },
         "jobs": {
           "contracts": {
-            "line": 31,
+            "line": 32,
             "matrix_instances": 1,
             "step_lines": [
-              38,
-              47,
-              56,
-              61,
-              65,
-              72
+              39,
+              48,
+              57,
+              62,
+              66,
+              73
             ],
             "direct_needs": [],
             "effective_permissions": {

@@ -24,7 +24,7 @@ A matrix job appears once in these counts. The per-job tables give its declared 
 | [metalfx-source.yml](../../.github/workflows/metalfx-source.yml) | Path-filtered main pushes and PRs, manual dispatch | Linux source and mutation controls | Same |
 | [native-macos.yml](../../.github/workflows/native-macos.yml) | Reusable call or manual dispatch | macOS ARM64 source correctness | Same |
 | [publication-rebind.yml](../../.github/workflows/publication-rebind.yml) | Reusable call or manual dispatch | Linux and Windows historical comparison | Same |
-| [telemetry-contracts.yml](../../.github/workflows/telemetry-contracts.yml) | Path-filtered main pushes and PRs, manual dispatch | Offline receiver and container contracts | Changed |
+| [telemetry-contracts.yml](../../.github/workflows/telemetry-contracts.yml) | Path-filtered main pushes and PRs, every tag push, manual dispatch | Offline receiver and container contracts | Changed |
 | [telemetry-health.yml](../../.github/workflows/telemetry-health.yml) | Daily at 09:17 UTC or manual dispatch | Public receiver health with no token permissions | Same |
 | [testqueue-windows.yml](../../.github/workflows/testqueue-windows.yml) | Path-filtered main pushes and PRs, manual dispatch | Windows containment and tooling contracts | Same |
 
@@ -87,7 +87,7 @@ Source links refer to the job declaration in each revision. Dependency IDs are t
 
 | Job and source | Disposition | When it runs | Direct prerequisites | Checks and risk covered |
 | --- | --- | --- | --- | --- |
-| `contracts` · [base L30](https://github.com/bultodepapas/OpenRCsimulator/blob/85a2475f60029a4b6b09f23f643119bceea84a45/.github/workflows/telemetry-contracts.yml#L30) · [candidate L31](../../.github/workflows/telemetry-contracts.yml#L31) | Improve · Reschedule | Relevant main pushes and PRs, or manual runs | Independent | Check schemas, generated examples, receiver/database behavior, dashboards and deployment helpers. Build a container, require healthy readiness, POST a canonical batch, check storage/UID and purge. Main-only push removes duplicate topic-branch runs with open PRs. Real client E2E runs under the required app integration job. |
+| `contracts` · [base L30](https://github.com/bultodepapas/OpenRCsimulator/blob/85a2475f60029a4b6b09f23f643119bceea84a45/.github/workflows/telemetry-contracts.yml#L30) · [candidate L32](../../.github/workflows/telemetry-contracts.yml#L32) | Improve · Reschedule | Relevant main pushes and PRs, every tag push, or manual runs | Independent | Check schemas, generated examples, receiver/database behavior, dashboards and deployment helpers. Build a container, require healthy readiness, POST a canonical batch, check storage/UID and purge. Restricting branch pushes to main removes duplicate topic-branch runs with open PRs. An explicit all-tag pattern preserves the baseline tag coverage; GitHub does not apply path filters to tags. Real client E2E runs under the required app integration job. |
 
 ### Telemetry receiver health
 
