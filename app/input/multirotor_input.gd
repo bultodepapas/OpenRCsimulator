@@ -113,8 +113,8 @@ func _init() -> void:
 	_mode = default_mode(source())
 
 
-static func _read_keyboard() -> Dictionary:
-	var raw: Dictionary = Keyboard.read_raw()
+static func _read_keyboard(include_axes := true) -> Dictionary:
+	var raw: Dictionary = Keyboard.read_raw() if include_axes else {}
 	raw.arm = Input.is_physical_key_pressed(ARM_KEY)
 	raw.mode = Input.is_physical_key_pressed(MODE_KEY)
 	raw.turtle = Input.is_physical_key_pressed(TURTLE_KEY)
@@ -524,7 +524,12 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	if _current_source_key() != _source_key:
 		_source_changed()
 	var kind := source()
-	var keys: Dictionary = read_keys.call()
+	# Polling can change the source. Only the built-in reader can omit axes without running a caller's callback.
+	var keys: Dictionary
+	if radio.connected and read_keys == _read_keyboard:
+		keys = _read_keyboard(false)
+	else:
+		keys = read_keys.call()
 	var error := ""
 	var ready := true
 	var roll := 0.0

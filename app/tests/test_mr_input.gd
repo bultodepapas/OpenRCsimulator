@@ -48,6 +48,7 @@ func _run() -> void:
 	_calibration()
 	_gamepad()
 	_keyboard()
+	_keyboard_readers()
 	_generations()
 	_radio_switch()
 	_throttle_limits()
@@ -191,6 +192,30 @@ func _keyboard() -> void:
 	s = input.sample(DT, true)
 	_check("a pad restart returns the virtual arm switch to OFF and keeps the mode", s.pilot[FC.IN_ARM] == 0.0
 		and s.pilot[FC.IN_MODE] == float(FC.FLIGHT_ACRO))
+
+
+func _keyboard_readers() -> void:
+	var input := PilotInput.new()
+	var default_reader := input.read_keys
+	var shortcuts := PilotInput._read_keyboard(false)
+	_check("controller keyboard read contains just the three shortcuts", shortcuts.size() == 3
+		and shortcuts.has_all(["arm", "mode", "turtle"]))
+	_check("standalone default keyboard reader keeps the Mode 2 axes", default_reader.call().has_all(
+		["roll", "pitch", "yaw", "throttle", "arm", "mode", "turtle"]))
+	input.read_axis = func(_id: int, _axis: int) -> float: return 0.0
+	input.read_button = func(_id: int, _button: int) -> bool: return false
+	input.connect_device(0, {name = "Test gamepad", known = true})
+	var generation := input.source_generation
+	var calls := [0]
+	input.read_keys = func() -> Dictionary:
+		calls[0] += 1
+		input.use_keyboard()
+		return {throttle = -1.0, roll = 1.0}
+	var sample := input.sample(DT, true)
+	input.read_keys = default_reader
+	_check("a custom reader can switch to keyboard and supply flight axes in the same sample",
+		calls[0] == 1 and sample.source_generation == generation + 1
+		and sample.raw.roll > 0.0 and sample.raw.throttle == -1.0)
 
 
 func _generations() -> void:
