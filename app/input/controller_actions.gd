@@ -417,6 +417,11 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 	return false
 
 
+static func is_flight_action(action_id: String) -> bool:
+	var definition: Variant = _definition_map().get(action_id)
+	return definition != null and _context_applies(definition.context, "flight")
+
+
 static func action_definition(action_id: String) -> Dictionary:
 	return _definition_map().get(action_id, {}).duplicate(true)
 

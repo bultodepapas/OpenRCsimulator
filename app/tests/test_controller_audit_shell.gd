@@ -68,7 +68,9 @@ func _run() -> void:
 	root.add_child(shell)
 	shell._input(button(false))
 	check("one event reuses the selected profile snapshot", service.profile_requests == 1)
+	var initial_pause: Dictionary = shell._controller_action_identities.pause
 	shell._input(button(true))
+	check("unchanged input reuses the detached Pause identity", is_same(initial_pause, shell._controller_action_identities.pause))
 	check("radio Pause reaches flight with keyboard menus", flight.received.count("pause") == 1)
 	var pause := Screen.new()
 	shell.screens.push("pause", pause, null, false)

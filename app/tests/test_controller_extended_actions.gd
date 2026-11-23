@@ -33,6 +33,10 @@ func _initialize() -> void:
 
 func _test_definitions_and_defaults() -> void:
 	var defaults := Actions.default_bindings()
+	for action_id: String in defaults:
+		_check("flight routing context for " + action_id, Actions.is_flight_action(action_id) ==
+			(Actions.action_definition(action_id).context in ["flight", "both"]))
+	_check("unknown actions do not enter flight routing", not Actions.is_flight_action("unknown"))
 	var added := [
 		"smoke_toggle", "flaps_up", "flaps_down", "flaps_cycle", "gear_toggle",
 		"camera_previous", "camera_pilot", "camera_chase", "camera_orbit",

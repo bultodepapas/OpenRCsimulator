@@ -2689,15 +2689,16 @@ func _sync_controller_generic_actions(require_off := false) -> void:
 	var bindings := _controller_bindings(id, true)
 	var kind := str(_controller_profile(id).get("kind", ""))
 	for action_id: String in bindings:
-		if ControllerActions.action_definition(action_id).get("context", "menu") not in ["flight", "both"]: continue
+		if not ControllerActions.is_flight_action(action_id): continue
 		var binding: Dictionary = bindings[action_id]
-		var identity := {device = id, generation = controllers.registry.connection_generation(id), binding = binding.duplicate(true)}
-		var changed: bool = _controller_action_identities.has(action_id) and _controller_action_identities[action_id] != identity
+		var generation: int = controllers.registry.connection_generation(id)
+		var previous: Variant = _controller_action_identities.get(action_id)
+		var changed: bool = previous != null and (previous.device != id or previous.generation != generation or previous.binding != binding)
 		if changed:
-			var old_id: int = _controller_action_identities[action_id].device
-			_controller_action_require_off.erase("%d:%s" % [old_id, action_id])
-		var first_raw_device := not _controller_action_identities.has(action_id) and kind in ["radio", "joystick"]
-		_controller_action_identities[action_id] = identity
+			_controller_action_require_off.erase("%d:%s" % [previous.device, action_id])
+		var first_raw_device: bool = previous == null and kind in ["radio", "joystick"]
+		if previous == null or changed:
+			_controller_action_identities[action_id] = {device = id, generation = generation, binding = binding.duplicate(true)}
 		if (changed or require_off or first_raw_device) and id >= 0 and binding.get("type", "unbound") in ["button", "axis"]:
 			_controller_action_require_off["%d:%s" % [id, action_id]] = binding.duplicate(true)
 
