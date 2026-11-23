@@ -22,6 +22,32 @@ REDUCER_SOURCES = {name: hashlib.sha256(Path(__file__).with_name(name).read_byte
                    for name in ("analysis.py", "catalog.py", "runner.py", "resource_coverage.py",
                                 "gpu_coverage.py", "pace_windows.py", "render_evidence.py")}
 REDUCER_SHA256 = hashlib.sha256(json.dumps(REDUCER_SOURCES, sort_keys=True).encode()).hexdigest()
+# Keep the close-time evidence limit aligned with FlightResolutionPolicy.MAX_AGE_USEC.
+DYNAMIC_RESOLUTION_MAX_FRAME_AGE_USEC = 100_000
+
+
+def _phase_close_frame_problem(close: object, confirmed: dict, start: int, end: int) -> str:
+    if not isinstance(close, dict) or not close:
+        return "missing phase-close completed frame"
+    if any(type(close.get(key)) is not int or close[key] < 0 for key in ("frame_id", "generation", "recorded_usec")):
+        return "invalid phase-close completed frame identity"
+    if any(close.get(key) != confirmed[key] for key in ("generation", "input_size", "output_size")):
+        return "phase-close completed frame does not match the final confirmed scale"
+    if close["frame_id"] < confirmed["frame_id"]:
+        return "phase-close frame is older than the final confirmation"
+    recorded = close["recorded_usec"]
+    if not start <= recorded <= end:
+        return "phase-close frame was recorded outside the measured phase"
+    if end - recorded > DYNAMIC_RESOLUTION_MAX_FRAME_AGE_USEC:
+        return "completed frame was stale at phase close"
+    same_frame = close["frame_id"] == confirmed["frame_id"]
+    confirmed_time = confirmed["recorded_usec"]
+    if not (recorded == confirmed_time if same_frame else recorded > confirmed_time):
+        return "phase-close frame timestamp disagrees with the final confirmation"
+    gpu = close.get("gpu_usec")
+    if type(gpu) not in (int, float) or not 0 < gpu < math.inf:
+        return "invalid completed GPU duration at phase close"
+    return ""
 
 
 def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
@@ -43,10 +69,11 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
         return "no legal adaptive scale range"
     confirmed = False
     pending_scale = None
-    when = phase.get("start_usec", 0)
+    start = phase.get("start_usec")
     end = phase.get("end_usec", -1)
-    if type(when) is not int or type(end) is not int:
+    if type(start) is not int or type(end) is not int or not 0 <= start <= end:
         return "invalid phase timing"
+    when = start
     previous: dict = {}
     for row in trace:
         if not isinstance(row, dict) or row.get("phase_id") != phase.get("id"):
@@ -79,6 +106,9 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
             return "completed frame does not identify the active output"
         if any(type(frame.get(key)) is not int or frame[key] < 0 for key in ("frame_id", "generation")):
             return "invalid completed frame identity"
+        recorded = frame.get("recorded_usec")
+        if type(recorded) is not int or not 0 <= recorded <= at:
+            return "missing or invalid completed frame recording time"
         size = frame.get("input_size")
         if (not isinstance(size, list) or len(size) != 2 or any(type(axis) is not int for axis in size)
                 or tuple(size) not in sizes or type(scale) not in (int, float) or not 0 < scale <= 1
@@ -88,6 +118,7 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
             return "completed frame does not confirm the pending scale"
         if previous and (frame != previous or not confirmed) and (
             frame["generation"] <= previous["generation"] or frame["frame_id"] <= previous["frame_id"]
+            or recorded <= previous["recorded_usec"]
         ):
             return "completed scale identity did not advance"
         previous = frame
@@ -95,7 +126,9 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
         confirmed = True
     if phase.get("dynamic_resolution_close_status") != trace[-1]["status"]:
         return "phase-close controller observation is missing or inconsistent"
-    return "" if confirmed else "no completed frame confirmed an active scale"
+    if not confirmed:
+        return "no completed frame confirmed an active scale"
+    return _phase_close_frame_problem(phase.get("dynamic_resolution_close_frame"), previous, start, end)
 
 
 def validate_stream(directory: Path, frames: dict) -> dict:

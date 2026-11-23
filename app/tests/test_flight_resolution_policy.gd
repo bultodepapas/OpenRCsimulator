@@ -8,7 +8,16 @@ var failures := 0
 
 
 class ObservationDriver extends "res://debug/godtest_driver.gd":
+	var completed_gpu_frame: Dictionary = {}
+	var completed_gpu_reads := 0
+	var completed_gpu_read_usec := 0
+
 	func _ready() -> void: pass # Drive the observer without starting a performance tour.
+
+	func _read_completed_gpu_frame(_viewport: Viewport) -> Dictionary:
+		completed_gpu_reads += 1
+		completed_gpu_read_usec = Time.get_ticks_usec()
+		return completed_gpu_frame
 
 
 func _initialize() -> void:
@@ -55,6 +64,7 @@ func _run() -> void:
 	if DisplayServer.get_name() == "headless":
 		_check(not DynamicResolution.supports(root), "the headless renderer stays fixed")
 	_test_controller_loss()
+	_test_phase_close_frame()
 	print("Flight resolution policy: %d failed" % failures)
 	quit(failures)
 
@@ -66,7 +76,8 @@ func _test_controller_loss() -> void:
 	var owner := DynamicResolution.new()
 	# Headless has no completed-GPU-frame provider. Supply its receipt, then use the real stop paths.
 	var confirmed := {state = "observing", target_fps = 60, configured_scale = 1.0,
-		completed_frame = {frame_id = 4, generation = 3, input_size = [1920, 1080], output_size = [1920, 1080]}}
+		completed_frame = {frame_id = 4, generation = 3, recorded_usec = 1, gpu_usec = 7_000.0,
+			input_size = [1920, 1080], output_size = [1920, 1080]}}
 	driver._begin("recover")
 	driver._observe_dynamic_resolution(Time.get_ticks_usec())
 	_check(driver.phase.dynamic_resolution.is_empty(), "no controller has appeared during warm-up")
@@ -111,7 +122,39 @@ func _test_controller_loss() -> void:
 	driver._end()
 	_check(driver.phases.back().dynamic_resolution.is_empty() and not driver.phases.back().has("dynamic_resolution_close_status"),
 		"a controller first seen after the last process sample cannot qualify an empty trace")
+	_check(driver.completed_gpu_reads == 1, "only a confirmed scale with a sampled controller triggers a closing read")
 	owner.stop(root)
+	driver.free()
+
+
+func _test_phase_close_frame() -> void:
+	var driver := ObservationDriver.new()
+	root.add_child(driver)
+	driver.dynamic_resolution_fps = 60
+	var cached := _sample(4, 3, FULL, 7_000.0)
+	cached.output_size = FULL
+	cached.recorded_usec = Time.get_ticks_usec()
+	var confirmed := {state = "observing", target_fps = 60, configured_scale = 1.0,
+		completed_frame = DynamicResolution.completed_frame_receipt(cached)}
+	root.set_meta(DynamicResolution.STATUS_META, confirmed)
+	driver._begin("recover")
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	_check(driver.completed_gpu_reads == 0, "ordinary status observations do not poll completed work")
+	var fresh := _sample(5, 3, FULL, 8_000.0)
+	fresh.output_size = FULL
+	fresh.recorded_usec = Time.get_ticks_usec()
+	driver.completed_gpu_frame = fresh
+	driver._end()
+	var closed: Dictionary = driver.phases.back()
+	var close_frame: Dictionary = closed.get("dynamic_resolution_close_frame", {})
+	_check(driver.completed_gpu_reads == 1 and driver.completed_gpu_read_usec <= int(closed.end_usec),
+		"the completed report is read once before the phase-end timestamp")
+	_check(close_frame == {frame_id = 5, generation = 3, recorded_usec = fresh.recorded_usec, gpu_usec = 8_000.0,
+		input_size = [1920, 1080], output_size = [1920, 1080]}, "phase close preserves the engine frame and recording time")
+	_check(closed.dynamic_resolution.size() == 1 and closed.dynamic_resolution_close_status == confirmed,
+		"a new frame in the same generation does not add a scale transition")
+	root.remove_meta(DynamicResolution.STATUS_META)
 	driver.free()
 
 

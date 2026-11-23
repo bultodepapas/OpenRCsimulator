@@ -36,6 +36,18 @@ static func supports(viewport: Viewport) -> bool:
 		and bool(RenderingServer.call(SUPPORT_METHOD, viewport.get_viewport_rid()))
 
 
+static func completed_frame_receipt(sample: Dictionary) -> Dictionary:
+	var input: Variant = sample.get("input_size")
+	var output: Variant = sample.get("output_size")
+	var gpu: Variant = sample.get("gpu_usec")
+	if typeof(input) != TYPE_VECTOR2I or typeof(output) != TYPE_VECTOR2I \
+			or typeof(gpu) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(gpu)) or gpu <= 0:
+		return {}
+	return {frame_id = sample.get("frame_id"), generation = sample.get("generation"),
+		recorded_usec = sample.get("recorded_usec"), gpu_usec = gpu,
+		input_size = [input.x, input.y], output_size = [output.x, output.y]}
+
+
 func tick(viewport: Viewport, flight_id: int, active: bool, config: Dictionary) -> void:
 	var fps := int(config.get("dynamic_resolution_fps", 0))
 	if flight_id == 0 or fps <= 0:
@@ -76,9 +88,7 @@ func tick(viewport: Viewport, flight_id: int, active: bool, config: Dictionary) 
 		return
 	if not sample.is_empty() and _policy.pending_level < 0 and sample.generation == _policy.generation \
 			and sample.generation != _confirmed_frame.get("generation", -1):
-		var input: Vector2i = sample.input_size
-		_confirmed_frame = {frame_id = sample.frame_id, generation = sample.generation,
-			input_size = [input.x, input.y], output_size = [_output.x, _output.y]}
+		_confirmed_frame = completed_frame_receipt(sample)
 	if next >= 0:
 		_written = _scales[next]
 		viewport.scaling_3d_scale = _written

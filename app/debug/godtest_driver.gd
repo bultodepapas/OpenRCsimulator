@@ -926,6 +926,13 @@ func _observe_dynamic_resolution(now: int) -> void:
 	_event("dynamic_resolution", observation)
 
 
+func _read_completed_gpu_frame(viewport: Viewport) -> Dictionary:
+	if not RenderingServer.has_method(FlightDynamicResolution.SAMPLE_METHOD):
+		return {}
+	var sample: Variant = RenderingServer.call(FlightDynamicResolution.SAMPLE_METHOD, viewport.get_viewport_rid())
+	return sample if sample is Dictionary else {}
+
+
 func _runtime_display() -> Dictionary:
 	# Read after preferences have been applied, rather than reusing startup diagnostics.
 	# Window/viewport coordinates do not establish native drawable pixel dimensions.
@@ -950,9 +957,17 @@ func _runtime_display() -> Dictionary:
 
 func _end(status: String = "complete", reason: String = "") -> void:
 	if phase.is_empty(): return
+	var observe_at_close: bool = phase.has("dynamic_resolution") and not phase.dynamic_resolution.is_empty()
+	if observe_at_close:
+		var viewport := get_tree().root
+		var current: Dictionary = viewport.get_meta(FlightDynamicResolution.STATUS_META, {})
+		if current.get("state") == "observing" and current.has("completed_frame"):
+			# Read completed work before stamping the end. Keep this out of the transition trace.
+			phase.dynamic_resolution_close_frame = FlightDynamicResolution.completed_frame_receipt(
+				_read_completed_gpu_frame(viewport))
 	phase.end_usec = Time.get_ticks_usec()
 	# Catch a controller stop after the last process callback. A phase with no sampled controller stays unconfirmed.
-	if phase.has("dynamic_resolution") and not phase.dynamic_resolution.is_empty():
+	if observe_at_close:
 		_observe_dynamic_resolution(phase.end_usec)
 		phase.dynamic_resolution_close_status = last_dynamic_resolution
 	phase.end_tick = bound_session.sim.tick if is_instance_valid(bound_session) else -1

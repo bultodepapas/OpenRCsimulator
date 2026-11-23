@@ -15,6 +15,43 @@ from test_godtest import artifacts, replace_stream
 
 
 class RenderingEvidenceTests(unittest.TestCase):
+    def test_dynamic_resolution_close_requires_fresh_completed_work_for_the_final_scale(self):
+        manifest = catalog.scenario("smoke", dict(dynamic_resolution_fps=60, render_scale=100))
+        cached = dict(frame_id=4, generation=3, input_size=[1920, 1080], output_size=[1920, 1080],
+                      recorded_usec=990_000)
+        status = dict(state="observing", target_fps=60, configured_scale=1.0, completed_frame=cached)
+        phase = dict(id="recover", start_usec=1_000_000, end_usec=1_500_000, dynamic_resolution=[
+            dict(phase_id="recover", observed_usec=1_010_000, status=status),
+        ], dynamic_resolution_close_status=status)
+        fresh = dict(cached, frame_id=5, recorded_usec=1_480_000, gpu_usec=7_000.0)
+        for close, reason in (
+            (None, "missing phase-close completed frame"),
+            (dict(cached, gpu_usec=7_000.0), "outside the measured phase"),
+            (dict(fresh, recorded_usec=1_399_999), "stale at phase close"),
+            (dict(fresh, recorded_usec=1_400_000), ""),
+            (dict(fresh, recorded_usec=1_500_001), "outside the measured phase"),
+            (dict(fresh, generation=4), "does not match the final confirmed scale"),
+            (dict(fresh, input_size=[1632, 918]), "does not match the final confirmed scale"),
+            (dict(fresh, output_size=[2560, 1440]), "does not match the final confirmed scale"),
+            (dict(fresh, frame_id=3), "older than the final confirmation"),
+            (dict(fresh, frame_id=4), "timestamp disagrees with the final confirmation"),
+            (dict(fresh, gpu_usec=float("inf")), "invalid completed GPU duration"),
+            (fresh, ""),
+        ):
+            with self.subTest(close=close):
+                phase["dynamic_resolution_close_frame"] = close
+                result = _dynamic_resolution_problem(phase, manifest)
+                if reason:
+                    self.assertIn(reason, result)
+                else:
+                    self.assertEqual(result, "")
+
+        # With one in-phase frame, the phase close may re-observe that same exact frame.
+        cached["recorded_usec"] = 1_410_000
+        phase["dynamic_resolution"][0]["observed_usec"] = 1_415_000
+        phase["dynamic_resolution_close_frame"] = dict(cached, gpu_usec=7_000.0)
+        self.assertEqual(_dynamic_resolution_problem(phase, manifest), "")
+
     def test_dynamic_resolution_respects_the_pixel_floor_and_needs_two_rungs(self):
         output = [3456, 2234]
         for ceiling, extent, scale, issue in (
@@ -26,11 +63,12 @@ class RenderingEvidenceTests(unittest.TestCase):
             with self.subTest(ceiling=ceiling, extent=extent):
                 manifest = catalog.scenario("smoke", dict(resolution=output, window_mode="borderless",
                                                            dynamic_resolution_fps=60, render_scale=ceiling))
-                frame = dict(frame_id=4, generation=3, input_size=extent, output_size=output)
+                frame = dict(frame_id=4, generation=3, input_size=extent, output_size=output, recorded_usec=100)
                 status = dict(state="observing", target_fps=60, configured_scale=scale, completed_frame=frame)
                 phase = dict(id="recover", start_usec=100, end_usec=200, dynamic_resolution=[
                     dict(phase_id="recover", observed_usec=120, status=status),
-                ], dynamic_resolution_close_status=status)
+                ], dynamic_resolution_close_status=status,
+                    dynamic_resolution_close_frame=dict(frame, frame_id=5, recorded_usec=180, gpu_usec=7_000.0))
                 self.assertEqual(_dynamic_resolution_problem(phase, manifest), issue)
 
     def test_dynamic_resolution_requires_a_confirmed_frame_and_allows_holding_the_ceiling(self):
@@ -46,7 +84,9 @@ class RenderingEvidenceTests(unittest.TestCase):
             runtime["identity"]["effective_display"] = {"dynamic_resolution_fps": 60}
             phase = runtime["phases"][0]
             phase.update(name="recover", id="0-0-recover", start_usec=1, end_usec=100)
-            frame = {"frame_id": 4, "generation": 3, "input_size": [1920, 1080], "output_size": [1920, 1080]}
+            frame = {"frame_id": 4, "generation": 3, "input_size": [1920, 1080], "output_size": [1920, 1080],
+                     "recorded_usec": 2}
+            phase["dynamic_resolution_close_frame"] = dict(frame, frame_id=6, recorded_usec=90, gpu_usec=7_000.0)
             for status, eligible in (
                 ({"state": "observing", "completed_frame": frame}, True),
                 ({"state": "observing"}, False),
@@ -65,7 +105,7 @@ class RenderingEvidenceTests(unittest.TestCase):
 
             confirmed = {"target_fps": 60, "state": "observing", "configured_scale": 1.0, "completed_frame": frame}
             pending = {"target_fps": 60, "state": "apply_pending", "configured_scale": 0.85}
-            next_frame = dict(frame, frame_id=5, generation=4, input_size=[1632, 918])
+            next_frame = dict(frame, frame_id=5, generation=4, input_size=[1632, 918], recorded_usec=3)
             applied = dict(confirmed, configured_scale=0.85, completed_frame=next_frame)
             warming = dict(pending, state="observing")
             for states, issue in (
@@ -94,6 +134,8 @@ class RenderingEvidenceTests(unittest.TestCase):
                         for at, state in enumerate(states, start=5)
                     ]
                     phase["dynamic_resolution_close_status"] = states[-1]
+                    phase["dynamic_resolution_close_frame"] = dict(states[-1].get("completed_frame") or {},
+                                                                  frame_id=6, recorded_usec=90, gpu_usec=7_000.0)
                     write_json(path / "runtime.json", runtime)
                     result = report(path, write=False)
                     self.assertEqual(result["data"] == "valid", not issue, result["issues"])
