@@ -110,6 +110,10 @@ static func _clear(aux: PackedFloat64Array, modes: PackedInt64Array) -> void:
 			modes[i] = 0
 
 
+static func can_start_from(phase: int) -> bool:
+	return phase == PHASE_IDLE or phase == PHASE_FINISHED or phase == PHASE_ABORTED
+
+
 ## Sampled staging. race = {aux, modes} of the accepted start-of-tick frame. facts (prepared by the model wrapper):
 ##   north, east, down, speed_mps          accepted start-of-tick CG position (NED) and world speed
 ##   terminal                              accepted motor lifecycle is crashed or depleted
@@ -138,7 +142,7 @@ static func stage(race: Dictionary, action: int, facts: Dictionary, course: Dict
 		elif phase == PHASE_FINISHED or phase == PHASE_ABORTED:
 			_clear(aux, modes)
 			modes[D_STAGED] = STAGED_CLEARED
-	elif action == ACTION_START and phase in [PHASE_IDLE, PHASE_FINISHED, PHASE_ABORTED]:
+	elif action == ACTION_START and can_start_from(phase):
 		var reason: int = REASON_NONE
 		var pad: Dictionary = course.pad
 		var dn: float = float(facts.north) - float(pad.north)

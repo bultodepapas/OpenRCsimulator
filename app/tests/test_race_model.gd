@@ -197,10 +197,13 @@ func _idle_parity() -> void:
 func _start_refusals() -> void:
 	var h: Dictionary = _install(_course)
 	var sim: Node = h.sim
+	var rest_limit: float = h.wrapper.rules.pad_rest_speed_mps
 	var cases: Array = [
 		["off the pad", h.wrapper.initial_frame(Fixtures.body(0.018)), Director.REASON_START_NOT_ON_PAD],
 		["above the pad", h.wrapper.initial_frame(_body(PAD_NORTH, PAD_EAST, 1.0)), Director.REASON_START_NOT_ON_PAD],
 		["while moving", h.wrapper.initial_frame(_body(PAD_NORTH, PAD_EAST, 0.018, M.v3(0.5, 0.0, 0.0))), Director.REASON_START_MOVING],
+		["at the exact rest-speed limit", h.wrapper.initial_frame(
+			_body(PAD_NORTH, PAD_EAST, 0.018, M.v3(rest_limit, 0.0, 0.0))), Director.REASON_START_MOVING],
 	]
 	var terminal: Dictionary = h.wrapper.initial_frame(_pad_body())
 	terminal.modes[FC.MODE_MOTOR] = FC.MOTOR_CRASHED
@@ -214,6 +217,15 @@ func _start_refusals() -> void:
 			and sim.modes[RaceModel.MODE_PHASE] == Director.PHASE_IDLE and sim.modes[RaceModel.MODE_REASON] == item[2]
 			and sim.modes[RaceModel.MODE_ATTEMPT] == 0 and _types(events).ends_with("race_refused")
 			and events[-1].reason_code == item[2], message + _types(events) + sim.fault_reason)
+	var speed_bits := PackedFloat64Array([rest_limit]).to_byte_array()
+	speed_bits.encode_u64(0, speed_bits.decode_u64(0) - 1)
+	var below_limit := speed_bits.decode_double(0)
+	var frame: Dictionary = h.wrapper.initial_frame(_body(PAD_NORTH, PAD_EAST, 0.018, M.v3(below_limit, 0.0, 0.0)))
+	var reset_error := _reset(h, frame)
+	var started: Array = _step(h, FC.neutral_input(), Director.ACTION_START)
+	_check("start is admitted one float64 step below the rest-speed limit", reset_error.is_empty()
+		and sim.fault_reason.is_empty() and sim.modes[RaceModel.MODE_PHASE] == Director.PHASE_COUNTDOWN
+		and sim.modes[RaceModel.MODE_ATTEMPT] == 1, reset_error + _types(started) + sim.fault_reason)
 	sim.free()
 
 

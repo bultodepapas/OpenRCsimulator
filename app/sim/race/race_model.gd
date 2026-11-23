@@ -261,9 +261,13 @@ func _sample(frame: Dictionary, pilot_frame: PackedFloat64Array, clock: Dictiona
 		if not is_finite(value):
 			return _refused_sample()
 	var body: PackedFloat64Array = frame.body
-	var velocity: PackedFloat64Array = _world_velocity(body)
+	if body.size() != RB.SIZE:
+		return _refused_sample()
+	var speed_mps := 0.0
+	if action == Director.ACTION_START and Director.can_start_from(frame.modes[MODE_PHASE]):
+		speed_mps = M.norm(_world_velocity(body))
 	var previous_motor: int = frame.modes[FC.MODE_MOTOR]
-	var facts := {north = body[RB.POS], east = body[RB.POS + 1], down = body[RB.POS + 2], speed_mps = M.norm(velocity),
+	var facts := {north = body[RB.POS], east = body[RB.POS + 1], down = body[RB.POS + 2], speed_mps = speed_mps,
 		terminal = previous_motor == FC.MOTOR_CRASHED or previous_motor == FC.MOTOR_DEPLETED,
 		armed = plant_modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED, throttle = pilot[FC.IN_THROTTLE],
 		collective = plant_aux[FC.AUX_COLLECTIVE], arm_low_throttle = arm_low_throttle,
