@@ -27,7 +27,7 @@ Dashboard CT  openrc-stats-build.timer (:12 hourly)     ▼ /var/lib/openrc-stat
 | `ct/openrc-stats-release-watch.{service,timer}` | Container `/etc/systemd/system/` |
 | `ct/nftables.conf` | Container `/etc/nftables.conf` (egress limits; the tailnet policy is the boundary) |
 | `ct/backup_archive.py` | Used in place from the release directory |
-| `pull_github_backup.py` | Operator-owned second host with established Proxmox SSH access |
+| `pull_github_backup.py` | Operator-owned second host with established Proxmox SSH access. Run from the checkout or place it beside the installed validator and reader bundle below. |
 
 ## Container contents
 
@@ -77,6 +77,8 @@ Run the sync at sign-in and at least every six hours while the workstation is si
 
 ### Independent archive backup
 
-For an unattended pull, install `host/openrc_stats_backup.py` in `/usr/local/lib/openrc-stats/` on both hosts. The exporter timer stages today’s validated CT 406 backup at 02:55 UTC. Create its staging directory with `install -d -m 2750 -o root -g openrc-stats-export /var/lib/openrc-stats-backup-export` so new files inherit the reader group. The exporter runs as root:root for Proxmox IPC. The separate SSH account has a locked password, no administrative groups and a root-owned authorized-keys file. Restrict its one key to the exact pull-host address with `from=…`, `restrict` and the forced command `/usr/bin/python3 /usr/local/lib/openrc-stats/openrc_stats_backup.py serve`. This command accepts no client arguments and reads only the staged archive.
+For an unattended pull, install `host/openrc_stats_backup.py` in `/usr/local/lib/openrc-stats/` on both hosts. From the same revision, install `tools/telemetry/github_archive.py` under its `telemetry/` subdirectory and `tools/analytics/github_history.py` under `analytics/`. The container, host and manual pull validate the archive identity and open the closed copy with the dashboard reader before replacing a known-good copy.
+
+The container backup starts at 02:40 UTC. The exporter timer stages today's validated CT 406 backup at 02:55 UTC. Create its staging directory with `install -d -m 2750 -o root -g openrc-stats-export /var/lib/openrc-stats-backup-export` so new files inherit the reader group. The exporter runs as root:root for Proxmox IPC. The separate SSH account has a locked password, no administrative groups and a root-owned authorized-keys file. Restrict its one key to the exact pull-host address with `from=…`, `restrict` and the forced command `/usr/bin/python3 /usr/local/lib/openrc-stats/openrc_stats_backup.py serve`. This command accepts no client arguments and reads only the staged archive.
 
 Install the pull units on the second host. Set `OPENRC_STATS_BACKUP_HOST` in `/etc/openrc-stats-backup.env`. Place a newly generated private key and the source server’s verified Ed25519 host key in `/etc/openrc-stats-backup/{id_ed25519,known_hosts}` with root-only permissions. Verify the host key over an established administrative connection. The dynamic service user receives the credentials through systemd, pulls at 03:15 UTC and keeps 14 validated copies. Enable either timer only after manually exercising the export and pull, comparing the archives and restoring a disposable database.

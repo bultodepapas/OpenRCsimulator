@@ -87,6 +87,43 @@ func _run() -> void:
 		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 		candidate.msaa_3d = msaa_3d
 		_check("MSAA mode %d is accepted" % msaa_3d, DisplayPreferences.validate(candidate).ok)
+	# GFX-IGPU-01: render scale defaults to full resolution, round-trips, and rejects other values.
+	_check("render scale defaults to full resolution", DisplayPreferences.DEFAULTS.render_scale == 100
+		and migrated.render_scale == 100)
+	_check("a legacy profile keeps dynamic resolution off", migrated.dynamic_resolution_fps == 0)
+	var adaptive := DisplayPreferences.DEFAULTS.duplicate()
+	adaptive.dynamic_resolution_fps = 60
+	_check("an explicit dynamic resolution target survives a reload",
+		DisplayPreferences.save_to(PREFS, adaptive) == OK and DisplayPreferences.load_from(PREFS).dynamic_resolution_fps == 60)
+	adaptive.dynamic_resolution_fps = 47
+	_check("an unsupported dynamic resolution target is refused", not DisplayPreferences.validate(adaptive).ok)
+	for percent: int in DisplayPreferences.RENDER_SCALES:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.render_scale = percent
+		_check("render scale %d round trips" % percent, DisplayPreferences.save_to(PREFS, candidate) == OK
+			and DisplayPreferences.load_from(PREFS).render_scale == percent)
+	for invalid_scale: Variant in [60, 0, 120, 0.75, "75", null]:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.render_scale = invalid_scale
+		_check("render scale %s is rejected" % str(invalid_scale), not DisplayPreferences.validate(candidate).ok)
+	var bad_scale_file := ConfigFile.new()
+	bad_scale_file.set_value("meta", "schema", 1)
+	bad_scale_file.set_value("graphics", "render_scale", 33)
+	bad_scale_file.set_value("graphics", "msaa_3d", 0)
+	_check("bad render scale fixture saves", bad_scale_file.save(PREFS) == OK)
+	var bad_scale_load := DisplayPreferences.load_from(PREFS)
+	_check("an invalid saved render scale falls back alone", bad_scale_load.render_scale == 100 and bad_scale_load.msaa_3d == 0)
+	_check("render scale belongs to the graphics defaults", "render_scale" in DisplayPreferences.graphics_default_keys()
+		and "render_scale" in DisplayPreferences.GPU_MANAGED_KEYS)
+	var saved_first_run: Dictionary = DisplayPreferences.first_run_defaults.duplicate(true)
+	DisplayPreferences.first_run_defaults = {"render_scale": 75, "msaa_3d": 0}
+	var recommended_scale := DisplayPreferences.recommended_defaults()
+	DisplayPreferences.first_run_defaults = {"render_scale": 60}
+	var rejected_recommendation := DisplayPreferences.recommended_defaults()
+	DisplayPreferences.first_run_defaults = saved_first_run
+	_check("a first-run render scale becomes the recommended default", recommended_scale.render_scale == 75
+		and recommended_scale.msaa_3d == 0)
+	_check("an unsupported first-run render scale is ignored", rejected_recommendation.render_scale == 100)
 
 	var invalid_window_mode: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 	_check("legacy reconstruction defaults to auto", migrated.reconstruction == "auto")
@@ -450,6 +487,31 @@ func _test_gpu_defaults() -> void:
 	DisplayPreferences.first_run_defaults = flagship
 	_check("a legacy profile keeps all saved fields and bytes until it opts in",
 		legacy.apply_gpu_defaults(false) == OK and legacy.config == store.config and FileAccess.get_file_as_string(PREFS) == original)
+
+	# GFX-IGPU-01: a recommendation-following file from before render_scale adopts the new recommendation;
+	# a saved render scale and files without ownership metadata stay as they are.
+	DisplayPreferences.first_run_defaults = integrated
+	for case: Array in [["predates", false, 75], ["manual", true, 100]]:
+		_reset()
+		var older := ConfigFile.new()
+		older.set_value("meta", "schema", 1)
+		older.set_value("meta", DisplayPreferences.GPU_DEFAULTS_KEY, {"msaa_3d": Viewport.MSAA_DISABLED})
+		older.set_value("graphics", "msaa_3d", Viewport.MSAA_DISABLED)
+		if case[1]:
+			older.set_value("graphics", "render_scale", 100)
+		older.save(PREFS)
+		var upgraded := DisplayPreferences.new(PREFS)
+		_check("an owned profile that %s render scale ends at %d %%" % [case[0], case[2]],
+			upgraded.apply_gpu_defaults(false) == OK and upgraded.config.render_scale == case[2]
+			and DisplayPreferences.new(PREFS).config.render_scale == case[2])
+	_reset()
+	var unowned := ConfigFile.new()
+	unowned.set_value("meta", "schema", 1)
+	unowned.set_value("graphics", "msaa_3d", Viewport.MSAA_DISABLED)
+	unowned.save(PREFS)
+	var kept := DisplayPreferences.new(PREFS)
+	_check("a profile without ownership metadata keeps full render scale",
+		kept.apply_gpu_defaults(false) == OK and kept.config.render_scale == 100)
 	DisplayPreferences.first_run_defaults = previous
 
 

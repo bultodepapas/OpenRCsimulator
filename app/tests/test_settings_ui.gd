@@ -304,6 +304,20 @@ func _run() -> void:
 	settings._process(0.0)
 	_check("timeout restores FPS and antialiasing together", settings._draft.max_fps == 0
 		and settings._draft.msaa_3d == 2 and _presentations.back() == store.config)
+	# GFX-IGPU-01: the 3D render scale sits on the Display page and previews under the same recovery timer.
+	var render_scale_picker: OptionButton = settings.find_child("RenderScale", true, false) as OptionButton
+	_check("render scale picker offers every supported scale on the Display page", render_scale_picker != null
+		and render_scale_picker.item_count == DisplayPreferences.RENDER_SCALES.size()
+		and settings._pages[0].is_ancestor_of(render_scale_picker)
+		and render_scale_picker.get_item_text(0) == tr("Native"))
+	var scale_index := DisplayPreferences.RENDER_SCALES.find(75)
+	render_scale_picker.select(scale_index)
+	render_scale_picker.item_selected.emit(scale_index)
+	_check("render scale preview starts recovery without saving", settings._draft.render_scale == 75
+		and settings._trial_deadline_msec > Time.get_ticks_msec() and DisplayPreferences.load_from(PREFS).render_scale == 100)
+	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
+	settings._process(0.0)
+	_check("timeout restores the saved render scale", settings._draft.render_scale == 100)
 	settings._resolution_picker.select(1)
 	settings._resolution_picker.item_selected.emit(1)
 	_check("resolution preview has recovery", settings._trial_deadline_msec > Time.get_ticks_msec())

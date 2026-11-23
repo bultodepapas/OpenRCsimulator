@@ -42,6 +42,16 @@ python3 tools/godtest/godtest.py performance-tour --repeats 3 \
   --out tmp/performance-tour/baseline-01
 ```
 
+`--graphics fixed` (the default) keeps the comparison workload: MSAA and other
+graphics options stay at the product defaults, and only scene detail, window and pacing come
+from the tour. `--graphics automatic` instead writes the first-run recommendation that
+a fresh install stores for the GPU it runs on: MSAA, shadows, birds, runway meadow,
+aircraft lighting and 3D render scale. The product's own preference writer stores
+it, and the case records it as `identity.graphics`. Pair it with the renderer
+Automatic would choose; on an integrated GPU that is
+`--rendering-method gl_compatibility --scene-detail low`. Fixed and automatic
+results are different workloads and are not compared.
+
 The standard screen is three repeats of three aircraft: **nine separate owned
 application launches**, in Stik → jet → Corsair order for each repeat. `--repeats 1`
 is the first functional smoke run. `--cycles 2` repeats the entire Home/flight/menu
@@ -219,6 +229,28 @@ This tour seeds native reconstruction; it does not claim MetalFX qualification.
 The standalone example does not establish Mac graphical-worker admission, panel
 pixel proof or native performance; those remain separate prerequisites.
 
+### Fixed-scale flight comparison
+
+Run the same configuration in separate outputs with `--render-scale 100` and
+`--render-scale 75`, alternating run order. The available percentages are
+100, 85, 75, 67 and 50. The explicit scale overrides the recommended scale
+when used with `--graphics automatic`. Run only one workload at a time.
+Use Forward+/Vulkan on Windows, Mobile/Metal on the M1 native Retina display
+and Compatibility/OpenGL on the UHD 630 as specified in the
+[flight resolution plan](../../docs/plans/dynamic-resolution.md#native-platform-trials).
+The default scenario keeps the existing pacing and profile when the option is omitted.
+
+For a short exploratory run, select `run runway-menus --phase runway_circuit`.
+The case report requires the requested bilinear scale at the start and end
+of each completed, requested pilot phase. These are viewport settings.
+Confirm actual pixels separately for native qualification. Match aircraft,
+camera, output size, scene settings and pacing before comparing p95/p99 and
+missed frames from the corresponding phases. The tour's closed-loop pilot
+can vary its path across repeats. Use recorded input for final paired
+acceptance and check the moving aircraft at each candidate scale. Inspect each
+run's report directly. The existing `compare` command requires the same
+requested workload and only admits supported transition phases.
+
 Windows uses the same Python entry point, normally with the console editor:
 
 ```powershell
@@ -249,6 +281,23 @@ When a benchmark is requested, Startup exits before reading preferences or
 loading Home if the debug observer or its private-profile check is unavailable.
 Godot's [user-data path contract](https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#accessing-persistent-user-data-user)
 explains why the Mac needs the distinct adapter.
+
+### Dynamic resolution flight comparisons
+
+Use `--dynamic-resolution-fps 60 --render-scale 100` with the experimental
+completed-GPU-frame engine. The render scale is the ceiling for this case.
+Pair it with `--dynamic-resolution-fps 0 --render-scale 100` and a readable
+fixed scale such as 85 on the same engine, aircraft workload and display.
+Use the qualified native kernel for that exact engine. The registered stock
+engine lacks the completed-frame API and the runtime rejects a positive request.
+
+Each measured flight phase records controller state changes, the requested FPS,
+the configured scale and completed-frame input and output sizes with the frame
+and configuration generation. A verified ceiling is valid when the workload
+has headroom. A fixed fallback or an unconfirmed scale cannot qualify as
+adaptive evidence. Compare retained phases and route landmarks using the
+[experiment design](../../docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md).
+The existing `compare` command's whole-flight geometry gate still applies.
 
 ### Preflight and repeats
 

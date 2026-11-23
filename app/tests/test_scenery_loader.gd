@@ -80,6 +80,11 @@ func _mutations() -> void:
 	_refuse("unknown format", func(c: Dictionary) -> void: c.format = "openrc-scenery v0", "format")
 	_refuse("another field's data", func(c: Dictionary) -> void: c.field = "elsewhere", "field")
 	_refuse("unknown theme", func(c: Dictionary) -> void: c.theme = "winter", "theme")
+	_refuse("self-crossing meadow", func(c: Dictionary) -> void:
+		for g: Dictionary in c.groups:
+			if g.id == "north-hay-meadow":
+				var p: Array = g.points.value
+				g.points.value = [p[0], p[2], p[1], p[3]], "convex quadrilateral")
 	_refuse("unknown prefab", func(c: Dictionary) -> void: c.groups[0].prefab = "castle", "unknown prefab")
 	_refuse("collides = true (L14 owns collisions)", func(c: Dictionary) -> void: c.groups[0].collides = true, "visual only")
 	_refuse("duplicate group id", func(c: Dictionary) -> void: c.groups[1].id = c.groups[0].id, "duplicate")

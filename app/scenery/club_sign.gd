@@ -43,6 +43,21 @@ static func build(k: MeshKit) -> void:
 			_bolt(k,Vector3(x,y,0.066),Vector3.BACK,0.008)
 
 
+## Double-sided painted board fastened across the upper rail of the open vehicle gate.
+static func gate_plate(k: MeshKit, width: float) -> void:
+	var face := Palette.col("sign_board")
+	var lettering := Palette.col("trim")
+	var height := minf(0.34, width * 0.32)
+	k.box(Vector3(width, height, 0.08), Vector3.ZERO, face, true)
+	var saved := k.xf
+	for side in 2:
+		k.xf = saved * Transform3D(Basis(Vector3.UP, PI * side), Vector3.ZERO)
+		_letters(k, "OPEN RC", Vector3(0, height * 0.05, -0.042), width * 0.76, height * 0.53, lettering)
+		k.box(Vector3(width * 0.78, height * 0.045, 0.002), Vector3(0, -height * 0.33, -0.041),
+			Palette.col("flag_red"))
+	k.xf = saved
+
+
 static func _letters(k: MeshKit, text: String, centre: Vector3, max_width: float, max_height: float, color: Color) -> void:
 	if not _letter_cache.has(text):
 		var mesh := TextMesh.new()

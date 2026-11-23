@@ -1141,6 +1141,35 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(result["cleanup"], "UNCONFIRMED")
         self.assertEqual(result["outcome"], "INFRA_FAILED")
 
+    def test_reconcile_same_boot_preparation_only_with_unentered_launch_fence(self):
+        self.worker.draining = True
+        accepted = self._submit("interrupted-preparation")
+        job = accepted["job"]
+        identity = {"boot": "fixture-boot", "host": "fixture-machine"}
+        with self.worker.lock:
+            attempt = self.worker.store.allocate(job, {"exclusive": 1}, {"exclusive": 1},
+                                                 {"process": identity, "host": self.worker.host_id})
+            self.worker.store.db.close()
+            self.worker.store = worker_module.Store(self.worker.root)
+        directory = self.worker.root / "attempts" / attempt
+        (directory / "source").mkdir(parents=True)
+        shutil.copy2(self.snapshot / "manifest.json", directory / "manifest.json")
+        with mock.patch.object(worker_module.platform, "system", return_value="Windows"), \
+                mock.patch.object(processes, "host_identity", return_value=identity), \
+                mock.patch.object(processes, "confirm_stopped", return_value=False):
+            (directory / "request.json").write_text("{}", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "cleanup cannot be proved"):
+                self._call("reconcile", handle=accepted["handle"])
+            (directory / "request.json").unlink()
+            with mock.patch.object(self.worker.store, "only_dispatched", return_value=False):
+                with self.assertRaisesRegex(ValueError, "cleanup cannot be proved"):
+                    self._call("reconcile", handle=accepted["handle"])
+            result = self._call("reconcile", handle=accepted["handle"])
+        self.assertEqual(result["state"], "FINISHED")
+        self.assertEqual(result["reconciliation"], "interrupted_before_launch_fence")
+        self.assertEqual(result["launch"], "NOT_CREATED")
+        self.assertFalse(self.worker.store.db.execute("SELECT 1 FROM claims WHERE attempt=?", (attempt,)).fetchone())
+
     def test_operator_abandonment_cannot_bypass_a_pending_attempt_journal(self):
         self.worker.draining = True
         accepted = self._submit("orphan-pending")

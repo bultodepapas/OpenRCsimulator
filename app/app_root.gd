@@ -93,6 +93,7 @@ const AircraftLightingPolicy := preload("res://render/lighting/lighting_policy.g
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const FlagQuality := preload("res://render/flag_quality.gd")
@@ -115,6 +116,8 @@ var _popup_realign_pending := false
 ## Test seam. Production restart is temporary: a normal launch always retains Compatibility.
 var graphics_restart: Callable = Callable(self, "_perform_graphics_restart")
 var display_preferences: DisplayPreferences
+var _flight_dynamic_resolution: RefCounted
+var _flight_graphics_calibration: Node
 var _display_window_mode := "windowed"
 var _display_resolution := "auto"
 var _automatic_window_size := Vector2i(1280, 720)
@@ -294,6 +297,12 @@ var _telemetry_prompted := false
 var _telemetry_home_note := ""
 ## The renderer_unavailable session fact was checked (once per session, when collection is first on).
 var _telemetry_renderer_noted := false
+var _telemetry_graphics_values: Dictionary = {}
+var _telemetry_graphics_profile := "unknown"
+var _telemetry_graphics_revision := 0
+var _telemetry_reset_source: WeakRef
+var _telemetry_reset_signal: StringName
+var _telemetry_activity_revision := 0
 ## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
 var window_minimized_probe: Callable = func() -> bool:
 	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
@@ -515,6 +524,7 @@ func _process(_delta: float) -> void:
 	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
 	_tick_telemetry_prompt()
+	_tick_flight_dynamic_resolution()
 	if not _home_scene_preparation_busy():
 		if _home_rebuild_queued:
 			_flush_home_scene_rebuild()
@@ -523,6 +533,26 @@ func _process(_delta: float) -> void:
 	# The shell owns the window viewport for Home and Home-started flights. Direct
 	# flights leave has_home false and are monitored by main.gd instead.
 	Reconstruction.guard_runtime_failure(get_viewport())
+
+
+func _tick_flight_dynamic_resolution() -> void:
+	if display_preferences == null:
+		return
+	var config: Dictionary = display_preferences.config
+	var target := int(config.get("dynamic_resolution_fps", 0))
+	if _flight_dynamic_resolution == null:
+		if target == 0 or not FlightDynamicResolution.supports(get_viewport()):
+			return
+		_flight_dynamic_resolution = FlightDynamicResolution.new()
+	var has_session := has_home and is_instance_valid(flight) and flight.session != null
+	var active: bool = has_session and not _loading_active and not _quit_audio_pending \
+		and not is_instance_valid(_flight_graphics_calibration) and flight.session.sim != null \
+		and not flight.session.sim.paused and flight.session.holds.is_empty() and screens.top() == null
+	var window := get_window()
+	if active:
+		active = window != null and window.mode != Window.MODE_MINIMIZED \
+			and DisplayServer.window_can_draw(window.get_window_id()) and bool(window_focus_probe.call())
+	_flight_dynamic_resolution.tick(get_viewport(), flight.session.get_instance_id() if has_session else 0, active, config)
 
 
 func _frame_generation_boundary(reason: String) -> void:
@@ -601,9 +631,12 @@ func shutdown_home_flight_preparation() -> void:
 	home_flight_preparation.drained = true
 
 
-## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
+## Flight arguments select the technical route. The graphics experiment opens the normal menu.
 static func wants_direct_flight(args: PackedStringArray) -> bool:
-	return not args.is_empty()
+	for argument: String in args:
+		if argument != FlightDynamicResolution.EXPERIMENT_FLAG:
+			return true
+	return false
 
 
 ## Direct-flight route selector. Plane arguments remain parsed by main.gd; Home supplies its selected catalog ID.
@@ -1785,6 +1818,7 @@ func _attach_graphics_calibration() -> void:
 	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels, automatic_level):
 		return
 	var calibration := AutoCalibration.new(flight.session, adapter, SceneDetail.level())
+	_flight_graphics_calibration = calibration
 	calibration.finished.connect(func(result: Dictionary) -> void:
 		SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
 		print("Graphics calibration: ", JSON.stringify(result)))
@@ -2111,6 +2145,7 @@ func _refresh_basic_graphics_notice(config: Dictionary) -> void:
 
 
 func _apply_presentation(config: Dictionary) -> void:
+	_remember_telemetry_graphics(config)
 	_refresh_basic_graphics_notice(config)
 	ShadowSettings.apply(config)
 	AircraftLightingPolicy.apply(config)
@@ -2199,6 +2234,7 @@ func _apply_presentation(config: Dictionary) -> void:
 ## A successful Restore changes Automatic's evidence after its preview was applied. Refresh only the
 ## presentation that follows Scene detail; preserve reconstruction receipts, camera state and window geometry.
 func _apply_calibration_reset(config: Dictionary) -> void:
+	_remember_telemetry_graphics(config, true)
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	_refresh_scene_detail_dependents()
 
@@ -3124,7 +3160,6 @@ func _start_telemetry() -> void:
 	telemetry.consent_path = telemetry_consent_path
 	telemetry.locale = TranslationServer.get_locale()
 	telemetry.context_provider = _telemetry_context
-	telemetry.graphics_profile_provider = _telemetry_graphics_profile
 	add_child(telemetry)
 	telemetry.state_changed.connect(_on_telemetry_state_changed)
 	if statistics_service != null and statistics_service.has_signal("flight_events_accepted"):
@@ -3196,7 +3231,17 @@ func _push_telemetry_state() -> void:
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
 	_refresh_telemetry_home_note()
-	if not _telemetry_renderer_noted and is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON:
+	var info := screens.get_screen("telemetry_info") as TelemetryScreen if screens != null else null
+	if is_instance_valid(info) and info.mode == "preview":
+		info.set_pending_data(telemetry.preview_text() if _telemetry_is_on() else "")
+	if not _telemetry_is_on():
+		_telemetry_graphics_values.clear()
+		_telemetry_graphics_profile = "unknown"
+		_telemetry_graphics_revision = 0
+		_telemetry_activity_revision = 0
+		_bind_telemetry_reset(null, &"")
+		return
+	if not _telemetry_renderer_noted:
 		_telemetry_renderer_noted = true # a session fact: checked once, counted once, when collection is on
 		if _telemetry_renderer_unavailable():
 			telemetry.note_error("renderer_unavailable")
@@ -3222,9 +3267,40 @@ func _telemetry_renderer_unavailable() -> bool:
 	return failed is Dictionary and str(failed.get("build", "")) == RendererGuard.build_identity()
 
 
-## "current_default", "custom" or "unknown" for the graphics choices Restore graphics defaults resets.
-func _telemetry_graphics_profile() -> String:
-	return DisplayPreferences.graphics_profile(display_preferences.config) if display_preferences != null else "unknown"
+func _telemetry_is_on() -> bool:
+	return is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON
+
+
+## Settings can preview and revert a configuration before it is saved. Capture the applied values here.
+func _remember_telemetry_graphics(config: Dictionary, calibration_changed := false) -> void:
+	if not _telemetry_is_on():
+		return
+	var values := {"lens": LensSettings.validate(config), "camera": DisplayPreferences.CameraSettings.normalized(config)}
+	for key: String in DisplayPreferences.graphics_default_keys():
+		values[key] = config.get(key)
+	var profile := DisplayPreferences.graphics_profile(config)
+	if calibration_changed or values != _telemetry_graphics_values or profile != _telemetry_graphics_profile:
+		_telemetry_graphics_values = values
+		_telemetry_graphics_profile = profile
+		_telemetry_graphics_revision += 1
+
+
+func _bind_telemetry_reset(source: Object, reset_signal: StringName) -> void:
+	var previous: Object = _telemetry_reset_source.get_ref() if _telemetry_reset_source != null else null
+	if previous == source:
+		return
+	if is_instance_valid(previous):
+		previous.disconnect(_telemetry_reset_signal, _note_telemetry_reset)
+	_telemetry_reset_source = null
+	if is_instance_valid(source) and source.has_signal(reset_signal):
+		source.connect(reset_signal, _note_telemetry_reset)
+		_telemetry_reset_source = weakref(source)
+		_telemetry_reset_signal = reset_signal
+
+
+func _note_telemetry_reset() -> void:
+	# The next observation closes the old window outside the vehicle's reset publication.
+	_telemetry_activity_revision += 1
 
 
 ## Home states the effective telemetry choice on its note line only while that line is free or still shows the
@@ -3260,12 +3336,21 @@ func _telemetry_note() -> String:
 ## forces or replay data. Loading, menus over an activity, a paused tree and an unfocused or minimized window are
 ## not eligible (the service closes its open window and re-primes its clock).
 func _telemetry_context() -> Dictionary:
+	if not _telemetry_is_on():
+		return {}
+	if _telemetry_graphics_values.is_empty():
+		# Admission can happen inside Settings while a preview is applied but not yet saved.
+		var settings := screens.get_screen("settings") as SettingsScreen
+		var config := settings.presentation_snapshot() if is_instance_valid(settings) else display_preferences.config
+		_remember_telemetry_graphics(config)
 	var mode := "other"
 	var vehicle := ""
 	var custom := false
 	var simulated := -1.0
+	var simulation_paused := false
 	var fixed_wing := false
 	var physics_backend := "unknown"
+	var activity_id := 0
 	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
 	# A vehicle activity begins once its session runs: not while it loads behind the loading screen, when neither its
 	# simulated clock nor the statistics classifier exists yet (the summary would be incomplete and unclassified).
@@ -3284,12 +3369,22 @@ func _telemetry_context() -> Dictionary:
 			vehicle = "rc-blimp-5m"
 		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
 		if session is Object and is_instance_valid(session):
+			activity_id = session.get_instance_id()
+			if activity.has_signal(&"activity_reset"):
+				_bind_telemetry_reset(activity, &"activity_reset")
+			else:
+				_bind_telemetry_reset(session, &"resetting")
+			var sim: Variant = session.get("sim")
+			# Manually stepped ground, multirotor and airship sessions own their pause flag.
+			# Fixed-wing and helicopter sessions let the kernel own it.
+			var paused: Variant = session.get("paused")
+			if not paused is bool and sim is Object and is_instance_valid(sim):
+				paused = sim.get("paused")
+			simulation_paused = not paused is bool or bool(paused)
 			if session.has_method("time_s"):
 				simulated = float(session.call("time_s"))
-			else:
-				var sim: Variant = session.get("sim")
-				if sim is Object and is_instance_valid(sim) and sim.has_method("time"):
-					simulated = float(sim.call("time"))
+			elif sim is Object and is_instance_valid(sim) and sim.has_method("time"):
+				simulated = float(sim.call("time"))
 			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
 				and statistics_service.observing(session)
 			# Telemetry v2: only the backend kind (native_fallback.gd), never the refusal text.
@@ -3299,11 +3394,14 @@ func _telemetry_context() -> Dictionary:
 		mode = "workshop" # editing in the Workshop: measured, but not a vehicle activity
 	elif home != null or home_build_pending:
 		mode = "home"
+	if activity == null and not _loading_active:
+		_bind_telemetry_reset(null, &"")
 	var window := get_window()
 	var minimized := bool(window_minimized_probe.call())
 	var menu_over_activity := activity != null and screens.top() != null
 	var eligible: bool = not _loading_active and not home_build_pending and not screens.is_top("loading") \
-		and not get_tree().paused and not menu_over_activity and not minimized and bool(window_focus_probe.call())
+		and not get_tree().paused and not simulation_paused and not menu_over_activity \
+		and not minimized and bool(window_focus_probe.call())
 	var input_class := "unknown"
 	if controllers != null and controllers.get("registry") != null:
 		var flight_device: int = controllers.registry.selected_device_id("flight")
@@ -3316,7 +3414,9 @@ func _telemetry_context() -> Dictionary:
 		"simulated_seconds": simulated, "physics_backend": physics_backend,
 		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
 		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
-		"input_class": input_class}
+		"input_class": input_class, "graphics_profile": _telemetry_graphics_profile,
+		"graphics_revision": _telemetry_graphics_revision, "activity_id": activity_id,
+		"activity_revision": _telemetry_activity_revision}
 
 
 ## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).
@@ -4009,6 +4109,8 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	if _flight_dynamic_resolution != null:
+		_flight_dynamic_resolution.stop(get_viewport())
 	if is_instance_valid(statistics_service):
 		statistics_service.close()
 	if is_instance_valid(_home_flight_preparation):

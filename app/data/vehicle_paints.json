@@ -703,6 +703,30 @@
 					"label": "JR Servos Tribute",
 					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/jr_servos.tres",
 					"materials": {}
+				},
+				{
+					"id": "aserradero",
+					"label": "Aserradero",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/aserradero.tres",
+					"materials": {}
+				},
+				{
+					"id": "vitral",
+					"label": "Vitral",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/vitral.tres",
+					"materials": {}
+				},
+				{
+					"id": "domingo_en_springfield",
+					"label": "Domingo en Springfield",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/domingo_en_springfield.tres",
+					"materials": {}
+				},
+				{
+					"id": "chapa_noble",
+					"label": "Chapa Noble",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/chapa_noble.tres",
+					"materials": {}
 				}
 			]
 		},
@@ -1793,6 +1817,16 @@
 								"albedo": "#ae122e",
 								"albedo_texture": null
 							}
+						},
+						"canopy_frame": {
+							"paint_trim_carbono": {
+								"albedo": "#a0aab5",
+								"albedo_texture": null,
+								"metallic": 0.24,
+								"roughness": 0.47,
+								"clearcoat": 0.2,
+								"clearcoat_roughness": 0.34
+							}
 						}
 					},
 					"materials": {
@@ -1801,9 +1835,11 @@
 							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
 							"emission_texture": null,
 							"metallic": 0.0,
-							"roughness": 0.38,
-							"clearcoat": 0.44,
-							"clearcoat_roughness": 0.23
+							"roughness": 1.0,
+							"clearcoat": 0.27,
+							"clearcoat_roughness": 0.24,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png",
+							"specular": 0.46
 						},
 						"paint_wing": {
 							"albedo": "#ffffff",
@@ -1885,6 +1921,429 @@
 							"roughness": 0.49,
 							"clearcoat": 0.36,
 							"clearcoat_roughness": 0.23
+						},
+						"canopy_glass": {
+							"albedo": "#2c3c5088",
+							"metallic": 0.0,
+							"roughness": 0.055,
+							"specular": 0.57,
+							"clearcoat": 0.62,
+							"clearcoat_roughness": 0.055
+						},
+						"intake_duct": {
+							"albedo": "#24262e",
+							"metallic": 0.0,
+							"roughness": 0.61,
+							"clearcoat": 0.0
+						}
+					}
+				},
+				{
+					"id": "elan_35",
+					"label": "Élan 35",
+					"node_lod_bias": {
+						"fuselage_core": 16.0,
+						"vertical_tail_fixed": 16.0
+					},
+					"nodes": {
+						"rudder": {
+							"paint_fin": {
+								"albedo": "#192330",
+								"albedo_texture": null,
+								"emission_texture": null,
+								"metallic": 0.0,
+								"roughness": 0.46,
+								"clearcoat": 0.23,
+								"clearcoat_roughness": 0.28
+							}
+						},
+						"canopy_frame": {
+							"paint_trim_carbono": {
+								"albedo": "#a8bfc9",
+								"albedo_texture": null,
+								"emission_texture": null,
+								"metallic": 0.52,
+								"roughness": 0.27,
+								"clearcoat": 0.27,
+								"clearcoat_roughness": 0.18,
+								"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+								"triplanar_scale": 38.0
+							},
+							"metal": {
+								"albedo": "#d3dde0",
+								"metallic": 0.48,
+								"roughness": 0.225,
+								"clearcoat": 0.22,
+								"clearcoat_roughness": 0.2
+							},
+							"mk_ply": {
+								"albedo": "#333d47",
+								"metallic": 0.0,
+								"roughness": 0.68
+							},
+							"intake_black": {
+								"albedo": "#212c34",
+								"metallic": 0.0,
+								"roughness": 0.82,
+								"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+								"normal_scale": 0.21,
+								"triplanar_scale": 28.0
+							}
+						},
+						"mesh_MainGear_L_Pivot": {
+							"paint_doors_ala": {
+								"door_interior": {
+									"axis": [
+										-1,
+										0,
+										0
+									],
+									"bounds": [
+										-0.0223,
+										-0.1593,
+										0.047,
+										0.0004
+									]
+								}
+							}
+						},
+						"mesh_MainGear_R_Pivot": {
+							"paint_doors_ala": {
+								"door_interior": {
+									"axis": [
+										1,
+										0,
+										0
+									],
+									"bounds": [
+										-0.0223,
+										-0.1593,
+										0.047,
+										0.0004
+									]
+								}
+							}
+						},
+						"mesh_MainGear_?_Pivot": {
+							"metal": {
+								"albedo": "#8a99a9",
+								"albedo_texture": null,
+								"metallic": 0.48,
+								"roughness": 0.37,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_NoseGear_Door_Pivot": {
+							"paint_doors": {
+								"door_interior": {
+									"axis": [
+										0,
+										1,
+										0
+									],
+									"bounds": [
+										0.0004,
+										-0.0929,
+										0.0426,
+										0.0929
+									]
+								}
+							},
+							"metal": {
+								"albedo": "#8a99a9",
+								"albedo_texture": null,
+								"metallic": 0.48,
+								"roughness": 0.37,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_*Gear*_Act_Cyl": {
+							"metal": {
+								"albedo": "#415875",
+								"albedo_texture": null,
+								"metallic": 0.46,
+								"roughness": 0.4,
+								"clearcoat": 0.18,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_*Gear*_Act_Piston": {
+							"metal": {
+								"albedo": "#c3d0d7",
+								"albedo_texture": null,
+								"metallic": 0.56,
+								"roughness": 0.19,
+								"clearcoat": 0.24,
+								"clearcoat_roughness": 0.134,
+								"specular": 0.57
+							}
+						},
+						"mesh_gear_compression_*": {
+							"metal": {
+								"albedo": "#b3a492",
+								"albedo_texture": null,
+								"metallic": 0.53,
+								"roughness": 0.32,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_gear_steer_nose": {
+							"metal": {
+								"albedo": "#b3a492",
+								"albedo_texture": null,
+								"metallic": 0.53,
+								"roughness": 0.32,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_NoseGear_Pivot": {
+							"metal": {
+								"albedo": "#748498",
+								"albedo_texture": null,
+								"metallic": 0.48,
+								"roughness": 0.39,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_NoseGear_Door_Act_*": {
+							"metal": {
+								"albedo": "#9caebc",
+								"albedo_texture": null,
+								"metallic": 0.52,
+								"roughness": 0.3,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							}
+						},
+						"mesh_gear_spin_*": {
+							"metal": {
+								"albedo": "#375d88",
+								"albedo_texture": null,
+								"metallic": 0.52,
+								"roughness": 0.275,
+								"clearcoat": 0.27,
+								"clearcoat_roughness": 0.2,
+								"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+								"triplanar_scale": 46.0
+							},
+							"rubber": {
+								"albedo": "#20262e",
+								"metallic": 0.0,
+								"roughness": 0.83,
+								"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+								"normal_scale": 0.49,
+								"triplanar_scale": 27.0,
+								"specular": 0.3
+							}
+						},
+						"mesh_gear_static": {
+							"metal": {
+								"albedo": "#8093a5",
+								"albedo_texture": null,
+								"metallic": 0.48,
+								"roughness": 0.36,
+								"clearcoat": 0.15,
+								"clearcoat_roughness": 0.27
+							},
+							"mk_ply": {
+								"albedo": "#3b4b5e",
+								"metallic": 0.0,
+								"roughness": 0.73
+							}
+						},
+						"wing_*_fixed": {
+							"mk_ply": {
+								"albedo": "#3b4b5e",
+								"metallic": 0.0,
+								"roughness": 0.73
+							}
+						},
+						"fuselage_core": {
+							"mk_ply": {
+								"albedo": "#3b4b5e",
+								"metallic": 0.0,
+								"roughness": 0.73
+							}
+						},
+						"cockpit": {
+							"metal": {
+								"albedo": "#a6bbc5",
+								"metallic": 0.54,
+								"roughness": 0.28,
+								"clearcoat": 0.14,
+								"clearcoat_roughness": 0.22
+							},
+							"paint_trim_carbono": {
+								"albedo": "#d6e0ea",
+								"metallic": 0.07,
+								"roughness": 0.49,
+								"albedo_texture": "res://assets/vehicle-paints/shared/carbon_twill_albedo.jpg",
+								"emission_texture": null,
+								"normal_texture": "res://assets/vehicle-paints/shared/carbon_twill_normal.jpg",
+								"normal_scale": 0.3,
+								"triplanar_scale": 17.0,
+								"clearcoat": 0.26,
+								"clearcoat_roughness": 0.24
+							}
+						}
+					},
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_low.png",
+							"high_albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage.png",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"roughness": 1.0,
+							"clearcoat": 0.43,
+							"clearcoat_roughness": 0.185,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_roughness.png",
+							"specular": 0.51,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_metallic.png",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_normal.png",
+							"normal_scale": 0.86
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_wing_low.png",
+							"high_albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_wing.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 0.39,
+							"clearcoat_roughness": 0.2,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_wing_roughness.png",
+							"specular": 0.48
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_stab.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.32,
+							"clearcoat_roughness": 0.21
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fin.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.33,
+							"clearcoat": 0.34,
+							"clearcoat_roughness": 0.2
+						},
+						"paint_doors_ala": {
+							"albedo": "#243140",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.43,
+							"clearcoat": 0.29,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_doors": {
+							"albedo": "#e8f1f5",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.49,
+							"clearcoat": 0.25,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_fence": {
+							"albedo": "#243140",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.39,
+							"clearcoat": 0.28,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_fence_lower": {
+							"albedo": "#192330",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.48,
+							"clearcoat": 0.21,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_fillets": {
+							"albedo": "#243140",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.43,
+							"clearcoat": 0.28,
+							"clearcoat_roughness": 0.28
+						},
+						"intake_duct": {
+							"albedo": "#222c3a",
+							"metallic": 0.0,
+							"roughness": 0.59
+						},
+						"canopy_glass": {
+							"albedo": "#39536e59",
+							"metallic": 0.0,
+							"roughness": 0.028,
+							"specular": 0.66,
+							"clearcoat": 0.69,
+							"clearcoat_roughness": 0.043
+						},
+						"seat_tan": {
+							"albedo": "#b28b69",
+							"metallic": 0.0,
+							"roughness": 0.58,
+							"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+							"normal_scale": 0.18,
+							"triplanar_scale": 26.0,
+							"specular": 0.32
+						},
+						"seat_cushion": {
+							"albedo": "#34445b",
+							"metallic": 0.0,
+							"roughness": 0.76,
+							"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+							"normal_scale": 0.35,
+							"triplanar_scale": 33.0,
+							"specular": 0.24
+						},
+						"side_console": {
+							"albedo": "#ffffff",
+							"metallic": 0.0,
+							"roughness": 0.46,
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_console.png",
+							"specular": 0.38
+						},
+						"cockpit_tub_grey": {
+							"albedo": "#374858",
+							"metallic": 0.0,
+							"roughness": 0.69,
+							"specular": 0.3
+						},
+						"glare_shield_black": {
+							"albedo": "#1d2630",
+							"metallic": 0.0,
+							"roughness": 0.83,
+							"specular": 0.23,
+							"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+							"normal_scale": 0.25,
+							"triplanar_scale": 34.0
+						},
+						"instrument_panel": {
+							"albedo": "#ffffff",
+							"metallic": 0.0,
+							"roughness": 0.43,
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_instruments.png",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_instruments_emission.png",
+							"emission": "#000000",
+							"specular": 0.42
 						}
 					}
 				}
@@ -1892,6 +2351,9 @@
 		}
 	},
 	"detail_map_means": {
+		"res://assets/vehicle-paints/avanti-s-a200/elan_35_wing_roughness.png": 0.37166090666079055,
+		"res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_roughness.png": 0.3595290885252111,
+		"res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png": 0.43056630527271944,
 		"res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png": 0.36732230373457364,
 		"res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png": 0.4474937915802002,
 		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,

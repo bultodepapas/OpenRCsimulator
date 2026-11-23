@@ -17,6 +17,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	_bounds()
+	_observation_deadlines()
 	_cadence_and_budget()
 	_retries()
 	_statuses()
@@ -55,6 +56,36 @@ func _bounds() -> void:
 	var item := q.begin(0.0, 1)
 	q.push(_body(10), 1, 700.0)
 	_check("expiring the active batch releases the request slot", not q.is_active(int(item.serial)) and q.items.size() == 1)
+
+
+func _observation_deadlines() -> void:
+	var q := _queue()
+	q.push(_body(10), 1, 200.0, 100.0)
+	q.push(_body(10), 1, 300.0, 0.0)
+	var head := q.begin(300.0, 1)
+	q.expire(599.999999)
+	_check("a late-sealed observation is live one microsecond before its deadline", q.items.size() == 2)
+	q.expire(600.0)
+	_check("expiry removes an older observation behind a live request",
+		q.items.size() == 1 and q.is_active(int(head.serial)) and q.items[0].observed == 100.0)
+	_check("a live request can complete at another item's deadline", q.complete(int(head.serial), 202, 600.0) == Queue.ACCEPTED)
+
+	for status: int in [202, 410]:
+		q = _queue()
+		q.push(_body(10), 1, 60.0, 0.0)
+		var item := q.begin(599.999999, 1)
+		_check("completion at the observation deadline discards HTTP %d" % status,
+			not item.is_empty() and q.complete(int(item.serial), status, 600.0) == Queue.DROPPED
+			and q.sent_ok == 0 and q.items.is_empty())
+
+	q = _queue()
+	for i: int in Queue.MAX_BATCHES:
+		q.push(_body(10), 1, 590.0)
+	# Rejected input must not displace a valid pending batch or cancel its request.
+	head = q.begin(590.0, 1)
+	q.push(_body(10), 1, 600.0, 0.0)
+	_check("already expired data cannot evict live reports",
+		q.items.size() == Queue.MAX_BATCHES and q.is_active(int(head.serial)) and q.dropped == 1)
 
 
 func _cadence_and_budget() -> void:
@@ -165,3 +196,13 @@ func _statuses() -> void:
 	var it := q.begin(0.0, 1)
 	q.purge()
 	_check("a late answer after purge is stale", q.complete(int(it.serial), 202, 1.0) == Queue.STALE and q.sent_ok == 0)
+	var created := 296.2968
+	for age: float in [599.0, 600.0, 601.0]:
+		q = _queue(0.0)
+		q.push(_body(10), 1, created)
+		it = q.begin(created + 599.0, 1)
+		var outcome := q.complete(int(it.serial), 202, created + age)
+		var before_deadline := age < Queue.TTL_S
+		_check("a completion must arrive before the original deadline at %d s" % age,
+			outcome == (Queue.ACCEPTED if before_deadline else Queue.DROPPED)
+			and q.sent_ok == int(before_deadline) and q.items.is_empty())

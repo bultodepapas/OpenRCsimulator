@@ -3,6 +3,7 @@ extends CanvasLayer
 const Screen := preload("res://ui/screen.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const LoadingBar := preload("res://ui/loading_bar.gd")
+const GraphicsPreparation := preload("res://render/graphics_preparation.gd")
 const ATMOSPHERE := preload("res://ui/shaders/brand_atmosphere.gdshader")
 
 signal cancel_requested
@@ -36,6 +37,9 @@ var summary_label: Label
 var stage_label: Label
 ## UI-28-R5b: the current sub-stage (field and scenery chunks), dimmer and below the stable stage line.
 var detail_label: Label
+## GFX-IGPU-02: says before the frozen frames that the first flight on this computer prepares its graphics.
+var preparation_notice: Label
+var _preparation_stage := ""
 var cancel_button: Button
 var progress_bar: Control
 
@@ -110,6 +114,11 @@ func _init(existing_theme: Theme = null) -> void:
 	summary_label = _label("FlightSummary", "SecondaryLabel", "")
 	summary_label.custom_minimum_size.x = 0.0
 	content.add_child(summary_label)
+
+	preparation_notice = _label("FirstFlightGraphics", "SecondaryLabel", GraphicsPreparation.FIRST_FLIGHT_TEXT)
+	preparation_notice.custom_minimum_size.x = 0.0
+	preparation_notice.visible = false
+	content.add_child(preparation_notice)
 
 	stage_label = _label("LoadingStage", "SectionLabel", "")
 	stage_label.custom_minimum_size.x = 0.0
@@ -198,6 +207,13 @@ func configure_home(summary: String, see_through := false) -> void:
 func configure(summary: String) -> void:
 	## Summary is caller-formatted and localized because it contains dynamic aircraft/field/start values.
 	summary_label.text = summary
+	show_preparation_notice(GraphicsPreparation.pending("flight"))
+
+
+## Shows the first-flight graphics notice; a committed flight then records the preparation when this surface goes.
+func show_preparation_notice(visible_now: bool) -> void:
+	_preparation_stage = "flight" if visible_now else ""
+	preparation_notice.visible = visible_now
 
 
 func set_stage(stage: String) -> void:
@@ -252,11 +268,15 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh_text()
 		_apply_stage()
+	elif what == NOTIFICATION_PREDELETE and _preparation_stage != "" and _committing and not _cancelling:
+		GraphicsPreparation.mark(_preparation_stage)
 
 
 func _refresh_text() -> void:
 	if title_label != null:
 		title_label.text = tr(_title_source)
+	if preparation_notice != null:
+		preparation_notice.text = tr(GraphicsPreparation.FIRST_FLIGHT_TEXT)
 	if cancel_button != null:
 		cancel_button.text = tr(CANCEL_TEXT)
 		cancel_button.disabled = _cancelling or _committing

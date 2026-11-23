@@ -13791,5 +13791,20 @@ msgstr "请选择支持跑道起飞的飞机。"
 msgid "Preparing panorama"
 msgstr "正在准备全景"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "已启用基础画质。你可以在“设置”>“图形”中提高画质。"
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "已启用基础画质。你可以在“设置”>“图形”中提高画质，并在“设置”>“显示”中提高 3D 渲染比例。"
+
+msgid "3D render scale"
+msgstr "3D 渲染比例"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "以较低分辨率渲染 3D 视图并放大显示。较低的值可提高集成显卡的帧率，但画面会更柔和。"
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR、DLSS 和 MetalFX 使用各自的渲染比例。切换回原生重建后会恢复你的选择。"
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "正在为这台电脑准备图形。只有首次启动需要这么长时间。"
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "正在为这台电脑上的首次飞行准备图形。之后的飞行会加载得更快。"

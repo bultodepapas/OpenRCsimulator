@@ -32,7 +32,8 @@ var _panel: PanelContainer
 var _armed := false
 var _opened_msec := 0
 var _release: Dictionary
-var _preview := ""
+var _pending_data: Label
+var _pending_empty: Label
 var _texts: Array[Dictionary] = []
 var _answered := false
 var _notice_scroll: ScrollContainer
@@ -42,7 +43,6 @@ var _notice_scroll: ScrollContainer
 func _init(screen_mode := "consent", release: Dictionary = {}, preview := "") -> void:
 	mode = screen_mode if screen_mode in ["consent", "notice", "preview"] else "notice"
 	_release = release
-	_preview = preview
 	name = "TelemetryConsent" if mode == "consent" else "TelemetryInfo"
 	layer = 12
 	_screen = Screen.mount(self, "Screen")
@@ -111,16 +111,15 @@ func _init(screen_mode := "consent", release: Dictionary = {}, preview := "") ->
 		"preview":
 			shell.add_child(_text("Data waiting to be sent", "TitleLabel"))
 			shell.add_child(scroll)
-			if _preview.strip_edges() == "":
-				body.add_child(_text("Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on.", "SecondaryLabel"))
-			else:
-				var data := Label.new()
-				data.name = "PendingData"
-				data.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-				data.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
-				data.text = _preview # exact bytes: never translated or reformatted beyond the JSON itself
-				data.theme_type_variation = "SecondaryLabel"
-				body.add_child(data)
+			_pending_empty = _text("Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on.", "SecondaryLabel")
+			body.add_child(_pending_empty)
+			_pending_data = Label.new()
+			_pending_data.name = "PendingData"
+			_pending_data.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+			_pending_data.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+			_pending_data.theme_type_variation = "SecondaryLabel"
+			body.add_child(_pending_data)
+			set_pending_data(preview)
 	if mode != "consent":
 		close_button = _choice("Close", "", "Close")
 		close_button.pressed.connect(close)
@@ -128,6 +127,13 @@ func _init(screen_mode := "consent", release: Dictionary = {}, preview := "") ->
 	_opened_msec = Time.get_ticks_msec()
 	_screen.resized.connect(_resize_panel)
 	_screen.theme_changed.connect(_resize_panel)
+
+
+
+func set_pending_data(preview: String) -> void:
+	_pending_data.text = preview
+	_pending_data.visible = not preview.is_empty()
+	_pending_empty.visible = preview.is_empty()
 
 
 func _ready() -> void:

@@ -1057,34 +1057,70 @@ func export_recording(name: String) -> Dictionary:
 		return {"ok": false, "error": "could not create user://rcv/ (%s)" % error_string(mkdir_error)}
 	var csv_path := directory.path_join(safe_name + ".csv")
 	var json_path := directory.path_join(safe_name + ".json")
-	var csv_temp := csv_path + ".tmp"
-	var json_temp := json_path + ".tmp"
-	if FileAccess.file_exists(csv_path) or FileAccess.file_exists(json_path) \
-			or FileAccess.file_exists(csv_temp) or FileAccess.file_exists(json_temp):
-		return {"ok": false, "error": "recording output already exists; choose a new name"}
-	var metadata := _recording_metadata()
-	var json_text := JSON.stringify(metadata, "\t", true, true) + "\n"
+	for path: String in [csv_path, json_path, csv_path + ".tmp", json_path + ".tmp"]:
+		if _recording_export_path_exists(path):
+			return {"ok": false, "error": "recording output already exists; choose a new name"}
+	# Reserve one staging directory per basename. Only its creator writes or cleans its files.
+	var stage := directory.path_join("." + safe_name + ".recording")
+	if _recording_export_path_exists(stage):
+		return {"ok": false, "error": "recording output is already reserved; choose a new name"}
+	var stage_error := DirAccess.make_dir_absolute(stage)
+	if stage_error != OK:
+		return {"ok": false, "error": "could not reserve recording output (%s)" % error_string(stage_error)}
+	var csv_temp := stage.path_join("recording.csv")
+	var json_temp := stage.path_join("recording.json")
+	var cleanup := PackedStringArray([csv_temp, json_temp, stage])
+
 	var csv_error := _write_recording_csv(csv_temp)
 	if not csv_error.is_empty():
-		DirAccess.remove_absolute(csv_temp)
-		return {"ok": false, "error": csv_error}
+		return _recording_export_failure(csv_error, cleanup)
+	var json_text := JSON.stringify(_recording_metadata(), "\t", true, true) + "\n"
 	var json_error := _write_new_file(json_temp, json_text)
 	if not json_error.is_empty():
-		DirAccess.remove_absolute(csv_temp)
-		return {"ok": false, "error": json_error}
+		return _recording_export_failure(json_error, cleanup)
+	if _recording_export_path_exists(csv_path) or _recording_export_path_exists(json_path):
+		return _recording_export_failure("recording output already exists; choose a new name", cleanup)
 	var rename_error := DirAccess.rename_absolute(csv_temp, csv_path)
 	if rename_error != OK:
-		DirAccess.remove_absolute(csv_temp)
-		DirAccess.remove_absolute(json_temp)
-		return {"ok": false, "error": "could not commit CSV recording (%s)" % error_string(rename_error)}
+		return _recording_export_failure("could not commit CSV recording (%s)" % error_string(rename_error), cleanup)
+	cleanup.append(csv_path)
+	if _recording_export_path_exists(json_path):
+		return _recording_export_failure("recording output already exists; choose a new name", cleanup)
 	rename_error = DirAccess.rename_absolute(json_temp, json_path)
 	if rename_error != OK:
-		DirAccess.remove_absolute(csv_path)
-		DirAccess.remove_absolute(json_temp)
-		return {"ok": false, "error": "could not commit JSON metadata (%s)" % error_string(rename_error)}
+		return _recording_export_failure("could not commit JSON metadata (%s)" % error_string(rename_error), cleanup)
+
+	var cleanup_warning := _cleanup_recording_export(PackedStringArray([stage]))
 	_recording_exported = true
 	return {"ok": true, "csv_path": "user://rcv/" + safe_name + ".csv",
-		"metadata_path": "user://rcv/" + safe_name + ".json", "samples": sample_count}
+		"metadata_path": "user://rcv/" + safe_name + ".json", "samples": sample_count,
+		"cleanup_warning": cleanup_warning}
+
+
+func _recording_export_path_exists(path: String) -> bool:
+	if FileAccess.file_exists(path) or DirAccess.dir_exists_absolute(path):
+		return true
+	var parent := DirAccess.open(path.get_base_dir())
+	return parent != null and parent.is_link(path.get_file())
+
+
+func _recording_export_failure(error: String, cleanup_paths: PackedStringArray) -> Dictionary:
+	var cleanup_error := _cleanup_recording_export(cleanup_paths)
+	return {"ok": false, "error": error if cleanup_error.is_empty() else error + ". " + cleanup_error}
+
+
+func _cleanup_recording_export(paths: PackedStringArray) -> String:
+	var failures := PackedStringArray()
+	for path: String in paths:
+		if _recording_export_path_exists(path):
+			var status := _remove_recording_export_path(path)
+			if status != OK:
+				failures.append("%s (%s)" % [path.get_file(), error_string(status)])
+	return "recording cleanup failed: " + ", ".join(failures) if not failures.is_empty() else ""
+
+
+func _remove_recording_export_path(path: String) -> Error:
+	return DirAccess.remove_absolute(path)
 
 
 func _capture_record_sample(controls: Dictionary) -> bool:
@@ -1378,7 +1414,11 @@ func _write_new_file(path: String, content: String) -> String:
 	file.flush()
 	var status := file.get_error()
 	file.close()
-	return "could not write recording output (%s)" % error_string(status) if status != OK else ""
+	if status != OK:
+		return "could not write recording output (%s)" % error_string(status)
+	if FileAccess.get_file_as_string(path) != content:
+		return "could not verify recording metadata after writing"
+	return ""
 
 
 func _csv_quote(value: String) -> String:

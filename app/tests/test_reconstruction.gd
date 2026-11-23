@@ -83,6 +83,22 @@ func _initialize() -> void:
 			and Preferences.load_from(PREFS_PATH).reconstruction == mode)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS_PATH))
 
+	# GFX-IGPU-01: the player's render scale shapes Native (bilinear) only.
+	_check("render scale percents mirror the preference values", Reconstruction.RENDER_SCALE_PERCENTS == Preferences.RENDER_SCALES)
+	var scaled_native := Reconstruction.with_render_scale(Reconstruction.resolve("native", no_providers), {render_scale = 75})
+	_check("native reconstruction renders 3D at the player's render scale",
+		is_equal_approx(scaled_native.scale, 0.75) and scaled_native.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+		and scaled_native.render_scale == 75 and not scaled_native.temporal)
+	var full_native := Reconstruction.with_render_scale(Reconstruction.resolve("native", no_providers), {})
+	_check("a missing render scale keeps native at full resolution", full_native.scale == 1.0 and full_native.render_scale == 100)
+	var invalid_scale := Reconstruction.with_render_scale(Reconstruction.resolve("native", no_providers), {render_scale = 60})
+	_check("an unsupported render scale keeps full resolution", invalid_scale.scale == 1.0 and invalid_scale.render_scale == 100)
+	var temporal_scale := Reconstruction.with_render_scale(Reconstruction.resolve("fsr2_quality", true), {render_scale = 50})
+	_check("temporal reconstruction keeps its own scale and records the saved render scale",
+		is_equal_approx(temporal_scale.scale, 2.0 / 3.0) and temporal_scale.render_scale == 50)
+	var fallback_scale := Reconstruction.with_render_scale(Reconstruction.resolve("fsr2_quality", no_providers), {render_scale = 67})
+	_check("an unavailable provider falls back to native at the render scale",
+		fallback_scale.provider == "native" and is_equal_approx(fallback_scale.scale, 0.67))
 	_check("native captures retain their two-frame settle", Reconstruction.capture_settle_frames(Viewport.SCALING_3D_MODE_BILINEAR, 1.0) == 2)
 	_check("FSR2 Native AA captures allow temporal history", Reconstruction.capture_settle_frames(Viewport.SCALING_3D_MODE_FSR2, 1.0) == 16)
 	_check("FSR2 Quality captures allow two jitter cycles", Reconstruction.capture_settle_frames(Viewport.SCALING_3D_MODE_FSR2, 2.0 / 3.0) == 36)

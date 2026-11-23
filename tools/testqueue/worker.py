@@ -560,12 +560,53 @@ class Worker:
         # Job Object is named by attempt and remains queryable while it has members.
         from .processes import confirm_stopped
         identity = status.get("process")
-        if not identity or not confirm_stopped(identity):
+        stopped = bool(identity and confirm_stopped(identity))
+        nonlaunch = not stopped and self._restarted_before_launch(status)
+        if not stopped and not nonlaunch:
             raise ValueError("cleanup cannot be proved; resource remains quarantined")
         data = {**status["attempts"][-1]["data"], "cleanup": "CONFIRMED", "outcome": "INFRA_FAILED",
                 "evidence": "INCOMPLETE", "finished": time.time(), "reconciled": True}
+        if nonlaunch:
+            data.update(launch="NOT_CREATED", nonlaunch="CONFIRMED", reconciliation="interrupted_before_launch_fence")
         self.store.update(job, status["attempts"][-1]["id"], "FINISHED", data)
         return self.store.get(job)
+
+    def _restarted_before_launch(self, status: dict) -> bool:
+        """Recover only a Windows preparation interrupted before the launch fence."""
+        if (platform.system() != "Windows" or not self.draining or status["reason"] != "SUPERVISOR_RESTART: reconcile required"
+                or self.active or self.contexts or self._closing or self._unresolved_attempts
+                or self._pending_unknown or self._pending_nonlaunch):
+            return False
+        with self._journal_lock:
+            if self._pending_journal:
+                return False
+        if self.store.db.execute("SELECT 1 FROM attempts WHERE state IN ('DISPATCHING','RUNNING','CLEANING') LIMIT 1").fetchone():
+            return False
+        attempt = status["attempts"][-1]
+        data = attempt["data"]
+        if (set(data) - {"process", "host", "scheduling"} or data.get("host") != self.host_id
+                or not self.store.only_dispatched(status["id"], attempt["id"])):
+            return False
+        from .processes import host_identity
+        from .snapshots import _check_no_links
+        directory = self.root / "attempts" / attempt["id"]
+        try:
+            if data.get("process") != host_identity():
+                return False
+            _check_no_links(directory / "source")
+            _check_no_links(directory / "manifest.json")
+            # The adapter request, profile and temporary directory precede gate
+            # creation. Keep older/incomplete evidence quarantined if any exist.
+            manifest_path = directory / "manifest.json"
+            if ({entry.name for entry in directory.iterdir()} != {"source", "manifest.json"}
+                    or not (directory / "source").is_dir() or not manifest_path.is_file()):
+                return False
+            receipt = json.loads(manifest_path.read_text(encoding="utf-8"))
+            expected = status["payload"]["manifest"]
+            return all(key in expected and receipt.get(key) == expected[key]
+                       for key in ("source_digest", "manifest_digest"))
+        except (OSError, ValueError, RuntimeError):
+            return False
 
     def _scheduler_health(self):
         # A heartbeat is a completed successful scheduler pass, not a promise

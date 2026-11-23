@@ -259,9 +259,12 @@ func _test_steam_coverage() -> void:
 
 func _test_first_run() -> void:
 	var basic := AutoGraphicsPolicy.BASIC_SETTINGS
+	# GFX-IGPU-01: recognized weak shared-memory GPUs also start at a lower 3D render scale; unknown ones do not.
+	var basic_scaled := basic.duplicate()
+	basic_scaled["render_scale"] = AutoGraphicsPolicy.LOW_GPU_RENDER_SCALE
 	var cases := {"NVIDIA GeForce RTX 3090": {}, "NVIDIA GeForce GTX 1650": {"msaa_3d": Viewport.MSAA_2X, "shadow_quality": "medium"},
 		"Example Accelerator 9000": basic, "NVIDIA GeForce RTX 6060": basic, "NVIDIA RTX A2000": basic,
-		"Intel(R) UHD Graphics 630": basic, "llvmpipe (LLVM 15.0.7, 256 bits)": basic,
+		"Intel(R) UHD Graphics 630": basic_scaled, "llvmpipe (LLVM 15.0.7, 256 bits)": basic_scaled,
 		"Apple M1 (Apple7)": {}, "Qualcomm(R) Adreno(TM) X1-85 GPU": {},
 		"AMD Radeon Graphics (radeonsi, gfx9999, LLVM 21.0.0)": basic,
 		"AMD Radeon(TM) 890M Graphics": {"msaa_3d": Viewport.MSAA_2X, "shadow_quality": "low"}}

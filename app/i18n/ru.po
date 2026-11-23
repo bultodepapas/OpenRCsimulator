@@ -14592,5 +14592,20 @@ msgstr "Выберите самолёт, который может взлета�
 msgid "Preparing panorama"
 msgstr "Подготовка панорамы"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "Включены базовые настройки графики. Повысить качество можно в разделе «Настройки» > «Графика»."
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "Включены базовые настройки графики. Повысить качество можно в разделе «Настройки» > «Графика», а масштаб 3D-рендеринга — в разделе «Настройки» > «Экран»."
+
+msgid "3D render scale"
+msgstr "Масштаб 3D-рендеринга"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "Отрисовывает 3D-вид в меньшем разрешении и растягивает его. Меньшие значения повышают частоту кадров на встроенной графике; изображение становится мягче."
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR, DLSS и MetalFX задают собственный масштаб рендеринга. Ваш выбор вернётся при нативной реконструкции."
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "Подготовка графики для этого компьютера. Так долго длится только первый запуск."
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "Подготовка графики для первого полёта на этом компьютере. Следующие полёты загружаются быстрее."

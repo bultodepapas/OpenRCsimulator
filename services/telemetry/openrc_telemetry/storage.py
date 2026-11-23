@@ -241,6 +241,7 @@ class AggStore(_Db):
         body TEXT NOT NULL, bot_author TEXT NOT NULL, state TEXT NOT NULL,
         create_attempts INTEGER NOT NULL DEFAULT 0, issue_number INTEGER,
         created_unix INTEGER NOT NULL, updated_unix INTEGER NOT NULL,
+        revision INTEGER NOT NULL DEFAULT 0,
         PRIMARY KEY(repository, key)) WITHOUT ROWID;
     CREATE TABLE IF NOT EXISTS ingest_counts(
         day TEXT NOT NULL, category TEXT NOT NULL, count INTEGER NOT NULL,
@@ -261,6 +262,20 @@ class AggStore(_Db):
         have = {row[1] for row in conn.execute("PRAGMA table_info(daily_gpu)")}
         if not set(self.TABLES["gpu"][1]) <= have:
             raise StorageUnavailable("aggregates_schema")  # an older layout: there is no migration
+        if not self.read_only and not self._has_publication_revision(conn):
+            # Serialize the column check and ALTER across independent store initializations.
+            conn.execute("BEGIN IMMEDIATE")
+            try:
+                if not self._has_publication_revision(conn):
+                    conn.execute("ALTER TABLE publications ADD COLUMN revision INTEGER NOT NULL DEFAULT 0")
+                conn.execute("COMMIT")
+            except BaseException:
+                conn.execute("ROLLBACK")
+                raise
+
+    @staticmethod
+    def _has_publication_revision(conn):
+        return any(row[1] == "revision" for row in conn.execute("PRAGMA table_info(publications)"))
 
     @classmethod
     def _flatten(cls, row):
@@ -395,22 +410,38 @@ class AggStore(_Db):
 
     def get_publication(self, repository, key):
         with self.connection() as conn:
-            row = conn.execute(f"SELECT {', '.join(self._PUB_COLUMNS)} FROM publications "
+            revision = "revision" if not self.read_only or self._has_publication_revision(conn) else "0"
+            row = conn.execute(f"SELECT {', '.join(self._PUB_COLUMNS)}, {revision} FROM publications "
                                "WHERE repository=? AND key=?", (repository, key)).fetchone()
-        return dict(zip(self._PUB_COLUMNS, row)) if row else None
+        return dict(zip((*self._PUB_COLUMNS, "revision"), row)) if row else None
 
     def create_publication(self, repository, key, digest, title, body, bot_author, now):
         with self.transaction() as conn:
             conn.execute(
                 "INSERT INTO publications(repository, key, digest, title, body, bot_author, state, "
-                "create_attempts, created_unix, updated_unix) VALUES(?,?,?,?,?,?, 'creating', 0, ?, ?)",
+                "create_attempts, created_unix, updated_unix) VALUES(?,?,?,?,?,?, 'creating', 0, ?, ?) "
+                "ON CONFLICT(repository, key) DO NOTHING",
                 (repository, key, digest, title, body, bot_author, int(now), int(now)))
 
-    def update_publication(self, repository, key, now, **fields):
+    def update_publication(self, expected, now, **fields):
+        """Compare and advance one ledger revision, including the durable pre-POST claim."""
         allowed = {"state", "create_attempts", "issue_number"}
         if not fields or set(fields) - allowed:
             raise ValueError("fields")
         assignments = ", ".join(f"{name}=?" for name in fields)
         with self.transaction() as conn:
-            conn.execute(f"UPDATE publications SET {assignments}, updated_unix=? WHERE repository=? AND key=?",
-                         (*fields.values(), int(now), repository, key))
+            cursor = conn.execute(
+                f"UPDATE publications SET {assignments}, updated_unix=?, revision=revision+1 "
+                "WHERE repository=? AND key=? AND digest=? AND bot_author=? AND revision=? "
+                "AND state=? AND create_attempts=? AND state!='review_required'",
+                (*fields.values(), int(now), expected["repository"], expected["key"], expected["digest"],
+                 expected["bot_author"], expected["revision"], expected["state"], expected["create_attempts"]))
+        return cursor.rowcount == 1
+
+    def mark_publication_review(self, expected, now):
+        """Positive conflict evidence for the frozen identity is sticky across later revisions."""
+        with self.transaction() as conn:
+            conn.execute(
+                "UPDATE publications SET state='review_required', updated_unix=?, revision=revision+1 "
+                "WHERE repository=? AND key=? AND digest=? AND bot_author=? AND state!='review_required'",
+                (int(now), expected["repository"], expected["key"], expected["digest"], expected["bot_author"]))

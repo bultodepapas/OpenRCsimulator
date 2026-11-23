@@ -35,6 +35,8 @@ const SCALES := {
 	"metalfx_spatial_85": 0.85, "metalfx_spatial_quality": 2.0 / 3.0,
 	"metalfx_temporal_native": 1.0, "metalfx_temporal_85": 0.85, "metalfx_temporal_quality": 2.0 / 3.0,
 }
+## Mirrors DisplayPreferences.RENDER_SCALES (test_reconstruction.gd keeps them equal).
+const RENDER_SCALE_PERCENTS: Array[int] = [100, 85, 75, 67, 50]
 ## DT-MAC-07b: "auto" picks MetalFX Spatial only when its 3D input stays at least 1080p-class
 ## (AUTO_MIN_INPUT_HEIGHT rows, e.g. Quality on a 2560 × 1600 Retina panel), else Native. Other
 ## providers are never chosen automatically. The output size is the viewport's pixel size at apply.
@@ -248,7 +250,19 @@ static func resolve_for_viewport(viewport: Viewport, config: Dictionary, capabil
 	auto_output_size = viewport_output_size(viewport)
 	var gates := capabilities_for_viewport(viewport, capabilities)
 	var requested := str(config.get("reconstruction", "native"))
-	return resolve(requested, gates)
+	return with_render_scale(resolve(requested, gates), config)
+
+
+## GFX-IGPU-01: Native (bilinear) output renders the 3D view at the player's render scale (percent). Temporal and
+## spatial upscalers keep their own mode scale, so the preference is recorded but does not change them.
+static func with_render_scale(policy: Dictionary, config: Dictionary) -> Dictionary:
+	var requested: Variant = config.get("render_scale", 100)
+	var percent := int(requested) if typeof(requested) == TYPE_INT and int(requested) in RENDER_SCALE_PERCENTS else 100
+	policy["render_scale"] = percent
+	if str(policy.get("provider", "")) == "native" and percent < 100:
+		policy["scale"] = float(percent) / 100.0
+		policy["scaling_3d_mode"] = Viewport.SCALING_3D_MODE_BILINEAR
+	return policy
 
 
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
@@ -287,7 +301,7 @@ static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictiona
 		viewport.remove_meta(RUNTIME_FAILURE_META)
 
 
-## Roll a native provider back to full resolution after its backend reports a runtime failure.
+## Roll a failed provider back to Native (at the player's render scale) after its backend reports a runtime failure.
 ## The requested config remains stored and is never rewritten to the display preferences file.
 static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary = {},
 		capabilities: Dictionary = {}) -> bool:
@@ -707,6 +721,8 @@ static func describe(viewport: Viewport) -> Dictionary:
 	var nominal := nominal_input_size(output, viewport.scaling_3d_scale)
 	policy["nominal_3d_size"] = [nominal.x, nominal.y]
 	policy["nominal_3d_size_scope"] = NOMINAL_SIZE_SCOPE
+	if viewport.has_meta(&"openrc_flight_dynamic_resolution"):
+		policy["dynamic_resolution"] = viewport.get_meta(&"openrc_flight_dynamic_resolution").duplicate()
 	return policy
 
 

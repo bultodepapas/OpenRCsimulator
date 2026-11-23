@@ -633,12 +633,53 @@ static func _add_line_obstacles(proxies: Array[Dictionary], group: Dictionary) -
 		var a: Vector3 = piece.a
 		var b: Vector3 = piece.b
 		var center := (a + b) * 0.5
-		if piece.part == "post":
+		if piece.part == "gate":
+			_add_gate_leaf(proxies, id, piece, group_id == "club-entrance" and piece.profile == "metal")
+			continue
+		elif piece.part == "post":
 			_add_box_at_down(proxies, id, "fence", "post", "hard_terminal", -center.z, center.x, -center.y,
 				float(piece.width) + absf(b.x - a.x), absf(b.y - a.y), float(piece.width), 0.0)
 		else:
 			_add_line_box(proxies, id, "fence", str(piece.part), "hard_terminal",
 				Vector2(-a.z, a.x), Vector2(-b.z, b.x), float(piece.width), float(piece.width), -center.y)
+		proxies.back()["damage_profile"] = piece.profile
+
+
+static func _add_gate_leaf(proxies: Array[Dictionary], id: String, piece: Dictionary, club_entrance: bool) -> void:
+	var first := proxies.size()
+	var a: Vector3 = piece.a
+	var b: Vector3 = piece.b
+	var members: Array = piece.members
+	var heading := rad_to_deg(atan2(b.x - a.x, a.z - b.z))
+	for i in members.size():
+		var member: Dictionary = members[i]
+		var start: Vector3 = member.a
+		var end: Vector3 = member.b
+		var thickness: float = member.width
+		var face := float(member.get("face", thickness))
+		var member_id := "%s:%02d" % [id, i]
+		if is_equal_approx(start.x, end.x) and is_equal_approx(start.z, end.z):
+			_add_box_at_down(proxies, member_id, "fence", "gate", "hard_terminal", -start.z, start.x,
+				-(start.y + end.y) * 0.5, thickness, absf(end.y - start.y), face, heading if member.has("face") else 0.0)
+			continue
+		# Boxes support heading. Step a diagonal in height to preserve the gaps between rails.
+		var steps := maxi(1, ceili(absf(end.y - start.y) / 0.08))
+		for j in steps:
+			var p := start.lerp(end, float(j) / steps)
+			var q := start.lerp(end, float(j + 1) / steps)
+			_add_line_box(proxies, "%s:%02d" % [member_id, j], "fence", "gate", "hard_terminal",
+				Vector2(-p.z, p.x), Vector2(-q.z, q.x), thickness, absf(q.y - p.y) + face, -(p.y + q.y) * 0.5)
+	if club_entrance:
+		var span := FenceParts.gate_plate_width(a, b)
+		var centre := a.lerp(b, 0.36) + Vector3.UP * FenceParts.GATE_PLATE_OFFSET
+		var half_span := a.direction_to(b) * span * 0.5
+		var left := centre - half_span
+		var right := centre + half_span
+		_add_line_box(proxies, id + ":plate", "fence", "gate", "hard_terminal", Vector2(-left.z, left.x),
+			Vector2(-right.z, right.x), 0.084, minf(0.34, span * 0.32), -centre.y)
+	for i in range(first, proxies.size()):
+		proxies[i].damage_id = id
+		proxies[i].damage_profile = piece.profile
 
 
 static func _add_line_box(proxies: Array[Dictionary], id: String, kind: String, part: String,
