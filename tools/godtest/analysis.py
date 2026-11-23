@@ -31,8 +31,16 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
     target = manifest["dynamic_resolution_fps"]
     output = manifest["resolution"]
     ceiling = manifest.get("render_scale", 100)
-    sizes = {tuple(axis * percent // 100 for axis in output): percent / 100
-             for percent in (75, 85, ceiling) if percent <= ceiling}
+    floor = tuple((axis * 75 + 99) // 100 for axis in output)
+    sizes = {}
+    for percent in (75, 85, ceiling):
+        if percent > ceiling:
+            continue
+        size = tuple(axis * percent // 100 for axis in output)
+        if all(axis >= minimum for axis, minimum in zip(size, floor)):
+            sizes.setdefault(size, percent / 100)
+    if len(sizes) < 2:
+        return "no legal adaptive scale range"
     confirmed = False
     pending_scale = None
     when = phase.get("start_usec", 0)

@@ -7,13 +7,32 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from analysis import report
+import catalog
+from analysis import _dynamic_resolution_problem, report
 from godtest import _case_success, _tour_success
 from runner import write_json
 from test_godtest import artifacts, replace_stream
 
 
 class RenderingEvidenceTests(unittest.TestCase):
+    def test_dynamic_resolution_respects_the_pixel_floor_and_needs_two_rungs(self):
+        output = [3456, 2234]
+        for ceiling, extent, scale, issue in (
+            (100, [2592, 1675], 0.75, "completed pixels do not match an allowed scale"),
+            (100, [2937, 1898], 0.85, ""),
+            (100, output, 1.0, ""),
+            (85, [2937, 1898], 0.85, "no legal adaptive scale range"),
+        ):
+            with self.subTest(ceiling=ceiling, extent=extent):
+                manifest = catalog.scenario("smoke", dict(resolution=output, window_mode="borderless",
+                                                           dynamic_resolution_fps=60, render_scale=ceiling))
+                frame = dict(frame_id=4, generation=3, input_size=extent, output_size=output)
+                status = dict(state="observing", target_fps=60, configured_scale=scale, completed_frame=frame)
+                phase = dict(id="recover", start_usec=100, end_usec=200, dynamic_resolution=[
+                    dict(phase_id="recover", observed_usec=120, status=status),
+                ], dynamic_resolution_close_status=status)
+                self.assertEqual(_dynamic_resolution_problem(phase, manifest), issue)
+
     def test_dynamic_resolution_requires_a_confirmed_frame_and_allows_holding_the_ceiling(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "run"
