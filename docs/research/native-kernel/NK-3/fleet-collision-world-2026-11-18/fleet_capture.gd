@@ -40,6 +40,5 @@ func _run() -> void:
 	file.store_string(JSON.stringify(capture, "  "))
 	file.close()
 	print("FLEET_CAPTURE cases=%d" % cases.size())
-	if fleet is Node:
-		(fleet as Node).free()
+	fleet.free()
 	quit(0 if cases.size() == 8 else 1)
