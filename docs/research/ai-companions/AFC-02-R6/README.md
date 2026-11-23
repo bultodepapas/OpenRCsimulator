@@ -168,3 +168,14 @@ arguments are retained in each checked report. Decompress each ORFL into a new
 ignored directory and follow the existing [flight-log workflow](../../../FLIGHT-LOGGING.md).
 This work does not qualify arbitrary-player avoidance, static containment,
 additional aircraft, runway activities, live fleet restore or higher populations.
+
+### 2026-11-23 release renewal
+
+The v0.3.4 candidate renews the AppRoot and scenery collision source hashes after
+lightweight graphics setup and the Club entrance geometry change. The solver
+and companion controller source match the accepted baseline. On Linux with
+pinned Godot 4.8 beta2, the production probe ran three companions for 28,800
+ticks in calm weather. Both reports give the same minimum ground clearance of
+34.57 m and complete without a crash or fault. The [qualification receipt](2026-11-23-v034-behavior-renewal.json)
+records the two source pins, report hash and focused admission, shell, scenery
+and livery checks. The probe compares the reported scenario outcomes.

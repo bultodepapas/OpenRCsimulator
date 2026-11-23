@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-23",
+  "actions_run_id": 45217632258,
+  "platform": "Linux x86_64 on GitHub Actions Ubuntu 24.04",
+  "baseline_commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "tested_commit": "002db86dd910045348acf00ff421acaa8d70a154",
+  "changed_behavior_manifest_sources": {
+    "app/app_root.gd": {
+      "before": "7b80a6a17a6ff8b05a1af6f8e800bc589c7154d022c6a2c22b4b1e4e58712b89",
+      "after": "d171ae641f7e255cde553d7a9a3946cf97242f09f4cf8e3cde7416b9901730d6"
+    },
+    "app/scenery/collision_world.gd": {
+      "before": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+      "after": "8be7c632c8bd8499ebff09221ff1375e7bd5415bb192fba591700bc1454bc8d6"
+    }
+  },
+  "production_report_sha256": "5d8548649d8046997e857eb7248f72e6708bff181519e761155f195df867bf75",
+  "production_result": {
+    "complete": true,
+    "count": 3,
+    "engine": "4.8-beta2 (official)",
+    "failure": "",
+    "format": "openrc-companions-production v1",
+    "min_clearance_m": 34.5677852280569,
+    "physics_hz": 240,
+    "requested_ticks": 28800,
+    "scope": "Full production manager/session callbacks, Club collision inventory and lake context. No rendering/audio or long-session resource-soak claim.",
+    "seed": 1,
+    "ticks": 28800,
+    "weather": "calm"
+  },
+  "checked_engine_log_sha256": {
+    "import-baseline": "30deabe7084313166970d87941e6096fa6fd08aaee32ebed42f9f17009628ae2",
+    "import-candidate": "ed6a2d4c21305d4f7c698367e0015b047b6b155541e5187f654ba34b83224ea8",
+    "production-baseline": "a40ca3b423ecf63a4ec2b55acf87de2b595644ff453677adde82f747b296ea5d",
+    "production-candidate": "a40ca3b423ecf63a4ec2b55acf87de2b595644ff453677adde82f747b296ea5d",
+    "companions_profiles": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26",
+    "companions_behavior_manifest": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+    "companions_manager": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+    "companions_shell": "dcd9b6af2ef7fbb8ed2a9c6984310641341ed70a25a929df3b3ef3f1a6d24ff4",
+    "scenery_loader": "dccef1654b39747f760851c692215986b6955ba0feed0dd15caffab610aa78f3",
+    "scenery_destruction": "2ba1090fef8d1f6958993a212ac253816c66b5616d50a04e700ea92e4e63c2a8",
+    "rcv_scenery_collision": "788684906286fdfdf534a6c1aa1844d764bc25b2ac56978d78f4440951bbc5da",
+    "vehicle_paint": "22d22d668eb6c3368452788123048896f0d5f30065531dcdeec39f980feea910",
+    "livery_picker": "d3f538c2893d8e682928b82867a185b801a437d6c5f46251cb5e0dd061805695"
+  }
+}
