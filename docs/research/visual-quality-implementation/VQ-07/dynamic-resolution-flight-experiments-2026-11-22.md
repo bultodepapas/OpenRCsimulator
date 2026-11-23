@@ -48,6 +48,15 @@ The 5 s case spent about 1.1 s at the lower scale before the pulse ended and ano
 
 The [current first-run policy](../../../plans/dynamic-resolution.md#phase-3--implement-the-controller-and-player-controls-m2) applies a conservative low-end default when the viewport supports completed GPU timing. Native flight and package evidence are still open. Qualification covers the GPU, driver, renderer, provider, display and fixed ceiling, with observed GPU pressure and measured fixed-scale response. A GPU name supplies a starting hypothesis. Preserve manual Off, manual targets and the saved fixed ceiling. Treat unavailable timing, mismatched targets and an unreadable floor as fixed cases. Recheck changed renderer, driver and package identities before qualifying further rows.
 
+The first-run smoke used the same patched engines on Primis and Angela with a
+small 3D scene and no experimental argument. Primis Mobile/Vulkan on the UHD 630
+selected 30 FPS at an 85% ceiling on a 1366×768 virtual output. The controller
+received a completed 1161×652 frame at that ceiling. The Compatibility/OpenGL
+control held a fixed 75%. Angela Mobile/Metal on the M1 detected MetalFX Spatial
+and kept it at its fixed Quality scale with a 2560×1600 Retina viewport. This
+smoke verifies selection and initial GPU feedback. Loaded-flight transitions and
+pilot readability remain open.
+
 GOD TEST now accepts `--dynamic-resolution-fps 0|30|60|90|120`. A positive request enables the experiment in the isolated profile and records phase transitions with the controller target, actual input and output pixels and completed-frame generation. The reducer requires completed evidence and rejects a fallback as an adaptive result. The tour retains its native physics requirement. [Operating guide](../../../../tools/godtest/PERFORMANCE_TOUR.md)
 
 ## Windows flight integration screen
