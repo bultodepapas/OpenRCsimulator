@@ -1,0 +1,36 @@
+[
+  {
+    "case": "ambient-one",
+    "command": [
+      "python3",
+      "app/tests/test_ci_partitions.py"
+    ],
+    "CI_environment": {
+      "OPENRC_TEST_PART": "integration",
+      "OPENRC_UNIT_SHARD": "0",
+      "OPENRC_UNIT_SHARDS": "1"
+    },
+    "OPENRC_KEEP_GOING": "1",
+    "return_code": 0,
+    "wall_seconds": 29.222096,
+    "log": "ambient-one.log",
+    "log_sha256": "b13a37b345f5273f9d947e4c97ed182d2277ef3fad53d12be348d37fb39c1cbc"
+  },
+  {
+    "case": "ambient-unset",
+    "command": [
+      "python3",
+      "app/tests/test_ci_partitions.py"
+    ],
+    "CI_environment": {
+      "OPENRC_TEST_PART": "integration",
+      "OPENRC_UNIT_SHARD": "0",
+      "OPENRC_UNIT_SHARDS": "1"
+    },
+    "OPENRC_KEEP_GOING": null,
+    "return_code": 0,
+    "wall_seconds": 28.9849,
+    "log": "ambient-unset.log",
+    "log_sha256": "bf6ad86b67ad84e2676efa1aa686a5173dd406e186806587a6f4e9dab40d524e"
+  }
+]
