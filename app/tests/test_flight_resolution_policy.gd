@@ -7,7 +7,15 @@ const LOWER := Vector2i(1632, 918)
 var failures := 0
 
 
+class ObservationDriver extends "res://debug/godtest_driver.gd":
+	func _ready() -> void: pass # Drive the observer without starting a performance tour.
+
+
 func _initialize() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
 	var policy := Policy.new([LOWER, FULL], 60, 0)
 	var request := _feed(policy, 1, 363, 1, FULL, 18_000.0)
 	_check(request == 0 and policy.level == 1, "sustained pressure proposes one rung without confirming it")
@@ -46,8 +54,52 @@ func _initialize() -> void:
 	_check(wrong_size.retired and wrong_size.reason == "apply_unverified", "a new generation with the wrong dimensions retires")
 	if DisplayServer.get_name() == "headless":
 		_check(not DynamicResolution.supports(root), "the headless renderer stays fixed")
+	_test_controller_loss()
 	print("Flight resolution policy: %d failed" % failures)
 	quit(failures)
+
+
+func _test_controller_loss() -> void:
+	var driver := ObservationDriver.new()
+	root.add_child(driver)
+	driver.dynamic_resolution_fps = 60
+	var owner := DynamicResolution.new()
+	# Headless has no completed-GPU-frame provider. Supply its receipt, then use the real stop paths.
+	var confirmed := {state = "observing", target_fps = 60, configured_scale = 1.0,
+		completed_frame = {frame_id = 4, generation = 3, input_size = [1920, 1080], output_size = [1920, 1080]}}
+	driver._begin("recover")
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	_check(driver.phase.dynamic_resolution.is_empty(), "no controller has appeared during warm-up")
+	root.set_meta(DynamicResolution.STATUS_META, confirmed)
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	owner.tick(root, 1, true, {dynamic_resolution_fps = 0})
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	root.set_meta(DynamicResolution.STATUS_META, confirmed)
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	driver._end()
+	var rows: Array = driver.phases.back().dynamic_resolution
+	_check(rows.size() == 3 and rows[0].status == confirmed and rows[1].status == {} and rows[2].status == confirmed,
+		"turning Off then recovering records exactly one loss and the returning status")
+
+	driver._begin("landing")
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	owner.tick(root, 0, true, {dynamic_resolution_fps = 60})
+	driver._end() # No process callback between loss of the flight owner and phase close.
+	var closed: Dictionary = driver.phases.back()
+	rows = closed.dynamic_resolution
+	_check(rows.size() == 2 and rows[0].status == confirmed and rows[1].status == {}
+		and rows[1].phase_id == closed.id and rows[1].observed_usec == closed.end_usec,
+		"phase close records owner loss after the last process sample")
+	driver._begin("takeoff")
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	root.set_meta(DynamicResolution.STATUS_META, confirmed)
+	driver._end()
+	_check(driver.phases.back().dynamic_resolution.is_empty(),
+		"a controller first seen after the last process sample cannot qualify an empty trace")
+	owner.stop(root)
+	driver.free()
 
 
 func _sample(frame: int, generation: int, extent: Vector2i, usec: float) -> Dictionary:

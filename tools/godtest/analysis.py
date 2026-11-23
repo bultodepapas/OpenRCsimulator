@@ -47,6 +47,8 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
             return "observation lies outside the phase or is out of order"
         when = at
         state = row.get("status")
+        if state == {}:
+            return "controller status disappeared"
         if not isinstance(state, dict) or state.get("target_fps") != target:
             return "controller target differs from the manifest"
         if state.get("state") not in ("observing", "apply_pending"):

@@ -918,7 +918,7 @@ func _flight_3d_scaling() -> Dictionary:
 
 func _observe_dynamic_resolution(now: int) -> void:
 	var status: Dictionary = get_tree().root.get_meta(FlightDynamicResolution.STATUS_META, {})
-	if status.is_empty() or status == last_dynamic_resolution:
+	if status == last_dynamic_resolution:
 		return
 	last_dynamic_resolution = status
 	var observation := {phase_id = phase.id, observed_usec = now, status = status}
@@ -951,6 +951,9 @@ func _runtime_display() -> Dictionary:
 func _end(status: String = "complete", reason: String = "") -> void:
 	if phase.is_empty(): return
 	phase.end_usec = Time.get_ticks_usec()
+	# Catch a controller stop after the last process callback. A phase with no sampled controller stays unconfirmed.
+	if phase.has("dynamic_resolution") and not phase.dynamic_resolution.is_empty():
+		_observe_dynamic_resolution(phase.end_usec)
 	phase.end_tick = bound_session.sim.tick if is_instance_valid(bound_session) else -1
 	phase.end_sim_s = bound_session.sim.time() if is_instance_valid(bound_session) else float(phase.start_sim_s)
 	phase.wall_seconds = float(int(phase.end_usec) - int(phase.start_usec)) / 1000000.0

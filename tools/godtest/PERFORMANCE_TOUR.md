@@ -293,7 +293,11 @@ engine lacks the completed-frame API and the runtime rejects a positive request.
 
 Each measured flight phase records controller state changes, the requested FPS,
 the configured scale and completed-frame input and output sizes with the frame
-and configuration generation. A verified ceiling is valid when the workload
+and configuration generation. After the first controller observation, the driver
+also samples at phase close. An empty status records that the controller
+disappeared and disqualifies the phase even if it returns. Repeated identical
+samples occupy one trace entry. Older traces cannot show an omitted loss.
+A verified ceiling is valid when the workload
 has headroom. A fixed fallback or an unconfirmed scale cannot qualify as
 adaptive evidence. Compare retained phases and route landmarks using the
 [experiment design](../../docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md).

@@ -43,6 +43,18 @@ class RenderingEvidenceTests(unittest.TestCase):
                     if not eligible:
                         self.assertIn("dynamic resolution not verified", " ".join(result["issues"]))
 
+            confirmed = {"target_fps": 60, "state": "observing", "configured_scale": 1.0, "completed_frame": frame}
+            for states in ([confirmed, {}], [confirmed, {}, confirmed]):
+                with self.subTest(states=states):
+                    phase["dynamic_resolution"] = [
+                        {"phase_id": phase["id"], "observed_usec": at, "status": state}
+                        for at, state in enumerate(states, start=5)
+                    ]
+                    write_json(path / "runtime.json", runtime)
+                    result = report(path, write=False)
+                    self.assertNotEqual(result["data"], "valid")
+                    self.assertIn("controller status disappeared", " ".join(result["issues"]))
+
     def test_explicit_render_scale_requires_matching_bilinear_receipts_at_both_boundaries(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "run"
