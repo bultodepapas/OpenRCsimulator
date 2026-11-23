@@ -168,6 +168,40 @@ esac
     def test_test_failure_is_fatal(self):
         result = self.run_partition(0, 1, PROBE_FAIL=self.names[0])
         self.assertEqual(result.returncode, 7, result.stdout)
+        self.assertNotIn("VISITED " + self.names[1], result.stdout)
+        self.assertFalse(list((self.root.parent / "tmp/godot-checks").glob("roster-units-*.json")))
+
+    def test_keep_going_collects_independent_failures_without_a_success_receipt(self):
+        # Preserve a previous genuine receipt even when a later invocation fails.
+        self.assertEqual(self.run_partition(0, 1).returncode, 0)
+        output = self.root.parent / "tmp/godot-checks"
+        prior = {path.name: path.read_bytes() for path in output.glob("roster-units-*.json")}
+        for failure in ({"PROBE_FAIL": self.names[0]},
+                        {"PROBE_ERROR": self.names[0]},
+                        {"PROBE_ERROR": self.names[0], "PROBE_KIND": "SHADER ERROR"}):
+            with self.subTest(failure=failure):
+                result = self.run_partition(0, 1, OPENRC_KEEP_GOING="1", **failure)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                visited = [line.removeprefix("VISITED ") for line in result.stdout.splitlines()
+                           if line.startswith("VISITED ")]
+                self.assertEqual(visited, self.names)
+                self.assertIn("== 1 failed section(s):", result.stdout)
+                self.assertIn("no complete unit receipt was written", result.stdout)
+                self.assertEqual({path.name: path.read_bytes() for path in output.glob("roster-units-*.json")}, prior)
+
+    def test_keep_going_preserves_fixed_brake_failure_and_runs_later_units(self):
+        (self.root / "tests/test_fixed_gear_brake_input.gd").touch()
+        wrapper = self.root.parent / "tools/godot/fixed_brake_legacy.py"
+        wrapper.write_text('import sys\nprint("STRICT_BRAKE_GATE")\nsys.exit(9)\n', encoding="utf-8")
+        wrapper.with_name("get_historical_godot.py").touch()
+        result = self.run_partition(0, 1, OPENRC_KEEP_GOING="1")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("  test_fixed_gear_brake_input.gd (exit 9)", result.stdout)
+        self.assertNotIn("VISITED test_fixed_gear_brake_input.gd", result.stdout)
+        visited = [line.removeprefix("VISITED ") for line in result.stdout.splitlines()
+                   if line.startswith("VISITED ")]
+        self.assertEqual(visited, self.names)
+        self.assertFalse(list((self.root.parent / "tmp/godot-checks").glob("roster-units-*.json")))
 
     def test_engine_error_is_fatal_even_with_zero_exit(self):
         result = self.run_partition(0, 1, PROBE_ERROR=self.names[0])

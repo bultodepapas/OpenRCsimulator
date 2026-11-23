@@ -80,7 +80,7 @@ run_reference_unit() {
 }
 
 # BEGIN section helpers
-# Each integration gate is written as
+# Each independent gate is written as
 #   section "label"; section_body() {
 #   ...commands...
 #   }; end_section
@@ -477,13 +477,14 @@ UNIT_RECEIPT="$CHECK_OUT/roster-units-$UNIT_SHARD-of-$UNIT_SHARDS-$RUN_SUFFIX.js
 python3 "$ROSTER_HELPER" begin "$HERE" units "$ROSTER" "$ROSTER_STATE" "$UNIT_RECEIPT" "$UNIT_SHARD" "$UNIT_SHARDS" units
 unit_index=0
 selected_units=0
+unit_failures_before=${#FAILED_SECTIONS[@]}
 for t in "${unit_tests[@]}"; do
   t="$HERE/$t"
   shard_for_test=$((unit_index % UNIT_SHARDS))
   unit_index=$((unit_index + 1))
   [[ "$shard_for_test" == "$UNIT_SHARD" ]] || continue
   selected_units=$((selected_units + 1))
-  echo "== $(basename "$t")"
+  section "$(basename "$t")"
   test_timeout=60
   # Four 46-second simulated landings at 240/480 Hz: measured 75–82 s wall time on Linux (PT1-rc8).
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
@@ -542,12 +543,14 @@ for t in "${unit_tests[@]}"; do
     test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-sideslip) ;;
     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac
-  if [ "$(basename "$t")" = "test_fixed_gear_brake_input.gd" ]; then
-    python3 "$HERE/../tools/godot/fixed_brake_legacy.py" --godot "$GODOT" --out-dir "$CHECK_OUT" 2>&1 | tee "$LOG"
-  else
-    run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
-  fi
-  printf '%s\0' "${t#"$HERE"/}" >> "$ROSTER_DONE"
+  section_body() {
+    if [ "$(basename "$t")" = "test_fixed_gear_brake_input.gd" ]; then
+      python3 "$HERE/../tools/godot/fixed_brake_legacy.py" --godot "$GODOT" --out-dir "$CHECK_OUT" 2>&1 | tee "$LOG"
+    else
+      run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
+    fi
+    printf '%s\0' "${t#"$HERE"/}" >> "$ROSTER_DONE"
+  }; end_section
   # run_with_timeout checks every invocation for engine/script/shader errors,
   # including errors printed with a successful process exit.
 done
@@ -555,7 +558,11 @@ done
 echo "== unit partition $UNIT_SHARD/$UNIT_SHARDS: $selected_units of $unit_index scripts"
 (( selected_units > 0 )) || { echo "empty unit partition" >&2; exit 2; }
 collect_unit_roster > "$ROSTER_CURRENT"
-python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$UNIT_RECEIPT" units
+if (( ${#FAILED_SECTIONS[@]} == unit_failures_before )); then
+  python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$UNIT_RECEIPT" units
+else
+  echo "unit partition failed; no complete unit receipt was written" >&2
+fi
 fi
 if [[ "$TEST_PART" != all && "$TEST_PART" != integration && "$TEST_PART" != integration-runtime ]]; then exit 0; fi
 
