@@ -65,8 +65,10 @@ func _initialize() -> void:
 			await process_frame
 	var started := Time.get_ticks_msec()
 	while (service.queue.items.size() > 0 or service.sender.busy()) and Time.get_ticks_msec() - started < 20000:
-		_now += 61000000 # let the normal cadence admit the next queued batch
-		service._process(0.0)
+		# Advance the send cadence only between requests. Real HTTP frames must not age an in-flight batch.
+		if not service.sender.busy():
+			_now += 61000000
+			service._process(0.0)
 		await process_frame
 	print("E2E sent=%d queued=%d dropped=%d local_drops=%d status=%s" % [service.queue.sent_ok, service.queue.items.size(),
 		service.queue.dropped, service.local_drops, service.state])

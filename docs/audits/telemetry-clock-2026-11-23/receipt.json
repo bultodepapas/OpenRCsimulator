@@ -1,0 +1,326 @@
+{
+  "format": "openrc-telemetry-clock-audit-v1",
+  "hosted": {
+    "date_utc": "2026-11-23",
+    "run": 45091058487,
+    "job": 137421394373,
+    "attempt": 1,
+    "head": "8ce11eb2a22eec1d647c85a2fb48cbd674d7f7d5",
+    "merge_checkout": "a1fd7faa1d35f955b35c0d1711ddfa9aec1c5426",
+    "merge_parents": [
+      "843f357c07af842054f3ccd6728f93beca9a57ef",
+      "8ce11eb2a22eec1d647c85a2fb48cbd674d7f7d5"
+    ],
+    "head_and_merge_tree": "9ca36e1e18ce788362285bbaefb8c785d7e7c6a5",
+    "step": "Require the real Godot client against the telemetry receiver",
+    "command": "OPENRC_GODOT=\"$(app/get-godot.sh)\" OPENRC_REQUIRE_GODOT_E2E=1 \"$venv/bin/python\" services/telemetry/tests/test_godot_e2e.py -v",
+    "test_seconds": 1.247,
+    "assertion": "GodotClientEndToEnd.test_godot_client_batches_are_accepted_and_stored: checked process exited 1",
+    "zip": {
+      "artifact_id": 14781781122,
+      "name": "telemetry-client-e2e",
+      "bytes": 1398,
+      "sha256": "0aa22ba6410f1470874572fb437027028ae59386114ca3139f8a1ba44243fcb0",
+      "member_sha256": {
+        "checks/telemetry-client-dgln1u5k/engine.log": "895b2631f58c0e200f7c55bdfa3afbef8f6b5843183b0f84e32fad6b1dff46ae",
+        "checks/telemetry-client-dgln1u5k/report.json": "16ccade061c03a307c671e0682626aad8175043b28d417f17d92df4418571486",
+        "receiver.log": "f1b797de048112d3e236ed54d52df6da2f63f5e36cc946d34089573047134d9d"
+      }
+    },
+    "receiver_log_utc": [
+      "2026-11-23 01:02:41,198 INFO ingest outcome=accepted",
+      "2026-11-23 01:02:41,244 INFO ingest outcome=accepted",
+      "2026-11-23 01:02:41,379 INFO ingest outcome=accepted"
+    ],
+    "client_summary": "E2E sent=2 queued=0 dropped=1 local_drops=0 status=on",
+    "checked_client": {
+      "capture_id": "7748c73f-4d3f-4c78-9356-40ba6bba6eb4",
+      "started_utc": "2026-11-23T01:02:40.679623+00:00",
+      "process_exit": 1,
+      "elapsed_seconds": 0.744596,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "missing_required_text": [],
+      "log_sha256": "895b2631f58c0e200f7c55bdfa3afbef8f6b5843183b0f84e32fad6b1dff46ae"
+    }
+  },
+  "source": {
+    "base_head": "8ce11eb2a22eec1d647c85a2fb48cbd674d7f7d5",
+    "driver_path": "app/tests/telemetry_receiver_e2e.gd",
+    "original_driver": {
+      "git_blob": "d83f6bc94451f996c8eed75b880855da782f27d4",
+      "sha256": "6270f4e33a1fa7c2bd58a3e879537b223f797c309a360bb87131d86ad6d76998"
+    },
+    "candidate_driver": {
+      "git_blob": "ec467b4ea7e3401c13c3c17594edfeaa28f7aeaf",
+      "sha256": "8a41df896d8dee789a49ae8be3df57fede6600d70b4fca4a3dea1479dab095d3"
+    },
+    "base_app_git_tree": "623f30e0f07b19a96976380b8b9dc2f088bf4c54",
+    "production_client_git_tree": "e95051193c8449bf9648fd445d67089397e1d887",
+    "receiver_package_git_tree": "ebed40086b3af17d854523b6a81d3668a6e4f4ca",
+    "contract_directory_git_tree": "7973fffa55dd353cdade1bb5ca805aa712245d42",
+    "selected_files": {
+      "app/telemetry/telemetry_service.gd": {
+        "git_blob": "ba03fea46fa8cf382521ed9544535d350d00fd05",
+        "sha256": "c7a2b4b87c6bb51b6751921739d2ca9d22888886c60def22426fbc4a744b2b63"
+      },
+      "app/telemetry/telemetry_queue.gd": {
+        "git_blob": "b18df9ff0653d11ef157d863bd99eeca2ded0723",
+        "sha256": "815823ac524892d315d473f6f668e99d5a165484bcbca510b292762d61d73e81"
+      },
+      "app/telemetry/telemetry_sender.gd": {
+        "git_blob": "2954a7dfe6da36600c8d2858576ad5415a18c705",
+        "sha256": "d8e6c266bba24a1881a3de6716d15a41510ab40802cd9aa9727217c0e4d51e3f"
+      },
+      "services/telemetry/openrc_telemetry/ingress.py": {
+        "git_blob": "02a0ad73bc17e9b04b51846ed3501fca2acad57b",
+        "sha256": "4dce88999adb8df1b1730d8c578a1f72cceda95df1fb73c02b8cdaf8756ae397"
+      },
+      "services/telemetry/tests/test_godot_e2e.py": {
+        "git_blob": "1710af0aaee282b9c2f6ef6197fe58fa30887608",
+        "sha256": "5c1514c3cbd4625523672cba80b08f5240bde3e1709d480743600cc40a9fdf4a"
+      },
+      "services/telemetry/requirements.txt": {
+        "git_blob": "0cdb47dce95212d869f75c1d57be832af0320eab",
+        "sha256": "c7aeea3600ee67f84d06a01651d30ff1b959d83eec562b34623dedc4bb435f18"
+      },
+      "tools/godot/run_checked.py": {
+        "git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+        "sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888"
+      }
+    },
+    "exact_full_project": {
+      "tracked_app_files": 6015,
+      "source": "Base head, with only the candidate driver substituted. Checked-out file hashes and executable modes verified; no extra source paths outside .godot. Existing imported cache reused.",
+      "source_manifest_sha256": "2b9a2a54f8c9ef45fbe712d66539d4023b03a3bee1ad4fdb2125e14859fc7610",
+      "manifest_representation": "Relative app path, Git mode, Git blob and checkout SHA-256, separated by NUL, LF after each record in the dated source inventory order."
+    },
+    "component_fixture": {
+      "production_scripts": [
+        "app/app_state/build_info.gd",
+        "app/telemetry/telemetry_consent_store.gd",
+        "app/telemetry/telemetry_contract.gd",
+        "app/telemetry/telemetry_frame_window.gd",
+        "app/telemetry/telemetry_hardware.gd",
+        "app/telemetry/telemetry_policy.gd",
+        "app/telemetry/telemetry_queue.gd",
+        "app/telemetry/telemetry_release.gd",
+        "app/telemetry/telemetry_sender.gd",
+        "app/telemetry/telemetry_service.gd"
+      ],
+      "scope": "Minimal Godot project with the listed source-identical production scripts and the selected driver. All controls start fresh receivers with isolated storage and profiles."
+    }
+  },
+  "local": {
+    "engine": "4.8.beta2.official.cafc17a19",
+    "engine_linux_x86_64_binary_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "python": "3.12.14",
+    "requirements": "services/telemetry/requirements.txt",
+    "command": "OPENRC_GODOT=\"$(app/get-godot.sh)\" OPENRC_REQUIRE_GODOT_E2E=1 \"$venv/bin/python\" services/telemetry/tests/test_godot_e2e.py -v",
+    "sender_wall_deadline_seconds": 5,
+    "final_drain_wall_deadline_seconds": 20,
+    "queue_retention_seconds": 600,
+    "checked_outer_deadline_seconds": 600,
+    "parse": {
+      "capture_id": "9caa47de-9e88-441f-b287-c4a1aeb61267",
+      "started_utc": "2026-11-23T03:15:07.854601+00:00",
+      "process_exit": 0,
+      "elapsed_seconds": 0.404431,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "missing_required_text": [],
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    "cases": [
+      {
+        "case": "old-delayed",
+        "project": "telemetry component",
+        "driver": "original",
+        "response_control": "Delay third and later successful HTTP replies by 0.4 seconds after storage.",
+        "receiver_ingress_sha256": "7bb2c8c1c1cbc676b51d5cc12f8ae7fbd76ee9099b2d8efefdedba3d686f8b16",
+        "checked_client": {
+          "capture_id": "f2b3bba4-3112-4d4c-aa41-9f26352698aa",
+          "started_utc": "2026-11-23T03:15:00.751613+00:00",
+          "process_exit": 1,
+          "elapsed_seconds": 0.564738,
+          "reason": "process_exit",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "missing_required_text": [],
+          "log_sha256": "895b2631f58c0e200f7c55bdfa3afbef8f6b5843183b0f84e32fad6b1dff46ae"
+        },
+        "client_summary": "E2E sent=2 queued=0 dropped=1 local_drops=0 status=on",
+        "receiver_outcomes": [
+          "accepted",
+          "accepted",
+          "accepted"
+        ],
+        "receiver_log_sha256": "84539298be59c67b590f41f7512fbcd937a2de6c485d88551e0544bdb1b830d9",
+        "python_unittest_seconds": 1.528,
+        "python_exit": 1,
+        "python_log_sha256": "d76926c9e4ac4e7c980c04fa221eb40aa90ddf6348c89c38f498fc36dbfbcd75"
+      },
+      {
+        "case": "new-delayed",
+        "project": "telemetry component",
+        "driver": "candidate",
+        "response_control": "Delay third and later successful HTTP replies by 0.4 seconds after storage.",
+        "receiver_ingress_sha256": "7bb2c8c1c1cbc676b51d5cc12f8ae7fbd76ee9099b2d8efefdedba3d686f8b16",
+        "checked_client": {
+          "capture_id": "8b11efba-5a79-46d1-9cf1-b247404afaf9",
+          "started_utc": "2026-11-23T03:15:08.381527+00:00",
+          "process_exit": 0,
+          "elapsed_seconds": 1.047356,
+          "reason": "passed",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "missing_required_text": [],
+          "log_sha256": "a35c3de7de3d13c46710a3daebb949219946f4e53d7733e713ffb7bc5dcda4b1"
+        },
+        "client_summary": "E2E sent=3 queued=0 dropped=0 local_drops=0 status=on",
+        "receiver_outcomes": [
+          "accepted",
+          "accepted",
+          "accepted"
+        ],
+        "receiver_log_sha256": "1c96dc74824920d93af1eb7363edc7f99fdd72310a659bb537dcb5e3ffbe85f7",
+        "python_unittest_seconds": 1.739,
+        "python_exit": 0,
+        "python_log_sha256": "b6ab55cf4b7ac5d43167452010b807ba9d39ed3bffac84119309f4dcd502b91e"
+      },
+      {
+        "case": "new-refused",
+        "project": "telemetry component",
+        "driver": "candidate",
+        "response_control": "Substitute HTTP 422 on the third successful reply after storage.",
+        "receiver_ingress_sha256": "368913c1026ee2cd35a5ab78eb8072912def4f78ee3408b07c97be3f36d5a317",
+        "checked_client": {
+          "capture_id": "d45b559c-012e-433b-a7cc-093d20c8af88",
+          "started_utc": "2026-11-23T03:15:17.259576+00:00",
+          "process_exit": 1,
+          "elapsed_seconds": 0.585676,
+          "reason": "process_exit",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "missing_required_text": [],
+          "log_sha256": "895b2631f58c0e200f7c55bdfa3afbef8f6b5843183b0f84e32fad6b1dff46ae"
+        },
+        "client_summary": "E2E sent=2 queued=0 dropped=1 local_drops=0 status=on",
+        "receiver_outcomes": [
+          "accepted",
+          "accepted",
+          "accepted"
+        ],
+        "receiver_log_sha256": "5e206c7738c95a65e3d1403c013d25b1ad990313302e35c3ed14e7927c214642",
+        "python_unittest_seconds": 1.284,
+        "python_exit": 1,
+        "python_log_sha256": "42754901774eac62833a55631891c9478d82bd219ac6b5f33197863e31da336b"
+      },
+      {
+        "case": "new-stall",
+        "project": "telemetry component",
+        "driver": "candidate",
+        "response_control": "Delay third and all later successful replies by six seconds after storage.",
+        "receiver_ingress_sha256": "48cc0fe3c68a67ac0521d78666098d02593f060e04d291b3183673c5288ca8ac",
+        "checked_client": {
+          "capture_id": "506b6182-9164-4304-82b5-e302dd29645a",
+          "started_utc": "2026-11-23T03:15:17.053589+00:00",
+          "process_exit": 1,
+          "elapsed_seconds": 20.893569,
+          "reason": "process_exit",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "missing_required_text": [],
+          "log_sha256": "6601313e00872f5c4883531eb3d5a061a968d97de771166465c9293c26b6c9ee"
+        },
+        "client_summary": "E2E sent=2 queued=1 dropped=0 local_drops=0 status=on",
+        "receiver_outcomes": [
+          "accepted",
+          "accepted",
+          "accepted",
+          "duplicate",
+          "duplicate",
+          "duplicate"
+        ],
+        "receiver_log_sha256": "b0909c50a1d54cf4097c4250208806f80009c57136bfd5aaa317b2d375783594",
+        "python_unittest_seconds": 22.248,
+        "python_exit": 1,
+        "python_log_sha256": "13ff3161923f2986df985bc4462a40a31969ae5166cff6df4ccde5e28ff61a43"
+      },
+      {
+        "case": "new-ordinary",
+        "project": "telemetry component",
+        "driver": "candidate",
+        "response_control": "Unmodified receiver.",
+        "receiver_ingress_sha256": "4dce88999adb8df1b1730d8c578a1f72cceda95df1fb73c02b8cdaf8756ae397",
+        "checked_client": {
+          "capture_id": "61b304be-03c7-4488-be86-cff7df4b5b8c",
+          "started_utc": "2026-11-23T03:15:08.894291+00:00",
+          "process_exit": 0,
+          "elapsed_seconds": 0.584417,
+          "reason": "passed",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "missing_required_text": [],
+          "log_sha256": "a35c3de7de3d13c46710a3daebb949219946f4e53d7733e713ffb7bc5dcda4b1"
+        },
+        "client_summary": "E2E sent=3 queued=0 dropped=0 local_drops=0 status=on",
+        "receiver_outcomes": [
+          "accepted",
+          "accepted",
+          "accepted"
+        ],
+        "receiver_log_sha256": "f5bba1f8440dd49a53bd5473688a46be037175803009ce3cc587bb9ced74caf1",
+        "python_unittest_seconds": 1.245,
+        "python_exit": 0,
+        "python_log_sha256": "dc0f397308686c4a9df2adb092872ce3f598bcf2724f77d104457ed20cb0f2a2"
+      },
+      {
+        "case": "full-exact",
+        "project": "full",
+        "driver": "candidate",
+        "response_control": "Unmodified receiver.",
+        "receiver_ingress_sha256": "4dce88999adb8df1b1730d8c578a1f72cceda95df1fb73c02b8cdaf8756ae397",
+        "checked_client": {
+          "capture_id": "37ac501e-a772-4638-8861-ba3564583a61",
+          "started_utc": "2026-11-23T03:17:00.935016+00:00",
+          "process_exit": 0,
+          "elapsed_seconds": 1.149014,
+          "reason": "passed",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "missing_required_text": [],
+          "log_sha256": "a35c3de7de3d13c46710a3daebb949219946f4e53d7733e713ffb7bc5dcda4b1"
+        },
+        "client_summary": "E2E sent=3 queued=0 dropped=0 local_drops=0 status=on",
+        "receiver_outcomes": [
+          "accepted",
+          "accepted",
+          "accepted"
+        ],
+        "receiver_log_sha256": "b04080137c2cdaf38a9b6ade1bfb7bf4c0e85d0936a2d38e63fa4d14699256d4",
+        "python_unittest_seconds": 1.809,
+        "python_exit": 0,
+        "python_log_sha256": "b82b89a840218f8294f619b9f5f23e0bdf256b1c8e44298a24926149a29d8ce0"
+      }
+    ]
+  }
+}
