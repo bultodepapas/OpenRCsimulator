@@ -165,6 +165,72 @@ class RemoteAgentTests(unittest.TestCase):
             agent.launch(self.root, other)
         self.assertEqual(blocked.exception.code, "QUARANTINED")
 
+    def test_idle_remote_probe_reports_external_occupancy_before_placement(self):
+        with mock.patch.object(agent, "os", wraps=os) as remote_os, \
+                mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "Lock"), \
+                mock.patch.object(agent, "graphics_config", return_value=None), \
+                mock.patch.object(agent, "external_engine_present", side_effect=[True, False, OSError("ps failed")]):
+            remote_os.name = "posix"
+            for code in ("EXTERNAL_SIMULATOR", None, "OCCUPANCY_UNKNOWN"):
+                admission = agent.probe(self.root, {"engine_path": str(self.engine)})["admission"]
+                self.assertEqual(admission["busy"], code is not None)
+                self.assertEqual(admission.get("busy_code"), code)
+
+    def test_external_after_preparation_proves_nonlaunch_on_original_request(self):
+        request = self.request(self.sample_archive())
+        request["options"]["timeout"] = 1
+        accepted = self.accepted(request)
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=True), \
+                mock.patch.object(agent, "execute_stage") as execute:
+            self.assertEqual(agent.supervise(self.root, "job1"), 0)
+            execute.assert_not_called()
+        result = agent.launch(self.root, request)
+        self.assertEqual(result["payload_sha256"], accepted["payload_sha256"])
+        self.assertEqual(result["state"], "FINISHED")
+        self.assertEqual(result["evidence"], "INCOMPLETE")
+        self.assertEqual(result["cleanup"], "CONFIRMED")
+        self.assertEqual(result["stage"], "admission")
+        self.assertEqual(result["reason_code"], "EXTERNAL_SIMULATOR")
+        self.assertEqual((result["launch"], result["nonlaunch"]), ("NOT_CREATED", "CONFIRMED"))
+
+    def test_remote_wait_stays_observable_and_resumes_original_attempt(self):
+        request = self.request(self.sample_archive())
+        accepted = self.accepted(request)
+        def occupancy(engine):
+            state = agent.status(self.root, "job1")
+            if state.get("stage") != "admission":
+                return True
+            self.assertEqual(state["state"], "STARTING")
+            self.assertEqual(state["reason_code"], "EXTERNAL_SIMULATOR")
+            admission = agent.probe(self.root, {"engine_path": engine})["admission"]
+            self.assertTrue(admission["busy"])
+            self.assertEqual(admission["active_request_id"], "job1")
+            self.assertEqual(agent.launch(self.root, request)["payload_sha256"], accepted["payload_sha256"])
+            return False
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", side_effect=occupancy):
+            self.assertEqual(agent.supervise(self.root, "job1"), 0)
+        result = agent.status(self.root, "job1")
+        self.assertEqual(result["outcome"], "PASSED", result)
+        self.assertEqual(result["payload_sha256"], accepted["payload_sha256"])
+        self.assertGreaterEqual(result["admission_wait_finished_at"], result["admission_wait_started_at"])
+        self.assertNotIn("reason_code", result)
+
+    def test_remote_lost_waiting_supervisor_remains_uncertain(self):
+        request = self.request(self.sample_archive())
+        self.accepted(request)
+        path = agent.state_path(self.root, "job1")
+        state = agent.read_json(path)
+        state.update(stage="admission", reason_code="EXTERNAL_SIMULATOR", accepted_at=time.time() - 2 * agent.START_GRACE)
+        agent.write_json(path, state)
+        with mock.patch.object(agent.subprocess, "Popen") as spawn:
+            result = agent.launch(self.root, request)
+        spawn.assert_not_called()
+        self.assertEqual((result["state"], result["cleanup"]), ("UNKNOWN", "UNCONFIRMED"))
+        self.assertNotIn("nonlaunch", result)
+
     def test_supervisor_runs_import_and_check_in_owned_process(self):
         archive = self.sample_archive()
         request = self.request(archive)

@@ -5,6 +5,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import shlex
@@ -258,7 +259,7 @@ class Pool:
                          'cores': os.cpu_count(), 'load': psutil.cpu_percent(interval=0.1) * (os.cpu_count() or 1) / 100,
                          'capabilities': ['headless'], 'engine': current['engine']}
                 if external:
-                    value['busy_reason'] = 'an unmanaged simulator is running on this desktop'
+                    value['busy_reason'] = 'an unmanaged simulator is running on this desktop (EXTERNAL_SIMULATOR)'
                 # Typed cause for agents (TQ-05-F1.1); first match wins.
                 value['busy_code'] = next((code for code, active in (
                     ('CONDITION_' + str(current['condition']), current['condition'] != 'READY'),
@@ -270,6 +271,9 @@ class Pool:
                 remote = self.remote(host, 'probe', {'engine_path': host['engine']})
                 capacity, admission = remote['capacity'], remote['admission']
                 load = capacity.get('load_average')
+                busy_code = 'RUNNING_POOL_JOB'
+                if admission.get('busy_code') in {'EXTERNAL_SIMULATOR', 'OCCUPANCY_UNKNOWN'}:
+                    busy_code = admission['busy_code']
                 value = {'platform': remote['host']['system'].lower(),
                          'online': remote['engine']['available'],
                          'busy': admission['busy'] or admission['quarantined'] or admission['enrolled'],
@@ -278,8 +282,10 @@ class Pool:
                          'cores': capacity['cpu_count'], 'load': load[0] if isinstance(load, list) else (load or 0),
                          'capabilities': remote['capabilities'], 'engine': remote['engine'],
                          'busy_code': ('QUARANTINED' if admission['quarantined'] else
-                                       'RUNNING_POOL_JOB' if admission['busy'] else
+                                       busy_code if admission['busy'] else
                                        'ENROLLED_HOST' if admission['enrolled'] else None)}
+                if value['busy_code'] in {'EXTERNAL_SIMULATOR', 'OCCUPANCY_UNKNOWN'}:
+                    value['busy_reason'] = f"{busy_code}: " + str(admission.get('busy_reason') or busy_code)[:200]
             if not host.get('local') and value['engine'].get('sha256') != host.get('engine_sha256'):
                 raise ValueError('Remote engine differs from the configured verified pin')
             value.update(id=host['id'], local=host.get('local', False))
@@ -307,7 +313,10 @@ class Pool:
         """Fleet-best median duration of one script, or None when never measured."""
         return pool_history.expected_seconds(self.history(), script)
 
-    def probe(self):
+    def probe(self, host_id=None):
+        if host_id is not None:
+            host = next(host for host in self.hosts if host['id'] == host_id)
+            return self._reserve([self.probe_host(host)])
         with ThreadPoolExecutor(max_workers=len(self.hosts) or 1) as executor:
             observations = list(executor.map(self.probe_host, self.hosts))
         return self._reserve(observations)
@@ -315,13 +324,36 @@ class Pool:
     CIRCUIT_FAILURES = 2
     CIRCUIT_RETRY_SECONDS = 600
     # Refusals caused by the host's state, not by the frozen source.
-    _HOST_TRANSIENT = ('external godot', 'external simulator', 'insufficient disk', 'insufficient_disk',
+    _HOST_TRANSIENT = ('external godot', 'external simulator', 'external_simulator', 'insufficient disk', 'insufficient_disk',
                        'no space left', 'disk_unknown', 'quarantin', 'busy', 'gui_locked', 'desktop')
 
     @classmethod
     def _host_transient(cls, status):
+        if status.get('reason_code') == 'EXTERNAL_SIMULATOR':
+            return True
         text = ' '.join(str(status.get(key) or '') for key in ('error', 'reason', 'detail')).lower()
         return any(token in text for token in cls._HOST_TRANSIENT)
+
+    @staticmethod
+    def _terminal_time(receipt, path):
+        """Coordinator observation time, with a stable fallback for old receipts."""
+        observed = (receipt.get('terminal_observation') or {}).get('at')
+        if type(observed) in (int, float) and math.isfinite(observed) and observed > 0:
+            return observed
+        modified = path.stat().st_mtime
+        status = receipt['last_status']
+        for key in ('finished_at', 'finished'):  # remote / local authority clocks
+            stamp = status.get(key)
+            if type(stamp) in (int, float) and math.isfinite(stamp) and stamp > 0:
+                return min(stamp, modified)
+        return modified
+
+    def _remember_terminal(self, receipt, status, at):
+        previous = receipt.get('terminal_observation') or {}
+        if previous.get('outcome') == status.get('outcome') and previous.get('at'):
+            at = previous['at']
+        receipt['terminal_observation'] = {'at': at, 'outcome': status.get('outcome'),
+                                           'cleanup': status.get('cleanup'), 'host_transient': self._host_transient(status)}
 
     def _circuit(self, observations, source_digest):
         """Open a per-host, per-source circuit after consecutive INFRA_FAILED results.
@@ -335,27 +367,43 @@ class Pool:
         is retried or moved by the circuit itself.
         """
         finished = {}
+        trials = {}
         for path in (self.root / 'jobs').glob('*.json'):
             try:
                 receipt = json.loads(path.read_text(encoding='utf-8'))
                 last = receipt.get('last_status') or {}
-                if receipt.get('source_digest') != source_digest or last.get('state') != 'FINISHED':
+                if receipt.get('source_digest') != source_digest:
                     continue
-                if last.get('outcome') == 'INFRA_FAILED' and self._host_transient(last):
+                terminal = receipt.get('terminal_observation') or {}
+                if last.get('state') == 'FINISHED':
+                    outcome, transient = last.get('outcome'), self._host_transient(last)
+                elif terminal.get('cleanup') == 'CONFIRMED':
+                    outcome, transient = terminal.get('outcome'), terminal.get('host_transient')
+                else:
+                    if receipt.get('circuit_trial') and receipt.get('state') != 'TRANSFER_DEFERRED':
+                        trials[receipt['host']] = path.stem
+                    continue
+                if outcome == 'NOT_DISPATCHED':
+                    continue
+                if outcome == 'INFRA_FAILED' and transient:
                     continue  # the host refused for its own reasons; says nothing about this source (TQ-05-F0.4)
-                finished.setdefault(receipt['host'], []).append((float(receipt.get('created', 0)), last.get('outcome'), path.stem))
+                finished.setdefault(receipt['host'], []).append((self._terminal_time(receipt, path), path.stem, outcome))
             except (OSError, ValueError, KeyError, TypeError, AttributeError):
                 continue
         now = time.time()
         for observation in observations:
             recent = sorted(finished.get(observation['id'], []), reverse=True)[:self.CIRCUIT_FAILURES]
-            if recent and now - recent[0][0] >= self.CIRCUIT_RETRY_SECONDS:
-                continue  # half-open: one new attempt may run; another failure closes it again
-            if len(recent) == self.CIRCUIT_FAILURES and all(outcome == 'INFRA_FAILED' for _, outcome, _ in recent):
-                observation['busy'] = True
-                observation['busy_code'] = 'CIRCUIT_OPEN'
-                observation['busy_reason'] = (f'CIRCUIT_OPEN: last {self.CIRCUIT_FAILURES} attempts of this source ended '
-                                              f'INFRA_FAILED ({", ".join(stem[:8] for _, _, stem in recent)}); inspect them')
+            trial = trials.get(observation['id'])
+            if trial:
+                reason = f'awaiting the terminal outcome of trial {trial}'
+            elif len(recent) < self.CIRCUIT_FAILURES or any(outcome != 'INFRA_FAILED' for _, _, outcome in recent):
+                continue
+            elif now - recent[0][0] >= self.CIRCUIT_RETRY_SECONDS:
+                observation['circuit_half_open'] = True
+                continue
+            else:
+                reason = 'consecutive infrastructure failures: ' + ', '.join(stem for _, stem, _ in recent)
+            observation.update(busy=True, busy_code='CIRCUIT_OPEN', busy_reason='CIRCUIT_OPEN: ' + reason)
         return observations
 
     def _reserve(self, observations, since=None):
@@ -482,8 +530,13 @@ class Pool:
         # nothing ran, even on a replay after an accepted reply was lost.
         return receipt.get('state') == 'NOT_DISPATCHED'
 
-    def _read_receipt_locked(self, path):
-        receipt = json.loads(path.read_text())
+    def _read_receipt_locked(self, path, *, allow_missing=False):
+        try:
+            receipt = json.loads(path.read_text())
+        except FileNotFoundError:
+            if allow_missing:
+                return None
+            raise
         if not isinstance(receipt, dict):
             raise ValueError('invalid pool receipt; preserve original evidence')
         if self._unproved_nonexecution(receipt):
@@ -494,6 +547,24 @@ class Pool:
                 'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED',
                 'error': 'Legacy nonexecution result requires original-authority observation'})
             write_json(path, receipt)
+        # Promote only an identity-checked legacy terminal status. This record
+        # is placement history; collection still uses fresh, verified evidence.
+        previous = receipt.get('last_status') or {}
+        if (receipt.get('state') == 'SUBMITTED' and isinstance(receipt.get('request'), dict)
+                and previous.get('state') == 'FINISHED' and previous.get('cleanup') == 'CONFIRMED'
+                and previous.get('request_id') == receipt['request'].get('request_id') == path.stem
+                and 'cleanup' not in (receipt.get('terminal_observation') or {})):
+            try:
+                host, _ = self._destination(receipt)
+                if host.get('local'):
+                    self._verify_local_status(receipt, previous)
+                else:
+                    self._verify_remote_status(receipt, previous)
+            except (KeyError, OSError, ValueError):
+                pass
+            else:
+                self._remember_terminal(receipt, previous, self._terminal_time(receipt, path))
+                write_json(path, receipt)
         return receipt
 
     def needs_reobservation(self, identifier, status):
@@ -514,9 +585,18 @@ class Pool:
     @staticmethod
     def _public_status(receipt, identifier, status):
         result = {**status, 'job': identifier, 'pool_host': receipt['host']}
+        if 'transfer_seconds' in receipt:
+            result['transfer_seconds'] = receipt['transfer_seconds']
         if receipt.get('invalidated_nonexecution'):
             result['pool_recovery_version'] = 1
         return result
+
+    @staticmethod
+    def _missing_receipt(identifier):
+        return {'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED', 'job': identifier,
+                'reason_code': 'MISSING_RECEIPT',
+                'error': f'Missing pool receipt jobs/{identifier}.json. Preserve the original batch and ID. '
+                         'Restore the original receipt from verified evidence before recovery; dispatch is uncertain.'}
 
     @staticmethod
     def _deferred_status(receipt):
@@ -592,7 +672,8 @@ class Pool:
         return host, ({'root': root} if root is not None else {})
 
     def submit(self, snapshot, script, *, platform='any', require=(), timeout=90, host_id=None,
-               request_id=None, settings=None, expected_manifest_sha256=None, rendering_driver=None):
+               request_id=None, settings=None, expected_manifest_sha256=None, rendering_driver=None,
+               before_dispatch=None):
         identifier = request_id or uuid.uuid4().hex
         if not identifier.isalnum() or len(identifier) > 64:
             raise ValueError('invalid request id')
@@ -604,7 +685,7 @@ class Pool:
             return self._submit(snapshot, script, platform=platform, require=require, timeout=timeout,
                                 host_id=host_id, request_id=identifier, settings=settings,
                                 expected_manifest_sha256=expected_manifest_sha256,
-                                rendering_driver=rendering_driver)
+                                rendering_driver=rendering_driver, before_dispatch=before_dispatch)
         finally:
             guard.close()
 
@@ -658,7 +739,7 @@ class Pool:
         return manifest, options, job
 
     def _submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id, settings,
-                expected_manifest_sha256=None, rendering_driver=None):
+                expected_manifest_sha256=None, rendering_driver=None, before_dispatch=None):
         snapshot = Path(snapshot).resolve()
         identifier = request_id or uuid.uuid4().hex
         if not identifier.isalnum() or len(identifier) > 64:
@@ -704,7 +785,7 @@ class Pool:
                 # dispatch lock; only local receipt reservation and planning
                 # happen under it (plan section 7.6).
                 probed_at = time.time()
-                observations = self.probe()
+                observations = self.probe(bound_host) if bound_host else self.probe()
                 try:
                     guard = acquire_lock(self.root / 'dispatch.lock')
                 except PoolLockTimeout as error:
@@ -721,13 +802,16 @@ class Pool:
                 observations = self._reserve(observations, since=probed_at)
                 if bound_host:
                     observations = [item for item in observations if item['id'] == bound_host]
-                else:
+                if host_id is None:
                     # Unpinned work avoids a host where this exact source keeps
                     # failing infrastructure; pinned work keeps its explicit host.
                     observations = self._circuit(observations, manifest['source_digest'])
                 decision = plan(job, observations)
                 if decision['selected'] is None:
-                    return {'state': 'WAITING', 'decision': decision}
+                    waiting = {'state': 'WAITING', 'decision': decision, 'placement_job': job}
+                    if bound_host is not None:
+                        waiting['placement_host'] = bound_host
+                    return waiting
                 host = next(item for item in self.hosts if item['id'] == decision['selected'])
                 if not host.get('local') and archive is None:
                     # Building inputs does not reserve an execution host. Other
@@ -761,6 +845,12 @@ class Pool:
                            'config_sha256': self.config_digest}
                 if host.get('local'):
                     receipt['local_authority_root'] = str(state_root().resolve())
+            if any(item['id'] == host['id'] and item.get('circuit_half_open') for item in observations):
+                receipt['circuit_trial'] = True
+            else:
+                receipt.pop('circuit_trial', None)
+            if before_dispatch is not None:
+                before_dispatch()
             write_json(receipt_path, receipt)
             guard.close()
             guard = None
@@ -775,10 +865,12 @@ class Pool:
                 submission_receipt(self.root, request)
                 receipt['request'] = request
             else:
+                transfer_started = time.monotonic()
                 try:
                     remote_archive = self._transfer_archive(host, archive, archive_digest, identifier)
                 except TransferFailure as error:
                     self._defer_transfer(receipt, receipt_path, error)  # always raises TransferDeferred
+                receipt['transfer_seconds'] = round(time.monotonic() - transfer_started, 3)
                 receipt['request'] = {'request_id': identifier, 'preset': 'checked',
                                       'archive': {'path': remote_archive, 'sha256': archive_digest},
                                       'expected_engine_sha256': host['engine_sha256'],
@@ -812,7 +904,13 @@ class Pool:
         path = self.root / 'jobs' / (identifier + '.json')
         guard = acquire_lock(self.root / (identifier + '.lock'))
         try:
-            receipt = self._read_receipt_locked(path)
+            receipt = self._read_receipt_locked(path, allow_missing=True)
+            if receipt is None:
+                return self._missing_receipt(identifier)
+            if (receipt.get('terminal_observation') or {}).get('cleanup') == 'CONFIRMED':
+                # Once completion and teardown are witnessed, recovery can
+                # observe the authority but a lost receipt there cannot replay.
+                return self._status_locked(identifier)
             if receipt.get('state') == 'TRANSFER_DEFERRED':
                 # Nondispatched; only a repeated submit (it needs the snapshot) can resume the transfer.
                 return self._public_status(receipt, identifier, self._deferred_status(receipt))
@@ -981,7 +1079,9 @@ class Pool:
     def _status_locked(self, identifier):
         """Observe and update a receipt while holding its per-job lock."""
         path = self.root / 'jobs' / (identifier + '.json')
-        receipt = self._read_receipt_locked(path)
+        receipt = self._read_receipt_locked(path, allow_missing=True)
+        if receipt is None:
+            return self._missing_receipt(identifier)
         if receipt.get('state') in self._RECONCILED:
             return self._public_status(receipt, identifier, receipt['last_status'])
         if receipt.get('state') == 'TRANSFER_DEFERRED':
@@ -1002,11 +1102,21 @@ class Pool:
                 result = self._verify_remote_status(receipt, self.remote(host, 'status', {'request_id': identifier}))
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
             result = {'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED', 'error': str(error)}
+        if result.get('state') == 'FINISHED':
+            previous = receipt.get('last_status') or {}
+            outcome = result.get('outcome')
+            stamp = receipt.get('terminal_observation')
+            legacy = not stamp and previous.get('state') == 'FINISHED' and previous.get('outcome') == outcome
+            observed = self._terminal_time(receipt, path) if legacy else time.time()
+            self._remember_terminal(receipt, result, observed)
+        elif result.get('state') in {'RUNNING', 'STARTING', 'ACCEPTED', 'QUEUED', 'DISPATCHING', 'CLEANING'}:
+            receipt.pop('terminal_observation', None)
         receipt['last_status'] = result
         if result.get('state') in {'RUNNING', 'STARTING', 'FINISHED', 'ACCEPTED', 'QUEUED', 'DISPATCHING', 'CLEANING'}:
             receipt['state'] = 'SUBMITTED'
         elif result.get('state') in {'UNKNOWN', 'SUBMISSION_UNCONFIRMED', 'NOT_FOUND'}:
-            receipt['state'] = 'SUBMISSION_UNCONFIRMED'
+            if (receipt.get('terminal_observation') or {}).get('cleanup') != 'CONFIRMED':
+                receipt['state'] = 'SUBMISSION_UNCONFIRMED'
         write_json(path, receipt)
         return self._public_status(receipt, identifier, result)
 

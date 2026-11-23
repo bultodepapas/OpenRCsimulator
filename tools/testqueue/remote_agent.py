@@ -721,15 +721,22 @@ def probe(root, request):
         graphics = graphics_config(root)
         if graphics:
             capabilities += ["graphics", "gpu:" + graphics["gpu"]]
+    admission = {"enrolled": authority_enrolled(), "busy": busy or bool(states),
+                 "quarantined": any(s["state"] == "UNKNOWN" for s in states),
+                 "active_request_id": states[0].get("request_id") if states else None}
+    if os.name == "posix" and engine["available"] and not admission["busy"] and not admission["enrolled"]:
+        try:
+            if external_engine_present(engine_path):
+                admission.update(busy=True, busy_code="EXTERNAL_SIMULATOR", busy_reason="External Godot is running")
+        except (OSError, subprocess.SubprocessError) as error:
+            admission.update(busy=True, busy_code="OCCUPANCY_UNKNOWN", busy_reason=f"Godot process probe failed: {error}")
     return {"protocol": PROTOCOL,
             "host": {"hostname": platform.node(), "system": system, "release": platform.release(),
                      "machine": machine, "python": platform.python_version()},
             "capabilities": capabilities,
             "capacity": {"cpu_count": os.cpu_count(), "load_average": load, "free_bytes": usage.free,
                          "total_bytes": usage.total, "free_memory_bytes": memory[0], "total_memory_bytes": memory[1]},
-            "engine": engine, "admission": {"enrolled": authority_enrolled(), "busy": busy or bool(states),
-                                            "quarantined": any(s["state"] == "UNKNOWN" for s in states),
-                                            "active_request_id": states[0].get("request_id") if states else None}}
+            "engine": engine, "admission": admission}
 
 
 def launch(root, request):
@@ -1023,12 +1030,40 @@ def external_engine_present(engine):
         # The pool deliberately leaves Windows admission to the enrolled worker.
         raise Refused("native Windows execution belongs to the existing testqueue authority")
     result = subprocess.run(["ps", "-A", "-o", "comm="], text=True, capture_output=True, check=True, timeout=10)
+    if not result.stdout.strip():
+        raise OSError("process table observation was empty")
     base = Path(engine).name.lower()
     for line in result.stdout.splitlines():
         name = Path(line.strip()).name.lower()
         if name and (name == base or "godot" in name):
             return True
     return False
+
+
+def wait_for_engine(directory, state, request):
+    """Keep the original exclusive grant while an external simulator uses the host."""
+    engine = request["engine_path"]
+    if not external_engine_present(engine):
+        return
+    deadline = time.monotonic() + request["options"].get("timeout", 600)
+    state.update(stage="admission", reason_code="EXTERNAL_SIMULATOR",
+                 reason="Waiting for external Godot before starting the checked runner",
+                 admission_wait_started_at=time.time())
+    write_json(directory / "state.json", state)
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            state.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
+            raise Refused("EXTERNAL_SIMULATOR admission wait expired before process start", "EXTERNAL_SIMULATOR")
+        time.sleep(min(1.0, remaining))
+        if time.monotonic() < deadline and not external_engine_present(engine):
+            if authority_enrolled() or digest(engine) != state["engine"]["sha256"]:
+                raise Refused("host enrollment or engine changed during admission wait")
+            if time.monotonic() < deadline and not external_engine_present(engine):
+                break
+    state["admission_wait_finished_at"] = time.time()
+    for field in ("stage", "reason", "reason_code"):
+        state.pop(field)
 
 
 def execute_stage(root, directory, state, stage, deadline):
@@ -1305,8 +1340,6 @@ def supervise(root, identifier):
         state["native_adaptation"] = adapt_native_extensions(source)
         if not (source / "tools/godot/run_checked.py").is_file() or not (source / "app" / request["options"]["script"][6:]).is_file():
             raise Refused("snapshot is missing the checked runner or requested script")
-        if external_engine_present(request["engine_path"]):
-            raise Refused("external Godot process detected; it was not touched")
         state.update(host={"hostname": platform.node(), "system": platform.system(), "machine": platform.machine()},
                      engine={"path": request["engine_path"], "sha256": digest(request["engine_path"])},
                      transformation=transformation, source_inventory_sha256=digest(directory / "source-inventory.json"))
@@ -1318,6 +1351,9 @@ def supervise(root, identifier):
             state["import_cache"] = seed_import_cache(root, source, state["engine"]["sha256"])
         except Exception as error:
             state["import_cache"] = {"seeded": False, "error": f"{type(error).__name__}: {error}"[:300]}
+        # Preparation has no engine subprocess. Recheck occupancy at dispatch.
+        # status/probe inspect the saved state without waiting for this slot.
+        wait_for_engine(directory, state, request)
         end = time.monotonic() + request["options"].get("timeout", 600)
         started = True
         imported = execute_stage(root, directory, state, "import", end)

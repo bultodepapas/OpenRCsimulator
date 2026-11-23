@@ -285,7 +285,7 @@ def summarize(result, pool=None):
         action = "snapshot was interrupted before any dispatch; sim_test_launch with a new request_id"
     elif state == "ERROR" and not active and not result.get("source_frozen") and not rows:
         action = ("source freeze failed before any test was dispatched (" + str(supervisor.get("error"))[:160]
-                  + "); fix that cause, then run again with a new request_id")
+                  + "); fix the cause, keep the source checkout stable and run again with a new request_id")
     elif state == "ERROR" and not active:
         action = "inspect supervisor.error; then sim_test_recover with the same request_id"
     elif state == "NEEDS_OPERATOR" and not active:
@@ -312,6 +312,8 @@ def summarize(result, pool=None):
     else:
         action = "poll sim_test_status"
     summary = {"result": overall, **counts, "attention": attention, "next_action": action}
+    if "snapshot_seconds" in supervisor:
+        summary["snapshot_seconds"] = supervisor["snapshot_seconds"]
     if waiting:
         summary["waiting"] = waiting
     if overall == "INCOMPLETE" and pool is not None:
@@ -369,7 +371,8 @@ class Progress:
         self.clock, self.signature, self.changed = clock, None, clock()
 
     def observe(self, rows):
-        signature = tuple((row.get("request_id"), row.get("phase"), (row.get("status") or {}).get("state"))
+        signature = tuple((row.get("request_id"), row.get("phase"), (row.get("status") or {}).get("state"),
+                           (row.get("status") or {}).get("stage"), (row.get("status") or {}).get("reason_code"))
                           for row in rows)
         now = self.clock()
         if signature != self.signature:
@@ -402,20 +405,27 @@ def supervise(directory):
                 return
             time.sleep(0.1)
     state_path = directory / "supervisor.json"
+    timings = {}
     def update(state, **extra):
-        write_json(state_path, {"state": state, "updated_at": time.time(), **extra})
+        write_json(state_path, {"state": state, "updated_at": time.time(), **timings, **extra})
     try:
         request = _read(directory / "request.json")
         if digest(request["config"]) != request["config_sha256"]:
             raise ValueError("pool configuration changed; restore it before recovery")
         pool = Pool(request["config"])
         manifest = directory / "manifest.json"
+        previous = _read(state_path) if state_path.exists() else {}
+        if "snapshot_seconds" in previous:
+            timings["snapshot_seconds"] = previous["snapshot_seconds"]
         if not manifest.exists():
-            previous = _read(state_path) if state_path.exists() else {}
             if previous.get("state") != "ACCEPTED":
                 raise ValueError("snapshot preparation was interrupted; no tests dispatched; use a new request_id for current source")
             update("SNAPSHOTTING")
-            snapshot = pool.snapshot(Path(request["source"]))
+            started = time.monotonic()
+            try:
+                snapshot = pool.snapshot(Path(request["source"]))
+            finally:
+                timings["snapshot_seconds"] = round(time.monotonic() - started, 3)
             write_json(manifest, {"snapshot": str(snapshot), "jobs": request["jobs"]})
         # TQ-05-F2.2: observe until a final result or a stop rule, not for a
         # fixed hour. A stop never cancels work; recover resumes observation.

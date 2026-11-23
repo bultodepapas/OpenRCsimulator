@@ -85,7 +85,9 @@ class TransferDeferralTests(unittest.TestCase):
         def plan(job, observations):
             self.planned.append([item['id'] for item in observations])
             return {'selected': self.selected}
-        probe = lambda: [{'id': name, 'online': True, 'busy': False} for name in ('remote', 'second')]
+        def probe(host_id=None):
+            return [{'id': name, 'online': True, 'busy': False} for name in ('remote', 'second')
+                    if host_id is None or name == host_id]
         with patch.object(self.pool, '_preflight', return_value=(self.manifest, {}, {})), \
                 patch.object(self.pool, 'probe', side_effect=probe), \
                 patch.object(pool_module, 'plan', side_effect=plan), \

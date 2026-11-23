@@ -3,16 +3,18 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
+import threading
+import time
 import unittest
 from unittest.mock import patch
 
 from tools.testqueue.test_pool import verified_fixture
 from tools.testqueue.test_collection import checked_fixture
 
-from tools.testqueue.common import Singleton
+from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool import Pool
-from tools.testqueue.pool_batch import run_batch
+from tools.testqueue.pool_batch import _host_lanes, run_batch
 
 
 PASS = {"state": "FINISHED", "outcome": "PASSED", "evidence": "COMPLETE", "cleanup": "CONFIRMED"}
@@ -32,7 +34,7 @@ class FakePool:
         self.crash_once = False
 
     def submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id,
-               expected_manifest_sha256):
+               expected_manifest_sha256, before_dispatch, rendering_driver=None):
         saved = json.loads(self.state_path.read_text())
         assert request_id in [row["request_id"] for row in saved["jobs"]]
         assert all(row.get("request_id") for row in saved["jobs"])
@@ -41,6 +43,7 @@ class FakePool:
             self.wait_once.remove(script)
             return {"state": "WAITING", "decision": self.wait_decisions.get(script, {"selected": None})}
         # The real pool binds the input and request ID to one durable receipt.
+        before_dispatch()
         self.submissions.setdefault(request_id, script)
         if self.crash_once:
             self.crash_once = False
@@ -99,11 +102,10 @@ class PoolBatchTests(unittest.TestCase):
         result = self.run_case()
         self.assertEqual(result["result"], "PASSED")
         calls = list(self.pool.submit_calls)
-        # WAITING for platform "any" proves no host is eligible for the
-        # narrower darwin/mac-1 row, so that row waits for the next pass.
-        self.assertEqual([call[0] for call in calls], [first, first, second])
-        self.assertEqual(calls[0][1], calls[1][1])
-        self.assertNotEqual(calls[0][1], calls[2][1])
+        # The narrower row can proceed on the next pass during the first row's backoff.
+        self.assertEqual(calls[0][0], first)
+        self.assertEqual([call for call in calls if call[0] == first], [calls[0]] * 2)
+        self.assertEqual(len([call for call in calls if call[0] == second]), 1)
         self.assertEqual(len(self.pool.submissions), 2)
         self.run_case()
         self.assertEqual(self.pool.submit_calls, calls)
@@ -117,7 +119,9 @@ class PoolBatchTests(unittest.TestCase):
         self.assertEqual(result["result"], "PASSED")
         # linux waited: the linux/l1 row is skipped, windows proceeds; the
         # broader "any" row is not implied by a linux wait and proceeds too.
-        self.assertEqual([call[0] for call in self.pool.submit_calls], [a, c, d, a, b])
+        scripts = [call[0] for call in self.pool.submit_calls]
+        self.assertEqual(scripts[:3], [a, c, d])
+        self.assertCountEqual(scripts[3:], [b, a])
         self.assertEqual(len(self.pool.submissions), 4)
 
     def test_script_specific_history_refusal_does_not_hold_back_other_rows(self):
@@ -129,6 +133,56 @@ class PoolBatchTests(unittest.TestCase):
              "reasons": ["INVALID_INVENTORY: historical duration must be positive"]}]}
         self.assertEqual(self.run_case()["result"], "PASSED")
         self.assertEqual([call[0] for call in self.pool.submit_calls], [a, b, a])
+
+    def test_refusal_backoff_survives_restart_and_preserves_original_id_and_constraint(self):
+        first = "res://tests/test_a.gd"
+        self.inputs([{"script": first, "platform": "linux", "host": "linux"}])
+        delay = 30
+        with patch("tools.testqueue.pool_batch.RETRY_INITIAL_SECONDS", delay):
+            for count in (1, 2):
+                self.pool.wait_once.add(first)
+                self.pool.wait_decisions[first] = {"selected": None, "candidates": [
+                    {"host": "linux", "eligible": False, "reasons": [f"INSUFFICIENT_DISK: {count} < 3 bytes"]}]}
+                with patch("tools.testqueue.pool_batch.time.sleep", side_effect=SystemExit), self.assertRaises(SystemExit):
+                    self.run_case()
+                state = json.loads(self.state.read_text())
+                row = state["jobs"][0]
+                self.assertEqual(row["phase"], "WAITING")
+                self.assertEqual(row["admission_wait"]["consecutive"], count)
+                stamp = row["admission_wait"]["last_observed_at"]
+                self.assertAlmostEqual(row["retry_after"] - stamp, delay)
+                if count == 1:
+                    identifier, first_stamp = row["request_id"], stamp
+                self.assertEqual(row["admission_wait"]["first_observed_at"], first_stamp)
+                with patch("tools.testqueue.pool_batch.time.sleep", side_effect=SystemExit), self.assertRaises(SystemExit):
+                    self.run_case()
+                self.assertEqual(len(self.pool.submit_calls), count)
+                row["retry_after"] = 0
+                self.state.write_text(json.dumps(state))
+            result = self.run_case()
+        self.assertEqual(result["result"], "PASSED")
+        self.assertEqual(self.pool.submit_calls, [(first, identifier)] * 3)
+        self.assertEqual(self.pool.submissions, {identifier: first})
+
+    def test_slow_placement_cannot_starve_another_host_across_observation_windows(self):
+        a, b = "res://tests/test_a.gd", "res://tests/test_b.gd"
+        self.inputs([{"script": a}, {"script": b, "platform": "windows"}])
+        clock = [100.0]
+        submit = self.pool.submit
+
+        def slow(*args, **kwargs):
+            clock[0] += 5
+            return submit(*args, **kwargs)
+
+        with patch("tools.testqueue.pool_batch.time.monotonic", side_effect=lambda: clock[0]), \
+                patch("tools.testqueue.pool_batch.time.time", side_effect=lambda: clock[0]), \
+                patch.object(self.pool, "submit", side_effect=slow):
+            self.pool.wait_once.add(a)
+            run_batch(self.pool, self.config, self.manifest, self.state, timeout=2)
+            clock[0] += 10  # Even with the first row eligible to probe again, host B gets its turn.
+            self.pool.wait_once.add(a)
+            run_batch(self.pool, self.config, self.manifest, self.state, timeout=2)
+        self.assertEqual([script for script, _ in self.pool.submit_calls], [a, b])
 
     def test_longest_expected_test_is_submitted_first(self):
         short, long, unmeasured = (f"res://tests/test_{name}.gd" for name in ("short", "long", "new"))
@@ -142,6 +196,125 @@ class PoolBatchTests(unittest.TestCase):
         self.pool.expected_seconds = lambda script: (_ for _ in ()).throw(OSError("history unavailable"))
         self.assertEqual(self.run_case()["result"], "PASSED")
         self.assertEqual([call[0] for call in self.pool.submit_calls], [short, long, unmeasured])
+
+    def test_host_collects_while_another_transfer_is_blocked(self):
+        self.cross_host_transfer(pinned=True)
+
+    def test_unpinned_distinct_platforms_advance_independently(self):
+        self.cross_host_transfer(pinned=False)
+
+    def test_overlapping_affinities_stay_in_one_lane(self):
+        rows = [{"input": {"host": "windows-1", "platform": "windows"}},
+                {"input": {"host": None, "platform": "windows"}}]
+        self.assertEqual(_host_lanes(rows), [rows])
+        rows.append({"input": {"host": "linux-1", "platform": "linux"}})
+        self.assertEqual(_host_lanes(rows), [rows[:2], rows[2:]])
+        rows[0]["input"]["platform"] = "any"
+        self.assertEqual(_host_lanes(rows), [rows])
+
+    def cross_host_transfer(self, *, pinned):
+        from tools.testqueue.pool import request_digest
+        hosts = [{"id": name, "ssh": name, "agent": "/agent", "engine": "/engine", "engine_sha256": "a"*64}
+                 for name in ("slow", "fast")]
+        self.config.write_text(json.dumps({"state_root": str(self.root / "pool"), "hosts": hosts}))
+        platform_hosts = {"darwin": "slow", "linux": "fast"}
+        self.inputs([{"host": host if pinned else None, "platform": platform, "script": "res://tests/test_a.gd"}
+                     for platform, host in platform_hosts.items()])
+        pool = Pool(self.config)
+        entered, finished = threading.Event(), threading.Event()
+        visible = []
+        real_clock, elapsed = time.monotonic, [0.0]
+        refused = []
+
+        def plan(job, observations):
+            host = platform_hosts[job["platform"]]
+            self.assertIn(host, [item["id"] for item in observations])
+            if host == "slow" and not refused:
+                refused.append(host)
+                return {"selected": None, "candidates": [{"host": host, "eligible": False,
+                                                         "reasons": ["INSUFFICIENT_DISK: 1 < 3 bytes"]}]}
+            return {"selected": host}
+
+        def transfer(host, archive, archive_digest, identifier):
+            if host["id"] == "slow":
+                entered.set()
+                if not finished.wait(10):
+                    raise AssertionError("fast host did not finish while slow transfer was held")
+                elapsed[0] += 20  # Exhaust the observation budget while the owner still holds the call.
+                visible.extend(json.loads(self.state.read_text())["jobs"])
+                with self.assertRaises(OSError):
+                    run_batch(pool, self.config, self.manifest, self.state, timeout=.1)
+            elif not entered.wait(10):
+                raise AssertionError("slow host failed to enter its transfer")
+            return "/remote/archive.tar"
+
+        def publish(path, value):
+            write_json(path, value)
+            if value["jobs"][1]["phase"] == "DONE":
+                finished.set()
+
+        def accepted(host, action, request):
+            return {"state": "STARTING", "request_id": request["request_id"], "payload_sha256": request_digest(request)}
+
+        def collect(identifier):
+            return {"pool_job": identifier, "pool_outcome": "PASSED", "collection_format": COLLECTION_FORMAT,
+                    "diagnostic_only": False}
+
+        def preflight(snapshot, script, platform, *args):
+            return {"source_digest": "src"}, {}, {"platform": platform}
+        def probe(host=None):
+            return [{"id": item["id"], "busy": False} for item in hosts if host is None or item["id"] == host]
+
+        with (patch.object(pool, "_preflight", side_effect=preflight),
+              patch.object(pool, "probe", side_effect=probe),
+              patch("tools.testqueue.pool.plan", side_effect=plan),
+              patch("tools.testqueue.pool_batch.time.monotonic", side_effect=lambda: real_clock() + elapsed[0]),
+              patch.object(pool, "_prepare_archive", return_value=self.manifest),
+              patch("tools.testqueue.pool.verify_archive"),
+              patch.object(pool, "_transfer_archive", side_effect=transfer),
+              patch.object(pool, "remote", side_effect=accepted) as remote,
+              patch.object(pool, "status", return_value=PASS),
+              patch.object(pool, "collect", side_effect=collect),
+              patch.object(pool, "verify_collection", side_effect=lambda identifier, result: result),
+              patch("tools.testqueue.pool_batch.write_json", side_effect=publish)):
+            result = run_batch(pool, self.config, self.manifest, self.state, timeout=15, poll_interval=.01)
+            self.assertEqual(result["result"], "INCOMPLETE")
+            with patch.object(pool, "submit", side_effect=AssertionError("duplicate submission")) as submit:
+                result = run_batch(pool, self.config, self.manifest, self.state, timeout=15, poll_interval=.01)
+            submit.assert_not_called()
+        self.assertEqual(result["result"], "PASSED")
+        self.assertEqual([r["phase"] for r in visible], ["SUBMITTING", "DONE"])
+        self.assertEqual(visible[0]["status"], {"state": "SUBMITTING", "stage": "placement"})
+        self.assertIn("placement_started_at", visible[0])
+        self.assertNotIn("retry_after", visible[0])
+        self.assertNotIn("admission_wait", visible[0])
+        self.assertEqual([r["request_id"] for r in visible], [r["request_id"] for r in result["jobs"]])
+        self.assertEqual(remote.call_count, 2)
+        for row in result["jobs"]:
+            self.assertLessEqual(row["first_placement_at"], row["last_placement_at"])
+            self.assertEqual(set(row["coordinator_seconds"]), {"placement", "collection"})
+
+    def test_failed_parallel_publication_fences_other_dispatch_callbacks(self):
+        self.inputs([{"host": host, "script": "res://tests/test_a.gd"} for host in ("one", "two")])
+        failed = threading.Event()
+
+        def publish(path, value):
+            if value["jobs"][0]["phase"] == "SUBMITTING":
+                failed.set()
+                raise OSError("injected journal write failure")
+            write_json(path, value)
+
+        original = self.pool.submit
+        def submit(*args, **kwargs):
+            if kwargs["host_id"] == "two":
+                self.assertTrue(failed.wait(10))
+            return original(*args, **kwargs)
+
+        with patch("tools.testqueue.pool_batch.write_json", side_effect=publish), patch.object(self.pool, "submit", submit):
+            with self.assertRaisesRegex(RuntimeError, "publication stopped: injected journal write failure"):
+                self.run_case()
+        self.assertEqual(self.pool.submissions, {})
+        self.assertEqual([r["phase"] for r in json.loads(self.state.read_text())["jobs"]], ["WAITING", "WAITING"])
 
     def test_crash_after_launch_recovers_same_id_without_another_attempt(self):
         self.inputs([{"script": "res://tests/test_a.gd"}])

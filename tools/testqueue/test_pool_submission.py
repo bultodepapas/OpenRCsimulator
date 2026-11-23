@@ -105,7 +105,10 @@ class SubmissionBoundaryTests(unittest.TestCase):
         self.assertEqual(repeated["jobs"][0]["first_error"], row["first_error"])
 
     def test_crash_at_call_boundary_with_missing_receipt_never_resubmits(self):
-        with patch.object(self.pool, "submit", side_effect=SystemExit("crash after possible dispatch")):
+        def crash_after_dispatch_boundary(*args, before_dispatch, **kwargs):
+            before_dispatch()
+            raise SystemExit("receipt lost after possible dispatch")
+        with patch.object(self.pool, "submit", side_effect=crash_after_dispatch_boundary):
             with self.assertRaises(SystemExit):
                 self.run_case()
         saved = json.loads(self.state.read_text())
@@ -117,6 +120,7 @@ class SubmissionBoundaryTests(unittest.TestCase):
         submit.assert_not_called()
         rpc.assert_not_called()
         self.assertEqual(result["jobs"][0]["phase"], "BLOCKED")
+        self.assertEqual(result["jobs"][0]["status"]["reason_code"], "MISSING_RECEIPT")
         self.assertEqual(result["jobs"][0]["request_id"], saved["jobs"][0]["request_id"])
 
     def test_generic_submit_error_is_not_safe_retry_or_rejection(self):
@@ -140,7 +144,7 @@ class SubmissionBoundaryTests(unittest.TestCase):
         self.assertEqual(result["migrated_from_version"], 1)
         self.assertEqual(result["jobs"][0]["phase"], "BLOCKED")
 
-    def test_interrupted_rejection_response_is_not_inferred_from_receipt_absence(self):
+    def test_interrupted_preflight_is_revalidated_with_original_id(self):
         original = self.pool.submit
         def reject_then_crash(*args, **kwargs):
             try:
@@ -150,10 +154,27 @@ class SubmissionBoundaryTests(unittest.TestCase):
         with patch.object(self.pool, "submit", side_effect=reject_then_crash):
             with self.assertRaises(SystemExit):
                 self.run_case()
-        with patch.object(self.pool, "submit") as submit:
+        saved = json.loads(self.state.read_text())["jobs"][0]
+        self.assertEqual(saved["phase"], "WAITING")
+        with patch.object(self.pool, "submit", wraps=original) as submit, patch.object(transport, "rpc") as rpc:
             result = self.run_case()
-        submit.assert_not_called()
-        self.assertEqual(result["jobs"][0]["status"]["state"], "UNKNOWN")
+        submit.assert_called_once()
+        rpc.assert_not_called()
+        self.assertEqual(submit.call_args.kwargs["request_id"], saved["request_id"])
+        self.assertEqual(result["jobs"][0]["status"]["state"], "REJECTED")
+
+    def test_restart_during_placement_keeps_one_request_and_one_dispatch(self):
+        stack, rpc = self.admitted()
+        with stack:
+            with patch.object(self.pool, "probe", side_effect=SystemExit), self.assertRaises(SystemExit):
+                self.run_case()
+            row = json.loads(self.state.read_text())["jobs"][0]
+            self.assertEqual(row["phase"], "WAITING")
+            rpc.assert_not_called()
+            result = self.run_case(timeout=15)
+        self.assertEqual(result["result"], "PASSED")
+        self.assertEqual(result["jobs"][0]["request_id"], row["request_id"])
+        rpc.assert_called_once()
 
 
 if __name__ == "__main__":

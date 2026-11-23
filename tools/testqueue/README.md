@@ -41,6 +41,22 @@ waiting never cancels.
   reason (`NO_HOST_FOR_PLATFORM`, `NO_ONLINE_HOST_FOR_PLATFORM`, `HOST_BUSY`,
   `DISK`, `CIRCUIT_OPEN`, `QUARANTINED`, `TRANSFER_DEFERRED`, …). `detail: "full"`
   returns the authoritative rows.
+- For a placement refusal, inspect the row's host reasons, first and last observation
+  and next probe time. Identical refusals back off to 30 seconds. Snapshot duration
+  appears in the summary when the supervisor measured it. An interrupted dispatch
+  without its original receipt is `MISSING_RECEIPT`: keep its ID for reconciliation.
+- A batch with explicit host pins can advance up to four independent host groups
+  concurrently. A batch that includes unpinned work and specifies an OS for
+  every job can advance independent OS groups concurrently. Overlapping jobs
+  within a group use the shared placement loop. A mixed batch with unpinned
+  work and an `any` constraint uses one lane. An in-flight transfer can outlast
+  an observation window. Cached status still reports its elapsed placement time
+  and other groups' published results while the batch retains ownership.
+  In compact results,
+  `stage_seconds.placement` includes preflight, archive preparation and transfer.
+  The separate transfer duration measures the successful upload/cache check and
+  is already included in placement. Other available durations include admission
+  wait, import, check and collection.
 - `sim_fleet` shows hosts (online, typed `busy_code`, disk/RAM/load, active pool
   jobs) and every Godot process on the coordinator, with unmanaged ones flagged.
   It uses a 15-second cache; `refresh: true` probes now.
@@ -105,12 +121,16 @@ scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 6
 
 - resumes, through the idempotent `recover`, every MCP request with a frozen
   manifest, no final result, no live supervisor and a change within 6 hours;
-- skips `ERROR` and `NEEDS_OPERATOR`, and stops resuming a request after six
-  resumes in a day;
+- skips `ERROR`. For `NEEDS_OPERATOR` it can resume a recent frozen batch when
+  a row recorded a proved placement refusal and a fresh probe now satisfies
+  that row's original constraints. Older records without that proof and
+  ambiguous submissions require operator reconciliation. Recovery uses the
+  existing IDs and stops after six automatic resumes per request in a day;
 - reports older requests as stale and never resumes them: their queued tests
   would run old source;
-- starts `testctl serve` when the authority does not answer, for example after a
-  reboot. The machine-wide singleton refuses a second worker.
+- starts `testctl serve` after a failed probe if the authority's worker lock is
+  available. A held or inaccessible lock is recorded in the watchdog report
+  along with the probe error. The machine-wide singleton still guards startup.
 
 The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
 code it started with, so restart the task after updating it:
@@ -325,6 +345,18 @@ settings and may need separate diagnosis if its own initial window remains.
 Placement rejects unavailable/busy hosts, incompatible platforms, mismatched
 engine hashes and insufficient storage/memory. The estimate combines observed
 load, recorded per-test duration, import setup and configured transfer bandwidth.
+Two consecutive source-specific infrastructure failures on one host start a
+600-second cooldown from the terminal observation. After expiry, unpinned
+placement reserves one trial. Explicit host pins keep their normal admission
+checks. Older receipts use the recorded completion time or receipt modification
+time when completion time is unavailable.
+
+For checked jobs, a foreign Godot process that appears after preparation keeps
+the original attempt waiting at the admission gate for up to its configured
+timeout. The execution budget starts at launch. If the conflict persists, the
+authority reports the admission stage, `EXTERNAL_SIMULATOR` and its nonlaunch
+evidence. An interrupted launch still requires ownership reconciliation.
+
 `history.json` keeps the newest nine successful durations per host and script,
 tagged with their pool job so a retried collection adds no second sample (legacy
 single numbers are read as one sample). Placement uses the median, so one cold

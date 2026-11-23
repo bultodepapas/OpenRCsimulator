@@ -1102,7 +1102,7 @@ class WorkerFixture(unittest.TestCase):
 
     def test_external_simulator_appearing_during_preparation_prevents_start(self):
         self.worker.draining = True
-        accepted = self._submit("late-external", headless=True)
+        accepted = self._submit("late-external", headless=True, timeout=1)
         attempt = self.worker.store.allocate(accepted["job"], {"headless": 1}, {"headless": 1})
         self.worker.fixture = False
         self.worker.engine_identity = {"binaries_sha256": {}}
@@ -1112,7 +1112,39 @@ class WorkerFixture(unittest.TestCase):
         status = self._status(accepted["job"])
         self.assertEqual(status.get("outcome"), "INFRA_FAILED", status)
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
+        self.assertEqual(status["launch"], "NOT_CREATED")
+        self.assertEqual(status["nonlaunch"], "CONFIRMED")
+        self.assertEqual(status["reason_code"], "EXTERNAL_SIMULATOR")
+        self.assertEqual(status["stage"], "admission")
         self.assertIn("EXTERNAL_SIMULATOR", status["error"])
+
+    def test_late_external_wait_can_resume_or_cancel_the_same_attempt(self):
+        self.worker.draining = True
+        for cancel in (False, True):
+            with self.subTest(cancel=cancel):
+                self.worker.fixture = True
+                accepted = self._submit("late-external", headless=True)
+                job = accepted["job"]
+                attempt = self.worker.store.allocate(job, {"headless": 1}, {"headless": 1})
+                self.worker.fixture = False
+                self.worker.engine_identity = {"binaries_sha256": {}}
+                cleared = threading.Event()
+                with mock.patch.object(worker_module, "external_simulators", side_effect=lambda: [] if cleared.is_set() else [98765]):
+                    thread = threading.Thread(target=self.worker.execute, args=(job, attempt))
+                    thread.start()
+                    try:
+                        wait_until(lambda: self._status(job).get("reason_code") == "EXTERNAL_SIMULATOR")
+                        self.assertEqual(self._status(job)["state"], "DISPATCHING")
+                        if cancel:
+                            self._call("cancel", handle=accepted["handle"])
+                    finally:
+                        cleared.set()
+                        thread.join(10)
+                self.assertFalse(thread.is_alive())
+                status = self._status(job)
+                self.assertEqual(status["outcome"], "CANCELED" if cancel else "PASSED", status)
+                self.assertEqual(status["launch"], "NOT_CREATED" if cancel else "CREATED_OWNED")
+                self.assertEqual([record["id"] for record in status["attempts"]], [attempt])
 
     def test_operator_abandonment_requires_ownership_drain_and_absent_orphan(self):
         self.worker.draining = True

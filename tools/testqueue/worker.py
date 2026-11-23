@@ -1037,10 +1037,13 @@ class Worker:
             write_json(directory / "request.json", payload)
             command = [sys.executable, str(source / "tools/testqueue/adapter.py"), str(directory)]
             process = OwnedProcess(command, cwd=source, env=env, log=directory / "worker.log")
+            admission_deadline = None
             while True:
+                wait_seconds = _SCHEDULER_INTERVAL
                 with self.lock:
                     if self.store.get(job)["canceled"]:
-                        data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
+                        data.update(cleanup="CONFIRMED", outcome="CANCELED", launch="NOT_CREATED",
+                                    nonlaunch="CONFIRMED", finished=time.time())
                         self.store.update(job, attempt, "FINISHED", data)
                         return
                     # A teardown still in progress may yet fail; wait for its proof.
@@ -1053,11 +1056,29 @@ class Worker:
                         except _OwnershipBusy:
                             # Another teardown holds process ownership; re-check later.
                             quarantined = True
-                    if not quarantined:
+                    if admission_deadline is not None and time.monotonic() >= admission_deadline:
+                        confirmed_nonlaunch = True
+                        raise RuntimeError("EXTERNAL_SIMULATOR admission wait expired before process start")
+                    if conflicts:
+                        if payload["preset"] != "checked":
+                            confirmed_nonlaunch = True
+                            raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
+                        # Retain this prepared source and claim. Poll outside the authority lock
+                        # and pass the same cancel, quarantine and fresh occupancy gates on wake.
+                        if admission_deadline is None:
+                            admission_deadline = time.monotonic() + payload["options"]["timeout"]
+                            data.update(stage="admission", reason_code="EXTERNAL_SIMULATOR",
+                                        reason="Waiting for external Godot before starting the checked runner",
+                                        admission_wait_started_at=time.time())
+                            self.store.update(job, attempt, "DISPATCHING", data)
+                        wait_seconds = min(1.0, max(0.0, admission_deadline - time.monotonic()))
+                    elif not quarantined:
                         if not self.fixture and not payload["options"]["headless"] and not desktop_ready():
                             raise RuntimeError("GUI_LOCKED_OR_UNAVAILABLE before process start")
-                        if conflicts:
-                            raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
+                        if admission_deadline is not None:
+                            for field in ("stage", "reason_code", "reason"):
+                                data.pop(field)
+                            data["admission_wait_finished_at"] = time.time()
                         self.contexts[attempt] = (job, secret)
                         # Persist uncertainty before crossing the OS creation boundary.
                         data["launch"] = "CREATION_UNCERTAIN"
@@ -1098,7 +1119,8 @@ class Worker:
                         break
                 # An attempt allocated before quarantine must not cross the gate;
                 # it keeps its claims and can still receive owned cancellation.
-                if self.stopping.wait(_SCHEDULER_INTERVAL):
+                if self.stopping.wait(wait_seconds):
+                    confirmed_nonlaunch = True
                     raise RuntimeError("worker stopped before process start")
             reason = None
             canceled = False
@@ -1248,7 +1270,11 @@ class Worker:
                     if isinstance(error, WorkerBusy):
                         response["code"] = "WORKER_BUSY"
                     encoded = json.dumps(response, allow_nan=False)
-                self.wfile.write((encoded + "\n").encode())
+                try:
+                    self.wfile.write((encoded + "\n").encode())
+                except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError, TimeoutError):
+                    # The request was handled. Its owner can observe the durable result.
+                    return
 
         class Server(socketserver.ThreadingTCPServer):
             daemon_threads = True
