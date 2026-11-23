@@ -428,12 +428,17 @@ static func _reduced_normal_solve(h: PackedFloat64Array, g: PackedFloat64Array, 
 		return result
 	var m := PackedFloat64Array()
 	m.resize(n * (n + 1))
+	# Rotor indices sum to six. With three free rotors, only one term enters each RHS.
+	var fixed_rotor: int = 6 - free[0] - free[1] - free[2] if n == 3 else -1
 	for p in n:
 		var i: int = free[p]
 		var rhs: float = g[i]
-		for j in 4:
-			if status[j] != STATUS_FREE:
-				rhs -= h[i * 4 + j] * f[j]
+		if fixed_rotor >= 0:
+			rhs -= h[i * 4 + fixed_rotor] * f[fixed_rotor]
+		else:
+			for j in 4:
+				if status[j] != STATUS_FREE:
+					rhs -= h[i * 4 + j] * f[j]
 		for q in n:
 			m[p * (n + 1) + q] = h[i * 4 + free[q]]
 		m[p * (n + 1) + n] = rhs

@@ -31,6 +31,7 @@ func _run() -> void:
 	_plant_columns()
 	_in_box()
 	_saturation()
+	_three_free_reduction()
 	_airmode()
 	_reference_agreement()
 	_determinism()
@@ -173,6 +174,27 @@ func _saturation() -> void:
 ## FPV/03 §2 airmode example: corrections [-.2, -.2, +.2, +.2] at collective .02 per motor in [.05, 1]. With moment
 ## rows weighted 1e4 above collective, the weighted solution is [.05, .05, a, a] with the closed form below and tends
 ## to FPV/03's lexicographic answer [.05, .05, .45, .45] (collective raised to .25 per motor).
+func _three_free_reduction() -> void:
+	var g := PackedFloat64Array([4.0, 8.0, 12.0, 16.0])
+	var f := PackedFloat64Array([1.0, 2.0, 3.0, 4.0])
+	for fixed in 4:
+		var status := PackedInt64Array([Allocator.STATUS_FREE, Allocator.STATUS_FREE, Allocator.STATUS_FREE, Allocator.STATUS_FREE])
+		status[fixed] = Allocator.STATUS_UPPER
+		var h := PackedFloat64Array()
+		h.resize(16)
+		for i in 4:
+			h[5 * i] = 2.0
+		for coefficient: float in [1.0, -2.0]:
+			var expected := f.duplicate()
+			for i in 4:
+				if i != fixed:
+					h[4 * i + fixed] = coefficient
+					expected[i] = (g[i] - coefficient * f[fixed]) / 2.0
+			var solved := Allocator._reduced_normal_solve(h, g, f, status)
+			_check("three free rotors use current column %d (coefficient %.0f)" % [fixed, coefficient],
+				solved.to_byte_array() == expected.to_byte_array())
+
+
 func _airmode() -> void:
 	var scales := PackedFloat64Array([1.0, 0.1, 0.1, 0.01])
 	var weights := PackedFloat64Array([1.0e-3, 1.0, 1.0, 1.0])
