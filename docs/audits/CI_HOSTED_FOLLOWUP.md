@@ -111,7 +111,7 @@ The separate full-scene LU-34 check exposed an unresolved product regression:
 
 The current app produced identical counts for all eight categories before and after the woodland metadata regeneration. The earlier [pre-upstream hosted test](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45075562784/job/137372676695) passed the same allowances on scenery source matching the audit baseline. Total source triangles increased from 1,033,047 to 1,058,908. Close vegetation accounts for 16,803 of the 25,861 added triangles and remains below its separate 150,000 allowance; the original passing log did not print the exact earlier cell/miscellaneous split.
 
-The audit preserves both failing limits and their category definitions. A proper fix must identify expensive nodes, reduce their source geometry and pass both `test_scenery_build.gd` and `test_landscape_vegetation.gd`, plus relevant rendered/physical-boundary checks. Source counts concern geometry and memory work; they do not measure frame time or target-GPU performance. This regression remains a reason to keep the PR in draft.
+The audit preserves both failing limits and their category definitions. A proper fix must identify expensive nodes, reduce their source geometry and pass `test_scenery_build.gd`, `test_landscape_vegetation.gd` and `test_farm_tractor.gd`, plus relevant rendered/physical-boundary checks. These are the three source consumers of `scene_source_budget.gd`; the later hosted farm-tractor failure confirms the additional route. Source counts concern geometry and memory work; they do not measure frame time or target-GPU performance. This regression remains a reason to keep the PR in draft.
 
 ## Unit diagnostics after the first failure
 
@@ -160,6 +160,29 @@ The repair changes the application tree from `44faebf550d6257ef086760c2f50662faa
 | Portable GOD TEST matrix | Linux, macOS and Windows all passed, in 30, 26 and 33 seconds. [Run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773669) |
 
 At this observation cutoff, the actual macOS native/default route, app integration, all unit shards and visual aggregate had no completed passing verdict. The old visual helper remains present in this run's source. Publishing the repaired branch supersedes its ongoing PR execution; any later cancellation does not invalidate the completed job observations or turn incomplete jobs into successes. No full aggregate or hosted performance gain is claimed.
+
+## Archived offline diagnosis and fixture environment correction
+
+The final [integration log on 3cc86387](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819853) identifies the failed command as `python3 app/tests/test_ci_partitions.py`: 16 cases ran in 32.028 seconds and two failed. CI exported `OPENRC_KEEP_GOING=1`. The fixture copied that environment into its fake project, so the default-failure tests received aggregate exit 1 after visiting the remaining scripts instead of their expected child exit 7 or 9. The logs preserve the original child failures; the production runner was behaving as configured. Bash stopped the offline step before export-identity, native-install, F4U and the research tool suite. Their earlier results must not be credited to this incomplete step.
+
+This is a validation-context gap in the audit's own keep-going change. Commit [24e083e2](https://github.com/bultodepapas/OpenRCsimulator/commit/24e083e27fc26cb810ce7d0c5f714268ecd839fb) adds one fixture line to clear inherited `OPENRC_KEEP_GOING` before each case applies its explicit overrides. It tests the product's real unset default and preserves explicit continue/invalid-mode cases. The phase-routing fixtures share this helper. No production runner, workflow or failure assertion changes.
+
+Both full 16-case runs then passed with the actual hosted command and `OPENRC_TEST_PART=integration`, shard 0 of 1: parent keep-going enabled in 29.039 seconds and parent keep-going unset in 28.884 seconds. The corresponding process wall times were 29.222096 and 28.984900 seconds. Independent review verified mode isolation and unchanged failure assertions. [Commands and log hashes](partition-environment-2026-11-23/results.json) · [Enabled-parent output](partition-environment-2026-11-23/ambient-one.log) · [Unset-parent output](partition-environment-2026-11-23/ambient-unset.log)
+
+## Terminal observations from the superseded run
+
+The `3cc86387` run ended with a failing aggregate and cancelled unfinished jobs when the visual repair was published. Completed success, failure and partial evidence retain their individual meaning:
+
+| Job | Terminal result and what was actually observed |
+| --- | --- |
+| [Unit shard 2](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819931) | Passed: 147 checked invocations, 146 passed, one skipped, zero failed/invalid. |
+| [Unit shard 7](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819886) | Failed: 146 invocations, 144 passed, two failed/invalid. `test_farm_tractor.gd` rejected its shared source-budget guard at 00:32:09 UTC. Later `test_scenery_build.gd` printed the same verified cell/miscellaneous overages at 00:37:02 UTC. The runner continued through later scripts and remained nonzero. This is hosted evidence for the new diagnostic behavior, not a successful unit verdict. |
+| [Windows RC production](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137413523337) | Passed in 851 seconds: pinned editor, import, installed-native session and trajectory all passed; four checks passed, none skipped/failed. |
+| [Mac ARM64 native](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45087773718/job/137410819965) | Cancelled after 1,478 seconds. Before cancellation, the packed-domain suite passed all 72 checks. Its separate isolated stock-world loop matched on all 2,400 calls, with the exact world hash and 7,295 proxies. Seventeen positive oracle invocations and the deliberate stage-mutant refusal preceded it. The stage was installed, but installed execution and `MACOS_DEFAULT_ROUTE verdict=pass` were not observed. |
+| Remaining app shards, integration and full visual | Cancelled; no complete acceptance is inferred. The earlier genuine integration offline failure remains recorded and locally corrected above. |
+| Stable `CI required` aggregate | Failed; the incomplete/failing source did not receive a green aggregate. |
+
+At intermediate visual-repaired head `0dcd7fcb`, [hosted tooling](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45090359264/job/137418476728) passed 142 CI cases in 69.902 seconds and 459 queue cases in 54.442 seconds, with 12 queue skips. Its job elapsed time was 136 seconds; source preflight passed in 105 seconds. These results include the capture-dispatch repair but precede the one-line environment correction. The final published source requires its own selected gate; no elapsed-time improvement is inferred from different runs.
 
 ## Qualification still required
 
