@@ -27,7 +27,7 @@ EXPECTED_IMAGES += [f"capture-land-{name}.png" for name in ("30m", "low3m", "sun
 EXPECTED_IMAGES += [f"field/capture-land-az{az}-el{el}.png" for az in (0, 90, 180, 270) for el in (0, 10)]
 EXPECTED_IMAGES += ["field/capture-land-top.png"]
 EXPECTED_IMAGES += [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
-EXPECTED_CHECKERS = ["test_capture_runner.py", "test_stripes.py", "check_landscape_captures.py", "compare_captures.py",
+EXPECTED_CHECKERS = ["test_capture_runner.py", "test_stripes.py", "run_checked.py", "run_checked.py", "capture_groups.py", "check_landscape_captures.py", "compare_captures.py",
                      "check_trimmed_flight.py", "test_visual_quality_cases.py", "visual_quality_cases.py",
                      "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "capture_groups.py", "check_review.py", "check_horizon.py", "check_phase6.py",
                      "check_cloud_probe.py", "check_surfaces.py", "check_stripes.py",
@@ -84,6 +84,49 @@ elif args:
     if script == 'run_checked.py':
         sys.path.insert(0, str(Path(root) / 'tools/godot'))
         from run_checked import run_checked
+        if opt('--label') in ('geometry-hedge', 'geometry-furniture'):
+            import zlib
+            sys.path.insert(0, str(Path(root) / 'tools/ci'))
+            from capture_groups import FURNITURE_VIEWS, HEDGE_CASES, HEDGE_SOURCES, digest
+            folder = Path(next(a.split('=', 1)[1] for a in args if a.startswith('--out=')))
+            folder.mkdir()
+            def png(name, w, h, color):
+                def chunk(kind, data):
+                    return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data))
+                data = b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', w, h, 8, 0, 0, 0, 0))
+                data += chunk(b'IDAT', zlib.compress((b'\0' + bytes([color]) * w) * h)) + chunk(b'IEND', b'')
+                (folder / name).write_bytes(data)
+                return digest(folder / name)
+            renderer = {'method': 'gl_compatibility', 'adapter': 'synthetic adapter'}
+            if opt('--label') == 'geometry-hedge':
+                assert env.get('OPENRC_SCENERY') == 'off'
+                cases = [dict(id=case, passed=True, frame=i//2 if i < 8 else 0, observed_frame=i//2 if i < 8 else 0, reference_pixels=100,
+                    candidate_pixels=100, reference_border_pixels=7, lost_reference_pixels=0, added_pixels=0,
+                    max_common_channel_difference=0) for i, case in enumerate(HEDGE_CASES)]
+                bad = dict(passed=False, rejected=True, lost_reference_pixels=100, candidate_pixels=0)
+                images = {name: png(name, 384 if index < 2 else 192, 960 if index < 2 else 192, index)
+                          for index, name in enumerate(('reference.png', 'candidate.png', 'cropped.png', 'culled.png'))}
+                write(folder / 'summary.json', json.dumps(dict(format='openrc-hedge-render-v1', passed=True,
+                    case_ids=HEDGE_CASES, cases=cases, negative=dict(id='cropped-card', **bad),
+                    culling_negative=dict(id='undersized-aabb', case_id='edge-left', **bad), images=images,
+                    sources_sha256={name: digest(Path(root, name)) for name in HEDGE_SOURCES}, renderer=renderer['method'],
+                    adapter=renderer['adapter'], tile_pixels=192, max_mask_difference=1, max_common_channel_difference=2)))
+                marker='HEDGE_GEOMETRY_RENDER verdict=pass cases=10 negative=2'
+            else:
+                assert env.get('OPENRC_SCENERY') == 'on' and '--1080p' in args and '--verify-visible' in args
+                views=[dict(view=view, draws=4, eye=[1,2,3], fov=42.0, sha256=png(view+'.png', 1920, 1080, index),
+                    visibility=dict(id='prop:picnic:00' if view.startswith('table') else 'prop:benches:00',
+                                    changed_pixels=80, roi=[480,270,960,540],
+                                    absent_sha256=png(view+'-absent.png', 1920, 1080, index+4)))
+                       for index, view in enumerate(FURNITURE_VIEWS)]
+                write(folder / 'capture.json', json.dumps(dict(complete=True, **renderer, viewport=[1920, 1080],
+                    builder_sha256=digest(Path(app, 'scenery/prefabs.gd')), records=views, scenery_stats={'instances': 1},
+                    furniture_sha256=digest(Path(app, 'scenery/club_furniture.gd')))))
+                marker='CLUB_FURNITURE_RENDER verdict=pass views=4 viewport=1920x1080 visible=4'
+            required = [args[index+1] for index, value in enumerate(args) if value == '--require-text']
+            report=run_checked([sys.executable, '-c', f'print({marker!r})', '--script', opt('--script')],
+                               Path(opt('--out-dir')), required=required, label=opt('--label'))
+            sys.exit(report['exit_code'])
         count = int(env.get('FAKE_PIXEL_CHECKS', '13' if 'skin_patterns' in opt('--label') else '12'))
         terminal = opt('--require-text') + str(count) + ' checks, 0 failed'
         output = '\n'.join(f'ok   fixture assertion {index}' for index in range(count)) + '\n' + terminal
@@ -327,6 +370,12 @@ class CaptureGroupsTests(unittest.TestCase):
             shutil.copy2(ROOT / 'tools/testqueue' / name, admission / name)
         (self.root / 'tools/ci').mkdir()
         shutil.copy2(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
+        for name in receipts.GEOMETRY_SOURCES:
+            path = self.root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(f"fixture {name}\n")
+        (self.root / "tools/skins").mkdir()
+        shutil.copyfile(ROOT / "tools/skins/pack_image.py", self.root / "tools/skins/pack_image.py")
         self.bin = self.root / "bin"
         self.bin.mkdir()
         stub = self.root / "fixture_stub.py"
@@ -383,6 +432,7 @@ class CaptureGroupsTests(unittest.TestCase):
         self.assertEqual(new.returncode, 0, new.stderr + new.stdout)
         manifest = json.loads((new_out / "run-manifest.json").read_text())
         self.assertEqual(manifest['format'], 'openrc-capture-set v1')
+        self.assertEqual(manifest['geometry_review_sha256'], receipts.digest(new_out / manifest['geometry_review']))
         self.assertIs(manifest['complete'], True)
         self.assertEqual([entry['image'] for entry in manifest['captures']], EXPECTED_IMAGES)
         checkers = [Path(call[1]).name for call in new_calls if call[0] == 'python3'
@@ -408,6 +458,50 @@ class CaptureGroupsTests(unittest.TestCase):
         full_calls = [c for c in full_calls if 'test_capture_runner.py' not in ' '.join(c)
                       and '--import' not in c and c[1:2] != ['-']]
         self.assertEqual(Counter(map(tuple, full_calls)), Counter(map(tuple, partial_calls)))
+
+    def test_geometry_failure_stops_before_long_render_phases(self):
+        for group, script in ((None, 'check_geometry_render.gd'), ('vegetation', 'capture_club_furniture.gd')):
+            result, output, calls = self.run_capture(self.current, group, failure=script)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertRegex((output / 'timings.tsv').read_text(), r'geometry-render\t[0-9]+\tfail')
+            self.assertFalse((output / receipts.GEOMETRY_REPORT).exists())
+            self.assertFalse((output / 'run-manifest.json').exists())
+            self.assertFalse(any(Path(call[1]).name in ('capture_runner.py', 'check_grass.py') for call in calls))
+
+    def test_geometry_requires_fresh_images_negative_controls_and_source_bindings(self):
+        result, output, _ = self.run_capture(self.current, 'vegetation')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = output / receipts.GEOMETRY_REPORT
+        original = summary.read_bytes()
+        def reject(file, mutate):
+            previous = file.read_bytes()
+            summary.unlink()
+            mutate(file)
+            attempt = subprocess.run([sys.executable, str(self.root / 'tools/ci/capture_groups.py'),
+                                      'geometry-summary', '--root', str(output)], capture_output=True)
+            self.assertNotEqual(attempt.returncode, 0, str(file))
+            self.assertFalse(summary.exists())
+            file.write_bytes(previous)
+            summary.write_bytes(original)
+        image = output / 'geometry/furniture/table.png'
+        metadata = output / 'geometry/furniture/capture.json'
+        original_metadata = metadata.read_bytes()
+        def truncate_and_rehash(path):
+            records = json.loads(metadata.read_text())
+            path.write_bytes(path.read_bytes()[:24])
+            records["records"][0]["sha256"] = receipts.digest(path)
+            metadata.write_text(json.dumps(records))
+        reject(image, truncate_and_rehash)
+        metadata.write_bytes(original_metadata)
+        reject(image, lambda p: p.unlink())
+        reject(output / 'geometry/hedge/candidate.png', lambda p: p.write_bytes(p.read_bytes() + b'changed'))
+        reject(output / 'geometry/hedge/summary.json', lambda p: p.write_text(
+            p.read_text().replace('"rejected": true', '"rejected": false', 1)))
+        reject(output / 'geometry/hedge/summary.json', lambda p: p.write_text(
+            p.read_text().replace('"observed_frame": 0', '"observed_frame": 1', 1)))
+        reject(output / 'geometry/furniture/capture.json', lambda p: p.write_text(
+            p.read_text().replace('"changed_pixels": 80', '"changed_pixels": 0', 1)))
+        reject(self.root / 'app/scenery/club_furniture.gd', lambda p: p.write_text('changed builder'))
 
     def test_failing_checker_retains_timing_and_never_publishes_complete_marker(self):
         result, output, _ = self.run_capture(self.current, 'ground', 'check_stripes.py')
@@ -528,7 +622,7 @@ assert capture_groups.TREELINE_CASES == [case.case_id for case in treeline_reada
                 path.write_text('fixture source\n')
         shutil.copyfile(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
         self.executable(self.app / 'capture.sh', self.current)
-        (self.root / '.gitignore').write_text('/out-*\n/bin/\n/commands.jsonl\n/app/captures/\n/results/\n')
+        (self.root / '.gitignore').write_text('/out-*\n/bin/\n/commands.jsonl\n/app/captures/\n/results/\n__pycache__/\n')
         for command in (['git', 'init', '-q'], ['git', 'add', '.'],
                         ['git', '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
                          'commit', '-qm', 'fixture']):

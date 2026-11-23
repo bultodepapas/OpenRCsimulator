@@ -23,6 +23,9 @@ import subprocess
 import sys
 import tempfile
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.skins.pack_image import MAX_PNG_BYTES, inspect_png
+
 RECEIPT = "capture-group-receipt.json"
 START = ".capture-start.json"
 CHECKS = ".capture-checks"
@@ -33,16 +36,35 @@ GROUP_CHECKS = {
     "terrain-atmosphere": ["tree-review", "horizon", "phase6", "cloud-probe"],
     "ground": ["stripe-tests", "surfaces", "stripes", "windsock", "pilot-station",
                "flightline-barrier", "contact-shadows"],
-    "vegetation": ["grass", "grass-seam", "tree-wind", "treeline-tests", "treeline"],
+    "vegetation": ["geometry-render", "grass", "grass-seam", "tree-wind", "treeline-tests", "treeline"],
     "scenario": ["run"],
 }
 GROUP_PHASES = {group: ["setup", group] for group in GROUP_CHECKS}
+GROUP_PHASES["vegetation"] = ["setup", "geometry-render", "vegetation"]
 GROUP_PHASES["core"] = ["setup", "core-render", "core-checks"]
+
+ATLAS = "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view"
+HEDGE_SOURCES = (
+    "tools/scenery/check_geometry_render.gd", "app/scenery/imported_hedge.gd",
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.gdshader",
+    ATLAS + ".png", ATLAS + ".png.import", ATLAS + ".json",
+)
+GEOMETRY_SOURCES = (
+    *HEDGE_SOURCES, "tools/ground/capture_club_furniture.gd", "app/scenery/club_furniture.gd",
+    "app/scenery/damage_batches.gd", "app/scenery/mesh_kit.gd", "app/scenery/palette.gd", "app/scenery/prefabs.gd", "app/scenery/scenery.gd",
+    "app/render/field.gd", "app/render/atmosphere.gd", "app/render/shader_clock.gd", "app/data/field_loader.gd",
+    "app/data/fields/default.json", "app/data/scenery/default.json",
+    "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg",
+    "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg.import",
+)
+HEDGE_CASES = [f"frame{i}-{angle}" for i in range(4) for angle in ("low", "high")] + ["edge-left", "edge-right"]
+FURNITURE_VIEWS = ["table", "table-detail", "bench", "bench-rear"]
+GEOMETRY_REPORT = "geometry/summary.json"
 
 # Direct entry points are byte-hashed even in a clean working tree. Git's
 # commit plus dirty/untracked file contents bind the rest of the checkout.
 DIRECT_SOURCES = (
-    "app/capture.sh", "app/get-godot.sh", "app/tests/visual-env.sh",
+    *GEOMETRY_SOURCES, "tools/skins/pack_image.py", "app/capture.sh", "app/get-godot.sh", "app/tests/visual-env.sh",
     "app/tests/requirements-visual.txt", "app/tests/capture_runner.py",
     "app/tests/test_capture_runner.py", "app/tests/capture_ui.gd",
     "app/tests/fixtures/atmosphere_field.tscn", "app/tests/capture_landscape_upgrade.gd",
@@ -96,7 +118,7 @@ REQUIRED_OUTPUTS = {
                            "l4b/capture-summary.json", "l15d/summary.json"],
     "ground": ["l9c/summary.json", "l9c/stripes/summary.json", "l10a/summary.json",
                "l10b/summary.json", "l10c/summary.json", "l10d/summary.json"],
-    "vegetation": ["l11a/capture-summary.json", "l11a/seam-summary.json",
+    "vegetation": [GEOMETRY_REPORT, "l11a/capture-summary.json", "l11a/seam-summary.json",
                    "l15b/capture-summary.json", "l6c/l6c-run-manifest.json"],
     "scenario": ["scenario/latest/scenario.json", "scenario/latest/sync.json", "scenario/latest/report.html"],
 }
@@ -312,6 +334,99 @@ def verify_matrix(root: Path, relative: str, expected_ids: list[str]) -> None:
             fail(f"{relative}: matrix image or sidecar hash mismatch")
 
 
+def geometry_image(root: Path, name: str, size: tuple[int, int], expected: str) -> str:
+    path = local_file(root, name)
+    if path.stat().st_size > MAX_PNG_BYTES:
+        fail(f"oversized geometry image: {name}")
+    data = path.read_bytes()
+    if inspect_png(data) != size or hashlib.sha256(data).hexdigest() != expected:
+        fail(f"geometry image size or SHA-256 mismatch: {name}")
+    return expected
+
+
+def furniture_measurements(report: dict) -> dict:
+    # These two durations vary between otherwise identical captured frames.
+    return {**report, "scenery_stats": {key: value for key, value in report["scenery_stats"].items()
+                                        if key not in ("build_ms", "timing_ms")}}
+
+
+def geometry_result(root: Path) -> dict:
+    repo = Path(__file__).resolve().parents[2]
+    sources = {name: digest(repo / name) for name in (*GEOMETRY_SOURCES, "app/capture.sh",
+                                                       "tools/ci/capture_groups.py", "tools/godot/run_checked.py",
+                                                       "tools/skins/pack_image.py")}
+    revision = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True, capture_output=True)
+    geometry = root / "geometry"
+    hedge_path = local_file(geometry, "hedge/summary.json")
+    hedge = read_json(hedge_path)
+    images = {}
+    if (hedge.get("format") != "openrc-hedge-render-v1" or hedge.get("passed") is not True
+            or hedge.get("case_ids") != HEDGE_CASES or [row["id"] for row in hedge["cases"]] != HEDGE_CASES
+            or hedge.get("sources_sha256") != {name: sources[name] for name in HEDGE_SOURCES}
+            or not hedge.get("adapter") or hedge.get("renderer") not in ("gl_compatibility", "forward_plus", "mobile")
+            or hedge.get("tile_pixels") != 192 or hedge.get("max_mask_difference") != 1
+            or hedge.get("max_common_channel_difference") != 2):
+        fail("incomplete or inconsistent hedge measurement or source identity")
+    for index, row in enumerate(hedge["cases"]):
+        edge = index >= 8
+        counts = [row[key] for key in ("frame", "observed_frame", "reference_pixels", "candidate_pixels", "reference_border_pixels",
+                                        "lost_reference_pixels", "added_pixels", "max_common_channel_difference")]
+        if (any(type(count) is not int or count < 0 for count in counts)
+                or row["passed"] is not True or row["frame"] != (0 if edge else index // 2)
+                or row["observed_frame"] != row["frame"]
+                or min(row["reference_pixels"], row["candidate_pixels"]) < 64
+                or max(row["reference_pixels"], row["candidate_pixels"]) > 192 * 192
+                or row["candidate_pixels"] != row["reference_pixels"] - row["lost_reference_pixels"] + row["added_pixels"]
+                or row["lost_reference_pixels"] + row["added_pixels"] > 1
+                or not 0 <= row["max_common_channel_difference"] <= 2
+                or (edge and row["reference_border_pixels"] < 2)):
+            fail(f"failed hedge geometry case: {row['id']}")
+    negative, culled = hedge["negative"], hedge["culling_negative"]
+    if (negative["id"] != "cropped-card" or culled["id"] != "undersized-aabb"
+            or culled.get("case_id") != "edge-left" or culled["candidate_pixels"] != 0
+            or any(control["rejected"] is not True or control["passed"] is not False
+                   or control["lost_reference_pixels"] < 64 for control in (negative, culled))):
+        fail("hedge crop or culling control did not discriminate the regression")
+    tiles = {"reference.png": (384, 960), "candidate.png": (384, 960),
+             "cropped.png": (192, 192), "culled.png": (192, 192)}
+    if hedge["images"].keys() != tiles.keys():
+        fail("incorrect hedge image roster")
+    for name, size in tiles.items():
+        images["hedge/" + name] = geometry_image(geometry, "hedge/" + name, size, hedge["images"][name])
+
+    furniture = read_json(local_file(geometry, "furniture/capture.json"))
+    if (furniture.get("complete") is not True or furniture.get("viewport") != [1920, 1080]
+            or furniture.get("method") != hedge["renderer"] or furniture.get("adapter") != hedge["adapter"]
+            or furniture.get("builder_sha256") != sources["app/scenery/prefabs.gd"]
+            or furniture.get("furniture_sha256") != sources["app/scenery/club_furniture.gd"]
+            or furniture["scenery_stats"].get("instances", 0) <= 0 or [row["view"] for row in furniture["records"]] != FURNITURE_VIEWS
+            or len({row["sha256"] for row in furniture["records"]}) != len(FURNITURE_VIEWS)):
+        fail("incomplete or inconsistent furniture views, viewport, renderer or builder identity")
+    for row in furniture["records"]:
+        control = row["visibility"]
+        expected_id = "prop:picnic:00" if row["view"].startswith("table") else "prop:benches:00"
+        if (row["draws"] <= 0 or len(row["eye"]) != 3 or row["fov"] != 42.0
+                or control["id"] != expected_id or control["roi"] != [480, 270, 960, 540]
+                or type(control["changed_pixels"]) is not int or not 64 <= control["changed_pixels"] <= 960 * 540
+                or control["absent_sha256"] == row["sha256"]):
+            fail(f"missing furniture view, camera or visible content: {row['view']}")
+        name = "furniture/" + row["view"] + ".png"
+        images[name] = geometry_image(geometry, name, (1920, 1080), row["sha256"])
+        absent = "furniture/" + row["view"] + "-absent.png"
+        images[absent] = geometry_image(geometry, absent, (1920, 1080), control["absent_sha256"])
+    return {"format": "openrc-geometry-render-v1", "complete": True,
+            "commit": revision.stdout.strip() if revision.returncode == 0 else "unavailable",
+            "renderer": hedge["renderer"], "adapter": hedge["adapter"], "images_sha256": images,
+            "hedge_summary_sha256": digest(hedge_path), "furniture_views": FURNITURE_VIEWS,
+            "furniture_measurements_sha256": canonical_sha256(furniture_measurements(furniture)),
+            "sources_sha256": sources}
+
+
+def verify_geometry(root: Path) -> None:
+    if not same_json(read_json(local_file(root, GEOMETRY_REPORT)), geometry_result(root)):
+        fail("geometry summary differs from current images, measurements or sources")
+
+
 def verify_outputs(root: Path, group: str) -> dict[str, str]:
     if (root / "run-manifest.json").exists():
         fail("a partial group must never contain the legacy complete marker")
@@ -339,6 +454,7 @@ def verify_outputs(root: Path, group: str) -> dict[str, str]:
         if not isinstance(light_summary, dict) or light_summary.get("ok") is not True:
             fail("aircraft lights summary did not pass")
     if group == "vegetation":
+        verify_geometry(root)
         verify_matrix(root, "l6c", TREELINE_CASES)
     if group == "scenario":
         checks = read_json(root / "scenario/latest/sync.json")
@@ -527,6 +643,8 @@ def normalized_sha256(path: Path, markers: list[str]) -> str | None:
             if path.name in {Path(SEGMENT_METRICS).name, Path(SKIN_METRICS).name}:
                 # No run-clock/path rules apply inside semantic measurements.
                 return canonical_sha256(value)
+            if path.parts[-3:] == ("geometry", "furniture", "capture.json"):
+                return canonical_sha256(furniture_measurements(value))
             own_output_paths = None
             if (isinstance(value, dict) and value.get("format") == "openrc-godot-check v1"
                     and path.name == "report.json" and CHECKED_RUN.search(path.parent.name)):
@@ -634,6 +752,8 @@ def inventory(args) -> None:
         valid_run_id(args.run_id)
     if args.group in ("all", "quality"):
         verify_lighting_metrics(args.root)
+    if args.group in ("all", "vegetation"):
+        verify_geometry(args.root)
     source = source_identity(args.repo)
     atomic_new_json(args.out, {
         "format": "openrc-capture-inventory v1", "group": args.group,
@@ -725,6 +845,7 @@ def compare_groups(args) -> int:
         "cpu_mismatch_groups": sorted(g for g, inv in groups.items() if inv.get("cpu") != full.get("cpu")),
         "volatility_model": {"skipped_parts": sorted(SKIPPED_PARTS), "volatile_trees": list(VOLATILE_TREES),
                              "volatile_json_keys": sorted(VOLATILE_KEYS),
+                             "geometry/furniture/capture.json": ["scenery_stats.build_ms", "scenery_stats.timing_ms"],
                              "checked_report_paths": {"log": "engine.log", "report": "report.json"},
                              "checked_report_path_validation": "exact own file paths; validity retained"},
         "metric_policy": {"absolute_tolerance": 0.0, "relative_tolerance": 0.0,
@@ -757,6 +878,8 @@ def compare_groups(args) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
+    p = sub.add_parser("geometry-summary", help="validate native geometry captures and publish their summary")
+    p.add_argument("--root", type=Path, required=True)
     p = sub.add_parser("verify-metrics", help="require complete, finite lighting measurements")
     p.add_argument("--root", type=Path, required=True)
     for command in ("begin", "finish"):
@@ -792,6 +915,9 @@ def main() -> int:
     p.add_argument("--groups", type=Path, nargs="+", required=True)
     args = parser.parse_args()
     try:
+        if args.command == "geometry-summary":
+            atomic_new_json(args.root / GEOMETRY_REPORT, geometry_result(args.root))
+            return 0
         if args.command == "verify-metrics":
             verify_lighting_metrics(args.root)
             return 0
