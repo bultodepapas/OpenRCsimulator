@@ -10,7 +10,9 @@ const MANIFEST_PATH := "res://assets/landscape/vegetation/impostors/bush_common_
 const BUSH_SOURCE_ID := "bush_common_flowers"
 const BUSH_ATLAS_ASSET_ID := "bush_common_flowers_4view_impostor"
 const TREE_SOURCE_ID := "common_tree_3"
-const CARD_TRIANGLES := 2
+const CARD_TRIANGLES := 1
+# All four source silhouettes and their bilinear footprints fit in this UV triangle.
+const CARD_UVS := [Vector2(-0.20, 0.12), Vector2(1.20, 0.12), Vector2(0.50, 1.32)]
 const CARD_SPACING_M := 1.35
 const PLANTED_CARD_LIMIT := 1024
 const CARD_INSTANCE_LIMITS := {"low": 64, "balanced": 128, "high": 256}
@@ -47,11 +49,9 @@ static func build(
 	if not placements.is_empty():
 		var atlas_material := _impostor_material()
 		var frame_size := _frame_size(atlas_manifest)
-		var card_mesh := QuadMesh.new()
-		card_mesh.size = Vector2(frame_size, frame_size)
 		var multi_mesh := MultiMesh.new()
 		multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
-		multi_mesh.mesh = card_mesh
+		multi_mesh.mesh = _card_mesh(frame_size)
 		multi_mesh.use_colors = true
 		multi_mesh.use_custom_data = true
 		multi_mesh.instance_count = placements.size()
@@ -150,6 +150,22 @@ static func build(
 	root.set_meta("source_geometry_sha256", str(atlas_manifest.get("source_geometry_sha256", "")))
 	root.set_meta("atlas_sha256", str(atlas_manifest.get("atlas_sha256", "")))
 	return root
+
+
+static func _card_mesh(frame_size: float) -> ArrayMesh:
+	var vertices := PackedVector3Array()
+	for uv: Vector2 in CARD_UVS:
+		# Preserve the original quad's UV-to-world mapping, including the source ground pivot.
+		vertices.append(Vector3(uv.x - 0.5, 0.5 - uv.y, 0.0) * frame_size)
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_TEX_UV] = PackedVector2Array(CARD_UVS)
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	# Keep the original frame bounds for MultiMesh culling before the shader turns the cards.
+	mesh.custom_aabb = AABB(Vector3(-0.5, -0.5, 0.0) * frame_size, Vector3(1.0, 1.0, 0.0) * frame_size)
+	return mesh
 
 
 ## Convenience wrapper for existing packed scenery polylines.

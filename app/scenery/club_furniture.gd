@@ -86,11 +86,19 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
 			color_ring.append(_wood_color(point,tone,seed))
 		rings.append(ring)
 		colors.append(color_ring)
-	for r in rings.size()-1:
-		for j in 8:
-			var next := (j+1)%8
-			_face(k,rings[r][next],rings[r+1][next],rings[r+1][j],rings[r][j],tone,
-				colors[r][next],colors[r+1][next],colors[r+1][j],colors[r][j])
+	# Combine pairs of grain intervals on the four 3 mm bevels only when
+	# the combined span is at most 28 cm. Broad faces retain every sample.
+	for j in 8:
+		var next := (j+1)%8
+		var stride := 2 if j % 2 == 0 and length_m / segments <= 0.14 else 1
+		var r := 0
+		while r < rings.size()-1:
+			var stop := r + 1
+			if r > 0 and r <= segments:
+				stop = mini(r + stride, segments + 1)
+			_face(k,rings[r][next],rings[stop][next],rings[stop][j],rings[r][j],tone,
+				colors[r][next],colors[stop][next],colors[stop][j],colors[r][j])
+			r = stop
 	# Cross-section faces positive X; reverse only the negative-X cap.
 	var cap := rings[0]
 	cap.reverse()

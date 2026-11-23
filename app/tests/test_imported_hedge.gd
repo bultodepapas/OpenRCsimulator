@@ -90,6 +90,7 @@ func _test_source_atlas() -> void:
 	_check("source render atlas loads as a 1024 by 256 image", atlas != null and atlas.get_width() == 1024 and atlas.get_height() == 256)
 	if atlas == null:
 		return
+	_check("all four silhouettes and their linear filtering fit the card", _atlas_fits_card(atlas))
 	var transparent_samples := 0
 	var foliage_samples := 0
 	var green_foliage_samples := 0
@@ -113,6 +114,52 @@ func _test_source_atlas() -> void:
 					frame_has_transparency = true
 		_check("each source view retains both foliage and transparent cutout", frame_has_foliage and frame_has_transparency)
 	_check("green source foliage dominates while authored flower accents remain", green_foliage_samples > 500 and warm_flower_samples >= 8)
+
+
+func _atlas_fits_card(atlas: Image) -> bool:
+	if atlas.has_mipmaps():
+		return false
+	var card := ImportedHedge._card_mesh(1.0)
+	var frame := QuadMesh.new()
+	frame.size = Vector2.ONE
+	if not card.custom_aabb.is_equal_approx(frame.get_aabb()):
+		return false
+	var reference := frame.surface_get_arrays(0)
+	var frame_positions := {}
+	for i in 4:
+		frame_positions[reference[Mesh.ARRAY_TEX_UV][i]] = reference[Mesh.ARRAY_VERTEX][i]
+	var origin: Vector3 = frame_positions[Vector2.ZERO]
+	var frame_right: Vector3 = frame_positions[Vector2.RIGHT] - origin
+	var frame_down: Vector3 = frame_positions[Vector2.DOWN] - origin
+	var arrays := card.surface_get_arrays(0)
+	var corners: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	if corners.size() != 3 or vertices.size() != 3:
+		return false
+	for i in corners.size():
+		var uv := corners[i]
+		if not vertices[i].is_equal_approx(origin + uv.x * frame_right + uv.y * frame_down):
+			return false
+	var width := atlas.get_width() / 4
+	var height := atlas.get_height()
+	for y in height:
+		var left := width
+		var right := -1
+		for x in atlas.get_width():
+			if atlas.get_pixel(x, y).a > 0.0:
+				left = mini(left, x % width)
+				right = maxi(right, x % width)
+		if right < left:
+			continue
+		# Each sample can contribute alpha up to one texel from its centre.
+		# Transparent outer rows and columns also keep clamped UVs outside the frame clear.
+		if left == 0 or right == width - 1 or y == 0 or y == height - 1:
+			return false
+		for u: float in [(left - 0.5) / width, (right + 1.5) / width]:
+			for v: float in [(y - 0.5) / height, (y + 1.5) / height]:
+				if not Geometry2D.is_point_in_polygon(Vector2(u, v), corners):
+					return false
+	return true
 
 
 func _test_stable_layouts() -> void:
@@ -196,7 +243,7 @@ func _all_source_cards(placements: Array[Dictionary]) -> bool:
 	for placement: Dictionary in placements:
 		if str(placement.get("asset_id", "")) != "bush_common_flowers_4view_impostor" \
 			or str(placement.get("source_asset_id", "")) != "bush_common_flowers" \
-			or int(placement.get("source_triangles", -1)) != 2:
+			or int(placement.get("source_triangles", -1)) != 1:
 			return false
 	return not placements.is_empty()
 

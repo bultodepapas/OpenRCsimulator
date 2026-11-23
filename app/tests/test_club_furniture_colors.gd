@@ -33,7 +33,10 @@ func _initialize() -> void:
 		var tone := Color(0.3 + fixture * 0.08, 0.24, 0.13, 0.4)
 		var local := Kit.new()
 		builder.board(local, length_m, width, thickness, Vector3.ZERO, Basis.IDENTITY, seed, tone, segments)
-		var side_count := 48 * (maxi(1, segments) + 2)
+		var broad_intervals := maxi(1, segments)
+		var bevel_intervals := ceili(broad_intervals * 0.5) if length_m / broad_intervals <= 0.14 else broad_intervals
+		# Four broad faces, four narrow bevels, with independent chamfers at each end.
+		var side_count := 4 * 6 * (broad_intervals + bevel_intervals + 4)
 		_check("fixture %d triangle count" % fixture, local.cols.size() == side_count + 36)
 		var expected := PackedColorArray()
 		# Independent scalar oracle samples emitted local vertices, not cached rings.
