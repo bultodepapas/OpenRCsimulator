@@ -20,6 +20,7 @@ const vec4 BRONZE = vec4(0.49, 0.24, 0.115, 0.31);
 const vec4 ANODIZED_GOLD = vec4(0.81, 0.55, 0.16, 0.27);
 const vec4 GASKET = vec4(0.040, 0.048, 0.056, 0.72);
 const vec4 RUBBER = vec4(0.019, 0.023, 0.027, 0.89);
+const float FILTERED_GRAIN = 0.54;
 
 const int COWL = 8;
 const int FLAP = 9;
@@ -78,6 +79,14 @@ float mottling(vec2 p) {
 	vec2 t = smoothstep(vec2(0.0), vec2(1.0), fract(p));
 	return mix(mix(hash_cell(cell), hash_cell(cell + vec2(1.0, 0.0)), t.x),
 		mix(hash_cell(cell + vec2(0.0, 1.0)), hash_cell(cell + vec2(1.0)), t.x), t.y);
+}
+
+float filtered_mottling(vec2 p, float contribution) {
+	// Within this range, the cell and its neighbours give finite hash inputs.
+	if (contribution == 0.0 && all(lessThanEqual(abs(p), vec2(1048576.0)))) {
+		return FILTERED_GRAIN;
+	}
+	return mix(FILTERED_GRAIN, mottling(p), contribution);
 }
 
 // Inputs run aft in x. Cross-flow offset curves quadratically and the tail fades and narrows.
@@ -349,15 +358,16 @@ void fragment() {
 	float metal = 1.0 - smoothstep(0.56, 0.82, material.a);
 	float brushed = 0.0;
 	vec2 airflow = vec2(p.z, p.y + 0.74 * p.x);
-	vec3 grain = vec3(mottling(airflow * vec2(34.0, 184.0)), 0.54, 0.54);
+	vec3 grain = vec3(mottling(airflow * vec2(34.0, 184.0)), FILTERED_GRAIN, FILTERED_GRAIN);
 	if (detail_enabled) {
 		brushed = (texture(brushed_metal, brush).r - 0.469) * metal * smoothstep(0.13, 0.43, material.a);
 		vec2 striations = airflow * vec2(48.0, 710.0) + vec2(3.5, grain.x * 2.8);
 		vec2 flakes = airflow * 960.0;
-		vec2 rate = max(abs(dFdx(striations)), abs(dFdy(striations)));
-		grain.y = mix(grain.y, mottling(striations), 1.0 - smoothstep(0.36, 1.2, max(rate.x, rate.y)));
-		rate = max(abs(dFdx(flakes)), abs(dFdy(flakes)));
-		grain.z = mix(grain.z, mottling(flakes), 1.0 - smoothstep(0.34, 1.0, max(rate.x, rate.y)));
+		// Evaluate both footprints before entering either fragment-varying guard.
+		vec2 striation_rate = max(abs(dFdx(striations)), abs(dFdy(striations)));
+		vec2 flake_rate = max(abs(dFdx(flakes)), abs(dFdy(flakes)));
+		grain.y = filtered_mottling(striations, 1.0 - smoothstep(0.36, 1.2, max(striation_rate.x, striation_rate.y)));
+		grain.z = filtered_mottling(flakes, 1.0 - smoothstep(0.34, 1.0, max(flake_rate.x, flake_rate.y)));
 	}
 	vec4 marks = clamp(weather(p, n, grain), vec4(0.0), vec4(1.0));
 	vec3 sheen = mix(material.rgb, vec3(0.69, 0.67, 0.61), marks.z * 0.13 * metal);
