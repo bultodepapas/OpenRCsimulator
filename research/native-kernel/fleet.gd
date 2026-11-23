@@ -102,23 +102,21 @@ const RUNWAY_LIVE_CONFIG_V5 := {
 		"ideal": {"on": "98716ffa02b686af9995a357d67ef3c267de6d51e030456637ca68b35ca4fa91",
 			"off": "cf278c88606b2dd7ebba1923a896d18ec525fc6e8fa6d467099c0ff3324798bc"}},
 }
-# Linux beta2 reference observations after DR-19e (3c91936ab) adds the round-bale core boxes and the stepped
-# pit-shelter roof to the collision world. The 460-check typed comparison retains exact row, refusal, frame, setup,
-# outcome and ownership fields; only live indices 2 (checkpoint configuration) and 7 (collision-world digest)
-# change. V5 values remain in the retained baseline capture
-# (docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-18).
-const RUNWAY_LIVE_CONFIG_V6 := {
+# Linux beta2 observations after the club perimeter collision changes (843f357c0).
+# Only the world digest and its dependent checkpoint identity change in the eight refusals.
+# Typed comparison: docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-22.
+const RUNWAY_LIVE_CONFIG_V7 := {
 	"p51d-mustang-120": {"ideal": {
-		"on": "d108d4faeb85ffb8dbb934e3ab0378ff9508cad5bca1e719ab8afe1e8ff63e49",
-		"off": "0f71be7c6a712582a53b6ce11d23d0835a376ca886857218477c8680a78218db"}},
+		"on": "6bb0fc1f258d075f4d431a9c0c4eca5cedc703debf38eeac17d3d70faa393e10",
+		"off": "6423d88de4e447f7762a08c8ecb7353093454516039ab9aeb708f62edfc6ce3a"}},
 	"sebart-avanti-s-a200-p100rx": {"ideal": {
-		"on": "23865f3cbb09ccbcafe23bb27f283f6bc87fcf7f0570fe0e00ed3b9084d1c557",
-		"off": "407eb70d51d1328d1bdc4fe5a3c2dc38d4e1ebe6d34a4c1f9db9405478b28ca7"}},
+		"on": "93898d3e0284ab73a7883d611ed669fce9795f3a96367e587fbcdd5be90be85b",
+		"off": "7c87b79c2b5ad06977db708f6db15e4ec8fb27dc00945630ed8cdc1f04ae78e7"}},
 	"turbo-lumber-evolution": {
-		"pack": {"on": "f545be87dd002775b8847acdbeac9f834dd81b7492755dab51c011de2bf63ce2",
-			"off": "96c35659a8b837f54f9f90d9aaa120498ec5f120359b6b6c4e2f33f58e3df446"},
-		"ideal": {"on": "9c6e96d55c289ac8c6d9d6e34c200da033cc3fd1820831ee61f63318afc2d47f",
-			"off": "c999b8a213e7187ebdc9566b9b233d494805a1f70424ae3c48a676ec826d9a12"}},
+		"pack": {"on": "d7276388634d6dd39f1ebf652ae29b3042ad77306396d223fe178fac299aa1c7",
+			"off": "232ae31f35d3cfed37fd21ca64a1c353b94d4e60b7a19a692440cf13811e2e49"},
+		"ideal": {"on": "eb99ecf4ca4efe01de4e97ff3adf61df6ea45ee8e916f39baabf97c35fe52080",
+			"off": "f6dd7ff643b9dbdf32872f230847a8bad9a51e71551c8300030844be2d39ed67"}},
 }
 const TRIM_START_REFUSAL := "reset failed: trim: reference-speed trim already requires more than the requested throttle"
 const TRIM_START_BOUNDARIES := {
@@ -899,7 +897,7 @@ static func _fleet_start_proof_valid(row: Dictionary, proof: Variant, requested:
 	var live_hex: Variant = proof.get("live_config_bytes_hex")
 	var expected_live: String = spec.live_config_sha256["on" if row.soft_hull else "off"]
 	if runway:
-		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V6.get(row.aircraft, {})
+		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V7.get(row.aircraft, {})
 		var battery_pins: Dictionary = aircraft_pins.get(row.battery, {})
 		expected_live = str(battery_pins.get("on" if row.soft_hull else "off", ""))
 	if typeof(live_hex) != TYPE_STRING or live_hex.is_empty() or live_hex.length() > 1048576 \

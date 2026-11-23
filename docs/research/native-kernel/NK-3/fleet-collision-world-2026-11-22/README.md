@@ -1,0 +1,9 @@
+# NK-3 runway refusals after the club perimeter update
+
+The stock club perimeter gained gate-member collision proxies and fence damage profiles in `843f357c0`. The Linux native runtime-domain job then rejected the existing runway-start evidence at `1858352ca`. [Failing gate](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45097617517)
+
+The capture releases its temporary fleet SceneTree after writing each file. Two fresh Ubuntu 24.04 checkouts ran the pinned Godot 4.8-beta2 Linux editor. The [reference capture](../fleet-collision-world-2026-11-18/fleet_capture.gd) exercised the P-51D and Avanti on their ideal batteries, plus Turbo Lumber on pack and ideal batteries, each with the soft hull on and off. All eight [baseline rows](baseline-fleet.json.gz) reproduced the accepted V6 pins at `4ed82d3a6`. All eight [candidate rows](candidate-fleet.json.gz) at `1858352ca` retained the same bounded runway-start refusal. [Capture and comparison job](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45102824606)
+
+The [typed comparison](../fleet-collision-world-2026-11-18/compare_fleet.gd) passed 460 checks. The detached collision-world digest (live index 7) and its dependent checkpoint configuration (index 2) changed in each row. Frame, setup, outcome, ownership and all other live values matched exactly. The receipt records the uncompressed capture hashes and each old and new live digest. [Comparison receipt](fleet-comparison.json)
+
+To reproduce, decompress both captures and run the pinned Linux editor with the [existing comparison recipe](../fleet-collision-world-2026-11-18/README.md). The GDScript producer and the Python campaign reader use the eight candidate digests. The native gate exercises paired reference/native startup refusals and runtime-domain proofs with the verified production library. [Linux native qualification](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45102215065)
