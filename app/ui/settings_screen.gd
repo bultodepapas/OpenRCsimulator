@@ -28,6 +28,7 @@ const LENS_ROWS := [
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const FlightCompatibilityResolution := preload("res://render/flight_compatibility_resolution.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
@@ -123,6 +124,8 @@ var _flag_animation_picker: OptionButton
 var _lens_pickers: Dictionary = {}
 var _birds_picker: OptionButton
 var _runway_meadow_picker: OptionButton
+var _tree_detail_picker: OptionButton
+var _ground_detail_picker: OptionButton
 var _rc_track_picker: OptionButton
 var _shadow_group_button: Button
 var _shadow_group: VBoxContainer
@@ -419,7 +422,7 @@ func _build() -> void:
 	birds_row.add_child(_runway_meadow_picker)
 	_set_localized_tooltip(_runway_meadow_picker, "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail.")
 	# The collapsed toggle shares the actions row to preserve the 1080p height budget.
-	_shadow_group_button = _button("Shadows", "QuietButton", "ShadowGroupToggle")
+	_shadow_group_button = _button("Details", "QuietButton", "ShadowGroupToggle")
 	_shadow_group_button.toggle_mode = true
 	_shadow_group_button.toggled.connect(func(expanded: bool) -> void:
 		_shadow_group.visible = expanded
@@ -429,6 +432,12 @@ func _build() -> void:
 	_shadow_group.add_theme_constant_override("separation", 10)
 	_shadow_group.hide()
 	_refresh_shadow_group_button()
+	_tree_detail_picker = _camera_picker("TreeDetail", "tree_detail", DisplayPreferences.TREE_DETAILS)
+	_add_row(_shadow_group, "Tree detail", _tree_detail_picker)
+	_set_localized_tooltip(_tree_detail_picker, "Tree rendering only. The field and its physical obstacles stay the same.")
+	_ground_detail_picker = _camera_picker("GroundDetail", "ground_detail", DisplayPreferences.GROUND_DETAILS)
+	_add_row(_shadow_group, "Ground detail", _ground_detail_picker)
+	_set_localized_tooltip(_ground_detail_picker, "Simplifies grass shading while keeping runway markings and terrain cues.")
 	_shadow_quality_picker = _shadow_picker("ShadowQuality", "shadow_quality", ShadowSettings.QUALITY)
 	_add_row(_shadow_group, "Shadow quality", _shadow_quality_picker)
 	_set_localized_tooltip(_shadow_quality_picker, "Higher shadow quality can increase GPU cost.")
@@ -879,6 +888,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"flag_animation": return {"auto": tr("Automatic"), "static": tr("Static"), "basic": tr("Basic"),
 			"detailed": tr("Detailed")}.get(value, str(value))
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"tree_detail", "ground_detail": return {off = tr("Off"), simple = tr("Simple"), full = tr("Full")}.get(value, str(value))
 		"runway_meadow": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"rc_track":
 			if value == RcTrackOption.AUTO:
@@ -1135,7 +1145,7 @@ func _restore_shadow_defaults() -> void:
 
 func _refresh_shadow_group_button() -> void:
 	if _shadow_group_button != null:
-		_shadow_group_button.text = tr("Shadows") + ("  −" if _shadow_group_button.button_pressed else "  +")
+		_shadow_group_button.text = tr("Details") + ("  −" if _shadow_group_button.button_pressed else "  +")
 
 
 func _refresh_shadow_technique_tooltip() -> void:
@@ -1469,6 +1479,8 @@ func _sync_controls() -> void:
 	for key: String in _lens_pickers:
 		_select_metadata(_lens_pickers[key], _draft.get(key, DisplayPreferences.DEFAULTS[key]))
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_tree_detail_picker, _draft.tree_detail)
+	_select_metadata(_ground_detail_picker, _draft.ground_detail)
 	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
 	_refresh_rc_track_captions()
 	_select_metadata(_rc_track_picker, _draft.get("rc_track", DisplayPreferences.DEFAULTS.rc_track))
@@ -1581,12 +1593,15 @@ func _sync_reconstruction_controls(capabilities_override: Dictionary = {}) -> vo
 
 func _sync_dynamic_resolution_controls(viewport: Viewport, policy: Dictionary) -> void:
 	var reason := ""
-	if not is_instance_valid(viewport) or not FlightDynamicResolution.supports(viewport):
+	var completed_gpu := FlightDynamicResolution.supports(viewport)
+	var compatibility := not completed_gpu and FlightDynamicResolution.supports_compatibility(viewport)
+	var floor_percent := FlightCompatibilityResolution.MIN_SCALE_PERCENT if compatibility else FlightDynamicResolution.MIN_SCALE_PERCENT
+	if not completed_gpu and not compatibility:
 		reason = tr("Dynamic resolution requires a compatible experimental renderer.")
 	elif str(policy.provider) != "native":
 		reason = tr("Dynamic resolution requires Native reconstruction.")
-	elif int(_draft.render_scale) <= FlightDynamicResolution.MIN_SCALE_PERCENT:
-		reason = tr("Choose a 3D render scale above %d%% to allow dynamic resolution.") % FlightDynamicResolution.MIN_SCALE_PERCENT
+	elif int(_draft.render_scale) <= floor_percent:
+		reason = tr("Choose a 3D render scale above %d%% to allow dynamic resolution.") % floor_percent
 	var available := reason.is_empty()
 	_dynamic_resolution_picker.disabled = not available and int(_draft.dynamic_resolution_fps) == 0
 	_dynamic_resolution_picker.tooltip_text = tr("Experimental. Adjusts the 3D render scale during flight to meet a frame rate target.") \
@@ -1794,7 +1809,7 @@ func _refresh_translated_text() -> void:
 			_update_channel_picker.set_item_text(index, _update_channel_caption(str(_update_channel_picker.get_item_metadata(index))))
 	_refresh_update_status_text()
 	_refresh_telemetry_status_text()
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_render_scale_picker, "render_scale"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_render_scale_picker, "render_scale"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_tree_detail_picker, "tree_detail"], [_ground_detail_picker, "ground_detail"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"], [_shadow_cloud_picker, "shadow_cloud"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],

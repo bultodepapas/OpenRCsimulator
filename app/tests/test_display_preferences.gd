@@ -12,6 +12,7 @@ var _failures := 0
 func _initialize() -> void:
 	_run()
 	_test_gpu_defaults()
+	_test_independent_field_details()
 	_test_dynamic_resolution_gpu_defaults()
 	_reset()
 	print("display preferences checks=%d failures=%d" % [_checks, _failures])
@@ -570,6 +571,24 @@ func _test_dynamic_resolution_gpu_defaults() -> void:
 	_check("saved Off, ceiling and upscaler survive supported launch and reload",
 		store.save(manual) == OK and store.apply_gpu_defaults(false) == OK
 		and DisplayPreferences.new(PREFS).config == manual)
+	DisplayPreferences.first_run_defaults = previous
+
+
+func _test_independent_field_details() -> void:
+	_reset()
+	var previous := DisplayPreferences.first_run_defaults
+	DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run("Intel(R) UHD Graphics 630", "Linux")
+	var store := DisplayPreferences.new(PREFS)
+	_check("a legacy field defaults to full detail", store.config.tree_detail == "full" and store.config.ground_detail == "full")
+	_check("fresh profile persists independent simple choices",
+		store.apply_gpu_defaults(true) == OK and store.config.tree_detail == "simple" and store.config.ground_detail == "simple")
+	var manual := store.config.duplicate()
+	manual.tree_detail = "off"
+	_check("tree visibility persists independently of ground detail",
+		store.save(manual) == OK and DisplayPreferences.new(PREFS).config == manual)
+	manual.ground_detail = "invalid"
+	_check("invalid ground detail is rejected without losing tree choice",
+		store.save(manual) == ERR_INVALID_DATA and DisplayPreferences.new(PREFS).config.tree_detail == "off")
 	DisplayPreferences.first_run_defaults = previous
 
 

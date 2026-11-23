@@ -19,7 +19,8 @@ On a fresh install the game starts at 1920 × 1080 when a window of that size fi
 | Desktop RTX 5090 | Forward+, Extreme scene detail, 8× MSAA, Ultra shadows at Far distance, High aircraft lighting and Many birds |
 | Desktop RTX 3090 | Forward+, Extreme detail, 4× MSAA and the High renderer's standard shadow configuration |
 | Desktop RTX 3060 | Forward+, High detail, 2× MSAA and Medium shadows |
-| Intel UHD 630 or software renderer | Standard, Low detail, MSAA off, projected aircraft shadow, cloud shadows and runway meadow off, Few birds and a 75 % 3D render scale. Home explains how to raise quality. |
+| Identified lightweight hardware, including Intel UHD 630 | Standard on integrated graphics, Low scene detail, Simple trees and ground, MSAA off, projected aircraft cue, and minimal optional effects. The first launch explains how to raise settings individually. Compatibility can adapt from 75% toward 67% at a 30 FPS target. |
+| Recognized software renderer | Low visual detail, fixed 75% Native scale and first-launch guidance. |
 | Unidentified model | The same basic graphics at full 3D render scale, because the GPU may be fast |
 
 GFX-IGPU-01 added fixed bilinear scale for Native reconstruction. Players can

@@ -3,6 +3,7 @@ extends RefCounted
 
 const Policy := preload("res://render/flight_resolution_policy.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const TimingLease := preload("res://render/render_timing_lease.gd")
 const MIN_SCALE_PERCENT := 75
 const EXPERIMENT_FLAG := "--experimental-dynamic-resolution"
@@ -33,6 +34,13 @@ static func supports(viewport: Viewport) -> bool:
 	return RenderingServer.has_method(SAMPLE_METHOD) and RenderingServer.has_method(SUPPORT_METHOD) \
 		and RenderingServer.has_method(SAMPLE_TOGGLE_METHOD) \
 		and bool(RenderingServer.call(SUPPORT_METHOD, viewport.get_viewport_rid()))
+
+
+static func supports_compatibility(viewport: Viewport) -> bool:
+	return DisplayServer.get_name() != "headless" and is_instance_valid(viewport) \
+		and RenderingServer.get_current_rendering_method() == "gl_compatibility" \
+		and AutoGraphicsPolicy.compatibility_adaptation(
+			AutoGraphicsPolicy.GpuCapability.lookup(RenderingServer.get_video_adapter_name()))
 
 
 func tick(viewport: Viewport, flight_id: int, active: bool, config: Dictionary) -> void:

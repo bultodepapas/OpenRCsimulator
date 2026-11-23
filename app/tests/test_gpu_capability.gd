@@ -261,15 +261,26 @@ func _test_first_run() -> void:
 	var basic := AutoGraphicsPolicy.BASIC_SETTINGS
 	# GFX-IGPU-01: recognized weak shared-memory GPUs also start at a lower 3D render scale; unknown ones do not.
 	var basic_scaled := basic.duplicate()
+	basic_scaled.merge(AutoGraphicsPolicy.LIGHTWEIGHT_SETTINGS, true)
 	basic_scaled["render_scale"] = AutoGraphicsPolicy.LOW_GPU_RENDER_SCALE
 	var cases := {"NVIDIA GeForce RTX 3090": {}, "NVIDIA GeForce GTX 1650": {"msaa_3d": Viewport.MSAA_2X, "shadow_quality": "medium"},
 		"Example Accelerator 9000": basic, "NVIDIA GeForce RTX 6060": basic, "NVIDIA RTX A2000": basic,
 		"Intel(R) UHD Graphics 630": basic_scaled, "llvmpipe (LLVM 15.0.7, 256 bits)": basic_scaled,
-		"Apple M1 (Apple7)": {}, "Qualcomm(R) Adreno(TM) X1-85 GPU": {},
+		"Apple M1 (Apple7)": {}, "Qualcomm(R) Adreno(TM) X1-85 GPU": basic_scaled,
 		"AMD Radeon Graphics (radeonsi, gfx9999, LLVM 21.0.0)": basic,
 		"AMD Radeon(TM) 890M Graphics": {"msaa_3d": Viewport.MSAA_2X, "shadow_quality": "low"}}
 	for raw: String in cases:
 		_check("first-run settings for %s" % raw, AutoGraphicsPolicy.first_run(raw) == cases[raw], AutoGraphicsPolicy.first_run(raw))
+	var compatibility := {compatibility_adaptation_supported = true}
+	for adapter: String in ["Mesa Intel(R) UHD Graphics 630 (CFL GT2)", "Intel HD Graphics 4600", "AMD Radeon RX Vega 11 Graphics", "NVIDIA GeForce GT 710"]:
+		var recommended := AutoGraphicsPolicy.first_run(adapter, "Linux", 1.0, 60.0, compatibility)
+		_check("identified lightweight hardware starts at independent low detail and 30 FPS adaptation: " + adapter,
+			recommended.get("ground_detail") == "simple" and recommended.get("tree_detail") == "simple"
+			and recommended.get("birds") == "off" and recommended.get("dynamic_resolution_fps") == 30
+			and recommended.get("render_scale") == 75, recommended)
+	for adapter: String in ["NVIDIA GeForce RTX 3090", "Unknown GPU", "llvmpipe"]:
+		_check("adapter does not start Compatibility adaptation: " + adapter,
+			not AutoGraphicsPolicy.first_run(adapter, "Linux", 1.0, 60.0, compatibility).has("dynamic_resolution_fps"))
 	var hardware := {adapter = "NVIDIA GeForce RTX 5090", os = "Windows", cpu_threads = 12, screen = Vector2i(3840, 2160)}
 	var top := AutoGraphicsPolicy.decide(hardware)
 	_check("desktop flagship opens a 1080p window with Extreme, 8x AA and Ultra shadows",
@@ -317,7 +328,7 @@ func _test_first_run() -> void:
 	saved.msaa_3d = Viewport.MSAA_8X
 	_check("a saved file is written", DisplayPreferences.save_to(path, saved) == OK)
 	_check("a saved choice always wins over the recommendation", int(DisplayPreferences.load_from(path).msaa_3d) == Viewport.MSAA_8X)
-	DisplayPreferences.first_run_defaults = {"msaa_3d": 99, "scene_detail": "extreme"}
+	DisplayPreferences.first_run_defaults = {"msaa_3d": 99, "scene_detail": "unknown-detail"}
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	var fresh := DisplayPreferences.load_from(path)
 	_check("invalid or unsupported recommendations are ignored", int(fresh.msaa_3d) == DisplayPreferences.DEFAULTS.msaa_3d

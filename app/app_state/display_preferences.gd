@@ -43,6 +43,8 @@ const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"
 const FLAG_ANIMATIONS: Array[String] = ["auto", "static", "basic", "detailed"]
 # SC-BIRD (birds-sky-life plan D2): mirrors scenery/birds/bird_director.gd PREFERENCES (test_birds.gd keeps them equal).
 const BIRD_LEVELS: Array[String] = ["off", "few", "normal", "many"]
+const TREE_DETAILS: Array[String] = ["off", "simple", "full"]
+const GROUND_DETAILS: Array[String] = ["simple", "full"]
 const LIGHTING_QUALITY_LEVELS: Array[String] = ["low", "standard", "high"]
 # L11a-R3: runway meadow plant colonies; mirrors scenery/runway_meadow.gd PREFERENCES.
 const RUNWAY_MEADOW_LEVELS: Array[String] = ["off", "on"]
@@ -60,6 +62,8 @@ const DEFAULTS := {
 	"nvidia_reflex": "on",
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
+	"tree_detail": "full",
+	"ground_detail": "full",
 	"flag_animation": "auto",
 	"birds": "normal",
 	"runway_meadow": "on",
@@ -100,7 +104,7 @@ const DEFAULTS := {
 	"lens_clear_centre": LensSettings.DEFAULTS.lens_clear_centre,
 }
 const OPTIONAL_KEYS: Array[String] = [
-	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "render_scale",
+	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "tree_detail", "ground_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "render_scale",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
 	"fsr2_sharpness", "nvidia_reflex", "dynamic_resolution_fps",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
@@ -248,10 +252,11 @@ static func recommended_defaults() -> Dictionary:
 ## still equal recommended_defaults() (graphics_profile), so both use this one list. The physical RC circuit
 ## belongs to the flight scenario; restoring graphics must preserve its terrain and collision choice.
 static func graphics_default_keys() -> Array[String]:
-	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
+	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "tree_detail", "ground_detail", "flag_animation", "birds",
 		"runway_meadow", "reconstruction", "render_scale", "dynamic_resolution_fps", "fsr2_sharpness", "nvidia_reflex", "aircraft_lighting_quality"]
 	for key: String in SHADOW_FILE_KEYS:
 		keys.append(key)
+	keys.append_array(["lens_effects", "lens_rain", "lens_grime", "impact_effects", "aircraft_lighting_show_vfx"])
 	return keys
 
 
@@ -281,6 +286,18 @@ static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
 				and int(value) in {"msaa_3d": MSAA_3D_VALUES, "max_fps": MAX_FPS_VALUES, "render_scale": RENDER_SCALES}[key]:
 			result[key] = int(value)
 		elif key in SHADOW_FILE_KEYS and value in ShadowSettings.CHOICES[key]:
+			result[key] = value
+		elif key == "scene_detail" and value in SCENE_DETAILS:
+			result[key] = value
+		elif key == "tree_detail" and value in TREE_DETAILS:
+			result[key] = value
+		elif key == "ground_detail" and value in GROUND_DETAILS:
+			result[key] = value
+		elif key == "flag_animation" and value in FLAG_ANIMATIONS:
+			result[key] = value
+		elif key in LENS_FILE_KEYS and _valid_lens_value(key, value):
+			result[key] = value
+		elif key == "aircraft_lighting_show_vfx" and value is bool:
 			result[key] = value
 		elif key == "birds" and value in BIRD_LEVELS:
 			result[key] = value
@@ -325,6 +342,8 @@ static func _load_existing(file_path: String, result: Dictionary, owned_gpu_defa
 	raw.nvidia_reflex = cfg.get_value("graphics", "nvidia_reflex", DEFAULTS.nvidia_reflex)
 	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
+	raw.tree_detail = cfg.get_value("graphics", "tree_detail", DEFAULTS.tree_detail)
+	raw.ground_detail = cfg.get_value("graphics", "ground_detail", DEFAULTS.ground_detail)
 	raw.flag_animation = cfg.get_value("graphics", "flag_animation", DEFAULTS.flag_animation)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
 	raw.runway_meadow = cfg.get_value("graphics", "runway_meadow", DEFAULTS.runway_meadow)
@@ -418,6 +437,8 @@ static func save_to(file_path: String, candidate: Dictionary, owned_gpu_defaults
 	cfg.set_value("graphics", "nvidia_reflex", checked.config.nvidia_reflex)
 	cfg.set_value("graphics", "fsr2_sharpness", checked.config.fsr2_sharpness)
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
+	cfg.set_value("graphics", "tree_detail", checked.config.tree_detail)
+	cfg.set_value("graphics", "ground_detail", checked.config.ground_detail)
 	cfg.set_value("graphics", "flag_animation", checked.config.flag_animation)
 	cfg.set_value("graphics", "birds", checked.config.birds)
 	cfg.set_value("graphics", "runway_meadow", checked.config.runway_meadow)
@@ -478,6 +499,12 @@ static func validate(raw: Variant) -> Dictionary:
 		errors.append("fsr2_sharpness must be finite and between 0 and 1")
 	if typeof(scene_detail) != TYPE_STRING or scene_detail not in SCENE_DETAILS:
 		errors.append("scene_detail must be auto, low, medium, high or extreme")
+	var tree_detail: Variant = raw.get("tree_detail", DEFAULTS.tree_detail)
+	if typeof(tree_detail) != TYPE_STRING or tree_detail not in TREE_DETAILS:
+		errors.append("tree_detail must be off, simple or full")
+	var ground_detail: Variant = raw.get("ground_detail", DEFAULTS.ground_detail)
+	if typeof(ground_detail) != TYPE_STRING or ground_detail not in GROUND_DETAILS:
+		errors.append("ground_detail must be simple or full")
 	var flag_animation: Variant = raw.get("flag_animation", DEFAULTS.flag_animation)
 	if typeof(flag_animation) != TYPE_STRING or flag_animation not in FLAG_ANIMATIONS:
 		errors.append("flag_animation must be auto, static, basic or detailed")
@@ -527,6 +554,8 @@ static func validate(raw: Variant) -> Dictionary:
 		"nvidia_reflex": reflex,
 		"fsr2_sharpness": float(sharpness),
 		"scene_detail": scene_detail,
+		"tree_detail": tree_detail,
+		"ground_detail": ground_detail,
 		"flag_animation": flag_animation,
 		"birds": birds,
 		"runway_meadow": runway_meadow,

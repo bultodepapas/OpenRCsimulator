@@ -713,6 +713,15 @@ across renderer changes. Preserve the Retina MetalFX Spatial policy and fixed
 fallbacks. The [dynamic resolution plan](plans/dynamic-resolution.md#phase-3--implement-the-controller-and-player-controls-m2)
 owns the starting range, capability checks and remaining qualification.
 
+**VQ-07h-A2-R1 / VQ-07d, 2026-11-23.** Apply a lightweight bundle to new
+profiles on identified constrained GPUs and explain it once in Home. Saved
+profiles keep their settings. Keep ground and tree detail independent so players
+can raise individual settings. Automatic keeps simple tree silhouettes for
+collidable placements. The player's explicit Tree detail Off hides those
+silhouettes and preserves the same collision world. Compatibility uses
+rendered-frame cadence to test temporary reductions in pixel load.
+[Lightweight profile](plans/low-end-gpu-performance.md#lightweight-first-start-profile)
+
 ### V2 — Bind the shooting package to one explicit revision
 
 **22 November 2026.** The trailer index selects one active script, numeric shot plan, title plan and direction sheet. Generated shot cards, cut tables, maps and camera recipes derive from that revision; title/assembly validation refuses a mixed current/legacy edit. Preserve older locked scripts and their evidence alongside the current package, but do not treat them as current filming instructions. This avoids several plausible yet conflicting scene orders and camera settings.

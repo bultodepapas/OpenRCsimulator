@@ -38,9 +38,11 @@ The pinned renderer's viewport timing poll has unverified freshness. On Metal,
 the experimental completion stream exposes frame identity and completion time.
 It still needs a duration and actual 3D extent tied to that frame. Vulkan needs
 to associate completed timestamp slots with viewport generations and actual
-extents. Compatibility/OpenGL also needs a nonblocking read of completed
-queries. Keep each configuration on fixed rendering until its producer passes
-2.1 and its transitions pass 2.2–2.3. [Metal completion stream](../../tools/graphics/metalfx/README.md)
+extents. A completed-GPU source on Compatibility/OpenGL would also need a
+nonblocking read of completed queries. Qualify the completed-GPU controller
+against 2.1–2.3. For Compatibility's frame-interval controller, use 2.2–2.3 to
+verify scaling and phase 4 to check the cadence gain.
+[Metal completion stream](../../tools/graphics/metalfx/README.md)
 
 1. **2.1 Identify completed GPU work.** For the admitted renderer, require one coherent observation containing viewport lifetime, completed render ID, configuration generation, actual input extent, GPU duration and a monotonic recording time with bounded age. Describe which passes it covers. Exercise duplicate, delayed and out-of-order completions and viewport reuse. Compare observer-off/on process-loop p95 and record overhead against the M0 screening budget of 0.2 ms. Keep historical diagnostic formats readable. If the backend cannot supply the association asynchronously at acceptable cost, close as fixed. [Timing lease](../../app/render/render_timing_lease.gd) · [Diagnostic producer](../../app/render/frame_diagnostics.gd)
 2. **2.2 Build a legal scale range.** Intersect the provider's size/alignment limits, the measured pilot-readability floor and the player's fixed ceiling. Map each scalar to integer width and height as the pinned engine does, check both axes and remove duplicate extents. Verify observed pixels at odd window sizes as well as 1080p. A fixed 85% ceiling and an 85% floor can leave only one size. Fewer than two legal sizes closes that configuration as fixed.
@@ -60,8 +62,13 @@ identified discrete or laptop GPUs below 0.15× RTX 3090 estimated throughput.
 The bundle allows a 75–85% internal 3D range while Automatic reconstruction
 resolves to Native bilinear. Retina configurations with MetalFX Spatial support
 keep fixed scaling and Automatic reconstruction.
-Existing profiles retain their saved target and reconstruction. Compatibility
-and stock builds use fixed scale, with a 75% recommendation on a fresh UHD 630.
+Existing profiles retain their saved target and reconstruction. A fresh lightweight
+hardware profile on Compatibility also starts with a 30 FPS target. Its separate
+controller uses adjacent rendered frame intervals and a nominal 67–75% Native
+bilinear range. It discards isolated stalls, checks that a downstep actually
+improves pacing, and restores the player's ceiling while suspended. These
+observations are frame-cadence evidence. The completed GPU-frame path remains
+independent. Other stock renderer combinations without either source use fixed scale.
 Manual targets remain available on other supported GPUs. Renderer selection
 continues to follow the automatic graphics policy.
 

@@ -4,6 +4,7 @@ extends RefCounted
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const FieldLightData = preload("res://render/world/field_lights.gd")
+const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
 const Treeline = preload("res://render/treeline.gd")
 const FieldTreeDetail = preload("res://render/field_tree_detail.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
@@ -211,16 +212,18 @@ static func _advance_build(context: _BuildContext) -> void:
 		_BuildPhase.TREES:
 			if not context.trees_initialized:
 				context.front_azimuth = Treeline.front_azimuth_deg(context.field)
-				context.tree_half_angle = float(SceneDetail.profile().field_tree_half_angle_deg)
+				context.tree_half_angle = FieldDetailPreferences.tree_half_angle(float(SceneDetail.profile().field_tree_half_angle_deg))
 				context.trees_initialized = true
 			if context.object_index < context.field.objects.size():
 				var object_data: Dictionary = context.field.objects[context.object_index]
 				context.object_index += 1
-				context.result.add_child(Treeline.build(object_data, context.field.pilot,
-					context.front_azimuth, context.tree_half_angle))
+				var cards := Treeline.build(object_data, context.field.pilot, context.front_azimuth, context.tree_half_angle)
+				FieldDetailPreferences.register_tree(cards)
+				context.result.add_child(cards)
 				var detail := FieldTreeDetail.build(object_data, context.field.pilot,
 					context.front_azimuth, context.tree_half_angle)
 				if detail.get_child_count() > 0:
+					FieldDetailPreferences.register_tree(detail)
 					context.result.add_child(detail)
 				else:
 					detail.free()

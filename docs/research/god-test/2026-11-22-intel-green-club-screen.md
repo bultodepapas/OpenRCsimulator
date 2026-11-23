@@ -215,3 +215,37 @@ Five circuits used one process, the airborne Ugly Stik, the pilot view, calm wea
 In flight, the trees and ground masks reduced p95 by 3.60 ms and 2.73 ms, respectively, relative to the average of their adjacent controls. The terrain shader is the largest measured Home cost and the tree family is the larger of the two flight leads. Prioritize simpler base-grass shading for a terrain detail setting. For trees, split field cards from imported batches before selecting a reduction that preserves collision cues. These masks change the visual result. Adoption and Automatic selection require repeated paired measurements and image, readability and cue checks.
 
 Both sessions completed with clean exit. Raw intervals, timings, i915 samples, mask script and source receipts are retained under `U:/OpenRC-intel-club-ablation-20261123`.
+
+## 23 November · Player graphics options on PRIMIS
+
+The implementation adds separate tree and ground settings and a first-start
+lightweight profile. A rendered check on the UHD 630 used the pinned engine,
+Compatibility/OpenGL, and a 1920×1080 Weston/Xwayland output. A private new
+profile selected the lightweight settings and showed the notice. Keeping Tree
+detail Off and Ground detail Full hid the tree draw, saved both values and
+retired the notice. Relaunch restored the values without the notice. The native
+Ugly Stik flight started the 30 FPS controller at 75% with rendered-frame
+interval feedback. Pausing restored the fixed ceiling and cleared controller
+status. Headless checks exercised lower scale, recovery, rejected reductions,
+suspension and all nine notice languages.
+
+An additional Club Home screen compared the actual player options in the same
+app, scene and camera. It held Native bilinear at 75% with VSync, the frame cap
+and 3D MSAA off. Each arm used 8 s settle and 12 s of complete process
+intervals. The table shows one alternating sequence.
+
+| Run order | Ground | Trees | p50 ms | p95 ms | p99 ms | Over 50 ms |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| Control | Full | Simple | 38.86 | 39.53 | 41.25 | 0 |
+| Ground changed | Simple | Simple | 30.16 | 30.96 | 59.56 | 5 |
+| Control restored | Full | Simple | 38.80 | 39.44 | 39.60 | 0 |
+| Trees changed | Full | Off | 35.37 | 36.01 | 36.57 | 0 |
+| Control restored | Full | Simple | 38.90 | 39.46 | 39.79 | 0 |
+
+Simple ground reduced the median by 8.67 ms against its adjacent controls and
+introduced five intervals over 50 ms. Tree detail Off reduced the median by
+3.48 ms against its adjacent controls. The single sequence screens production
+settings in Home. Repeat the comparison and check flight readability and
+adaptive scale on the target hardware before claiming qualification.
+Receipts, checked logs, controller status and raw process intervals are in
+`U:/OpenRC-light-graphics-20261123/evidence-final.tar.gz`.

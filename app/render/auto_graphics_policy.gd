@@ -38,6 +38,27 @@ const BASIC_SETTINGS := {
 	"shadow_cloud": "off", "runway_meadow": "off", "birds": "few",
 }
 
+# Use the lowest detail that retains physical obstacle silhouettes and essential flight cues.
+const LIGHTWEIGHT_SETTINGS := {
+	"scene_detail": "low", "tree_detail": "simple", "ground_detail": "simple",
+	"flag_animation": "static", "birds": "off", "shadow_distance": "near", "shadow_softness": "hard",
+	"aircraft_lighting_quality": "low", "aircraft_lighting_show_vfx": false,
+	"lens_effects": "off", "lens_rain": "off", "lens_grime": "off", "impact_effects": "off",
+}
+
+static func is_lightweight(gpu: Dictionary) -> bool:
+	if needs_fallback(gpu):
+		return false
+	var kind := str(gpu.get("class", ""))
+	var rel := float(gpu.get("rel", INF))
+	return kind == "software" or rel < SCENE_LOW_BELOW \
+		or (kind == "integrated" and not str(gpu.get("id", "")).begins_with("apple_") and rel < MSAA_OFF_BELOW)
+
+
+static func compatibility_adaptation(gpu: Dictionary) -> bool:
+	return is_lightweight(gpu) and str(gpu.get("class", "")) != "software"
+
+
 static func basic_settings_active(recommended: Dictionary, current: Dictionary) -> bool:
 	if str(current.get("scene_detail", "auto")) not in ["auto", "low"]:
 		return false
@@ -199,6 +220,16 @@ static func first_run(adapter: String, os_name: String = "", screen_scale: float
 	var low_end_discrete := gpu_class in ["discrete", "laptop"] and not needs_fallback(gpu) \
 		and float(gpu.rel) < SCENE_MEDIUM_BELOW
 	var uses_retina_metalfx := retina and bool(facts.get("metalfx_spatial_available", false))
+	if is_lightweight(gpu) and not retina:
+		settings.merge(BASIC_SETTINGS, true)
+		settings.merge(LIGHTWEIGHT_SETTINGS, true)
+		settings["render_scale"] = LOW_GPU_RENDER_SCALE
+		if bool(facts.get("dynamic_resolution_supported", false)) and compatibility_adaptation(gpu):
+			settings["dynamic_resolution_fps"] = LOW_GPU_DYNAMIC_TARGET
+			settings["render_scale"] = LOW_GPU_DYNAMIC_CEILING
+		elif bool(facts.get("compatibility_adaptation_supported", false)) and compatibility_adaptation(gpu):
+			settings["dynamic_resolution_fps"] = LOW_GPU_DYNAMIC_TARGET
+		return settings
 	if bool(facts.get("dynamic_resolution_supported", false)) and not uses_retina_metalfx \
 			and (gpu_class == "integrated" or low_end_discrete):
 		settings.merge({"dynamic_resolution_fps": LOW_GPU_DYNAMIC_TARGET, "render_scale": LOW_GPU_DYNAMIC_CEILING})
@@ -248,5 +279,6 @@ static func decide(inputs: Dictionary) -> Dictionary:
 			{screen = screen, usable = inputs.get("usable", Vector2i.ZERO), cpu_threads = facts.cpu_threads,
 			forward_plus = facts.forward_plus, output_pixels = pixels, arm64 = arm64,
 			dynamic_resolution_supported = bool(inputs.get("dynamic_resolution_supported", false)),
+			compatibility_adaptation_supported = bool(inputs.get("compatibility_adaptation_supported", false)),
 			metalfx_spatial_available = bool(inputs.get("metalfx_spatial_available", false))}),
 		"reasons": {"renderer": str(chosen_renderer.reason), "scene_detail": str(scene.get("detail", scene.reason))}}

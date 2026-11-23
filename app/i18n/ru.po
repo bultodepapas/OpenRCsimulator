@@ -14609,3 +14609,21 @@ msgstr "Подготовка графики для этого компьютер
 
 msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
 msgstr "Подготовка графики для первого полёта на этом компьютере. Следующие полёты загружаются быстрее."
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "Мы выбрали облегчённые настройки графики для вашего GPU, чтобы симулятор работал плавно. Детализация изначально установлена на минимум. В разделе «Настройки → Графика» повышайте параметры по одному и проверяйте плавность работы."
+
+msgid "Tree detail"
+msgstr "Детализация деревьев"
+
+msgid "Ground detail"
+msgstr "Детализация поверхности"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "Меняет только отрисовку деревьев. Поле и его физические препятствия сохраняются."
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "Упрощает затенение травы, сохраняя разметку полосы и ориентиры на местности."
+
+msgid "Simple"
+msgstr "Упрощённая"

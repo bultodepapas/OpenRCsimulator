@@ -94,6 +94,8 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const FlightCompatibilityResolution := preload("res://render/flight_compatibility_resolution.gd")
+const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const FlagQuality := preload("res://render/flag_quality.gd")
@@ -117,6 +119,7 @@ var _popup_realign_pending := false
 var graphics_restart: Callable = Callable(self, "_perform_graphics_restart")
 var display_preferences: DisplayPreferences
 var _flight_dynamic_resolution: RefCounted
+var _show_light_graphics_notice := false
 var _flight_graphics_calibration: Node
 var _display_window_mode := "windowed"
 var _display_resolution := "auto"
@@ -465,8 +468,11 @@ func _ready() -> void:
 			forward_plus = RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD,
 			output_pixels = AutoGraphicsPolicy.startup_output_pixels,
 			dynamic_resolution_supported = FlightDynamicResolution.supports(ui_window),
+			compatibility_adaptation_supported = FlightDynamicResolution.supports_compatibility(ui_window),
 			metalfx_spatial_available = OS.get_name() == "macOS" and Reconstruction.runtime_capabilities().metalfx_spatial})
-		if display_preferences.apply_gpu_defaults(fresh_install) != OK:
+		var recommends_light_graphics: bool = DisplayPreferences.first_run_defaults.get("ground_detail") == "simple"
+		_show_light_graphics_notice = fresh_install and recommends_light_graphics
+		if (fresh_install or not recommends_light_graphics) and display_preferences.apply_gpu_defaults(fresh_install) != OK:
 			push_warning("Could not store the recommended display settings; they apply to this session only.")
 	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
 	if DisplayServer.get_name() != "headless":
@@ -544,9 +550,14 @@ func _tick_flight_dynamic_resolution() -> void:
 	var config: Dictionary = display_preferences.config
 	var target := int(config.get("dynamic_resolution_fps", 0))
 	if _flight_dynamic_resolution == null:
-		if target == 0 or not FlightDynamicResolution.supports(get_viewport()):
+		if target == 0:
 			return
-		_flight_dynamic_resolution = FlightDynamicResolution.new()
+		if FlightDynamicResolution.supports(get_viewport()):
+			_flight_dynamic_resolution = FlightDynamicResolution.new()
+		elif FlightDynamicResolution.supports_compatibility(get_viewport()):
+			_flight_dynamic_resolution = FlightCompatibilityResolution.new()
+		else:
+			return
 	var has_session := has_home and is_instance_valid(flight) and flight.session != null
 	var active: bool = has_session and not _loading_active and not _quit_audio_pending \
 		and not is_instance_valid(_flight_graphics_calibration) and flight.session.sim != null \
@@ -2043,6 +2054,9 @@ func open_settings(from: Control = null) -> void:
 	var window_checkpoint := _capture_display_window_state()
 	_display_preview_checkpoint = window_checkpoint
 	settings.presentation_committed.connect(func() -> void:
+		if _show_light_graphics_notice and DisplayPreferences.graphics_profile(display_preferences.config) == "custom":
+			_show_light_graphics_notice = false
+			_refresh_basic_graphics_notice(display_preferences.config)
 		_automatic_window_size = get_window().size if _display_window_mode == "windowed" else _windowed_size
 		window_checkpoint.clear()
 		window_checkpoint.merge(_capture_display_window_state()))
@@ -2153,14 +2167,15 @@ static func apply_master_volume(level: float) -> void:
 
 func _refresh_basic_graphics_notice(config: Dictionary) -> void:
 	if home != null and home.is_node_ready():
-		home.set_basic_graphics_notice(preferences_path == Preferences.DEFAULT_PATH and
-				AutoGraphicsPolicy.basic_settings_active(DisplayPreferences.first_run_defaults, config))
+		home.set_basic_graphics_notice(_show_light_graphics_notice and
+				DisplayPreferences.graphics_profile(config) == "current_default")
 
 
 func _apply_presentation(config: Dictionary) -> void:
 	_remember_telemetry_graphics(config)
 	_refresh_basic_graphics_notice(config)
 	ShadowSettings.apply(config)
+	FieldDetailPreferences.apply(get_tree(), config)
 	AircraftLightingPolicy.apply(config)
 	if is_instance_valid(menu_audio):
 		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))

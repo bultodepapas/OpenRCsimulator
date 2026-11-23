@@ -14780,3 +14780,21 @@ msgstr "Préparation des graphismes pour cet ordinateur. Seul le premier démarr
 
 msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
 msgstr "Préparation des graphismes pour le premier vol sur cet ordinateur. Les vols suivants se chargent plus vite."
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "Nous avons choisi des réglages graphiques plus légers pour votre GPU afin de préserver la fluidité du simulateur. Les détails visuels commencent au niveau le plus bas. Dans Paramètres > Graphismes, augmentez une option à la fois et vérifiez la fluidité du simulateur."
+
+msgid "Tree detail"
+msgstr "Détail des arbres"
+
+msgid "Ground detail"
+msgstr "Détail du terrain"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "Modifie uniquement le rendu des arbres. Le terrain et ses obstacles physiques restent en place."
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "Simplifie le rendu de l’herbe tout en conservant les marquages de piste et les repères du terrain."
+
+msgid "Simple"
+msgstr "Simple"

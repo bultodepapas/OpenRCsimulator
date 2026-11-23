@@ -13808,3 +13808,21 @@ msgstr "正在为这台电脑准备图形。只有首次启动需要这么长时
 
 msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
 msgstr "正在为这台电脑上的首次飞行准备图形。之后的飞行会加载得更快。"
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "为了让模拟器保持流畅，我们为您的 GPU 选用了负载较低的图形设置。画面细节从最低级别开始。您可以在“设置 > 图形”中逐项提高画质，并观察模拟器是否仍然流畅。"
+
+msgid "Tree detail"
+msgstr "树木细节"
+
+msgid "Ground detail"
+msgstr "地面细节"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "只改变树木的绘制方式。飞行场地及其物理障碍物保持原样。"
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "简化草地着色，保留跑道标记和地形参照。"
+
+msgid "Simple"
+msgstr "简易"

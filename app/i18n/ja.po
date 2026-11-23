@@ -13859,3 +13859,21 @@ msgstr "このコンピューター用にグラフィックを準備していま
 
 msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
 msgstr "このコンピューターでの初回フライト用にグラフィックを準備しています。次回以降のフライトはより速く読み込まれます。"
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "シミュレーターが滑らかに動作するよう、お使いの GPU に合わせて負荷の軽いグラフィック設定を選びました。描画の詳細度は最低レベルから始まります。「設定 ＞ グラフィック」で項目を一つずつ上げ、動作の滑らかさを確認してください。"
+
+msgid "Tree detail"
+msgstr "樹木の詳細度"
+
+msgid "Ground detail"
+msgstr "地面の詳細度"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "樹木の描画だけを変更します。飛行場と物理的な障害物はそのままです。"
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "草の陰影を簡略化しながら、滑走路の標示と地形の目印を残します。"
+
+msgid "Simple"
+msgstr "簡易"

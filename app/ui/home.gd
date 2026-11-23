@@ -699,7 +699,7 @@ func _init() -> void:
 	_launch_notices.add_theme_constant_override("separation", 0)
 	primary_actions.add_child(_launch_notices)
 	_launch_notices.add_child(note_label)
-	basic_graphics_notice = _label("Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display.", "SecondaryLabel")
+	basic_graphics_notice = _label("We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs.", "SecondaryLabel")
 	basic_graphics_notice.name = "BasicGraphicsNotice"
 	basic_graphics_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	basic_graphics_notice.hide()
