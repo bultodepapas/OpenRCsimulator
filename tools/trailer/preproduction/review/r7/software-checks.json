@@ -1,0 +1,305 @@
+{
+  "format": "openrc-trailer-review-checks",
+  "version": 1,
+  "revision": "R7",
+  "date": "2026-11-22",
+  "input_head": "fd2eb1f31b4df31571aed35d8a31df7006c97ce6",
+  "game_source_baseline": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "scope": "Source/editorial contracts, focused software and synthetic typography only. No actual R7 simulator footage or target-host qualification.",
+  "runtime": {
+    "os": "Linux",
+    "machine": "x86_64",
+    "python": "3.12.14",
+    "godot_version": "4.8.beta2.official.cafc17a19",
+    "godot_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "input_sha256": {
+    "tools/trailer/shot_plan.py": "105b88da3ad65e8bef519ef73a9933fb30b02e02187ef770b51ffbb0a3afa4be",
+    "tools/trailer/title_plan.py": "41011926ed4f5b47edf0021fc554db627c02c5eab74740ce414e957f1781251a",
+    "tools/trailer/assemble.py": "55367a43803b0d5e1bac90f2dd3d38ab6b40582e706b2dbcd711818c69936383",
+    "tools/trailer/cinema_titles.py": "bc64709c45355f141531cfce269f0f3738de26886df52ab8733a813ffa779f04",
+    "tools/trailer/planned_camera.gd": "b7500705d5b0cc4d2ad00da8c5afd2fa6fd9cbd1611d01d5d9baa1efc129f865",
+    "tools/trailer/capture_flight.gd": "99128af4a8080884a642dd456fef7300ea51d71f0d8c71e2ab51f87209629e0b",
+    "tools/trailer/test_planned_camera.gd": "aa83802c768ae9aad70eca870d818043e2ea0b046966138f8f28bcf13e4d4f06",
+    "tools/trailer/test_capture_time.gd": "c909815a215152670f29a5a3e9b096eed5f8a46922dd5664b3ad341241d0ad33",
+    "tools/trailer/test_r7_direction.py": "b87884ff71011c29543dd55a56b481b99382aa734eb736527ad4561abfc34e21",
+    "tools/trailer/test_shot_plan.py": "ed8e2997a2975b045ffaefc60ffddc60b4875e4635a2aa122d4014b2d4e596bb",
+    "tools/trailer/test_camera_recipe.py": "bea1f3985f4ab553bc87466bd7f7f8acfe27e5ffa286143752b728dbc776b712",
+    "tools/trailer/test_cinema_titles.py": "c7f8296741d186ead3df2207411f8974e1f379bfce873bc9f6bdf528595ad199",
+    "tools/trailer/test_title_plan.py": "6483cf5eac644cad1d446a673827a9d5c233d0a856c039d5e70684d0df263270",
+    "tools/trailer/test_cinema_assembly.py": "825148d6e40668a1967f1dd203853afa2f761f4f6f3c94d745cfc0be7fdc4fc8",
+    "docs/plans/trailer-v2/shot-plan-r7.json": "e743f1a0213c704cd1a4ddba7dacdb8b8f7e7a53f820541364e9b3d1d64383d4",
+    "docs/plans/trailer-v2/title-plan-r7.json": "49bc34c29684e4085216c117ccc91a820adf2622ff2c8bfdc99be28e7eae0b6b",
+    "docs/plans/trailer-v2/cinematic-script-r7.md": "869560cb5da7288ce88cdc0bc5b32ff8fc62c4e7497e8aaf3738bf4dd8d2d551",
+    "docs/plans/trailer-v2/storyboard-r7.md": "c3b29f1ea1bf5254a8a9a6fb0aba6d96d5ded983747640c23552569957d9ee66",
+    "docs/plans/trailer-v2/recipes/r4-01-camera.json": "a44f9ff9e61030b8483d6cc9ac51bd27f217bb4bd8d2b7924e8b25b83958cf91",
+    "docs/plans/trailer-v2/recipes/r4-03-camera.json": "5552311f1b40f53f25f9804b8bb02bfbd44fb80248e6dc916eda16dab8bfa4fa",
+    "docs/plans/trailer-v2/recipes/r4-40-camera.json": "e84bd07616d7017a4c7000c0871ee96b2718163b4992fb1c55bbf0a6087f28a7",
+    "docs/plans/trailer-v2/diagrams/r7-edit-map.svg": "8ad09c2bff25d20aa7a41770b4d1133649b493df7be7a598f83d43242cf97a13",
+    "docs/plans/trailer-v2/diagrams/r7-lake-blocking.svg": "0cbb537517c9b9c223a7f97f0fd1eb26e9165221e18199e83eb03f2d4acae26e",
+    "app/render/world/conditions.gd": "faf3049c59aab90b9eb497bd48e865b072439bebf316873ebbb4b187d181435b",
+    "app/render/world/ephemeris.gd": "2ddff868db43ea4e3803b2df9fe3d8bb85d1f84e41d9a4b25bdaac28b6b700a6",
+    "app/render/world/lunar.gd": "e7bd23f9306129c1994b7897432400c14c69520754755c38a67db59227e98302"
+  },
+  "python": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "unittest",
+      "-v",
+      "test_shot_plan",
+      "test_camera_recipe",
+      "test_cinema_titles",
+      "test_title_plan",
+      "test_cinema_assembly",
+      "test_r7_direction"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 27.40018939971924,
+    "log_sha256": "670a6cc6f13891be8876ed0781ebffba3b70e63d9db6e6cc6b139b09641f5671",
+    "tests": 60,
+    "scope": "Six focused suites, including actual synthetic FFmpeg encodes and legacy/current revision rejection."
+  },
+  "godot_runs": [
+    {
+      "label": "v2-r7-camera",
+      "capture_id": "58b45ca5-703b-46ec-a46e-63d2999defeb",
+      "started_utc": "2026-11-22T23:11:40.978505+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/workspace/scratch/3d3e37cee95d/openrc-camera-r7-anxvfq5z",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://test_planned_camera.gd",
+        "--",
+        "--check-post-draw",
+        "--exported-recipe=/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review/docs/plans/trailer-v2/recipes/r4-40-camera.json"
+      ],
+      "cwd": "/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review",
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "missing_required_text": [
+        "failures=0"
+      ],
+      "reason": "process_exit",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 0.747292,
+      "log_sha256": "5432153b0d552e6f91f1b5e261aa737aba374a0a98e4d6a85cd8b1cbd5fc944c",
+      "scope": "Bounded optional headless draw-callback probe; no frame_post_draw observed, not qualified.",
+      "report_sha256": "c246e1b8e7879e4d3d8af86eabb1ca50b698a6ddd09357ed4015469cccae8090",
+      "first_diagnostic": "TRAILER_PLANNED_CAMERA FAIL: frame_post_draw was observed on this engine route"
+    },
+    {
+      "label": "v2-r7-camera-headless",
+      "capture_id": "f853fc50-4510-4683-8383-4ca18e813bf9",
+      "started_utc": "2026-11-22T23:12:47.203340+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/workspace/scratch/3d3e37cee95d/openrc-camera-r7-anxvfq5z",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://test_planned_camera.gd",
+        "--",
+        "--exported-recipe=/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review/docs/plans/trailer-v2/recipes/r4-40-camera.json"
+      ],
+      "cwd": "/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.756572,
+      "log_sha256": "dfeb1d8a8be6b443a1b71d9a34173caedfcaf78edca3a6256ffab8cdf927e4a1",
+      "scope": "230 successful assertions in a minimal real SceneTree/Camera3D fixture; flight owner and director are stubs, no rendered aircraft.",
+      "report_sha256": "022e75a299fe87d49c7b192ca4886ddebddf78da24e8f534b1f5b642f3e6e727",
+      "first_diagnostic": null
+    },
+    {
+      "label": "v2-r7-capture-parse",
+      "capture_id": "ec081b39-2c86-47b9-82d2-4402f3f6de69",
+      "started_utc": "2026-11-22T23:14:07.177141+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "../tools/trailer/capture_flight.gd"
+      ],
+      "cwd": "/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 279,
+        "warning": 0
+      },
+      "missing_required_text": [],
+      "reason": "engine_error",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 13.47229,
+      "log_sha256": "d21c8700590eff58b7074cd55c196d3376e4068203f5e8e8fddc55ba1c6a15b6",
+      "scope": "Sparse checkout parse failed on missing imported texture/audio assets; not a passing engine check.",
+      "report_sha256": "3b64d5337b6dc75564e83f97d62a10e4e129f97dc38d34d86cf550f2be2ac905",
+      "first_diagnostic": "Unable to open file: res://.godot/imported/polystyrene_nor_gl_1k.jpg-b47c19e753b410995df1c5e18d544948.ctex."
+    },
+    {
+      "label": "v2-r7-capture-real-dependencies",
+      "capture_id": "209eb0d0-bdec-4c36-b203-ee5bcdcf98ce",
+      "started_utc": "2026-11-22T23:14:46.361084+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/workspace/scratch/3d3e37cee95d/openrc-real-capture-r6-mxdHDE/app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "../tools/trailer/capture_flight.gd"
+      ],
+      "cwd": "/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 13.841518,
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "scope": "Successful check-only compile/load with prepared real production dependencies; 842 app scripts match current checkout, no startup or flight.",
+      "report_sha256": "ed04c18efa539a049771fec8a9ce992cf615a56944fc32bdf47183c7abad725f",
+      "first_diagnostic": null
+    },
+    {
+      "label": "v2-r7-time-resolver",
+      "capture_id": "b258ca0e-2845-4cb5-ba07-ea7c9a0d9752",
+      "started_utc": "2026-11-22T23:12:48.290331+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "/workspace/scratch/3d3e37cee95d/openrc-camera-r7-anxvfq5z",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://test_capture_time.gd"
+      ],
+      "cwd": "/workspace/scratch/3d3e37cee95d/OpenRCsimulator-trailer-review",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.511732,
+      "log_sha256": "28b2883fdd47204a1d284fb8ae0f6fd8d37620ab36278b213c93407452c2780d",
+      "scope": "18 successful assertions using actual Conditions, Ephemeris and Lunar sources; no sky or exposure pixels.",
+      "report_sha256": "b954c3b9cfcd89de6145179cb720e9dbb32eb3c15ee89cabfddadc60e04e4836",
+      "first_diagnostic": null
+    }
+  ],
+  "prepared_dependency_fixture": {
+    "app_script_count": 842,
+    "all_match_checkout": true,
+    "manifest_format": "JSON object of repository-relative path to SHA-256, sorted keys, separators comma/colon",
+    "manifest_sha256": "23393402208ee00617bfd298f0ddc4113acb4976cff024af4ed6e72d6352771c",
+    "scope": "Existing imported production dependency fixture. Current capture_flight.gd and planned_camera.gd copied unchanged; no stub Main."
+  },
+  "plan_validation": {
+    "shots": 62,
+    "frames": 9000,
+    "fps": 60,
+    "source_files_verified": 40,
+    "source_class_seconds": {
+      "G": 112,
+      "U": 15,
+      "P": 18,
+      "E": 5
+    },
+    "each_prior_cut_duration_cast_class_preserved": true,
+    "exportable_review_recipes": [
+      "R4-01",
+      "R4-03",
+      "R4-40"
+    ]
+  },
+  "synthetic_study": {
+    "summary": "study-summary.json",
+    "summary_sha256": "396bcff4cbff61af5238e6080287281e51b20e52ec709bb435cfc67db04c982e",
+    "full_decode_exit": 0,
+    "full_motion_human_review": false,
+    "visual_samples": [
+      {
+        "study_frame": 255,
+        "size": [
+          480,
+          270
+        ],
+        "cue": "HX-700"
+      },
+      {
+        "study_frame": 765,
+        "size": [
+          480,
+          270
+        ],
+        "cue": "Phoenix provider"
+      },
+      {
+        "study_frame": 1215,
+        "size": [
+          480,
+          270
+        ],
+        "cue": "end card"
+      }
+    ],
+    "contact_and_edit_map_inspected": true,
+    "scope": "Neutral-background text samples only; no game/HUD/subject occlusion acceptance."
+  },
+  "independent_review": {
+    "roles": [
+      "editorial",
+      "world/camera source",
+      "inspiration and independent Good Enemy"
+    ],
+    "three_final_source_findings_closed": true,
+    "helpers_ran_runtime_checks": false
+  },
+  "remaining": [
+    "Real rendered post-draw camera evidence; headless draw-callback probe did not qualify it.",
+    "Real flight, subject framing, reflection, exposure and low-sun glare.",
+    "Manual/adapted R4-02 jump sky/camera route and Workshop R4-37 camera composition.",
+    "Actual imported-model identities, trial eligibility and estimated/donor label binding.",
+    "Native Windows/RTX3090 renderer and performance; actual audio/music and complete film.",
+    "Real-background title/phone reading and public destination/download flow."
+  ]
+}

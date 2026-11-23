@@ -74,7 +74,7 @@ The [22 November external investigation](god-test/2026-11-22-intel-gpu-investiga
 
 ### Cinematic trailer
 
-[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](cinematic-trailer/production-2026-10-17.md) records the first delivery and source identities; [revision 6](cinematic-trailer/revision-6-2026-10-17.md) removes the abrupt ending reset for a 58-second cut, retaining the cinematic feature titles, MONSTER CAR 2 jump, twilight Lumber, two Extra rolls, formation opening and continuous score. The [production plan](../plans/cinematic-trailer.md) retains creative targets and remaining release gates.
+[TRA-00 source investigation, 2026-10-17](../../tools/trailer/history/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](../../tools/trailer/history/production-2026-10-17.md) records the first delivery and source identities; [revision 6](../../tools/trailer/history/revision-6-2026-10-17.md) removes the abrupt ending reset for a 58-second cut, retaining the cinematic feature titles, MONSTER CAR 2 jump, twilight Lumber, two Extra rolls, formation opening and continuous score. The [production plan](../../tools/trailer/history/cinematic-trailer.md) retains creative targets and remaining release gates.
 
 ### Flight logging
 

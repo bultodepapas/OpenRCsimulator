@@ -1,10 +1,10 @@
 # OpenRC Simulator — cinematic trailer production plan
 
-2026-10-21 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** [runtime refresh](../research/cinematic-trailer/refresh-2026-10-21.md) delivers a new 58-second local film from the current simulator. It retains [revision 6's](../research/cinematic-trailer/revision-6-2026-10-17.md) scene order, feature titles, MONSTER CAR 2 jump, twilight Turbo Lumber Evolution, two Extra rolls, formation opening and continuous score. Listening review and the existing Turbo Lumber Evolution asset notice remain open before publication. [Original capture evidence](../research/cinematic-trailer/production-2026-10-17.md).
+2026-10-21 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** [runtime refresh](refresh-2026-10-21.md) delivers a new 58-second local film from the current simulator. It retains [revision 6's](revision-6-2026-10-17.md) scene order, feature titles, MONSTER CAR 2 jump, twilight Turbo Lumber Evolution, two Extra rolls, formation opening and continuous score. Listening review and the existing Turbo Lumber Evolution asset notice remain open before publication. [Original capture evidence](production-2026-10-17.md).
 
 User brief: a **very cinematic, AAA-style game trailer**, entirely in **English**, showing every current vehicle, aerobatics, crashes, controls and several airplanes performing together in the spirit of an airshow. The original exact-minute request was explicitly relaxed for revision 6; the accepted edit is 58 seconds. **Helicopter, both cars, electrical storms and physical wind are mandatory.** Review the complete player-facing feature inventory and select its strongest visual moments. **Prices mean the estimated accident/repair cost displayed after a crash, not the simulator's purchase price or vehicle shopping prices.** Historical storyboard timing below records the earlier targets.
 
-This plan retains the creative targets and remaining review gates. The [production evidence](../research/cinematic-trailer/production-2026-10-17.md) is authoritative for the delivered film, source identities and deliberate changes from those targets. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records the earlier source audit at commit `049df2034de017e6fedc649a55194eb5977191cd` and research limits.
+This plan retains the creative targets and remaining review gates. The [production evidence](production-2026-10-17.md) is authoritative for the delivered film, source identities and deliberate changes from those targets. The [dated investigation](2026-10-17.md) records the earlier source audit at commit `049df2034de017e6fedc649a55194eb5977191cd` and research limits.
 
 Current end-card rendering in `tools/trailer/assemble.py` uses `BETA PREVIEW`; the dated storyboards below retain their original wording.
 
@@ -83,7 +83,7 @@ The owner added on 2026-10-28: show the Corsair's liveries switching rapidly dur
 
 Claims stay inside source scope: aircraft remain experimental and not flight-validated; Workshop size is virtual similarity scaling; companions are an experimental 1–3 roster; DLSS/DLAA/Reflex and FSR are unqualified trials; radios are EdgeTX/OpenTX USB joystick mode, without a brand compatibility list. The score is re-rendered to the new length from the same licensed Uprising source.
 
-Research expansion: **16 internet investigations**, a parallel **five-track music shortlist**, and comparisons of code-video skills and generative-video tools are recorded in the [research ledger](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics). Production selected Scott Buckley's **Uprising**, native Godot capture and a small Python/FFmpeg edit pipeline. Listening review remains open; captures, effects and the full minute have been rendered.
+Research expansion: **16 internet investigations**, a parallel **five-track music shortlist**, and comparisons of code-video skills and generative-video tools are recorded in the [research ledger](2026-10-17.md#expanded-investigation-16-research-topics). Production selected Scott Buckley's **Uprising**, native Godot capture and a small Python/FFmpeg edit pipeline. Listening review remains open; captures, effects and the full minute have been rendered.
 
 ## 1. Creative direction
 
@@ -118,11 +118,11 @@ Current scope is **eight distinct vehicle visuals**: five airplane families, one
 | MONSTER CAR 2 — `monster-car-2` | Nitro acceleration, steering and braking on the circuit | Use its own sound and controls. Do not imply truck-to-aircraft collision or simultaneous shared gameplay. |
 | Stik engine variants — `stik-glow-61fx-2t`, `stik-glow-55ax-2t`, `stik-glow-fs64v-4t` | Audit all three; use the actual selected installation in the Stik/engine sound shots | Same visual family. The one-minute cut covers every distinct vehicle, without three extra engine title cards. Preserve exact configuration identities in the take sheet. |
 
-The source of aircraft identity is the [catalog](../../app/app_state/aircraft_catalog.gd); truck operation is owned by the [RC vehicle guide](../../research/rc-monster-truck/README.md). The [eight-vehicle media workflow](../media/README.md) supplies existing composition references and reusable model access.
+The source of aircraft identity is the [catalog](../../../app/app_state/aircraft_catalog.gd); truck operation is owned by the [RC vehicle guide](../../../research/rc-monster-truck/README.md). The [eight-vehicle media workflow](../../../docs/media/README.md) supplies existing composition references and reusable model access.
 
 ## 3. Main storyboard — exactly 1:00
 
-This table preserves the original edit targets. The [accepted timeline](../research/cinematic-trailer/production-2026-10-17.md#accepted-timeline) records the actual shots: a Stik bank rather than takeoff, grounded truck driving, a Mustang pass without a gear-transition claim, and the shorter title `MISTAKES COST.`. The letter identifies the intended source: **G** = actual gameplay, **S** = model/studio presentation, **C** = staged formation cinematic. The delivered film contains exactly **3,600 frames** at 60 fps.
+This table preserves the original edit targets. The [accepted timeline](production-2026-10-17.md#accepted-timeline) records the actual shots: a Stik bank rather than takeoff, grounded truck driving, a Mustang pass without a gear-transition claim, and the shorter title `MISTAKES COST.`. The letter identifies the intended source: **G** = actual gameplay, **S** = model/studio presentation, **C** = staged formation cinematic. The delivered film contains exactly **3,600 frames** at 60 fps.
 
 | Time | Shot and action | Camera / edit / sound | English copy and purpose |
 | --- | --- | --- | --- |
@@ -177,7 +177,7 @@ Capture approach, impact, aftermath and report in the same session. Keep the inc
 
 Use the report's exact English wording and currency. A partial subtotal remains a partial subtotal. Any editorial magnification reproduces the same number and its qualifications. Do not crop `estimated`, `inspection required` or missing-price information. A clearly staged montage may cut from a modest priced prop strike to a different dramatic wreck, but it must not suggest that the first bill belongs to the second crash; prefer one incident for the entire payoff.
 
-The [crash guide](../CRASH-DAMAGE-PLAN.md) owns presentation limits; the [economics plan and implementation links](crash-damage-economics.md) own valuation. Current structural/thermal assessment and full fleet costing remain incomplete. A spectacular particle effect does not establish a physically calibrated repair bill.
+The [crash guide](../../../docs/CRASH-DAMAGE-PLAN.md) owns presentation limits; the [economics plan and implementation links](../../../docs/plans/crash-damage-economics.md) own valuation. Current structural/thermal assessment and full fleet costing remain incomplete. A spectacular particle effect does not establish a physically calibrated repair bill.
 
 ## 6. Complete feature review and editorial coverage
 
@@ -185,46 +185,46 @@ Review scope: the current-source feature table, player guide, track registry and
 
 | Feature family / current scope | Treatment in the 60-second film | Source / boundary |
 | --- | --- | --- |
-| Five fixed-wing families; trim, stalls/spins, servo response and 240 Hz float64 flight model | Takeoff, roll, banking, control and crash shots | [Current features](../../README.md#current-features); show behavior without a physical-validation claim. |
-| Glow 2T/4T, gasoline, electric and turbine propulsion; finite-fuel glow controls | Distinct sound/response across vehicles; variants audited, no extra catalog montage | [Glow engines](../GLOW-ENGINES.md), [propulsion](../PROPULSION-CORE-PLAN.md); do not imply Turbo Lumber Evolution battery depletion. |
-| Playable helicopter: spool, hover, cyclic/collective/yaw and trainer controls | Mandatory 18–23 s hero | [Helicopter](../HELICOPTER.md); advanced HX-700 laboratory work is not another playable helicopter. |
-| Two trucks: electric/nitro, suspension, steering, braking, terrain, circuit ramps/rollers/slalom | Mandatory separate 23–27 and 27–31 s heroes | [RC activity](../../research/rc-monster-truck/README.md); truck experiments and qualification remain separate. |
-| Truck water/mud, damage/recovery, tuning laboratory and recording | Audited; mud/grime may appear within a car shot; no extra showcase slot | [RC activity](../../research/rc-monster-truck/README.md); do not transfer its water behavior or repair economics to aircraft. |
-| Per-wheel aircraft ground handling, suspension, steering, tire grip and rough grass | Stik takeoff and impact | [Ground model](../research/ground-physics/GP-05/README.md); no calibrated landing-distance claim. |
-| Flaps/retracts on equipped aircraft; Stik pump/exhaust smoke | Mustang equipment shot; Stik smoke | [Equipment/controls](../FIRST-LAUNCH.md); no jet smoke or active Turbo Lumber Evolution flaps. |
-| Physical mean wind, crosswind, repeating gusts and seeded temporal turbulence | Mandatory 34–38 s correction shot; windsock/smoke elsewhere | [Wind](../WIND-ATMOSPHERE-REFERENCE.md); spatially uniform field, no tornado or obstacle-wake claim. |
-| Nine skies and cloud motion; storm tower, distant rain curtains, branched lightning and delayed thunder | Mandatory 31–34 s Electrical Storm shot | [World controls](../FIELD-WORLD-PLAN.md#sky-and-cloud-controls); visual presentation, not rain/bolt damage or spatial storm forces. |
-| Elevation, temperature, QNH and humidity affecting atmosphere | Audited; carried by the chosen flight setup, no numeric explainer | [Atmosphere](../WIND-ATMOSPHERE-REFERENCE.md#atmosphere); do not claim that storm appearance changes density. |
-| Day/dawn/dusk/night, date/location/time, stars/moon, field lamps, campfire and aircraft-light presentation | Golden-hour vehicle footage into night/dusk storm; visible lamps as scenery | [World](../FIELD-WORLD-PLAN.md), [time](../TIME-OF-DAY-PLAN.md); editorial cuts, not instant physical weather changes. |
-| Club field, grass, vegetation, lake, buildings, people/birds and parked vehicles | Environmental layers in hero shots | [Landscape](../LANDSCAPE-PLAN.md); background objects are not additional playable vehicles. |
-| Positional engines, propeller/airframe sound, Doppler, wind/foliage/wildlife | Carries the entire film; thunder becomes the tension transition | [Audio](../AUDIO-PLAN.md); use captured voices, not unrelated full-size aircraft audio. |
-| Keyboard/gamepad/USB radio, saved calibration, profiles, remapping, AUX, rates/expo and failsafe | Mandatory 38–42 s synchronized controls | [Player guide](../FIRST-LAUNCH.md); active mappings and activity-specific controls are authoritative. |
-| Pilot/chase/orbit/close-up, zoom/auto-zoom and shadow aid | Different gameplay perspectives across hero shots | [Camera guide](camera-views.md); filming rails are not advertised player cameras. |
-| Sticks/trims, flight data, wind, warnings, control guide, telemetry and diagnostics overlays | Useful sticks/wind overlays only; clean footage elsewhere | [Overlays](flight-overlays.md); never fabricate telemetry for a staged shot. |
-| Contacts, debris, wrecks, marks, fire/smoke, limited scenery breakage, persistent aftermath/restart | Mandatory 42–50 s consequence | [Crash](../CRASH-DAMAGE-PLAN.md); damaged-flight mechanics remain unimplemented. |
-| Estimated component repair/replacement, incomplete scope and inspection status | Mandatory real incident report, 45–48 s | [Economics](crash-damage-economics.md); preserve partial/provisional status and real amount. |
-| Workshop supported size/weight/power/control changes, saved revisions and test flight | Reviewed; optional replacement insert in a derivative, not added to the main minute | [Workshop](../AIRCRAFT-WORKSHOP.md); capability-gated, not arbitrary hardware assembly. |
-| Natural Random briefing and repeatable scenario; optional fixed-wing emergency practice | Reviewed; a supported emergency may motivate the existing crash shot, if accurately recorded | [Natural Random](natural-random-flight.md), [failures](failure-mode.md); not every failure or vehicle is supported. |
-| English/Spanish menus, saved choices, pause/focus handling, display/text/accessibility settings | English capture; no settings tour | [Player guide](../FIRST-LAUNCH.md); preserve legibility and avoid rapid flash editing. |
-| Flight recording/markers, numerical exact replay/CSV, helicopter/truck diagnostics | Production evidence; no player-facing visual-replay promise | [Flight logs](../FLIGHT-LOGGING.md), [tools](../TOOLS.md). |
-| Desktop packages and update flow | Verify end-card destination and build availability | [Downloads](../../README.md#download-and-fly); no assumed mobile/web/Steam release. |
-| Drone racing, tornado challenge, general multiplayer and advanced helicopter flight | Reviewed as unimplemented/unreleased; exclude from advertised gameplay | [Drone plan](drone-racing.md), [sky plan](sky-clouds-weather.md), [helicopter](../HELICOPTER.md); formation is labeled cinematic. |
+| Five fixed-wing families; trim, stalls/spins, servo response and 240 Hz float64 flight model | Takeoff, roll, banking, control and crash shots | [Current features](../../../README.md#current-features); show behavior without a physical-validation claim. |
+| Glow 2T/4T, gasoline, electric and turbine propulsion; finite-fuel glow controls | Distinct sound/response across vehicles; variants audited, no extra catalog montage | [Glow engines](../../../docs/GLOW-ENGINES.md), [propulsion](../../../docs/PROPULSION-CORE-PLAN.md); do not imply Turbo Lumber Evolution battery depletion. |
+| Playable helicopter: spool, hover, cyclic/collective/yaw and trainer controls | Mandatory 18–23 s hero | [Helicopter](../../../docs/HELICOPTER.md); advanced HX-700 laboratory work is not another playable helicopter. |
+| Two trucks: electric/nitro, suspension, steering, braking, terrain, circuit ramps/rollers/slalom | Mandatory separate 23–27 and 27–31 s heroes | [RC activity](../../../research/rc-monster-truck/README.md); truck experiments and qualification remain separate. |
+| Truck water/mud, damage/recovery, tuning laboratory and recording | Audited; mud/grime may appear within a car shot; no extra showcase slot | [RC activity](../../../research/rc-monster-truck/README.md); do not transfer its water behavior or repair economics to aircraft. |
+| Per-wheel aircraft ground handling, suspension, steering, tire grip and rough grass | Stik takeoff and impact | [Ground model](../../../docs/research/ground-physics/GP-05/README.md); no calibrated landing-distance claim. |
+| Flaps/retracts on equipped aircraft; Stik pump/exhaust smoke | Mustang equipment shot; Stik smoke | [Equipment/controls](../../../docs/FIRST-LAUNCH.md); no jet smoke or active Turbo Lumber Evolution flaps. |
+| Physical mean wind, crosswind, repeating gusts and seeded temporal turbulence | Mandatory 34–38 s correction shot; windsock/smoke elsewhere | [Wind](../../../docs/WIND-ATMOSPHERE-REFERENCE.md); spatially uniform field, no tornado or obstacle-wake claim. |
+| Nine skies and cloud motion; storm tower, distant rain curtains, branched lightning and delayed thunder | Mandatory 31–34 s Electrical Storm shot | [World controls](../../../docs/FIELD-WORLD-PLAN.md#sky-and-cloud-controls); visual presentation, not rain/bolt damage or spatial storm forces. |
+| Elevation, temperature, QNH and humidity affecting atmosphere | Audited; carried by the chosen flight setup, no numeric explainer | [Atmosphere](../../../docs/WIND-ATMOSPHERE-REFERENCE.md#atmosphere); do not claim that storm appearance changes density. |
+| Day/dawn/dusk/night, date/location/time, stars/moon, field lamps, campfire and aircraft-light presentation | Golden-hour vehicle footage into night/dusk storm; visible lamps as scenery | [World](../../../docs/FIELD-WORLD-PLAN.md), [time](../../../docs/TIME-OF-DAY-PLAN.md); editorial cuts, not instant physical weather changes. |
+| Club field, grass, vegetation, lake, buildings, people/birds and parked vehicles | Environmental layers in hero shots | [Landscape](../../../docs/LANDSCAPE-PLAN.md); background objects are not additional playable vehicles. |
+| Positional engines, propeller/airframe sound, Doppler, wind/foliage/wildlife | Carries the entire film; thunder becomes the tension transition | [Audio](../../../docs/AUDIO-PLAN.md); use captured voices, not unrelated full-size aircraft audio. |
+| Keyboard/gamepad/USB radio, saved calibration, profiles, remapping, AUX, rates/expo and failsafe | Mandatory 38–42 s synchronized controls | [Player guide](../../../docs/FIRST-LAUNCH.md); active mappings and activity-specific controls are authoritative. |
+| Pilot/chase/orbit/close-up, zoom/auto-zoom and shadow aid | Different gameplay perspectives across hero shots | [Camera guide](../../../docs/plans/camera-views.md); filming rails are not advertised player cameras. |
+| Sticks/trims, flight data, wind, warnings, control guide, telemetry and diagnostics overlays | Useful sticks/wind overlays only; clean footage elsewhere | [Overlays](../../../docs/plans/flight-overlays.md); never fabricate telemetry for a staged shot. |
+| Contacts, debris, wrecks, marks, fire/smoke, limited scenery breakage, persistent aftermath/restart | Mandatory 42–50 s consequence | [Crash](../../../docs/CRASH-DAMAGE-PLAN.md); damaged-flight mechanics remain unimplemented. |
+| Estimated component repair/replacement, incomplete scope and inspection status | Mandatory real incident report, 45–48 s | [Economics](../../../docs/plans/crash-damage-economics.md); preserve partial/provisional status and real amount. |
+| Workshop supported size/weight/power/control changes, saved revisions and test flight | Reviewed; optional replacement insert in a derivative, not added to the main minute | [Workshop](../../../docs/AIRCRAFT-WORKSHOP.md); capability-gated, not arbitrary hardware assembly. |
+| Natural Random briefing and repeatable scenario; optional fixed-wing emergency practice | Reviewed; a supported emergency may motivate the existing crash shot, if accurately recorded | [Natural Random](../../../docs/plans/natural-random-flight.md), [failures](../../../docs/plans/failure-mode.md); not every failure or vehicle is supported. |
+| English/Spanish menus, saved choices, pause/focus handling, display/text/accessibility settings | English capture; no settings tour | [Player guide](../../../docs/FIRST-LAUNCH.md); preserve legibility and avoid rapid flash editing. |
+| Flight recording/markers, numerical exact replay/CSV, helicopter/truck diagnostics | Production evidence; no player-facing visual-replay promise | [Flight logs](../../../docs/FLIGHT-LOGGING.md), [tools](../../../docs/TOOLS.md). |
+| Desktop packages and update flow | Verify end-card destination and build availability | [Downloads](../../../README.md#download-and-fly); no assumed mobile/web/Steam release. |
+| Drone racing, tornado challenge, general multiplayer and advanced helicopter flight | Reviewed as unimplemented/unreleased; exclude from advertised gameplay | [Drone plan](../../../docs/plans/drone-racing.md), [sky plan](../../../docs/plans/sky-clouds-weather.md), [helicopter](../../../docs/HELICOPTER.md); formation is labeled cinematic. |
 
 **Storm staging:** use the airplane route with `Electrical Storm`; capture its tower, internal light, branched bolt and distant rain curtains. Warm up the storm and retain long sound handles: distant thunder can arrive much later than the three-second picture slot, so select a passage with audible thunder from earlier events rather than forcing an immediate boom onto the visible bolt. The helicopter and Natural Random routes currently keep the classic sky and have no equivalent storm consumer. Do not composite lightning behind the helicopter and present it as its current gameplay. Set physical wind/gusts independently for the following airplane shot. A bolt must not be edited to imply it struck the aircraft, caused the wind impulse or generated the repair bill. Reuse the already bundled free cloud/thunder assets.
 
-Use [FIRST-LAUNCH](../FIRST-LAUNCH.md), [Workshop](../AIRCRAFT-WORKSHOP.md), [helicopter controls](../HELICOPTER.md) and [truck controls](../../research/rc-monster-truck/README.md#drive-and-experiment) as the authoritative mappings. In the control insert, show a modest stick movement, matching surface travel and matching vehicle response; do not animate a decorative unsynchronized stick diagram.
+Use [FIRST-LAUNCH](../../../docs/FIRST-LAUNCH.md), [Workshop](../../../docs/AIRCRAFT-WORKSHOP.md), [helicopter controls](../../../docs/HELICOPTER.md) and [truck controls](../../../research/rc-monster-truck/README.md#drive-and-experiment) as the authoritative mappings. In the control insert, show a modest stick movement, matching surface travel and matching vehicle response; do not animate a decorative unsynchronized stick diagram.
 
 ## 7. Capture and editing workflow
 
 ### Reuse first
 
-- Reuse the [cinema pipeline](../../site/CINEMA.md), [eight-vehicle studio tooling](../media/README.md), native models, field, licensed fonts and bundled input glyphs. Existing studio clips are 24 fps/1280×800 and the tour is a small GIF: use them for the animatic, then recapture suitable master footage.
+- Reuse the [cinema pipeline](../../../site/CINEMA.md), [eight-vehicle studio tooling](../../../docs/media/README.md), native models, field, licensed fonts and bundled input glyphs. Existing studio clips are 24 fps/1280×800 and the tour is a small GIF: use them for the animatic, then recapture suitable master footage.
 - Use free downloadable tools: **OBS Studio** for real-time gameplay, **Godot Movie Maker** for repeatable offline staging, **Blender VSE** for the editable timeline/compositing, and **FFmpeg/ffprobe** for encoding and inspection. Reuse the project's checked FFmpeg distribution before downloading another. Record exact versions and hashes; change no engine pin for filming.
-- Download suitable licensed music and limited accent SFX instead of building an audio generator, editor, recorder or new aircraft assets. Existing game audio remains the vehicle sound source. The [five-track shortlist](../research/cinematic-trailer/2026-10-17.md#music-shortlist-and-edit-plan) prioritizes Vanguard and Uprising for audition; asset acquisition and final release checks are pending.
+- Download suitable licensed music and limited accent SFX instead of building an audio generator, editor, recorder or new aircraft assets. Existing game audio remains the vehicle sound source. The [five-track shortlist](2026-10-17.md#music-shortlist-and-edit-plan) prioritizes Vanguard and Uprising for audition; asset acquisition and final release checks are pending.
 
 ### Programmed effects and camera treatment
 
-All entries are **planned**, not delivered. Use existing engine/compositor features first. Small adapters belong under `tools/trailer/`; they read presentation data and never change vehicle physics. The [research ledger R06–R14](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics) provides the technical sources.
+All entries are **planned**, not delivered. Use existing engine/compositor features first. Small adapters belong under `tools/trailer/`; they read presentation data and never change vehicle physics. The [research ledger R06–R14](2026-10-17.md#expanded-investigation-16-research-topics) provides the technical sources.
 
 | Priority / treatment | How to produce it | Slot and visual acceptance |
 | --- | --- | --- |
@@ -243,7 +243,7 @@ The project's Godot 4.7 Compatibility renderer supports useful glow and adjustme
 
 ### Optional video skills
 
-The [tool comparison](../research/cinematic-trailer/2026-10-17.md#skills-and-production-tool-decision) identifies **HyperFrames** as the first new skill candidate for code-driven editing/titles, with **Remotion** as a React alternative subject to its license eligibility. Both assemble supplied footage. Baseline production can proceed with Blender and FFmpeg; use at most one additional framework if a short pilot demonstrates a benefit. Preserve this storyboard when evaluating templates, and pin exact versions before adoption.
+The [tool comparison](2026-10-17.md#skills-and-production-tool-decision) identifies **HyperFrames** as the first new skill candidate for code-driven editing/titles, with **Remotion** as a React alternative subject to its license eligibility. Both assemble supplied footage. Baseline production can proceed with Blender and FFmpeg; use at most one additional framework if a short pilot demonstrates a benefit. Preserve this storyboard when evaluating templates, and pin exact versions before adoption.
 
 Runway was found as an available, unconnected plugin. Generative video is optional for previs or abstract graphics, with service-specific credits and watermark constraints. Actual vehicle, control, weather and damage demonstrations must come from the simulator. No skill installation, service connection, generated clip or new tool dependency is part of this planning delivery.
 
@@ -253,7 +253,7 @@ Runway was found as an available, unconnected plugin. Generative video is option
 
 **Repeatable presentation:** use Godot's built-in `--write-movie` / `--fixed-fps` support for staged/model shots, with PNG frames plus WAV when lossless intermediates are warranted. This engine capability is available; this project's trailer director and visual replay adapter are **pending**. At 60 fps, target four existing 240 Hz simulation ticks per normal-speed frame, and verify the application's actual clock behavior. Use normal shutdown so audio headers finish correctly. Validate a 10-second shot before committing to long exports. [Godot movie documentation](https://docs.godotengine.org/en/4.7/tutorials/animation/creating_movies.html).
 
-The [flight logger](../FLIGHT-LOGGING.md) provides F10 recording, F11 markers, export and numerical exact replay. It is **not a visual replay player**. Use it as evidence for fixed-wing takes; helicopter and truck recordings retain their own formats and acceptance rules. In particular, the standard scripted/capture routes do not automatically reproduce the interactive crash-effects policy: capture the crash live first.
+The [flight logger](../../../docs/FLIGHT-LOGGING.md) provides F10 recording, F11 markers, export and numerical exact replay. It is **not a visual replay player**. Use it as evidence for fixed-wing takes; helicopter and truck recordings retain their own formats and acceptance rules. In particular, the standard scripted/capture routes do not automatically reproduce the interactive crash-effects policy: capture the crash live first.
 
 ### Production sequence
 
@@ -269,7 +269,7 @@ Slow motion uses actual higher-rate capture or explicit frame retiming; no AI-ge
 
 ## 8. Sound and graphic design
 
-The cue should have a spare intro, a driving middle, a usable stop and a final lift. **Audition [Vanguard — Scott Buckley](https://www.scottbuckley.com.au/library/vanguard/) first**, with [Uprising](https://www.scottbuckley.com.au/library/uprising/) as backup. Both creator pages offer full-mix MP3s under CC BY 4.0 with attribution. Five Armies, Aphelion and Simulacra complete the [researched shortlist](../research/cinematic-trailer/2026-10-17.md#music-shortlist-and-edit-plan). These are provisional choices based on descriptions; listening, final source offsets and musical joins remain pending. No fixed BPM is required.
+The cue should have a spare intro, a driving middle, a usable stop and a final lift. **Audition [Vanguard — Scott Buckley](https://www.scottbuckley.com.au/library/vanguard/) first**, with [Uprising](https://www.scottbuckley.com.au/library/uprising/) as backup. Both creator pages offer full-mix MP3s under CC BY 4.0 with attribution. Five Armies, Aphelion and Simulacra complete the [researched shortlist](2026-10-17.md#music-shortlist-and-edit-plan). These are provisional choices based on descriptions; listening, final source offsets and musical joins remain pending. No fixed BPM is required.
 
 Music arc: **0–4 s anticipation → 4–31 s rising drive with distinct engine voices → 31–42 s storm/control tension → 42–45 s impact drop → 45–48 s spare report bed → 48–50 s restart pickup → 50–57 s formation climax → 57–60 s resolution.** Cut at musical phrases and preserve the picture timing; do not compress a whole track to one minute. The composer identifies Uprising's heroic section at source time 2:07, which is an audition lead, not a committed edit point.
 
@@ -291,7 +291,7 @@ English editorial titles: `TAKE CONTROL.` · `EVERY MISTAKE HAS A COST.` · `EVE
 | Poster | A genuine final-video frame; no fictional vehicle or unfilmed screenshot |
 | Evidence / credits | Shot manifest, build and input identities, price-report references, asset licenses and source links |
 
-Proposed owned paths: `tools/trailer/` for the small capture/manifest adapters; `docs/research/cinematic-trailer/` for accepted evidence; this plan for remaining steps. Raw takes, frames, proxies and work-in-progress edits go under ignored `tmp/trailer/<run-id>/`. Deliver large final files to a named export folder outside Git, with hashes and a durable handoff location recorded in the evidence. Do not leave the only final copy in temporary storage.
+Proposed owned paths: `tools/trailer/` for the small capture/manifest adapters; `tools/trailer/history/` for accepted evidence; this plan for remaining steps. Raw takes, frames, proxies and work-in-progress edits go under ignored `tmp/trailer/<run-id>/`. Deliver large final files to a named export folder outside Git, with hashes and a durable handoff location recorded in the evidence. Do not leave the only final copy in temporary storage.
 
 The trailer track does not own `app/sim/`, physics data, aircraft generators, crash/economics logic, or `site/` publication. If filming exposes a defect, report it to its owning track; do not tune physics, bill amounts or crash severity to make a shot look better. Keep new drafts outside `app/` until they parse.
 
@@ -301,7 +301,7 @@ Estimates are planning ranges for focused production work, excluding unattended 
 
 | ID | Work | Result / remaining gate |
 | --- | --- | --- |
-| TRA-00 | Source/feature audit, 16 web investigations, five-track shortlist and skills/effects comparison | Completed; [research snapshot](../research/cinematic-trailer/2026-10-17.md). |
+| TRA-00 | Source/feature audit, 16 web investigations, five-track shortlist and skills/effects comparison | Completed; [research snapshot](2026-10-17.md). |
 | TRA-01 | Capture source, eight visual families / eleven configurations, priced incident, tools/licenses | Source/tree identities and original incident retained. Capture used the working tree, not a frozen checkout. Existing Turbo Lumber Evolution redistribution notice remains unresolved. |
 | TRA-02 | Native 1080p60 timing/audio, gusts, storm and four-actor pilot | Captured and checked; four 240 Hz simulation ticks per ordinary rendered flight frame. |
 | TRA-03 | English one-minute edit, cameras and music | 17-shot timing locked; Uprising acquired with attribution. Listening review remains open. |
@@ -310,8 +310,8 @@ Estimates are planning ranges for focused production work, excluding unattended 
 | TRA-06 | Edit, sound, titles, grading and report | Complete local H.264/AAC film; source audio, music, timeline and editor retained. |
 | TRA-07 | Technical review, poster and editable handoff | Full decode, 3,600 frames, 60.000 s and measured audio passed. Sampled visual review complete. Listening and asset release gate remain open. |
 | TRA-08 | Channel adaptation/publication | Not requested; no upload or publication performed. |
-| TRA-09 | Revision 8 feature re-cut | Local 58-second film delivered; [evidence](../research/cinematic-trailer/revision-8-2026-10-28.md). Superseded by TRA-10 after the owner's legibility review. |
-| TRA-10 | Revision 9 legibility re-cut | Local 90-second film; [evidence](../research/cinematic-trailer/revision-9-2026-10-29.md). Listening and small-screen review remain open. |
+| TRA-09 | Revision 8 feature re-cut | Local 58-second film delivered; [evidence](revision-8-2026-10-28.md). Superseded by TRA-10 after the owner's legibility review. |
+| TRA-10 | Revision 9 legibility re-cut | Local 90-second film; [evidence](revision-9-2026-10-29.md). Listening and small-screen review remain open. |
 
 The original **27–55 hour** range was a planning estimate, not a measured production duration. The remaining work concerns listening review and release clearance; the movie and editable handoff already exist.
 
@@ -342,4 +342,4 @@ The original **27–55 hour** range was a planning estimate, not a measured prod
 | New source features are absent from the public download | Label development footage and verify the CTA/package again before delivery. |
 | Music rights or Content ID are unresolved | Choose another cleared free track; the edit project keeps music replaceable. |
 
-The subsequent user instruction authorizes producing the complete trailer. Capture and editing now use the external [trailer tools](../../tools/trailer/README.md). Publication remains outside the requested production scope. The storyboard above records creative targets; the delivery evidence records what was actually filmed and accepted.
+The subsequent user instruction authorizes producing the complete trailer. Capture and editing now use the external [trailer tools](../README.md). Publication remains outside the requested production scope. The storyboard above records creative targets; the delivery evidence records what was actually filmed and accepted.

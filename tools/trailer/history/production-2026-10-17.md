@@ -4,7 +4,7 @@
 
 Latest delivery: the [2026-10-21 runtime refresh](refresh-2026-10-21.md) recaptures the 58-second edit with the current simulator. [Revision 6](revision-6-2026-10-17.md) removed the abrupt reset before the logo. This report retains the first delivery's capture and export evidence.
 
-The [production plan](../../plans/cinematic-trailer.md) and [16-topic research ledger](2026-10-17.md)
+The [production plan](cinematic-trailer.md) and [16-topic research ledger](2026-10-17.md)
 led to a complete **60-second English trailer** with eight distinct vehicles, real flying/driving,
 weather, controls, a priced native incident and a labeled four-aircraft finale.
 
@@ -27,7 +27,7 @@ Durable folder: `C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-17/`.
 The export includes README, timeline, render manifest, description/credits, poster, contact sheet,
 original/derived sources, editor snapshot, evidence and licenses. The poster is a final-video frame.
 Original MJPEG/PCM takes and lossless derived sources remain separate from the H.264 delivery.
-See [trailer tools](../../../tools/trailer/README.md) for rebuilding and the compact
+See [trailer tools](../README.md) for rebuilding and the compact
 [delivery manifest](delivery-2026-10-17.json) for final identity. Large media lives outside Git.
 
 ## Accepted timeline

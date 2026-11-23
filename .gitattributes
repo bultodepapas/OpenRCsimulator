@@ -330,3 +330,10 @@
 /docs/research/aircraft-creator/import-closeout-2026-11-17/evidence/**/*.log -whitespace
 /docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/evidence/** -text whitespace=cr-at-eol
 /docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/evidence/**/*.log -whitespace
+
+# Camera recipes and editorial receipts identify their plans by exact bytes.
+/tools/trailer/preproduction/shot-plan-*.json text eol=lf
+/tools/trailer/preproduction/title-plan-*.json text eol=lf
+# The filmmaking manifest pins upstream skill and license blobs.
+/tools/trailer/skills/*/SKILL.md text eol=lf
+/tools/trailer/skills/*/LICENSE text eol=lf

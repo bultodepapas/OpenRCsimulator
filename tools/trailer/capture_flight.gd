@@ -22,6 +22,7 @@ const ViewportColor := preload("res://render/viewport_color.gd")
 const StockSmoke := preload("res://render/smoke/stock_profile.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
 const WorkloadAudit := preload("lighting_workload_audit.gd")
+const PlannedCamera := preload("planned_camera.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -36,6 +37,11 @@ const AUDIO_MIX_AGE_JITTER_USEC := 2_000
 var _options: Dictionary = {}
 var _main: Node
 var _director: Node
+var _planned_camera: Node
+var _camera_recipe: Dictionary = {}
+var _camera_recipe_input_path := ""
+var _camera_recipe_input_sha256 := ""
+var _camera_script_sha256 := ""
 var _out_dir := ""
 var _shot := "stik-bank"
 var _fps := DEFAULT_FPS
@@ -90,6 +96,45 @@ func _run() -> void:
 	_options = _parse_options(OS.get_cmdline_user_args())
 	_lighting_flight = str(_options.get("lighting-flight", "workshop"))
 	_realtime = _options.has("frametimes")
+	_shot = str(_options.get("shot", "stik-bank"))
+	if _options.has("camera-recipe"):
+		var camera_arguments := 0
+		for argument: String in OS.get_cmdline_user_args():
+			if argument == "--camera-recipe" or argument.begins_with("--camera-recipe="):
+				camera_arguments += 1
+		if camera_arguments != 1 or typeof(_options["camera-recipe"]) != TYPE_STRING:
+			push_error("--camera-recipe must be provided exactly once as an absolute JSON path.")
+			quit(2)
+			return
+		if _realtime or _shot in ["lighting-pilot", "crash"]:
+			push_error("--camera-recipe does not support real-time, lighting-pilot or crash capture routes.")
+			quit(2)
+			return
+		if str(_options.get("landscape", Landscapes.DEFAULT_ID)) != "club_field":
+			push_error("--camera-recipe requires the Club-field landscape.")
+			quit(2)
+			return
+		var camera_input: Dictionary = PlannedCamera.read_recipe_file(str(_options["camera-recipe"]))
+		if not bool(camera_input.get("ok", false)):
+			push_error("Camera recipe refused: " + str(camera_input.get("error", "invalid input")))
+			quit(2)
+			return
+		_camera_recipe = camera_input.recipe
+		_camera_recipe_input_path = str(_options["camera-recipe"]).replace("\\", "/").simplify_path()
+		_camera_recipe_input_sha256 = str(camera_input.sha256)
+		var selected_aircraft := str(_options.get("aircraft", Catalog.DEFAULT_ID))
+		var selected_entry: Dictionary = Catalog.entry(selected_aircraft)
+		if selected_aircraft != str(_camera_recipe.vehicle_id) or selected_entry.is_empty() \
+				or str(selected_entry.get("vehicle", "airplane")) != "airplane" or not Catalog.can_fly(selected_aircraft):
+			push_error("Camera recipe requires the selected flyable fixed-wing catalog aircraft to match vehicle_id.")
+			quit(2)
+			return
+		var planned_camera_script: Script = PlannedCamera
+		_camera_script_sha256 = FileAccess.get_sha256(planned_camera_script.resource_path)
+		if _camera_script_sha256.is_empty():
+			push_error("Camera recipe refused: the camera script source could not be hashed.")
+			quit(2)
+			return
 	var lighting_options := validate_lighting_profile_options(_options)
 	if not bool(lighting_options.get("ok", false)):
 		push_error(str(lighting_options.get("error", "Invalid lighting profile options.")))
@@ -123,6 +168,10 @@ func _run() -> void:
 		push_error("--lighting-profile must not point to the capture manifest path.")
 		quit(2)
 		return
+	if not _camera_recipe.is_empty() and lighting_profile_collides_with_manifest(_camera_recipe_input_path, _out_dir):
+		push_error("--camera-recipe must not point to the capture manifest path.")
+		quit(2)
+		return
 	var directory_error := DirAccess.make_dir_recursive_absolute(_out_dir)
 	if directory_error != OK:
 		push_error("Could not create capture directory: %s (%s)" % [_out_dir, error_string(directory_error)])
@@ -132,7 +181,6 @@ func _run() -> void:
 	_width = int(_options.get("width", DEFAULT_WIDTH))
 	_height = int(_options.get("height", DEFAULT_HEIGHT))
 	_seconds = float(_options.get("seconds", 4.0))
-	_shot = str(_options.get("shot", "stik-bank"))
 	if _realtime and not _validate_performance_options():
 		quit(2)
 		return
@@ -144,6 +192,10 @@ func _run() -> void:
 		_save_images = false
 	if _fps != 60 or _width != 1920 or _height != 1080 or _seconds <= 0.0:
 		push_error("Trailer capture requires 1920x1080, 60 fps, and a positive duration")
+		quit(2)
+		return
+	if not _camera_recipe.is_empty() and (not is_finite(_seconds) or round(_seconds * _fps) < 2.0):
+		push_error("--camera-recipe requires a finite duration of at least two source frames.")
 		quit(2)
 		return
 	TranslationServer.set_locale("en")
@@ -242,6 +294,13 @@ func _run() -> void:
 			_failure = str(_main.session.start_error)
 		await _abort_live_capture("Production flight startup failed: " + _failure, 1)
 		return
+	if not _camera_recipe.is_empty() and (str(_main.aircraft_id) != str(_camera_recipe.vehicle_id) \
+			or str(_main.session.aircraft.get("model", {}).get("id", "")) != str(_camera_recipe.vehicle_id) \
+			or str(_main.landscape_id) != "club_field" \
+			or not _main.session.physics_enabled or _main.session.external_driver_enabled \
+			or _main._rig == null or _main._rig.camera != _main._camera):
+		await _abort_live_capture("Camera recipe requires the matched fixed-wing aircraft and a normal live flight camera.", 2)
+		return
 	_detach_desk_controller(_main.session)
 	if _lighting_flight == "normal":
 		var normal_flight: Dictionary = _validate_normal_flight()
@@ -302,6 +361,14 @@ func _run() -> void:
 			await _abort_live_capture("Flight director refused capture: " + director_error, 2)
 			return
 	root.add_child(_director)
+	if not _camera_recipe.is_empty():
+		_planned_camera = PlannedCamera.new()
+		_planned_camera.name = "TrailerPlannedCamera"
+		var camera_error: String = _planned_camera.configure(_main, _camera_recipe, Callable(self, "_planned_camera_tick"))
+		if not camera_error.is_empty():
+			await _abort_live_capture("Camera recipe refused: " + camera_error, 2)
+			return
+		root.add_child(_planned_camera)
 	# Let the real world, interpolated airplane, particles, and camera finish one full presented interval.
 	await process_frame
 	await RenderingServer.frame_post_draw
@@ -516,8 +583,9 @@ func _abort_live_capture(message: String, exit_code: int) -> void:
 
 
 func _teardown_live_scene() -> void:
-	# Main's exit hooks own renderer/audio disposal. Stop the director first because
-	# its process callback reads the still-live scene.
+	# Presentation nodes read the live scene; stop them before the Main teardown.
+	if is_instance_valid(_planned_camera):
+		_planned_camera.free()
 	if is_instance_valid(_director):
 		_director.free()
 	if is_instance_valid(_main):
@@ -723,6 +791,8 @@ func _capture_crash_report() -> void:
 func _capture_frames(count: int, preroll: int) -> void:
 	var previous_lighting_tick := -1
 	var lighting_capture_requested := _lighting_capture_requested()
+	var camera_requested := not _camera_recipe.is_empty()
+	var previous_camera_tick := int(_main.session.sim.tick) if camera_requested else -1
 	for index: int in range(count):
 		if _shot == "crash" and index == 60:
 			# Let the viewer see the actual impact and wreck for one second before revealing the native report.
@@ -749,6 +819,20 @@ func _capture_frames(count: int, preroll: int) -> void:
 			_director.resume_after_report_restart()
 		await process_frame
 		await RenderingServer.frame_post_draw
+		if camera_requested:
+			var sim: Node = _main.session.sim
+			if not is_instance_valid(_planned_camera):
+				_failure = "Planned camera disappeared during capture."
+			elif not str(_planned_camera.configuration_error()).is_empty():
+				_failure = "Planned camera failed: " + str(_planned_camera.configuration_error())
+			elif sim.paused or not sim.fault_reason.is_empty() or not _main.session.crash.is_empty() \
+					or not _main.session.holds.is_empty() or int(sim.tick) <= previous_camera_tick:
+				_failure = "Planned camera flight interrupted: tick=%d previous=%d paused=%s fault=%s holds=%s crash=%s" % [
+					sim.tick, previous_camera_tick, sim.paused, sim.fault_reason, str(_main.session.holds), str(_main.session.crash)]
+			if not _failure.is_empty():
+				push_error(_failure)
+				return
+			previous_camera_tick = int(sim.tick)
 		if lighting_capture_requested:
 			var sim: Node = _main.session.sim
 			if sim.paused or not sim.fault_reason.is_empty() or not _main.session.crash.is_empty() \
@@ -758,9 +842,11 @@ func _capture_frames(count: int, preroll: int) -> void:
 				push_error(_failure)
 				return
 			previous_lighting_tick = sim.tick
-		var director_record_count_before := _director_frame_record_count() if lighting_capture_requested else -1
+		var director_record_count_before := _director_frame_record_count() if lighting_capture_requested or camera_requested else -1
 		_director.record_presented_frame(index, preroll)
 		if lighting_capture_requested and not _ensure_lighting_frame_evidence(index, director_record_count_before):
+			return
+		if camera_requested and not _ensure_planned_camera_frame_evidence(index, director_record_count_before):
 			return
 		_frame_count += 1
 		if not _save_images:
@@ -784,6 +870,51 @@ func _capture_frames(count: int, preroll: int) -> void:
 		_image_count += 1
 		if index % _fps == 0:
 			print("FLIGHT_CAPTURE_FRAME ", index, " tick=", _main.session.sim.tick)
+
+
+## Return a real session tick to the camera when it applies its presentation.
+func _planned_camera_tick() -> int:
+	if not is_instance_valid(_main) or not is_instance_valid(_main.session) \
+			or not is_instance_valid(_main.session.sim):
+		return -1
+	return int(_main.session.sim.tick)
+
+
+## After frame_post_draw, the adapter must have applied during this engine process
+## frame and at this same session tick, even if the aircraft CG did not move.
+## Append its evidence alongside the selected director's record.
+func _ensure_planned_camera_frame_evidence(frame_index: int, record_count_before: int) -> bool:
+	if record_count_before < 0:
+		return _planned_camera_capture_failure("The flight director has no readable frame_records array.")
+	var records: Variant = _director.get("frame_records")
+	if typeof(records) != TYPE_ARRAY or records.size() != record_count_before + 1:
+		return _planned_camera_capture_failure("The flight director did not append exactly one frame record.")
+	var record_index: int = records.size() - 1
+	var record: Variant = records[record_index]
+	if typeof(record) != TYPE_DICTIONARY or typeof(record.get("frame")) != TYPE_INT \
+			or int(record.frame) != frame_index or typeof(record.get("sim_tick")) != TYPE_INT \
+			or int(record.sim_tick) != int(_main.session.sim.tick) or record.has("planned_camera"):
+		return _planned_camera_capture_failure("The flight director's frame record does not match the current frame and tick.")
+	var camera_evidence: Dictionary = _planned_camera.frame_record()
+	if not bool(camera_evidence.get("valid", false)):
+		return _planned_camera_capture_failure("No valid planned camera evidence was recorded for the presented frame.")
+	var camera: Camera3D = _main._camera
+	if not is_instance_valid(camera) or root.get_camera_3d() != camera:
+		return _planned_camera_capture_failure("The planned camera is not the viewport's current camera.")
+	var evidence_error: String = PlannedCamera.frame_evidence_error(camera_evidence, _camera_recipe,
+		_main.get("_last_render_pose"), camera, int(_main.session.sim.tick))
+	if not evidence_error.is_empty():
+		return _planned_camera_capture_failure(evidence_error)
+	record["planned_camera"] = camera_evidence.duplicate(true)
+	records[record_index] = record
+	_director.set("frame_records", records)
+	return true
+
+
+func _planned_camera_capture_failure(message: String) -> bool:
+	_failure = "Planned camera capture: " + message
+	push_error(_failure)
+	return false
 
 
 func _lighting_capture_requested() -> bool:
@@ -966,6 +1097,16 @@ func _write_manifest(ok: bool) -> void:
 		frame_records = _director.frame_records if _director != null else [],
 		physics_ticks = _director.tick_records if _director != null else [],
 	}
+	if not _camera_recipe.is_empty():
+		manifest["planned_camera"] = {
+			"recipe_path": _camera_recipe_input_path,
+			"recipe_sha256": _camera_recipe_input_sha256,
+			"recipe": _camera_recipe.duplicate(true),
+			"source_plan_sha256_claimed": str(_camera_recipe.source_plan_sha256),
+			"source_plan_verification": "declared by recipe; source plan bytes were not read by capture",
+			"camera_script_sha256": _camera_script_sha256,
+			"aircraft_input_identity": session.aircraft.get("input_identity", {}).duplicate(true) if session != null else {},
+		}
 	var file := FileAccess.open(_out_dir.path_join("manifest.json"), FileAccess.WRITE)
 	if file == null:
 		push_error("Could not write capture manifest")

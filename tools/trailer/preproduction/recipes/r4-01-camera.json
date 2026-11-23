@@ -1,0 +1,13 @@
+{
+  "format": "openrc-trailer-camera",
+  "version": 1,
+  "shot_id": "R4-01",
+  "vehicle_id": "sebart-avanti-s-a200-p100rx",
+  "source_plan_sha256": "dc6e63cd43a0215c1fd5f3f16163d987dd336bb0b34afb16becca25fe871ed8b",
+  "target": "presented_cg",
+  "fov_deg": 32,
+  "mode": "parallel_east",
+  "north_m": 6,
+  "down_m": -6.5,
+  "east_offset_m": -6
+}

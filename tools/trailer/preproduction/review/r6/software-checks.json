@@ -1,0 +1,102 @@
+{
+  "format": "openrc-trailer-r6-software-evidence",
+  "date": "2026-11-22",
+  "scope": "Linux software, camera-node unit tests, source parsing and synthetic typography only. No live flight, target-host performance, imported model or gameplay image acceptance.",
+  "game_source_baseline": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "godot": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "python_checks": {
+    "passed": 47,
+    "failed": 0,
+    "modules": {
+      "test_shot_plan": 15,
+      "test_camera_recipe": 9,
+      "test_cinema_titles": 10,
+      "test_title_plan": 8,
+      "test_cinema_assembly": 5
+    },
+    "command": "PYTHONPATH=tools/trailer python3 -B -m unittest test_shot_plan test_camera_recipe test_cinema_titles test_title_plan test_cinema_assembly",
+    "log_sha256": "4626a78384d0d03993b0f4890126b86b3d0025eaf686f63327ff2f7473aea9a7"
+  },
+  "godot_checks": {
+    "camera_unit": {
+      "label": "r6-planned-camera",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "elapsed_seconds": 0.446282,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2435a21ae15a6dbbadce828f1253fc98e467003ecf07a82af2c64570e0d0bade",
+      "capture_id": "6f7e2c12-2ebf-48eb-aeb5-242bcc2d33c4",
+      "report_sha256": "49d0aa287eed361e6530290bbd0608d7e03ddfa0cfb000dad781448351fdba26",
+      "checks": 163,
+      "failures": 0,
+      "scope": "Real adapter/Camera3D in a minimal project with fake flight owner and separate director; three exported recipe files read and hashed."
+    },
+    "app_dependency_import": {
+      "label": "r6-capture-import-complete",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "elapsed_seconds": 8.275499,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "059e4b8cdfe9c4c7f941c3f6c211faf638e1fdd86c2b36927b7f7b858dc26152",
+      "capture_id": "04072111-b487-4b09-83df-9e3766957186",
+      "report_sha256": "54afbf5280b0e718bfa758edc721f15ca9bb56c92583346d658bcca985a7be46",
+      "scope": "Isolated imported copy of 842 actual production GDScripts and exact transitive preload resources; no app stubs. Not a full exported application or rendered take."
+    },
+    "capture_harness_parse": {
+      "label": "r6-capture-parse-final-bytes",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "elapsed_seconds": 19.520891,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "capture_id": "120b6bf4-a29a-4535-9c4a-cef6463c71f8",
+      "report_sha256": "e3c139d7281ede088e6819cf6fca830531357b58027818414fb9d26a2fda0481",
+      "scope": "Isolated imported copy of 842 actual production GDScripts and exact transitive preload resources; no app stubs. Not a full exported application or rendered take."
+    }
+  },
+  "source_sha256": {
+    "tools/trailer/shot_plan.py": "b8cdec056dbe9451faddd0c1a2215a065f561844befea700f00ea46361ecd36e",
+    "tools/trailer/test_shot_plan.py": "ed8e2997a2975b045ffaefc60ffddc60b4875e4635a2aa122d4014b2d4e596bb",
+    "tools/trailer/test_camera_recipe.py": "c5c35bd3e431e730716c252294d233a6d9b576fb8c6b71ae94ef35fa887877b4",
+    "tools/trailer/cinema_titles.py": "bc64709c45355f141531cfce269f0f3738de26886df52ab8733a813ffa779f04",
+    "tools/trailer/test_cinema_titles.py": "c7f8296741d186ead3df2207411f8974e1f379bfce873bc9f6bdf528595ad199",
+    "tools/trailer/title_plan.py": "9db6ed59b46e4f303d93efcdc9d4899b57e671260997dea4f272d3703d00ec28",
+    "tools/trailer/test_title_plan.py": "abdbef7562790ebfa1c4d2cc98b56b98813f8f4d033b99be32c2d9fad22335fc",
+    "tools/trailer/assemble.py": "5391fe408c63c55b5d5b214da445adab515add55fb5623d94d8fec689fcc6b64",
+    "tools/trailer/test_cinema_assembly.py": "209d0cdb947218ab223692ecc92af1681bd4cc1c30a275af9f61461d1ae3fc73",
+    "tools/trailer/capture_flight.gd": "95de53fb0428c09b3d4a08bfdfde87cb32f9ed948d8646fe1e8b8ea9cc1239b2",
+    "tools/trailer/planned_camera.gd": "a67e7bd7a9afb63b2f697e694867a95f65ffd5ebdc227b344a2b61acaf4becba",
+    "tools/trailer/test_planned_camera.gd": "d54ed4bedb6c979663b51e90bc55f9175be074b3e9221c61bfbd02419e241b10"
+  },
+  "preview": {
+    "summary": "study-summary.json",
+    "full_decode": {
+      "command": "ffmpeg -hide_banner -v error -i typography-study.mp4 -f null -",
+      "exit_code": 0
+    },
+    "visual_scope": "Lead inspected the contact sheet and lake-map raster. Typography appearance and bounds only; no gameplay-placement or full-motion subjective acceptance."
+  },
+  "recipes": {
+    "docs/plans/trailer-v2/recipes/r4-01-camera.json": "087c611a1ce120eeef5ae8f368617a74e5d7bba1b3c7b8ff87514008161c5116",
+    "docs/plans/trailer-v2/recipes/r4-03-camera.json": "4c03d5a959ff236f35635b954ac9409ae77beaa06df52ead2b6a06911b408965",
+    "docs/plans/trailer-v2/recipes/r4-40-camera.json": "7c8921c9a9a1bae4b86091ddfa848147b91ed4f80cef8bb1786450e0782dec41"
+  }
+}

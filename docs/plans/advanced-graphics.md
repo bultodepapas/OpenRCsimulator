@@ -257,7 +257,7 @@ For conditional sky work, preserve the CPU visual clock and deterministic restor
 
 The initial trial uses explicit startup configuration. Before exposing High, VQ-06/UI/DT must extend the existing preferences and launch flow: validate capabilities, require restart when necessary, retain a known-good Compatibility launch, handle invalid/unwritable preferences, and recover from unsuccessful initialization without a restart loop. Record the renderer that actually launched; engine fallback is not High acceptance. Unsupported effects must have qualified baseline behavior. Do not add a second settings file or silently change controller calibration.
 
-Keep pilot presentation free of compulsory motion blur, depth of field, grain or chromatic aberration. Stronger grading, glow, optional depth of field and offline supersampling belong to the [trailer/camera workflow](cinematic-trailer.md) and remain independently switchable. Higher internal precision is not a commitment to HDR-display output.
+Keep pilot presentation free of compulsory motion blur, depth of field, grain or chromatic aberration. Stronger grading, glow, optional depth of field and offline supersampling belong to the [trailer/camera workflow](../../tools/trailer/history/cinematic-trailer.md) and remain independently switchable. Higher internal precision is not a commitment to HDR-display output.
 
 VQ-07g must explicitly resolve whether to maintain a second renderer. Evidence of visual benefit, maintenance cost and supported platform coverage goes into [DECISIONS](../DECISIONS.md) before production adoption; the old global delivery is not retroactively expanded.
 

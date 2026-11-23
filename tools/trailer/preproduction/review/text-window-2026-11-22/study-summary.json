@@ -1,0 +1,91 @@
+{
+  "kind": "isolated synthetic zoom-through-text study; no gameplay or master timeline change",
+  "word": "FLY",
+  "fps": 60,
+  "frames": 240,
+  "duration_s": 4.0,
+  "phases": {
+    "letter_windows_fade_in_from_black": [
+      0,
+      18
+    ],
+    "readable_hold": [
+      18,
+      72
+    ],
+    "mask_zoom_including_clear_endpoint": [
+      72,
+      192
+    ],
+    "full_picture_hold": [
+      192,
+      240
+    ]
+  },
+  "anchor_source_px": [
+    1341.5,
+    524.5
+  ],
+  "opaque_interior_square_px": 117,
+  "anchor_source_4x_check": {
+    "bounds": [
+      5358,
+      2090,
+      5374,
+      2106
+    ],
+    "coverage_min": 255,
+    "coverage_max": 255
+  },
+  "end_scale": 21.333333333333332,
+  "supersampling": 4,
+  "motion_blur": false,
+  "clean_reveal_check": {
+    "first_frame": 191,
+    "frames_checked": 49,
+    "cover_alpha_max": 0,
+    "uncompressed_composite_equals_source": true,
+    "scope": "Before study watermark and lossy H.264 encoding; every pixel compared."
+  },
+  "generator_sha256": "9bd6261bfe842f22d332e5df27def09590979fae0d69ebb3e5eba8d297108707",
+  "dependencies": {
+    "assets": {
+      "BarlowCondensed-Regular.ttf": {
+        "sha256": "583cec5da3b84bc4dc7c9c72e2a565c94d34e431518b19d7e250b7830ad5f996",
+        "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/BarlowCondensed-Regular.ttf"
+      },
+      "BarlowCondensed-SemiBold.ttf": {
+        "sha256": "7b619d14bc2327509a9ef32b0890f709626f7ecc9ff61191c2a4314c5499d2d9",
+        "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/BarlowCondensed-SemiBold.ttf"
+      },
+      "OFL.txt": {
+        "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+        "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/OFL.txt"
+      }
+    },
+    "provenance_sha256": "bab002c76a45f5a5d9bda67326a2506d14d91c13133d45f38fcf77d39d789299",
+    "pillow": "13.0.0",
+    "freetype": "2.14.3",
+    "raqm": "0.11.0"
+  },
+  "ffmpeg": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1920,
+        "height": 1080,
+        "avg_frame_rate": "60/1",
+        "nb_read_frames": "240"
+      }
+    ],
+    "format": {
+      "duration": "4.000000"
+    }
+  },
+  "outputs": {
+    "text-window-study.mp4": "b5509f1d91210b84dd92bc8720014483ae17aafec409f4379b83bc8897dd5ecd",
+    "text-window-contact.jpg": "e25b3d8c19fc4518ff5148721e929863926725a5f2dcc8adf36b6301d22fea37"
+  }
+}
