@@ -30,7 +30,6 @@ const RcTrackField = preload("res://render/rc_track_field.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
-const CLUB_INFIELD_EDGE_LIMIT := 16 # Matches club_infield.gdshaderinc.
 ## A checkpoint draws a frame, so batch deterministic scenery units into bounded CPU chunks.
 ## One indivisible unit may exceed this budget; large subsystems are isolated by stage.
 const SCENERY_BUILD_BUDGET_USEC := 16000
@@ -282,10 +281,6 @@ static func _advance_build(context: _BuildContext) -> void:
 					break
 			if Scenery.build_finished(context.scenery_build):
 				var attached_scenery: Node3D = Scenery.take_build(context.scenery_build)
-				var definition: Dictionary = attached_scenery.get_meta("source_definition", {})
-				_bind_meadow_parcels(context.grass, definition)
-				if context.field.get("id", "") == "default" and not context.scenery_options.get("file_explicit", false) and LandscapeOptions.enabled():
-					_bind_club_infield(context.grass, definition, context.field)
 				if WornGroundMaterial.enabled() and str(context.field.get("id", "")) == "default" and not bool(context.scenery_options.get("file_explicit", false)):
 					WornGroundMaterial.bind(attached_scenery, context.grass)
 				context.result.add_child(attached_scenery)
@@ -377,82 +372,6 @@ static func _countryside_layout_is_present(context: _BuildContext) -> bool:
 		if group.get("id") == "countryside-hamlet":
 			return true
 	return false
-
-
-## Derive the infield outline from the hedge, including its set-back gate.
-static func _bind_club_infield(material: ShaderMaterial, scenery: Dictionary, field: Dictionary) -> void:
-	for group: Dictionary in scenery.get("groups", []):
-		if group.id != "club-perimeter" or group.type != "hedge":
-			continue
-		var points: Array = group.points
-		if points.size() < 3 or points.size() > CLUB_INFIELD_EDGE_LIMIT:
-			return
-		var edges := PackedVector4Array()
-		var bounds := Rect2(points[0], Vector2.ZERO)
-		for i in points.size():
-			var a: Vector2 = points[i]
-			var step: Vector2 = points[(i + 1) % points.size()] - a
-			edges.append(Vector4(a.x, a.y, step.x, step.y))
-			bounds = bounds.expand(a)
-		# In the large middle of the field we can skip the polygon walk. Verify
-		# that the entire fast-path rectangle clears even a re-entrant hedge.
-		var core := bounds.grow(-0.22 * minf(bounds.size.x, bounds.size.y))
-		var clearance := core.grow(8.0)
-		var clear_core := core.has_area() and Geometry2D.is_point_in_polygon(core.get_center(), PackedVector2Array(points))
-		for edge: Vector4 in edges:
-			var a := Vector2(edge.x, edge.y)
-			if clearance.intersects(Rect2(a, Vector2(edge.z, edge.w)).abs(), true):
-				clear_core = false
-				break
-		if clear_core:
-			material.set_shader_parameter("club_infield_core", Vector4(core.position.x, core.position.y, core.end.x, core.end.y))
-		for surface: Dictionary in field.get("surfaces", []):
-			if surface.type == "runway":
-				# The club's runway and taxi apron already have their own cut.
-				material.set_shader_parameter("club_infield_apron", Vector4(surface.center_north, surface.center_east,
-					surface.width_north_south * 0.5 + 7.0, surface.length_east_west * 0.5 + 5.0))
-				break
-		edges.resize(CLUB_INFIELD_EDGE_LIMIT)
-		material.set_shader_parameter("club_infield_bounds", Vector4(bounds.position.x, bounds.position.y, bounds.end.x, bounds.end.y))
-		material.set_shader_parameter("club_infield_edges", edges)
-		material.set_shader_parameter("club_infield_edge_count", points.size())
-		return
-
-
-## Paint the grass up to the authored fence lines in the existing ground draw.
-## Each convex quad supplies four inward-facing planes in north/east metres.
-static func _bind_meadow_parcels(material: ShaderMaterial, scenery: Dictionary) -> void:
-	var edges := PackedVector4Array()
-	var bounds := PackedVector4Array()
-	var extent := Rect2()
-	for group: Dictionary in scenery.get("groups", []):
-		if group.type != "patch" or group.surface not in Scenery.Loader.FIELD_COVERS:
-			continue
-		var points: Array = group.points
-		var first: Vector2 = points[0]
-		var second: Vector2 = points[1]
-		var third: Vector2 = points[2]
-		var winding := signf((second - first).cross(third - first))
-		var box := Rect2(first, Vector2.ZERO)
-		var cover := Scenery.Loader.FIELD_COVERS.find(group.surface)
-		for i in 4:
-			var a: Vector2 = points[i]
-			var b: Vector2 = points[(i + 1) % 4]
-			var side := (b - a).normalized()
-			var inward := Vector2(-side.y, side.x) * winding
-			edges.append(Vector4(inward.x, inward.y, -inward.dot(a), float(cover)))
-			box = box.expand(a)
-		extent = box if bounds.is_empty() else extent.merge(box)
-		bounds.append(Vector4(box.position.x, box.position.y, box.end.x, box.end.y))
-	if bounds.is_empty():
-		return
-	var count := bounds.size()
-	edges.resize(Scenery.Loader.MAX_MEADOW_PARCELS * 4)
-	bounds.resize(Scenery.Loader.MAX_MEADOW_PARCELS)
-	material.set_shader_parameter("meadow_edges", edges)
-	material.set_shader_parameter("meadow_bounds", bounds)
-	material.set_shader_parameter("meadow_extent", Vector4(extent.position.x, extent.position.y, extent.end.x, extent.end.y))
-	material.set_shader_parameter("meadow_count", count)
 
 
 static func _build_ground_setup(context: _BuildContext) -> void:

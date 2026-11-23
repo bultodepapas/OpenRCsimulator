@@ -33,8 +33,6 @@ func _initialize() -> void:
 func _run() -> void:
 	ShaderClock.register()
 	_test_fence_contact()
-	_test_open_gate()
-	_test_stock_gate()
 	_test_barrier_contact()
 	_test_batches_and_effects()
 	print("scenery destruction: %d checks, %d failures" % [checks, failures])
@@ -47,7 +45,7 @@ func _fence(style: String = "wire") -> Dictionary:
 	return {id = "test", type = "fence", points = [Vector2(5, 0), Vector2(5, 9)], style = style, seed = 42, height = 1.25}
 
 func _test_fence_contact() -> void:
-	for style: String in ["wire", "rail", "barbed"]:
+	for style: String in ["wire", "rail"]:
 		var group := _fence(style)
 		var world: Dictionary = World.build(_field(), {groups = [group]}).world
 		var pieces := FenceParts.build(PackedVector2Array([Vector2(0, -5), Vector2(9, -5)]), style, 42)
@@ -57,7 +55,7 @@ func _test_fence_contact() -> void:
 			_check("%s unique local IDs" % style, not ids.has(proxy.id))
 			ids[proxy.id] = true
 			_check("%s damage ID identifies exactly one piece" % style, proxy.damage_id == proxy.id)
-		var height := 0.95 if style == "rail" else 0.85
+		var height := 0.85 if style == "wire" else 0.95
 		var hit := _hit(world, 1.5, height)
 		_check("high-speed sweep hits %s at its actual visible height" % style, hit != null and hit.obstacle_kind == "fence")
 		if hit != null:
@@ -65,35 +63,6 @@ func _test_fence_contact() -> void:
 			_check("destroyed local bay no longer collides", _hit(world, 1.5, height, damage) == null)
 			_check("neighbour bay still collides", _hit(world, 4.5, height, damage) != null)
 		_check("open air between rails stays clear", _hit(world, 1.5, 0.70) == null)
-
-func _test_open_gate() -> void:
-	var world: Dictionary = World.build(_field(), {groups = [_fence("gate")]}).world
-	_check("vehicle passage is clear between the gateposts", _hit(world, 4.5, 0.80) == null)
-	var post := _hit(world, 9.0, 1.58)
-	_check("the limewashed gate pier has masonry contact above the leaf", post != null
-		and post.damage_id == "fence:test:latch" and post.damage_profile == "masonry")
-	var hit := Collision.first_hit(_state(8.0, -3.0, -1.36), _state(8.0, 2.0, -1.36),
-		PackedFloat64Array([0,0,0]), world, 1, 2.0, PackedFloat64Array([1,1,1,0,0,0]))
-	_check("open metal leaf stands inside the property", hit != null and hit.damage_id == "fence:test:leaf"
-		and hit.damage_profile == "metal")
-	var opening := Collision.first_hit(_state(12.3, -3.0, -0.79), _state(12.3, 2.0, -0.79),
-		PackedFloat64Array([0,0,0]), world, 1, 2.0, PackedFloat64Array([1,1,1,0,0,0]))
-	_check("a sweep between the open leaf's rails passes through air", opening == null)
-
-func _test_stock_gate() -> void:
-	var fence := _fence("stock_gate")
-	fence.points = [Vector2(5, 0), Vector2(5, 4)]
-	var world: Dictionary = World.build(_field(), {groups = [fence]}).world
-	var hit := _hit(world, 2.0, 0.57)
-	_check("stock gate planks have a wood leaf damage ID", hit != null
-		and hit.damage_id == "fence:test:leaf" and hit.damage_profile == "wood")
-	_check("stock gate has an opening between its planks", _hit(world, 0.85, 0.75) == null)
-	var brace := _hit(world, 2.0, 0.755)
-	_check("stock gate brace spans the middle opening", brace != null and brace.damage_id == "fence:test:leaf")
-	if hit != null:
-		var damage := {hit.damage_id: _record("wood", hit.point_ned, "broken")}
-		_check("the broken wooden leaf clears the bay and leaves its jamb", _hit(world, 2.0, 0.57, damage) == null
-			and _hit(world, 0.0, 1.4, damage) != null)
 
 func _hit(world: Dictionary, east: float, height: float, damage: Dictionary = {}) -> RefCounted:
 	return Collision.first_hit(_state(0, east, -height), _state(10, east, -height),

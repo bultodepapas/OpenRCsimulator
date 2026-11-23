@@ -25,7 +25,6 @@ varying float worn_shoulder;
 #include "res://render/cloud_field.gdshaderinc"
 #include "res://scenery/vertex_color_linear.gdshaderinc"
 #include "res://render/grass_surface.gdshaderinc"
-#include "res://render/meadow_surface.gdshaderinc"
 #include "res://render/turf_detail.gdshaderinc"
 #include "res://render/rc_ground_detail.gdshaderinc"
 
@@ -46,8 +45,7 @@ void vertex() {
 	ground_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
 	aggregate_mask = smoothstep(0.44, 0.50, COLOR.a) * clamp((1.0 - COLOR.a) * 2.0, 0.0, 1.0);
 	worn_mask = clamp((0.45 - COLOR.a) * 2.2, 0.0, 1.0);
-	// Gravel vertices contribute no grass at transitions into the access lane's grassy shoulders.
-	worn_shoulder = COLOR.a < 0.44 ? clamp((COLOR.a - 0.18) / 0.25, 0.0, 1.0) : 0.0;
+	worn_shoulder = clamp((COLOR.a - 0.18) / 0.25, 0.0, 1.0);
 }
 
 void fragment() {
@@ -65,9 +63,6 @@ void fragment() {
 	// These detail fetches use explicit gradients and have no internal derivatives.
 	// Skip them on gravel/access surfaces and the fully worn center of the tread.
 	if (field_turf_enabled && worn_mask > 0.01 && worn_shoulder > 0.0) {
-		if (meadow_count > 0 || club_infield_edge_count > 0) {
-			field_color = meadow_colour(field_color, vec2(-p.y, p.x), (abs(turf_dx) + abs(turf_dy)).yx);
-		}
 		float camera_distance = length(VERTEX);
 		float photo_weight = grass_photo_enabled ? rc_near_weight(turf_dx, turf_dy, camera_distance) : 0.0;
 		float turf_weight_value = turf_weight(turf_dx, turf_dy, camera_distance) * (1.0 - photo_weight);

@@ -41,23 +41,6 @@ func _run() -> void:
 	root.add_child(built)
 	var plain := built.get_node_or_null("Countryside")
 	check("Club attaches countryside", plain != null)
-	var turf: ShaderMaterial = built.get_node("rough").material_override
-	check("club land cover is bound to the rough ground", turf.get_shader_parameter("meadow_count") == 5)
-	var edges: PackedVector4Array = turf.get_shader_parameter("meadow_edges")
-	var covers := {}
-	for i in int(turf.get_shader_parameter("meadow_count")):
-		covers[int(edges[i * 4].w)] = true
-	check("near fields render four grass treatments and a planted crop", covers == {0: true, 1: true, 2: true, 3: true, 4: true})
-	var planted := built.get_node_or_null("Scenery/ImportedHedge_club-perimeter")
-	check("the club hedge has one batched row of shrubs", planted != null
-		and planted.get_meta("batches") == 1 and int(planted.get_meta("bush_cards")) <= 1024)
-	if planted != null and planted.get_child_count() > 0:
-		var cards := planted.get_child(0) as MultiMeshInstance3D
-		var material := cards.material_override as ShaderMaterial
-		var texture := material.get_shader_parameter("impostor_atlas") as Texture2D
-		check("club perimeter uses the leafy shrub texture and source", cards.get_meta("source_asset_id") == "forest_leafy_shrub"
-			and cards.get_meta("atlas_asset_id") == "forest_leafy_shrub_4view_impostor"
-			and texture != null and texture.resource_path.ends_with("/forest_leafy_shrub_4view.png"))
 	if plain != null:
 		var stats: Dictionary = plain.get_meta("stats")
 		check("spatial batch budget", stats.cells > 0 and stats.cells <= 40)

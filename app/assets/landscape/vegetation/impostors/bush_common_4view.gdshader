@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode cull_disabled, depth_draw_opaque;
 
-uniform sampler2D impostor_atlas : source_color, filter_linear_mipmap, repeat_disable;
+uniform sampler2D impostor_atlas : source_color, filter_linear, repeat_disable;
 uniform float alpha_cutoff : hint_range(0.0, 1.0) = 0.32;
 uniform float atlas_frames = 4.0;
 
@@ -10,7 +10,6 @@ varying float selected_frame;
 void vertex() {
 	vec3 instance_origin = MODEL_MATRIX[3].xyz;
 	vec3 to_camera = CAMERA_POSITION_WORLD - instance_origin;
-	float elevation = clamp(to_camera.y / max(length(to_camera), 0.0001), 0.0, 1.0);
 	to_camera.y = 0.0;
 	if (length(to_camera) < 0.0001) {
 		to_camera = vec3(1.0, 0.0, 0.0);
@@ -32,11 +31,11 @@ void vertex() {
 	// The source cards use only a yaw rotation and uniform instance scale.
 	// Project the world-facing billboard right vector into that local basis;
 	// this avoids an inverse-matrix builtin that Godot's shader language lacks.
-	// Give the planted hedge a visible crown on steep flyovers. The ground-level silhouette stays upright.
-	float tilt = INSTANCE_CUSTOM.y * smoothstep(0.30, 0.95, elevation) * 0.78;
-	vec3 up = vec3(0.0, cos(tilt), 0.0) - toward_camera * sin(tilt);
-	vec3 offset = right * VERTEX.x + up * VERTEX.y;
-	VERTEX = vec3(dot(offset, model_x), offset.y, dot(offset, model_z));
+	VERTEX = vec3(
+		dot(right, model_x) * VERTEX.x,
+		VERTEX.y,
+		dot(right, model_z) * VERTEX.x
+	);
 }
 
 void fragment() {

@@ -53,8 +53,7 @@ func _initialize() -> void:
 				worn_texture = mat.get_shader_parameter("worn_albedo") as Texture2D
 				batches += 1
 				surfaces_valid = surfaces_valid and child.mesh.get_surface_count() == 1
-	_check("default scenery stays within its 60-cell allowance and reports every nonempty batch",
-		cells > 0 and cells <= 60 and node.get_meta("stats").cells == cells)
+	_check("default scenery retains 60 nonempty cells and reports them accurately", cells == 60 and node.get_meta("stats").cells == cells)
 	_check("detail uses existing flat single-surface batches", batches > 0 and surfaces_valid)
 	_check("photographic path detail has real imported mipmaps", worn_texture != null
 		and worn_texture.get_image().has_mipmaps())
@@ -65,11 +64,6 @@ func _initialize() -> void:
 	ground.set_shader_parameter("tile_m", 2.375)
 	ground.set_shader_parameter("macro_amp", 0.17)
 	ground.set_shader_parameter("pilot_xz", Vector2(19, -7))
-	var boundaries := PackedVector4Array()
-	boundaries.resize(Loader.MAX_MEADOW_PARCELS * 4)
-	boundaries[0] = Vector4(1.0, 0.0, 20.0, 3.0)
-	ground.set_shader_parameter("meadow_count", 1)
-	ground.set_shader_parameter("meadow_edges", boundaries)
 	_check("field turf binds to the existing scenery material", WornGroundMaterial.bind(node, ground))
 	_check("shoulder shares the scene-owned grass and turf resources",
 		detail.get_shader_parameter("grass") == ground.get_shader_parameter("grass")
@@ -77,8 +71,6 @@ func _initialize() -> void:
 	_check("shoulder receives nondefault scale, macro and pilot values",
 		detail.get_shader_parameter("tile_m") == 2.375 and detail.get_shader_parameter("macro_amp") == 0.17
 		and detail.get_shader_parameter("pilot_xz") == Vector2(19, -7))
-	_check("stock-trail shoulders share the field's grazing treatment and boundaries",
-		detail.get_shader_parameter("meadow_count") == 1 and detail.get_shader_parameter("meadow_edges") == boundaries)
 	if RenderingServer.shader_get_parameter_default(ground.shader.get_rid(), "anti_tiling") != null:
 		_check("unset source parameters resolve to effective shader defaults",
 			detail.get_shader_parameter("anti_tiling") == 1.0 and detail.get_shader_parameter("pilot_pin_m") == 35.0)

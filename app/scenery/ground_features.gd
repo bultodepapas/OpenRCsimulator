@@ -35,121 +35,47 @@ static var _patch_cache_bytes: int = 0
 # ---------------- tracks and patches ----------------
 
 ## A dirt track along a polyline (render XZ points): two wheel ruts, a grassy crown, mitred joints (no overlaps).
-static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: String, theme: String,
-		gate: PackedVector2Array = PackedVector2Array()) -> void:
+static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: String, theme: String) -> void:
 	var dirt := Palette.col("dirt") if surface == "dirt" else Palette.col("gravel")
 	var crown := Palette.vegetation(Palette.col("worn_grass"), theme)
-	var stock := surface == "trampled"
-	var worn := surface == "worn" or stock
-	var route := _round_track_corners(pts, width, 0.994 if worn else 0.94)
-	if surface == "dirt" and gate.size() == 2 and _club_drive(k, route, width, gate, theme):
-		return
-	if worn:
+	var route := _round_track_corners(pts, width, 0.994 if surface == "worn" else 0.94)
+	if surface == "worn":
 		route = _worn_route(route)
 	var lanes: Array
-	if worn:
+	if surface == "worn":
 		# A quiet, single pedestrian tread. Its lower lift lets an existing slab or gravel apron cover the join.
 		lanes = [[-1.0, -0.62], [-0.62, 0.62], [0.62, 1.0]]
 	else:
 		# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge
 		lanes = [[-1.0, -0.62, dirt.lightened(0.06)], [-0.62, -0.22, dirt], [-0.22, 0.22, crown], [0.22, 0.62, dirt], [0.62, 1.0, dirt.lightened(0.06)]]
 	var offs := _miter_normals(route)
-	var lift := LIFT_WORN if worn else LIFT_SURFACE
-	var widths := PackedFloat32Array()
-	for i in route.size():
-		var half_width := width * 0.5
-		if worn:
-			half_width *= lerpf(0.78, 1.12, Palette.hash01(i, 37))
-		if stock:
-			var to_end := minf(route[i].distance_to(route[0]), route[i].distance_to(route[-1]))
-			half_width *= smoothstep(0.0, 7.5, to_end)
-		widths.append(half_width)
+	var lift := LIFT_WORN if surface == "worn" else LIFT_SURFACE
 	for i in route.size() - 1:
 		for lane: Array in lanes:
 			var a0: float = lane[0]
 			var a1: float = lane[1]
-			var p00 := route[i] + offs[i] * a0 * widths[i]
-			var p01 := route[i] + offs[i] * a1 * widths[i]
-			var p10 := route[i + 1] + offs[i + 1] * a0 * widths[i + 1]
-			var p11 := route[i + 1] + offs[i + 1] * a1 * widths[i + 1]
-			if worn:
+			var w0 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i, 37)) if surface == "worn" else 1.0)
+			var w1 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i + 1, 37)) if surface == "worn" else 1.0)
+			var p00 := route[i] + offs[i] * a0 * w0
+			var p01 := route[i] + offs[i] * a1 * w0
+			var p10 := route[i + 1] + offs[i + 1] * a0 * w1
+			var p11 := route[i + 1] + offs[i + 1] * a1 * w1
+			if surface == "worn":
 				_worn_quad(k, p00, p10, p11, p01, lift, [
-					_worn_color(a0, i, stock), _worn_color(a0, i + 1, stock),
-					_worn_color(a1, i + 1, stock), _worn_color(a1, i, stock)])
+					_worn_color(a0, i), _worn_color(a0, i + 1),
+					_worn_color(a1, i + 1), _worn_color(a1, i)])
 			else:
 				var c: Color = lane[2]
 				var tone := 0.94 + 0.1 * Palette.hash01(i, int(a0 * 10.0))
 				_flat_quad(k, p00, p10, p11, p01, lift, c * Color(tone, tone, tone))
 
 
-## Build the unpaved lane as one continuous ribbon. Cars wear two wheel paths in
-## the grass; at the gate their paths fan into a shared compacted gravel apron.
-static func _club_drive(k: MeshKit, route: PackedVector2Array, width: float,
-		gate: PackedVector2Array, theme: String) -> bool:
-	var crossing := Vector2.ZERO
-	var opening_half := 0.0
-	for i in range(1, route.size()):
-		var hit: Variant = Geometry2D.segment_intersects_segment(route[i - 1], route[i], gate[0], gate[1])
-		if hit == null:
-			continue
-		crossing = hit
-		var direction := route[i - 1].direction_to(route[i])
-		# Measure across the actual lane, since the posts may cross it obliquely.
-		opening_half = minf(absf(direction.cross(gate[0] - crossing)), absf(direction.cross(gate[1] - crossing)))
-		if opening_half <= 0.45:
-			return false
-		if crossing.distance_to(route[i - 1]) > 0.01 and crossing.distance_to(route[i]) > 0.01:
-			route = route.duplicate()
-			route.insert(i, crossing)
-		break
-	if opening_half <= 0.45:
-		return false
-	var stations := PackedVector2Array([route[0]])
-	for i in range(1, route.size()):
-		var a := route[i - 1]
-		var b := route[i]
-		var pitch := 4.0 if Geometry2D.get_closest_point_to_segment(crossing, a, b).distance_to(crossing) < 52.0 else 24.0
-		var steps := clampi(ceili(a.distance_to(b) / pitch), 1, 12)
-		for step in range(1, steps + 1):
-			stations.append(a.lerp(b, float(step) / steps))
-	var normals := _miter_normals(stations)
-	var half := width * 0.5
-	var gate_half := minf(half + 0.64, opening_half - 0.45)
-	var lanes := PackedFloat32Array([-1.0, -0.76, -0.52, -0.30, 0.0, 0.30, 0.52, 0.76, 1.0])
-	var turf := Palette.vegetation(PATCH_FIELD_GRASS_COLOR, theme)
-	var previous := PackedVector2Array()
-	var previous_colors := PackedColorArray()
-	for i in stations.size():
-		var flare := 1.0 - smoothstep(1.2, 11.0, stations[i].distance_to(crossing))
-		var soil := Palette.col("dirt").lerp(Palette.col("gravel"), 0.72 * flare)
-		var row := PackedVector2Array()
-		var colors := PackedColorArray()
-		for j in lanes.size():
-			var x := lanes[j]
-			var wheel := 1.0 - smoothstep(0.01, 0.43, absf(absf(x) - 0.52))
-			var shoulder := smoothstep(0.75, 1.0, absf(x))
-			var green := maxf(shoulder, (1.0 - wheel) * (1.0 - 0.98 * flare))
-			var tone := 0.94 + 0.10 * Palette.hash01(i, j, 157)
-			var tint := soil.lerp(turf, green) * Color(tone, tone, tone)
-			tint.a = 0.90 - 0.37 * flare if green < 0.10 else lerpf(0.18, 0.43, green)
-			colors.append(tint)
-			var uneven := (Palette.hash01(i, j, 163) - 0.5) * 0.095 * (1.0 - flare)
-			row.append(stations[i] + normals[i] * x * (lerpf(half, gate_half, flare) + uneven))
-		if i > 0:
-			for j in lanes.size() - 1:
-				_worn_quad(k, previous[j], row[j], row[j + 1], previous[j + 1], LIFT_SURFACE,
-					[previous_colors[j], colors[j], colors[j + 1], previous_colors[j + 1]])
-		previous = row
-		previous_colors = colors
-	return true
-
-
 ## L9b-R2: shared lane/joint colors, with a grass-toned outer shoulder.
 ## Alpha stays below the aggregate tag range; it selects photo wear, never transparency.
-static func _worn_color(across: float, station: int, stock: bool = false) -> Color:
+static func _worn_color(across: float, station: int) -> Color:
 	var edge := smoothstep(0.62, 1.0, absf(across))
 	var tone := 0.98 + 0.04 * Palette.hash01(station, 37)
-	var tread := (Color("#877651") if stock else Color("#627747")) * Color(tone, tone, tone)
+	var tread := Color("#627747") * Color(tone, tone, tone)
 	var result := tread.lerp(PATCH_FIELD_GRASS_COLOR, edge)
 	result.a = lerpf(0.18, 0.43, edge)
 	return result
@@ -690,7 +616,7 @@ static func _hedge_tree(k: MeshKit, p: Vector2, seed: int, theme: String) -> voi
 			leaf.lerp(Palette.veg("leaf_light", theme), 0.5 * Palette.hash01(seed, i, 4)), seed + i, 7, 3)
 
 
-## Authored fence or swing gate along render-XZ points.
+## Post-and-wire ("wire") or post-and-rail ("rail") fence along render-XZ points.
 static func fence(k: MeshKit, pts: PackedVector2Array, style: String, seed: int) -> void:
 	for piece: Dictionary in FenceParts.build(pts, style, seed):
-		FenceParts.draw(k, piece)
+		k.beam(piece.a, piece.b, piece.width, piece.color)

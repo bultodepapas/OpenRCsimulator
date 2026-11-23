@@ -1,5 +1,4 @@
 """Regressions for the generated field layout, planted trees, and lake-bank clearance."""
-import json
 import math
 import unittest
 
@@ -15,72 +14,6 @@ class SceneryPlaceTests(unittest.TestCase):
     def test_generated_default_matches_its_source(self):
         self.assertEqual(place.dumps(self.data), place.OUT.read_text())
 
-    def test_club_driveway_and_property_edges(self):
-        groups = {g["id"]: g for g in self.data["groups"]}
-        def points(name):
-            return groups[name]["points"]["value"]
-
-        hinge, latch = points("club-entrance")
-        hedge = points("club-perimeter")
-        self.assertEqual((hedge[0], hedge[-1]), (hinge, latch))
-        drive = points("access-track")
-        self.assertTrue(any(place._segments_intersect(a, b, hinge, latch) for a, b in zip(drive, drive[1:])))
-        shoulder = groups["access-track"]["width"]["value"] / 2
-        for post in (hinge, latch):
-            self.assertGreater(min(place._point_segment_distance(post, a, b) for a, b in zip(drive, drive[1:])),
-                               shoulder + 0.5)
-        for a, b in zip(hedge, hedge[1:]):
-            self.assertTrue(all(not place._segments_intersect(a, b, c, d) for c, d in zip(drive, drive[1:])))
-        self.assertGreater(min(hinge[0] - hedge[1][0], latch[0] - hedge[-2][0]), 5.0)
-        self.assertGreater(math.dist(hedge[1], hedge[-2]), 2 * math.dist(hinge, latch))
-        for name in ("lane-side-pasture", "north-hay-meadow", "east-grazing-lot"):
-            corners = points(name)
-            self.assertEqual(len(corners), 4)
-            self.assertGreaterEqual(sum(c in hedge for c in corners), 2)
-            turns = [place._cross(corners[i-2], corners[i-1], corners[i]) for i in range(4)]
-            self.assertTrue(all(t > 0 for t in turns) or all(t < 0 for t in turns), name)
-
-    def test_forage_rows_share_the_hedge_and_pasture_wire(self):
-        groups = {g["id"]: g for g in self.data["groups"]}
-        crop = groups["south-forage-crop"]
-        corners = crop["points"]["value"]
-        self.assertEqual(crop["surface"], "row_crop")
-        self.assertTrue(all(p in groups["club-perimeter"]["points"]["value"] for p in corners[:2]))
-        self.assertEqual([corners[0], corners[-1]], groups["lane-side-wire"]["points"]["value"][:2])
-        boundary = groups["forage-boundary-wire"]["points"]["value"]
-        self.assertEqual(boundary[:2], [corners[3], corners[2]])
-        self.assertAlmostEqual(math.dist(boundary[-1], corners[1]), 6.0, places=2)
-        _, trees, _ = place.load_field()
-        self.assertFalse(any(place._point_in_polygon(tree[:2], corners) for tree in trees))
-
-    def test_stock_trails_and_gates_connect_the_pastures(self):
-        groups = {g["id"]: g for g in self.data["groups"]}
-        def points(name):
-            return groups[name]["points"]["value"]
-
-        for name, gate_name in [("lane-stock-trail", "lane-stock-gate"),
-                                ("paddock-stock-trail", "paddock-stock-gate")]:
-            hinge, latch = points(gate_name)
-            route = points(name)
-            midpoint = [(x + y) / 2 for x, y in zip(hinge, latch)]
-            self.assertEqual(groups[gate_name]["style"], "stock_gate")
-            self.assertAlmostEqual(min(math.dist(p, midpoint) for p in route), 0, places=3)
-            for post in (hinge, latch):
-                clearance = min(place._point_segment_distance(post, a, b) for a, b in zip(route, route[1:]))
-                self.assertGreater(clearance, groups[name]["width"]["value"] / 2 + 0.15)
-            for fence in groups.values():
-                if fence["type"] not in ("hedge", "fence") or fence["id"] == gate_name:
-                    continue
-                line = fence["points"]["value"]
-                self.assertFalse(any(place._segments_intersect(a, b, c, d)
-                                     for a, b in zip(route, route[1:]) for c, d in zip(line, line[1:])),
-                                 f"{name} crosses {fence['id']}")
-        self.assertTrue(place._point_in_polygon(points("lane-stock-trail")[-1], points("lane-side-pasture")))
-        self.assertTrue(place._point_in_polygon(points("paddock-stock-trail")[0], points("east-grazing-lot")))
-        for group in ["cows", "sheep"]:
-            for n, e, _ in groups[group]["placements"]["value"]:
-                self.assertTrue(place._point_in_polygon((n, e), points("home-paddock")))
-
     def test_bales_keep_group_count_and_source_order(self):
         group = next(item for item in self.data["groups"] if item["id"] == "hay-bales")
         rows = group["placements"]["value"]
@@ -88,40 +21,6 @@ class SceneryPlaceTests(unittest.TestCase):
         self.assertEqual(group["prefab"], "round_bale")
         self.assertEqual(len(rows), 34)
         self.assertEqual([row[2] for row in rows], [row[2] for row in source])
-
-    def test_boundary_trees_keep_the_lane_gate_and_flight_box_clear(self):
-        groups = {g["id"]: g for g in self.data["groups"]}
-        _, trees, runway = place.load_field()
-        safety_n = runway["center_north"]["value"] - runway["width_north_south"]["value"] * 0.5
-        flight_box_end = safety_n + self.data["profile"]["flight_box_depth_m"]["value"]
-        drive = groups["access-track"]["points"]["value"]
-        half_lane = groups["access-track"]["width"]["value"] * 0.5
-        hinge, latch = groups["club-entrance"]["points"]["value"]
-        catalog = json.loads((place.ROOT / "app/assets/landscape/vegetation/catalog.json").read_text())
-        assets = {a["id"]: a for a in catalog["assets"]}
-        triangles = 0
-        for name, species, boundary in [
-            ("gate-maple", "maple_tree", "club-perimeter"),
-            ("young-boundary-tree", "landscapelab_pine", "lane-side-wire"),
-            ("hay-meadow-shade", "landscapelab_quercus", "hedge-north-w"),
-        ]:
-            group = groups[name]
-            self.assertEqual(len(group["placements"]["value"]), 1)
-            n, e, _ = group["placements"]["value"][0]
-            prefab = group["prefab"]
-            choices = place.vegetation_alias_choices(prefab)
-            self.assertEqual(choices[(place.loader_seed(name) & 0x7FFFFFFF) % len(choices)], species)
-            triangles += assets[species]["source_triangles"]
-            # Conservative loader footprint covers all headings and normal tree-size variation.
-            radius = math.hypot(18, 18) / 2 if prefab == "shade_tree" else math.hypot(3, 3.1) / 2
-            self.assertGreater(min(place._point_segment_distance((n, e), a, b) for a, b in zip(drive, drive[1:])),
-                               half_lane + radius)
-            self.assertGreater(place._point_segment_distance((n, e), hinge, latch), radius)
-            self.assertTrue(n + radius < safety_n or n - radius > flight_box_end)
-            self.assertTrue(place.clear_of_trees(trees, n, e, radius + place.TREE_CLEARANCE_M))
-            edge = groups[boundary]["points"]["value"]
-            self.assertLess(min(place._point_segment_distance((n, e), a, b) for a, b in zip(edge, edge[1:])), 10)
-        self.assertLessEqual(triangles, 17500)  # remaining near-vegetation source allowance
 
     def test_bales_have_two_metre_footprint_clearance_from_lake_bank(self):
         rows = next(item for item in self.data["groups"] if item["id"] == "hay-bales")["placements"]["value"]
@@ -172,9 +71,8 @@ class SceneryPlaceTests(unittest.TestCase):
             self.assertTrue(place.clear_of_trees(trees, north, east, 15.75),
                             "Maple should clear the existing treeline and its 3 m buffer")
 
-    def test_original_tree_placement_count_and_sapling_mix(self):
-        tree_groups = [group for group in self.data["groups"]
-                       if group["id"] in ("shade-trees", "saplings") or group["id"].startswith("maple-")]
+    def test_tree_placement_count_stays_flat_and_sapling_mix_keeps_one_common_tree_1(self):
+        tree_groups = [group for group in self.data["groups"] if group.get("prefab") in ("shade_tree", "sapling")]
         tree_count = sum(len(group["placements"]["value"]) for group in tree_groups)
         self.assertEqual(tree_count, 17)
 
@@ -183,7 +81,7 @@ class SceneryPlaceTests(unittest.TestCase):
         seed = place.loader_seed(group["id"]) & 0x7FFFFFFF
         resolved = [choices[((seed + index * 7919) & 0x7FFFFFFF) % len(choices)]
                     for index in range(len(group["placements"]["value"]))]
-        self.assertCountEqual(resolved, ["landscapelab_quercus2", "landscapelab_pine"] * 2)
+        self.assertEqual(resolved.count("common_tree_1"), 1)
 
 
 if __name__ == "__main__":

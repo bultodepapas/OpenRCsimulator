@@ -17,12 +17,6 @@ const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const FLEET_VIEWS := {
-	"club_gate": {eye = [-80.0, -53.5, -2.1], at = [-68.0, -59.0, -0.9], fov = 58.0},
-	"stock_gate": {eye = [-79.0, -58.0, -1.65], at = [-74.8, -50.6, -0.78], fov = 49.0},
-	"stock_paddocks": {eye = [-64.0, 378.0, -48.0], at = [4.0, 314.0, 0.0], fov = 61.0},
-	"club_properties": {eye = [-257.0, -201.0, -250.0], at = [26.0, 40.0, 0.0], fov = 60.0},
-	"forage_rows": {eye = [-189.0, 191.0, -43.0], at = [-114.0, 151.0, 0.0], fov = 55.0},
-	"pasture_wire": {eye = [-85.0, -54.5, -1.25], at = [-81.0, -51.9, -0.85], fov = 48.0},
 	"tractor_pilot": {eye = [0.0, -13.0, -1.7], at = [-27.0, 326.0, -1.1], fov = 55.0},
 	"tractor_zoom": {eye = [0.0, -13.0, -1.7], at = [-27.0, 326.0, -1.1], fov = 3.5},
 	"tractor_close": {eye = [-21.0, 320.0, -1.8], at = [-27.0, 326.0, -1.1], fov = 45.0},

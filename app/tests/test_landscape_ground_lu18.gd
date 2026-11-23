@@ -38,7 +38,6 @@ func _initialize() -> void:
 		return
 	_scenery = loaded.scenery
 	_test_route_contract()
-	_test_gated_drive()
 	_test_worn_vertex_blend()
 	_test_clearances()
 	_test_existing_batches_only()
@@ -114,31 +113,6 @@ func _test_route_contract() -> void:
 
 
 ## The shared opaque mesh must keep its winding and a single color at each lane/joint vertex.
-func _test_gated_drive() -> void:
-	var lane := PackedVector2Array([Vector2.ZERO, Vector2(0, 48)])
-	var gate := PackedVector2Array([Vector2(-2.7, 14), Vector2(2.7, 16)])
-	var kit := MeshKit.new()
-	GroundFeatures.track(kit, lane, 3.2, "dirt", "temperate", gate)
-	var gate_half := 0.0
-	var far_half := 0.0
-	var gravel_throat := false
-	var grassy_centre := false
-	for i in kit.verts.size():
-		var p := kit.verts[i]
-		if is_equal_approx(p.z, 15.0):
-			gate_half = maxf(gate_half, absf(p.x))
-			if is_zero_approx(p.x):
-				gravel_throat = kit.cols[i].a >= 0.50 and kit.cols[i].a < 0.65
-		if is_zero_approx(p.z):
-			far_half = maxf(far_half, absf(p.x))
-			if is_zero_approx(p.x):
-				grassy_centre = kit.cols[i].a > 0.40 and kit.cols[i].a < 0.44
-	_check("oblique vehicle gate has a widened threshold clear of the posts",
-		gate_half > far_half + 0.45 and gate_half <= 2.7 - 0.45)
-	_check("compacted gravel through gate with a grass crown on approach", gravel_throat and grassy_centre)
-	_check("lane keeps source endpoints and modest ribbon geometry", lane.size() == 2 and kit.triangle_count() < 240)
-
-
 func _test_worn_vertex_blend() -> void:
 	var route := PackedVector2Array([Vector2(0, 0), Vector2(4, 0), Vector2(6, 3)])
 	for mirror: float in [1.0, -1.0]:

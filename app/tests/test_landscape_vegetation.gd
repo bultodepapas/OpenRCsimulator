@@ -244,10 +244,10 @@ func _test_complete_scenery_budget() -> void:
 			var asset_id := str(tree.get("asset_id", ""))
 			source_tree_counts[asset_id] = int(source_tree_counts.get(asset_id, 0)) + 1
 			source_tree_triangles += int(tree.get("triangles", 0))
-	_check("complete scene includes all twenty planted trees at the club and farm boundaries",
-		source_tree_counts == {landscapelab_quercus = 3, landscapelab_fagus = 4, landscapelab_pine = 6,
-			landscapelab_quercus2 = 2, maple_tree = 5}
-		and source_tree_triangles == 133765,
+	_check("complete scene uses realistic sources at the same 17 trees and preserves four maples",
+		source_tree_counts == {landscapelab_quercus = 2, landscapelab_fagus = 4, landscapelab_pine = 5,
+			landscapelab_quercus2 = 2, maple_tree = 4}
+		and source_tree_triangles == 116962,
 		"sources=%s triangles=%d" % [source_tree_counts, source_tree_triangles])
 	var source_failures := SourceBudget.failures(field_only) + SourceBudget.failures(built)
 	_check("every scenery subsystem stays within its LU-34 source allowance, with and without lake context",

@@ -8,7 +8,6 @@ extends RefCounted
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
 const ParkedAircraft = preload("res://scenery/parked_aircraft.gd")
-const FenceParts = preload("res://scenery/fence_parts.gd")
 
 const FORMAT := "openrc-scenery v1"
 const DEFAULT_PATH := "res://data/scenery/default.json"
@@ -18,10 +17,8 @@ const ZONES: Array[String] = ["club", "pits", "spectators", "parking", "flight_b
 const PROFILE_KEYS: Array[String] = ["pits_min_behind_m", "spectators_min_behind_m", "parking_min_behind_m",
 	"pits_min_from_centreline_m", "flight_box_depth_m", "flight_box_half_width_m", "flight_box_max_height_m",
 	"approach_slope", "tree_clearance_m", "runway_margin_m"]
-const FENCE_STYLES: Array[String] = ["wire", "rail", "barbed", "gate", "stock_gate"]
+const FENCE_STYLES: Array[String] = ["wire", "rail"]
 const SURFACES: Array[String] = ["gravel", "dirt", "worn"]
-const FIELD_COVERS: Array[String] = ["pasture", "hay", "grazed", "close_grazed", "row_crop"]
-const MAX_MEADOW_PARCELS := 5 # Ground shader uniform capacity.
 const MAX_POINTS := 4096
 
 
@@ -62,7 +59,6 @@ static func validate(raw: Variant, field: Dictionary) -> Dictionary:
 	var geometry := _field_geometry(field)
 	var trees := _tree_points(field)
 	var groups: Array = []
-	var meadow_count := 0
 	var ids := {}
 	var groups_node: Variant = root.get("groups")
 	if typeof(groups_node) != TYPE_ARRAY or (groups_node as Array).is_empty():
@@ -97,10 +93,6 @@ static func validate(raw: Variant, field: Dictionary) -> Dictionary:
 					_instances(errors, path, gd, group, geometry, profile, trees)
 				"hedge", "fence", "track", "patch":
 					_line(errors, path, gd, group, geometry, profile)
-					if gtype == "patch" and group.get("surface", "") in FIELD_COVERS:
-						meadow_count += 1
-						if meadow_count > MAX_MEADOW_PARCELS:
-							errors.append(path + ": field supports at most %d meadow parcels" % MAX_MEADOW_PARCELS)
 				"flowers":
 					_flowers(errors, path, gd, group, geometry)
 			groups.append(group)
@@ -367,31 +359,17 @@ static func _line(errors: PackedStringArray, path: String, gd: Dictionary, group
 		"fence":
 			group.style = str(gd.get("style", ""))
 			if not FENCE_STYLES.has(group.style):
-				errors.append(path + ".style: expected one of %s" % [FENCE_STYLES])
+				errors.append(path + ".style: expected wire or rail")
 			height = 1.2
-			if group.style in ["gate", "stock_gate"]:
-				var hinge := Vector2(rows[0][0], rows[0][1])
-				var latch := Vector2(rows[1][0], rows[1][1])
-				if rows.size() != 2 or hinge.distance_to(latch) < 1.0:
-					errors.append(path + ".points: gate requires two posts at least 1 m apart")
-					return
-				height = FenceParts.STOCK_GATE_HEIGHT
-				if group.style == "gate":
-					height = FenceParts.GATE_HEIGHT
-					var tip := FenceParts.gate_tip(hinge, latch)
-					var err := _check_point(tip.x, tip.y, height, 0.2, group.zone, geo, profile)
-					if not err.is_empty():
-						errors.append("%s open gate at (%.1f, %.1f): %s" % [path, tip.x, tip.y, err])
-						return
 		"track":
 			width = _quantity(errors, path + ".width", gd.get("width"), "m")
 			group.surface = str(gd.get("surface", ""))
-			if not SURFACES.has(group.surface) and group.surface != "trampled":
-				errors.append(path + ".surface: expected one of %s" % [SURFACES + ["trampled"]])
+			if not SURFACES.has(group.surface):
+				errors.append(path + ".surface: expected one of %s" % [SURFACES])
 		"patch":
 			group.surface = str(gd.get("surface", ""))
-			if not SURFACES.has(group.surface) and not FIELD_COVERS.has(group.surface):
-				errors.append(path + ".surface: expected one of %s" % [SURFACES + FIELD_COVERS])
+			if not SURFACES.has(group.surface):
+				errors.append(path + ".surface: expected one of %s" % [SURFACES])
 	group.height = height
 	group.width = width
 	var pts: Array = []
@@ -403,20 +381,6 @@ static func _line(errors: PackedStringArray, path: String, gd: Dictionary, group
 			return
 		pts.append(Vector2(r[0], r[1]))
 	group.points = pts
-	if group.type == "patch" and group.surface in FIELD_COVERS:
-		if pts.size() != 4:
-			errors.append(path + ": a meadow requires four ordered corners")
-			return
-		var direction := 0.0
-		for i in 4:
-			var a: Vector2 = pts[i]
-			var b: Vector2 = pts[(i + 1) % 4]
-			var c: Vector2 = pts[(i + 2) % 4]
-			var turn := signf((b - a).cross(c - b))
-			if turn == 0.0 or (i > 0 and turn != direction):
-				errors.append(path + ": a meadow must be a convex quadrilateral")
-				return
-			direction = turn
 
 
 static func _flowers(errors: PackedStringArray, path: String, gd: Dictionary, group: Dictionary, geo: Dictionary) -> void:

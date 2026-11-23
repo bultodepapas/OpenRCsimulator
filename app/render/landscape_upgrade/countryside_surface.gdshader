@@ -1,7 +1,7 @@
 // LU-28: bounded countryside surface, one shared material for spatial batches.
 // UV is metres: (across rows/road, along rows/road). UV2 is (kind, extent m):
-// row length for fields (0, 1, 6..11), full width for roads/yards (2..5).
-// Vertex RGB carries the palette; alpha is the parcel's stable pattern seed.
+// row length for fields (0, 1, 6..9), full width for roads/yards (2..5).
+// COLOR carries the field palette; licensed photographs provide surface variation.
 shader_type spatial;
 render_mode cull_back;
 
@@ -89,41 +89,19 @@ float field_interior(float along_m, float row_length_m) {
 			row_length_m - end_m + feather, along_m));
 }
 
-vec3 cultivated_field(vec3 palette, float kind, float row_length_m, vec2 field_uv, float seed) {
+vec3 cultivated_field(vec3 palette, float kind, float row_length_m, vec2 field_uv) {
 	vec3 grass = texture(grass_tex, field_uv / max(grass_tile_m, 0.001)).rgb;
-	// Offset and stretch each parcel's growth patches in its own row coordinates.
-	// A positive mip bias keeps individual blades out of these metre-scale patches.
-	float broad = texture(grass_tex, field_uv / vec2(47.0 + 25.0 * seed, 79.0)
-		+ vec2(seed * 3.0, seed * 7.0), 2.0).g;
-	// Compare with the same photograph's coarsest mip in the renderer's colour space.
-	float average_grass = textureLod(grass_tex, vec2(0.5), 12.0).g;
-	float growth = smoothstep(0.85, 1.15, broad / max(average_grass, 0.001));
-	vec3 field = palette * photo_value(grass);
-	if (kind > 10.5) {
-		// A resting meadow has taller, drier tufts growing among greener patches.
-		return field * mix(vec3(0.80, 0.91, 0.94), vec3(1.15, 1.05, 0.84), growth);
-	}
+	float broad = texture(grass_tex, (world_pos.xz + vec2(417.0, 783.0)) / 85.0).g;
+	vec3 field = palette * photo_value(grass) * (0.83 + 0.50 * broad);
 	if (kind > 6.5 && kind < 7.5) {
-		// Grazing leaves irregular islands of longer grass, without machinery lines.
-		return field * mix(vec3(0.87, 0.93, 0.90), vec3(1.08, 1.06, 0.97), growth);
+		// Pasture keeps broad mowing swaths rather than cereal rows or tramlines.
+		return field * (1.0 - 0.035 * periodic_band(field_uv.x, 6.0, 3.0));
 	}
 	float interior = field_interior(field_uv.y, row_length_m);
-	if (kind > 9.5) {
-		// Swaths follow the length of the field; the end pass runs across them.
-		float swath_m = mix(4.8, 8.6, seed);
-		float across = field_uv.x + 0.8 * sin(field_uv.y * 0.035 + seed * TAU);
-		float pass = periodic_band(across, swath_m * 2.0, swath_m);
-		float head_pass = periodic_band(field_uv.y, swath_m * 2.0, swath_m);
-		float windrow = periodic_band(across, swath_m, 0.48);
-		return field * (0.92 + 0.12 * mix(head_pass, pass, interior) + 0.05 * growth)
-			+ palette * vec3(0.20, 0.15, 0.06) * windrow * interior;
-	}
-	field *= 0.90 + 0.15 * growth;
 	bool maize = kind > 5.5 && kind < 6.5;
-	float rows = periodic_band(field_uv.x, maize ? mix(0.70, 0.85, seed) : 0.18, maize ? 0.22 : 0.035);
-	float implement_m = mix(12.0, 19.0, seed);
-	float tramlines = clamp(periodic_band(field_uv.x, implement_m, 0.24)
-		+ periodic_band(field_uv.x - 1.55, implement_m, 0.24), 0.0, 1.0);
+	float rows = periodic_band(field_uv.x, maize ? 0.76 : 0.18, maize ? 0.22 : 0.035);
+	float tramlines = clamp(periodic_band(field_uv.x, 14.0, 0.20)
+		+ periodic_band(field_uv.x - 0.55, 14.0, 0.20), 0.0, 1.0);
 	float harvested = kind > 7.5 && kind < 8.5 ? 1.0 : 0.0;
 	if (kind > 8.5) {
 		// One existing wheat parcel: its first passes have been cut. Shared UVs keep
@@ -131,9 +109,8 @@ vec3 cultivated_field(vec3 palette, float kind, float row_length_m, vec2 field_u
 		float feather = max(fwidth(field_uv.y), 0.25);
 		harvested = 1.0 - smoothstep(harvested_length_m - feather, harvested_length_m + feather, field_uv.y);
 	}
-	vec3 straw_palette = kind < 8.5 ? palette : vec3(0.51, 0.43, 0.28);
-	vec3 stubble = straw_palette * photo_value(grass) * (0.90 + 0.15 * growth);
-	float windrow = periodic_band(field_uv.x, mix(4.5, 7.0, seed), 0.45);
+	vec3 stubble = vec3(0.51, 0.43, 0.28) * photo_value(grass) * (0.83 + 0.50 * broad);
+	float windrow = periodic_band(field_uv.x, 5.5, 0.45);
 	stubble *= 1.0 + 0.18 * windrow - 0.06 * rows;
 	field = mix(field * (1.0 - (maize ? 0.23 : 0.10) * rows), stubble, harvested);
 	field *= 1.0 - 0.20 * tramlines * interior;
@@ -151,12 +128,12 @@ void fragment() {
 	vec3 paint = vec3(0.62, 0.61, 0.55);
 
 	if (kind < 0.5 || kind > 5.5) {
-		albedo = cultivated_field(palette, kind, full_width_m, UV, COLOR.a);
+		albedo = cultivated_field(palette, kind, full_width_m, UV);
 	} else if (kind < 1.5) {
 		vec3 soil = texture(soil_tex, vec2(cross_m, along_m) / max(soil_tile_m, 0.001)).rgb;
 		albedo *= photo_value(soil);
 		albedo *= 0.86 + 0.42 * texture(soil_tex, world_pos.xz / 48.0).r;
-		float furrows = periodic_band(cross_m, mix(0.8, 1.5, COLOR.a), 0.16);
+		float furrows = periodic_band(cross_m, 1.4, 0.16);
 		albedo *= 1.0 - 0.16 * furrows * field_interior(along_m, full_width_m);
 	} else if (kind < 2.5) {
 		vec3 asphalt = texture(asphalt_tex,

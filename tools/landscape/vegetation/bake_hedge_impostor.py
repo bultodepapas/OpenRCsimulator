@@ -164,13 +164,7 @@ def _route_material_to_unlit_albedo(material: Any, alpha_cutoff: float, source_a
         links.new(alpha_link, alpha_test.inputs[0])
     else:
         alpha_test.inputs[0].default_value = alpha_default
-    if source_alpha_mode == "BLEND":
-        if alpha_link is not None:
-            links.new(alpha_link, mix.inputs[0])
-        else:
-            mix.inputs[0].default_value = alpha_default
-    else:
-        links.new(alpha_test.outputs[0], mix.inputs[0])
+    links.new(alpha_test.outputs[0], mix.inputs[0])
     links.new(transparent.outputs[0], mix.inputs[1])
     links.new(emission.outputs[0], mix.inputs[2])
     for link in list(output.inputs["Surface"].links):
@@ -186,10 +180,10 @@ def _route_material_to_unlit_albedo(material: Any, alpha_cutoff: float, source_a
         "material": material.name,
         "base_color_source": "complete imported glTF Principled Base Color input link, routed to Emission",
         "base_color_input_network": base_network,
-        "alpha_source": "imported glTF opacity" if source_alpha_mode == "BLEND" else "complete imported glTF Principled Alpha input link, thresholded",
+        "alpha_source": "complete imported glTF Principled Alpha input link, thresholded",
         "alpha_input_network": alpha_network,
         "alpha_mode": source_alpha_mode,
-        "alpha_cutoff": None if source_alpha_mode == "BLEND" else alpha_cutoff,
+        "alpha_cutoff": alpha_cutoff,
         "surface_render_method": getattr(material, "surface_render_method", "legacy"),
     }
 
@@ -263,11 +257,7 @@ def bake(
     source_material = source_materials[0]
     alpha_cutoff = float(source_material.get("alphaCutoff", 0.5))
     alpha_mode = str(source_material.get("alphaMode", "OPAQUE"))
-    # The shrub has one leaf-cutout material. Preserve its graded opacity during the bake;
-    # only the finished billboard uses the runtime alpha test.
-    if any(material.get("alphaMode", "OPAQUE") == "BLEND" for material in source_materials) and not (
-        source_asset_id == "forest_leafy_shrub" and len(source_materials) == 1
-    ):
+    if any(material.get("alphaMode", "OPAQUE") == "BLEND" for material in source_materials):
         raise ValueError("BLEND source needs a separately reviewed transparency conversion; this baker supports OPAQUE/MASK")
 
     scene_before = bpy.context.window.scene if bpy.context.window is not None else bpy.context.scene
@@ -447,8 +437,8 @@ def bake(
                 "exposure": 0.0,
                 "gamma": 1.0,
                 "output_colorspace": "sRGB PNG",
-                "alpha": "graded glTF opacity baked over transparency" if alpha_mode == "BLEND" else "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
-                "alpha_cutoff": None if alpha_mode == "BLEND" else alpha_cutoff,
+                "alpha": "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
+                "alpha_cutoff": alpha_cutoff,
                 "alpha_mode": alpha_mode,
                 "png_channels": "RGBA",
                 "png_bit_depth": 8,

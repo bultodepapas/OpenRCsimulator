@@ -1,4 +1,4 @@
-## Source-derived shrub cards for wild and planted hedges, with optional sparse canopy trees.
+## Source-only hedgerows: a Bush_Common impostor atlas plus sparse imported canopy trees.
 extends RefCounted
 
 const Vegetation := preload("res://scenery/imported_vegetation.gd")
@@ -7,13 +7,11 @@ const ImpostorShader := preload("res://assets/landscape/vegetation/impostors/bus
 
 const ATLAS_PATH := "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png"
 const MANIFEST_PATH := "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.json"
-const PLANTED_MANIFEST_PATH := "res://assets/landscape/vegetation/impostors/forest_leafy_shrub_4view.json"
 const BUSH_SOURCE_ID := "bush_common_flowers"
 const BUSH_ATLAS_ASSET_ID := "bush_common_flowers_4view_impostor"
 const TREE_SOURCE_ID := "common_tree_3"
 const CARD_TRIANGLES := 2
 const CARD_SPACING_M := 1.35
-const PLANTED_CARD_LIMIT := 1024
 const CARD_INSTANCE_LIMITS := {"low": 64, "balanced": 128, "high": 256}
 const TREE_INSTANCE_LIMITS := {"low": 2, "balanced": 3, "high": 4}
 const QUALITY_RANK_LIMITS := {"low": 0.45, "balanced": 0.74, "high": 1.0}
@@ -21,7 +19,8 @@ const TREE_TRIANGLE_BUDGET := 16000
 const TOTAL_TRIANGLE_BUDGET := 20000
 
 static var _manifest_cache: Dictionary = {}
-static var _shader_materials: Dictionary = {}
+static var _atlas_texture: Texture2D
+static var _shader_material: ShaderMaterial
 
 
 ## Build a batched hedgerow from render-XZ points. `include_trees` adds sparse CommonTree_3 meshes.
@@ -31,23 +30,20 @@ static func build(
 	width: float,
 	seed: int,
 	quality: String = "balanced",
-	include_trees: bool = false,
-	planted: bool = false
+	include_trees: bool = false
 ) -> Node3D:
 	var root := Node3D.new()
 	root.name = "ImportedHedge"
 	var quality_id := _quality_id(quality)
-	var placements := layout(points, height, width, seed, quality_id, planted)
+	var placements := layout(points, height, width, seed, quality_id)
 	var all_cpu_placements: Array[Dictionary] = []
 	var group_stats: Dictionary = {}
 	var source_triangles := 0
 	var batch_count := 0
 	var asset_batches := 0
-	var atlas_manifest := _manifest(planted)
-	var source_id := str(atlas_manifest.get("derived_from_asset_id", ""))
-	var atlas_id := str(atlas_manifest.get("asset_id", ""))
+	var atlas_manifest := _manifest()
 	if not placements.is_empty():
-		var atlas_material := _impostor_material(atlas_manifest)
+		var atlas_material := _impostor_material()
 		var frame_size := _frame_size(atlas_manifest)
 		var card_mesh := QuadMesh.new()
 		card_mesh.size = Vector2(frame_size, frame_size)
@@ -63,14 +59,14 @@ static func build(
 			multi_mesh.set_instance_transform(instance_index, transform)
 			multi_mesh.set_instance_color(instance_index, Color.WHITE)
 			var yaw := float(placement.get("yaw_rad", 0.0))
-			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, float(planted), 0.0, 1.0))
+			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, 0.0, 0.0, 1.0))
 		var cards := MultiMeshInstance3D.new()
-		cards.name = "Forest_Leafy_Shrub_4View" if planted else "Bush_Common_Flowers_4View"
+		cards.name = "Bush_Common_Flowers_4View"
 		cards.multimesh = multi_mesh
 		cards.material_override = atlas_material
 		cards.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		cards.set_meta("source_asset_id", source_id)
-		cards.set_meta("atlas_asset_id", atlas_id)
+		cards.set_meta("source_asset_id", BUSH_SOURCE_ID)
+		cards.set_meta("atlas_asset_id", BUSH_ATLAS_ASSET_ID)
 		root.add_child(cards)
 		batch_count += 1
 		asset_batches += 1
@@ -78,13 +74,15 @@ static func build(
 		for placement: Dictionary in placements:
 			var record := placement.duplicate(true)
 			record["type"] = "source_impostor"
+			record["source_asset_id"] = BUSH_SOURCE_ID
+			record["asset_id"] = BUSH_ATLAS_ASSET_ID
 			record["source_triangles"] = CARD_TRIANGLES
 			card_records.append(record)
 		all_cpu_placements.append_array(card_records)
 		var bush_triangles := placements.size() * CARD_TRIANGLES
 		source_triangles += bush_triangles
-		group_stats[atlas_id] = {
-			"source_asset_id": source_id,
+		group_stats[BUSH_ATLAS_ASSET_ID] = {
+			"source_asset_id": BUSH_SOURCE_ID,
 			"instances": placements.size(),
 			"triangles": bush_triangles,
 			"draw_batches": 1,
@@ -133,7 +131,7 @@ static func build(
 	root.set_meta("imported", true)
 	root.set_meta("source_only", true)
 	root.set_meta("quality", quality_id)
-	root.set_meta("source_assets", [source_id] if not placements.is_empty() else [])
+	root.set_meta("source_assets", [BUSH_SOURCE_ID] if not placements.is_empty() else [])
 	if not tree_records.is_empty() and group_stats.has(TREE_SOURCE_ID):
 		(root.get_meta("source_assets") as Array).append(TREE_SOURCE_ID)
 	root.set_meta("asset_batches", asset_batches)
@@ -168,26 +166,15 @@ static func build_packed(
 
 
 ## Deterministic nested quality layout for source-derived cards along the path.
-static func layout(points: Array[Vector2], height: float, width: float, seed: int,
-		quality: String = "balanced", planted: bool = false) -> Array[Dictionary]:
+static func layout(points: Array[Vector2], height: float, width: float, seed: int, quality: String = "balanced") -> Array[Dictionary]:
 	var output: Array[Dictionary] = []
 	if height <= 0.0 or width < 0.0 or points.size() < 2:
 		return output
 	var clean_points := _clean_points(points)
 	if clean_points.size() < 2:
 		return output
-	var manifest := _manifest(planted)
-	if manifest.is_empty():
-		return output
-	var source_height := _source_height(manifest)
 	var candidates: Array[Dictionary] = []
 	var candidate_id := 0
-	# Maintained hedges need cover along every bay. Scale spacing, keeping the
-	# silhouette continuous even on low; wild hedges still use sparse ranked bushes.
-	var spacing := CARD_SPACING_M
-	if planted:
-		var quality_spacing: float = {"low": 0.92, "balanced": 0.78, "high": 0.67}.get(quality, 0.78)
-		spacing = maxf(height * quality_spacing, _path_length(clean_points) / PLANTED_CARD_LIMIT)
 	for segment_index: int in range(clean_points.size() - 1):
 		var start: Vector2 = clean_points[segment_index]
 		var finish: Vector2 = clean_points[segment_index + 1]
@@ -197,14 +184,9 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 			continue
 		var direction := delta / segment_length
 		var normal := Vector2(-direction.y, direction.x)
-		var step_count := floori(segment_length / spacing)
-		if planted:
-			step_count = mini(maxi(1, roundi(segment_length / spacing)), PLANTED_CARD_LIMIT - candidate_id)
-			if step_count == 0:
-				break
-		var pitch := segment_length / step_count if planted else spacing
+		var step_count := int(floor(segment_length / CARD_SPACING_M))
 		for step_index: int in range(step_count):
-			var along := pitch * (float(step_index) + 0.5)
+			var along := CARD_SPACING_M * (float(step_index) + 0.5)
 			var max_jitter := maxf(0.0, minf(0.18, minf(along - 0.1, segment_length - along - 0.1)))
 			along += (Palette.hash01(seed, candidate_id, 41) * 2.0 - 1.0) * max_jitter
 			var centre := start.lerp(finish, clampf(along / segment_length, 0.0, 1.0))
@@ -213,15 +195,15 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 			var yaw := atan2(-direction.y, direction.x) + (Palette.hash01(seed, candidate_id, 47) - 0.5) * 0.28
 			var height_scale := height * (0.82 + 0.30 * Palette.hash01(seed, candidate_id, 53))
 			var rank := Palette.hash01(seed, candidate_id, 59)
-			var scale := height_scale / source_height
+			var scale := height_scale / _source_height(_manifest())
 			var transform := Transform3D(
 				Basis(Vector3.UP, yaw).scaled(Vector3.ONE * scale),
 				Vector3(position.x, height_scale * 0.5, position.y)
 			)
 			candidates.append({
 				"id": "hedge:%d:bush:%d" % [seed, candidate_id],
-				"asset_id": manifest.asset_id,
-				"source_asset_id": manifest.derived_from_asset_id,
+			"asset_id": BUSH_ATLAS_ASSET_ID,
+				"source_asset_id": BUSH_SOURCE_ID,
 				"candidate_index": candidate_id,
 				"rank": rank,
 				"position": position,
@@ -233,8 +215,6 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 				"transform": transform,
 			})
 			candidate_id += 1
-	if planted:
-		return candidates
 	var quality_id := _quality_id(quality)
 	var rank_limit := float(QUALITY_RANK_LIMITS.get(quality_id, 0.74))
 	var ranked: Array[Dictionary] = []
@@ -345,38 +325,35 @@ static func _sample_path(points: Array[Vector2], distance: float) -> Dictionary:
 	return {"position": points[points.size() - 1], "direction": Vector2.RIGHT}
 
 
-static func _manifest(planted: bool = false) -> Dictionary:
-	var path := PLANTED_MANIFEST_PATH if planted else MANIFEST_PATH
-	if _manifest_cache.has(path):
-		return _manifest_cache[path]
-	var file := FileAccess.open(path, FileAccess.READ)
+static func _manifest() -> Dictionary:
+	if not _manifest_cache.is_empty():
+		return _manifest_cache
+	var file := FileAccess.open(MANIFEST_PATH, FileAccess.READ)
 	if file == null:
-		push_error("Hedge impostor manifest is missing: %s" % path)
+		push_error("Bush_Common impostor manifest is missing: %s" % MANIFEST_PATH)
 		return {}
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
 	if parsed is Dictionary:
-		_manifest_cache[path] = parsed
-		return parsed
-	return {}
+		_manifest_cache = parsed
+	return _manifest_cache
 
 
-## Woodland habitat batches share the flowering shrub texture.
 static func _atlas() -> Texture2D:
-	return load(ATLAS_PATH) as Texture2D
+	if _atlas_texture == null:
+		_atlas_texture = load(ATLAS_PATH) as Texture2D
+	return _atlas_texture
 
 
-static func _impostor_material(manifest: Dictionary = {}) -> ShaderMaterial:
-	var path := str(manifest.get("atlas_path", ATLAS_PATH))
-	if _shader_materials.has(path):
-		return _shader_materials[path]
-	var material := ShaderMaterial.new()
-	material.shader = ImpostorShader
-	material.set_shader_parameter("impostor_atlas", load(path) as Texture2D)
-	material.set_shader_parameter("alpha_cutoff", 0.32)
-	material.set_shader_parameter("atlas_frames", 4.0)
-	_shader_materials[path] = material
-	return material
+static func _impostor_material() -> ShaderMaterial:
+	if _shader_material != null:
+		return _shader_material
+	_shader_material = ShaderMaterial.new()
+	_shader_material.shader = ImpostorShader
+	_shader_material.set_shader_parameter("impostor_atlas", _atlas())
+	_shader_material.set_shader_parameter("alpha_cutoff", 0.32)
+	_shader_material.set_shader_parameter("atlas_frames", 4.0)
+	return _shader_material
 
 
 static func _source_height(manifest: Dictionary) -> float:
