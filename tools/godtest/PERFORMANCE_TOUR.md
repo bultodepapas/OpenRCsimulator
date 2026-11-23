@@ -299,7 +299,13 @@ disappeared and disqualifies the phase even if it returns. Repeated identical
 samples occupy one trace entry. Older traces cannot show an omitted loss.
 A verified ceiling is valid when the workload
 has headroom. A fixed fallback or an unconfirmed scale cannot qualify as
-adaptive evidence. Compare retained phases and route landmarks using the
+adaptive evidence. After a scale request, the phase needs a completed frame
+at the requested scale. Its generation and frame ID must advance beyond any
+previous confirmation in that phase. A request still pending at phase close
+disqualifies that phase. The driver records the controller status at phase close
+even when the last trace entry is unchanged. Older adaptive captures without
+this closing receipt can still be inspected but cannot qualify a comparison.
+Compare retained phases and route landmarks using the
 [experiment design](../../docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md).
 The existing `compare` command's whole-flight geometry gate still applies.
 

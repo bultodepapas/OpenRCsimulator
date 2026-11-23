@@ -37,6 +37,7 @@ class RenderingEvidenceTests(unittest.TestCase):
                 with self.subTest(status=status):
                     phase["dynamic_resolution"] = [{"phase_id": phase["id"], "observed_usec": 5,
                                                      "status": {"target_fps": 60, "configured_scale": 1.0, **status}}]
+                    phase["dynamic_resolution_close_status"] = phase["dynamic_resolution"][-1]["status"]
                     write_json(path / "runtime.json", runtime)
                     result = report(path, write=False)
                     self.assertEqual(result["data"] == "valid", eligible, result["issues"])
@@ -44,16 +45,53 @@ class RenderingEvidenceTests(unittest.TestCase):
                         self.assertIn("dynamic resolution not verified", " ".join(result["issues"]))
 
             confirmed = {"target_fps": 60, "state": "observing", "configured_scale": 1.0, "completed_frame": frame}
-            for states in ([confirmed, {}], [confirmed, {}, confirmed]):
+            pending = {"target_fps": 60, "state": "apply_pending", "configured_scale": 0.85}
+            next_frame = dict(frame, frame_id=5, generation=4, input_size=[1632, 918])
+            applied = dict(confirmed, configured_scale=0.85, completed_frame=next_frame)
+            warming = dict(pending, state="observing")
+            for states, issue in (
+                ([confirmed, {}], "controller status disappeared"),
+                ([confirmed, {}, confirmed], "controller status disappeared"),
+                ([confirmed, pending], "no completed frame"),
+                ([confirmed, pending, warming], "no completed frame"),
+                ([confirmed, dict(confirmed, completed_frame=None), confirmed], "identity did not advance"),
+                ([confirmed, dict(pending, configured_scale=None), applied], "outside the allowed ladder"),
+                ([confirmed, dict(pending, configured_scale=10**400)], "outside the allowed ladder"),
+                ([confirmed, pending, dict(pending, configured_scale=0.75)], "changed without a completed frame"),
+                ([confirmed, pending, confirmed], "pending scale"),
+                ([confirmed, pending, dict(applied, completed_frame=dict(next_frame, generation=3))],
+                 "identity did not advance"),
+                ([confirmed, pending, dict(applied, completed_frame=dict(next_frame, frame_id=4))],
+                 "identity did not advance"),
+                ([confirmed, dict(pending, configured_scale=1.0), confirmed], "identity did not advance"),
+                ([confirmed, dict(confirmed)], ""),
+                ([pending, applied], ""),
+                ([confirmed, pending, dict(pending), applied], ""),
+                ([confirmed, pending, warming, applied], ""),
+            ):
                 with self.subTest(states=states):
                     phase["dynamic_resolution"] = [
                         {"phase_id": phase["id"], "observed_usec": at, "status": state}
                         for at, state in enumerate(states, start=5)
                     ]
+                    phase["dynamic_resolution_close_status"] = states[-1]
+                    write_json(path / "runtime.json", runtime)
+                    result = report(path, write=False)
+                    self.assertEqual(result["data"] == "valid", not issue, result["issues"])
+                    if issue:
+                        self.assertIn(issue, " ".join(result["issues"]))
+
+            phase["dynamic_resolution"] = [{"phase_id": phase["id"], "observed_usec": 5, "status": confirmed}]
+            for close_status in (None, pending):
+                with self.subTest(close_status=close_status):
+                    if close_status is None:
+                        phase.pop("dynamic_resolution_close_status")
+                    else:
+                        phase["dynamic_resolution_close_status"] = close_status
                     write_json(path / "runtime.json", runtime)
                     result = report(path, write=False)
                     self.assertNotEqual(result["data"], "valid")
-                    self.assertIn("controller status disappeared", " ".join(result["issues"]))
+                    self.assertIn("phase-close controller observation", " ".join(result["issues"]))
 
     def test_explicit_render_scale_requires_matching_bilinear_receipts_at_both_boundaries(self):
         with tempfile.TemporaryDirectory() as temporary:

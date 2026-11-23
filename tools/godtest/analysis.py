@@ -34,6 +34,7 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
     sizes = {tuple(axis * percent // 100 for axis in output): percent / 100
              for percent in (75, 85, ceiling) if percent <= ceiling}
     confirmed = False
+    pending_scale = None
     when = phase.get("start_usec", 0)
     end = phase.get("end_usec", -1)
     if type(when) is not int or type(end) is not int:
@@ -54,22 +55,38 @@ def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
         if state.get("state") not in ("observing", "apply_pending"):
             return f"controller used fixed resolution ({state.get('reason', 'unknown')})"
         frame = state.get("completed_frame")
+        scale = state.get("configured_scale")
         if frame is None:
+            confirmed = False
+            if state["state"] == "apply_pending":
+                if type(scale) not in (int, float) or not 0 < scale <= 1 or not any(
+                    math.isclose(scale, allowed, abs_tol=1e-6) for allowed in sizes.values()
+                ):
+                    return "pending scale is outside the allowed ladder"
+                if pending_scale is not None and not math.isclose(pending_scale, scale, abs_tol=1e-6):
+                    return "pending scale changed without a completed frame"
+                pending_scale = scale
             continue
         if not isinstance(frame, dict) or state["state"] != "observing" or frame.get("output_size") != output:
             return "completed frame does not identify the active output"
         if any(type(frame.get(key)) is not int or frame[key] < 0 for key in ("frame_id", "generation")):
             return "invalid completed frame identity"
         size = frame.get("input_size")
-        scale = state.get("configured_scale")
         if (not isinstance(size, list) or len(size) != 2 or any(type(axis) is not int for axis in size)
-                or tuple(size) not in sizes or type(scale) not in (int, float)
+                or tuple(size) not in sizes or type(scale) not in (int, float) or not 0 < scale <= 1
                 or not math.isclose(scale, sizes[tuple(size)], abs_tol=1e-6)):
             return "completed pixels do not match an allowed scale"
-        if previous and frame != previous and (frame["generation"] <= previous["generation"] or frame["frame_id"] <= previous["frame_id"]):
+        if pending_scale is not None and not math.isclose(scale, pending_scale, abs_tol=1e-6):
+            return "completed frame does not confirm the pending scale"
+        if previous and (frame != previous or not confirmed) and (
+            frame["generation"] <= previous["generation"] or frame["frame_id"] <= previous["frame_id"]
+        ):
             return "completed scale identity did not advance"
         previous = frame
+        pending_scale = None
         confirmed = True
+    if phase.get("dynamic_resolution_close_status") != trace[-1]["status"]:
+        return "phase-close controller observation is missing or inconsistent"
     return "" if confirmed else "no completed frame confirmed an active scale"
 
 

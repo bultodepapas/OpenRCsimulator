@@ -82,6 +82,8 @@ func _test_controller_loss() -> void:
 	var rows: Array = driver.phases.back().dynamic_resolution
 	_check(rows.size() == 3 and rows[0].status == confirmed and rows[1].status == {} and rows[2].status == confirmed,
 		"turning Off then recovering records exactly one loss and the returning status")
+	_check(driver.phases.back().get("dynamic_resolution_close_status") == confirmed,
+		"phase close attests a steady observation without duplicating it in the trace")
 
 	driver._begin("landing")
 	driver._observe_dynamic_resolution(Time.get_ticks_usec())
@@ -90,13 +92,24 @@ func _test_controller_loss() -> void:
 	var closed: Dictionary = driver.phases.back()
 	rows = closed.dynamic_resolution
 	_check(rows.size() == 2 and rows[0].status == confirmed and rows[1].status == {}
-		and rows[1].phase_id == closed.id and rows[1].observed_usec == closed.end_usec,
+		and rows[1].phase_id == closed.id and rows[1].observed_usec == closed.end_usec
+		and closed.get("dynamic_resolution_close_status") == {},
 		"phase close records owner loss after the last process sample")
+	driver._begin("recover")
+	root.set_meta(DynamicResolution.STATUS_META, confirmed)
+	driver._observe_dynamic_resolution(Time.get_ticks_usec())
+	var pending := {state = "apply_pending", target_fps = 60, configured_scale = 0.85}
+	root.set_meta(DynamicResolution.STATUS_META, pending)
+	driver._end()
+	closed = driver.phases.back()
+	_check(closed.get("dynamic_resolution_close_status") == pending and closed.dynamic_resolution.back().status == pending,
+		"phase close records a scale request made after the last process sample")
+	owner.stop(root)
 	driver._begin("takeoff")
 	driver._observe_dynamic_resolution(Time.get_ticks_usec())
 	root.set_meta(DynamicResolution.STATUS_META, confirmed)
 	driver._end()
-	_check(driver.phases.back().dynamic_resolution.is_empty(),
+	_check(driver.phases.back().dynamic_resolution.is_empty() and not driver.phases.back().has("dynamic_resolution_close_status"),
 		"a controller first seen after the last process sample cannot qualify an empty trace")
 	owner.stop(root)
 	driver.free()

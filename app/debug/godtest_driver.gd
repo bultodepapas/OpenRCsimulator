@@ -954,6 +954,7 @@ func _end(status: String = "complete", reason: String = "") -> void:
 	# Catch a controller stop after the last process callback. A phase with no sampled controller stays unconfirmed.
 	if phase.has("dynamic_resolution") and not phase.dynamic_resolution.is_empty():
 		_observe_dynamic_resolution(phase.end_usec)
+		phase.dynamic_resolution_close_status = last_dynamic_resolution
 	phase.end_tick = bound_session.sim.tick if is_instance_valid(bound_session) else -1
 	phase.end_sim_s = bound_session.sim.time() if is_instance_valid(bound_session) else float(phase.start_sim_s)
 	phase.wall_seconds = float(int(phase.end_usec) - int(phase.start_usec)) / 1000000.0
