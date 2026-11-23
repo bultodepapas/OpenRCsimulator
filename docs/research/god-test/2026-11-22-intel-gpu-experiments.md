@@ -10,9 +10,9 @@ identity and comparison scope; a full tour is conditional, not the entry ticket
 for every experiment.
 
 Companion to the [investigation](2026-11-22-intel-gpu-investigation.md), under
-VQ-07h-A2-R1 / PT1h-R15 / GOD-12/13. **Proposed hardware experiments, not completed
-measurements.** Use the same currently owned Intel device for every paired
-comparison. The earlier M1 records are context, not a new test dependency.
+VQ-07h-A2-R1 / PT1h-R15 / GOD-12/13. This protocol describes the original experiment
+design. The dated PRIMIS record links completed comparisons to their source and
+scope. Use the same Intel device for every paired comparison. [PRIMIS results](2026-11-22-intel-green-club-screen.md)
 
 ## 1. Establish the correct baseline
 
