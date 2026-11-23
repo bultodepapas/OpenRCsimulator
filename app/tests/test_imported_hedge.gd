@@ -204,6 +204,10 @@ func _test_batched_build() -> void:
 	var default_root := ImportedHedge.build(points, 2.2, 1.4, 9182)
 	_check("production hedge defaults to the card row without optional trees", int(default_root.get_meta("trees", -1)) == 0
 		and int(default_root.get_meta("bush_cards", 0)) > 0)
+	var expected := ImportedHedge.layout(points, 2.2, 1.4, 9182)
+	for placement: Dictionary in expected:
+		placement["type"] = "source_impostor"
+	_check("card metadata preserves every layout field and its order", default_root.get_meta("cpu_placements") == expected)
 	default_root.free()
 	var no_tree_root := ImportedHedge.build(points, 2.2, 1.4, 9182, "balanced", false)
 	_check("tree meshes can be omitted while retaining the imported hedge card batch",

@@ -62,6 +62,9 @@ static func build(
 			multi_mesh.set_instance_color(instance_index, Color.WHITE)
 			var yaw := float(placement.get("yaw_rad", 0.0))
 			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, float(planted), 0.0, 1.0))
+			# This build owns the fresh layout records, so it can publish them directly.
+			placement["type"] = "source_impostor"
+			all_cpu_placements.append(placement)
 		var cards := MultiMeshInstance3D.new()
 		cards.name = "Bush_Common_Flowers_4View"
 		cards.multimesh = multi_mesh
@@ -72,15 +75,6 @@ static func build(
 		root.add_child(cards)
 		batch_count += 1
 		asset_batches += 1
-		var card_records: Array[Dictionary] = []
-		for placement: Dictionary in placements:
-			var record := placement.duplicate(true)
-			record["type"] = "source_impostor"
-			record["source_asset_id"] = BUSH_SOURCE_ID
-			record["asset_id"] = BUSH_ATLAS_ASSET_ID
-			record["source_triangles"] = CARD_TRIANGLES
-			card_records.append(record)
-		all_cpu_placements.append_array(card_records)
 		var bush_triangles := placements.size() * CARD_TRIANGLES
 		source_triangles += bush_triangles
 		group_stats[BUSH_ATLAS_ASSET_ID] = {
