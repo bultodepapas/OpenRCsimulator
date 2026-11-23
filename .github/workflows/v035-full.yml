@@ -1,0 +1,39 @@
+name: OpenRC v0.3.5 restored scenery checks
+on:
+  push:
+    branches: [release-check/v0.3.5-full-source]
+permissions:
+  contents: read
+jobs:
+  focused:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Check restored scenery from the full source tree
+        run: |
+          set -euo pipefail
+          engine="$(bash app/get-godot.sh)"
+          export XDG_DATA_HOME="$RUNNER_TEMP/v035-data"
+          export XDG_CONFIG_HOME="$RUNNER_TEMP/v035-config"
+          export XDG_CACHE_HOME="$RUNNER_TEMP/v035-cache"
+          run() {
+            label="$1"
+            shift
+            python3 tools/godot/run_checked.py --timeout 900 --out-dir "$RUNNER_TEMP/v035-checks" --label "$label" -- "$engine" --headless --path app --audio-driver Dummy "$@"
+          }
+          run import --import
+          git diff --exit-code HEAD -- app
+          test -z "$(git ls-files --others --exclude-standard -- app)"
+          for suite in farm_tractor scenery_destruction scenery_loader companions_profiles companions_behavior_manifest companions_shell; do
+            run "$suite" --script "res://tests/test_$suite.gd"
+          done
+          run nk3-trajectory --script "$PWD/research/native-kernel/test_trajectory.gd"
+          run nk3-fleet --script "$PWD/research/native-kernel/test_fleet.gd"
+          python3 -m unittest discover -s tools/scenery -p 'test_*.py'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: restored-scenery-checks
+          path: ${{ runner.temp }}/v035-checks
+          if-no-files-found: error
