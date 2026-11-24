@@ -166,6 +166,7 @@ var _rate_mark := {msec = 0, tick = -1}
 ## Frame history (PT1h-R8): wall time per frame, physics ticks per frame, and recent hitches with their context.
 const FRAME_CAPACITY := 7200
 const FrameStatistics := preload("res://debug/frame_statistics.gd")
+const FramePhases := preload("res://render/frame_phases.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const FRAME_FORMAT := "openrc-debug-frames v1"
 const RELATIVE_STUTTER := 1
@@ -197,6 +198,9 @@ var _frame_route := ""
 var _frame_query_pending := false
 var _frame_observer_last_usec := 0
 var _frame_clock_discontinuities := 0
+## PT1h-R15-S3: main-loop phase split of each interval; stutter/hitch records carry the split of their frame.
+var _phases: RefCounted
+var _frame_phase_split := {}
 ## PT1h-R15-S1: process-constant capture identity, read once (not per poll). The launch instance is a random,
 ## nonsecret receipt for joining snapshots of one bridge lifetime; it is never derived from the session token.
 var _frame_source_static := {}
@@ -268,6 +272,8 @@ func _ready() -> void:
 	_launch_id() # before the network thread exists, so `ping` reads an immutable value
 	_render = RenderProbe.new(get_viewport())
 	_render.set_measure(true) # two GPU timestamps per frame; no-op headless. render measure=false turns it off.
+	_phases = FramePhases.new()
+	_phases.start(get_tree().root)
 	var err := _server.listen(port, "127.0.0.1")
 	if err != OK:
 		push_error("debug bridge: cannot listen on 127.0.0.1:%d: %s" % [port, error_string(err)])
@@ -285,6 +291,8 @@ func _exit_tree() -> void:
 	# observer of the same viewport keeps its shared lease.
 	if _render != null:
 		_render.set_measure(false)
+	if _phases != null:
+		_phases.stop()
 	_ablation_owned_measure = false
 	_finish_ablation_pause()
 	_restore_sticks()
@@ -1821,6 +1829,7 @@ func _record_frame(now_us: int) -> void:
 		_frame_observer_usec.resize(FRAME_CAPACITY)
 		_frame_routes.resize(FRAME_CAPACITY)
 		return
+	_frame_phase_split = _phases.split(_frame_last_us, now_us) if _phases != null else {}
 	var wall_usec := now_us - _frame_last_us
 	var ms := wall_usec / 1000.0
 	_frame_last_us = now_us
@@ -1949,7 +1958,8 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 		gpu_ms = gpu_ms if gpu_ms > 0.0 else null,
 		gpu_timing_status = "unverified_freshness" if gpu_ms > 0.0 else "unavailable_or_zero",
 		focused = get_window().has_focus() if is_inside_tree() and _display_name != "headless" else null,
-		diagnostic_query = bool(flags & DIAGNOSTIC_QUERY)}
+		diagnostic_query = bool(flags & DIAGNOSTIC_QUERY), phases = _frame_phase_split.duplicate(),
+		phase_largest = _largest_phase(_frame_phase_split)}
 	var session := _session()
 	if session != null:
 		record.tick = session.sim.tick
@@ -1969,6 +1979,19 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 		_stutter_log_last_usec = _event_last_usec
 	else:
 		_event_logs_suppressed += 1
+
+
+## Name and milliseconds of the longest main-loop phase in a valid split; empty otherwise.
+static func _largest_phase(split: Dictionary) -> Dictionary:
+	if int(split.get("phase_valid", 0)) != 1:
+		return {}
+	var best := ""
+	var best_usec := -1
+	for key: String in FramePhases.DURATIONS:
+		if int(split.get(key, 0)) > best_usec:
+			best = key
+			best_usec = int(split.get(key, 0))
+	return {phase = best.trim_prefix("phase_").trim_suffix("_usec"), ms = best_usec / 1000.0}
 
 
 func _cmd_frames(request: Dictionary) -> Dictionary:

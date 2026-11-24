@@ -19,6 +19,7 @@ var app: Node
 var pilot: RefCounted
 var collector: RefCounted
 var diagnostics: RefCounted
+var frame_phases: RefCounted
 var original_reader: Callable
 var original_shell_reader: Callable
 var bound_session: Node
@@ -128,7 +129,8 @@ func _run() -> void:
 	var research := ProjectSettings.globalize_path("res://").trim_suffix("/").get_base_dir().path_join("research/performance/godtest")
 	var frames_script: Script = load(research.path_join("frames.gd"))
 	var diagnostic_script: Script = load("res://render/frame_diagnostics.gd")
-	if frames_script == null or diagnostic_script == null:
+	var phases_script: Script = load("res://render/frame_phases.gd")
+	if frames_script == null or diagnostic_script == null or phases_script == null:
 		_fail("benchmark source helpers unavailable")
 		return
 	collector = frames_script.new()
@@ -137,6 +139,8 @@ func _run() -> void:
 		return
 	diagnostics = diagnostic_script.new()
 	diagnostics.start(get_tree().root)
+	frame_phases = phases_script.new()
+	frame_phases.start(get_tree().root)
 	events = FileAccess.open(output_dir.path_join("events.jsonl"), FileAccess.WRITE)
 	trajectory = FileAccess.open(output_dir.path_join("trajectory.csv"), FileAccess.WRITE)
 	if events == null or trajectory == null:
@@ -873,6 +877,7 @@ func _process(delta: float) -> void:
 		paused = int(bound_session.sim.paused)
 		crashed = int(not bound_session.crash.is_empty())
 	var sample: Dictionary = diagnostics.sample()
+	sample.merge(frame_phases.split(began - wall_usec, began))
 	sample.merge({phase_index = phases.size(), cycle = cycle, sim_tick = tick, sim_time_s = sim_s,
 		paused = paused, crashed = crashed, render_frames_drawn = drawn, render_interval_draws = interval_draws,
 		render_window_drawable = int(drawable), render_window_transition = int(mode_transition), window_focused = int(get_tree().root.has_focus()),
@@ -1062,6 +1067,9 @@ func _finish(success: bool) -> void:
 	if diagnostics != null:
 		diagnostics.stop()
 		identity.diagnostics = diagnostics.metadata()
+	if frame_phases != null:
+		frame_phases.stop()
+		identity.frame_phases = frame_phases.metadata()
 	identity.actual_resolution = [get_tree().root.size.x, get_tree().root.size.y]
 	identity.final_display = _runtime_display()
 	identity.viewport_size = [get_tree().root.get_visible_rect().size.x, get_tree().root.get_visible_rect().size.y]
