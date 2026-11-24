@@ -6,6 +6,8 @@ extends SceneTree
 const Track := preload("res://sim/race/track.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const AirfieldTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
+const Session := preload("res://sim/multirotor/session.gd")
+const World := preload("res://scenery/collision_world.gd")
 
 const SHIPPED := "res://data/race/tracks/openrc-practice-oval-1.json"
 const TOWER := "res://data/race/tracks/openrc-tower-sprint-1.json"
@@ -41,6 +43,7 @@ func _run() -> void:
 	_refusals(field)
 	_identity(field)
 	_frames(field)
+	_woods(field)
 	_tower(field)
 	_venue(field)
 	print("%d checks, %d failed" % [_count, _failures])
@@ -250,6 +253,58 @@ func _frames(field: Dictionary) -> void:
 	_check("RACE-01 the four frame boxes (posts to the ground, top and bottom bars) surround each aperture exactly",
 		surround and course.frames.size() == 4 * course.gates.size())
 	_check("RACE-01 no frame box intrudes into an open aperture", clear, detail)
+
+
+func _woods(original_field: Dictionary) -> void:
+	var field := original_field.duplicate(true)
+	field.objects = [{type = "treeline", positions = [[31, 43, 0], [39, 43, 0]]}]
+	var raw := _raw()
+	raw.gates[0].height_m = 3.0
+	var track: Dictionary = Track.load_document(raw).track
+	var bare := Track.prepare(track, field, _flat)
+	_check("field-only preparation retains the conservative treeline fallback", not bare.ok
+		and "treeline" in " ".join(bare.errors))
+	var trunks: Array[Dictionary] = []
+	for north: float in [31.0, 39.0]:
+		World._add_capsule(trunks, "trunk-%.0f" % north, "tree_trunk", "trunk", "hard_terminal",
+			north, 43.0, -3.0, 0.16, 3.0)
+	var prepared := Track.prepare(track, field, _flat, Session.obstacle_index({proxies = trunks}, 0.5))
+	_check("the gate fits in a measured 8 m gap inside both former tree-card radii", prepared.ok
+		and absf(prepared.course.min_object_clearance_m - 2.16) < 1.0e-8, str(prepared.errors))
+	var slope := PackedFloat64Array([0.0, sqrt(0.8), sqrt(0.2)])
+	var branches: Array[Dictionary] = []
+	World._add_capsule(branches, "fork", "tree_trunk", "branch", "hard_terminal", 35.0, 46.0, -0.5, 0.10, 4.0)
+	var fork: Dictionary = branches[0]
+	fork.axis_ned = slope
+	fork.bounds_east_min = fork.east - 4.0*slope[1] - fork.radius
+	fork.bounds_east_max = fork.east + 4.0*slope[1] + fork.radius
+	fork.bounds_down_min = fork.down - 4.0*slope[2] - fork.radius
+	fork.bounds_down_max = fork.down + 4.0*slope[2] + fork.radius
+	# The line crosses the middle of the aperture at (35,43,-2), over 1 m from all four frame panels.
+	prepared = Track.prepare(track, field, _flat, Session.obstacle_index({proxies = branches}, 0.5))
+	var why := " ".join(prepared.errors)
+	_check("an inclined branch through the timing aperture refuses even when its centre clears", not prepared.ok
+		and "gates[0]" in why and "fork" in why, why)
+	fork.down -= 8.0
+	fork.bounds_down_min -= 8.0
+	fork.bounds_down_max -= 8.0
+	prepared = Track.prepare(track, field, _flat, Session.obstacle_index({proxies = branches}, 0.5))
+	_check("the same overhead branch leaves the gate usable", prepared.ok, str(prepared.errors))
+	var pad_trunk: Array[Dictionary] = []
+	World._add_capsule(pad_trunk, "pad-edge", "tree_trunk", "trunk", "hard_terminal", 28, 40, -1, 0.1, 1.0)
+	prepared = Track.prepare(track, field, _flat, Session.obstacle_index({proxies = pad_trunk}, 0.5))
+	why = " ".join(prepared.errors)
+	_check("the full circular pad and its clearance margin reject wood at the edge", not prepared.ok
+		and "pad:" in why and "pad-edge" in why, why)
+	pad_trunk.clear()
+	World._add_capsule(pad_trunk, "clear-pad", "tree_trunk", "trunk", "hard_terminal", 30, 40, -1, 0.1, 1.0)
+	prepared = Track.prepare(track, field, _flat, Session.obstacle_index({proxies = pad_trunk}, 0.5))
+	_check("wood beyond the diagonal edge of the pad clearance circle is clear", prepared.ok
+		and absf(prepared.course.min_object_clearance_m - (sqrt(8.0)-1.6)) < 1.0e-8, str(prepared.errors))
+	field.flight_cues = [{type = "windsock", north = 35, east = 43, length = 1, throat_diameter = 0.2}]
+	prepared = Track.prepare(track, field, _flat, Session.obstacle_index({proxies = trunks}, 0.5))
+	_check("installed forest geometry preserves the windsock exclusion", not prepared.ok
+		and "windsock" in " ".join(prepared.errors), str(prepared.errors))
 
 
 ## DR-28/32 second shipped course: the tower sprint loads and prepares on the default field, varies its gate heights

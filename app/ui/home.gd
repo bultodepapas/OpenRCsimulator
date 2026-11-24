@@ -98,6 +98,7 @@ var start_choice: String = "runway"
 ## shown and launched, so browsing a helicopter or a runway-less landscape never rewrites the airplane choice.
 var _airplane_start_preference: String = "runway"
 var _rotorcraft_start_preference: String = "runway"
+var airship_start_preference: String = "runway"
 var runway_available: bool = true
 var rotorcraft_pad_available: bool = true
 var landscape_id: String = Landscapes.DEFAULT_ID
@@ -1501,18 +1502,25 @@ func set_preview_state(state: String) -> void:
 
 ## The pilot's explicit start for the selected vehicle class (remembered for that class).
 func set_start_choice(choice: String) -> void:
-	if Catalog.is_rotorcraft(aircraft_id):
+	if activity_id == AirshipCatalog.STOCK_ID:
+		if choice not in ["runway", "airborne"]:
+			return
+		airship_start_preference = choice
+	elif not activity_id.is_empty():
+		return
+	elif Catalog.is_rotorcraft(aircraft_id):
 		_rotorcraft_start_preference = choice
 	else:
 		_airplane_start_preference = choice
 	_show_start_choice(choice)
 
 
-## Saved starts for both classes, applied to the selected aircraft.
-func set_start_preferences(airplane: String, rotorcraft: String) -> void:
+## Saved starts by vehicle family, applied to the selected vehicle.
+func set_start_preferences(airplane: String, rotorcraft: String, airship := "runway") -> void:
 	# D6e-R4: the former explicit 50 % choice is the trimmed airborne start.
 	_airplane_start_preference = "airborne" if airplane == FlightSession.START_HALF_POWER else airplane
 	_rotorcraft_start_preference = rotorcraft
+	airship_start_preference = airship
 	reapply_start_preference()
 
 
@@ -1523,7 +1531,7 @@ func start_preference(rotorcraft: bool) -> String:
 
 ## Shows the remembered start again after the aircraft or the landscape changed what is available.
 func reapply_start_preference() -> void:
-	_show_start_choice(start_preference(Catalog.is_rotorcraft(aircraft_id)))
+	_show_start_choice(airship_start_preference if activity_id == AirshipCatalog.STOCK_ID else start_preference(Catalog.is_rotorcraft(aircraft_id)))
 
 
 func battery_preference() -> String:
@@ -1536,6 +1544,16 @@ func fuel_preference() -> float:
 
 func _show_start_choice(choice: String) -> void:
 	var previous := start_choice
+	if activity_id == AirshipCatalog.STOCK_ID:
+		start_choice = "runway" if runway_available and choice == "runway" else "airborne"
+		start_button.disabled = not runway_available
+		start_button.text = tr("Start: runway") if start_choice == "runway" else tr("Start: in the air")
+		limits_label.text = "On the wheels" if start_choice == "runway" else "Airborne release (6 m)"
+		start_button.tooltip_text = tr(limits_label.text) if runway_available else tr("This landscape supports airborne starts only.")
+		_update_launch_caption()
+		if start_choice != previous:
+			launch_setup_changed.emit()
+		return
 	if not activity_id.is_empty():
 		# UI-39: the activity owns its start and setup; the aircraft's remembered start stays untouched.
 		start_button.disabled = true
@@ -1720,6 +1738,9 @@ func _cycle_fuel_fill() -> void:
 
 
 func _cycle_start_choice() -> void:
+	if activity_id == AirshipCatalog.STOCK_ID and runway_available:
+		start_requested.emit("runway" if start_choice == "airborne" else "airborne")
+		return
 	if not activity_id.is_empty():
 		return
 	if Catalog.is_rotorcraft(aircraft_id):

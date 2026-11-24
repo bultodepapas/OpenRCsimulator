@@ -8,6 +8,7 @@ const Customization := preload("res://render/aircraft_customization.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Lighting := preload("res://render/lighting/lighting_profile.gd")
 const PreviewScript := preload("res://ui/workshop_preview.gd")
+const Activity := preload("res://vehicles/airship/airship_scene.gd")
 
 const REST := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 const DAY := {"local_seconds": 12.0 * 3600.0, "sun_elevation_deg": 40.0}
@@ -34,10 +35,84 @@ func _run() -> void:
 	_test_describe()
 	_test_builds_and_paint()
 	_test_expected_presentation()
+	_test_activity_views_and_skin()
 	await _test_lighting()
 	await _test_preview()
 	print("airship presentation: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_activity_views_and_skin() -> void:
+	var activity := Activity.new()
+	activity.enable_audio = false
+	activity.enable_world = false
+	activity.camera_preferences = {"camera_view": "pilot"}
+	get_root().add_child(activity)
+	_check("blimp scene admits the selected pilot view", activity.startup_error.is_empty()
+		and activity.camera != null and activity._rig.view == "pilot", activity.startup_error)
+	if activity.camera == null:
+		activity.free()
+		return
+	var before: PackedFloat64Array = activity.session.sim.state.duplicate()
+	var choices: OptionButton = activity.hud.choices.camera
+	var views := ["pilot", "chase", "flyby", "orbit", "closeup"]
+	_check("blimp menu offers all flight views", choices.item_count == views.size())
+	for i in views.size():
+		choices.select(i)
+		choices.item_selected.emit(i)
+		activity._process(0.0)
+		var center: Vector3 = activity.visual.root.global_position
+		_check("blimp %s view frames the envelope" % views[i], activity._rig.view == views[i]
+			and activity.camera.global_transform.is_finite() and activity.camera.is_position_in_frustum(center))
+	var previous: Node3D = activity.visual.root
+	var changes: Array[String] = []
+	activity.skin_changed.connect(func(id: String) -> void: changes.append(id))
+	var skin: OptionButton = activity.hud.choices.skin
+	skin.select(1)
+	skin.item_selected.emit(1)
+	_check("switching skin replaces the model once and keeps the chosen view", changes == ["historico"]
+		and activity.visual.root != previous and previous.get_parent() == null and activity._rig.view == "closeup")
+	# A malformed binding in a subsequent candidate must release its partial model and roll back the selection.
+	activity.presentation = activity.presentation.duplicate(true)
+	activity.presentation.bindings.erase("vector_port")
+	skin.select(2)
+	skin.item_selected.emit(2)
+	_check("a refused skin keeps the last working model and selector", skin.selected == 1 and activity.skin_id == "historico"
+		and activity.visual.active_skin == "historico" and changes == ["historico"])
+	_check("presentation changes preserve the accepted flight state", activity.session.sim.state == before)
+	_test_readout(activity)
+	activity.free()
+
+
+func _test_readout(activity: Node) -> void:
+	var session: Node = activity.session
+	_check("hidden telemetry stays unevaluated through camera and skin changes",
+		activity.hud.menu_visible and session._info_tick == -1 and activity.hud.readout.text.is_empty())
+	activity.handle_action("resume")
+	activity.hud.update(session.telemetry, {}, activity._rig.view_name(), "", 0)
+	_check("resuming refreshes the readout on its first frame", not session.paused
+		and session._info_tick == session.sim.tick and not activity.hud.readout.text.is_empty())
+	var zero := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	var updated := 0
+	for frame in 60:
+		for tick in 4:
+			session.tick_once(zero)
+		var frame_usec := roundi((frame + 1) * 1_000_000.0 / 60.0)
+		activity.hud.update(session.telemetry, {}, activity._rig.view_name(), "", frame_usec)
+		if session._info_tick == session.sim.tick:
+			updated += 1
+	_check("one second of flight samples the visible readout twelve times", updated == 12, str(updated))
+	session.tick_once(zero)
+	activity._rig.set_view("pilot")
+	activity._process(0.0)
+	_check("changing view refreshes the camera label immediately", session._info_tick == session.sim.tick
+		and activity.hud.readout.text.contains("camera: " + activity._rig.view_name()))
+	activity.hud.flash("Recording saved.")
+	var expires: int = activity.hud._message_until_usec
+	activity.hud.update(session.telemetry, {}, "pilot", "", expires)
+	_check("a flash stays visible through its deadline", activity.hud.message.text == "Recording saved.")
+	activity.hud.update(session.telemetry, {}, "pilot", "", expires + 1)
+	_check("an expired flash clears on the next frame", activity.hud.message.text.is_empty())
 
 
 func _test_describe() -> void:

@@ -546,6 +546,8 @@ static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, nort
 		north, east, base_down - height * float(TREE_CROWN_CENTER_FRACTIONS[species_index]),
 		horizontal_half_extent * 2.0, vertical_half_extent * 2.0, horizontal_half_extent * 2.0,
 		rad_to_deg(-yaw))
+	# The FPV close mesh uses the grounded source asset, including outside the pilot-facing sector.
+	proxies.back().fpv_tree = [Treeline.DETAIL_ASSETS[species_index], north, east, base_down, height, rad_to_deg(yaw)]
 
 
 ## L8a-R1: a 3D field tree uses the club trees' imported envelope at its hashed height and heading.
@@ -569,6 +571,7 @@ static func _add_field_detail_tree_proxies(proxies: Array[Dictionary], id: Strin
 		crown_center[0], crown_center[1], base_down - (crown_bottom_height + height) * 0.5,
 		float(vegetation.width) + 2.0 * wind_margin, maxf(0.001, height - crown_bottom_height),
 		float(vegetation.depth) + 2.0 * wind_margin, heading)
+	proxies.back().fpv_tree = [asset_id, north, east, base_down, height, heading]
 
 
 static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, prefab: String,
@@ -597,6 +600,7 @@ static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, p
 		"soft_foliage_impulse", crown_center[0], crown_center[1], -(crown_bottom_height + height) * 0.5,
 		float(vegetation.width) + 2.0 * wind_margin, crown_height,
 		float(vegetation.depth) + 2.0 * wind_margin, heading)
+	proxies.back().fpv_tree = [vegetation.asset_id, north, east, 0.0, height, heading]
 
 
 static func _add_bush_proxy(proxies: Array[Dictionary], id: String, north: float, east: float,
@@ -866,8 +870,12 @@ static func _add_lights(proxies: Array[Dictionary], lights: Dictionary) -> void:
 
 static func _placement_point(center_north: float, center_east: float, heading_deg: float, local_x: float, local_z: float) -> PackedFloat64Array:
 	var heading := deg_to_rad(heading_deg)
-	var sin_heading := sin(heading)
-	var cos_heading := cos(heading)
+	return placement_point_rotated(center_north, center_east, sin(heading), cos(heading), local_x, local_z)
+
+
+## A placement can reuse its bearing for all endpoints of a compound obstacle.
+static func placement_point_rotated(center_north: float, center_east: float, sin_heading: float, cos_heading: float,
+		local_x: float, local_z: float) -> PackedFloat64Array:
 	return PackedFloat64Array([
 		center_north - sin_heading * local_x - cos_heading * local_z,
 		center_east + cos_heading * local_x - sin_heading * local_z,

@@ -13,13 +13,18 @@ const BALLAST_KG := [-0.05, 0.0, 0.08, 0.2]
 const WIND_LABELS := ["Calm", "Breeze 1.5 m/s", "Wind 3 m/s"]
 const WIND_MPS := [0.0, 1.5, 3.0]
 const START_LABELS := ["Airborne release (6 m)", "On the wheels"]
-const CAMERA_LABELS := ["Chase", "Pilot", "Orbit"]
+const CAMERA_LABELS := ["Pilot", "Chase", "Fly-by", "Orbit", "Close-up"]
+# Only the numerical readout samples at 12 Hz. Buttons, warnings and camera movement respond every frame.
+const READOUT_INTERVAL_USEC := 83_333
 
 var root_control: Control
 var readout: Label
 var message: Label
 var help: Label
 var menu: PanelContainer
+var menu_backdrop: ColorRect
+var menu_scroll: ScrollContainer
+var menu_help: Label
 var menu_reason: Label
 var resume_button: Button
 var home_button: Button
@@ -28,7 +33,9 @@ var choices := {}
 var skin_names: Array = []
 ## First readout line; a Workshop trial names its scaled envelope.
 var vehicle_label := "RC BLIMP 5.0 m"
-var _message_until := 0.0
+var _message_until_usec := 0
+var _next_readout_usec := 0
+var _readout_camera := ""
 
 
 func _ready() -> void:
@@ -80,7 +87,7 @@ func _ready() -> void:
 		"Yaw (left stick sides / A-D): stern thruster + rudders",
 		"Roll (right stick sides / Left-Right): differential side thrust",
 		"Full back stick vectors past vertical: brake and hover",
-		"P or Esc: pause menu   R: restart   C: camera   H: this help",
+		"P or Esc: pause menu   R: restart   C / Shift+C: cycle view   H: this help",
 		"F10: start/stop the flight log (.orfl)   F11: log marker",
 		"Resume needs the throttle low and the yaw stick centred.",
 		"", "A blimp keeps drifting: reduce thrust early, brake with vectoring.",
@@ -91,14 +98,25 @@ func _ready() -> void:
 
 
 func _build_menu(ui_scale: float) -> void:
+	menu_backdrop = ColorRect.new()
+	menu_backdrop.name = "PauseBackdrop"
+	menu_backdrop.color = Color(0.02, 0.03, 0.05, 0.6)
+	root_control.add_child(menu_backdrop)
+	menu_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var center := CenterContainer.new()
+	menu_backdrop.add_child(center)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	menu = PanelContainer.new()
 	menu.name = "PauseMenu"
-	menu.set_anchors_preset(Control.PRESET_CENTER)
-	menu.custom_minimum_size = Vector2(520, 0)
-	root_control.add_child(menu)
+	center.add_child(menu)
+	menu_scroll = ScrollContainer.new()
+	menu_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	menu_scroll.follow_focus = true
+	menu.add_child(menu_scroll)
 	var box := VBoxContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_theme_constant_override("separation", 8)
-	menu.add_child(box)
+	menu_scroll.add_child(box)
 	var title := Label.new()
 	title_label = title
 	title.text = "RC Blimp 5 m — experimental physics"
@@ -116,7 +134,30 @@ func _build_menu(ui_scale: float) -> void:
 	choices.wind = _choice(box, "Steady wind", "wind", WIND_LABELS)
 	choices.camera = _choice(box, "Camera", "camera", CAMERA_LABELS)
 	_button(box, "Controls help", "help")
+	menu_help = Label.new()
+	menu_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	menu_help.text = help.text
+	menu_help.hide()
+	box.add_child(menu_help)
 	home_button = _button(box, "Home", "home")
+	root_control.resized.connect(_fit_menu)
+	box.minimum_size_changed.connect(_fit_menu)
+	_fit_menu()
+
+
+func _fit_menu() -> void:
+	var content: Control = menu_scroll.get_child(0)
+	menu_scroll.custom_minimum_size = Vector2(minf(600.0, maxf(1.0, root_control.size.x - 48.0)),
+		minf(content.get_combined_minimum_size().y, maxf(1.0, root_control.size.y - 64.0)))
+
+
+func toggle_help() -> void:
+	if menu_visible:
+		menu_help.visible = not menu_help.visible
+		if menu_help.visible:
+			menu_scroll.ensure_control_visible.call_deferred(menu_help)
+	else:
+		help.visible = not help.visible
 
 
 ## BL-19d: a Workshop trial returns to the Workshop and flies the frozen build with its pinned (default) skin.
@@ -173,29 +214,49 @@ func _choice(parent: Container, label_text: String, option: String, items: Array
 
 var menu_visible: bool:
 	get:
-		return menu != null and menu.visible
+		return menu_backdrop != null and menu_backdrop.visible
 
 
 func show_menu(reason: String, can_resume: bool) -> void:
-	menu.visible = true
+	menu_backdrop.show()
+	readout.get_parent().hide()
+	help.hide()
+	message.hide()
 	menu_reason.text = reason
 	resume_button.disabled = not can_resume
-	(resume_button if can_resume else menu.find_child("Restart", true, false)).grab_focus.call_deferred()
+	(resume_button if can_resume else menu.find_child("Restart", true, false)).grab_focus()
 
 
 func hide_menu() -> void:
-	menu.visible = false
+	menu_backdrop.hide()
+	menu_help.hide()
+	_readout_camera = ""
+	readout.get_parent().show()
+	message.show()
 	var focus := root_control.get_viewport().gui_get_focus_owner()
 	if focus != null:
 		focus.release_focus()
 
 
 func flash(text: String, seconds := 4.0) -> void:
+	if menu_visible:
+		menu_reason.text = text
 	message.text = text
-	_message_until = Time.get_ticks_msec() / 1000.0 + seconds
+	_message_until_usec = Time.get_ticks_usec() + roundi(seconds * 1_000_000.0)
 
 
-func update(t: Dictionary, input: Dictionary, camera_name: String) -> void:
+## Only request the expensive force and contact breakdown when the visible readout needs it.
+func update(read_telemetry: Callable, input: Dictionary, camera_name: String, pause_reason: String,
+		now_usec: int = Time.get_ticks_usec()) -> void:
+	if menu_visible:
+		return
+	if now_usec > _message_until_usec:
+		message.text = pause_reason
+	if camera_name == _readout_camera and now_usec < _next_readout_usec:
+		return
+	_readout_camera = camera_name
+	_next_readout_usec = now_usec - (now_usec % READOUT_INTERVAL_USEC) + READOUT_INTERVAL_USEC
+	var t: Dictionary = read_telemetry.call()
 	if t.is_empty():
 		return
 	var battery: Dictionary = t.get("battery", {})
@@ -221,5 +282,3 @@ func update(t: Dictionary, input: Dictionary, camera_name: String) -> void:
 		"Input %s  %s%s" % [str(input.get("source", "keyboard")), armed, ("  " + str(input.error)) if not str(input.get("error", "")).is_empty() else ""],
 	])
 	readout.text = "\n".join(lines)
-	if Time.get_ticks_msec() / 1000.0 > _message_until:
-		message.text = str(t.pause_reason) if t.paused and not menu_visible else ""

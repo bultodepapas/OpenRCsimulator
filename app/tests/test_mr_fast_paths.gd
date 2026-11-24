@@ -299,7 +299,7 @@ func _run() -> void:
 	var reference_us := 0
 	var indexed_us := 0
 	for reach: float in [0.05, 0.6608, 1.5, 4.0]:
-		var query: Callable = Session._obstacle_query(world, [], reach)
+		var query: Callable = Session._obstacle_query(Session.obstacle_index(world, reach), [], reach)
 		for p: PackedFloat64Array in points:
 			var t0 := Time.get_ticks_usec()
 			var expected := _reference(world, reach, p[0], p[1], p[2])
@@ -318,7 +318,7 @@ func _run() -> void:
 		4 * points.size(), hits], mismatches == 0 and hits > 1000, first)
 	_check("the indexed query is at least 3x faster", indexed_us * 3 < reference_us,
 		"%d us against %d us" % [indexed_us, reference_us])
-	var query: Callable = Session._obstacle_query(world, [], 0.6608)
+	var query: Callable = Session._obstacle_query(Session.obstacle_index(world, 0.6608), [], 0.6608)
 	_check("non-finite input returns the reach, as the fresh query did",
 		_same(query.call(NAN, 0.0, 0.0), 0.6608) and _same(query.call(0.0, INF, 0.0), 0.6608)
 		and _same(_reference(world, 0.6608, NAN, 0.0, 0.0), 0.6608))

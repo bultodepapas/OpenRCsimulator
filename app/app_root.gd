@@ -904,7 +904,8 @@ func _install_home(setup: Dictionary) -> void:
 	home.set_livery_preferences(preferences.get("liveries", {}))
 	home.set_aircraft(aircraft)
 	home.set_start_preferences(preferences.get("start_choice", Preferences.DEFAULTS.start_choice),
-		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice))
+		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice),
+		preferences.get("airship_start_choice", Preferences.DEFAULTS.airship_start_choice))
 	if not str(setup.get("activity", "")).is_empty():
 		home.set_activity(setup.activity)
 	home.set_weather_config(home_weather)
@@ -1029,21 +1030,44 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 func start_airship(skin_id: String = "") -> void:
 	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active or home_build_pending:
 		return
+	if ground_vehicle != null or flight != null:
+		return
+	var departing_home := home
+	if departing_home != null and not screens.is_top("home"):
+		return
+	var staged := departing_home != null and flight_loading_enabled
+	if staged:
+		_loading_active = true
+		_loading_cancelled = false
+		_loading_quit_requested = false
+		_loading_focus_lost = false
+		_loading_started_usec = Time.get_ticks_usec()
+		last_flight_loading = {status = "loading", phases = [], aircraft = "rc-blimp-5m", landscape = landscape_id}
+		_loading_screen = FlightLoading.new(departing_home.theme)
+		_loading_screen.configure("%s · %s" % [tr(VehicleRoster.short_name("rc-blimp-5m")), departing_home.start_button.text])
+		_loading_screen.show_preparation_notice(false)
+		_loading_screen.cancel_requested.connect(cancel_flight_loading)
+		screens.push("loading", _loading_screen, null, false)
+		if not await _flight_loading_checkpoint("Preparing resources"):
+			if is_inside_tree():
+				_cancel_loading_before_candidate(departing_home)
+			return
 	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
 		_home_preparation_route_pending = true
 		await shutdown_home_flight_preparation()
 		_home_preparation_route_pending = false
 		_home_prefetch_suspended = false
-		if not is_inside_tree() or not screens.is_top("home") or _home_preparation_quit_pending or _loading_active:
+		if not is_inside_tree() or _home_preparation_quit_pending:
 			return
-	if ground_vehicle != null or flight != null:
+		if not staged and not screens.is_top("home"):
+			return
+	if staged and not await _flight_loading_checkpoint("Checking landscape"):
+		if is_inside_tree():
+			_cancel_loading_before_candidate(departing_home)
 		return
 	if skin_id.is_empty():
 		skin_id = home.airship_skin_id if home != null else "tiburon-blanco"
-	var departing_home := home
-	if departing_home != null and not screens.is_top("home"):
-		return
-	if departing_home != null:
+	if departing_home != null and not staged:
 		screens.pop(false, false)
 	if home_scene != null:
 		remove_child(home_scene)
@@ -1055,6 +1079,12 @@ func start_airship(skin_id: String = "") -> void:
 	if candidate != null:
 		candidate.departure_managed = true
 		candidate.skin_id = skin_id
+		if departing_home != null:
+			candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(display_preferences.config)
+			candidate.start_index = 1 if departing_home.start_choice == "runway" else 0
+		if staged:
+			candidate.startup_checkpoint = _flight_loading_checkpoint
+			candidate.process_mode = Node.PROCESS_MODE_DISABLED
 		candidate.field_path = field_path
 		candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 		candidate.night_options = _night_options_from_preferences()
@@ -1064,18 +1094,50 @@ func start_airship(skin_id: String = "") -> void:
 			candidate.controller_profile_for = Callable(controllers, "profile_for_device")
 			candidate.controller_confirmation = Callable(controllers, "_confirmed_gamepad_connection")
 		add_child(candidate)
+		if staged:
+			await candidate.prepare_activity()
+			if not is_inside_tree():
+				return
+			if _loading_cancelled:
+				remove_child(candidate)
+				candidate.queue_free()
+				_cancel_loading_before_candidate(departing_home, "", true)
+				return
+			candidate.process_mode = Node.PROCESS_MODE_INHERIT
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():
+			if staged:
+				_loading_screen.set_committing()
+				_remove_flight_loading_screen()
+				screens.pop(false, false)
+				_finish_flight_loading("ready")
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_airship_skin = skin_id
+			if departing_home != null and preferences.airship_start_choice != departing_home.airship_start_preference:
+				preferences.airship_start_choice = departing_home.airship_start_preference
+				var saved: Error = Preferences.save_to(preferences_path, preferences)
+				if saved != OK:
+					_settings_note = tr("Could not save settings (error %d).") % saved
+					candidate.hud.flash(_settings_note)
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
+			if departing_home != null:
+				ground_vehicle.skin_changed.connect(_save_activity_airship_skin)
+				if (not staged or not _loading_focus_lost) and window_focus_probe.call():
+					ground_vehicle.handle_action("resume")
+				else:
+					ground_vehicle.hud.show_menu(tr("Window focus lost. Resume when ready."), true)
+				if ground_vehicle.hud.menu_visible:
+					ground_vehicle.hud.resume_button.grab_focus()
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
 			home_scene = null
 			return
 		remove_child(candidate)
 		candidate.queue_free()
+	if staged:
+		_cancel_loading_before_candidate(departing_home, error, true)
+		return
 	if home_scene != null:
 		add_child(home_scene)
 		home_scene.camera.make_current()
@@ -1086,6 +1148,14 @@ func start_airship(skin_id: String = "") -> void:
 	else:
 		printerr(error)
 		get_tree().quit(ERR_CANT_CREATE)
+
+
+func _save_activity_airship_skin(skin: String) -> void:
+	selected_airship_skin = skin
+	preferences.airship_skin = skin
+	var error := Preferences.save_to(preferences_path, preferences)
+	if error != OK:
+		ground_vehicle.hud.flash(tr("Could not save settings (error %d).") % error)
 
 
 ## DR-36a: the experimental FPV quad occupies the same exclusive activity slot as the ground vehicles and the blimp,
@@ -2020,7 +2090,7 @@ func _finish_flight_loading(outcome: String) -> void:
 		quit_app.call_deferred()
 
 
-func _cancel_loading_before_candidate(departing_home: Control, error := "") -> void:
+func _cancel_loading_before_candidate(departing_home: Control, error := "", restore_world := false) -> void:
 	if is_instance_valid(_home_preview_resources):
 		_home_preview_resources.cancel_for(self, false)
 	if home_scene != null and not home_scene.is_inside_tree():
@@ -2029,6 +2099,9 @@ func _cancel_loading_before_candidate(departing_home: Control, error := "") -> v
 	if home_scene != null:
 		home_scene.retain_resources_on_exit = false
 		home_scene.resume_preview()
+		if restore_world:
+			Conditions.session_preset = departing_home.time_of_day
+			_rebuild_home_scene()
 	_remove_flight_loading_screen()
 	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % tr(error)
 	if not error.is_empty():

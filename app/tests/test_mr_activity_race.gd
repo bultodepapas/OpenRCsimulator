@@ -151,9 +151,10 @@ func _run() -> void:
 	if files.size() == 1:
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DIR.path_join(files[0])))
 		_check("the saved record is the aborted attempt of this course", typeof(parsed) == TYPE_DICTIONARY and parsed.get("valid") == false
-			and parsed.get("phase") == "ABORTED" and parsed.get("course_identity") == str(s.course.identity) and parsed.get("saved") == true)
+			and parsed.get("phase") == "ABORTED" and parsed.get("course_identity") == str(s.course.identity)
+			and parsed.get("records_identity") == s.records_identity() and parsed.get("saved") == true)
 	var book: Dictionary = RaceRecords.load_file(_scene.records_path())
-	var entry: Dictionary = book.records.get(str(s.course.identity), {})
+	var entry: Dictionary = book.records.get(s.records_identity(), {})
 	_check("DR-40 a cancelled race enters the record book as no attempt (the pilot left it), no finish, no best total",
 		book.ok and not entry.is_empty() and int(entry.get("attempts", -1)) == 0 and int(entry.get("finishes", -1)) == 0
 		and float(entry.get("best_total_s", -1.0)) == 0.0, str(entry))

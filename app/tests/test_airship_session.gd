@@ -129,6 +129,20 @@ func _initialize() -> void:
 	open.prepare(field, {})
 	_fly(open, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
 	_check("open start clear of obstacles", open.crash.is_empty(), str(open.crash.get("reason", "")))
+	_check("Club field accepts a wheeled release", open.prepare(field, {start = "ground"}))
+	var lineup: PackedFloat64Array = open.sim.state.duplicate()
+	_check("wheels line up eastbound in the middle of the Club runway", lineup[0] == 15.0 and lineup[1] == 0.0
+		and absf(float(open.telemetry().heading_deg) - 90.0) < 0.001)
+	_check("Club runway supports the blimp at idle", _fly(open, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+		and float(open.telemetry().contact.gear_load_n) > 0.3)
+	var runway_agl := float(open.telemetry().agl_m)
+	_check("vectored lift-off clears the Club runway and scenery", _fly(open, 6.0, PackedFloat64Array([0.0, 0.75, 0.0, 0.8]))
+		and float(open.telemetry().agl_m) > runway_agl + 0.5 and open.crash.is_empty())
+	_check("restart repeats the exact runway pose", open.reset() and open.sim.state.to_byte_array() == lineup.to_byte_array())
+	var historical: Dictionary = open.options.duplicate(true)
+	historical.north_offset_m = 22.0
+	_check("explicit recorded ground offsets retain the historical release position",
+		open.prepare(field, historical) and open.sim.state[0] == float(field.pilot.north) + 22.0)
 	var pole: Dictionary = {}
 	for proxy: Dictionary in built.world.proxies:
 		if proxy.shape == "capsule" and float(proxy.radius) < 0.4 and float(proxy.half_length) > 1.0:

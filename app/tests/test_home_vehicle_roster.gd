@@ -80,10 +80,14 @@ func _run() -> void:
 	check("defaults select the aircraft", str(prefs.home_vehicle).is_empty() and prefs.airship_skin == AirshipCatalog.DEFAULT_SKIN)
 	prefs.home_vehicle = "monster-car-2"
 	prefs.airship_skin = "cromo-carbono-azul"
+	check("new profiles start the blimp on its wheels", prefs.airship_start_choice == "runway")
+	prefs.airship_start_choice = "airborne"
 	check("an RC vehicle selection saves", Preferences.save_to(PREFS, prefs) == OK)
 	var loaded := Preferences.load_from(PREFS)
 	check("an RC vehicle selection and blimp skin load back", loaded.home_vehicle == "monster-car-2"
 		and loaded.airship_skin == "cromo-carbono-azul" and loaded.aircraft == prefs.aircraft)
+	check("the saved blimp start is independent of the aircraft start", loaded.airship_start_choice == "airborne"
+		and loaded.start_choice == prefs.start_choice and loaded.rotorcraft_start_choice == prefs.rotorcraft_start_choice)
 	loaded.home_vehicle = Catalog.DEFAULT_ID # an aircraft id is never an RC vehicle selection
 	loaded.airship_skin = "missing"
 	check("invalid values still save", Preferences.save_to(PREFS, loaded) == OK)

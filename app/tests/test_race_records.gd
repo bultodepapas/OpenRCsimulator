@@ -64,6 +64,13 @@ func _run() -> void:
 		and float(first.previous_total_s) == 0.0 and float(entry.best_total_s) == 60.0 and float(entry.best_lap_s) == 19.5
 		and first.best_lap_index == 1 and entry.medal == "bronze" and first.new_medal and int(entry.finishes) == 1
 		and int(entry.attempts) == 1, str(entry))
+	var revised := _result(75.0, [25.0, 25.0, 25.0])
+	revised.course_identity = course.identity
+	revised.records_identity = "revised-world-and-law"
+	var separate := RaceRecords.apply(first.records, course, revised)
+	_check("an updated world and law start a separate record while the historical best is retained",
+		separate.records.size() == 2 and separate.new_best_total and separate.previous_total_s == 0.0
+		and separate.records[course.identity].best_total_s == 60.0 and separate.records[revised.records_identity].best_total_s == 75.0)
 	var faster := RaceRecords.apply(first.records, course, _result(float(goals.silver) - 1.0, [13.0, 12.0, 12.0]))
 	_check("a faster finish is a new record against the previous best and raises the medal", faster.new_best_total
 		and float(faster.previous_total_s) == 60.0 and faster.entry.medal == "silver" and faster.new_medal

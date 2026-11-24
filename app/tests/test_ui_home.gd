@@ -404,9 +404,23 @@ func _run() -> void:
 	garage_home._step_vehicle(-1)
 	_check("the Flight arrows step through the whole vehicle roster", garage_selections.size() == 3
 		and garage_selections[1] == Roster.step("monster-car-2", 1) and garage_selections[2] == Roster.step("monster-car-2", -1))
+	garage_home.set_start_preferences("airborne", "runway")
+	garage_home.set_activity("rc-blimp-5m")
+	_check("the blimp has its own wheeled start", garage_home.start_choice == "runway" and not garage_home.start_button.disabled)
+	garage_home.start_requested.connect(garage_home.set_start_choice)
+	garage_home.start_button.pressed.emit()
+	_check("the blimp start control switches to an air release", garage_home.start_choice == "airborne")
+	garage_home.start_button.pressed.emit()
+	garage_home.runway_available = false
+	garage_home.reapply_start_preference()
+	_check("the blimp falls back to air on a landscape without a qualified runway",
+		garage_home.start_button.disabled and garage_home.start_choice == "airborne")
+	garage_home.runway_available = true
+	garage_home.reapply_start_preference()
+	_check("returning to Club restores the wheeled choice", garage_home.start_choice == "runway")
 	garage_home.set_aircraft(Catalog.DEFAULT_ID)
 	_check("choosing an aircraft restores FLY and the airplane card", garage_home.activity_id.is_empty()
-		and garage_home.fly_button.text == "FLY" and not garage_home.start_button.disabled)
+		and garage_home.fly_button.text == "FLY" and not garage_home.start_button.disabled and garage_home.start_choice == "airborne")
 	garage_home.free()
 	await process_frame
 	fly.grab_focus()

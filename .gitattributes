@@ -334,6 +334,9 @@
 # Camera recipes and editorial receipts identify their plans by exact bytes.
 /tools/trailer/preproduction/shot-plan-*.json text eol=lf
 /tools/trailer/preproduction/title-plan-*.json text eol=lf
+# The title renderer checks the font license digest and records the provenance digest.
+/tools/trailer/assets/fonts/OFL.txt text eol=lf
+/tools/trailer/assets/fonts/provenance.json text eol=lf
 # The filmmaking manifest pins upstream skill and license blobs.
 /tools/trailer/skills/*/SKILL.md text eol=lf
 /tools/trailer/skills/*/LICENSE text eol=lf

@@ -7,6 +7,7 @@ const FieldLightData = preload("res://render/world/field_lights.gd")
 const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
 const Treeline = preload("res://render/treeline.gd")
 const FieldTreeDetail = preload("res://render/field_tree_detail.gd")
+const FpvFieldTrees = preload("res://render/fpv_field_trees.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
 const Ground = preload("res://render/ground.gd")
 const WornGroundMaterial = preload("res://render/worn_ground_material.gd")
@@ -83,6 +84,7 @@ class _BuildContext:
 	var build_ridges: bool = false
 	var build_countryside: bool = false
 	var rc_track: Dictionary
+	var camera_local_trees := false
 
 	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array,
 			rc_track_input: Dictionary = {}) -> void:
@@ -100,8 +102,9 @@ class _BuildContext:
 ## Synchronous builder: drain the exact same ordered steps as build_staged without yielding or workers.
 ## `rc_track`: the airplane flight's RC-TRACK circuit (scenery/rc_track_option.gd), or {} for none.
 static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = [],
-		rc_track: Dictionary = {}) -> Node3D:
+		rc_track: Dictionary = {}, camera_local_trees := false) -> Node3D:
 	var context := _BuildContext.new(field, lighting, extra_grass_exclusions, rc_track)
+	context.camera_local_trees = camera_local_trees
 	while context.phase != _BuildPhase.DONE:
 		var started_usec: int = Time.get_ticks_usec()
 		var stage: String = _next_build_stage(context)
@@ -216,6 +219,11 @@ static func _advance_build(context: _BuildContext) -> void:
 			if context.object_index < context.field.objects.size():
 				var object_data: Dictionary = context.field.objects[context.object_index]
 				context.object_index += 1
+				if context.camera_local_trees:
+					var forest := FpvFieldTrees.new()
+					forest.build(object_data, context.field.pilot, SceneDetail.level())
+					context.result.add_child(forest)
+					return
 				var cards := Treeline.build(object_data, context.field.pilot, context.front_azimuth, context.tree_half_angle)
 				FieldDetailPreferences.register_tree(cards)
 				context.result.add_child(cards)

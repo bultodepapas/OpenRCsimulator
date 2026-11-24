@@ -1,5 +1,5 @@
 # BL-10/BL-12: Home -> Vehicles catalog "RC blimp" (UI-39) -> FLY -> airship activity -> Home. Checks the
-# exclusive activity slot, skin selection, paused safe start, resume/arming, accepted ticks and the return route.
+# exclusive activity slot, safe launch, skin selection, accepted ticks and the return route.
 extends SceneTree
 
 const AppRoot = preload("res://app_root.gd")
@@ -29,6 +29,8 @@ func _run() -> void:
 	var app := AppRoot.new()
 	app.user_args = PackedStringArray()
 	app.preferences_path = "user://test_airship_activity_settings.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(app.preferences_path))
+	app.window_focus_probe = func() -> bool: return true
 	app.update_check_url = "http://127.0.0.1:1/unavailable"
 	root.add_child(app)
 	await process_frame
@@ -54,9 +56,25 @@ func _run() -> void:
 	check(app.home_scene.requested_aircraft == Catalog.STOCK_ID and app.home_scene.requested_livery == "historico", "the backdrop shows the chosen skin")
 	var car_requests := [0]
 	app.home.ground_vehicle_requested.connect(func() -> void: car_requests[0] += 1)
+	app.flight_loading_enabled = true
 	app.home.fly_button.pressed.emit()
-	for i in 4:
+	check(app.screens.is_top("loading"), "Fly immediately covers Home with the loading screen")
+	app.home.fly_button.pressed.emit()
+	var loading_deadline := Time.get_ticks_msec() + 30000
+	while app._loading_active and app._loading_phase != "Building landscape" and Time.get_ticks_msec() < loading_deadline:
 		await process_frame
+	check(app._loading_phase == "Building landscape", "the loading screen remains cancellable while the world is built")
+	app.cancel_flight_loading()
+	for i in 8:
+		await process_frame
+	check(app.screens.is_top("home") and app.home_scene.camera.is_current() and app.ground_vehicle == null and not app._loading_active,
+		"cancelling a repeated Fly request restores the same Home")
+	app.home.fly_button.pressed.emit()
+	var deadline := Time.get_ticks_msec() + 100000
+	while Time.get_ticks_msec() < deadline:
+		await process_frame
+		if app.ground_vehicle != null:
+			break
 	var activity: Node = app.ground_vehicle
 	check(car_requests[0] == 0 and activity != null and activity.name == "AirshipActivity" and app.home == null and app.flight == null,
 		"Fly RC blimp routes to the airship activity only")
@@ -66,9 +84,9 @@ func _run() -> void:
 		return
 	check(str(activity.startup_error).is_empty(), "airship activity starts: " + str(activity.startup_error))
 	check(activity.skin_id == "historico" and activity.visual != null, "selected skin is loaded")
-	check(activity.session.paused and activity.hud.menu_visible, "the blimp starts paused with its menu open")
+	check(not activity.session.paused and not activity.hud.menu_visible and app.screens.top() == null
+		and activity.session.options.start == "ground", "a focused keyboard launch starts on the wheels with both menus closed")
 	activity.scripted_sticks = func(_tick: int) -> PackedFloat64Array: return PackedFloat64Array([0.0, 0.0, 0.0, 0.4])
-	activity.handle_action("resume")
 	var started: int = activity.session.sim.tick
 	for i in 30:
 		await physics_frame
@@ -80,17 +98,30 @@ func _run() -> void:
 		await physics_frame
 	check(activity.session.paused and activity.hud.menu_visible and activity.session.sim.tick == paused_tick,
 		"losing window focus pauses the blimp behind its menu")
-	activity.handle_action("resume")
+	var selector: OptionButton = activity.hud.choices.skin
+	selector.select(2)
+	selector.item_selected.emit(2)
+	check(activity.skin_id == "cromo-carbono-azul" and app.preferences.airship_skin == activity.skin_id
+		and paused_tick == activity.session.sim.tick, "changing paint in Pause updates the saved selection at the same tick")
+	activity.hud.resume_button.pressed.emit()
 	for i in 10:
 		await physics_frame
 	check(not activity.session.paused and activity.session.sim.tick > paused_tick, "explicit resume continues the flight")
+	app.flight_loading_enabled = false
 	activity.handle_action("home")
 	for i in 8:
 		await process_frame
 	check(app.ground_vehicle == null and app.home != null, "Home returns after the blimp activity")
 	if app.home != null:
-		check(app.home.activity_id == Catalog.STOCK_ID and app.home.airship_skin_id == "historico" and app.home.livery_id == "historico",
+		check(app.home.activity_id == Catalog.STOCK_ID and app.home.airship_skin_id == "cromo-carbono-azul" and app.home.livery_id == "cromo-carbono-azul",
 			"Home remembers the blimp and its skin (%s %s %s)" % [app.home.activity_id, app.home.airship_skin_id, app.home.livery_id])
+		app.set_start_choice("airborne")
+		app.window_focus_probe = func() -> bool: return false
+		app.home.fly_button.pressed.emit()
+		activity = app.ground_vehicle
+		check(activity != null and activity.session.options.start == "air" and activity.hud.menu_visible
+			and activity.session.paused and activity.hud.resume_button.has_focus(),
+			"an unfocused air release remains paused with Resume ready for keyboard navigation")
 	await ui.close_app(app)
 	print("Airship activity: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)

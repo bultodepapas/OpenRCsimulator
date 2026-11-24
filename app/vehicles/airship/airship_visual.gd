@@ -56,34 +56,44 @@ func build(presentation: Dictionary, skin_id: String) -> bool:
 	if scene == null:
 		error = "Blimp model is unavailable: " + str(chosen.model)
 		return false
-	active_skin = skin_id
+	error = ""
 	root = Node3D.new()
 	root.name = "Airship"
-	model = scene.instantiate() as Node3D
-	if model == null:
-		error = "Blimp model did not instantiate"
-		return false
+	var instance := scene.instantiate()
+	if not instance is Node3D:
+		if instance != null:
+			instance.free()
+		return _refuse_build("Blimp model did not instantiate")
+	model = instance as Node3D
 	model.name = "Model"
 	root.add_child(model)
 	var bindings: Dictionary = presentation.get("bindings", {})
 	for key: String in VECTOR_KEYS + FIN_KEYS + ROTOR_KEYS:
 		var binding: Variant = bindings.get(key)
 		if typeof(binding) != TYPE_DICTIONARY:
-			error = "Blimp binding missing: " + key
-			return false
-		var node := model.find_child(str(binding.node), true, false) as Node3D
+			return _refuse_build("Blimp binding missing: " + key)
+		var node_name := str(binding.get("node", ""))
+		var node := model.find_child(node_name, true, false) as Node3D
 		var axis_raw: Array = binding.get("local_axis", [])
 		if node == null or axis_raw.size() != 3:
-			error = "Blimp model node missing: " + str(binding.node)
-			return false
+			return _refuse_build("Blimp model node missing: " + node_name)
 		var axis := Vector3(axis_raw[0], axis_raw[1], axis_raw[2])
 		if absf(axis.length() - 1.0) > 1e-3:
-			error = "Blimp binding axis is not a unit vector: " + key
-			return false
+			return _refuse_build("Blimp binding axis is not a unit vector: " + key)
 		_bindings[key] = {node = node, rest = node.transform, axis = axis.normalized(), sign = float(binding.get("sign", 1.0))}
 	for key: String in ROTOR_KEYS:
 		_discs.append(_make_disc(_bindings[key], presentation.get("disc_radius", {}).get(key, 0.09)))
+	active_skin = skin_id
 	return true
+
+
+func _refuse_build(reason: String) -> bool:
+	_bindings.clear()
+	root.free()
+	root = null
+	model = null
+	error = reason
+	return false
 
 
 ## A faint translucent disc appears only at speed; at rest the real blades are visible.

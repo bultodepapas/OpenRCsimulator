@@ -364,7 +364,7 @@ static func _replay(session: Node, field: Dictionary, head: Dictionary, read: Di
 		# that overrides the circuit gets the matching inventory (terrain and obstacles stay one decision).
 		var recorded_track: Variant = overrides.get("rc_track", head.options.get("rc_track", {}))
 		var built: Dictionary = CollisionSetup.build(field, recorded_track if typeof(recorded_track) == TYPE_DICTIONARY else {})
-		if not built.ok or str(built.world.get("identity", "")) != str(head.collision_identity) or not session.set_collision_world(built.world):
+		if not built.ok or not session.set_collision_world(built.world) or session.collision_identity() != str(head.collision_identity):
 			report.error = "Recorded obstacle inventory differs from the current field."
 			return report
 	var options: Dictionary = head.options.duplicate(true)
