@@ -171,6 +171,7 @@ var _profiles: Array[Dictionary] = []
 var _legacy_profiles: Array[Dictionary] = []
 var _devices: Array[Dictionary] = []
 var _draft_profile: Dictionary = {}
+var _action_rows_locale := ""
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
 var _draft_connections: Dictionary = {}
@@ -651,6 +652,7 @@ func apply_menu_verification(profile: Dictionary, device_id: int, generation: in
 	_draft_ui_device_id = device_id
 	_ui_connection = _connection_lease(device_id)
 	_refresh_devices()
+	_update_action_controls()
 	_update_menu_controls()
 	_remember_current_draft()
 	_set_status(tr("Radio menu controls are verified in the draft. Save to use this radio for menus."), false)
@@ -2050,7 +2052,9 @@ func _ready() -> void:
 	_update_profile_options()
 	_update_axis_controls()
 	_update_aux_controls()
-	_update_action_controls()
+	# configure() populated the action rows. Their labels can go stale while detached.
+	if _action_rows_locale != TranslationServer.get_locale():
+		_update_action_controls()
 	_update_preview()
 	_initial_focus_wait_frames = 2
 
@@ -3495,6 +3499,7 @@ func _update_live_axis_views(connected: bool) -> void:
 func _update_action_controls() -> void:
 	if action_grid == null:
 		return
+	_action_rows_locale = TranslationServer.get_locale()
 	var presentation: Dictionary = _draft_profile.get("presentation", {})
 	var family := str(presentation.get("glyph_family", "auto"))
 	var device := _device_for_id(_draft_flight_device_id)
@@ -3569,7 +3574,7 @@ func _update_action_controls() -> void:
 		workspace.set_chips(chips_by_control)
 	# The shorter Save caption must remain the next D-pad target below the list,
 	# regardless of the Cancel button's relative width in the current language.
-	if is_inside_tree() and last_change_button != null:
+	if last_change_button != null:
 		last_change_button.focus_neighbor_bottom = last_change_button.get_path_to(save_button)
 	# A filter change may hide the focused row; keep keyboard/gamepad focus on a visible control nearby.
 	if focus_in_rows and is_instance_valid(focused) and not focused.is_visible_in_tree():
@@ -4810,7 +4815,7 @@ func _action_conflicts() -> Dictionary:
 func _tag_workspace_rows() -> void:
 	for definition in ControllerActions.ACTIONS:
 		var action_id := str(definition.id)
-		for control: Control in [action_grid.find_child("Remap_%s" % action_id, false, false), _clear_action_buttons[action_id],
+		for control: Control in [_validation_fields["actions." + action_id].control, _clear_action_buttons[action_id],
 				_axis_capture_buttons[action_id]]:
 			_tag_row(control, "action:" + action_id)
 	for aux_name: String in AUX_CHANNELS:
@@ -5077,9 +5082,7 @@ func _update_accessible_names() -> void:
 		var caption := tr(str(definition.label))
 		_name_control(_clear_action_buttons[action_id], tr("Clear %s") % caption)
 		_name_control(_axis_capture_buttons[action_id], tr("Learn axis for %s") % caption)
-		var remap_button := action_grid.find_child("Remap_%s" % action_id, false, false) as Control
-		if remap_button != null:
-			_name_control(remap_button, tr("Remap %s") % caption)
+		_name_control(_validation_fields["actions." + action_id].control, tr("Remap %s") % caption)
 
 
 static func _name_control(control: Control, accessible: String) -> void:

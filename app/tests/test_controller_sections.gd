@@ -241,9 +241,26 @@ func _run() -> void:
 	UiInput.set_gamepad(15)
 	root.size = Vector2i(1280, 720)
 	var registry := FixtureRegistry.new()
+	var original_locale := TranslationServer.get_locale()
+	TranslationServer.set_locale("en")
+	var prepared := ControllerSetup.new()
+	prepared.configure(registry, FixtureStore.new(), 15, 15)
+	TranslationServer.set_locale("es")
+	root.add_child(prepared)
+	var prepared_remap := prepared.action_grid.get_node("Remap_camera_cycle") as Button
+	_check("first opening localizes a draft prepared in another language", prepared_remap.text == prepared_remap.tr("Remap"))
+	prepared.free()
+	TranslationServer.set_locale(original_locale)
 	var setup := ControllerSetup.new()
 	setup.configure(registry, FixtureStore.new(), 15, 15)
 	root.add_child(setup)
+	var last_remap: Button
+	for definition in ControllerActions.ACTIONS:
+		var button := setup.action_grid.get_node("Remap_%s" % definition.id) as Button
+		if button.visible:
+			last_remap = button
+	_check("initial action list links its last visible Remap to Save", last_remap != null
+		and last_remap.get_node_or_null(last_remap.focus_neighbor_bottom) == setup.save_button)
 	await _settle()
 	_check("first focus is the flight controller selector", setup.flight_device_picker.has_focus())
 	var original: Dictionary = setup.current_profile()

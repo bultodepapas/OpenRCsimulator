@@ -67,6 +67,8 @@ establishes a new bottleneck nor changes this queue's adoption gates.
 
 ### Frame stalls and sustained FPS
 
+The [Windows Controls experiments](../research/god-test/2026-11-24-frame-attribution.md#windows-controls-experiments) isolated the duplicated action refresh and timed scene-tree insertion. In the next native flight capture, instrument each major Controls subtree during insertion and measure the first use of each tab and device mode.
+
 The [24 November attribution record](../research/god-test/2026-11-24-frame-attribution.md) supplies the baseline incidents. The historical runs predate the restoration of Club Field. Freeze the revision being investigated, including the active native library and scenery digest. Start with the Stik where it reproduces the shared issue. Use the jet or Corsair for the frequent M1 circuit dips. The [tour guide](../../tools/godtest/PERFORMANCE_TOUR.md) covers the admitted route and raw capture.
 
 | Priority and owner | Next experiment | Evidence that selects a repair |

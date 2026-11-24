@@ -31,10 +31,10 @@ var _settled := false
 
 
 static func attach(target: Control) -> void:
-	if target.get_node_or_null("CrystalSurface") != null:
-		return
 	if not target is Button \
 		and not (target is PanelContainer and target.theme_type_variation in PANEL_TYPES):
+		return
+	if target.get_node_or_null("CrystalSurface") != null:
 		return
 	var effect := new() as Node2D
 	effect.name = "CrystalSurface"

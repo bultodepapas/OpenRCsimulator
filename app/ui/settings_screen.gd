@@ -247,7 +247,6 @@ func _ready() -> void:
 
 func _build() -> void:
 	_surface = Screen.mount(self)
-	_surface.theme = ScreenTheme.build()
 	_surface.close_requested.connect(close)
 	_surface.dismiss_option_popup_first = true
 	_surface.dim(0.58)

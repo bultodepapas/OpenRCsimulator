@@ -20,6 +20,29 @@ All six recordings used native physics at 240 Hz. Windows used an RTX 3090 with 
 - **Flight loading.** Every peak in the loading column was entirely between Fly and the draw marker. All six matching bridge rows ended on the loading screen at tick zero. Windows recorded pipeline-count increases of 93, 93 and 99 in those rows. The Mac rows recorded a net gain of 23 resources each, with no reported pipeline delta. These endpoint observations give the loading probe a target. A counter cannot time a compiler call or identify which load stage occupied the interval. [Existing loading probe](../../../research/performance/loading_probe.gd)
 - **Other transitions.** Lighting selection and Apply peaked at 320–639 ms across the six recordings. Returning Home peaked at 370–763 ms. The recorded phases include dialog close or world replacement. Separate those boundaries before assigning the full pause to saving preferences or rebuilding the field. [Phase map](2026-11-21-stutter-map.md#marked-freezes-by-phase)
 
+## Windows Controls experiments
+
+We drove the production Pause menu, screen stack and Controls form at 1920×1080 on the RTX 3090 with Godot 4.8 beta 2 and Compatibility/OpenGL. Each process opened Controls twice with a keyboard fixture, then twice with a gamepad fixture. On each opening it timed the first visits to Profile, Axes, Aux and Buttons, then the return to Devices. The clock ran from the button signal to `frame_post_draw`. The world, OS presentation and physical input were outside this measurement. The historical tour used Forward+/Vulkan. [Rendered benchmark](../../../app/tests/bench_controls_open.gd) · [Per-process timings and source identities](2026-11-24-controls-opening.json)
+
+**Work removed.** Configuring the draft updated 37 action rows. Attaching the screen then updated them a second time. Across the four openings in a separate profiled process these calls took 17.6–21.1 ms combined. The candidate updated them once in 11.0–13.0 ms and kept the refresh when the language changed before insertion. The last visible Remap button now has its relative path to Save before attachment. Two passes over the form also reuse registered Remap controls, eliminating 74 linear searches. [Controls](../../../app/ui/controller_setup.gd)
+
+The final comparison used five fresh engine processes per version in alternating order. The table gives median milliseconds per opening. The first gamepad opening followed the two keyboard openings in the same process.
+
+| Opening | Stock to first draw | Candidate to first draw | Pairs faster out of 5 |
+| --- | ---: | ---: | ---: |
+| Keyboard, first | 339.6 | 272.9 | 3 |
+| Keyboard, repeat | 262.7 | 250.5 | 3 |
+| Gamepad, first | 249.0 | 210.0 | 3 |
+| Gamepad, repeat | 257.7 | 239.2 | 4 |
+
+All 20 openings per version exceeded 100 ms. The worst fell from 394.4 to 359.4 ms. All 100 measured tab changes per version stayed under 33.3 ms, with maxima of 21.2 and 18.9 ms. Variation between paired openings was larger than the measured action-row saving. The full-flight comparison still needs a native run with the original renderer, aircraft and scenery.
+
+**Largest remaining cost.** In a separate instrumented candidate process, the single `_host.add_child(node)` call took 136–237 ms across the four openings. The subsequent `surface.open(from)` took 11–17 ms. These spans include the synchronous Godot notifications each operation triggers. The next attribution target is the cost of attaching each Controls subtree. [Screen stack](../../../app/ui/screen_stack.gd)
+
+**Rejected experiment.** Initializing decorative materials and styles when their controls first became visible reduced the median fresh keyboard opening from 341.5 to 267.1 ms across five processes per version. The first gamepad visit to Buttons increased from 14.4 to 30.6 ms. The sum of opening and the five tab changes for that gamepad cycle increased from 259.4 to 278.5 ms. We retained eager decoration and moved the control-type check ahead of the child lookup. [Decoration](../../../app/ui/crystal_surface.gd)
+
+**Settings.** The screen mount already creates its theme. The constructor immediately replaced it with another identical one. We removed the second build and kept the theme refresh used by the accessibility settings. In a separate rendered process, we alternated both constructors and measured through the first draw. After one warmup pair, six of eight pairs opened faster, with a median paired saving of 6.4 ms. Individual differences ranged from an 8.3 ms slowdown to a 36.7 ms saving. [Settings](../../../app/ui/settings_screen.gd)
+
 ## M1 circuit cadence
 
 The Stik, jet and Corsair averaged 97, 79 and 74 FPS on the M1, yet had 12, 65 and 92 circuit intervals above 33.333 ms. Home ran at a sustained 42–51 FPS on arrival. We tested the visible half-second spacing in flight separately for each aircraft. The first half determined the timing window. The second half supplied the counts below. Each window covered 100 ms out of every 500 ms.
@@ -33,6 +56,8 @@ The Stik, jet and Corsair averaged 97, 79 and 74 FPS on the M1, yet had 12, 65 a
 All **68 of 68** slow frames in the second halves landed in the predicted windows, which contained only **16.8%** of all frame endpoints there. This is an exploratory result within the recorded tours. A periodic cause can coexist with sustained GPU load. The recorded 94–96% mean GPU utilization does not tell us which operation made those frames late.
 
 The watcher polled every 500 ms with incident snapshots disabled. Its saved incidents cover 105 of the 169 slow frames with matching engine frames and at least 90% time overlap. **Zero of those 105** carry the bridge's same-row diagnostic-query flag. The flag has limited timing coverage. Test the observer by changing its period, then repeat the workload with independent timing and the bridge absent. The controller service also refreshes on a 0.5 s timer. The tour selected keyboard input, and that path already skips the storage lease when no default is pending. Time the actual refresh before changing it. [Watcher](../../../tools/debug/frame_watch.py) · [Controller service](../../../app/input/controller_service.gd)
+
+Replaying the controller service's timer against the three archived circuits predicted **4 of the 68** second-half slow frames within one callback of a refresh (Stik 0/6, jet 3/29, Corsair 1/33). Starting at circuit entry, we accumulated each recorded `engine_delta_s`, reset the accumulator to zero at 0.5 s, and tried initial values from 0 to 500 ms in 1 ms steps. We selected the lowest initial value with the most first-half matches. The winning values were 28, 444 and 376 ms. This makes controller enumeration a weaker explanation for the regular pattern. Directly timestamping service refreshes would test the assumption that its delta matches the recorded one. [Stream identities](2026-11-24-frame-attribution.json)
 
 ## Earlier controlled experiments
 
