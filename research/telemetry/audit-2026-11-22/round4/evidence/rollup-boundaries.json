@@ -1,0 +1,84 @@
+{
+  "scope": "source-equivalent reduced SQL model; not integrated receiver or contract-validated batches",
+  "python": "3.13.5",
+  "sqlite": "3.46.1",
+  "missing_raw": {
+    "original_rows": 40,
+    "new_file_created": true,
+    "selected_rows": 0,
+    "before": {
+      "status": "ready",
+      "release_count": 1
+    },
+    "after": {
+      "status": "no_data",
+      "release_count": 1
+    }
+  },
+  "late_read_after_purge": {
+    "eligible_at_checked_seconds": 169199,
+    "read_at_seconds": 170940,
+    "deadline_seconds": 169200,
+    "delay_seconds": 1741,
+    "rows_before": 40,
+    "deleted": 20,
+    "rows_after": 20
+  },
+  "provenance": {
+    "main": "19e9e69dda17261a7761625958d038a646608e8c",
+    "previous_main": "85fc06ff3ed0074586691c1a7fce70687ea1558a",
+    "original_baseline": "7940a4081e10994f34c858c4acac3d7a1a271464",
+    "prior_audit_tip": "e1e4b13ffe0ab0b4338a569ea1d58a7852706523",
+    "compares": {
+      "original": {
+        "ahead": 107,
+        "behind": 0,
+        "returned_files": 300,
+        "complete_list_not_claimed": true
+      },
+      "previous": {
+        "ahead": 9,
+        "behind": 0,
+        "returned_files": 119
+      }
+    },
+    "identical_blobs": {
+      "services/telemetry/openrc_telemetry/storage.py": "ccad0ddc419ba8827b9e8649aec1067a433a83dd",
+      "services/telemetry/openrc_telemetry/rollup.py": "91b4d44c55f310b1b5cf774605f6820b55bc2acd",
+      "services/telemetry/openrc_telemetry/report.py": "c2fc7800fcb5748317c5c82b1c2885b12600240d",
+      "services/telemetry/openrc_telemetry/publisher.py": "cc5b55f9dabfd7888ca3b63f83494027c585ac64",
+      "services/telemetry/openrc_telemetry/cli.py": "30a68a541d2c95ee851765bae586426d2aa11edd",
+      "app/telemetry/telemetry_service.gd": "ba03fea46fa8cf382521ed9544535d350d00fd05",
+      "tools/telemetry/dashboard.py": "abbded6d340727f0387faecb1e3ceb83c04318bf",
+      "tools/telemetry/deploy/host/openrc_stats_backup.py": "961af9eb36e516fadd881113b13cfd130b526824",
+      "app/render/overlays/overlay_manager.gd": "918411abcd0bcedf3226ba5fba669a61c58feacb",
+      "app/sim/ground_vehicle/session.gd": "d8b73034a040938402e5643eda9a3f2faae8a468"
+    },
+    "ci": {
+      "previous_telemetry": {
+        "run": 45222628625,
+        "conclusion": "success",
+        "successful_steps": [
+          "Verify schemas, examples and behavioral contracts",
+          "Receiver tests (the Godot end-to-end test skips without OPENRC_GODOT)",
+          "Operator dashboard against the receiver package",
+          "Build and smoke-test the receiver container"
+        ]
+      },
+      "previous_ci": {
+        "run": 45222631027,
+        "conclusion": "failure"
+      },
+      "current_ci": {
+        "run": 45438200301,
+        "status": "in_progress_at_retrieval"
+      },
+      "current_portable_tooling": {
+        "run": 45438200299,
+        "conclusion": "success"
+      }
+    },
+    "local_full_suites_rerun": false,
+    "scope": "GitHub metadata and local synthetic SQL only"
+  }
+}

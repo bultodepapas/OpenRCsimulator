@@ -75,3 +75,7 @@ Full output, hashes and caveats are in [verification](verification.md). This is 
 4. Supply the HUD with the authoritative composed terrain, clean up failed local recording metadata, and close the documented consent and deployment qualification decisions.
 
 The [remediation matrix](scope-and-remediation.md#repair-sequence-and-acceptance) defines concrete acceptance evidence for each work item. This branch records the audit and its reproductions; finding closure requires a separately reviewed repair and verification record.
+
+## Current-main follow-up — 24 November 2026
+
+The [fourth-pass report](follow-up-2026-11-24.md) pins main at `19e9e69dda17261a7761625958d038a646608e8c` and adds two conditional rollup input-integrity findings (absent source and stale eligibility at snapshot time), a publisher discovery-budget planning gap, offline model evidence, and prior-pin CI job results. The original findings and prior dispositions remain historical; no production fix or full new-head suite pass is claimed. [Round-four probe and receipt](../../../../research/telemetry/audit-2026-11-22/round4/evidence/rollup-boundaries.json).
