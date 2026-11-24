@@ -144,8 +144,7 @@ static func _first(index: Dictionary, gates: Array, gate_bounds: PackedFloat64Ar
 				var dot := SceneryCollision._dot4(a, b)
 				if dot < 0.0:
 					b = SceneryCollision._negate4(b)
-				# Maximum angular speed per unit time fraction for shortest-arc normalized linear interpolation.
-				var angular := 4.0 * sqrt(maxf(0.0, (1.0 - absf(dot)) / (1.0 + absf(dot))))
+				var angular := _angular_bound(a, b)
 				motion = {start = previous.slice(0, 3), delta = M.sub(body.slice(0, 3), previous.slice(0, 3)),
 					a = a, b = b, angular = angular * radius, acceleration = 2.0 * angular * angular * radius,
 					centre = centre, half = half}
@@ -157,6 +156,19 @@ static func _first(index: Dictionary, gates: Array, gate_bounds: PackedFloat64Ar
 				hit.kind = p.response_class
 				best = hit
 	return best
+
+
+## Angular speed of a normalized quaternion chord is at most twice chord speed over chord length.
+## The squared length along the chord is lerp(|a|², |b|², t) - t*(1-t)*|b-a|².
+static func _angular_bound(a: PackedFloat64Array, b: PackedFloat64Array) -> float:
+	if a == b:
+		return 0.0
+	var chord2 := 0.0
+	for i in 4:
+		var d := b[i] - a[i]
+		chord2 += d * d
+	var norm2 := minf(SceneryCollision._dot4(a, a), SceneryCollision._dot4(b, b)) - 0.25 * chord2
+	return 2.0 * sqrt(chord2 / norm2)
 
 
 ## The separating plane stays valid until translation and the maximum possible rotational motion close its gap.
@@ -308,6 +320,7 @@ static func _capsule(relative: PackedFloat64Array, axis: PackedFloat64Array, hal
 					cuts.append(t)
 	cuts.sort()
 	var best_d2 := INF
+	var best_centre_d2 := INF
 	var point := M.v3(0, 0, 0)
 	var offset := M.v3(0, 0, 0)
 	for i in cuts.size() - 1:
@@ -322,15 +335,26 @@ static func _capsule(relative: PackedFloat64Array, axis: PackedFloat64Array, hal
 		# For a segment parallel to a flat face the minimizer is an interval. Prefer its centreline height
 		# (the centre of the contact patch) over an arbitrary shaft endpoint.
 		var t := clampf(-linear / quadratic if quadratic > 0.0 else -M.dot(relative, axis), cuts[i], cuts[i + 1])
-		var shaft := M.add(relative, M.scale(axis, t))
-		var box := M.v3(clampf(shaft[0], -half[0], half[0]), clampf(shaft[1], -half[1], half[1]),
-			clampf(shaft[2], -half[2], half[2]))
-		var delta := M.sub(box, shaft)
-		var d2 := M.dot(delta, delta)
-		if d2 < best_d2 or (d2 == best_d2 and M.dot(box, box) < M.dot(point, point)):
+		var x := relative[0] + axis[0] * t
+		var y := relative[1] + axis[1] * t
+		var z := relative[2] + axis[2] * t
+		var bx := clampf(x, -half[0], half[0])
+		var by := clampf(y, -half[1], half[1])
+		var bz := clampf(z, -half[2], half[2])
+		var dx := bx - x
+		var dy := by - y
+		var dz := bz - z
+		var d2 := dx * dx + dy * dy + dz * dz
+		var centre_d2 := bx * bx + by * by + bz * bz
+		if d2 < best_d2 or (d2 == best_d2 and centre_d2 < best_centre_d2):
 			best_d2 = d2
-			point = box
-			offset = delta
+			best_centre_d2 = centre_d2
+			point[0] = bx
+			point[1] = by
+			point[2] = bz
+			offset[0] = dx
+			offset[1] = dy
+			offset[2] = dz
 	if best_d2 > 1.0e-20:
 		var distance := sqrt(best_d2)
 		return {gap = distance - radius, local_normal = M.scale(offset, 1.0 / distance), point = point}

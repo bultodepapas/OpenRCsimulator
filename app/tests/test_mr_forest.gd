@@ -43,7 +43,8 @@ func _fly(world: Dictionary, mode: String, east: float) -> Dictionary:
 		ok = session.restore_checkpoint(mark) and session.resume()
 	var inside := {}
 	var input := FC.neutral_input()
-	const TICKS := 108
+	# Give the unpowered pass one second. Leaf and air drag change the time taken to exit.
+	const TICKS := 240
 	const MARK_STEP := 40
 	for step in TICKS:
 		if not ok or not session.crash.is_empty():
@@ -51,7 +52,9 @@ func _fly(world: Dictionary, mode: String, east: float) -> Dictionary:
 		ok = session.tick_once(input)
 		if step == MARK_STEP:
 			inside = session.checkpoint()
-	var result := {ok = ok, body = session.sim.state.duplicate(), reason = str(session.crash.get("reason", "")),
+	var final_body: PackedFloat64Array = session.sim.state.duplicate()
+	var travel_velocity := M.q_rotate(RB._att(final_body), RB._slice3(final_body, RB.VEL))
+	var result := {ok = ok, body = final_body, north_speed = travel_velocity[0], reason = str(session.crash.get("reason", "")),
 		health = session.sim.continuous.slice(Plant.C_HEALTH, Plant.C_HEALTH + 4), repeatable = false}
 	if ok and result.reason == "" and not inside.is_empty():
 		ok = session.restore_checkpoint(inside) and session.resume()
@@ -127,10 +130,11 @@ func _run() -> void:
 			and absf(incoming.frame.body[RB.RATE + 2] - board.frame.body[RB.RATE + 2]) > 1e-4)
 		var air := _fly({}, mode, 0.0)
 		var leaves := _fly(_world(false), mode, 0.0)
-		_check("%s crosses a 6 m crown and exits moving forward" % mode, leaves.ok and leaves.reason == ""
-			and leaves.body[RB.POS] > 3.0 and leaves.body[RB.VEL] > 0.0)
+		_check("%s crosses a 6 m crown and exits moving north (%.3f m, %.3f m/s)" % [mode,
+			leaves.body[RB.POS], leaves.north_speed], leaves.ok and leaves.reason == ""
+			and leaves.body[RB.POS] > 3.0 and leaves.north_speed > 0.0)
 		_check("%s loses speed to leaf drag while all props survive" % mode, air.ok
-			and air.body[RB.VEL] - leaves.body[RB.VEL] > 0.1
+			and air.north_speed - leaves.north_speed > 0.1
 			and leaves.health == PackedFloat64Array([1, 1, 1, 1]))
 		_check("%s restores a mid-crown checkpoint exactly" % mode, leaves.repeatable)
 		var wood := _fly(_world(true), mode, 0.0)

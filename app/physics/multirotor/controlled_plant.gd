@@ -990,14 +990,14 @@ func _disc_ground_hit(i: int, position: PackedFloat64Array, attitude: PackedFloa
 ## strike or obstacle touch (crash_reason). The graded law is a declared, deterministic gameplay law, not measured
 ## damage data: severity is the closing speed along the contact normal at the contact point; the frame and the props
 ## are told apart; most contacts bounce or wear the props and the flight goes on, and only the hardest impacts end it.
-const IMPACT_STRICT := "multirotor-strict-impact-v2"
+const IMPACT_STRICT := "multirotor-strict-impact-v3"
 ## v2 (DR-19e §19.4): the frame is a box and each spinning prop a thin disc (v1: spheres of the hub and prop radii,
 ## which reached 7.7 cm above and below the 4.9 cm body and 6.5 cm above and below each prop disc).
 ## v3 (DR-19f §20): grazes and material. Coulomb friction on obstacle and touchdown impulses; props chip only when a
 ## frame hit lands at their disc; prop wear and breaks follow the material and the blade's bite; an obstacle prop strike
 ## brakes and kicks like a ground strike; sliding contacts raise scrape events.
 ## v4 distinguishes porous vegetation from solids and sweeps the frame against individual solid proxies.
-const IMPACT_GRADED := "multirotor-graded-impact-v4"
+const IMPACT_GRADED := "multirotor-graded-impact-v5"
 ## A ground touchdown faster than this multiple of contacts.crash_speed ends the flight ("Hard impact").
 const HARD_IMPACT_FACTOR := 3.0
 ## Prop health lost per accepted tick while a spinning prop is in contact, at the hover shaft speed (scales with speed).

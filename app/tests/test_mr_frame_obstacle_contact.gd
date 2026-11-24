@@ -4,6 +4,7 @@ extends SceneTree
 const Sweep := preload("res://sim/multirotor/frame_obstacle_contact.gd")
 const Prop := preload("res://sim/multirotor/swept_prop_contact.gd")
 const Session := preload("res://sim/multirotor/session.gd")
+const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const World := preload("res://scenery/collision_world.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -36,6 +37,9 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var zero := M.v3(0, 0, 0)
+	var initial_q := PackedFloat64Array([1.0 + 4.5e-13, 0, 0, 0])
+	var final_q := PackedFloat64Array([sqrt(1.0 - 9e-7 * 9e-7), 9e-7, 0, 0])
+	_check("near-unit endpoints still bound a small rotation", Sweep._angular_bound(initial_q, final_q) >= 2.0 * asin(9e-7))
 	var half := M.v3(0.10, 0.08, 0.03)
 	var solids: Array[Dictionary] = []
 	# Two pencil-thin posts and the nearer slab. A 10 m sweep crosses multiple index cells; neither midpoint nor
@@ -138,6 +142,61 @@ func _prop_sweep() -> void:
 	hit = cast.call(_pose(0, 0, 0, -PI/3.0), _pose(0, 0, 0, PI/3.0), M.v3(0.11, 0, 0), radius, thickness)
 	_check("an off-centre spinning prop sweeps an arc around a stationary CG", hit.get("obstacle_id") == "pole"
 		and hit.fraction > 0.1 and hit.fraction < 0.5)
+	# A lateral offset makes the true circular rim arrive after the enclosing square.
+	solids.clear()
+	World._add_capsule(solids, "stem", "tree_trunk", "trunk", "hard_terminal", 0, 0, 0, 0.06, 0.5)
+	cast = Prop.query(Session.obstacle_index({proxies = solids}, 0.3), [])
+	var begin := _pose(-0.4, 0.075, 0.0, 0.36)
+	var finish := _pose(0.4, 0.075, 0.02, 0.36)
+	# The 0.125 m sum of radii gives a 0.100 m horizontal offset at first touch.
+	hit = cast.call(begin, finish, hub, radius, thickness)
+	_check("offset blade hits the round side at its analytic fraction", hit.get("obstacle_id") == "stem"
+		and absf(hit.fraction - 0.375) < 1e-10 and M.norm(M.sub(hit.normal, M.v3(-0.8, 0.6, 0))) < 1e-10)
+	if not hit.is_empty():
+		var rim := M.q_rotate(RB._att(begin), hit.point_body)
+		_check("side witness is on the prop rim toward the stem", M.norm(M.add(rim, M.scale(hit.normal, radius))) < 1e-10)
+	_check("frame cutoff before the circular rim wins", (cast.call(begin, finish, hub, radius, thickness, 0.374) as Dictionary).is_empty())
+	_check("parallel flight just outside the round rim misses", (cast.call(_pose(-0.4, 0.126),
+		_pose(0.4, 0.126), hub, radius, thickness) as Dictionary).is_empty())
+	hit = cast.call(_pose(-0.4, 0.125), _pose(0.4, 0.125), hub, radius, thickness)
+	_check("the circular rim finds a tangent stem", not hit.is_empty() and absf(hit.fraction - 0.5) < 1e-7)
+	_check("the shaft side does not extend past its rounded cap", (cast.call(_pose(-0.4, 0.075, 0.58),
+		_pose(0.4, 0.075, 0.58), hub, radius, thickness) as Dictionary).is_empty())
+	var pitch0 := deg_to_rad(20.0)
+	var turn := deg_to_rad(18.0)
+	begin = RB.make_state(M.v3(-0.4, 0, 0), hub, M.q_from_euler(0, pitch0, 0), hub)
+	finish = RB.make_state(M.v3(0.4, 0, 0), hub, M.q_from_euler(0, pitch0 + turn, 0), hub)
+	hit = cast.call(begin, finish, hub, radius, thickness)
+	# The frontmost point of the tilted, finite blade has reach r*cos(pitch) + h*sin(pitch).
+	var lo := 0.0
+	var hi := 1.0
+	for _i in 50:
+		var mid := (lo + hi) * 0.5
+		var pitch := pitch0 + 2.0 * atan2(mid * sin(turn * 0.5), 1.0 - mid + mid * cos(turn * 0.5))
+		if -0.4 + 0.8 * mid + radius * cos(pitch) + thickness * sin(pitch) >= -0.06:
+			hi = mid
+		else:
+			lo = mid
+	_check("changing blade pitch finds the independently calculated side contact",
+		not hit.is_empty() and absf(hit.fraction - hi) < 5e-6 and hit.normal[0] < -0.99999)
+	var nearest := Prop._shaft_to_disc(M.v3(0.16, 0, 0.05), M.v3(0.6, 0, 0.8), 0.02, radius, thickness)
+	var cap_delta := M.v3(radius - 0.148, 0, thickness - 0.034)
+	_check("inclined shaft endpoint finds the finite blade edge",
+		absf(nearest.distance - M.norm(cap_delta)) < 1e-12 and M.norm(M.sub(nearest.point, M.v3(radius, 0, thickness))) < 1e-12)
+	# Both components of the shaft point away from the rim, so its nearer cap is the first to touch.
+	solids.clear()
+	World._add_capsule(solids, "twig", "tree_trunk", "branch", "hard_terminal", 0.16, 0, 0.05, 0.04, 0.02)
+	var twig: Dictionary = solids[0]
+	twig.axis_ned = M.v3(0.6, 0, 0.8)
+	twig.bounds_north_min = 0.16 - 0.012 - 0.04
+	twig.bounds_north_max = 0.16 + 0.012 + 0.04
+	cast = Prop.query(Session.obstacle_index({proxies = solids}, 0.3), [])
+	expected = (0.148 - radius - sqrt(0.04 * 0.04 - 0.031 * 0.031)) / 0.10
+	hit = cast.call(_pose(0, 0), _pose(0.10, 0), hub, radius, thickness)
+	_check("oblique twig cap reaches the blade rim at the spherical-cap solution",
+		hit.get("obstacle_id") == "twig" and absf(hit.fraction - expected) < 3e-5)
+	_check("a previous event clips the oblique cap approach", (cast.call(_pose(0, 0), _pose(0.10, 0),
+		hub, radius, thickness, expected - 1e-3) as Dictionary).is_empty())
 
 
 ## Run identical 240 Hz ticks with and without the shared rejection, including the accepted event payloads.
@@ -246,7 +305,11 @@ func _session_prop(mode: String) -> void:
 	session.sim.events_located.connect(func(_tick: int, events: Array[Dictionary]) -> void: accepted.append_array(events))
 	var tick_ok := Fixtures.reset(session.sim, frame, neutral).is_empty() and session.resume() and session.tick_once(neutral)
 	_check("%s dive accepts one tick" % mode, tick_ok)
-	_check("%s quad stops at prop-only obstacle before midpoint" % mode, absf(float(session.sim.state[RB.POS + 2]) + 9.951) < 0.002)
+	var contact_down := -9.946 - 0.002 - Plant.PROP_DISC_HALF_THICKNESS_M
+	var expected_down := contact_down - SceneryCollision.CONTACT_SEPARATION_M if mode == "graded" else contact_down
+	var accepted_down := float(session.sim.state[RB.POS + 2])
+	_check("%s prop strike resolves at %.4f m down (expected %.4f)" % [mode, accepted_down, expected_down],
+		absf(accepted_down - expected_down) < 0.002)
 	if mode == "graded":
 		var health: PackedFloat64Array = session.sim.continuous.slice(Plant.C_HEALTH, Plant.C_HEALTH + 4)
 		_check("graded crossing breaks only the touched prop", session.crash.is_empty() and health == PackedFloat64Array([0, 1, 1, 1]))

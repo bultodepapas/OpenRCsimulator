@@ -454,3 +454,21 @@ The [activity test](../../app/tests/test_airship_activity.gd) covers the Home ha
 Ten regression scripts passed on Linux. The eight blimp and Home checks were supplemented by the [Home layout](../../app/tests/test_ui_home_layout.gd) and [screen navigation](../../app/tests/test_ui_screen_stack.gd) suites. The final activity run passed all 20 checks, including cancelling during landscape construction. The presentation check initially failed because the default test bundle omitted the exporter's manifest. Repeating it on the same runtime files with `assets/aircraft/rc-blimp-5m/source-manifest.json` included passed all 74 checks, including the three GLB hashes.
 
 The final pilot check uses a physical transmitter. Start with displaced yaw and high throttle, lower throttle, center yaw, fly from each start, disconnect and reconnect, then return Home. Record the device and profile, launch mode and result. Compare contact and handling with measured blimp data under BL-12. Repeat display and frame-time qualification on each target host under BL-17.
+
+### Instrument readout cost
+
+The HUD used to request detailed forces and contacts on every drawn frame and format nine instrument lines behind the pause menu. It now samples the visible instruments at 12 Hz on a monotonic clock. Resume and a change of view refresh the readout on the next frame. Status messages keep their own real-time deadlines. Cameras and animation still update per frame, and the session still accepts 240 physics steps per simulated second.
+
+On 23 November 2026, a Windows headless comparison ran both HUDs in the same Godot 4.8-beta2 process on a Ryzen 9 5900X. Each condition used four alternating pairs, 30 warm-up frames and 180 measured frames per run, paced at 60 Hz. The timer covered the activity's presentation callback. Physics integration ran outside it, with the same commands and four accepted ticks per active frame. World rendering and audio were disabled.
+
+| Condition | Before (µs/frame) | After (µs/frame) | CPU time saved | Detailed evaluations before → after (720 frames) |
+| --- | ---: | ---: | ---: | ---: |
+| Resting on the Club runway | 747 | 374 | 49.9% | 720 → 145 |
+| Powered flight from a 6 m release | 639 | 362 | 43.4% | 720 → 143 |
+| Pause menu open | 455 | 315 | 30.9% | 0 → 0 |
+
+Times are the medians of four run means. Pause already reused its last detailed physics result. The saving there comes from skipping the remaining telemetry work and hidden text formatting. Each paired run matched the trajectory and continuous-state digest at every accepted tick. The earlier takeoff also replayed byte-for-byte for all 1,273 ticks with the same blimp session identity. Its repository-wide solver fingerprint differed because multirotor and race sources had changed since recording.
+
+The harness reached a scheduled frame at least one period late on 8 baseline frames and 22 candidate frames out of 2,160 per version. Those deadlines include host scheduling and work outside the timed callback. Player-visible FPS and frame pacing require a rendered run. The local measurements and individual runs are in `tmp/blimp-efficiency-20261123/measurement.json`.
+
+All 119 checks passed on Linux with the optimized HUD, including 80 for presentation, 20 for the Home-to-flight route and 19 for the Workshop. The presentation test counts telemetry reads at a simulated 60 frames per second and checks the first frame after Resume, view changes, hidden text and notice expiry. The Home test covers cancellation during loading, launch on wheels, advancing ticks and returning with the selected paint. The checks used the blimp and Club assets and omitted unrelated optional liveries and skin-kit archives.

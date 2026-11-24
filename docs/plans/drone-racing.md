@@ -682,7 +682,17 @@ Across the stock 1,680 treeline placements the five profiles produce 37,522 wood
 
 The FPV projection reuses each placement's bearing for its stem sections, branch endpoints and crown centre. The stock field has 60,310 such points and needs 1,680 sine/cosine pairs. The frame and four eligible props share one conservative solid rejection per accepted path. Foliage still receives its own exposure check.
 
+The [contact regression](../../app/tests/test_mr_frame_obstacle_contact.gd) compares accepted state and events with the rejection enabled and disabled. On clear paths with four spinning props it removes five shape sweeps. The [CPU benchmark](../../app/tests/bench_mr_forest.gd) times the same two paths in alternating order over Club Field, above a grove and approaching a trunk. It reports median and p95 of 40 eight-call batch averages.
+
+With Godot 4.8 beta 2 (cafc17a19) on Windows and a Ryzen 9 5900X, the final scenery callback at 40 m/s took 9.00 µs p95 over open ground and 17.25 µs above the grove. Disabling the shared rejection in the same run gave 70.00 and 106.75 µs. On a level approach to the trunk, p95 fell from 47.018 ms before the wood-contact change to 0.538 ms with the new sweep. With pitch changing from 20° to 21° during the tick, the previous rim subdivision took 61.591 ms p95 and the new sweep took 1.251 ms. The timings cover the GDScript scenery callback only.
+
+A translating prop whose spin axis is parallel to a stem uses the exact circle intersection when the entire blade stays alongside its straight shaft. For a tilted or rotating blade, the closest shaft point and its projection onto the finite prop disc supply a contact witness. A separating plane bounds the time that can pass before the two shapes meet. Initial overlaps and unresolved grazes use the subdivided rim sweep. These paths refine the contact time within the previous rim approximation. Strict impact v3 and graded impact v5 give the revised law distinct flight and race record identities.
+
 Close-tree buffers are sized at field preparation. The outer visibility square fits inside a two-by-two block of cells whose width slightly exceeds its diameter. The maximum population of any such block bounds the slots needed by each species, including in a dense custom field. Summed once per stock species, the capacities are 140, 188, 210 and 256 slots from low through extreme, down from 1,680 at every level. Each mesh part has its own buffer. [FPV tree renderer](../../app/render/fpv_field_trees.gd)
+
+On 23 November 2026 the tree transition test passed on Windows with an RTX 3090 and OpenGL at 1920×1080. In its 192×192 silhouette probe the close tree covered 1,435 pixels. Hiding that mesh at the same camera position left zero tree pixels. Moving outside the close range drew 1,538 pixels from the distant card.
+
+The final Linux headless checks passed for swept geometry (79 checks), forest flight, graded crashes (56), flight logs (31), race replay (8) and fast-path equivalence (17). In both crash modes the coasting fixture began at 22 m/s, crossed a 6 m crown and was still flying at 13.434 m/s after one second. The separate Linux OpenGL run timed out before the GPU lane identified a device.
 
 ### Remaining acceptance
 
