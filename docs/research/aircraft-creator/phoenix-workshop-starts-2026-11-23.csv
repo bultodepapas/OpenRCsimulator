@@ -1,0 +1,115 @@
+model,family,stage,compiled,airborne,hand_launch,runway,proposed_scaled,proposed_planform_fitted,reason,airborne_reason,hand_launch_reason,runway_reason
+A10warthogDuctedFan,fixedWing,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+A10warthogTurbine,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+A6MZero,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+acromaster,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+adrenaline,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+aerobaticSlopeSoarer,gliders,starts_checked,yes,yes,no,no,yes,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+B17,fixedWing,starts_checked,yes,no,no,no,yes,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+bearcat,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+beaver,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+beaverFloat,fixedWing,starts_checked,yes,yes,yes,no,yes,no,,,,runway start needs landing gear with stiction data
+beech58,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+berievBE103,fixedWing,starts_checked,yes,yes,no,no,no,yes,,,hand launch is offered to airplanes without landing gear,runway start: engine-off support pose unresolved: contact 0 is outside compression/support/anchor friction bounds
+cap232,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+capiche140,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+corsair,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+deucesWild,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+easystar,fixedWing,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+edge540E,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+EFLCarbonZYak543X,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+eflite4site,fixedWing,starts_checked,yes,yes,yes,no,no,yes,,,,runway start needs landing gear with stiction data
+eflite4siteMicro,fixedWing,starts_checked,yes,no,no,no,yes,yes,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+efliteApprentice15e,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+efliteApprenticeS15e,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+efliteCarbonZCub,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+efliteF4Phantom,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+efliteGrasshopper,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+efliteStearman,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+EFLP_47D,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+EFLRareBear,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+enticement,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+extra,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+F117flyingWing,fixedWing,starts_checked,yes,yes,no,no,yes,yes,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+fieselerStorch,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+flyingWing,fixedWing,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+fokkerDR1,fixedWing,starts_checked,yes,yes,yes,no,no,yes,,,,runway start needs landing gear with stiction data
+funtana90,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+gambler40,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+geeBeeZ,fixedWing,starts_checked,yes,no,no,no,no,no,,"trimmed starting condition is invalid: level trim failed at 16.65 m/s: needs 10.8° of elevator, more than the 10.0° throw","trimmed starting condition is invalid: level trim failed at 16.65 m/s: needs 10.8° of elevator, more than the 10.0° throw","trimmed starting condition is invalid: level trim failed at 16.65 m/s: needs 10.8° of elevator, more than the 10.0° throw"
+grummanGoose,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+GTX,fixedWing,starts_checked,yes,no,no,no,yes,no,,trimmed starting condition is invalid: requested throttle was not bracketed by the maximum speed 40.07 m/s,trimmed starting condition is invalid: requested throttle was not bracketed by the maximum speed 40.07 m/s,trimmed starting condition is invalid: requested throttle was not bracketed by the maximum speed 40.07 m/s
+H9Inverza62,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+H9pawnee33,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+H9sukhoi31m,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+hawkTrainer,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+HBZdeltaRay,fixedWing,compile,no,,,,no,yes,The flight loader refused the compiled aircraft: propulsion.propeller.thrust_line_offset: a single_pusher propeller must sit aft of the CG,,,
+HBZSportsmanSPlus,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+HBZstratos,fixedWing,compile,no,,,,no,no,This value must be between -2.0 and 0.0.,,,
+HBZsuperCubFloat,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+HBZsuperCubLP,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+HBZsuperCubS,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+highWingTrainer,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+hypeUCanFly,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+iconA5,fixedWing,starts_checked,yes,yes,no,no,no,no,,,hand launch is offered to airplanes without landing gear,runway start: engine-off support pose unresolved: contact 2 is outside compression/support/anchor friction bounds
+iconA5noGear,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+ilyushinIL2,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+integral,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+katanaMini,fixedWing,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+lakeLA4,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+lilBanchee,fixedWing,starts_checked,yes,no,no,no,no,yes,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+lowWingTrainer,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+max3D,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+miniUltimate,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+miniYak,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+multiplexFuncub,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+multiplexFunjet,fixedWing,starts_checked,yes,yes,no,no,yes,yes,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+multiplexMentor,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+multiplexMinimag,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+NANshadow,gliders,starts_checked,yes,yes,no,no,yes,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+P51mustang,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PAaddiction,fixedWing,starts_checked,yes,yes,no,yes,no,yes,,,hand launch is offered to airplanes without landing gear,
+parkzoneBF109,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+parkzoneHabu,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+parkzoneHabu2,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+parkzoneRadian,gliders,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+parkzoneT28,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+piperCub,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+piperCubFloat,fixedWing,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+pittsSpecial,fixedWing,starts_checked,yes,no,no,no,yes,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+PKZArtizan,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PKZcorsair,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PKZP47,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PKZSE5A,fixedWing,starts_checked,yes,no,no,no,no,yes,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+PKZspitfire,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PKZstinson,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PKZSukhoiSU29MM,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+PkzUmSpitfire,fixedWing,starts_checked,yes,no,no,no,yes,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+PKZVisionaire,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+polikarpovI15,fixedWing,starts_checked,yes,no,no,no,no,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+reflex,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+RV8,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+sbach32Thunderbolt,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+shuriken,fixedWing,starts_checked,yes,no,no,no,yes,no,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+simpropLiftoffXS,gliders,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+slopeSoarer,gliders,starts_checked,yes,yes,no,no,yes,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+sopwithCamel,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+spitfire,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+sukhoi22,fixedWing,starts_checked,yes,yes,no,no,no,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+sukhoi26MX,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+superDimona,gliders,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+theBeast,fixedWing,starts_checked,yes,no,no,no,yes,yes,,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle,trimmed starting condition is invalid: reference-speed trim already requires more than the requested throttle
+thermalSoarer,gliders,starts_checked,yes,yes,no,no,yes,no,,,"A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start.",runway start needs landing gear with stiction data
+tigerMoth,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+toledoSpecial,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+tutor40,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+tutor40towplane,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+typhoonEDF,fixedWing,compile,no,,,,no,yes,The tail surfaces must sit behind the wing's quarter chord.,,,
+typhoonEDF_handlaunched,fixedWing,compile,no,,,,no,yes,The tail surfaces must sit behind the wing's quarter chord.,,,
+ultimateBiplane,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,
+wot4classic,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+yak30,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+yak54,fixedWing,starts_checked,yes,yes,no,yes,yes,no,,,hand launch is offered to airplanes without landing gear,
+yak55,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+zivkoEdge,fixedWing,starts_checked,yes,yes,yes,no,no,no,,,,runway start needs landing gear with stiction data
+ZNalliance,fixedWing,starts_checked,yes,yes,no,yes,no,no,,,hand launch is offered to airplanes without landing gear,

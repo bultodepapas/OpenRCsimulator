@@ -32,7 +32,7 @@ Little-endian and **unaligned**. Strings are fixed 28-byte fields written from `
 
 The geometry is one unindexed triangle list. Sub-mesh ranges are contiguous and end at the vertex count. Node matrices are identity in the corpus: vertices are already in model space. Node names carry roles: `__col*` collision proxies, other `__*` helpers (empty hinge/mass helpers included), the rest visual parts named after the aircraft parts (`left_aileron`, `elevator`, `rudder`, `propBlades`, …).
 
-**Frame and units.** GEO space equals glTF: +X left, +Y up, +Z forward; triangles are counter-clockwise and agree with the stored normals in every checked triangle. Visual span is normalized to about 100 units. The definition's `Physical.Size` sets the metric scale: metres per unit = `Size / 100`. The Easystar check: GEO span 101.56 units × 1.507/100 = 1.531 m, equal to twice its main-wing `Length` (2 × 0.7656 m).
+**Frame and units.** GEO uses the glTF frame (+X left, +Y up, +Z forward). The initial investigation reported agreement between triangle winding and stored normals. The [23 November recount](phoenix-import-audit-2026-11-23.md#installed-aircraft-and-flight-scripts) found exceptions. Visual span is normalized to about 100 units. Metres per unit equals `Physical.Size / 100`. For the EasyStar, 101.56 GEO units × 1.507/100 gives 1.531 m, equal to twice the main wing's `Length` (2 × 0.7656 m).
 
 ### 3.2 Textures
 
@@ -82,7 +82,7 @@ Engine sounds are plain-text `.pxe` definitions in `resources/engines/` mapping 
 | Check | Result |
 | --- | --- |
 | GEO parse with exact byte consumption | 220 of 221 files under `objects/`; the refusal is `helicopters/Electric/KDSAgile55/output.geo`, a stray file no definition references |
-| Winding versus stored normals | Agreement in every non-degenerate triangle of every accepted file |
+| Winding versus stored normals | The original all-triangle agreement claim was superseded by a [per-node recount](phoenix-import-audit-2026-11-23.md#installed-aircraft-and-flight-scripts) on the installed corpus. |
 | Encoded `.mod` decode + data evaluation | 220 of 220, no diagnostics |
 | Encoded 6.0 `.sim` scripts | 64 of 64 parse; 11 are straight-line, the others stop at function calls as intended |
 | 3-channel textures | 208 of 220 base-name textures decoded; the remainder use other names declared by GEO materials or 4-channel layouts |

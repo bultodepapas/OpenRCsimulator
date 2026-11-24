@@ -4,6 +4,7 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 
 | Record | Content |
 | --- | --- |
+| [2026-11-23 Phoenix aircraft audit](phoenix-import-audit-2026-11-23.md) | Stock 5.5.k source census and flight references, seven downloaded models, GLB validation and [Windows Workshop start decisions for 114 aircraft](phoenix-workshop-starts-2026-11-23.csv). |
 | [2026-11-17 import closeout audit](import-closeout-2026-11-17/README.md) | Original `2a3cf04d` and separate Flight Simulator plan audit; seven re-downloaded archives, 18/26 visual conversions, 15 focused script passes and original CI preflight blocker. [Verification and missing tests](import-closeout-2026-11-17/verification.md); [closeout order](import-closeout-2026-11-17/closeout-plan.md). |
 | [Import follow-up 02](import-closeout-2026-11-17/followup-02/README.md) | `08f94826`: upstream UID repair preserved; invalid-inventory draft loss, final-model cancellation and semantic-pair observations; checked 26-model lexical ledger; source-traced runtime defects. [Implementation seams and pseudocode](import-closeout-2026-11-17/implementation-guide.md). |
 | [Revision 6 specification](2026-11-07-creator-specification-rev6.md) | External source specification, 2026-11-07, written against `997e2127` and never run against the application. Kept unchanged as the detailed reference for record, storage and UI contracts. The plan supersedes it where they differ. Its companion pack and historical probe receipts (H01, H02) were never in this repository. |
