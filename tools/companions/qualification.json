@@ -8,8 +8,8 @@
     "app/failures"
   ],
   "accepted": {
-    "solver_sha256": "290d56277cadaa29c5449ef2734b05ee5a8610ef2c90486d9ac9ad6fe8ba58c4",
-    "rev": "da900ddc5e228e768b9ff6892e502b6077cfe2c5"
+    "solver_sha256": "cd34e615e23f882b41b8ebd11b0293c2bbfbc66e556bc29926d16df6bf9a8757",
+    "rev": "9e67fb1d6686e74fb1525bb1fe2352730a8c75ba"
   },
   "tapes": [
     "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-ai.orfl.gz",
