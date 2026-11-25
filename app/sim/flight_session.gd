@@ -3494,7 +3494,8 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 		return candidate
 	var scenery_hit: SceneryCollision.Event = null
 	if has_world:
-		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction,
+			_native_contact_reach(previous, candidate))
 		if not sampled.ok:
 			return PackedFloat64Array()
 		scenery_hit = sampled.event
@@ -3563,20 +3564,26 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 		_last_scenery_event = null
 		_last_lake_event = null
 		return candidate
+	var reach: int = _native_contact_reach(previous, candidate)
 	var scenery_hit: SceneryCollision.Event = null
 	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
-		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction, reach)
 		if not sampled.ok:
 			return PackedFloat64Array()
 		scenery_hit = sampled.event
 	var lake_hit: LakeCollision.WaterEvent
 	if mass_at_fraction.is_valid():
-		var sampled_lake: Dictionary = LakeCollision.first_hit_sampled(_lake, previous, candidate,
-			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), mass_at_fraction,
-			soft_hull_contacts, _prop_disc, _hull_contact)
-		if not sampled_lake.ok:
-			return PackedFloat64Array()
-		lake_hit = sampled_lake.event
+		if reach & REACH_LAKE_CLEAR and _lake_sweep_inputs_valid(previous, candidate, next_tick):
+			lake_hit = null # NK-5d: no hull, gear or propeller probe reaches the highest possible water this tick
+		else:
+			var sampled_lake: Dictionary = LakeCollision.first_hit_sampled(_lake, previous, candidate,
+				aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), mass_at_fraction,
+				soft_hull_contacts, _prop_disc, _hull_contact)
+			if not sampled_lake.ok:
+				return PackedFloat64Array()
+			lake_hit = sampled_lake.event
+	elif reach & REACH_LAKE_CLEAR:
+		lake_hit = null # NK-5d: the unsampled sweep returns null for this proof and for invalid inputs alike
 	else:
 		lake_hit = LakeCollision.first_hit(_lake, previous, candidate,
 			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), sim.mass,
@@ -3689,12 +3696,69 @@ func _soft_ground_owns_terminal(previous: PackedFloat64Array, contact_state: Pac
 
 
 func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
-		next_tick: int, mass_at_fraction: Callable) -> Dictionary:
+		next_tick: int, mass_at_fraction: Callable, reach: int = 0) -> Dictionary:
+	if reach & REACH_SCENERY_CLEAR:
+		# NK-5d: no collision proxy meets a box that contains every box this sweep tests, so it finds no hit.
+		# The unsampled sweep also returns no event for invalid inputs; the sampled one refuses them below.
+		if not mass_at_fraction.is_valid():
+			return {ok = true, event = null}
+		var hull: PackedFloat64Array = aircraft.model.crash_hull
+		if SceneryCollision._state_is_valid(previous) and SceneryCollision._state_is_valid(candidate) \
+				and not hull.is_empty() and hull.size() % 3 == 0 and SceneryCollision._packed_finite(hull) \
+				and SceneryCollision._world_is_valid(_collision_world):
+			return {ok = true, event = null, reason = ""}
 	if mass_at_fraction.is_valid():
 		return SceneryCollision.first_hit_sampled(previous, candidate, aircraft.model.crash_hull,
 			_collision_world, next_tick, mass_at_fraction, _scenery_damage)
 	return {ok = true, event = SceneryCollision.first_hit(previous, candidate, aircraft.model.crash_hull,
 		_collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)}
+
+
+## NK-5d: contact reach proofs from the native stage for one accepted tick. REACH_SCENERY_CLEAR: no collision
+## proxy lies within reach of any swept probe; REACH_LAKE_CLEAR: no probe reaches the highest possible water. A proof
+## only skips a sweep whose "no hit" result it implies; 0 (no native stage, or no proof) runs every sweep.
+const REACH_SCENERY_CLEAR := 1
+const REACH_LAKE_CLEAR := 2
+## Test hook: false runs every sweep, for equivalence checks.
+var native_contact_reach_enabled := true
+
+
+func _native_contact_reach(previous: PackedFloat64Array, candidate: PackedFloat64Array) -> int:
+	if not native_contact_reach_enabled or _native_stage == null or not aircraft.get("ok", false):
+		return 0
+	var lake_threshold: float = NAN
+	if not _lake.is_empty():
+		var level: Variant = _lake.get("water_level_down_m")
+		var waves: Variant = _lake.get("wave_bounds")
+		if typeof(level) in [TYPE_FLOAT, TYPE_INT] and waves is Dictionary \
+				and typeof(waves.get("max_amplitude_m")) in [TYPE_FLOAT, TYPE_INT]:
+			# LakeCollision's own reject threshold: the highest possible water "down" less its contact epsilon.
+			lake_threshold = minf(0.0, float(level) - float(waves.max_amplitude_m)) - LakeSurface.CONTACT_EPSILON_M
+	return _native_stage.contact_reach(self, previous, candidate, aircraft.model.crash_hull, _contact_probe_reach(),
+		lake_threshold)
+
+
+## The farthest gear or propeller probe that the lake sweep adds to the hull, measured as it measures them.
+func _contact_probe_reach() -> float:
+	var reach := 0.0
+	var contacts: Variant = current_landing_gear().get("contacts", [])
+	if contacts is Array:
+		for contact: Variant in contacts:
+			var point: PackedFloat64Array = LakeCollision._gear_probe_point(contact)
+			if not point.is_empty():
+				reach = maxf(reach, M.norm(point))
+	if LakeCollision._prop_disc_is_valid(_prop_disc):
+		reach = maxf(reach, M.norm(_prop_disc.hub) + float(_prop_disc.radius))
+	return reach
+
+
+## The sampled lake sweep's own input checks (its sampler is valid here); it refuses the tick when one fails.
+func _lake_sweep_inputs_valid(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> bool:
+	var hull: PackedFloat64Array = aircraft.model.crash_hull
+	var dt: float = sim.dt()
+	return LakeSurface.is_valid_definition(_lake) and SceneryCollision._state_is_valid(previous) \
+		and SceneryCollision._state_is_valid(candidate) and not hull.is_empty() and hull.size() % 3 == 0 \
+		and SceneryCollision._packed_finite(hull) and is_finite(dt) and dt > 0.0 and next_tick >= 1
 
 
 func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) -> Dictionary:

@@ -40,6 +40,7 @@
 #include "nk_configuration_guard.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
+#include "nk_contact_reach.hpp"
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/classes/ref.hpp>
 
@@ -925,6 +926,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
+	nk::ContactReach contact_reach_; // NK-5d: proxy bounds of the session's collision world
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
 	// The binding converts Godot arrays once per call, into storage sized at
@@ -1087,6 +1089,10 @@ protected:
 			&OpenRCNativeKernel::aero_loads);
 		godot::ClassDB::bind_method(D_METHOD("stage_wing_wake", "s", "air", "d", "ground_up"),
 			&OpenRCNativeKernel::stage_wing_wake);
+		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
+		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
+		godot::ClassDB::bind_method(D_METHOD("contact_reach", "previous", "candidate", "hull", "extra_reach", "lake_threshold"),
+			&OpenRCNativeKernel::contact_reach);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
 		godot::ClassDB::bind_method(D_METHOD("float64_transport", "scalar", "values"), &OpenRCNativeKernel::float64_transport);
 		godot::ClassDB::bind_method(D_METHOD("math_control_state"), &OpenRCNativeKernel::math_control_state);
@@ -1502,6 +1508,38 @@ public:
 	// AeroModel (decode_aero, as the component oracle's), the caller's own air_data(s) values [v_air x, y, z, V, alpha,
 	// beta, qbar] (datum or spatial; the reference reads only v_air) and _deflections(aux). Same arithmetic as
 	// aero_component case 6. NaN when the stage or an input is unusable: the caller then evaluates the reference.
+	// NK-5d: copy the bounds of the session's collision-world proxies (six numbers each) for contact_reach.
+	// Anything other than numeric bounds refuses and clears, so contact_reach then proves nothing for scenery.
+	bool prepare_reach_world(const godot::Array &proxies) {
+		static const godot::StringName keys[6] = {"bounds_north_min", "bounds_north_max", "bounds_east_min",
+			"bounds_east_max", "bounds_down_min", "bounds_down_max"};
+		contact_reach_.clear();
+		const int64_t count = proxies.size();
+		if (count <= 0 || count > nk::ContactReach::kMaxProxies) return false;
+		std::vector<double> bounds;
+		bounds.reserve(static_cast<size_t>(count) * 6);
+		for (int64_t i = 0; i < count; ++i) {
+			const godot::Variant item = proxies[i];
+			if (item.get_type() != godot::Variant::DICTIONARY) return false;
+			const godot::Dictionary proxy = item;
+			for (const godot::StringName &key : keys) {
+				const godot::Variant value = proxy.get(key, godot::Variant());
+				if (value.get_type() != godot::Variant::FLOAT && value.get_type() != godot::Variant::INT) return false;
+				bounds.push_back(static_cast<double>(value));
+			}
+		}
+		return contact_reach_.prepare(bounds);
+	}
+
+	void clear_reach_world() { contact_reach_.clear(); }
+
+	// NK-5d: bit 1 = no collision proxy can be reached this tick, bit 2 = the lake cannot be reached. 0 = no proof.
+	int64_t contact_reach(const PackedFloat64Array &previous, const PackedFloat64Array &candidate,
+			const PackedFloat64Array &hull, double extra_reach, double lake_threshold) const {
+		if (previous.size() != kStateSize || candidate.size() != kStateSize || hull.is_empty()) return 0;
+		return contact_reach_.reach_clear(previous.ptr(), candidate.ptr(), hull.ptr(), hull.size(), extra_reach, lake_threshold);
+	}
+
 	double stage_wing_wake(const PackedFloat64Array &s, const PackedFloat64Array &air, const PackedFloat64Array &d,
 			double ground_up) {
 		nk::Deflections deflections;

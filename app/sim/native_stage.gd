@@ -122,6 +122,11 @@ var _body_only := false
 var _installed_model: RefCounted = null
 ## NK-5a: the loaded library binds stage_wing_wake (checked once per installation, not per tick).
 var _wing_wake_bound := false
+## NK-5d: the collision world (and its proxies array) whose bounds the native contact reach holds.
+var _contact_reach_bound := false
+var _reach_world: Dictionary = {}
+var _reach_proxies: Array = []
+var _reach_size := -1
 var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
@@ -400,6 +405,9 @@ func install(session: Node) -> Callable:
 		session._runway_field = _macos_domain_context.field
 	_installed_model = model
 	_wing_wake_bound = _native.has_method("stage_wing_wake")
+	_contact_reach_bound = _native.has_method("contact_reach")
+	if _contact_reach_bound and _family != "helicopter":
+		_prepare_reach_world(session._collision_world) # at installation, not on the first flying tick
 	_installed = true
 	return _reference_stage
 
@@ -418,6 +426,10 @@ func uninstall(session: Node) -> Callable:
 	_installed = false
 	_prepared = false
 	_installed_model = null
+	_contact_reach_bound = false
+	_reach_world = {}
+	_reach_proxies = []
+	_reach_size = -1
 	reason = "uninstalled"
 	return previous
 
@@ -450,6 +462,28 @@ func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up:
 	return _native.stage_wing_wake(s, PackedFloat64Array([v[0], v[1], v[2], float(air.get("V", NAN)), float(air.get("alpha", NAN)),
 		float(air.get("beta", NAN)), float(air.get("qbar", NAN))]),
 		PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), ground_up)
+
+
+## NK-5d: contact reach proofs for the accepted tick (FlightSession.REACH_* bits); 0 proves nothing. The proxy
+## bounds follow the session's collision world by identity; set_collision_world installs a new private copy.
+func contact_reach(session: Node, previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		hull: PackedFloat64Array, extra_reach: float, lake_threshold: float) -> int:
+	if not _installed or not _contact_reach_bound or _native == null: return 0
+	var world: Dictionary = session._collision_world
+	var proxies: Variant = world.get("proxies", [])
+	if not is_same(world, _reach_world) or not is_same(proxies, _reach_proxies) \
+			or not proxies is Array or (proxies as Array).size() != _reach_size:
+		_prepare_reach_world(world)
+	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold))
+
+
+func _prepare_reach_world(world: Dictionary) -> void:
+	_reach_world = world
+	var proxies: Variant = world.get("proxies", [])
+	_reach_proxies = proxies if proxies is Array else []
+	_reach_size = _reach_proxies.size()
+	if _reach_proxies.is_empty() or not bool(_native.prepare_reach_world(_reach_proxies)):
+		_native.clear_reach_world()
 
 
 ## prepare_stage() input: committed model, gear, surface table, lake, prepared hull, layout, density and

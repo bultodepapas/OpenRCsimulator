@@ -530,6 +530,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - The configuration guard primes its watches at preparation (parent containers, `StringName` keys for untyped
   String keys, raw expected scalars) and keeps the same accept/refuse rules per tick
   ([NK-5c](../../docs/research/native-kernel/NK-5c/README.md)).
+- `prepare_reach_world(proxies)` and `contact_reach(previous, candidate, hull, extra_reach, lake_threshold)` (NK-5d)
+  prove, conservatively, that no collision proxy or lake water is reachable during an accepted tick; the session then
+  skips only that sweep ([evidence](../../docs/research/native-kernel/NK-5d/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
