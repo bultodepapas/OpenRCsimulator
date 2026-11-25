@@ -523,6 +523,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   stage's `AeroModel` for the session pre-step's tail downwash lag. `flight_session.gd` calls it only inside
   `_kernel_pre_step` after the configuration guard passed, and evaluates the reference on NaN
   ([evidence](../../docs/research/native-kernel/NK-5a/README.md)).
+- A finite-liquid gas stage's accepted-endpoint substep preview (`stage_context`) also carries
+  `source_off_rpm_rate` (NK-5b), the source-off shaft rate of the same trial and wrench, published only when finite.
+  `_substeps_joint` uses it instead of rebuilding `LiquidFlight.properties` and `_coupled_response`; the reference
+  stage publishes the same key ([evidence](../../docs/research/native-kernel/NK-5b/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.

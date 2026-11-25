@@ -105,6 +105,8 @@ struct StageResult {
 	SpatialPointContext preview_point;
 	std::array<R, 6> pre_reaction{};
 	std::vector<R> preview_wheel_rates;
+	bool has_preview_source_off = false; // NK-5b: liquid gas preview's finite source-off shaft rate
+	R preview_source_off_rpm_rate = 0.0;
 };
 
 // A callback into immutable native weather only. Its context is local to one RK stage.
@@ -426,6 +428,8 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 			out.preview_point = point_context;
 			out.preview_point.provider = {}; // stack-owned provider must never escape
 			out.preview_wheel_rates = rates;
+			out.has_preview_source_off = result.has_source_off_rate;
+			out.preview_source_off_rpm_rate = result.source_off_rpm_rate;
 		}
 		return out;
 	}

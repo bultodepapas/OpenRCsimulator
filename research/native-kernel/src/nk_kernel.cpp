@@ -924,7 +924,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
-	mutable std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
+	std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
 	// The binding converts Godot arrays once per call, into storage sized at
@@ -1503,7 +1503,7 @@ public:
 	// beta, qbar] (datum or spatial; the reference reads only v_air) and _deflections(aux). Same arithmetic as
 	// aero_component case 6. NaN when the stage or an input is unusable: the caller then evaluates the reference.
 	double stage_wing_wake(const PackedFloat64Array &s, const PackedFloat64Array &air, const PackedFloat64Array &d,
-			double ground_up) const {
+			double ground_up) {
 		nk::Deflections deflections;
 		if (!stage_ready_ || !read_state(s) || air.size() != 7 || !read_deflections(d, deflections)) {
 			return std::numeric_limits<double>::quiet_NaN();
@@ -1827,6 +1827,10 @@ public:
 					context[godot::StringName("air")] = air;
 					context[godot::StringName("pre_reaction_loads")] = pack(result.pre_reaction.data(), 6);
 					context[godot::StringName("wheel_derivative")] = pack(result.preview_wheel_rates);
+					// NK-5b: same key, order and value as LiquidFlight.evaluate; only a finite rate is published.
+					if (result.has_preview_source_off) {
+						context[godot::StringName("source_off_rpm_rate")] = result.preview_source_off_rpm_rate.v;
+					}
 					out[godot::StringName("stage_context")] = context;
 				}
 			} else if (rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive &&

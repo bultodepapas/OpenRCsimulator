@@ -120,6 +120,8 @@ var _reference_loads := Callable()
 var _reference_rotor := Callable()
 var _body_only := false
 var _installed_model: RefCounted = null
+## NK-5a: the loaded library binds stage_wing_wake (checked once per installation, not per tick).
+var _wing_wake_bound := false
 var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
@@ -397,6 +399,7 @@ func install(session: Node) -> Callable:
 		session._collision_world = _macos_domain_context.world
 		session._runway_field = _macos_domain_context.field
 	_installed_model = model
+	_wing_wake_bound = _native.has_method("stage_wing_wake")
 	_installed = true
 	return _reference_stage
 
@@ -441,7 +444,7 @@ func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64A
 ## NK-5a: Aero.wing_wake_velocity for the session's pre-step downwash lag through the prepared fixed-wing stage.
 ## The caller passes its own air_data(s), _deflections(aux) and _ground_up(s); NaN means "use the reference".
 func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up: float) -> float:
-	if not _installed or _family == "helicopter" or _native == null: return NAN
+	if not _installed or not _wing_wake_bound or _family == "helicopter" or _native == null: return NAN
 	var v: Variant = air.get("v_air")
 	if not v is PackedFloat64Array or (v as PackedFloat64Array).size() != 3: return NAN
 	return _native.stage_wing_wake(s, PackedFloat64Array([v[0], v[1], v[2], float(air.get("V", NAN)), float(air.get("alpha", NAN)),

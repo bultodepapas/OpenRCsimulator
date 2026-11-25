@@ -5406,12 +5406,19 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 			and source_may_stop_this_tick and continuous.size() > _rotor_index():
 		var rpm: float = continuous[_rotor_index()]
 		if is_finite(rpm) and rpm > Propulsion.STOPPED_RPM:
-			var shaft_values: PackedFloat64Array = continuous.slice(0, _liquid_index()) if liquid_fuel_is_active() \
-				else continuous.duplicate()
-			var properties: Dictionary = LiquidFlight.properties(self, continuous, true) if liquid_fuel_is_active() else {}
-			# Finite-fuel exhaust can turn off the source partway through this same tick. Estimate the
-			# off-source domain rate even while its current latch is on so the event locator's remainder is safe.
-			var response: Dictionary = _coupled_response(body, shaft_values, at, properties, false, preview)
+			var response: Dictionary
+			if liquid_fuel_is_active() and preview.get("source_off_rpm_rate") is float \
+					and is_finite(float(preview.source_off_rpm_rate)):
+				# NK-5b: this tick's liquid stage (native or reference) evaluated the same source-off response
+				# from the same preview, trial properties and shaft values; it publishes only a finite rate.
+				response = {ok = true, rpm_rate = preview.source_off_rpm_rate}
+			else:
+				var shaft_values: PackedFloat64Array = continuous.slice(0, _liquid_index()) if liquid_fuel_is_active() \
+					else continuous.duplicate()
+				var properties: Dictionary = LiquidFlight.properties(self, continuous, true) if liquid_fuel_is_active() else {}
+				# Finite-fuel exhaust can turn off the source partway through this same tick. Estimate the
+				# off-source domain rate even while its current latch is on so the event locator's remainder is safe.
+				response = _coupled_response(body, shaft_values, at, properties, false, preview)
 			if not response.get("ok", false):
 				# A bad preview cannot justify an unrefined step. Return an over-cap request so the
 				# kernel rejects the tick without committing a potentially malformed RK stage.
