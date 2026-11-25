@@ -1796,42 +1796,64 @@ public:
 			if (result.shaped) {
 				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
 				static const godot::StringName kLoads("loads"), kDerivative("derivative"), kRotor("rotor_momentum");
+				// NK-5c: build every result key once, not on each RK stage.
+				static const godot::StringName k_body_derivative("body_derivative");
+				static const godot::StringName k_v_air("v_air");
+				static const godot::StringName k_V("V");
+				static const godot::StringName k_alpha("alpha");
+				static const godot::StringName k_beta("beta");
+				static const godot::StringName k_qbar("qbar");
+				static const godot::StringName k_spatial_air_law("spatial_air_law");
+				static const godot::StringName k_spatial_aero_law("spatial_aero_law");
+				static const godot::StringName k_spatial_state("spatial_state");
+				static const godot::StringName k_spatial_time_s("spatial_time_s");
+				static const godot::StringName k_spatial_rho("spatial_rho");
+				static const godot::StringName k_aero_station_delta_body("aero_station_delta_body");
+				static const godot::StringName k_spatial_sampler("spatial_sampler");
+				static const godot::StringName k_ambient_delta_body_at("ambient_delta_body_at");
+				static const godot::StringName k_propulsion_air_body("propulsion_air_body");
+				static const godot::StringName k_wake_source_delta_body("wake_source_delta_body");
+				static const godot::StringName k_air("air");
+				static const godot::StringName k_pre_reaction_loads("pre_reaction_loads");
+				static const godot::StringName k_wheel_derivative("wheel_derivative");
+				static const godot::StringName k_source_off_rpm_rate("source_off_rpm_rate");
+				static const godot::StringName k_stage_context("stage_context");
 				out[kLoads] = pack(result.loads.data(), 6);
 				out[kDerivative] = pack(result.derivative);
 				out[kRotor] = pack(result.rotor.data(), 3);
-				if (result.has_body_derivative) out[godot::StringName("body_derivative")] = pack(result.body_derivative.data(), 13);
+				if (result.has_body_derivative) out[k_body_derivative] = pack(result.body_derivative.data(), 13);
 				if (result.has_preview) {
 					Dictionary air;
 					const nk::Air &a = result.preview_air;
-					air[godot::StringName("v_air")] = pack(a.v, 3);
-					air[godot::StringName("V")] = a.V.v;
-					air[godot::StringName("alpha")] = a.alpha.v;
-					air[godot::StringName("beta")] = a.beta.v;
-					air[godot::StringName("qbar")] = a.qbar.v;
+					air[k_v_air] = pack(a.v, 3);
+					air[k_V] = a.V.v;
+					air[k_alpha] = a.alpha.v;
+					air[k_beta] = a.beta.v;
+					air[k_qbar] = a.qbar.v;
 					if (result.preview_spatial) {
 						godot::Ref<OpenRCNativePointSampler> sampler;
 						sampler.instantiate();
 						sampler->prepare(stage_.spatial_identity, result.preview_point);
-						air[godot::StringName("spatial_air_law")] = "m5-w05c-r2-point-air-v1";
-						air[godot::StringName("spatial_aero_law")] = "matched-unwashed-full-angle-section-delta-v1";
-						air[godot::StringName("spatial_state")] = body;
-						air[godot::StringName("spatial_time_s")] = result.preview_time.v;
-						air[godot::StringName("spatial_rho")] = result.preview_rho.v;
-						air[godot::StringName("aero_station_delta_body")] = pack(result.preview_flow.aero_deltas.data(), 24);
-						air[godot::StringName("spatial_sampler")] = sampler;
-						air[godot::StringName("ambient_delta_body_at")] = godot::Callable(sampler.ptr(), "delta_at");
-						air[godot::StringName("propulsion_air_body")] = pack(result.preview_flow.propulsion_air.data(), 3);
-						air[godot::StringName("wake_source_delta_body")] = pack(result.preview_flow.wake_source_delta.data(), 3);
+						air[k_spatial_air_law] = "m5-w05c-r2-point-air-v1";
+						air[k_spatial_aero_law] = "matched-unwashed-full-angle-section-delta-v1";
+						air[k_spatial_state] = body;
+						air[k_spatial_time_s] = result.preview_time.v;
+						air[k_spatial_rho] = result.preview_rho.v;
+						air[k_aero_station_delta_body] = pack(result.preview_flow.aero_deltas.data(), 24);
+						air[k_spatial_sampler] = sampler;
+						air[k_ambient_delta_body_at] = godot::Callable(sampler.ptr(), "delta_at");
+						air[k_propulsion_air_body] = pack(result.preview_flow.propulsion_air.data(), 3);
+						air[k_wake_source_delta_body] = pack(result.preview_flow.wake_source_delta.data(), 3);
 					}
 					Dictionary context;
-					context[godot::StringName("air")] = air;
-					context[godot::StringName("pre_reaction_loads")] = pack(result.pre_reaction.data(), 6);
-					context[godot::StringName("wheel_derivative")] = pack(result.preview_wheel_rates);
+					context[k_air] = air;
+					context[k_pre_reaction_loads] = pack(result.pre_reaction.data(), 6);
+					context[k_wheel_derivative] = pack(result.preview_wheel_rates);
 					// NK-5b: same key, order and value as LiquidFlight.evaluate; only a finite rate is published.
 					if (result.has_preview_source_off) {
-						context[godot::StringName("source_off_rpm_rate")] = result.preview_source_off_rpm_rate.v;
+						context[k_source_off_rpm_rate] = result.preview_source_off_rpm_rate.v;
 					}
-					out[godot::StringName("stage_context")] = context;
+					out[k_stage_context] = context;
 				}
 			} else if (rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive &&
 					rejection_trial_is_valid(body, continuous, t)) {

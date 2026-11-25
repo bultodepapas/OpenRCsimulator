@@ -20,6 +20,7 @@
 #include <godot_cpp/variant/variant.hpp>
 
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <initializer_list>
 #include <utility>
@@ -45,6 +46,14 @@ class ConfigurationGuard {
 		int64_t index = 0;
 		Variant expected;
 		int64_t container_size = -1;
+		// NK-5c: per-tick fast paths captured at preparation. The parent is the same
+		// container instance, and the primed value repeats same_scalar's comparison.
+		Dictionary parent_dictionary;
+		Array parent_array;
+		Variant::Type expected_type = Variant::NIL;
+		int64_t expected_int = 0;
+		uint64_t expected_bits = 0;
+		std::vector<uint8_t> expected_bytes;
 	};
 	// Validated schemas have bounded nesting; flat model size is owned by the source validator.
 	static constexpr int kMaxDepth = 32;
@@ -113,6 +122,73 @@ class ConfigurationGuard {
 		}
 	}
 
+	template <typename P, typename T>
+	static void prime_bytes(Watch &watch) {
+		const P packed = watch.expected;
+		const int64_t size = packed.size();
+		watch.expected_bytes.clear();
+		if (size > 0) {
+			const uint8_t *data = reinterpret_cast<const uint8_t *>(packed.ptr());
+			watch.expected_bytes.assign(data, data + static_cast<std::size_t>(size) * sizeof(T));
+		}
+	}
+
+	// NK-5c: capture the expected scalar once; same_primed then repeats same_scalar per tick.
+	static void prime_scalar(Watch &watch) {
+		watch.expected_type = watch.expected.get_type();
+		switch (watch.expected_type) {
+			case Variant::BOOL: watch.expected_int = static_cast<bool>(watch.expected) ? 1 : 0; break;
+			case Variant::INT: watch.expected_int = static_cast<int64_t>(watch.expected); break;
+			case Variant::FLOAT: {
+				const double value = static_cast<double>(watch.expected);
+				std::memcpy(&watch.expected_bits, &value, sizeof(double));
+				break;
+			}
+			case Variant::PACKED_FLOAT64_ARRAY: prime_bytes<godot::PackedFloat64Array, double>(watch); break;
+			case Variant::PACKED_FLOAT32_ARRAY: prime_bytes<godot::PackedFloat32Array, float>(watch); break;
+			case Variant::PACKED_INT64_ARRAY: prime_bytes<godot::PackedInt64Array, int64_t>(watch); break;
+			case Variant::PACKED_INT32_ARRAY: prime_bytes<godot::PackedInt32Array, int32_t>(watch); break;
+			case Variant::PACKED_BYTE_ARRAY: prime_bytes<godot::PackedByteArray, uint8_t>(watch); break;
+			default: break;
+		}
+	}
+
+	template <typename P, typename T>
+	static bool same_bytes(const Variant &current, const std::vector<uint8_t> &expected) {
+		const P packed = current;
+		const int64_t size = packed.size();
+		if (size < 0 || static_cast<std::size_t>(size) * sizeof(T) != expected.size()) return false;
+		return size == 0 || std::memcmp(packed.ptr(), expected.data(), expected.size()) == 0;
+	}
+
+	// The result of same_scalar(current, watch.expected) for a current value of the expected type.
+	static bool same_primed(const Variant &current, Variant::Type type, const Watch &watch) {
+		switch (type) {
+			case Variant::NIL: return true;
+			case Variant::BOOL: return (static_cast<bool>(current) ? 1 : 0) == watch.expected_int;
+			case Variant::INT: return static_cast<int64_t>(current) == watch.expected_int;
+			case Variant::FLOAT: {
+				const double value = static_cast<double>(current);
+				uint64_t bits = 0;
+				std::memcpy(&bits, &value, sizeof(double));
+				return bits == watch.expected_bits;
+			}
+			case Variant::STRING:
+			case Variant::STRING_NAME:
+			case Variant::PACKED_STRING_ARRAY:
+				return current == watch.expected;
+			case Variant::CALLABLE:
+				return godot::UtilityFunctions::is_same(current, watch.expected);
+			case Variant::PACKED_FLOAT64_ARRAY: return same_bytes<godot::PackedFloat64Array, double>(current, watch.expected_bytes);
+			case Variant::PACKED_FLOAT32_ARRAY: return same_bytes<godot::PackedFloat32Array, float>(current, watch.expected_bytes);
+			case Variant::PACKED_INT64_ARRAY: return same_bytes<godot::PackedInt64Array, int64_t>(current, watch.expected_bytes);
+			case Variant::PACKED_INT32_ARRAY: return same_bytes<godot::PackedInt32Array, int32_t>(current, watch.expected_bytes);
+			case Variant::PACKED_BYTE_ARRAY: return same_bytes<godot::PackedByteArray, uint8_t>(current, watch.expected_bytes);
+			default:
+				return false; // No arbitrary Object or unsupported variant in a stage snapshot.
+		}
+	}
+
 	static Variant detached_scalar(const Variant &value) {
 		switch (value.get_type()) {
 			case Variant::PACKED_FLOAT64_ARRAY: return godot::PackedFloat64Array(value).duplicate();
@@ -140,12 +216,14 @@ class ConfigurationGuard {
 		if (!container(live)) {
 			if (!same_scalar(live, expected)) return false;
 			watch.expected = detached_scalar(expected);
+			prime_scalar(watch);
 			watches_.push_back(std::move(watch));
 			return true;
 		}
 		const int64_t size = container_size(live);
 		if (size < 0 || size != container_size(expected)) return false;
 		watch.expected = live;
+		watch.expected_type = live.get_type();
 		watch.container_size = size;
 		watches_.push_back(std::move(watch));
 		if (size == 0) return true;
@@ -162,7 +240,15 @@ class ConfigurationGuard {
 				Watch child;
 				child.source = Parent::DictionaryEntry;
 				child.parent = live;
+				child.parent_dictionary = current;
+				// An untyped dictionary treats a String key and the equal StringName as one key, and the
+				// StringName carries its hash, so the per-tick lookup does not rehash the text. Keep it only
+				// where this dictionary resolves it (an empty StringName does not hash like the empty String).
 				child.key = key;
+				if (key.get_type() == Variant::STRING && !current.is_typed_key()) {
+					const Variant interned = StringName(godot::String(key));
+					if (current.has(interned)) child.key = interned;
+				}
 				if (!append_watch(std::move(child), current[key], saved[key], depth + 1, completed)) return false;
 			}
 		} else {
@@ -172,6 +258,7 @@ class ConfigurationGuard {
 				Watch child;
 				child.source = Parent::ArrayEntry;
 				child.parent = live;
+				child.parent_array = current;
 				child.index = i;
 				if (!append_watch(std::move(child), current[i], saved[i], depth + 1, completed)) return false;
 			}
@@ -210,23 +297,23 @@ class ConfigurationGuard {
 				break;
 			}
 			case Parent::DictionaryEntry: {
-				const Dictionary parent = watch.parent;
-				current = parent.get(watch.key, Variant());
-				if (current.get_type() == Variant::NIL && !parent.has(watch.key)) return false;
+				current = watch.parent_dictionary.get(watch.key, Variant());
+				if (current.get_type() == Variant::NIL && !watch.parent_dictionary.has(watch.key)) return false;
 				break;
 			}
 			case Parent::ArrayEntry: {
-				const Array parent = watch.parent;
-				if (watch.index < 0 || watch.index >= parent.size()) return false;
-				current = parent[watch.index];
+				if (watch.index < 0 || watch.index >= watch.parent_array.size()) return false;
+				current = watch.parent_array[watch.index];
 				break;
 			}
 		}
+		const Variant::Type type = current.get_type();
+		if (type != watch.expected_type) return false;
 		if (watch.container_size >= 0) {
-			return current.get_type() == watch.expected.get_type() &&
-					godot::UtilityFunctions::is_same(current, watch.expected) && container_size(current) == watch.container_size;
+			return godot::UtilityFunctions::is_same(current, watch.expected) &&
+					(type == Variant::DICTIONARY ? Dictionary(current).size() : Array(current).size()) == watch.container_size;
 		}
-		return same_scalar(current, watch.expected);
+		return same_primed(current, type, watch);
 	}
 
 	static bool object_variant(const Variant &value) {
