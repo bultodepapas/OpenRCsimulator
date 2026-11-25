@@ -29,7 +29,7 @@ EXPECTED_IMAGES += ["field/capture-land-top.png"]
 EXPECTED_IMAGES += [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
 EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "compare_captures.py",
                      "check_trimmed_flight.py", "test_visual_quality_cases.py", "visual_quality_cases.py",
-                     "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "capture_groups.py", "check_review.py", "check_horizon.py", "check_phase6.py",
+                     "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "capture_groups.py", "fpv_profiles.py", "check_review.py", "check_horizon.py", "check_phase6.py",
                      "check_cloud_probe.py", "check_surfaces.py", "test_stripes.py", "check_stripes.py",
                      "check_windsock.py", "check_windsock.py", "check_windsock.py", "check_windsock.py",
                      "check_grass.py", "check_grass_seam.py", "check_wind.py", "test_treeline_readability.py",
