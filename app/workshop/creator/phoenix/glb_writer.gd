@@ -31,6 +31,7 @@ const _DEFAULT_COLOR := 0.8
 const _GLASS_COLOR := [0.12, 0.15, 0.18, 0.45]
 const _GLASS_ROUGHNESS := 0.08
 const _GLASS_MIN_ALPHA := 0.3
+const _ALPHA_CUTOFF := 0.5
 const _PART_HINT := "openrc-creator-part-hint-v1"
 
 
@@ -121,8 +122,14 @@ class Writer extends RefCounted:
 			if slot >= 0:
 				pbr.baseColorFactor = [1.0, 1.0, 1.0, 1.0]
 				pbr.baseColorTexture = {index = slot}
-				if bool(decoded.get("has_alpha", false)):
-					entry.alphaMode = "BLEND"
+				# Cut-outs test against the cutoff and keep depth sorting; only graded alpha blends.
+				# A texture whose alpha is unused ("none"/"zero") stays opaque.
+				match _alpha_class(decoded):
+					"mask":
+						entry.alphaMode = "MASK"
+						entry.alphaCutoff = _ALPHA_CUTOFF
+					"blend":
+						entry.alphaMode = "BLEND"
 			elif bool(decoded.get("uniform", false)):
 				var mean: Array = decoded.mean
 				if float(mean[3]) < _GLASS_MIN_ALPHA:
@@ -278,6 +285,14 @@ class Writer extends RefCounted:
 		var z := x.cross(helper).normalized()
 		var y := z.cross(x)
 		return {origin = o, axes = [[x.x, x.y, x.z], [y.x, y.y, y.z], [z.x, z.y, z.z]]}
+
+	## "none", "zero", "mask" or "blend" (see `texture.gd`); a texture decoded without a class blends when
+	## it has alpha.
+	static func _alpha_class(decoded: Dictionary) -> String:
+		var alpha: Variant = decoded.get("alpha")
+		if alpha is String:
+			return alpha
+		return "blend" if bool(decoded.get("has_alpha", false)) else "none"
 
 	## Untextured materials named as glass (the shared glass texture was not found) render translucent.
 	static func _is_glass(material: Dictionary) -> bool:

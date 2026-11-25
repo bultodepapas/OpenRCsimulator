@@ -176,70 +176,67 @@ def winding_agreement(data, geo):
 # ---------------------------------------------------------------- textures
 
 TEXTURE_MAGIC = bytes([0xFF, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02])
-# Bytes the pixel data starts before (size - width*height*channels): BGR 1, BGRA 2.
-TEXTURE_LEAD = {3: 1, 4: 2}
+# A stock texture is an uncompressed BMP behind TEXTURE_MAGIC. When the BMP holds two blocks, its first
+# 2 * TEXTURE_BLOCK bytes are stored at the end with the two blocks exchanged.
+TEXTURE_BLOCK = 1000
+
+
+def texture_bmp(data):
+    """Return (kind, bmp_bytes): the original BMP file inside a stock texture, or a plain BMP unchanged.
+
+    stored = TEXTURE_MAGIC + bmp[2000:] + bmp[1000:2000] + bmp[0:1000]   (bmp of at least 2000 bytes)
+    stored = TEXTURE_MAGIC + bmp                                          (smaller bmp)
+
+    Established 2026-11-25 on all 365 stock aircraft textures: each rebuilt header declares exactly the
+    rebuilt length, and GEO texture coordinates land on the painted islands. The same wrapper carries the
+    installation's DDS files. `app/workshop/creator/phoenix/texture.gd` ports this rule; it also classifies
+    the fourth byte of 32-bit images (unused, mask or blend), which this research PNG keeps raw.
+    """
+    if len(data) > MAX_INPUT:
+        raise GeoError("texture input limit")
+    if data[:2] == b"BM":
+        return "standard BMP", data
+    if data[:8] != TEXTURE_MAGIC:
+        raise GeoError("unrecognized texture magic")
+    s, k = len(data), TEXTURE_BLOCK
+    if s - 8 >= 2 * k and data[s - k:s - k + 2] == b"BM":
+        bmp = data[s - k:] + data[s - 2 * k:s - k] + data[8:s - 2 * k]
+        if struct.unpack_from("<I", bmp, 2)[0] == len(bmp) or data[8:10] != b"BM":
+            return "phoenix wrapped", bmp
+    if data[8:10] == b"BM":
+        return "phoenix plain", data[8:]
+    raise GeoError("unrecognized texture layout (%d bytes)" % s)
 
 
 def texture_profile(data):
-    """Stock `.bmp`: 8-byte magic, an overwritten BMP header, then BGR(A) rows bottom-up.
-
-    The colour phase was fixed on known liveries (red Fokker DR-1, yellow J-3 Cub): 3-channel pixel
-    data begins one byte before (size - width*height*channels); 4-channel (BGRA) data begins two bytes
-    before (glass, rotor disc and thumbnails). `app/workshop/creator/phoenix/texture.gd` ports this rule.
-
-    Dimensions are not recoverable from the overwritten header; they are inferred from the size
-    (power-of-two sides) and, for non-square candidates, by adjacent-row similarity.
-    """
-    if data[:2] == b"BM":
-        return {"kind": "standard BMP"}
-    if data[:8] != TEXTURE_MAGIC:
-        raise GeoError("unrecognized texture magic")
-    cands = []
-    for ch in (3, 4):
-        for hdr in (54, 56):
-            n = len(data) - 8 - hdr
-            if n <= 0 or n % ch:
-                continue
-            px = n // ch
-            w = 4
-            while w <= 4096:
-                if px % w == 0:
-                    h = px // w
-                    if 4 <= h <= 4096 and h & (h - 1) == 0:
-                        cands.append((w, h, ch, len(data) - n - TEXTURE_LEAD[ch]))
-                w *= 2
-    if not cands:
-        raise GeoError("unrecognized texture layout (%d bytes)" % len(data))
-
-    def roughness(c):
-        w, h, ch, off = c
-        stride = w * ch
-        rows = min(h - 1, 64)
-        step = max(1, (h - 1) // rows)
-        tot = 0
-        for y in range(0, h - 1, step):
-            a = data[off + y * stride: off + y * stride + stride: 7]
-            b = data[off + (y + 1) * stride: off + (y + 1) * stride + stride: 7]
-            tot += sum(abs(x - z) for x, z in zip(a, b))
-        return tot
-    square = [c for c in cands if c[0] == c[1]]
-    near = [c for c in cands if max(c[0], c[1]) <= 2 * min(c[0], c[1])]
-    pool = square or near or cands
-    best = min(pool, key=roughness) if len(pool) > 1 else pool[0]
-    w, h, ch, off = best
-    return {"kind": "phoenix raw", "width": w, "height": h, "channels": ch, "pixel_offset": off,
-            "candidates": len(cands)}
+    kind, bmp = texture_bmp(data)
+    if len(bmp) < 54:
+        raise GeoError("texture header truncated")
+    declared, offset, info, width, height, planes, bits, compression = struct.unpack_from("<I4xIIiiHHI", bmp, 2)
+    if kind != "standard BMP" and declared != len(bmp):
+        raise GeoError("texture header size %d differs from %d" % (declared, len(bmp)))
+    if info < 40 or not 14 + info <= offset <= len(bmp) or planes != 1:
+        raise GeoError("invalid texture header")
+    if bits not in (24, 32) or compression != 0:
+        raise GeoError("only uncompressed 24/32-bit textures are converted")
+    if not (1 <= width <= 4096 and 1 <= abs(height) <= 4096):
+        raise GeoError("texture size out of profile")
+    channels = bits // 8
+    stride = (width * channels + 3) & ~3
+    if offset + stride * abs(height) > len(bmp):
+        raise GeoError("texture pixels truncated")
+    return {"kind": kind, "width": width, "height": abs(height), "channels": channels, "top_down": height < 0,
+            "pixel_offset": offset, "stride": stride, "bmp_bytes": len(bmp)}
 
 
 def png_from_texture(data):
     p = texture_profile(data)
-    if p["kind"] != "phoenix raw":
-        raise GeoError("only the observed raw profile is converted")
-    w, h, ch, off = p["width"], p["height"], p["channels"], p["pixel_offset"]
-    stride = w * ch
+    _, bmp = texture_bmp(data)
+    w, h, ch, off, stride = p["width"], p["height"], p["channels"], p["pixel_offset"], p["stride"]
     rows = []
-    for y in range(h):  # stored bottom-up, BGR(A)
-        r = bytearray(data[off + (h - 1 - y) * stride: off + (h - y) * stride])
+    for y in range(h):  # BGR(A), bottom-up unless top_down
+        stored = y if p["top_down"] else h - 1 - y
+        r = bytearray(bmp[off + stored * stride: off + stored * stride + w * ch])
         r[0::ch], r[2::ch] = r[2::ch], r[0::ch]
         rows.append(bytes(r))
 
