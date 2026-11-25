@@ -96,7 +96,10 @@ func _soundness(s: Node, id: String) -> void:
 				base[1] = _rng.randf_range(-300.0, 300.0)
 				base[2] = -_rng.randf_range(2.0, 90.0)
 		var previous := _state(base)
-		var candidate := _advance(previous, 0.05 if i % 10 else 1.5, 0.02 if i % 7 else 0.4)
+		# Mostly ordinary ticks; some large moves, and some rotations up to a half turn within one tick.
+		var turn: float = 0.02 if i % 7 else 0.4
+		if i % 23 == 0: turn = 3.0
+		var candidate := _advance(previous, 0.05 if i % 10 else 1.5, turn)
 		var reach: int = s._native_contact_reach(previous, candidate)
 		var tick: int = 1 + i
 		var hits: Array = SceneryCollision.contacts(previous, candidate, hull, s._collision_world, tick, 1.0, unit, {})
@@ -187,8 +190,8 @@ func _equivalence(id: String, scenario: String) -> void:
 		var a: Node = sessions[0]
 		var b: Node = sessions[1]
 		if var_to_bytes([a.sim.tick, a.sim.state, a.sim.continuous, a.sim.aux, a.sim.fault_reason, a.crash.keys(),
-				a._contact_events.size()]) != var_to_bytes([b.sim.tick, b.sim.state, b.sim.continuous, b.sim.aux,
-				b.sim.fault_reason, b.crash.keys(), b._contact_events.size()]):
+				a._contact_events, a.sim.last_events]) != var_to_bytes([b.sim.tick, b.sim.state, b.sim.continuous, b.sim.aux,
+				b.sim.fault_reason, b.crash.keys(), b._contact_events, b.sim.last_events]):
 			identical = false
 			detail = "tick %d: %s / %s" % [tick, str(a.sim.state.slice(0, 3)), str(b.sim.state.slice(0, 3))]
 			break

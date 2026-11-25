@@ -45,7 +45,8 @@ public:
 				continue;
 			}
 			const int64_t n0 = cell(b[0]), n1 = cell(b[1]), e0 = cell(b[2]), e1 = cell(b[3]);
-			if ((n1 - n0 + 1) * (e1 - e0 + 1) > kMaxCellsPerProxy) {
+			// Compare each span before multiplying, so the product cannot overflow.
+			if (n1 - n0 >= kMaxCellsPerProxy || e1 - e0 >= kMaxCellsPerProxy || (n1 - n0 + 1) * (e1 - e0 + 1) > kMaxCellsPerProxy) {
 				large_.push_back(i);
 				continue;
 			}
@@ -115,7 +116,8 @@ private:
 			if (std::fabs(lo[axis]) > kMaxGridCoordinate || std::fabs(hi[axis]) > kMaxGridCoordinate) return false;
 		}
 		const int64_t n0 = cell(lo[0]), n1 = cell(hi[0]), e0 = cell(lo[1]), e1 = cell(hi[1]);
-		if (n1 < n0 || e1 < e0 || (n1 - n0 + 1) * (e1 - e0 + 1) > kMaxQueryCells) return false;
+		if (n1 < n0 || e1 < e0 || n1 - n0 >= kMaxQueryCells || e1 - e0 >= kMaxQueryCells ||
+				(n1 - n0 + 1) * (e1 - e0 + 1) > kMaxQueryCells) return false;
 		for (int64_t n = n0; n <= n1; ++n) {
 			for (int64_t e = e0; e <= e1; ++e) {
 				const auto found = grid_.find(key(n, e));

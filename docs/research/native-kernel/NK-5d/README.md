@@ -52,15 +52,27 @@ reject.
 ## Evidence
 
 - `app/tests/test_native_contact_reach.gd` (22/22), Corsair, P-51 and Stik:
-  - Soundness: 4,000 random tick pairs each, near obstacles, over the lake and in open air, with large rotations
-    and translations in some. No claimed proof met a non-empty `SceneryCollision.contacts` or a non-null
-    `LakeCollision.first_hit`. Scenery proofs held for 65–77% of pairs and lake proofs for 73–83%; 27–48 scenery
-    hits and 39–70 lake hits occurred among the unproven pairs.
-  - Equivalence: paired sessions with and without the shortcut flew byte-identical ticks, contact-event counts
-    and crash records. Each aircraft flew a cruise of 480 ticks, a level flight into the tallest obstacle (crash
+  - Soundness: 4,000 random tick pairs each, near obstacles, over the lake and in open air. Some pairs move up to
+    1.5 m, and one in 23 rotates up to half a turn in a tick, which tests the radius bound at its tightest. No
+    claimed proof met a non-empty `SceneryCollision.contacts` or a non-null `LakeCollision.first_hit`. Scenery
+    proofs held for 65–77% of pairs and lake proofs for 73–83%; 31–64 scenery hits and 40–73 lake hits occurred
+    among the unproven pairs.
+  - Equivalence: paired sessions with and without the shortcut flew byte-identical ticks, contact events, located
+    events and crash records. Each aircraft flew a cruise of 480 ticks, a level flight into the tallest obstacle (crash
     after 275–308 ticks) and a sinking ditching (crash after 65–105 ticks).
-- All nineteen installer gates are identical for binary `a07e540937de121690cd9972dabe915020c0e4e7e3bd401c41c021b4ea8f266b`,
-  and the mutant build still fails.
+- All nineteen installer gates are identical for binary `39f272aa96f2d77d43618828249a46b5ac199e6a4137bd63428f7130a5732686`,
+  and the mutant build still fails. Accepted results (tool root, not in Git): `stage-20261125T213317439673Z.json`
+  `b30238a30a82b764855d4f178a3761862f67af843c1f4d9adeb2c549eac9401d`, `stage_mutant-20261125T213346985631Z.json`
+  `d97cabf6e5849dc0a56bf2adab8cd791356aeedaef8bda77a9883a02c2e1cb6b`, `trajectory-20261125T213416954742Z.json`
+  `c15bc510ef681c8f0130607b174002fb05f3a914532f5a5764cf6fc192638640`, `liquid-stage-20261125T213642972936Z.json`
+  `ed35ad4d9a938581b3dbf6bb5af49d94aa3a8eedd33ce66d9719923e59755392`.
+- With the native stage installed, existing sessions take the new path. These suites pass: contact sessions, collision
+  tie order, crash cause and integration, dynamic-mass contact (three suites), lake collision, session and ground
+  contact, scenery damage and destruction, scenery trace, soft-ground scenery order, water checkpoint, RC-track
+  crossing, the native suites, golden flights and replay integrity.
+- An independent review found no exactness bug. Its follow-ups are included: an RC-track test override that kept
+  the old signature, an overflow guard for cell counts at absurd coordinates, and dropping per-tick hull checks that
+  a proof already implies.
 
 ## Gain
 

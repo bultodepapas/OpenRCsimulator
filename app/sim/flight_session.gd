@@ -3700,11 +3700,10 @@ func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 	if reach & REACH_SCENERY_CLEAR:
 		# NK-5d: no collision proxy meets a box that contains every box this sweep tests, so it finds no hit.
 		# The unsampled sweep also returns no event for invalid inputs; the sampled one refuses them below.
+		# A proof already implies a nonempty, finite hull of whole points (the native reach refuses others).
 		if not mass_at_fraction.is_valid():
 			return {ok = true, event = null}
-		var hull: PackedFloat64Array = aircraft.model.crash_hull
 		if SceneryCollision._state_is_valid(previous) and SceneryCollision._state_is_valid(candidate) \
-				and not hull.is_empty() and hull.size() % 3 == 0 and SceneryCollision._packed_finite(hull) \
 				and SceneryCollision._world_is_valid(_collision_world):
 			return {ok = true, event = null, reason = ""}
 	if mass_at_fraction.is_valid():
@@ -3753,12 +3752,11 @@ func _contact_probe_reach() -> float:
 
 
 ## The sampled lake sweep's own input checks (its sampler is valid here); it refuses the tick when one fails.
+## A lake proof already implies a nonempty, finite hull of whole points.
 func _lake_sweep_inputs_valid(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> bool:
-	var hull: PackedFloat64Array = aircraft.model.crash_hull
 	var dt: float = sim.dt()
 	return LakeSurface.is_valid_definition(_lake) and SceneryCollision._state_is_valid(previous) \
-		and SceneryCollision._state_is_valid(candidate) and not hull.is_empty() and hull.size() % 3 == 0 \
-		and SceneryCollision._packed_finite(hull) and is_finite(dt) and dt > 0.0 and next_tick >= 1
+		and SceneryCollision._state_is_valid(candidate) and is_finite(dt) and dt > 0.0 and next_tick >= 1
 
 
 func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) -> Dictionary:
