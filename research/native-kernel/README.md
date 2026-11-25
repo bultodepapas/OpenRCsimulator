@@ -519,6 +519,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   `pre_tick`, the inputs, the session's own `_deflections(aux)` (`[elevator, aileron_right, aileron_left, rudder]`)
   and `sim.time()`. `stage(body, continuous, t)` is then the joint stage: `{loads, derivative, rotor_momentum}` with
   `StringName` keys like the reference literal, or `{}` exactly where the reference returns `{}`.
+- `stage_wing_wake(s, air, deflections, ground_up)` (NK-5a) evaluates `aero.gd` `wing_wake_velocity` with the prepared
+  stage's `AeroModel` for the session pre-step's tail downwash lag. `flight_session.gd` calls it only inside
+  `_kernel_pre_step` after the configuration guard passed, and evaluates the reference on NaN
+  ([evidence](../../docs/research/native-kernel/NK-5a/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.

@@ -438,6 +438,17 @@ func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64A
 	if not accepted: reason = "native tick context refused"
 	return accepted
 
+## NK-5a: Aero.wing_wake_velocity for the session's pre-step downwash lag through the prepared fixed-wing stage.
+## The caller passes its own air_data(s), _deflections(aux) and _ground_up(s); NaN means "use the reference".
+func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up: float) -> float:
+	if not _installed or _family == "helicopter" or _native == null: return NAN
+	var v: Variant = air.get("v_air")
+	if not v is PackedFloat64Array or (v as PackedFloat64Array).size() != 3: return NAN
+	return _native.stage_wing_wake(s, PackedFloat64Array([v[0], v[1], v[2], float(air.get("V", NAN)), float(air.get("alpha", NAN)),
+		float(air.get("beta", NAN)), float(air.get("qbar", NAN))]),
+		PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), ground_up)
+
+
 ## prepare_stage() input: committed model, gear, surface table, lake, prepared hull, layout, density and
 ## ground-effect reach and explicit capability flags; family adapters add their validated source snapshots.
 static func config_for(session: Node) -> Dictionary:

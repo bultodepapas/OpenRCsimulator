@@ -5459,12 +5459,19 @@ func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: f
 	if _native_stage != null and not _native_stage.configuration_matches(self):
 		stage_backend_error = "native prepared configuration changed outside an accepted boundary; reset required"
 		return PackedFloat64Array() # kernel rejects before any native stage can use stale coefficients
+	# NK-5a: only this guarded call may evaluate the pre-step's wing wake through the prepared native stage.
+	_native_wake_admitted = _native_stage != null
 	var next := _pre_step(aux, inputs, dt)
+	_native_wake_admitted = false
 	if _native_stage != null and next.size() == aux.size():
 		if not _native_stage.tick_context(self, next, inputs):
 			stage_backend_error = _native_stage.reason
 			return PackedFloat64Array()
 	return next
+
+
+## NK-5a: true only inside _kernel_pre_step after the native configuration guard accepted this tick.
+var _native_wake_admitted := false
 
 
 func _drop_tick_facts() -> void:
@@ -5561,7 +5568,13 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 			# NK-2a / A6 O4: pure queries at the same state/time yield the same air. Reuse only here,
 			# after the anchor update; never reuse a shaft sample, an RK stage or a previous tick.
 			var air: Dictionary = air_data(s)
-			cl_now = Aero.wing_wake_velocity(s, air, _deflections(aux), aircraft.model, _ground_up(s))
+			var deflections: Dictionary = _deflections(aux)
+			var ground_up: float = _ground_up(s)
+			# NK-5a: the native stage's bit-identical copy when this tick's configuration guard admitted it; NaN
+			# (unusable input or a NaN result) evaluates the reference, which yields the same value.
+			cl_now = _native_stage.wing_wake(s, air, deflections, ground_up) if _native_wake_admitted else NAN
+			if is_nan(cl_now):
+				cl_now = Aero.wing_wake_velocity(s, air, deflections, aircraft.model, ground_up)
 			speed = air.V
 		else:
 			# Derived sessions may override either helper, including the second air query.

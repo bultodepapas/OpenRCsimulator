@@ -924,6 +924,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
+	mutable std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
 	// The binding converts Godot arrays once per call, into storage sized at
@@ -1084,6 +1085,8 @@ protected:
 			&OpenRCNativeKernel::aero_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_loads", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
 			&OpenRCNativeKernel::aero_loads);
+		godot::ClassDB::bind_method(D_METHOD("stage_wing_wake", "s", "air", "d", "ground_up"),
+			&OpenRCNativeKernel::stage_wing_wake);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
 		godot::ClassDB::bind_method(D_METHOD("float64_transport", "scalar", "values"), &OpenRCNativeKernel::float64_transport);
 		godot::ClassDB::bind_method(D_METHOD("math_control_state"), &OpenRCNativeKernel::math_control_state);
@@ -1493,6 +1496,32 @@ public:
 	PackedFloat64Array aero_loads(const PackedFloat64Array &s, const PackedFloat64Array &wind, double rho,
 			const PackedFloat64Array &d, double downwash_cl, double ground_up) const {
 		return aero_component(0, s, wind, rho, d, downwash_cl, ground_up);
+	}
+
+	// NK-5a: aero.gd wing_wake_velocity for flight_session.gd _pre_step's downwash lag, with the prepared stage's
+	// AeroModel (decode_aero, as the component oracle's), the caller's own air_data(s) values [v_air x, y, z, V, alpha,
+	// beta, qbar] (datum or spatial; the reference reads only v_air) and _deflections(aux). Same arithmetic as
+	// aero_component case 6. NaN when the stage or an input is unusable: the caller then evaluates the reference.
+	double stage_wing_wake(const PackedFloat64Array &s, const PackedFloat64Array &air, const PackedFloat64Array &d,
+			double ground_up) const {
+		nk::Deflections deflections;
+		if (!stage_ready_ || !read_state(s) || air.size() != 7 || !read_deflections(d, deflections)) {
+			return std::numeric_limits<double>::quiet_NaN();
+		}
+		nk::R state[kStateSize];
+		nk::R values[7];
+		load(s, state);
+		load(air, values);
+		nk::Air a;
+		a.v[0] = values[0];
+		a.v[1] = values[1];
+		a.v[2] = values[2];
+		a.V = values[3];
+		a.alpha = values[4];
+		a.beta = values[5];
+		a.qbar = values[6];
+		nk::ge_factors(state, stage_.aero, ground_up, wing_wake_ge_);
+		return nk::wing_lift_coefficient_with(state, a, deflections, stage_.aero, wing_wake_ge_, true).v;
 	}
 
 	// Diagnostic boundary witnesses only: no arithmetic, global FP changes, or retained caller storage.
