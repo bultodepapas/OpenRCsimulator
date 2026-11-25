@@ -476,6 +476,13 @@ proves a GPU bottleneck or counts actual dropped display frames.
 - `samples=true` returns chronological packed columns: exact monotonic end/duration microseconds, engine frame,
   physics ticks, baseline, flags, route at interval start, prior recorder cost and optional last-read GPU time.
   `first_sequence` identifies the first row; all rows and event details share one `epoch`/`capture_id`.
+- Stutter and hitch event records carry `phases`, the [main-loop split](../../app/render/frame_phases.gd) of their
+  interval (`openrc-frame-phases v1`), and `phase_largest`. With `phase_valid` 1 the eight `phase_*_usec`
+  durations sum exactly to the interval: late `_process`, deferred/engine tail, render (recording, acquire,
+  submit, present and fence waits), between iterations (audio, limiter, OS events), physics ticks, after
+  physics, `process_frame` handlers and `_process` before the bridge. Handlers and resumed awaits connected to
+  `process_frame`, `physics_frame` or `frame_post_draw` before the probe count in the preceding phase. Rows in
+  `samples` do not carry it.
 - Headless or zero/unavailable GPU readings remain unavailable. Positive readings retain **unverified freshness**.
   `source` reports a random nonsecret `launch_instance` (also in `ping`), `build_source`/`build_describe` and
   `runtime_revision`. A source-tree run reports `runtime_revision: not_observed`; only an exported build's embedded

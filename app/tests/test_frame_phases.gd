@@ -54,6 +54,7 @@ func _run_checks() -> void:
 		and split.phase_after_physics_usec == 100 and split.phase_pre_process_usec == 300 and split.phase_process_usec == 1600, str(split))
 	_check("durations sum exactly to the interval", _sum(split) == 8000, str(_sum(split)))
 	_check("tick script time sums each tick's callback span", split.phase_tick_scripts_usec == 1800 and split.phase_tick_max_usec == 1000, str(split))
+	_check("running totals count every completed tick", probe.totals() == {ticks = 2, tick_scripts_usec = 1800}, str(probe.totals()))
 	_check("a valid split keeps the schema", _schema_ok(split, names))
 	_check("splitting is read-only", probe.split_at(11, 1000, 9000) == split)
 
@@ -70,7 +71,8 @@ func _run_checks() -> void:
 	_check("undrawn split still sums to the interval", _sum(undrawn) == 4000, str(_sum(undrawn)))
 
 	_check("a skipped iteration is invalid", probe.split_at(13, 9000, 13000).phase_valid == 0)
-	_check("an observer earlier than its previous callback is invalid", probe.split_at(12, 9600, 13000).phase_valid == 0)
+	_check("an observer later than the previous last callback is invalid", probe.split_at(12, 9600, 13000).phase_valid == 0)
+	_check("an observer that skipped the previous iteration is invalid", probe.split_at(12, 7000, 13000).phase_valid == 0)
 	_check("a non-advancing interval is invalid", probe.split_at(12, 13000, 13000).phase_valid == 0)
 	var disordered = FramePhases.new()
 	disordered.mark_process_signal_at(1, 100)
@@ -88,8 +90,12 @@ func _run_checks() -> void:
 	unmatched.mark_physics_end_at(3, 100)
 	_check("a tick end without its start is not counted", unmatched._current[FramePhases.TICKS] == 0)
 
-	# Live engine: an observer at priority 0 splits each real iteration.
+	# Live engine: an observer at priority 0 splits each real iteration. The root enters the tree after _initialize.
+	await process_frame
 	var live = FramePhases.new()
+	var detached := Node.new()
+	_check("a root outside the tree is refused", not FramePhases.new().start(detached))
+	detached.free()
 	_check("probe starts once on a live root", live.start(root) and not live.start(root))
 	var observer := Observer.new()
 	observer.probe = live
@@ -126,6 +132,22 @@ func _run_checks() -> void:
 		and root.get_node_or_null("FramePhasesLast") == null and not process_frame.is_connected(live._on_process_frame)
 		and not RenderingServer.frame_post_draw.is_connected(live._on_post_draw))
 	_check("metadata names the format", live.metadata().format == FramePhases.FORMAT and not live.metadata().started)
+	var early = FramePhases.new()
+	_check("a probe stopped before its deferred attach adds no node", early.start(root))
+	early.stop()
+	await process_frame
+	_check("no bracket is left behind", root.get_node_or_null("FramePhasesFirst") == null and root.get_node_or_null("FramePhasesLast") == null)
+	var first = FramePhases.acquire(root)
+	var second = FramePhases.acquire(root)
+	_check("observers share one probe", first != null and first == second and first.is_started())
+	FramePhases.release(second)
+	_check("the shared probe runs until its last user releases it", first.is_started())
+	FramePhases.release(first)
+	_check("the last release stops the shared probe", not first.is_started())
+	var third = FramePhases.acquire(root)
+	_check("a later acquire starts a fresh probe", third != null and third != first and third.is_started())
+	FramePhases.release(third)
+	await process_frame
 	observer.queue_free()
 	await process_frame
 

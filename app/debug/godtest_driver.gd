@@ -139,8 +139,10 @@ func _run() -> void:
 		return
 	diagnostics = diagnostic_script.new()
 	diagnostics.start(get_tree().root)
-	frame_phases = phases_script.new()
-	frame_phases.start(get_tree().root)
+	frame_phases = phases_script.acquire(get_tree().root) # shared with the debug bridge's stutter records
+	if frame_phases == null:
+		_fail("frame phase probe unavailable")
+		return
 	events = FileAccess.open(output_dir.path_join("events.jsonl"), FileAccess.WRITE)
 	trajectory = FileAccess.open(output_dir.path_join("trajectory.csv"), FileAccess.WRITE)
 	if events == null or trajectory == null:
@@ -1068,8 +1070,9 @@ func _finish(success: bool) -> void:
 		diagnostics.stop()
 		identity.diagnostics = diagnostics.metadata()
 	if frame_phases != null:
-		frame_phases.stop()
 		identity.frame_phases = frame_phases.metadata()
+		frame_phases.get_script().release(frame_phases)
+		frame_phases = null
 	identity.actual_resolution = [get_tree().root.size.x, get_tree().root.size.y]
 	identity.final_display = _runtime_display()
 	identity.viewport_size = [get_tree().root.get_visible_rect().size.x, get_tree().root.get_visible_rect().size.y]

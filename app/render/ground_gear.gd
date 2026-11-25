@@ -16,6 +16,14 @@ var _previous_speeds := PackedFloat64Array()
 var _last_tick := -1
 ## VQ-01c-R1: wheel spin is visible motion, so it advances every rendered frame at most (never less often).
 var _cadence := Cadence.new(mini(Cadence.configured_every_frames(), 1))
+## F1: `Retraction.apply` poses every rig node from the extension alone (about 90 us per frame). Only this observer
+## poses the live rig. When the rig and extension are unchanged, the nodes it posed keep their pose, except those this
+## observer rewrites afterwards (spin, steering and compression nodes). Those get the same `position` and `quaternion`
+## values through the same setters as `apply` (a restored `transform` would decompose differently when `rotation.x`
+## is written next, as on the Corsair's quarter-turned retracted wheels).
+var _applied_rig: Dictionary = {}
+var _applied_extension := NAN
+var _posed_rewritten: Array = [] # [Node3D, position, quaternion] that the last apply set
 
 
 static func attach(airplane: Dictionary, session: Node) -> Node:
@@ -66,6 +74,34 @@ func _advance_wheels(tick: int) -> void:
 	_last_tick = tick
 
 
+## Rig nodes this observer writes after `Retraction.apply`, with the exact values the pose gave them (the same
+## interpolation and helpers as `Retraction.apply`, for these few nodes only).
+func _rewritten_after_posing(rig: Dictionary, extension: float) -> Array:
+	var result: Array = []
+	if rig.is_empty() or not is_finite(extension) or extension < 0.0 or extension > 1.0:
+		return result
+	var names := {}
+	for node_name: Variant in rig.get("nodes", {}).keys():
+		names[rig.nodes[node_name]] = node_name
+	var candidates: Array = _airplane.get("gear", {}).values()
+	candidates.append_array(rig.get("compression", {}).values())
+	var samples: Array = rig.data.retraction.samples
+	var at := extension * (samples.size() - 1)
+	var left := mini(int(floor(at)), samples.size() - 2)
+	var fraction := at - left
+	for node: Variant in candidates:
+		if not node is Node3D or not names.has(node) or result.any(func(posed: Array) -> bool: return posed[0] == node):
+			continue
+		var node_name: Variant = names[node]
+		if not samples[left].nodes.has(node_name):
+			continue
+		var a: Dictionary = samples[left].nodes[node_name]
+		var b: Dictionary = samples[left + 1].nodes[node_name]
+		result.append([node, Retraction._v3(a.translation).lerp(Retraction._v3(b.translation), fraction),
+			Retraction._rotation(a.rotation_wxyz).slerp(Retraction._rotation(b.rotation_wxyz), fraction).normalized()])
+	return result
+
+
 func _process(_dt: float) -> void:
 	if not is_instance_valid(_session) or _session.sim == null:
 		return
@@ -75,16 +111,29 @@ func _process(_dt: float) -> void:
 		return
 	var contacts: Array = _session.current_landing_gear().contacts
 	var rig: Dictionary = _airplane.get("gear_retraction", {})
-	if not rig.is_empty(): Retraction.apply(rig, _session.gear_state().extension)
-	elif _session.gear_is_retractable():
+	var retractable: bool = _session.gear_is_retractable()
+	# One accepted gear state per frame; every reader below sees the same extension.
+	var extension: float = _session.gear_state().extension if not rig.is_empty() or retractable else 1.0
+	if not rig.is_empty():
+		if not is_same(rig, _applied_rig) or extension != _applied_extension:
+			Retraction.apply(rig, extension)
+			_applied_rig = rig
+			_applied_extension = extension
+			_posed_rewritten = _rewritten_after_posing(rig, extension)
+		else:
+			for posed: Array in _posed_rewritten:
+				if is_instance_valid(posed[0]):
+					(posed[0] as Node3D).position = posed[1]
+					(posed[0] as Node3D).quaternion = posed[2]
+	elif retractable:
 		# P51-11b: procedural builders pose their own gear legs and doors from the accepted extension.
 		var builder: Script = _airplane.get("_model_builder")
 		if builder != null and builder.has_method("set_gear"):
-			builder.call("set_gear", _airplane, _session.gear_state().extension)
+			builder.call("set_gear", _airplane, extension)
 	# P51-V13: night-kit lights anchored on moving parts follow them; gear-gated lamps work only down and locked.
 	var model: Node3D = _airplane.get("root")
 	if model != null and model.has_node("NightKit"):
-		NightKit.update_dynamic(model.get_node("NightKit"), model, _session.gear_state().extension if _session.gear_is_retractable() else 1.0)
+		NightKit.update_dynamic(model.get_node("NightKit"), model, extension if retractable else 1.0)
 	# Far above the ground no wheel can be compressed: skip the per-wheel terrain/lake/track queries and leave the
 	# axles at rest. The bound (reach + highest surface + margin + 0.5 s of travel) also covers the interpolated
 	# pose between two accepted ticks. Same conservative test as ground audio (VQ-01c-R1).

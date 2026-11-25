@@ -7,18 +7,19 @@ extends RefCounted
 ## limiter and OS events before the next iteration. Two bracket nodes at the extreme process priorities and four
 ## engine signals mark those boundaries; no simulation or rendering source changes. An observer that runs once per
 ## iteration at a fixed priority calls `split(previous_usec, now_usec)`; when `phase_valid` is 1 the eight
-## `*_usec` durations sum exactly to its interval.
+## `*_usec` durations sum exactly to its interval. Observers share one probe through `acquire`/`release`, so ticks
+## carry one set of bracket callbacks however many observers split them.
 
 const FORMAT := "openrc-frame-phases v1"
 const MIN_PRIORITY := -2147483648
 const MAX_PRIORITY := 2147483647
 const DURATIONS: Array[String] = [
 	"phase_tail_process_usec", # observer callback -> last `_process` callback of the previous iteration
-	"phase_tail_engine_usec", # -> `frame_pre_draw`: deferred calls, timers, tweens, frees, RenderingServer sync
-	"phase_render_usec", # `frame_pre_draw` -> `frame_post_draw`: draw, submission and presentation waits
-	"phase_between_usec", # -> first callback of this iteration: audio, frame limiter, OS events, physics sync
+	"phase_tail_engine_usec", # -> `frame_pre_draw`: deferred calls, timers, tweens, frees, idle callbacks, navigation, RenderingServer sync
+	"phase_render_usec", # `frame_pre_draw` -> `frame_post_draw`: CPU render recording, swapchain acquire, submit, present and fence waits
+	"phase_between_usec", # -> first callback of this iteration: audio, frame limiter, OS/run-loop events, input flush, physics sync
 	"phase_physics_usec", # first `physics_frame` -> last high-priority `_physics_process` of this iteration
-	"phase_after_physics_usec", # -> `process_frame`: the last tick's deferred calls, timers and physics step
+	"phase_after_physics_usec", # -> `process_frame`: the last tick's deferred calls, timers, navigation and physics step
 	"phase_pre_process_usec", # `process_frame` handlers, resumed coroutines and deferred calls
 	"phase_process_usec", # lowest-priority `_process` -> this observer callback
 ]
@@ -32,8 +33,10 @@ const METADATA := {
 	iteration_key = "Engine.get_process_frames()",
 	invalid_rule = "phase_valid=0 and all phase values 0 unless every boundary of the previous and current iteration was observed in order",
 	drawn_rule = "phase_drawn=0 when the previous iteration did not draw; phase_tail_engine_usec then runs to this iteration's first callback",
-	tick_scripts_scope = "sum over ticks of physics_frame -> highest-priority _physics_process; excludes per-tick deferred calls, timers and the physics server step",
-	signal_order_note = "the probe's physics_frame/process_frame handlers run in connection order; handlers connected earlier land in the preceding phase",
+	tick_scripts_scope = "sum over ticks of physics_frame -> the last _physics_process callback; excludes per-tick deferred calls, timers and the physics server step",
+	signal_order_note = "the probe's physics_frame/process_frame handlers run in connection order; handlers and resumed awaits connected earlier land in the preceding phase (after_physics or between)",
+	forced_draw_note = "a RenderingServer.force_draw before the last _process callback counts as process work; the last draw of an iteration is the render phase",
+	bracket_scope = "brackets order within the default process group and the default (non-separate) render thread model",
 	monitor_note = "monitor_* are Godot's TIME_PROCESS/TIME_PHYSICS_PROCESS: per-second maxima, for comparison only",
 }
 
@@ -57,6 +60,13 @@ var _tree: SceneTree
 var _low: Node
 var _high: Node
 var _started := false
+## A separate render thread defers `frame_post_draw` into a later iteration; splits are then always invalid.
+var _separate_render_thread := false
+## Running totals since start for long-window per-tick cost (F1 A/Bs through the bridge's `eval`).
+var _total_ticks := 0
+var _total_tick_scripts_usec := 0
+static var _shared: RefCounted = null
+static var _shared_users := 0
 
 
 class LowBracket extends Node:
@@ -99,6 +109,29 @@ class HighBracket extends Node:
 		probe.mark_process_high_at(Engine.get_process_frames(), Time.get_ticks_usec())
 
 
+## The process-wide probe, started on first use. Pair every successful call with `release`.
+static func acquire(root: Node) -> RefCounted:
+	if _shared == null or not _shared.is_started():
+		var probe: RefCounted = (load("res://render/frame_phases.gd") as GDScript).new()
+		if not probe.start(root):
+			return null
+		_shared = probe
+		_shared_users = 0
+	_shared_users += 1
+	return _shared
+
+
+## Stops the shared probe when its last user releases it. Other probes are ignored.
+static func release(probe: RefCounted) -> void:
+	if probe == null or probe != _shared:
+		return
+	_shared_users -= 1
+	if _shared_users <= 0:
+		_shared.stop()
+		_shared = null
+		_shared_users = 0
+
+
 static func metric_names() -> Array[String]:
 	var names: Array[String] = []
 	names.append_array(DURATIONS)
@@ -112,16 +145,29 @@ func start(root: Node) -> bool:
 	if _started or root == null or not root.is_inside_tree():
 		return false
 	_tree = root.get_tree()
+	_separate_render_thread = int(ProjectSettings.get_setting("rendering/driver/threads/thread_model", 1)) == 2
 	_low = LowBracket.new(self, MIN_PRIORITY)
 	_high = HighBracket.new(self, MAX_PRIORITY)
-	root.add_child.call_deferred(_low)
-	root.add_child.call_deferred(_high)
+	_attach.call_deferred(root)
 	_tree.physics_frame.connect(_on_physics_frame)
 	_tree.process_frame.connect(_on_process_frame)
 	RenderingServer.frame_pre_draw.connect(_on_pre_draw)
 	RenderingServer.frame_post_draw.connect(_on_post_draw)
 	_started = true
 	return true
+
+
+## Deferred so a busy root can accept children; a probe stopped before this point adds nothing.
+func _attach(root: Node) -> void:
+	if not _started or not is_instance_valid(root) or not root.is_inside_tree():
+		return
+	for node: Variant in [_low, _high]:
+		if is_instance_valid(node) and not (node as Node).is_inside_tree():
+			root.add_child(node)
+
+
+func is_started() -> bool:
+	return _started
 
 
 func stop() -> void:
@@ -139,14 +185,23 @@ func stop() -> void:
 		RenderingServer.frame_post_draw.disconnect(_on_post_draw)
 	for node: Variant in [_low, _high]:
 		if is_instance_valid(node):
-			(node as Node).queue_free()
+			if (node as Node).is_inside_tree():
+				(node as Node).queue_free()
+			else:
+				(node as Node).free()
 	_low = null
 	_high = null
+
+
+## Completed ticks and their summed `physics_frame` -> last `_physics_process` time since the probe was created.
+func totals() -> Dictionary:
+	return {ticks = _total_ticks, tick_scripts_usec = _total_tick_scripts_usec}
 
 
 func metadata() -> Dictionary:
 	var result: Dictionary = METADATA.duplicate(true)
 	result.started = _started
+	result.separate_render_thread = _separate_render_thread
 	return result
 
 
@@ -159,12 +214,15 @@ func split_at(frame: int, previous_usec: int, now_usec: int) -> Dictionary:
 	var result := _empty()
 	var current := _current
 	var previous := _previous
-	if previous_usec <= 0 or now_usec <= previous_usec or current[ID] != frame or previous[ID] != frame - 1:
+	if _separate_render_thread or previous_usec <= 0 or now_usec <= previous_usec or current[ID] != frame or previous[ID] != frame - 1:
 		return result
 	var previous_high: int = previous[PROCESS_HIGH]
 	var process_signal: int = current[PROCESS_SIGNAL]
 	var process_low: int = current[PROCESS_LOW]
-	if previous_high < previous_usec or process_signal < 0 or process_low < 0:
+	# The observer's previous callback must lie inside the previous iteration's `_process` brackets; an observer that
+	# skipped an iteration would otherwise lump a whole iteration into the tail.
+	if previous[PROCESS_LOW] < 0 or previous_usec < previous[PROCESS_LOW] or previous_high < previous_usec \
+			or process_signal < 0 or process_low < 0:
 		return result
 	var ticks: int = current[TICKS]
 	var first: int = current[PHYSICS_FIRST] if ticks > 0 else process_signal
@@ -211,6 +269,8 @@ func mark_physics_end_at(frame: int, usec: int) -> void:
 	_current[TICK_MAX] = maxi(_current[TICK_MAX], span)
 	_current[TICK_OPEN] = -1
 	_current[PHYSICS_LAST] = usec
+	_total_ticks += 1
+	_total_tick_scripts_usec += span
 
 
 func mark_process_signal_at(frame: int, usec: int) -> void:

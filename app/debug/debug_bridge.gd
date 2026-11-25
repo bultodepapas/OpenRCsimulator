@@ -272,8 +272,7 @@ func _ready() -> void:
 	_launch_id() # before the network thread exists, so `ping` reads an immutable value
 	_render = RenderProbe.new(get_viewport())
 	_render.set_measure(true) # two GPU timestamps per frame; no-op headless. render measure=false turns it off.
-	_phases = FramePhases.new()
-	_phases.start(get_tree().root)
+	_phases = FramePhases.acquire(get_tree().root) # shared with a GOD TEST driver in the same process
 	var err := _server.listen(port, "127.0.0.1")
 	if err != OK:
 		push_error("debug bridge: cannot listen on 127.0.0.1:%d: %s" % [port, error_string(err)])
@@ -292,7 +291,8 @@ func _exit_tree() -> void:
 	if _render != null:
 		_render.set_measure(false)
 	if _phases != null:
-		_phases.stop()
+		FramePhases.release(_phases)
+		_phases = null
 	_ablation_owned_measure = false
 	_finish_ablation_pause()
 	_restore_sticks()

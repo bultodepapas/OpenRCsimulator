@@ -401,8 +401,11 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 		return true
 	if tick == _scrape_tick and generation == _scrape_generation and rate == _scrape_rate and law == _scrape_law:
 		return true
-	var continuous := tick == _scrape_tick + 1 and generation == _scrape_generation \
-		and rate == _scrape_rate and law == _scrape_law
+	# F1: a presentation-cadence observer may skip contact-free ticks; `since_tick` names the previous observed
+	# tick when every tick between them was accepted without a gap, which keeps the episode continuous.
+	var since: int = int(snapshot.get("since_tick", -1))
+	var continuous := (tick == _scrape_tick + 1 or (since >= 0 and since == _scrape_tick and tick > since)) \
+		and generation == _scrape_generation and rate == _scrape_rate and law == _scrape_law
 	if not continuous:
 		request_hull_scrape_cancel()
 	_scrape_tick = tick
@@ -479,7 +482,9 @@ static func _nonnegative_integer(value: Variant) -> bool:
 
 
 static func _valid_hull_snapshot(snapshot: Dictionary) -> bool:
-	if snapshot.size() != 4 or not snapshot.get("observation") is Dictionary \
+	var since_valid: bool = not snapshot.has("since_tick") or (typeof(snapshot.since_tick) == TYPE_INT and snapshot.since_tick >= -1)
+	if snapshot.size() != (5 if snapshot.has("since_tick") else 4) or not since_valid \
+		or not snapshot.get("observation") is Dictionary \
 		or typeof(snapshot.get("paused")) != TYPE_BOOL or typeof(snapshot.get("terminal")) != TYPE_BOOL \
 		or typeof(snapshot.get("tick_rate")) not in [TYPE_INT, TYPE_FLOAT]:
 		return false

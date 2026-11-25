@@ -338,6 +338,7 @@ OS-cold or shader-cold measurements, and the runner does not clear global caches
 | Evidence | What it tells us | Limits retained |
 | --- | --- | --- |
 | Verified GOD TEST frame stream and phase events | Mean callback FPS, p50/p95/p99/worst intervals, 1% and 0.1% lows; time and counts above 16.667/33.333/50/100 ms; startup/loading and menu latency | Callback intervals, not presented frames; short-tail estimates are labeled |
+| Main-loop phase split in the same stream (`phase_*`, [`frame_phases.gd`](../../app/render/frame_phases.gd)) | Where each interval went: late `_process`, deferred/engine tail, render (recording, acquire, submit, present and fence waits), between iterations, physics ticks, after physics, `process_frame` handlers and `_process`. `python tools/godtest/frame_phases.py RUN_DIR --phase runway_circuit` compares slow frames with typical ones | Intervals with an unobserved boundary are `phase_valid` 0; render time is not GPU time; streams before 24 November 2026 have no split |
 | Existing continuous `frames watch` | Relative stutter, absolute stalls, sustained slow frames, FPS-drop episodes, frozen-frame observations, bounded incident lead-up/recovery and per-second/route views | Armed after initial Home; gaps, detector warmup, clipped edges and capture limits stay visible |
 | Existing `ResourceSampler` | Direct-process CPU time and percentage, RSS/virtual memory, thread count, available host memory and process I/O | 100% means one logical CPU; may exceed 100%; no descendant totals or same-frame CPU attribution |
 | Passive GPU sampler | Device-wide utilization; clocks, temperature, power and memory when supported; every observed device has its own identity | Other processes contribute; the rendering GPU is not automatically identified; Apple memory is shared memory |
@@ -464,7 +465,7 @@ marks the freezes detected on Windows and the M1.
 
 | Observed symptom | Next existing tool | Controlled optimization experiment |
 | --- | --- | --- |
-| Brief hitch, freeze or FPS collapse | Retained `frame-watch/report.html`, its incidents, `timeline --stutter`, or `frames --out` | Reproduce the same phase; inspect loading, shader work, allocations, I/O and observer markers |
+| Brief hitch, freeze or FPS collapse | `frame_phases.py` on the run directory, then the retained `frame-watch/report.html`, its incidents, `timeline --stutter`, or `frames --out` | Reproduce the same phase; inspect loading, shader work, allocations, I/O and observer markers |
 | High process CPU with GPU headroom | `launch --script-profile` / `profile`, [native development tools](../../research/native-kernel/README.md#c-development-tools-nk-3) | Change one measured hot path; verify unchanged physics and rerun the same circuit |
 | High GPU utilization / render cost | `render`, `layers`, `ablate`; [graphics ladder](../../research/performance/graphics_ladder/README.md) | One quality feature or resolution change at a time; retain visual acceptance and actual pixels |
 | First-load or menu-only spike | GOD TEST selection/loading/menu phases and verbose `timeline` | Separate asset decode, preparation, upload and scene attachment; compare initial and repeated entries |
