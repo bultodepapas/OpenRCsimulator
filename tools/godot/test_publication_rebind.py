@@ -17,7 +17,7 @@ ROOT = HERE.parents[1]
 
 class CanonicalBaselineTests(unittest.TestCase):
     def test_packer_anchors_to_the_last_qualified_fixture(self):
-        receipt = json.loads((ROOT / 'docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-25.json').read_text())
+        receipt = json.loads((ROOT / 'docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-25-nk5d.json').read_text())
         self.assertEqual(pack.SOURCE_REBIND_BASE, receipt['candidate_commit'])
         self.assertEqual(pack.SOURCE_REBIND_PRIOR, receipt['candidate_fixture_sha256'])
 

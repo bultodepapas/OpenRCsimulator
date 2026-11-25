@@ -151,3 +151,14 @@ inventories, checked reports and unchanged typed frames.
 
 The renewed fixture is `bd4acbf7710aed1431415bdab13a65ec816d286c938b4c8ab0dbecc5622b9979`. Only the session source
 pin and overlay, candidate commit and fixture identity changed.
+
+## 2026-11-25 native contact reach renewal
+
+NK-5d (native contact reach in the session's contact resolution) changed the pinned `sim/flight_session.gd` again.
+The [receipt](publication-rebind-2026-11-25-nk5d.json) binds baseline `bb04c9c6` and candidate `d4e04360` to
+[run 45707240000](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45707240000). All eight Windows and
+Linux shaft and weather captures reproduced their retained hashes, and the strict packer verified the source
+inventories, checked reports and unchanged typed frames.
+
+The renewed fixture is `4a3f0c36fa759968d990a97a591eaea7b2d1bb6c69fadd859dece76c688e4cb3`. Only the session source
+pin and overlay, candidate commit and fixture identity changed.
