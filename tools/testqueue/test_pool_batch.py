@@ -289,7 +289,10 @@ class PoolBatchTests(unittest.TestCase):
         self.assertNotIn("retry_after", visible[0])
         self.assertNotIn("admission_wait", visible[0])
         self.assertEqual([r["request_id"] for r in visible], [r["request_id"] for r in result["jobs"]])
-        self.assertEqual(remote.call_count, 2)
+        self.assertEqual([call.args[1] for call in remote.call_args_list].count("run"), 2)
+        # The disk refusal on the slow host triggered one storage sweep there (no candidates).
+        self.assertEqual([(call.args[0]["id"], call.args[1]) for call in remote.call_args_list if call.args[1] != "run"],
+                         [("slow", "gc-incoming")])
         for row in result["jobs"]:
             self.assertLessEqual(row["first_placement_at"], row["last_placement_at"])
             self.assertEqual(set(row["coordinator_seconds"]), {"placement", "collection"})

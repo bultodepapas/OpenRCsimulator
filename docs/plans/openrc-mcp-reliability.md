@@ -17,6 +17,29 @@ Windows verification on 23 November ran both complete Python discovery suites. O
 
 A separate Windows headless Godot session exercised the revised MCP client against the real bridge from `64b73545a`. The admitted session opened a flight with `ready=false`, explicitly paused it and read back `paused=true`, returned home, then opened a second flight with `ready=true`. The second flight reported `paused=false` at tick 48. Session `T-bf92fc7d3c0c45fb98738f737034127e` stopped with `FINISHED` and `cleanup=CONFIRMED`. The refused-resume and lost-snapshot cases were exercised through injected bridge replies.
 
+## Post-repair inventory, 25 November
+
+The same Windows-pool records were read again on 25 November at about 08:40 Bogotá. The cohort has the 15 requests whose `request.json` changed on or after 23 November. At inspection their supervisors were 4 `FINISHED`, 5 `NEEDS_OPERATOR`, 4 `ERROR` and 2 `RUNNING`.
+
+| Signal | 20–22 Nov | 23–25 Nov |
+| --- | ---: | ---: |
+| Completed rows: passed / test failed / infrastructure failed | — / 21 / 52 | 33 / 9 / 1 |
+| Rows still waiting, refused for disk on every eligible host | — | 14 |
+| Rows blocked on a local `SUBMISSION_UNCONFIRMED` receipt | — | 1 |
+
+The 23 November cause typing worked: execution-stage infrastructure failures disappeared. The remaining stalls had two causes that the earlier repairs did not address.
+
+- **Retained failures filled the remote disks.** On `linux` the queue store held 25 GB of a full 96 GB disk. Five `TEST_FAILED` jobs held 19.8 GB and five `INFRA_FAILED` jobs 4.15 GB. Each failure kept its extracted source and import cache (about 3 GB) and its input archive (about 1 GB); its evidence was under 5 MB. Passed jobs held 0.15 GB because `pool gc` already reclaimed them. Rows needed 2.95–4.72 GB, but only 0.8–2.6 GB was free on `linux`, `primis` and `angel`. Two freeze errors also reported too little space on `C:` for the snapshot.
+- **A refused local submit reserved the Windows host indefinitely.** The batch froze a sparse worktree that was later deleted. The Windows authority refused the submit with "source must be an OpenRC checkout with the admitted adapter", although `checked` jobs execute the materialized snapshot. The pool kept the receipt `SUBMISSION_UNCONFIRMED`, and placement treated the host as busy. Receipts show the same refusal on 14, 15, 22 and 24 November, holding the host 61, 46 and 40 hours until manual reconciliation; the fourth was still holding it after 23 hours. Its ID appeared as the Windows `BUSY` reason in 17 batches.
+
+Two operational findings need owner action. `angel` and `linux` still run `remote_agent.py` from `3f5718dc3` (20 November): the remote late-conflict wait and GPU-lane changes in `14aeac505` and `1c2de9e66` had not been deployed. `primis` failed at its SSH jump and `angela` was offline.
+
+The Git history of `tools/testqueue/` shows the same pattern: 45 commits between 12 and 25 November, with audits on 14, 15, 20 and 23 November. Each round fixed its recorded incidents and verified them with fixtures. Storage retention stayed manual (17 November full disks; 101 GB reclaimed on 20 November) and remote deployment was never checked against `HEAD`.
+
+**Repairs (TQ-04-R1, TQ-04-R8/TQ-05-F0.7).** An explicit local refusal is settled through the authority's tombstone: `recover` first, then `cancel_submission`. The row ends `REJECTED` with `LOCAL_SUBMIT_REFUSED` and the host is released. Status, recovery and a placement sweep settle overdue unconfirmed local receipts the same way. `checked` submissions no longer need the frozen worktree to exist. `pool gc` also reclaims reproducible inputs of finished failures and keeps run residue. Placement runs it, with a two-minute budget, on a remote host it refuses for disk. A remote `run` refused `BUSY` is deferred under its original ID. Compact status rounds stage durations. [Decisions](../DECISIONS.md) · [queue guide](../../tools/testqueue/README.md#operator-storage-and-reconciliation-tools)
+
+An independent review found no duplicate-execution or unverified-pass path. Its two hazards (a sweep's host lock refusing another batch's `run`, and an unbounded sweep inside a placement lane) and the operator-reconciled reclaim case were fixed before deployment. Residual: a transient local error reply now ends `REJECTED` instead of reserving the host; the local fence uses two RPCs, so an acceptance between them is canceled (never duplicated); the Windows authority needs a restart to load the worktree change.
+
 ## What the records show
 
 On 23 November at about 08:10 Bogotá time, we read the Windows pool's retained `mcp/<request_id>/` directories. The cohort comprises 119 requests whose `request.json` modification date fell on 20–22 November inclusive in Bogotá. Count each directory once by saved `supervisor.json.state`, then read `batch.json.result` and `jobs[]` for row-level evidence. The window includes multiple code revisions. The files are mutable, and the saved state alone cannot establish whether a process was still alive. See the [receipt and recovery contract](../../tools/testqueue/README.md#mcp-checked-batches).

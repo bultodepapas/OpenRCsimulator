@@ -557,6 +557,28 @@ checked-evidence contract is intentionally narrower than a complete per-preset
 artifact inventory; broaden retention only after the ownership, reader-lifetime
 and native durability gates in the [handoff](research/testqueue/2026-11-15-resilience/implementation.md#16-november-re-audit-of-current-main-and-the-review-branch).
 
+**TQ-04-R8 / TQ-05-F0.7, reproducible remote inputs, 2026-11-25.** A remote checked job
+that finished with confirmed cleanup may lose, after the coordinator re-verifies its
+collected evidence, only bytes it can regenerate: archive copies, Godot's import
+cache, Python bytecode and source files whose size and SHA-256 match the job's own
+verified inventory. Files the run wrote or changed stay as reported residue, which
+answers the capture-evidence concern above; `UNKNOWN`, unconfirmed and
+operator-reconciled jobs are never touched. Placement may run this, time-bounded, for
+a host it refuses for disk; a remote `run` refused `BUSY` meanwhile wrote no job and
+is deferred under the same ID. Retained failures
+had filled the Linux host (24 of 25 GB) while rows waited on disk for hours. Local
+`retention.py` already removes whole failed checked sources (TQ-05-F0.1).
+
+**TQ-04-R1, explicit local refusals, 2026-11-25.** An explicit refusal from the
+local authority is settled by that authority's durable submission tombstone after
+`recover` shows no acceptance; it is not inferred from the reply. Transport
+failures stay uncertain, and a refused replay waits ten minutes so a late original
+can still be found. A transient error reply therefore ends the row `REJECTED`
+(relaunch) rather than reserving the host. An acceptance landing between `recover`
+and `cancel_submission` is canceled, never duplicated; an atomic tombstone-if-absent
+operation would remove that window. Checked submissions no longer require the frozen
+worktree to exist; history presets still do.
+
 ### Keep a senior lead with bounded, evidence-producing helpers
 
 **DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**

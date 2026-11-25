@@ -108,6 +108,184 @@ class PoolReconcileTests(unittest.TestCase):
             self.pool.reconcile("done1", operator_confirm=True)
 
 
+class LocalRefusalFenceTests(PoolReconcileTests):
+    """2026-11-25 audit: a refused local submit held the Windows host 23-61 h per incident."""
+
+    REQUEST = {"request_id": "late1", "request_secret": "s"}
+
+    def unconfirmed(self, identifier="late1", age=3600, **extra):
+        self.receipt(identifier, "windows", state="SUBMISSION_UNCONFIRMED", created=time.time() - age,
+                     request={**self.REQUEST, "request_id": identifier}, local_authority_root="C:/authority",
+                     error="source must be an OpenRC checkout with the admitted adapter", **extra)
+
+    def authority(self, recover=None, fenced=None):
+        operations = []
+
+        def call(operation, **payload):
+            operations.append(operation)
+            if operation == "recover":
+                return recover
+            if operation == "cancel_submission":
+                return fenced if fenced is not None else {"canceled": True}
+            raise AssertionError("unexpected authority call " + operation)
+        return call, operations
+
+    def test_recent_unconfirmed_local_submission_is_only_observed(self):
+        self.unconfirmed(age=60)
+        call, operations = self.authority()
+        with patch.object(pool_module, "rpc", side_effect=call):
+            status = self.pool.status("late1")
+        self.assertEqual((status["state"], operations), ("SUBMISSION_UNCONFIRMED", ["recover"]))
+        self.assertTrue(self.busy()["windows"])
+
+    def test_overdue_unconfirmed_local_submission_is_fenced_and_releases_the_host(self):
+        self.unconfirmed()
+        call, operations = self.authority()
+        with patch.object(pool_module, "rpc", side_effect=call):
+            status = self.pool.status("late1")
+        self.assertEqual(operations, ["recover", "recover", "cancel_submission"])
+        self.assertEqual((status["state"], status["outcome"], status["reason_code"]),
+                         ("FINISHED", "NOT_DISPATCHED", "LOCAL_SUBMIT_REFUSED"))
+        self.assertIn("admitted adapter", status["error"])
+        stored = self.stored("late1")
+        self.assertEqual(stored["state"], "CANCELED_BEFORE_DISPATCH")
+        self.assertTrue(stored["reconciliation"]["automatic"])
+        self.assertFalse(self.busy()["windows"])
+        with patch.object(pool_module, "rpc", side_effect=AssertionError("final status needs no authority call")):
+            self.assertEqual(self.pool.status("late1")["outcome"], "NOT_DISPATCHED")
+
+    def test_accepted_or_unobservable_requests_are_never_fenced(self):
+        self.unconfirmed("acc1")
+        call, operations = self.authority(fenced={"canceled": True, "job": "j1"})
+        with patch.object(pool_module, "rpc", side_effect=call):
+            self.pool._fence_local_refusal(self.stored("acc1"), self.pool.root / "jobs/acc1.json", {})
+        self.assertEqual(operations, ["recover", "cancel_submission"])
+        self.assertEqual(self.stored("acc1")["state"], "SUBMISSION_UNCONFIRMED")  # observed through status
+        call, operations = self.authority(recover={"job": "j2", "handle": "j2:x"})
+        with patch.object(pool_module, "rpc", side_effect=call):
+            self.assertIsNone(self.pool._fence_local_refusal(self.stored("acc1"), self.pool.root / "jobs/acc1.json", {}))
+        self.assertEqual(operations, ["recover"])
+        with patch.object(pool_module, "rpc", side_effect=RuntimeError("testqueue worker unavailable")):
+            self.assertIsNone(self.pool._fence_local_refusal(self.stored("acc1"), self.pool.root / "jobs/acc1.json", {}))
+        self.assertEqual(self.stored("acc1")["state"], "SUBMISSION_UNCONFIRMED")
+        self.assertTrue(self.busy()["windows"])
+
+    def test_placement_sweep_fences_a_receipt_its_batch_stopped_observing(self):
+        self.unconfirmed("late1")
+        self.unconfirmed("late2", age=30)
+        self.receipt("remote9", "mac", state="SUBMISSION_UNCONFIRMED", created=1.0)
+        call, operations = self.authority()
+        with patch.object(pool_module, "rpc", side_effect=call), patch.object(self.pool, "remote") as remote:
+            self.pool._fence_stale_local_receipts()
+            self.pool._fence_stale_local_receipts()  # rate limited: no second pass
+        remote.assert_not_called()
+        self.assertEqual(operations, ["recover", "recover", "cancel_submission"])
+        self.assertEqual(self.stored("late1")["state"], "CANCELED_BEFORE_DISPATCH")
+        self.assertEqual(self.stored("late2")["state"], "SUBMISSION_UNCONFIRMED")
+        self.assertEqual(self.stored("remote9")["state"], "SUBMISSION_UNCONFIRMED")
+
+    def test_recover_replay_refused_by_the_authority_is_fenced(self):
+        self.unconfirmed("replay1", config_sha256=self.pool.config_digest)
+        operations = []
+
+        def call(operation, **payload):
+            operations.append(operation)
+            if operation == "submit":
+                raise ValueError("source must be an OpenRC checkout with the admitted adapter")
+            return {"canceled": True} if operation == "cancel_submission" else None
+        with patch.object(pool_module, "rpc", side_effect=call):
+            status = self.pool.recover("replay1")
+        self.assertEqual(operations, ["recover", "submit", "recover", "cancel_submission"])
+        self.assertEqual((status["outcome"], status["reason_code"]), ("NOT_DISPATCHED", "LOCAL_SUBMIT_REFUSED"))
+        operations.clear()
+        self.unconfirmed("replay2", config_sha256=self.pool.config_digest)
+
+        def unavailable(operation, **payload):
+            operations.append(operation)
+            if operation == "submit":
+                raise RuntimeError("testqueue worker unavailable")  # transport failure, not a refusal
+            return None
+        with patch.object(pool_module, "rpc", side_effect=unavailable):
+            self.assertEqual(self.pool.recover("replay2")["state"], "UNKNOWN")
+        self.assertEqual(operations, ["recover", "submit"])  # a transport failure proves nothing
+        self.assertEqual(self.stored("replay2")["state"], "SUBMISSION_UNCONFIRMED")
+
+
+class RemoteStorageGcTests(PoolReconcileTests):
+    def finished(self, identifier, outcome, *, cleanup="CONFIRMED", evidence="COMPLETE", host="mac", **extra):
+        self.receipt(identifier, host, state="SUBMITTED", request={"request_id": identifier, "preset": "checked"},
+                     last_status={"state": "FINISHED", "outcome": outcome, "cleanup": cleanup, "evidence": evidence},
+                     **extra)
+
+    def test_gc_reclaims_collected_passes_and_finished_failures_only(self):
+        self.finished("pass1", "PASSED")
+        self.finished("fail1", "TEST_FAILED")
+        self.finished("time1", "TIMED_OUT", evidence="INCOMPLETE")
+        self.finished("unconf1", "TEST_FAILED", cleanup="UNCONFIRMED")
+        self.finished("incomplete1", "PASSED", evidence="INCOMPLETE")
+        self.finished("done1", "INFRA_FAILED", storage_gc={"state": "RECLAIMED"})
+        self.finished("other1", "TEST_FAILED", host="windows")
+        self.receipt("unknown1", "mac", state="SUBMISSION_UNCONFIRMED", request={"request_id": "unknown1"})
+        self.assertEqual(sorted(self.pool.gc("mac")["request_ids"]), ["fail1", "pass1", "time1"])
+
+        outcomes = {"pass1": "PASSED", "fail1": "TEST_FAILED", "time1": "INFRA_FAILED"}  # time1 mismatches
+        calls = []
+
+        def remote(host, action, payload, timeout=45):
+            calls.append((action, payload.get("request_id"), timeout))
+            if action == "gc":
+                return {"logical_bytes_removed": 100, "retained_residue": {"files": 1}}
+            return {"removed_files": 0, "logical_bytes_removed": 0}
+        with patch.object(self.pool, "collect", side_effect=lambda identifier: {
+                "pool_outcome": outcomes[identifier], "diagnostic_only": False}), \
+                patch.object(self.pool, "remote", side_effect=remote):
+            report = self.pool.gc("mac", execute=True)
+        self.assertEqual((report["reclaimed"], report["logical_bytes_removed"]), (2, 200))
+        self.assertEqual([item["request_id"] for item in report["skipped"]], ["time1"])
+        self.assertEqual(sorted(call for call in calls if call[0] == "gc"),
+                         [("gc", "fail1", 300), ("gc", "pass1", 300)])
+        self.assertEqual(self.stored("fail1")["storage_gc"]["state"], "RECLAIMED")
+        self.assertEqual(self.pool.gc("mac")["request_ids"], ["time1"])
+
+    def test_sweep_budget_defers_remaining_jobs_and_failures_go_first(self):
+        self.finished("apass", "PASSED")
+        self.finished("zfail", "TEST_FAILED")
+        self.assertEqual(self.pool.gc("mac")["request_ids"], ["zfail", "apass"])
+        with patch.object(self.pool, "collect") as collect, \
+                patch.object(self.pool, "remote", return_value={"removed_files": 0}) as remote:
+            report = self.pool.gc("mac", execute=True, deadline=time.monotonic() - 1)
+        collect.assert_not_called()
+        self.assertEqual((report["deferred"], report["reclaimed"]), (2, 0))
+        self.assertEqual([call.args[1] for call in remote.call_args_list], ["gc-incoming"])
+        with patch.object(self.pool, "gc") as gc:
+            self.assertEqual(self.pool.reclaim_for_space(
+                {"candidates": [{"host": "mac", "reasons": ["INSUFFICIENT_DISK: 1 < 3 bytes"]}]}, budget_seconds=0.5), {})
+        gc.assert_not_called()
+
+    def test_disk_refusal_triggers_one_rate_limited_sweep_per_remote_host(self):
+        decision = {"selected": None, "candidates": [
+            {"host": "mac", "reasons": ["INSUFFICIENT_DISK: 1 < 3 bytes"]},
+            {"host": "windows", "reasons": ["INSUFFICIENT_DISK: 1 < 3 bytes"]},
+            {"host": "elsewhere", "reasons": ["INSUFFICIENT_DISK: 1 < 3 bytes"]},
+            {"host": "mac2", "reasons": ["OFFLINE"]}]}
+        with patch.object(self.pool, "gc", return_value={"candidates": 2, "reclaimed": 2,
+                                                         "logical_bytes_removed": 9, "skipped": []}) as gc:
+            self.assertEqual(list(self.pool.reclaim_for_space(decision)), ["mac"])
+            self.assertEqual(self.pool.reclaim_for_space(decision), {})
+        gc.assert_called_once()
+        self.assertEqual((gc.call_args.args, gc.call_args.kwargs["execute"]), (("mac",), True))
+        self.assertLessEqual(gc.call_args.kwargs["deadline"] - time.monotonic(), Pool.AUTO_GC_BUDGET_SECONDS)
+        journal = json.loads((self.pool.root / "retention/auto-gc-mac.json").read_text())
+        self.assertEqual((journal["state"], journal["reclaimed"], journal["logical_bytes_removed"]), ("DONE", 2, 9))
+        journal["at"] -= Pool.AUTO_GC_INTERVAL_SECONDS + 1
+        (self.pool.root / "retention/auto-gc-mac.json").write_text(json.dumps(journal))
+        with patch.object(self.pool, "gc", side_effect=RuntimeError("ssh: host unreachable")):
+            self.assertEqual(self.pool.reclaim_for_space(decision)["mac"]["state"], "FAILED")
+        self.assertEqual(json.loads((self.pool.root / "retention/auto-gc-mac.json").read_text())["state"], "FAILED")
+        self.assertEqual(self.pool.reclaim_for_space({"selected": "mac"}), {})
+        self.assertEqual(self.pool.reclaim_for_space(None), {})
+
+
 class PoolCircuitTests(PoolReconcileTests):
     def finished(self, identifier, host, outcome, created, source="src", **status):
         self.receipt(identifier, host, state="SUBMITTED", created=time.time() - 100 + created, source_digest=source,

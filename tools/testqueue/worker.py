@@ -24,6 +24,8 @@ from .presets import scheduling, validate
 from .store import StaleTransition, Store
 
 
+# Presets whose adapter clones Git history from the submitted live checkout.
+HISTORY_PRESETS = frozenset({"suite", "ci", "godtest", "capture", "aircraft-screenshot"})
 _SCHEDULER_INTERVAL = 0.1
 _SCHEDULER_MAX_BACKOFF = 5.0
 _SCHEDULER_STALE_SECONDS = 30.0
@@ -512,7 +514,11 @@ class Worker:
         if target not in {platform.system().lower(), "any-qualified"}:
             raise ValueError("UNSUPPORTED_PLATFORM: no qualified worker for " + str(target))
         source = Path(request["source"]).resolve()
-        if not (source / "app/project.godot").is_file() or not (source / "tools/testqueue/adapter.py").is_file():
+        checkout = (source / "app/project.godot").is_file() and (source / "tools/testqueue/adapter.py").is_file()
+        # Only history presets clone the live checkout (adapter.prepare_history).
+        # The others execute the materialized snapshot, so a disposable worktree
+        # may be gone by dispatch; it repeatedly blocked pool batches (2026-11-25).
+        if preset in HISTORY_PRESETS and not checkout:
             raise ValueError("source must be an OpenRC checkout with the admitted adapter")
         # Resolve a caller-supplied immutable snapshot before acceptance. A duplicate
         # submission must resolve to these same bytes, not resnapshot a changing tree.
@@ -522,6 +528,8 @@ class Worker:
         if manifest.get("ok") is not True:
             raise ValueError("snapshot verification failed: " + str(manifest))
         receipt = manifest["manifest"]
+        if not checkout and not {"app/project.godot", "tools/testqueue/adapter.py"}.issubset(receipt.get("files") or {}):
+            raise ValueError("snapshot must be an OpenRC checkout with the admitted adapter")
         for key in ("source_digest", "manifest_digest"):
             if key in expected_digests and manifest.get(key) != expected_digests[key]:
                 raise ValueError("SNAPSHOT_MISMATCH: " + key + " differs from the accepted request")

@@ -273,10 +273,10 @@ def compact_row(row: dict) -> dict:
     for stage in ("placement", "collection"):
         seconds = measured.get(stage) if isinstance(measured, dict) else None
         if type(seconds) in (float, int) and math.isfinite(seconds) and seconds >= 0:
-            stage_seconds[stage] = seconds
+            stage_seconds[stage] = round(seconds, 3)  # accumulated float sums printed as 105.32800000000861
     transfer = status.get("transfer_seconds")
     if type(transfer) in (int, float) and math.isfinite(transfer) and transfer >= 0:
-        stage_seconds["transfer"] = transfer
+        stage_seconds["transfer"] = round(transfer, 3)
     start, finish = status.get("admission_wait_started_at"), status.get("admission_wait_finished_at")
     if all(type(t) in (int, float) and math.isfinite(t) for t in (start, finish)) and finish >= start:
         stage_seconds["admission"] = round(finish - start, 3)
@@ -304,8 +304,12 @@ def compact_row(row: dict) -> dict:
         elif cause == "MISSING_RECEIPT":
             stage = "dispatch"
             item["hint"] = "restore the original receipt from verified evidence and reconcile this job ID"
+        elif cause == "LOCAL_SUBMIT_REFUSED":
+            stage = "dispatch"
+            item["hint"] = ("the local authority refused this request and its durable tombstone proves it never ran; "
+                            "fix the reported cause and launch a new request")
         elif item["phase"] == "REJECTED":
-            stage = "preflight"
+            stage = "dispatch" if status.get("outcome") == "NOT_DISPATCHED" else "preflight"
         elif item["phase"] == "COLLECTION_BLOCKED":
             stage = "collection"
         elif isinstance(checked, dict) and checked:

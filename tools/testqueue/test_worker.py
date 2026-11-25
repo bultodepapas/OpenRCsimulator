@@ -383,6 +383,24 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(finished.get("cleanup"), "CONFIRMED", finished)
         self.assertEqual(finished["canceled"], 1)
 
+    def test_checked_submit_uses_the_snapshot_after_its_disposable_worktree_is_gone(self):
+        # 2026-11-25 audit: pool batches froze sparse worktrees that were deleted
+        # before dispatch; every later checked submit was refused on Windows.
+        self.worker.draining = True
+        full_snapshot = self.base / "full-scope"
+        snapshots.capture(self.repo, full_snapshot, scope=("app", "tools", "research", "assets", "site", "docs", ".github"))
+        removed = self.base / "worktree-removed"
+        self.repo.rename(removed)
+        self.addCleanup(lambda: removed.exists() and not self.repo.exists() and removed.rename(self.repo))
+        accepted = self._submit("disposable-worktree", headless=True)
+        self.assertEqual(self._status(accepted["job"])["payload"]["source"], str(self.repo.resolve()))
+        self._call("cancel", handle=accepted["handle"])
+        # History presets clone the live checkout, so they still require it.
+        with self.assertRaisesRegex(ValueError, "admitted adapter"):
+            self._call("submit", owner="history-needs-source", preset="suite", options={},
+                       source=str(self.repo), snapshot=str(full_snapshot),
+                       request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex)
+
     def test_changed_submitted_snapshot_never_executes(self):
         self.worker.draining = True
         job = self._submit("must-not-execute")

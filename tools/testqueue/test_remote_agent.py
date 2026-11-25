@@ -432,11 +432,85 @@ class RemoteAgentTests(unittest.TestCase):
         kept = agent.read_json(directory / "state.json")
         self.assertEqual((kept["outcome"], kept["storage_gc"]["state"]), ("PASSED", "RECLAIMED"))
         self.assertTrue((directory / "check-result.json").is_file())
-        # A failed job is never a candidate.
-        state["outcome"] = "TEST_FAILED"
+        # Unconfirmed cleanup or an UNKNOWN attempt is never a candidate, whatever its outcome.
+        state.pop("storage_gc", None)
+        for changes in ({"outcome": "TEST_FAILED", "cleanup": "UNCONFIRMED"},
+                        {"state": "UNKNOWN", "outcome": "INFRA_FAILED", "cleanup": "CONFIRMED"},
+                        {"outcome": "PASSED", "evidence": "INCOMPLETE"}):
+            agent.write_json(directory / "state.json", {**state, **changes})
+            with self.assertRaises(agent.Refused):
+                agent.collect_garbage(self.root, {**bad, "payload_sha256": state["payload_sha256"]})
+
+    def _failed_job(self, **changes):
+        self.accepted(self.request(self.sample_archive()))
+        self.assertEqual(self._supervise(), 0)
+        directory = self.root / "jobs/job1"
+        state = agent.read_json(directory / "state.json")
+        # Same layout as a finished failed test: what matters is outcome and confirmed cleanup.
+        state.update({"outcome": "TEST_FAILED", "evidence": "COMPLETE", "cleanup": "CONFIRMED", **changes})
         agent.write_json(directory / "state.json", state)
-        with self.assertRaises(agent.Refused):
-            agent.collect_garbage(self.root, {**bad, "payload_sha256": state["payload_sha256"]})
+        # Pool remotes are POSIX; the logic is exercised on every OS.
+        supported = mock.patch.object(agent, "_failure_reclaim_supported", return_value=True)
+        supported.start()
+        self.addCleanup(supported.stop)
+        return directory, state, {"request_id": "job1", "payload_sha256": state["payload_sha256"],
+                                  "operator_confirm": True}
+
+    def test_operator_gc_of_a_failure_refuses_reconciled_attempts_and_windows_hosts(self):
+        directory, state, request = self._failed_job(outcome="INFRA_FAILED", evidence="INCOMPLETE",
+                                                     reconciliation={"proof": "reboot", "operator_confirmed": True})
+        with self.assertRaises(agent.Refused) as refused:
+            agent.collect_garbage(self.root, request)
+        self.assertEqual(refused.exception.code, "CONFLICT")
+        state.pop("reconciliation")
+        agent.write_json(directory / "state.json", state)
+        with mock.patch.object(agent, "_failure_reclaim_supported", return_value=False), \
+                self.assertRaises(agent.Refused) as refused:
+            agent.collect_garbage(self.root, request)
+        self.assertEqual(refused.exception.code, "UNSUPPORTED")
+        self.assertTrue((directory / "input.tar").is_file())
+        self.assertTrue((directory / "source/app/tests/test_sample.gd").is_file())
+
+    def test_operator_gc_of_a_failure_keeps_everything_the_run_wrote(self):
+        directory, state, request = self._failed_job()
+        source = directory / "source"
+        (source / "assets/aircraft/model-bindings.json").write_text('{"changed": true}\n')  # modified input
+        (source / "app/tests/capture.png").write_bytes(b"evidence")                     # written by the run
+        imported = source / "app/.godot/imported"
+        imported.mkdir(parents=True)
+        (imported / "texture.ctex").write_bytes(b"x" * 64)
+        cache = source / "tools/godot/__pycache__"
+        cache.mkdir(exist_ok=True)
+        (cache / "run_checked.cpython-312.pyc").write_bytes(b"pyc")
+        result = agent.collect_garbage(self.root, request)
+        self.assertFalse((directory / "input.tar").exists())
+        self.assertFalse((source / "app/.godot").exists())
+        self.assertFalse((source / "app/tests/test_sample.gd").exists())
+        self.assertFalse((source / "tools/godot/run_checked.py").exists())
+        self.assertFalse(cache.exists())
+        self.assertEqual((source / "app/tests/capture.png").read_bytes(), b"evidence")
+        self.assertEqual((source / "assets/aircraft/model-bindings.json").read_text(), '{"changed": true}\n')
+        residue = result["retained_residue"]
+        self.assertIn("app/tests/capture.png", residue["sample"])
+        self.assertIn("assets/aircraft/model-bindings.json", residue["sample"])
+        self.assertEqual(residue["files"], len(residue["sample"]))
+        self.assertGreater(result["logical_bytes_removed"], 64)
+        for name in ("check-result.json", "import-result.json", "source-inventory.json"):
+            self.assertTrue((directory / name).is_file(), name)
+        kept = agent.read_json(directory / "state.json")
+        self.assertEqual((kept["outcome"], kept["storage_gc"]["state"]), ("TEST_FAILED", "RECLAIMED"))
+        # Idempotent: a repeated sweep reports the earlier reclaim and touches nothing.
+        self.assertEqual(agent.collect_garbage(self.root, request)["state"], "RECLAIMED")
+        self.assertTrue((source / "app/tests/capture.png").is_file())
+
+    def test_operator_gc_of_a_failure_trusts_only_its_own_inventory(self):
+        directory, _, request = self._failed_job(outcome="INFRA_FAILED", evidence="INCOMPLETE",
+                                                 source_inventory_sha256="0" * 64)
+        result = agent.collect_garbage(self.root, request)
+        # Archive copies go; with an unverified inventory every source file is residue.
+        self.assertFalse((directory / "input.tar").exists())
+        self.assertTrue((directory / "source/app/tests/test_sample.gd").is_file())
+        self.assertGreaterEqual(result["retained_residue"]["files"], 4)
 
     def test_operator_gc_incoming_keeps_active_recent_and_pending_archives(self):
         incoming = self.root / "incoming"

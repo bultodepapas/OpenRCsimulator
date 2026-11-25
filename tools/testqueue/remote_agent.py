@@ -1494,12 +1494,98 @@ def _tree_bytes(path):
     return total
 
 
+RECLAIMABLE_FAILURES = frozenset({"TEST_FAILED", "TIMED_OUT", "INFRA_FAILED"})
+RESIDUE_SAMPLE = 20
+
+
+def _failure_reclaim_supported():
+    # Pool hosts are macOS and Linux. Windows unlink fails on read-only files and
+    # its rmtree is not descriptor-based, so a Windows remote keeps failures.
+    return os.name != "nt"
+
+
+def _reclaim_reproducible(directory, state):
+    """Remove only bytes a failed job can regenerate; keep everything the run made.
+
+    Deleted: the job's input archive copies, Godot's import cache
+    (``source/app/.godot``), Python bytecode caches and every extracted source
+    file whose size and SHA-256 still match the job's own verified inventory.
+    Retained as residue: any other file under ``source`` (written or changed by
+    the run, for example by ``isolate_project``), plus the job record, logs,
+    stage outputs and profile outside ``source``. Each step is idempotent, so a
+    retry after an interrupted sweep only finishes the same removal.
+    """
+    removed = {"files": 0, "bytes": 0}
+    names = []
+
+    def unlink(path):
+        info = os.lstat(path)
+        os.unlink(path)
+        removed["files"] += 1
+        removed["bytes"] += info.st_size
+
+    for name in ("input.tar", "retained-input.tar"):
+        target = directory / name
+        if target.is_symlink():
+            raise Refused(f"{name} is a link; not removed", "CONFLICT")
+        if target.is_file():
+            unlink(target)
+            names.append(name)
+    source = directory / "source"
+    if source.is_symlink():
+        raise Refused("source is a link; not removed", "CONFLICT")
+    retained = {"files": 0, "bytes": 0, "sample": []}
+    if not source.is_dir():
+        return names, removed, retained
+    imports = source / "app" / ".godot"
+    if imports.is_symlink():
+        raise Refused("source/app/.godot is a link; not removed", "CONFLICT")
+    if imports.is_dir():
+        removed["bytes"] += _tree_bytes(imports)
+        shutil.rmtree(imports)  # descriptor-based on POSIX; does not follow links
+        names.append("source/app/.godot")
+    inventory = {}
+    inventory_path = directory / "source-inventory.json"
+    if (inventory_path.is_file() and not inventory_path.is_symlink()
+            and digest(inventory_path) == state.get("source_inventory_sha256")):
+        files = read_json(inventory_path).get("files")
+        inventory = files if isinstance(files, dict) else {}
+    for base, dirs, files in os.walk(source, topdown=False):
+        for name in files:
+            path = Path(base) / name
+            relative = path.relative_to(source).as_posix()
+            info = os.lstat(path)
+            expected = inventory.get(relative)
+            reproducible = stat.S_ISREG(info.st_mode) and (
+                path.parent.name == "__pycache__" and name.endswith(".pyc")
+                or isinstance(expected, dict) and expected.get("size") == info.st_size
+                and expected.get("sha256") == digest(path))
+            if reproducible:
+                unlink(path)
+            else:
+                retained["files"] += 1
+                retained["bytes"] += info.st_size
+                if len(retained["sample"]) < RESIDUE_SAMPLE:
+                    retained["sample"].append(relative)
+        for name in dirs:
+            with contextlib.suppress(OSError):
+                os.rmdir(Path(base) / name)  # only empty directories; a link is never followed
+    with contextlib.suppress(OSError):
+        os.rmdir(source)
+    if removed["files"] or not source.exists():
+        names.append("source (inventory-verified files)")
+    return names, removed, retained
+
+
 def collect_garbage(root, request):
-    """Remove the extracted source and archive copies of one collected PASSED job.
+    """Remove reproducible input copies of one collected, finished job.
 
     The coordinator calls this only after verifying its own collected evidence.
-    The job record, logs, reports and stage outputs stay; failed, incomplete and
-    UNKNOWN jobs are never touched.
+    A PASSED/COMPLETE/CONFIRMED job loses its whole extracted source and archive
+    copies. A finished failure with confirmed cleanup (TEST_FAILED, TIMED_OUT,
+    INFRA_FAILED) loses only what ``_reclaim_reproducible`` proves it can
+    regenerate; files the run wrote are retained. The job record, logs, reports
+    and stage outputs always stay; UNKNOWN or unconfirmed jobs are never touched.
     """
     if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256", "operator_confirm"}
             or request.get("operator_confirm") is not True
@@ -1515,9 +1601,30 @@ def collect_garbage(root, request):
         state = read_json(path)
         if state.get("payload_sha256") != request["payload_sha256"]:
             raise Refused("payload identity differs from the collected job", "CONFLICT")
+        if (state.get("state") == "FINISHED" and state.get("cleanup") == "CONFIRMED"
+                and state.get("outcome") in RECLAIMABLE_FAILURES):
+            if (state.get("storage_gc") or {}).get("state") == "RECLAIMED":
+                return {"request_id": request["request_id"], **state["storage_gc"]}
+            if state.get("reconciliation"):
+                # An operator-reconciled UNKNOWN attempt keeps its only forensic copy.
+                raise Refused("an operator-reconciled attempt keeps its source", "CONFLICT")
+            if not _failure_reclaim_supported():
+                raise Refused("failure reclamation needs POSIX unlink semantics", "UNSUPPORTED")
+            # Durable intent first: an interrupted sweep is visible and a retry finishes it.
+            state["storage_gc"] = {"state": "PENDING", "at": time.time(),
+                                   "scope": "reproducible inputs of a finished failure; run residue retained"}
+            publish_terminal(path, state)
+            names, removed, retained = _reclaim_reproducible(directory, state)
+            state["storage_gc"] = {"state": "RECLAIMED", "removed": names, "logical_bytes_removed": removed["bytes"],
+                                   "files_removed": removed["files"], "retained_residue": retained, "at": time.time(),
+                                   "scope": "reproducible inputs of a finished failure; run residue retained"}
+            publish_terminal(path, state)
+            return {"request_id": request["request_id"], "removed": names,
+                    "logical_bytes_removed": removed["bytes"], "retained_residue": retained}
         if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) != (
                 "FINISHED", "PASSED", "COMPLETE", "CONFIRMED"):
-            raise Refused("only a FINISHED/PASSED/COMPLETE/CONFIRMED job is collected", "CONFLICT")
+            raise Refused("only a finished job with confirmed cleanup (PASSED with complete evidence, "
+                          "or TEST_FAILED/TIMED_OUT/INFRA_FAILED) is collected", "CONFLICT")
         removed, names = 0, []
         for name in ("source", "input.tar", "retained-input.tar"):
             target = directory / name

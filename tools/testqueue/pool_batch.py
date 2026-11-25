@@ -122,6 +122,22 @@ def _refusal_causes(status):
             for candidate in (status.get("decision") or {}).get("candidates", [])}
 
 
+def _reclaim_for_space(pool, submission, deadline):
+    """Ask the pool to reclaim remote hosts that refused for disk space; advisory.
+
+    The sweep's budget never exceeds this observation window.
+    """
+    reclaim = getattr(pool, "reclaim_for_space", None)
+    if not callable(reclaim):
+        return
+    try:
+        budget = min(Pool.AUTO_GC_BUDGET_SECONDS, deadline - time.monotonic())
+        if budget >= 1:
+            reclaim(submission.get("decision"), budget_seconds=budget)
+    except Exception:  # storage work never changes a row's placement state
+        pass
+
+
 def _record_wait(row, submission):
     now = time.time()
     previous = row.get("admission_wait") or {}
@@ -233,6 +249,7 @@ def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, dea
                     retry_ready[row["request_id"]] = time.monotonic() + delay
                     if not _script_specific_refusal(submission):
                         saturated.add(constraint)
+                    _reclaim_for_space(pool, submission, deadline)
                 elif submission.get("job") == row["request_id"]:
                     row.update(phase="TRACKING", status=submission)
                 else:
@@ -276,6 +293,11 @@ def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, dea
                     delay = _backoff(row.get("submission_attempts", 1))
                     retry_ready[row["request_id"]] = time.monotonic() + delay
                     row.update(phase="RETRY_WAIT", retry_after=time.time() + delay, status=status)
+                elif status["state"] == "FINISHED" and status.get("outcome") == "NOT_DISPATCHED":
+                    # Proved never to have run (local tombstone or operator
+                    # reconciliation). There is no evidence to collect.
+                    row.update(phase="REJECTED", status=status)
+                    row.setdefault("first_error", status.get("error") or "not dispatched")
                 else:
                     phase = "COLLECTING" if status["state"] == "FINISHED" else (
                         "BLOCKED" if status["state"] in {"UNKNOWN", "SUBMISSION_UNCONFIRMED", "NOT_FOUND"} else "TRACKING")
