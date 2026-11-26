@@ -9,7 +9,9 @@ extends SceneTree
 ## - single ticks of a bare Simulation restored from a session checkpoint, with injected malformed rotor momentum,
 ##   substep counts, post-step filters, auxiliary projections, event transitions and event types, an overflowing state
 ##   and a vanishing mass: each must end like the reference, with its refusal reason and restored state;
-## - refusals: the reference keeps ticks the kernel does not own (step policies, a reference stage, the hook off).
+## - NK-6c: the finite-pack electrics (`id@pack`, the catalog's default battery mode) through their step policy
+##   (_electric_step: battery step, contact pieces, pack supervision), with rotor-stop and battery-exhaustion events;
+## - refusals: the reference keeps ticks the kernel does not own (other step policies, a reference stage, the hook off).
 ## Skips (passes) without a verified native library.
 
 const Flight := preload("res://sim/flight_session.gd")
@@ -68,7 +70,12 @@ func _initialize() -> void:
 func _run() -> void:
 	_field = FieldLoader.load_from().field
 	_lake = LakeLoader.load_from(LakeLoader.DEFAULT_PATH).lake
+	var specs: PackedStringArray = []
 	for id: String in Catalog.ids():
+		specs.append(id)
+		if Catalog.has_battery_mode(id, "pack"):
+			specs.append(id + "@pack")
+	for id: String in specs:
 		var start: String = Flight.START_RUNWAY
 		var probe := _session(id, start, "calm")
 		if probe == null:
@@ -100,6 +107,7 @@ func _run() -> void:
 		_pair(id, "calm", "gear_cycle")
 		_pair(id, "calm", "fuel")
 		_pair(id, "calm", "stop")
+		_pair(id, "calm", "battery")
 	for id: String in ["f4u-corsair-250", "turbo-lumber-evolution", "jensen-das-ugly-stik-60"]:
 		if id in _fleet and _start_for[id] == Flight.START_RUNWAY:
 			for weather: String in ["gusty", "turbulent", "spatial"]:
@@ -109,6 +117,7 @@ func _run() -> void:
 			_fault_case(id, fault)
 	_check("the fleet located a rotor-stop event", _events_seen.has("rotor_stop"), str(_events_seen))
 	_check("the fleet located a fuel-exhaustion event", _events_seen.has("fuel_exhausted"), str(_events_seen))
+	_check("the finite packs located a battery-exhaustion event", _events_seen.has("battery_exhausted"), str(_events_seen))
 	_check("some flight ticks were subdivided", _subdivided > 0, str(_subdivided))
 	for reason: String in FAULTS.values():
 		_check("the fleet met the refusal \"%s\"" % reason, _reasons_seen.has(reason), str(_reasons_seen.keys()))
@@ -132,7 +141,8 @@ func _session(id: String, start: String, weather: String) -> Node:
 	s.soft_hull_contacts = true
 	s.start_choice = start
 	s.setup_stage_backend(NativeStage.BACKEND_NATIVE)
-	s.setup(str(Catalog.entry(id).data), id)
+	var spec: PackedStringArray = id.split("@")
+	s.setup(Catalog.data_for(spec[0], spec[1] if spec.size() > 1 else "ideal"), spec[0])
 	if not s.aircraft.get("ok", false):
 		s.free()
 		return null
@@ -194,6 +204,8 @@ func _controls(scenario: String, tick: int) -> Dictionary:
 			return {roll = 0.0, pitch = 0.1, yaw = 0.0, throttle = 1.0}
 		"stop":
 			return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+		"battery":
+			return {roll = 0.0, pitch = 0.1, yaw = 0.0, throttle = 1.0}
 	return {roll = 0.05, pitch = 0.04, yaw = 0.0, throttle = 0.6}
 
 
@@ -229,6 +241,11 @@ func _event_index(s: Node, type: String) -> int:
 	return -1
 
 
+## The continuous rotor index of a model stepped by the finite-pack policy (charge follows it), or -1.
+func _policy_rotor(s: Node) -> int:
+	return s._rotor_index() if s.sim.model.step_policy.get_method() == &"_electric_step" else -1
+
+
 ## Sets one continuous value and the auxiliary projection that must agree with it.
 func _set_continuous(s: Node, index: int, value: float) -> void:
 	s.sim.continuous[index] = value
@@ -244,15 +261,22 @@ func _pair(id: String, weather: String, scenario: String) -> void:
 	if scenario == "gear_cycle" and not pair[0].gear_is_retractable():
 		_free(pair)
 		return
-	if scenario in ["fuel", "stop"]:
+	if scenario in ["fuel", "stop", "battery"]:
 		var type := "fuel_exhausted" if scenario == "fuel" else "rotor_stop"
-		var index := _event_index(pair[0], type)
+		var index := _event_index(pair[0], type) if scenario != "battery" else -1
+		var rotor := _policy_rotor(pair[0])
+		if scenario == "stop" and index < 0:
+			index = rotor
+		elif scenario == "battery":
+			index = rotor + 1 if rotor >= 0 else -1 # the remaining pack charge (C) follows the rotor
 		if index < 0:
 			_free(pair)
 			return
+		var value: float = {fuel = 0.0004, stop = 300.0, battery = 4.0}[scenario] # fuel kg; rotor rpm; charge C
 		for s: Node in pair:
-			_set_continuous(s, index, 0.0004 if scenario == "fuel" else 300.0) # a few seconds of fuel; a slow rotor
-	var ticks: int = {takeoff = 1440, landing = 960, cut = 1440, gear_cycle = 2100, fuel = 2400, stop = 2400}.get(scenario, 960)
+			_set_continuous(s, index, value)
+	var ticks: int = {takeoff = 1440, landing = 960, cut = 1440, gear_cycle = 2100, fuel = 2400, stop = 2400,
+		battery = 2400}.get(scenario, 960)
 	var stats := _fly(pair, ticks, scenario, label)
 	if scenario == "fuel":
 		_check(label + ": the fuel ran out through the located event", stats.events.has("fuel_exhausted"), str(stats))
@@ -367,6 +391,8 @@ func _fault_case(id: String, fault: String) -> void:
 		b.free()
 		s.free()
 	var expected: String = FAULTS[fault]
+	if fault == "substeps_four" and _policy_rotor_spec(id):
+		expected = "step rejected: the step policy owns the tick and cannot honour 4 contact substeps"
 	var native: Dictionary = results[0]
 	var reference: Dictionary = results[1]
 	var detail := "%s / %s" % [str(native).left(600), str(reference).left(600)]
@@ -402,6 +428,10 @@ func _fault_case(id: String, fault: String) -> void:
 		_check(label + ": the event was located", not native.events.is_empty(), detail)
 		for event: Dictionary in native.events:
 			_events_seen[str(event.type)] = true
+
+
+func _policy_rotor_spec(id: String) -> bool:
+	return id.ends_with("@pack")
 
 
 func _inject(b: Node, m: RefCounted, fault: String) -> void:
@@ -529,6 +559,17 @@ func _hook_off() -> void:
 	_check(id + ": a reference stage leaves no integrator", s.sim._native_integrator() == null)
 	s.sim.model.stage = native_stage
 	s.free()
+	for spec: String in _fleet:
+		if spec.ends_with("@pack"):
+			var pack := _session(spec, _start_for[spec], "calm")
+			pack.native_electric_step_enabled = false
+			var before: int = int(_kernel(pack).tick_stats().calls)
+			for i in 60:
+				_tick(pack)
+			_check(spec + ": the policy hook off keeps the reference", int(_kernel(pack).tick_stats().calls) == before
+				and pack.sim.tick == 60, str(_kernel(pack).tick_stats()))
+			pack.free()
+			break
 
 
 func _free(pair: Array) -> void:

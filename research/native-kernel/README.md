@@ -500,7 +500,7 @@ diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 | `nk_weather*`, `nk_spatial*`, `nk_wake*` | Stage-time weather, atmosphere, local spatial flow and transported/quasistatic wake |
 | `nk_helicopter*` | Helicopter controls, rotor/airframe forces, drive, body derivatives and ground contact |
 | `nk_legacy_ground.hpp` | Legacy no-wheel-state flat/lake contact law for valid older or workshop models |
-| `nk_tick.hpp` | `simulation.gd` legacy joint tick (`_rk4_substeps`, `_locate_substeps`, stage validity), `rigid_body.gd` `derivative`, `integrator.gd` RK4, `event_step.gd` and `event_bracket.gd` (NK-6a) |
+| `nk_tick.hpp` | `simulation.gd` legacy joint tick (`_rk4_substeps`, `_locate_substeps`, stage validity), `rigid_body.gd` `derivative`, `integrator.gd` RK4, `event_step.gd` and `event_bracket.gd` (NK-6a); `electric_battery_step.gd`, `electric_stop.gd` and `electric_contact_step.gd` for the finite-pack policy (NK-6c) |
 | `nk_kernel.cpp` | `OpenRCNativeKernel` (RefCounted): prepare, per-call and per-tick methods, probes, counters, benches |
 
 These rows identify implemented code, not release qualification. Installed fleet, lifecycle and package evidence
@@ -563,7 +563,11 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   and auxiliary-projection callbacks are called where the reference calls them. `Simulation._native_integrator`
   selects it; `{}` refuses before any evaluation, `{fault}` carries the reference's refusal, and otherwise the
   endpoint is committed by `Simulation._commit_step`. `tick_stats()` counts calls, answers and faults
-  ([evidence](../../docs/research/native-kernel/NK-6a/README.md)).
+  ([evidence](../../docs/research/native-kernel/NK-6a/README.md)). NK-6c admits one step policy, the finite-pack
+  `FlightSession._electric_step`. Its pure plan (`native_electric_step_plan`: dynamic battery, contact pieces,
+  rotor index, pack supervision) comes first. The kernel then runs the battery step or the contact pieces, with
+  rotor-stop and battery-exhaustion events in the policy's order, and calls back `_project_electric_stop` and
+  `_supervise_pack` ([evidence](../../docs/research/native-kernel/NK-6c/README.md)).
 - `stage_glow_firing(body, values, time_s)` (NK-6b) answers `GlowFlight.point(...).firing_fraction`, the only point
   value the glow step policy's endpoint and counted segments read, from the prepared glow stage's own lifecycle
   point. `FlightSession.native_glow_firing` asks only inside the tick its guarded pre-step installed, and

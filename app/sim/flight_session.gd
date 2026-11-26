@@ -5422,6 +5422,20 @@ func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivati
 	return {state = result.state, events = result.events}
 
 
+## NK-6c: _electric_step's plan for the native kernel's integration of this tick, computed as _electric_step computes
+## it: [battery dynamic (1/0), contact pieces, combined rotor index, pack supervision (1/0)]. The kernel calls back
+## _project_electric_stop and _supervise_pack where the policy calls them. Empty keeps the reference policy: the hook
+## off or a derived session class (whose policy pieces may differ).
+func native_electric_step_plan(combined: PackedFloat64Array, dt: float) -> PackedInt64Array:
+	if not native_electric_step_enabled or get_script().resource_path != SELF_PATH:
+		return PackedInt64Array()
+	var dynamic: bool = battery_is_dynamic()
+	var count: int = 1
+	if dynamic and aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
+		count = Ground.substeps(combined.slice(0, RB.SIZE), current_landing_gear(), dt, ground_surfaces, _rc_track)
+	return PackedInt64Array([1 if dynamic else 0, count, RB.SIZE + _rotor_index(), 1 if dynamic and battery_is_pack() else 0])
+
+
 ## BAT-11: the ESC samples its filtered pack voltage at the accepted endpoint and holds the new output limit
 ## for the next tick. Only the zero-rate supervisor slots change; the integrated state is untouched.
 func _supervise_pack(state: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -5684,6 +5698,8 @@ var native_endpoint_facts_enabled := true
 var native_endpoint_fact_answers := 0
 ## NK-5i: this class's script, for published_endpoint_facts' derived-class refusal (as observer_air_and_wind's).
 const SELF_PATH := "res://sim/flight_session.gd"
+## NK-6c test hook: false keeps the finite-pack step policy (_electric_step) in the reference transaction.
+var native_electric_step_enabled := true
 ## NK-6b test hook: false always evaluates the glow step policy's endpoint point(), for equivalence checks.
 var native_glow_firing_enabled := true
 ## Diagnostic: glow endpoint samples the native stage answered.

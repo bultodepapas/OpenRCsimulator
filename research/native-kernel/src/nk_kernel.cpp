@@ -1962,6 +1962,8 @@ public:
 			{"1e-30", nk::kGd1eMinus30}, {"1.0e-30", 1.0e-30},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
+			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.
+			{"2.220446049250313e-16", nk::kFloat64Epsilon},
 			{"9223372036854775808.0", 9223372036854775808.0},
 		};
 		for (const auto &entry : table) {
@@ -2300,6 +2302,26 @@ public:
 				inertia.size() != 6 || inertia_inv.size() != 6) {
 			return Dictionary();
 		}
+		// NK-6c: a model stepped by the session's finite-pack policy (_electric_step) first gives the policy's plan:
+		// [dynamic, contact pieces, combined rotor index, pack supervision], computed as the policy computes it (pure).
+		static const godot::StringName k_step_policy("step_policy"), k_electric_step("_electric_step"),
+			k_electric_plan("native_electric_step_plan"), k_supervise_pack("_supervise_pack"),
+			k_project_stop("_project_electric_stop");
+		const godot::Callable policy = model->get(k_step_policy);
+		godot::Object *policy_owner = nullptr;
+		godot::PackedInt64Array plan;
+		if (policy.is_valid()) {
+			policy_owner = policy.get_object();
+			if (policy_owner == nullptr || policy.get_method() != k_electric_step || !policy_owner->has_method(k_electric_plan)) {
+				return Dictionary();
+			}
+			PackedFloat64Array planned_state = state.duplicate();
+			planned_state.append_array(continuous);
+			const Variant planned = policy_owner->call(k_electric_plan, planned_state, dt);
+			if (planned.get_type() != Variant::PACKED_INT64_ARRAY) return Dictionary();
+			plan = planned;
+			if (plan.size() != 4 || plan[2] < kStateSize || plan[2] + 1 >= kStateSize + continuous.size()) return Dictionary();
+		}
 		++tick_calls_;
 		const int extra = static_cast<int>(continuous.size());
 		const int size = kStateSize + extra;
@@ -2341,6 +2363,10 @@ public:
 			return tick_fault("step rejected: substep count is not an integer within 1..16");
 		}
 		const int pieces = static_cast<int>(int64_t(declared));
+		if (policy_owner != nullptr && pieces > 1) {
+			return tick_fault(String("step rejected: the step policy owns the tick and cannot honour ") +
+				String::num_int64(pieces) + String(" contact substeps"));
+		}
 		if (stage_error != nullptr) return tick_fault(String("step rejected: ") + stage_error);
 
 		// The RK stage derivative `f`.
@@ -2362,7 +2388,48 @@ public:
 		bool located = true;
 		String event_type;
 		const Array events = model->get(k_events);
-		if (!events.is_empty()) {
+		bool policy_ok = true;
+		std::vector<nk::TickPolicyEvent> policy_events;
+		if (policy_owner != nullptr) {
+			// FlightSession._electric_step: battery step (one piece) or contact pieces, then pack supervision; a fixed
+			// source keeps the rotor-stop event step. Any failure makes the policy return [NAN].
+			const bool dynamic = plan[0] != 0;
+			const int64_t count = plan[1];
+			const int rotor = static_cast<int>(plan[2]);
+			const bool supervised = plan[3] != 0;
+			const godot::Callable project_stop(policy_owner, k_project_stop);
+			auto project = [&](const nk::R *in, int count_in, int at, std::vector<nk::R> &out) -> bool {
+				const Variant projected = project_stop.call(pack(in, count_in), at);
+				if (projected.get_type() != Variant::PACKED_FLOAT64_ARRAY) return false;
+				const PackedFloat64Array values = projected;
+				out.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) out[static_cast<size_t>(i)] = values[i];
+				return true;
+			};
+			policy_ok = false;
+			if (dynamic) {
+				if (count >= 1 && count <= nk::kTickMaxSubsteps) {
+					status = count == 1 ?
+						nk::tick_battery_advance(combined, size, t, dt, f, tick_first_.data(), rotor, rotor + 1, project,
+							policy_ok, tick_next_, policy_events, tick_rk4_) :
+						nk::tick_contact_advance(combined, size, t, dt, f, tick_first_.data(), rotor, rotor + 1, project,
+							static_cast<int>(count), policy_ok, tick_next_, policy_events, tick_rk4_);
+					if (status == nk::TickStatus::Ok && policy_ok && supervised) {
+						const PackedFloat64Array supervised_state = policy_owner->call(k_supervise_pack, pack(tick_next_), dt);
+						tick_next_.resize(static_cast<size_t>(supervised_state.size()));
+						for (int64_t i = 0; i < supervised_state.size(); ++i) tick_next_[static_cast<size_t>(i)] = supervised_state[i];
+					}
+				}
+			} else {
+				status = nk::tick_event_advance(combined, size, t, dt, f, tick_first_.data(), rotor, project,
+					project_stop.is_valid(), policy_ok, tick_next_, tick_event_times_, tick_rk4_);
+				for (const nk::R at : tick_event_times_) {
+					nk::TickPolicyEvent rotor_event;
+					rotor_event.time_s = at;
+					policy_events.push_back(rotor_event);
+				}
+			}
+		} else if (!events.is_empty()) {
 			const Dictionary event = events[0];
 			const godot::Callable transition = event.get(k_transition, Variant());
 			const int index = static_cast<int>(int64_t(event.get(k_index, Variant())));
@@ -2387,7 +2454,26 @@ public:
 		}
 		if (!located) return tick_fault("step rejected: the event locator could not bound the tick");
 		Array tick_events;
-		if (!events.is_empty()) {
+		if (policy_owner != nullptr && !policy_ok) {
+			// The policy returned [NAN]: Simulation finds no events and refuses the integrated state.
+			tick_next_.assign(1, nk::R(nk::kNan));
+		} else if (policy_owner != nullptr) {
+			const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
+			const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
+			for (const nk::TickPolicyEvent &policy_event : policy_events) {
+				if (!nk::is_finite(policy_event.time_s) || policy_event.time_s.v < earliest.v || policy_event.time_s.v > latest.v) {
+					return tick_fault("step rejected: step policy returned malformed events");
+				}
+				Dictionary event;
+				event[String("type")] = String(policy_event.battery ? "battery_exhausted" : "rotor_stop");
+				event[String("time_s")] = policy_event.time_s.v;
+				if (policy_event.battery) {
+					event[String("charge_residual_c")] = policy_event.residual_c.v;
+					event[String("time_error_bound_s")] = policy_event.time_error_s.v;
+				}
+				tick_events.append(event);
+			}
+		} else if (!events.is_empty()) {
 			const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
 			const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
 			for (const nk::R time_s : tick_event_times_) {

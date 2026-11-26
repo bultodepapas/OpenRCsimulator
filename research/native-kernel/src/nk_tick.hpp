@@ -387,4 +387,349 @@ inline TickStatus tick_locate_substeps(const R *combined, int size, R t, R dt_ti
 	return TickStatus::Ok;
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// NK-6c: the finite-pack electric step policy (FlightSession._electric_step): electric_battery_step.gd `advance`
+// (rotor stop composed with battery-exhaustion localization), electric_stop.gd and electric_contact_step.gd
+// `advance` (contact pieces). Failure messages are not ported: every failure makes the policy return [NAN].
+
+// electric_battery_step.gd: TIME_TOL 1e-12, CHARGE_TOL_C 1e-10, LEFT_LIMIT_CHARGE_C 1e-30 (the GDScript spelling,
+// nk_math.hpp), MAX_DT_S 60.0, MAX_SEGMENTS 128, MAX_REFINEMENTS 64, MAX_ROOT_TRIALS 128, BODY_RATE_INDEX 10.
+constexpr double kBatteryTimeTol = 1e-12;
+constexpr double kBatteryChargeTol = 1e-10;
+constexpr double kBatteryLeftLimit = kGd1eMinus30;
+constexpr double kBatteryMaxDt = 60.0;
+constexpr int kBatteryMaxSegments = 128;
+constexpr int kBatteryMaxRefinements = 64;
+constexpr int kBatteryMaxRootTrials = 128;
+// electric_contact_step.gd: MAX_PIECES 16, MAX_EVENTS 128, EVENT_WINDOW_SLACK_S 1e-9, FLOAT64_EPSILON.
+constexpr int kContactMaxPieces = 16;
+constexpr int kContactMaxEvents = 128;
+constexpr double kContactWindowSlack = 1e-9;
+constexpr double kFloat64Epsilon = 2.220446049250313e-16;
+
+// One {type, time_s[, charge_residual_c, time_error_bound_s]} event of the battery composition.
+struct TickPolicyEvent {
+	bool battery = false; // false: "rotor_stop"; true: "battery_exhausted"
+	R time_s = 0.0;
+	R residual_c = 0.0;
+	R time_error_s = 0.0;
+};
+
+struct TickBatteryTrial {
+	bool ok = false;
+	std::vector<R> state;
+	std::vector<R> rotor_times;
+	R minimum_charge = 0.0;
+};
+
+// electric_battery_step.gd `_stop_trial`. `project(in, count, index, out)` returns false when the owner's callback did
+// not return a packed float64 array. Its tracker's failures continue the integration as the reference does.
+template <class F, class P>
+inline TickStatus tick_battery_stop_trial(const R *start, int size, R time_s, R dt, F &f, const R *first, int rpm,
+		int charge, P &project, bool connected, TickBatteryTrial &out, TickRk4Scratch &sc) {
+	out.ok = false;
+	bool tracker_ok = true;
+	R minimum = start[charge];
+	const bool start_connected = connected && start[charge].v > 0.0;
+	if (first != nullptr && first[charge].v > 0.0) return TickStatus::Ok;
+	if (first != nullptr && !connected && first[charge].v != 0.0) return TickStatus::Ok;
+	std::vector<R> evaluated(static_cast<size_t>(size));
+	auto tracked = [&](const R *values, R at, R *rate) -> bool {
+		if (!tick_finite(values, size)) {
+			tracker_ok = false;
+			for (int i = 0; i < size; ++i) rate[i] = 0.0;
+			return true;
+		}
+		minimum = minf(minimum, values[charge]);
+		const R *query = values;
+		if (start_connected && values[charge].v == 0.0) {
+			// OCV(0) connected left-limit for this derivative query only.
+			for (int i = 0; i < size; ++i) evaluated[static_cast<size_t>(i)] = values[i];
+			evaluated[static_cast<size_t>(charge)] = -R(kBatteryLeftLimit);
+			query = evaluated.data();
+		}
+		if (!f(query, at, rate)) return false;
+		if (!tick_finite(rate, size)) {
+			tracker_ok = false;
+			for (int i = 0; i < size; ++i) rate[i] = 0.0;
+			return true;
+		}
+		if (rate[charge].v > 0.0) tracker_ok = false;
+		else if (!connected && rate[charge].v != 0.0) tracker_ok = false;
+		return true;
+	};
+	auto safe_project = [&](const R *values, int count, int index, std::vector<R> &projected) -> bool {
+		std::vector<R> raw;
+		const bool packed = project(values, count, index, raw);
+		bool valid = packed && static_cast<int>(raw.size()) == size && tick_finite(raw.data(), size) && index == rpm;
+		for (int i = 0; valid && i < size; ++i) {
+			if (i != rpm && (i < kTickRate || i >= kTickRate + 3) && raw[static_cast<size_t>(i)].v != values[i].v) valid = false;
+		}
+		if (!valid) {
+			tracker_ok = false;
+			projected.assign(static_cast<size_t>(size), R(0.0));
+			return true;
+		}
+		projected = raw;
+		return true;
+	};
+	bool stopped = false;
+	std::vector<R> event_times;
+	const TickStatus status = tick_event_advance(start, size, time_s, dt, tracked, first, rpm, safe_project, true, stopped,
+		out.state, event_times, sc);
+	if (status != TickStatus::Ok) return status;
+	if (!tracker_ok || !stopped) return TickStatus::Ok;
+	if (static_cast<int>(out.state.size()) != size || !tick_finite(out.state.data(), size) ||
+			out.state[static_cast<size_t>(rpm)].v < 0.0) return TickStatus::Ok;
+	if (!connected && out.state[static_cast<size_t>(charge)].v != 0.0) return TickStatus::Ok;
+	out.rotor_times = event_times;
+	out.minimum_charge = minimum;
+	out.ok = true;
+	return TickStatus::Ok;
+}
+
+// electric_battery_step.gd `_append_rotor_events`; `shared_time` NaN means none.
+inline void tick_append_rotor_events(std::vector<TickPolicyEvent> &events, const std::vector<R> &times, R shared_time) {
+	for (const R at : times) {
+		R event_time = at;
+		if (is_finite(shared_time) && absf(event_time - shared_time).v <= kBatteryTimeTol) {
+			event_time = shared_time;
+		} else if (!events.empty() && events.back().battery &&
+				absf(event_time - events.back().time_s).v <= kBatteryTimeTol) {
+			TickPolicyEvent rotor;
+			rotor.time_s = events.back().time_s;
+			events.insert(events.end() - 1, rotor);
+			continue;
+		}
+		TickPolicyEvent rotor;
+		rotor.time_s = event_time;
+		events.push_back(rotor);
+	}
+}
+
+// electric_battery_step.gd `_append_battery_event`.
+inline void tick_append_battery_event(std::vector<TickPolicyEvent> &events, R at, R residual_c, R time_error_s) {
+	for (int i = static_cast<int>(events.size()) - 1; i >= 0; --i) {
+		TickPolicyEvent &event = events[static_cast<size_t>(i)];
+		if (event.battery) break;
+		if (absf(event.time_s - at).v <= kBatteryTimeTol) event.time_s = at;
+	}
+	TickPolicyEvent battery;
+	battery.battery = true;
+	battery.time_s = at;
+	battery.residual_c = residual_c;
+	battery.time_error_s = time_error_s;
+	events.push_back(battery);
+}
+
+// electric_battery_step.gd `_finish_exhausted`.
+template <class F, class P>
+inline TickStatus tick_battery_finish_exhausted(std::vector<R> state, int size, R time_s, R dt, F &f, int rpm, int charge,
+		P &project, std::vector<TickPolicyEvent> &events, bool &ok, std::vector<R> &out, TickRk4Scratch &sc) {
+	ok = false;
+	if (dt.v <= 0.0) {
+		out = state;
+		ok = !state.empty();
+		return TickStatus::Ok;
+	}
+	TickBatteryTrial exhausted;
+	const TickStatus status = tick_battery_stop_trial(state.data(), size, time_s, dt, f, nullptr, rpm, charge, project,
+		false, exhausted, sc);
+	if (status != TickStatus::Ok || !exhausted.ok) return status;
+	if (exhausted.state[static_cast<size_t>(charge)].v != 0.0) return TickStatus::Ok;
+	tick_append_rotor_events(events, exhausted.rotor_times, kNan);
+	out = exhausted.state;
+	ok = !out.empty();
+	return TickStatus::Ok;
+}
+
+// electric_battery_step.gd `_locate_battery_crossing`.
+template <class F, class P>
+inline TickStatus tick_battery_locate(const R *start, int size, R time_s, R dt, F &f, const R *first, int rpm, int charge,
+		P &project, const TickBatteryTrial &high_trial, bool &located, std::vector<R> &high_state,
+		std::vector<R> &high_times, R &offset, R &time_error, TickRk4Scratch &sc) {
+	located = false;
+	R lo = 0.0;
+	R hi = dt;
+	R low_charge = start[charge];
+	bool bisect = false;
+	high_state = high_trial.state;
+	high_times = high_trial.rotor_times;
+	if (high_state[static_cast<size_t>(charge)].v > 0.0) return TickStatus::Ok;
+	auto done = [&]() -> bool {
+		return (hi - lo).v <= kBatteryTimeTol && absf(high_state[static_cast<size_t>(charge)]).v <= kBatteryChargeTol;
+	};
+	TickBatteryTrial trial;
+	for (int iteration = 0; iteration < kBatteryMaxRootTrials; ++iteration) {
+		if (done()) {
+			located = true;
+			offset = hi;
+			time_error = hi - lo;
+			return TickStatus::Ok;
+		}
+		const R old_width = hi - lo;
+		const R mid = tick_bracket_propose(lo, hi, low_charge, high_state[static_cast<size_t>(charge)], kBatteryTimeTol, bisect);
+		if (!is_finite(mid)) break;
+		const TickStatus status = tick_battery_stop_trial(start, size, time_s, mid, f, first, rpm, charge, project, true, trial, sc);
+		if (status != TickStatus::Ok || !trial.ok) return status;
+		const R q = trial.state[static_cast<size_t>(charge)];
+		if (q.v > 0.0) {
+			lo = mid;
+			low_charge = q;
+		} else {
+			hi = mid;
+			high_state = trial.state;
+			high_times = trial.rotor_times;
+		}
+		bisect = !bisect && (hi - lo).v > (R(0.5) * old_width).v;
+		if (done()) {
+			located = true;
+			offset = hi;
+			time_error = hi - lo;
+			return TickStatus::Ok;
+		}
+	}
+	if ((hi - lo).v <= kBatteryTimeTol && high_state[static_cast<size_t>(charge)].v <= 0.0 &&
+			absf(high_state[static_cast<size_t>(charge)]).v <= kBatteryChargeTol) {
+		located = true;
+		offset = hi;
+		time_error = hi - lo;
+	}
+	return TickStatus::Ok;
+}
+
+// electric_battery_step.gd `advance` (strict_clock false).
+template <class F, class P>
+inline TickStatus tick_battery_advance(const R *s, int size, R time_s, R dt, F &f, const R *first, int rpm, int charge,
+		P &project, bool &ok, std::vector<R> &out, std::vector<TickPolicyEvent> &out_events, TickRk4Scratch &sc) {
+	ok = false;
+	out_events.clear();
+	if (rpm < kTickBody || rpm >= size || charge < kTickBody || charge >= size || charge == rpm || !tick_finite(s, size) ||
+			s[rpm].v < 0.0 || s[charge].v < 0.0 || !is_finite(time_s) || !is_finite(dt) || dt.v <= 0.0 ||
+			dt.v > kBatteryMaxDt || !is_finite(time_s + dt) || (time_s + dt).v <= time_s.v ||
+			(first != nullptr && !tick_finite(first, size))) {
+		return TickStatus::Ok;
+	}
+	if (first != nullptr && first[charge].v > 0.0) return TickStatus::Ok;
+	std::vector<R> state(s, s + size);
+	std::vector<TickPolicyEvent> &events = out_events;
+	R elapsed = 0.0;
+	const R *initial = first;
+	int accepted_segments = 0;
+	if (state[static_cast<size_t>(charge)].v == 0.0) {
+		return tick_battery_finish_exhausted(state, size, time_s, dt, f, rpm, charge, project, events, ok, out, sc);
+	}
+	TickBatteryTrial trial;
+	std::vector<R> high_state, high_times;
+	while (accepted_segments < kBatteryMaxSegments) {
+		const R remaining = dt - elapsed;
+		if (remaining.v <= 0.0) {
+			out = state;
+			ok = !out.empty();
+			return TickStatus::Ok;
+		}
+		R trial_step = remaining;
+		bool accepted_piece = false;
+		for (int refinement = 0; refinement < kBatteryMaxRefinements; ++refinement) {
+			TickStatus status = tick_battery_stop_trial(state.data(), size, time_s + elapsed, trial_step, f, initial, rpm,
+				charge, project, true, trial, sc);
+			if (status != TickStatus::Ok || !trial.ok) return status;
+			const R candidate_charge = trial.state[static_cast<size_t>(charge)];
+			if (candidate_charge.v > state[static_cast<size_t>(charge)].v) return TickStatus::Ok;
+			if (candidate_charge.v > 0.0) {
+				if (trial.minimum_charge.v <= 0.0) {
+					// A negative RK stage with a positive endpoint is unresolved, not a safe step.
+					trial_step = trial_step * R(0.5);
+					if (trial_step.v < kBatteryTimeTol) return TickStatus::Ok;
+					continue;
+				}
+				tick_append_rotor_events(events, trial.rotor_times, kNan);
+				state = trial.state;
+				elapsed = elapsed + trial_step;
+				initial = nullptr;
+				accepted_segments += 1;
+				accepted_piece = true;
+				break;
+			}
+			bool located = false;
+			R offset = 0.0, time_error = 0.0;
+			status = tick_battery_locate(state.data(), size, time_s + elapsed, trial_step, f, initial, rpm, charge, project,
+				trial, located, high_state, high_times, offset, time_error, sc);
+			if (status != TickStatus::Ok || !located) return status;
+			std::vector<R> crossing_state = high_state;
+			const R residual = crossing_state[static_cast<size_t>(charge)];
+			if (residual.v > 0.0 || absf(residual).v > kBatteryChargeTol) return TickStatus::Ok;
+			const R event_time = time_s + elapsed + offset;
+			tick_append_rotor_events(events, high_times, event_time);
+			crossing_state[static_cast<size_t>(charge)] = 0.0;
+			tick_append_battery_event(events, event_time, residual, time_error);
+			const R after = dt - elapsed - offset;
+			if (after.v <= 0.0) {
+				out = crossing_state;
+				ok = !out.empty();
+				return TickStatus::Ok;
+			}
+			return tick_battery_finish_exhausted(crossing_state, size, event_time, after, f, rpm, charge, project, events,
+				ok, out, sc);
+		}
+		if (!accepted_piece) return TickStatus::Ok;
+	}
+	return TickStatus::Ok;
+}
+
+// electric_contact_step.gd `_append_ordered`.
+inline bool tick_append_ordered(std::vector<TickPolicyEvent> &events, TickPolicyEvent copy, int piece_index, R tolerance) {
+	if (!events.empty()) {
+		const TickPolicyEvent &previous = events.back();
+		R difference = copy.time_s - previous.time_s;
+		if (difference.v < 0.0 && (piece_index > 0 || difference.v < (-tolerance).v)) return false;
+		if (piece_index == 0 && difference.v < 0.0) {
+			copy.time_s = previous.time_s;
+			difference = 0.0;
+		}
+		if (piece_index == 0 && difference.v == 0.0 && previous.battery && !copy.battery) {
+			events.insert(events.end() - 1, copy);
+			return true;
+		}
+	}
+	events.push_back(copy);
+	return true;
+}
+
+// electric_contact_step.gd `advance`: `pieces` uniform contact pieces of the battery step.
+template <class F, class P>
+inline TickStatus tick_contact_advance(const R *combined, int size, R at, R dt, F &f, const R *first, int rpm, int charge,
+		P &project, int pieces, bool &ok, std::vector<R> &out, std::vector<TickPolicyEvent> &events, TickRk4Scratch &sc) {
+	ok = false;
+	events.clear();
+	if (pieces < 1 || pieces > kContactMaxPieces || !is_finite(at) || !is_finite(dt) || dt.v <= 0.0) return TickStatus::Ok;
+	if (pieces == 1) return tick_battery_advance(combined, size, at, dt, f, first, rpm, charge, project, ok, out, events, sc);
+	std::vector<R> state(combined, combined + size);
+	const R clock_tolerance = minf(R(kContactWindowSlack), maxf(R(kBatteryTimeTol),
+		R(2.0) * R(kFloat64Epsilon) * maxf(absf(at), absf(at + dt))));
+	std::vector<R> piece_state;
+	std::vector<TickPolicyEvent> piece_events;
+	for (int i = 0; i < pieces; ++i) {
+		const R begin = dt * R(static_cast<double>(i)) / R(static_cast<double>(pieces));
+		const R end = dt * R(static_cast<double>(i + 1)) / R(static_cast<double>(pieces));
+		bool piece_ok = false;
+		const TickStatus status = tick_battery_advance(state.data(), size, at + begin, end - begin, f, i == 0 ? first : nullptr,
+			rpm, charge, project, piece_ok, piece_state, piece_events, sc);
+		if (status != TickStatus::Ok || !piece_ok) return status;
+		int piece_event_index = 0;
+		for (const TickPolicyEvent &event : piece_events) {
+			if (!is_finite(event.time_s) || event.time_s.v < (at + begin - R(kContactWindowSlack)).v ||
+					event.time_s.v > (at + end + R(kContactWindowSlack)).v || static_cast<int>(events.size()) >= kContactMaxEvents) {
+				return TickStatus::Ok;
+			}
+			if (!tick_append_ordered(events, event, piece_event_index, clock_tolerance)) return TickStatus::Ok;
+			piece_event_index += 1;
+		}
+		state = piece_state;
+	}
+	out = state;
+	ok = true;
+	return TickStatus::Ok;
+}
+
 } // namespace nk
