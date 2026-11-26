@@ -52,6 +52,21 @@ func _ready() -> void:
 	_target = get_parent() as Control
 	_button = _target as Button
 	show_behind_parent = true
+	set_process(false)
+	set_physics_process(false)
+	# 2026-11-26: a surface on a hidden page (another tab of Controls or Settings) is built when it first shows.
+	# Building all of them when a screen opens (221 on Controls, 84% on hidden tabs) was part of its 150–250 ms
+	# freeze; its duplicated styles keep the native margins, so the layout does not depend on it.
+	if is_visible_in_tree():
+		_setup()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED and _material == null and is_node_ready() and is_visible_in_tree():
+		_setup()
+
+
+func _setup() -> void:
 	_material = ShaderMaterial.new()
 	_material.shader = GLASS
 	_glass = ColorRect.new()
@@ -73,8 +88,6 @@ func _ready() -> void:
 		_target.pressed.connect(_confirm)
 	_rebuild_styles()
 	_resize()
-	set_process(false)
-	set_physics_process(false)
 	if _target is PanelContainer:
 		_engage()
 
@@ -85,6 +98,8 @@ func _resize() -> void:
 
 
 func _uniform(key: StringName, value: Variant) -> void:
+	if _material == null:
+		return # not built yet (hidden since it entered the tree): _setup() applies every uniform
 	if _uniforms.get(key) == value:
 		return
 	_uniforms[key] = value
