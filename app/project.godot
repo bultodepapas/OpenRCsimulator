@@ -21,6 +21,9 @@ config/project_settings_override.template="user://renderer.cfg"
 ; Install bundled CJK glyphs before startup without replacing the engine Latin font.
 InterfaceFonts="*res://i18n/fonts.gd"
 
+; F3: no pipeline-cache writes while a flight runs (render/pipeline_cache_gate.gd).
+PipelineCacheGate="*res://render/pipeline_cache_gate.gd"
+
 [display]
 
 ; GDU-03: the application owns fullscreen transitions and persisted display settings.
