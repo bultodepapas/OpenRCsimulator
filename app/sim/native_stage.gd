@@ -127,6 +127,10 @@ var _contact_reach_bound := false
 var _reach_world: Dictionary = {}
 var _reach_proxies: Array = []
 var _reach_size := -1
+## NK-5h: the kernel's callbacks as installed, built once per installation instead of on every owns_stage call.
+var _native_stage_callable := Callable()
+var _native_body_loads := Callable()
+var _native_body_rotor := Callable()
 ## NK-5e: the loaded library binds stage_compressions (checked once per installation).
 var _compressions_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
@@ -183,9 +187,9 @@ func is_installed() -> bool:
 func owns_stage(session: Node) -> bool:
 	if not _installed or session.sim.model != _installed_model: return false
 	if _body_only:
-		return not _installed_model.stage.is_valid() and _installed_model.loads == Callable(_native, "body_loads") \
-			and _installed_model.rotor_momentum == Callable(_native, "body_rotor")
-	return _installed_model.stage == Callable(_native, "stage")
+		return not _installed_model.stage.is_valid() and _installed_model.loads == _native_body_loads \
+			and _installed_model.rotor_momentum == _native_body_rotor
+	return _installed_model.stage == _native_stage_callable
 
 
 ## Detach without changing this helper. A transaction can restore its pointer and original model on refusal.
@@ -409,6 +413,9 @@ func install(session: Node) -> Callable:
 		session._collision_world = _macos_domain_context.world
 		session._runway_field = _macos_domain_context.field
 	_installed_model = model
+	_native_stage_callable = Callable(_native, "stage")
+	_native_body_loads = Callable(_native, "body_loads")
+	_native_body_rotor = Callable(_native, "body_rotor")
 	_wing_wake_bound = _native.has_method("stage_wing_wake")
 	_contact_reach_bound = _native.has_method("contact_reach")
 	_compressions_bound = _native.has_method("stage_compressions") and _family != "helicopter"

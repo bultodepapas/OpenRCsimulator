@@ -19,13 +19,16 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/variant.hpp>
 
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <initializer_list>
+#include <string>
 #include <utility>
 #include <vector>
 
+#include "nk_guard_plan.hpp"
 #include "nk_variant_identity.hpp"
 
 namespace nk {
@@ -73,6 +76,11 @@ class ConfigurationGuard {
 	int64_t continuous_size_ = 0;
 	int64_t modes_size_ = 0;
 	std::vector<Watch> watches_;
+	// NK-5h per-tick plan (build_plan): root watches and the nested watches engine equality cannot settle, then one
+	// engine deep equality per root container against its preparation snapshot. Not ready: the full leaf walk.
+	bool plan_ready_ = false;
+	std::vector<std::size_t> plan_watches_;
+	std::vector<std::pair<std::size_t, Variant>> plan_snapshots_;
 
 	StringName p_sim_ = "sim";
 	StringName p_model_ = "model";
@@ -316,6 +324,61 @@ class ConfigurationGuard {
 		return same_primed(current, type, watch);
 	}
 
+	// NK-5h: the per-tick plan (rules in nk_guard_plan.hpp). Root watches stay; each root container is compared once
+	// with the engine against a deep snapshot; nested watches stay only for leaves engine equality settles less
+	// strictly (±0, Callables) and for every container holding one. A NaN, an unsupported value or a snapshot the
+	// engine does not accept keeps the full leaf walk.
+	bool build_plan() {
+		plan_ready_ = false;
+		plan_watches_.clear();
+		plan_snapshots_.clear();
+		const auto refuse = [this] {
+			plan_watches_.clear();
+			plan_snapshots_.clear();
+			return false;
+		};
+		for (std::size_t i = 0; i < watches_.size(); ++i) {
+			const Watch &watch = watches_[i];
+			if (watch.source != Parent::DictionaryEntry && watch.source != Parent::ArrayEntry) {
+				plan_watches_.push_back(i);
+				if (watch.container_size >= 0) {
+					// A deep copy (nested containers and packed buffers of its own); the engine must accept it.
+					const Variant snapshot = watch.expected.duplicate(true);
+					if (snapshot.get_type() != watch.expected_type || godot::UtilityFunctions::is_same(snapshot, watch.expected) ||
+							!(snapshot == watch.expected)) {
+						return refuse();
+					}
+					plan_snapshots_.emplace_back(i, snapshot);
+				}
+				continue;
+			}
+			if (watch.container_size >= 0) {
+				bool refused = false;
+				if (guard_plan::holds_retained(watch.expected, 0, kMaxDepth, refused)) plan_watches_.push_back(i);
+				if (refused) return refuse();
+				continue;
+			}
+			switch (guard_plan::classify_scalar(watch.expected)) {
+				case guard_plan::Leaf::Retained: plan_watches_.push_back(i); break;
+				case guard_plan::Leaf::Refuse: return refuse();
+				case guard_plan::Leaf::Exact: break;
+			}
+		}
+		plan_ready_ = true;
+		return true;
+	}
+
+	bool watches_match(Object *session, Object *sim, bool use_plan) const {
+		if (use_plan && plan_ready_) {
+			for (const std::size_t i : plan_watches_) if (!watch_matches(watches_[i], session, sim)) return false;
+			// Each root watch above proved the live root is its prepared instance (`expected`) of the same size.
+			for (const auto &root : plan_snapshots_) if (!(root.second == watches_[root.first].expected)) return false;
+			return true;
+		}
+		for (const Watch &watch : watches_) if (!watch_matches(watch, session, sim)) return false;
+		return true;
+	}
+
 	static bool object_variant(const Variant &value) {
 		return value.get_type() == Variant::OBJECT && static_cast<Object *>(value) != nullptr;
 	}
@@ -384,7 +447,8 @@ class ConfigurationGuard {
 				"input_size", "aux_size", "modes_size", "continuous_size", "identity", "state_layout_identity", "loads",
 				"block_loads", "block_derivative", "stage_rotor_momentum", "rotor_momentum", "pre_tick", "post_tick",
 				"post_tick_joint", "block_aux", "step_policy", "events", "substeps", "substeps_joint", "endpoint_transition", "state_validator"})) return false;
-		return configuration_guard_matches(session);
+		build_plan(); // a refused plan keeps the full leaf walk
+		return matches(session, false) && configuration_guard_matches(session);
 	}
 
 public:
@@ -400,7 +464,69 @@ public:
 		return out;
 	}
 
-	bool configuration_guard_matches(Object *session) const {
+	// NK-5h research diagnostic: per-category cost of the per-tick watch loop and of its access pieces.
+	Dictionary profile(Object *session, int64_t iterations) const {
+		Dictionary out;
+		if (!ready_ || !session || iterations < 1) return out;
+		Object *sim = godot::ObjectDB::get_instance(sim_id_);
+		if (!sim) return out;
+		static const char *kSources[] = {"session", "sim", "owned", "dict", "array"};
+		std::vector<std::pair<std::string, std::vector<const Watch *>>> groups;
+		for (const Watch &watch : watches_) {
+			std::string name = std::string(kSources[static_cast<int>(watch.source)]) + ":" +
+					godot::String(Variant::get_type_name(watch.expected_type)).utf8().get_data();
+			if (watch.source == Parent::DictionaryEntry) name += watch.key.get_type() == Variant::STRING_NAME ? "[sn]" : "[str]";
+			bool found = false;
+			for (auto &group : groups) {
+				if (group.first == name) { group.second.push_back(&watch); found = true; break; }
+			}
+			if (!found) groups.push_back({name, {&watch}});
+		}
+		auto timed = [&](auto &&body) {
+			const auto start = std::chrono::steady_clock::now();
+			for (int64_t k = 0; k < iterations; ++k) body();
+			return std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count() / iterations;
+		};
+		bool sink = true;
+		for (const auto &group : groups) {
+			const double n = static_cast<double>(group.second.size());
+			Dictionary row;
+			row["count"] = static_cast<int64_t>(group.second.size());
+			row["match_ns"] = timed([&] { for (const Watch *w : group.second) sink = watch_matches(*w, session, sim) && sink; }) / n;
+			if (group.second.front()->source == Parent::DictionaryEntry) {
+				row["get_ns"] = timed([&] { for (const Watch *w : group.second) sink = w->parent_dictionary.get(w->key, Variant()).get_type() != Variant::OBJECT && sink; }) / n;
+				row["has_ns"] = timed([&] { for (const Watch *w : group.second) sink = w->parent_dictionary.has(w->key) && sink; }) / n;
+			}
+			if (group.second.front()->source == Parent::ArrayEntry) {
+				row["index_ns"] = timed([&] { for (const Watch *w : group.second) sink = (&w->parent_array[w->index] != nullptr) && sink; }) / n;
+			}
+			row["type_ns"] = timed([&] { for (const Watch *w : group.second) sink = w->expected.get_type() != Variant::OBJECT && sink; }) / n;
+			out[godot::String(group.first.c_str())] = row;
+		}
+		out["whole_ns"] = timed([&] { sink = configuration_guard_matches(session) && sink; });
+		out["full_ns"] = timed([&] { sink = matches(session, false) && sink; });
+		out["plan_ready"] = plan_ready_;
+		out["plan_watches"] = static_cast<int64_t>(plan_watches_.size());
+		out["plan_snapshots"] = static_cast<int64_t>(plan_snapshots_.size());
+		for (const auto &root : plan_snapshots_) {
+			const Watch &watch = watches_[root.first];
+			const godot::String name = godot::String("root ") + godot::String(watch.property);
+			Dictionary row;
+			row["equal_ns"] = timed([&] { sink = (root.second == watch.expected) && sink; });
+			row["size"] = watch.container_size;
+			out[name] = row;
+		}
+		out["sink"] = sink;
+		out["watches"] = static_cast<int64_t>(watches_.size());
+		return out;
+	}
+
+	bool configuration_guard_matches(Object *session) const { return matches(session, true); }
+
+	bool plan_ready() const { return plan_ready_; }
+
+private:
+	bool matches(Object *session, bool use_plan) const {
 		if (!ready_ || !session || godot::ObjectDB::get_instance(session_id_) != session) return false;
 		Object *sim = godot::ObjectDB::get_instance(sim_id_);
 		if (!sim || !instance_matches(session->get_script(), session_script_) ||
@@ -418,8 +544,7 @@ public:
 				aux.get_type() != Variant::PACKED_FLOAT64_ARRAY || godot::PackedFloat64Array(aux).size() != aux_size_ ||
 				continuous.get_type() != Variant::PACKED_FLOAT64_ARRAY || godot::PackedFloat64Array(continuous).size() != continuous_size_ ||
 				modes.get_type() != Variant::PACKED_INT64_ARRAY || godot::PackedInt64Array(modes).size() != modes_size_) return false;
-		for (const Watch &watch : watches_) if (!watch_matches(watch, session, sim)) return false;
-		return true;
+		return watches_match(session, sim, use_plan);
 	}
 };
 

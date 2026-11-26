@@ -1113,6 +1113,9 @@ protected:
 		using godot::D_METHOD;
 		godot::ClassDB::bind_method(D_METHOD("prepare_configuration_guard", "session", "identity"), &OpenRCNativeKernel::prepare_configuration_guard);
 		godot::ClassDB::bind_method(D_METHOD("configuration_guard_matches", "session"), &OpenRCNativeKernel::configuration_guard_matches);
+		godot::ClassDB::bind_method(D_METHOD("configuration_guard_profile", "session", "iterations"), &OpenRCNativeKernel::configuration_guard_profile);
+		godot::ClassDB::bind_method(D_METHOD("configuration_guard_plan_ready"), &OpenRCNativeKernel::configuration_guard_plan_ready);
+		godot::ClassDB::bind_method(D_METHOD("weather_guard_plan_ready"), &OpenRCNativeKernel::weather_guard_plan_ready);
 		godot::ClassDB::bind_method(D_METHOD("prepare_macos_domain_guard", "world", "field"), &OpenRCNativeKernel::prepare_macos_domain_guard);
 		godot::ClassDB::bind_method(D_METHOD("macos_domain_guard_matches", "world", "field"), &OpenRCNativeKernel::macos_domain_guard_matches);
 		godot::ClassDB::bind_method(D_METHOD("prepare_heli_stage", "snapshot", "weather"), &OpenRCNativeKernel::prepare_heli_stage);
@@ -1444,6 +1447,8 @@ public:
 
 	Dictionary prepare_configuration_guard(godot::Object *session, godot::Object *identity) { return configuration_guard_.prepare_configuration_guard(session, identity); }
 	bool configuration_guard_matches(godot::Object *session) const { return configuration_guard_.configuration_guard_matches(session); }
+	Dictionary configuration_guard_profile(godot::Object *session, int64_t iterations) const { return configuration_guard_.profile(session, iterations); }
+	bool configuration_guard_plan_ready() const { return configuration_guard_.plan_ready(); }
 	Dictionary prepare_macos_domain_guard(const Dictionary &world, const Dictionary &field) { return macos_domain_guard_.prepare(world, field); }
 	bool macos_domain_guard_matches(const Dictionary &world, const Dictionary &field) const { return macos_domain_guard_.matches(world, field); }
 	Dictionary prepare_heli_stage(const Dictionary &snapshot, const Dictionary &weather) {
@@ -1469,6 +1474,7 @@ public:
 	String heli_last_failure() const { return helicopter_.heli_last_failure(); }
 	Dictionary prepare_weather_guard(godot::Object *session, godot::Object *identity) { return weather_guard_.prepare_weather_guard(session, identity); }
 	bool weather_guard_matches(godot::Object *session) const { return weather_guard_.weather_guard_matches(session); }
+	bool weather_guard_plan_ready() const { return weather_guard_.plan_ready(); }
 	Dictionary prepare_liquid(const Dictionary &snapshot) { return liquid_.prepare_liquid(snapshot); }
 	Dictionary liquid_mass_component(double usable) const { return liquid_.liquid_mass_component(usable); }
 	Dictionary liquid_gas_laws_component(double rpm, double throttle, double axial, double rho, double charge, double shaft_power, bool running) const {

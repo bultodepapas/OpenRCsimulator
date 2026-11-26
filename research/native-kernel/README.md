@@ -544,6 +544,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   aux and `sim.modes[1]` for the prepared fixed-wing stage. Engine `exp`/`log`/`sin`/`cos` are the engine's utility
   functions and `RandomPCG` is reproduced in integers. `_kernel_pre_step` asks after the configuration guard passed
   and evaluates the reference on an empty answer ([evidence](../../docs/research/native-kernel/NK-5g/README.md)).
+- The configuration and weather guards run a per-tick plan (NK-5h, `nk_guard_plan.hpp`). Each root container is compared
+  once inside the engine against a deep snapshot taken at preparation. Watches remain only for ±0 floats, packed
+  float arrays holding a zero, Callables and the containers that hold them. A NaN keeps the full leaf walk
+  ([evidence](../../docs/research/native-kernel/NK-5h/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
