@@ -12,7 +12,7 @@ class CountingAdapter extends "res://statistics/fixed_wing_adapter.gd":
 	var contacts := 0
 	var ordering: Array = []
 	var on_sample := Callable()
-	func sample() -> Dictionary:
+	func sample(_published := false) -> Dictionary:
 		samples += 1
 		ordering.append("statistics")
 		if on_sample.is_valid(): on_sample.call()

@@ -10,12 +10,15 @@ var session: Node
 var _consumer: Callable
 var _eligible: Callable
 var _attached := false
+## NK-5f: the session publishes its accepted-endpoint measurements (published_gear_compressions/collapsed).
+var _publishes := false
 
 
 func configure(owner: Node, aircraft_id: String, consumer: Callable, eligible: Callable = Callable()) -> void:
 	session = owner
 	_consumer = consumer
 	_eligible = eligible
+	_publishes = session.has_method("published_gear_compressions") and session.has_method("published_gear_collapsed")
 	profile = load("res://statistics/profiles.gd").resolve(aircraft_id, session.aircraft.model, session.contact_contract())
 	profile.initial_tick = int(session.sim.tick)
 	profile.generation_id = str(session.statistics_generation)
@@ -42,7 +45,8 @@ func _stepped(_tick: int, _time: float, _state: PackedFloat64Array, _loads: Pack
 	# Simulation.reset also publishes stepped at tick zero. It is not an accepted
 	# physics interval; only the session's later committed receipt changes generation.
 	if _tick == 0 or not _may_sample(): return
-	_consumer.call(sample())
+	# NK-5f: this publication's own endpoint, after the session's handler measured its wheel compressions.
+	_consumer.call(sample(true))
 
 
 func _contacts() -> void:
@@ -57,7 +61,9 @@ func _may_sample() -> bool:
 	return _eligible.is_null() or (_eligible.is_valid() and bool(_eligible.call()))
 
 
-func sample() -> Dictionary:
+## `published`: called from this publication's `stepped` handler, so the session's measurement of the endpoint
+## being published may stand in for the same evaluation (published_gear_compressions/collapsed).
+func sample(published := false) -> Dictionary:
 	var s: PackedFloat64Array = session.sim.state
 	if s.size() != 13:
 		return {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = false}
@@ -75,7 +81,7 @@ func sample() -> Dictionary:
 	var body_normal: PackedFloat64Array = M.q_rotate(M.q_conj(q), normal)
 	var bank: float = atan2(body_normal[1], -body_normal[2])
 	var pitch: float = atan2(body_normal[0], sqrt(body_normal[1] ** 2 + body_normal[2] ** 2))
-	var compression: PackedFloat64Array = _compressions(s)
+	var compression: PackedFloat64Array = _compressions(s, published)
 	var physical := false
 	var intended := false
 	var stop := bool(profile.get("landing_available", false))
@@ -115,7 +121,7 @@ func sample() -> Dictionary:
 		deployed = float(session.sim.aux[session.gear_aux_index()]) >= 0.95
 	var controlled: bool = absf(bank) <= deg_to_rad(15.0) \
 		and absf(pitch - float(profile.get("rest_pitch_rad", 0.0))) <= deg_to_rad(20.0) \
-		and angular <= 1.0 and deployed and not session.gear_collapsed(s)
+		and angular <= 1.0 and deployed and not _collapsed(s, published)
 	if uses_hull:
 		intended = bool(hull.facts.intended_support) if not hull.is_empty() else false
 		stop = bool(hull.facts.stop_support) if not hull.is_empty() else false
@@ -141,17 +147,31 @@ func sample() -> Dictionary:
 ## (gear reach over the terrain height bound): only `> 0.00001` contact flags are read here, and every
 ## flag is false there, so the per-wheel terrain samples are skipped (UI-FS-08-R1).
 ## UI-FS-08-R2 includes the circuit in that bound; session setters validate lake/track definitions.
-func _compressions(s: PackedFloat64Array) -> PackedFloat64Array:
+func _compressions(s: PackedFloat64Array, published := false) -> PackedFloat64Array:
 	if not session.aircraft.get("ok", false) or not session.sim.state_is_valid(s):
-		return session.gear_compressions(s)
+		return _session_compressions(s, published)
 	var gear: Dictionary = session.current_landing_gear()
 	if gear.is_empty() or not Terrain.is_valid_surface_table(session.ground_surfaces) \
 			or -s[RB.POS + 2] <= float(gear.get("reach", INF)) + session.environment.ground_max_height():
-		return session.gear_compressions(s)
+		return _session_compressions(s, published)
 	var clear := PackedFloat64Array()
 	clear.resize(gear.get("contacts", []).size())
 	clear.fill(-1.0)
 	return clear
+
+
+## session.gear_compressions(s); within this publication, the session's own measurement of it when available.
+func _session_compressions(s: PackedFloat64Array, published: bool) -> PackedFloat64Array:
+	if published and _publishes:
+		var known: PackedFloat64Array = session.published_gear_compressions(s)
+		if not known.is_empty():
+			return known
+	return session.gear_compressions(s)
+
+
+## session.gear_collapsed(s); within this publication, its variant that reads the published measurement.
+func _collapsed(s: PackedFloat64Array, published: bool) -> bool:
+	return session.published_gear_collapsed(s) if published and _publishes else session.gear_collapsed(s)
 
 
 ## Only an accepted physical receipt may open a nonterminal accident. Missing legacy

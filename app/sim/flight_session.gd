@@ -1163,7 +1163,7 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_deflection_key", "_deflection_cache", "_has_committed_aircraft", "_pending_controller_start",
 	"_scenery_damage", "soft_contacts", "prop_strike", "crash", "_last_scenery_event", "_last_lake_event",
 	"_contact_tick", "_contact_events", "_active_hull_ids", "_soft_contacts_cache_tick",
-	"_cost_support_previous", "_cost_support_tick",
+	"_cost_support_previous", "_cost_support_tick", "_cost_support_state", "_cost_support_aux",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
 	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
 	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error", "_stage_backend_requested", "_stage_backend_explicit"]
@@ -1421,6 +1421,9 @@ var _active_hull_ids := PackedStringArray()
 var cost_observations_enabled := false
 var _cost_support_previous := PackedFloat64Array()
 var _cost_support_tick := -1
+## NK-5f: the endpoint state and aux those compressions were measured at (published_gear_compressions).
+var _cost_support_state := PackedFloat64Array()
+var _cost_support_aux := PackedFloat64Array()
 var _resolving_contact: bool = false
 var _committing_contacts: bool = false
 var _pending_contact_tick: int = -1
@@ -2779,6 +2782,8 @@ func _observe_contact_tick(tick: int) -> void:
 					_contact_events.append(event)
 		_cost_support_previous = current
 		_cost_support_tick = tick
+		_cost_support_state = sim.state.duplicate() # packed arrays are shared by reference
+		_cost_support_aux = sim.aux.duplicate()
 	if not soft_hull_contacts or not aircraft.get("ok", false):
 		_soft_contacts_cache_tick = -1
 		_active_hull_ids.clear()
@@ -2832,6 +2837,8 @@ func _clear_pending_contacts() -> void:
 func _reset_contact_history() -> void:
 	_cost_support_previous = PackedFloat64Array()
 	_cost_support_tick = -1
+	_cost_support_state = PackedFloat64Array()
+	_cost_support_aux = PackedFloat64Array()
 	_hull_scrape_cache_key = PackedByteArray()
 	_hull_scrape_cache = {}
 	_hull_scrape_cache_tick = -1
@@ -2845,6 +2852,9 @@ func _reset_contact_history() -> void:
 func _restore_contact_history(record: Dictionary) -> void:
 	_cost_support_previous = PackedFloat64Array()
 	_cost_support_tick = int(record.tick)
+	# Rebuilt from events, not measured: nothing is published until the observer measures an endpoint again.
+	_cost_support_state = PackedFloat64Array()
+	_cost_support_aux = PackedFloat64Array()
 	_cost_support_previous.resize(_contact_bindings.get("support_points", []).size())
 	for event: Dictionary in record.events:
 		if event.get("format") == ContactEvents.SUPPORT_FORMAT:
@@ -3373,6 +3383,45 @@ func _endpoint_compressions() -> PackedFloat64Array:
 			native_endpoint_answers += 1
 			return native
 	return gear_compressions(sim.state)
+
+
+## NK-5f: gear_compressions(s) as the contact observer measured it for the accepted endpoint now being published, for
+## `stepped` observers that run after the session's own handler in that same publication. Empty unless the observer
+## ran for sim.tick and `s` and sim.aux carry that endpoint's exact bits; the caller then evaluates
+## gear_compressions(s). Not for use between ticks, where data can change without a tick.
+func published_gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
+	if not cost_observations_enabled or _cost_support_tick <= 0 or _cost_support_tick != sim.tick \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	return _cost_support_previous.duplicate()
+
+
+## NK-5f: gear_collapsed(s) with Ground.collapsed's checks in its order; where it computes the compressions, those
+## published for this endpoint (published_gear_compressions) stand in when available. Same caller scope.
+func published_gear_collapsed(s: PackedFloat64Array) -> bool:
+	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
+		return false
+	var gear := current_landing_gear()
+	var surfaces: PackedFloat64Array = ground_surfaces if wheel_count() > 0 else PackedFloat64Array()
+	var lake: Dictionary = _lake
+	var overlay: Dictionary = _rc_track
+	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
+		return true
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Ground.Wheels.Terrain.max_height(surfaces) \
+			+ Ground.Wheels.Track.max_height_m(overlay):
+		return false
+	var c := published_gear_compressions(s)
+	if c.is_empty():
+		c = Ground.compressions(s, gear, surfaces, lake, overlay)
+	for i in c.size():
+		if c[i] > gear.contacts[i].max_compression:
+			return true
+	return false
+
+
+## Same length and bytes (float bits, so ±0 and NaN payloads differ).
+static func _same_bits(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
+	return a.size() == b.size() and a.to_byte_array() == b.to_byte_array()
 
 
 ## Compression of each landing-gear contact at state `s` (m, ≤ 0 in the air), in data order; empty without gear.
@@ -4560,7 +4609,13 @@ func gear_is_retractable() -> bool:
 
 
 func gear_aux_index() -> int:
-	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0) if gear_is_retractable() else -1
+	if _fact_gear_aux_index != _FACT_UNKNOWN:
+		return _fact_gear_aux_index
+	var index: int = -1
+	if gear_is_retractable():
+		index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+	if _facts_armed: _fact_gear_aux_index = index
+	return index
 
 
 func _gear_aux_valid(values: PackedFloat64Array) -> bool:
@@ -5543,6 +5598,7 @@ var _fact_rotor_index := _FACT_UNKNOWN
 var _fact_battery_dynamic := _FACT_UNKNOWN
 var _fact_battery_pack := _FACT_UNKNOWN
 var _fact_battery_block_size := _FACT_UNKNOWN
+var _fact_gear_aux_index := _FACT_UNKNOWN
 
 
 func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -5592,6 +5648,7 @@ func _drop_tick_facts() -> void:
 	_fact_battery_dynamic = _FACT_UNKNOWN
 	_fact_battery_pack = _FACT_UNKNOWN
 	_fact_battery_block_size = _FACT_UNKNOWN
+	_fact_gear_aux_index = _FACT_UNKNOWN
 
 
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:

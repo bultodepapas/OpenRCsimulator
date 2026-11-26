@@ -537,6 +537,8 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   the prepared stage ground, posed by the tick context when the gear retracts. `flight_session.gd` asks only while
   observing the endpoint of the tick whose guarded pre-step installed that context, and evaluates the reference on
   an empty answer ([evidence](../../docs/research/native-kernel/NK-5e/README.md)).
+  The session publishes that endpoint's compressions to the `stepped` observers after it; the statistics sampler
+  reads them within the same publication (NK-5f, [evidence](../../docs/research/native-kernel/NK-5f/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
