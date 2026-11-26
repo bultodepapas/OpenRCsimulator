@@ -533,6 +533,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `prepare_reach_world(proxies)` and `contact_reach(previous, candidate, hull, extra_reach, lake_threshold)` (NK-5d)
   prove, conservatively, that no collision proxy or lake water is reachable during an accepted tick; the session then
   skips only that sweep ([evidence](../../docs/research/native-kernel/NK-5d/README.md)).
+- `stage_compressions(s, aux)` (NK-5e) evaluates the session's `gear_compressions(s)` at the accepted endpoint from
+  the prepared stage ground, posed by the tick context when the gear retracts. `flight_session.gd` asks only while
+  observing the endpoint of the tick whose guarded pre-step installed that context, and evaluates the reference on
+  an empty answer ([evidence](../../docs/research/native-kernel/NK-5e/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.

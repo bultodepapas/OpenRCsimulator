@@ -17,6 +17,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <initializer_list>
 #include <limits>
 #include <string>
@@ -927,6 +928,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::StageModel stage_;
 	std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
 	nk::ContactReach contact_reach_; // NK-5d: proxy bounds of the session's collision world
+	std::vector<nk::R> compressions_scratch_; // NK-5e: endpoint compressions without a per-tick allocation
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
 	// The binding converts Godot arrays once per call, into storage sized at
@@ -1091,6 +1093,7 @@ protected:
 			&OpenRCNativeKernel::stage_wing_wake);
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
+		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
 		godot::ClassDB::bind_method(D_METHOD("contact_reach", "previous", "candidate", "hull", "extra_reach", "lake_threshold"),
 			&OpenRCNativeKernel::contact_reach);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
@@ -1538,6 +1541,42 @@ public:
 			const PackedFloat64Array &hull, double extra_reach, double lake_threshold) const {
 		if (previous.size() != kStateSize || candidate.size() != kStateSize || hull.is_empty()) return 0;
 		return contact_reach_.reach_clear(previous.ptr(), candidate.ptr(), hull.ptr(), hull.size(), extra_reach, lake_threshold);
+	}
+
+	// NK-5e: flight_session.gd gear_compressions(s) at the accepted endpoint, for its contact observer: the stage's
+	// ground (posed by this tick's context when retractable) through nk::wheels_compressions, as the component
+	// oracle's. Empty when the stage, tick context, state (Simulation.state_is_valid), endpoint gear aux or ground
+	// (empty or invalid table, invalid lake) cannot reproduce the reference's terrain branch: the caller then
+	// evaluates the reference.
+	PackedFloat64Array stage_compressions(const PackedFloat64Array &s, const PackedFloat64Array &aux) {
+		if (!stage_ready_ || !tick_.ready || !read_state(s) || stage_.layout.wheel_count <= 0) return PackedFloat64Array();
+		const double *body = s.ptr();
+		for (int i = 0; i < kStateSize; ++i) {
+			if (!std::isfinite(body[i])) return PackedFloat64Array();
+		}
+		const double norm_sq = body[6] * body[6] + body[7] * body[7] + body[8] * body[8] + body[9] * body[9];
+		if (!std::isfinite(norm_sq) || !(norm_sq > 1e-24)) return PackedFloat64Array();
+		const nk::GroundContext *ground = &stage_.ground;
+		if (stage_.retraction.enabled) {
+			// The endpoint pose is the tick context's only when both gear values carry the same bits it validated.
+			const int64_t index = stage_.layout.gear_aux;
+			if (aux.size() != static_cast<int64_t>(tick_.aux.size()) || index < 0 || index + 1 >= aux.size()) {
+				return PackedFloat64Array();
+			}
+			for (int64_t i = index; i <= index + 1; ++i) {
+				const double expected = tick_.aux[static_cast<size_t>(i)].v;
+				if (std::memcmp(&aux.ptr()[i], &expected, sizeof(double)) != 0) return PackedFloat64Array();
+			}
+			ground = &tick_.posed_ground;
+		}
+		// An empty table (valid here) may send the reference to its flat-ground formula, whose -0.0 can differ.
+		if (ground->gear.empty || ground->surfaces.values.empty() || !ground->surfaces.valid || !ground->lake_valid) {
+			return PackedFloat64Array();
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		if (!nk::wheels_compressions(state, *ground, compressions_scratch_)) return PackedFloat64Array();
+		return pack(compressions_scratch_);
 	}
 
 	double stage_wing_wake(const PackedFloat64Array &s, const PackedFloat64Array &air, const PackedFloat64Array &d,

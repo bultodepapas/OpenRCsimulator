@@ -127,6 +127,8 @@ var _contact_reach_bound := false
 var _reach_world: Dictionary = {}
 var _reach_proxies: Array = []
 var _reach_size := -1
+## NK-5e: the loaded library binds stage_compressions (checked once per installation).
+var _compressions_bound := false
 var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
@@ -406,6 +408,7 @@ func install(session: Node) -> Callable:
 	_installed_model = model
 	_wing_wake_bound = _native.has_method("stage_wing_wake")
 	_contact_reach_bound = _native.has_method("contact_reach")
+	_compressions_bound = _native.has_method("stage_compressions") and _family != "helicopter"
 	if _contact_reach_bound and _family != "helicopter":
 		_prepare_reach_world(session._collision_world) # at installation, not on the first flying tick
 	_installed = true
@@ -427,6 +430,7 @@ func uninstall(session: Node) -> Callable:
 	_prepared = false
 	_installed_model = null
 	_contact_reach_bound = false
+	_compressions_bound = false
 	_reach_world = {}
 	_reach_proxies = []
 	_reach_size = -1
@@ -475,6 +479,13 @@ func contact_reach(session: Node, previous: PackedFloat64Array, candidate: Packe
 			or not proxies is Array or (proxies as Array).size() != _reach_size:
 		_prepare_reach_world(world)
 	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold))
+
+
+## NK-5e: the session's gear_compressions(s) at the accepted endpoint `s` with its aux, from the fixed-wing stage
+## and the tick context of the guarded pre-step; empty means "use the reference".
+func endpoint_compressions(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _compressions_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_compressions(s, aux)
 
 
 func _prepare_reach_world(world: Dictionary) -> void:

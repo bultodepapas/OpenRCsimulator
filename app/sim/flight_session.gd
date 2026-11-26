@@ -2580,11 +2580,14 @@ func _on_sim_faulted(reason: String) -> void:
 func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	_accepted_flap_mix_owner = _flap_mix_owner
+	var native_endpoint := _native_endpoint_tick == tick and tick > 0
 	_drop_tick_facts()
 	# This connection precedes external observers: a rejected RK/contact candidate never announces an incident.
 	var failure_activated: bool = _failures != null and tick > 0 and _failures.commit(tick)
 	_committing_contacts = true
+	_native_endpoint_admitted = native_endpoint
 	_observe_contact_tick(tick)
+	_native_endpoint_admitted = false
 	var crash_pause_pending := false
 	if _pending_contact_tick == tick:
 		_last_scenery_event = _pending_scenery_event
@@ -2757,14 +2760,23 @@ func _observe_contact_tick(tick: int) -> void:
 		prop_strike = {}
 	if tick > 0 and cost_observations_enabled and aircraft.get("ok", false):
 		# Observe the committed endpoint only. Never sample an RK candidate or add loads.
-		var current := gear_compressions(sim.state)
-		var gear := current_landing_gear()
+		var current := _endpoint_compressions()
+		var continued := _cost_support_tick == tick - 1
+		# A support event needs compression now or on the previous tick; otherwise support_event returns {}.
+		var supported := false
 		for index in current.size():
-			var event := ContactEvents.support_event(index, current[index],
-				_cost_support_previous[index] if _cost_support_tick == tick - 1 and index < _cost_support_previous.size() else 0.0,
-				float(gear.contacts[index].max_compression), tick, _contact_bindings)
-			if not event.is_empty():
-				_contact_events.append(event)
+			if not (current[index] <= 0.0 and (not continued or index >= _cost_support_previous.size() \
+					or _cost_support_previous[index] <= 0.0)):
+				supported = true
+				break
+		if supported:
+			var gear := current_landing_gear()
+			for index in current.size():
+				var event := ContactEvents.support_event(index, current[index],
+					_cost_support_previous[index] if continued and index < _cost_support_previous.size() else 0.0,
+					float(gear.contacts[index].max_compression), tick, _contact_bindings)
+				if not event.is_empty():
+					_contact_events.append(event)
 		_cost_support_previous = current
 		_cost_support_tick = tick
 	if not soft_hull_contacts or not aircraft.get("ok", false):
@@ -3348,6 +3360,19 @@ func gear_collapsed(s: PackedFloat64Array) -> bool:
 		return false
 	return Ground.collapsed(s, current_landing_gear(),
 		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake, _rc_track)
+
+
+## NK-5e: gear_compressions(sim.state) for the accepted endpoint under observation. The native stage answers only
+## for the tick whose guarded pre-step installed its context and when no RC track overlay is composed; the reference
+## evaluates every refusal.
+func _endpoint_compressions() -> PackedFloat64Array:
+	if _native_endpoint_admitted and native_endpoint_compressions_enabled and _native_stage != null \
+			and _rc_track.is_empty():
+		var native: PackedFloat64Array = _native_stage.endpoint_compressions(sim.state, sim.aux)
+		if not native.is_empty():
+			native_endpoint_answers += 1
+			return native
+	return gear_compressions(sim.state)
 
 
 ## Compression of each landing-gear contact at state `s` (m, ≤ 0 in the air), in data order; empty without gear.
@@ -5536,14 +5561,25 @@ func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: f
 		if not _native_stage.tick_context(self, next, inputs):
 			stage_backend_error = _native_stage.reason
 			return PackedFloat64Array()
+		_native_endpoint_tick = sim.tick + 1 # NK-5e: the endpoint this guarded context belongs to
 	return next
 
 
 ## NK-5a: true only inside _kernel_pre_step after the native configuration guard accepted this tick.
 var _native_wake_admitted := false
+## NK-5e: the accepted tick whose native tick context the guarded pre-step installed (-1: none). Every tick-fact
+## drop (pre-step, fault, pause, aircraft change) clears it; _on_sim_stepped reads it first.
+var _native_endpoint_tick := -1
+## NK-5e: true only while _on_sim_stepped observes the endpoint of that tick.
+var _native_endpoint_admitted := false
+## Test hook: false always evaluates the reference endpoint compressions, for equivalence checks.
+var native_endpoint_compressions_enabled := true
+## Diagnostic: accepted endpoints whose compressions the native stage answered.
+var native_endpoint_answers := 0
 
 
 func _drop_tick_facts() -> void:
+	_native_endpoint_tick = -1
 	_facts_armed = false
 	_fact_glow = _FACT_UNKNOWN
 	_fact_gear_retractable = _FACT_UNKNOWN
