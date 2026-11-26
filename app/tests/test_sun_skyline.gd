@@ -3,7 +3,7 @@
 #   - a 20 m building (mesh, vertex-sampled) east gives its roof's elevation; a flat ground plane changes nothing;
 #   - a shelter within EXCLUDE_RADIUS_M of the eye and hidden nodes are ignored;
 #   - visibility: a disc below the skyline is hidden, above it visible, with a smooth edge over its diameter;
-#   - the result does not depend on the per-frame work budget (captures and replays finish it on the same frame).
+#   - the result depends neither on the per-frame work budget nor on when its worker batches finish.
 # Run: godot --headless --path . --script res://tests/test_sun_skyline.gd
 extends SceneTree
 
@@ -130,6 +130,24 @@ func _run() -> void:
 	while not stepped.step(17):
 		frames += 1
 	_check("step-by-step equals finish", stepped.bins == sky.bins, "%d frames" % frames)
+	# 2026-11-26: batches run on a worker thread and a step never waits for one. Waiting a whole frame between steps,
+	# as a flight does, and stepping again at once must give the same bins.
+	var paced := Skyline.new(field, EYE)
+	var skipped := 0
+	while true:
+		var task_before: int = paced._task
+		var finished := paced.step(17)
+		if task_before >= 0 and paced._task == task_before:
+			skipped += 1 # the previous batch was still running: nothing planned this frame
+		if finished:
+			break
+		OS.delay_msec(1)
+	_check("frame-paced worker batches equal finish", paced.bins == sky.bins and paced._task < 0, "%d skipped" % skipped)
+	var dropped := Skyline.new(field, EYE)
+	dropped.step(17)
+	dropped.join() # owners join before dropping a skyline that is still building
+	_check("a joined, unfinished skyline has no batch left", dropped._task < 0 and not dropped.done)
+	dropped = null
 	_check("the azimuth wraps", Skyline.azimuth_bin(_toward(359.9, 0.0)) == Skyline.BINS - 1
 		and Skyline.azimuth_bin(_toward(0.1, 0.0)) == 0)
 	var none := Skyline.new(null, EYE)
