@@ -53,6 +53,11 @@ static var calibration_path := CALIBRATION_PATH
 static var _incomplete_attempts: Dictionary = {}
 ## A kept reset invalidates even a paused collector; its old samples must not repopulate the cleared cache.
 static var _reset_generation := 0
+## Worker tasks writing a measured verdict. A kept Restore waits for them, so a late write cannot recreate the file.
+static var _store_tasks: Array[int] = []
+## Verdict sections written by those tasks in this process ("path\nsection" -> stored values). load_result serves
+## them without reading the file back on the main thread; a synchronous save or a kept Restore forgets them.
+static var _written: Dictionary = {}
 
 signal finished(result: Dictionary)
 
@@ -74,6 +79,12 @@ var _last_read_usec := 0
 var _subviewports_seen := false
 var _views: Array[SubViewport] = []
 var _tracking_views := false
+## The finished attempt while its verdict is written on a worker thread (`finished` follows on a later frame).
+var _result: Dictionary = {}
+var _store_task := -1
+var _store_slot: Array = [false]
+var _store_key := ""
+var _store_values: Dictionary = {}
 
 
 ## `level` is the Scene detail level this flight renders (SceneDetail.level()); the verdict is relative to it.
@@ -104,10 +115,21 @@ func _exit_tree() -> void:
 		_token = 0
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_reap(_store_task) # freed mid-write (the flight ended within those milliseconds): every task is awaited
+
+
 func _process(delta: float) -> void:
 	if _generation != _reset_generation:
+		_reap(_store_task)
+		_store_task = -1
 		set_process(false)
 		queue_free()
+		return
+	if _store_task >= 0:
+		if _store_done():
+			_publish_store()
 		return
 	if _token == 0 or not _flight_active():
 		_last_frame_usec = 0 # a pause or lost focus must not count as a slow frame
@@ -142,10 +164,64 @@ func _process(delta: float) -> void:
 		result["adapter"] = _adapter
 		result["method"] = RenderingServer.get_current_rendering_method()
 		result.merge(current_workload(get_viewport()), true)
+		_begin_store(result)
+
+
+## Persists a finished attempt off the main thread. Reading, merging and writing the verdict file in the middle of
+## a flight stalled that frame: 24 ms in a local run and 133-147 ms in the GOD TEST while the antivirus scanned new
+## files (2026-11-26). `finished` keeps its `stored` flag and follows on a later frame. An incomplete attempt writes
+## nothing (record_attempt only keeps its in-process cooldown), so it finishes at once.
+func _begin_store(result: Dictionary) -> void:
+	_result = result
+	if not bool(result.get("complete", false)):
 		result["stored"] = record_attempt(result)
-		finished.emit(result)
-		set_process(false)
-		queue_free()
+		_emit_and_retire()
+		return
+	var adapter := str(result.get("adapter", ""))
+	var method := str(result.get("method", ""))
+	_incomplete_attempts.erase(_attempt_key(adapter, method, int(result.get("pixels", 0)), result))
+	var path := calibration_path
+	var section := _section(adapter, method)
+	_store_key = _written_key(path, section)
+	_store_values = _section_values(result)
+	_written.erase(_store_key) # until this write lands, readers see the file
+	_store_slot = [false]
+	_store_task = _start_store(path, section, _store_values, _store_slot)
+
+
+## Started from a static function so the task holds no reference to this node.
+static func _start_store(path: String, section: String, values: Dictionary, slot: Array) -> int:
+	var task := WorkerThreadPool.add_task(func() -> void: slot[0] = _write_section(path, section, values),
+		false, "Graphics calibration store")
+	_store_tasks.append(task)
+	return task
+
+
+func _store_done() -> bool:
+	return not _store_tasks.has(_store_task) or WorkerThreadPool.is_task_completed(_store_task)
+
+
+func _publish_store() -> void:
+	_reap(_store_task)
+	_store_task = -1
+	var stored := bool(_store_slot[0])
+	if stored:
+		_written[_store_key] = _store_values
+	_result["stored"] = stored
+	_emit_and_retire()
+
+
+func _emit_and_retire() -> void:
+	finished.emit(_result)
+	set_process(false)
+	queue_free()
+
+
+## Awaits one store task once; a completed task returns at once.
+static func _reap(task: int) -> void:
+	if task >= 0 and _store_tasks.has(task):
+		WorkerThreadPool.wait_for_task_completion(task)
+		_store_tasks.erase(task)
 
 
 func _flight_active() -> bool:
@@ -269,26 +345,31 @@ static func _section(adapter: String, method: String) -> String:
 
 ## The stored verdict for this GPU and renderer, or {} when there is none.
 static func load_result(adapter: String, method: String) -> Dictionary:
-	var cfg := ConfigFile.new()
-	if adapter.is_empty() or cfg.load(calibration_path) != OK or int(cfg.get_value("meta", "format", 0)) != FORMAT:
+	if adapter.is_empty():
 		return {}
 	var section := _section(adapter, method)
-	if not cfg.has_section(section):
-		return {}
-	var level := str(cfg.get_value(section, "level", ""))
+	var values: Dictionary = _written.get(_written_key(calibration_path, section), {})
+	if values.is_empty():
+		var cfg := ConfigFile.new()
+		if cfg.load(calibration_path) != OK or int(cfg.get_value("meta", "format", 0)) != FORMAT \
+				or not cfg.has_section(section):
+			return {}
+		for key: String in cfg.get_section_keys(section):
+			values[key] = cfg.get_value(section, key)
+	var level := str(values.get("level", ""))
 	return {"adapter": adapter_key(adapter), "method": method, "level": level if level in LEVEL_ORDER else "",
-		"scene_offset": clampi(int(cfg.get_value(section, "scene_offset", 0)), -1, 1),
-		"reject_high": bool(cfg.get_value(section, "reject_high", false)) and method == HIGH_METHOD,
-		"complete": bool(cfg.get_value(section, "complete", false)),
-		"pixels": maxi(int(cfg.get_value(section, "pixels", 0)), 0),
-		"render_pixels": maxi(int(cfg.get_value(section, "render_pixels", 0)), 0),
-		"msaa_3d": int(cfg.get_value(section, "msaa_3d", -1)),
-		"gpu_p95_ms": float(cfg.get_value(section, "gpu_p95_ms", 0.0)),
-		"cpu_p95_ms": float(cfg.get_value(section, "cpu_p95_ms", 0.0)),
-		"interval_p95_ms": float(cfg.get_value(section, "interval_p95_ms", 0.0)),
-		"cpu_bound": bool(cfg.get_value(section, "cpu_bound", false)),
-		"subviewports": bool(cfg.get_value(section, "subviewports", false)),
-		"refresh_hz": float(cfg.get_value(section, "refresh_hz", 0.0))}
+		"scene_offset": clampi(int(values.get("scene_offset", 0)), -1, 1),
+		"reject_high": bool(values.get("reject_high", false)) and method == HIGH_METHOD,
+		"complete": bool(values.get("complete", false)),
+		"pixels": maxi(int(values.get("pixels", 0)), 0),
+		"render_pixels": maxi(int(values.get("render_pixels", 0)), 0),
+		"msaa_3d": int(values.get("msaa_3d", -1)),
+		"gpu_p95_ms": float(values.get("gpu_p95_ms", 0.0)),
+		"cpu_p95_ms": float(values.get("cpu_p95_ms", 0.0)),
+		"interval_p95_ms": float(values.get("interval_p95_ms", 0.0)),
+		"cpu_bound": bool(values.get("cpu_bound", false)),
+		"subviewports": bool(values.get("subviewports", false)),
+		"refresh_hz": float(values.get("refresh_hz", 0.0))}
 
 
 ## Complete evidence alone may replace a stored verdict. In particular, a timing-unavailable attempt must not
@@ -296,27 +377,44 @@ static func load_result(adapter: String, method: String) -> Dictionary:
 static func save_result(result: Dictionary) -> bool:
 	if not bool(result.get("complete", false)):
 		return false
+	var section := _section(str(result.get("adapter", "")), str(result.get("method", "")))
+	_written.erase(_written_key(calibration_path, section))
+	return _write_section(calibration_path, section, _section_values(result))
+
+
+## The values one verdict section stores, in file order.
+static func _section_values(result: Dictionary) -> Dictionary:
+	return {"scene_offset": clampi(int(result.get("scene_offset", 0)), -1, 1),
+		"level": str(result.get("level", "")),
+		"reject_high": bool(result.get("reject_high", false)),
+		"complete": bool(result.get("complete", false)),
+		"pixels": maxi(int(result.get("pixels", 0)), 0),
+		"render_pixels": maxi(int(result.get("render_pixels", 0)), 0),
+		"msaa_3d": int(result.get("msaa_3d", -1)),
+		"gpu_p95_ms": float(result.get("gpu_p95_ms", 0.0)),
+		"samples": int(result.get("samples", 0)),
+		"cpu_p95_ms": float(result.get("cpu_p95_ms", 0.0)),
+		"interval_p95_ms": float(result.get("interval_p95_ms", 0.0)),
+		"cpu_bound": bool(result.get("cpu_bound", false)),
+		"subviewports": bool(result.get("subviewports", false)),
+		"refresh_hz": float(result.get("refresh_hz", 0.0))}
+
+
+## Replaces one section and keeps other GPUs' and renderers' verdicts. Touches no shared state: also runs on a
+## worker thread.
+static func _write_section(path: String, section: String, values: Dictionary) -> bool:
 	var cfg := ConfigFile.new()
-	cfg.load(calibration_path) # keep other GPUs' and renderers' verdicts
+	cfg.load(path)
 	if int(cfg.get_value("meta", "format", FORMAT)) != FORMAT:
 		cfg = ConfigFile.new()
 	cfg.set_value("meta", "format", FORMAT)
-	var section := _section(str(result.get("adapter", "")), str(result.get("method", "")))
-	cfg.set_value(section, "scene_offset", clampi(int(result.get("scene_offset", 0)), -1, 1))
-	cfg.set_value(section, "level", str(result.get("level", "")))
-	cfg.set_value(section, "reject_high", bool(result.get("reject_high", false)))
-	cfg.set_value(section, "complete", bool(result.get("complete", false)))
-	cfg.set_value(section, "pixels", maxi(int(result.get("pixels", 0)), 0))
-	cfg.set_value(section, "render_pixels", maxi(int(result.get("render_pixels", 0)), 0))
-	cfg.set_value(section, "msaa_3d", int(result.get("msaa_3d", -1)))
-	cfg.set_value(section, "gpu_p95_ms", float(result.get("gpu_p95_ms", 0.0)))
-	cfg.set_value(section, "samples", int(result.get("samples", 0)))
-	cfg.set_value(section, "cpu_p95_ms", float(result.get("cpu_p95_ms", 0.0)))
-	cfg.set_value(section, "interval_p95_ms", float(result.get("interval_p95_ms", 0.0)))
-	cfg.set_value(section, "cpu_bound", bool(result.get("cpu_bound", false)))
-	cfg.set_value(section, "subviewports", bool(result.get("subviewports", false)))
-	cfg.set_value(section, "refresh_hz", float(result.get("refresh_hz", 0.0)))
-	return cfg.save(calibration_path) == OK
+	for key: String in values:
+		cfg.set_value(section, key, values[key])
+	return cfg.save(path) == OK
+
+
+static func _written_key(path: String, section: String) -> String:
+	return path + "\n" + section
 
 
 ## Finish one measurement. A failed write stays eligible; an insufficient sample only delays the same workload
@@ -431,10 +529,13 @@ static func clear() -> Error:
 	var absolute := ProjectSettings.globalize_path(calibration_path)
 	if DirAccess.dir_exists_absolute(absolute):
 		return ERR_FILE_CANT_WRITE
+	for task: int in _store_tasks.duplicate():
+		_reap(task) # a write still in flight would recreate the file after its deletion
 	if FileAccess.file_exists(calibration_path):
 		var err := DirAccess.remove_absolute(absolute)
 		if err != OK:
 			return err
+	_written.clear()
 	_incomplete_attempts.clear()
 	_reset_generation += 1
 	return OK
