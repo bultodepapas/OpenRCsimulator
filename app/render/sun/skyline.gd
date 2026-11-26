@@ -28,6 +28,12 @@ const TERRAIN_RELIEF_SHARE := 0.02
 const MAX_EDGE_SPAN := PI / 6.0
 ## No scenery in a bin: the elevation reported (stored as float32: compare with is_empty_elevation()).
 const EMPTY := -PI / 2.0
+## A mesh's [vertices, indices] (mesh space, triangle surfaces) read while its field was built behind the loading screen
+## (capture_source): reading a mesh back from the renderer in flight cost 1–10 ms per mesh on Forward+, 13–20 ms frames
+## for the large scenery cells. A finished skyline removes the copies it used.
+const SOURCE_META := &"openrc_skyline_source"
+## capture_source keeps meshes whose top reaches this height: every eye that builds a skyline stands above it.
+const CAPTURE_MIN_TOP_M := 0.5
 
 var eye := Vector3.ZERO
 var bins := PackedFloat32Array()
@@ -37,6 +43,8 @@ var _job: Dictionary = {} # the node in progress: {kind, node, index, count, str
 ## The worker task running the previous step's batch, or -1.
 var _task := -1
 var _planned_out := false
+## Meshes whose captured source this skyline read; released when it is done.
+var _captured: Array[Mesh] = []
 
 
 func _init(field: Node, eye_position: Vector3) -> void:
@@ -72,7 +80,63 @@ func step(samples: int) -> bool:
 		_task = WorkerThreadPool.add_task(_run_batch.bind(self, batch), true, "Sun skyline")
 	elif _planned_out:
 		done = true
+		for mesh: Mesh in _captured:
+			if is_instance_valid(mesh):
+				mesh.remove_meta(SOURCE_META) # another eye position reads the renderer again
+		_captured.clear()
 	return done
+
+
+## A mesh's triangle surfaces as one [vertices, indices] pair in mesh space: the captured copy when there is one,
+## else read from the renderer (main thread; a GPU read-back on Forward+).
+static func mesh_source(mesh: Mesh) -> Array:
+	if mesh.has_meta(SOURCE_META):
+		var captured: Variant = mesh.get_meta(SOURCE_META)
+		if captured is Array and (captured as Array).size() == 2:
+			return captured
+	var vertices := PackedVector3Array()
+	var indices := PackedInt32Array()
+	for surface in mesh.get_surface_count():
+		if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
+			continue
+		var arrays: Array = mesh.surface_get_arrays(surface)
+		var surface_vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var surface_indices: Variant = arrays[Mesh.ARRAY_INDEX]
+		var base := vertices.size()
+		if surface_indices is PackedInt32Array and not (surface_indices as PackedInt32Array).is_empty():
+			if base == 0:
+				indices.append_array(surface_indices) # the usual single surface: no per-index script loop
+			else:
+				for index: int in surface_indices:
+					indices.append(base + index)
+		else:
+			for index in surface_vertices.size():
+				indices.append(base + index)
+		vertices.append_array(surface_vertices)
+	return [vertices, indices]
+
+
+## Field construction (render/field.gd, behind the loading screen): stores mesh_source() on a mesh the skyline of any
+## eye could read. `world` is the instance's transform relative to the field root, which sits at the world origin.
+## Returns whether it read the mesh.
+static func capture_source(instance: MeshInstance3D, world: Transform3D) -> bool:
+	var mesh := instance.mesh
+	if mesh == null or mesh.has_meta(SOURCE_META):
+		return false
+	var world_box: AABB = world * mesh.get_aabb()
+	if world_box.end.y <= CAPTURE_MIN_TOP_M or is_terrain_sheet(world_box):
+		return false
+	mesh.set_meta(SOURCE_META, mesh_source(mesh))
+	return true
+
+
+## Terrain sheets kilometres wide with relief under TERRAIN_RELIEF_SHARE of their size are skipped: reading the
+## field's 40 km ground costs a 24 ms frame. Measured on the default field, the skyline drops by at most 1° (at
+## 45–60° and 300° azimuth, where gentle relief near the field rose above the trees): a little more glare there,
+## never less. Distant hills are their own ridge meshes.
+static func is_terrain_sheet(world_box: AABB) -> bool:
+	return minf(world_box.size.x, world_box.size.z) > TERRAIN_MIN_SIZE_M \
+		and world_box.size.y < TERRAIN_RELIEF_SHARE * minf(world_box.size.x, world_box.size.z)
 
 
 ## Waits for the batch the last step started (it normally finished during that frame). Owners call it before they
@@ -147,34 +211,13 @@ func _start(node: Node) -> void:
 		# Nothing at or below the eye can rise above the horizon (the callers keep the geometric horizon): the flat
 		# ground and lake are skipped without reading their vertices.
 		var world_box: AABB = transform * mesh.get_aabb()
-		if world_box.end.y <= eye.y:
+		if world_box.end.y <= eye.y or is_terrain_sheet(world_box):
 			return
-		# Terrain sheets kilometres wide with relief under TERRAIN_RELIEF_SHARE of their size are skipped: reading the
-		# field's 40 km ground costs a 24 ms frame. Measured on the default field, the skyline drops by at most 1° (at
-		# 45–60° and 300° azimuth, where gentle relief near the field rose above the trees): a little more glare there,
-		# never less. Distant hills are their own ridge meshes.
-		if minf(world_box.size.x, world_box.size.z) > TERRAIN_MIN_SIZE_M \
-				and world_box.size.y < TERRAIN_RELIEF_SHARE * minf(world_box.size.x, world_box.size.z):
-			return
-		var vertices := PackedVector3Array()
-		var indices := PackedInt32Array()
-		for surface in mesh.get_surface_count():
-			if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
-				continue
-			var arrays: Array = mesh.surface_get_arrays(surface)
-			var surface_vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-			var surface_indices: Variant = arrays[Mesh.ARRAY_INDEX]
-			var base := vertices.size()
-			if surface_indices is PackedInt32Array and not (surface_indices as PackedInt32Array).is_empty():
-				if base == 0:
-					indices.append_array(surface_indices) # the usual single surface: no per-index script loop
-				else:
-					for index: int in surface_indices:
-						indices.append(base + index)
-			else:
-				for index in surface_vertices.size():
-					indices.append(base + index)
-			vertices.append_array(surface_vertices)
+		var source := mesh_source(mesh)
+		if mesh.has_meta(SOURCE_META):
+			_captured.append(mesh)
+		var vertices: PackedVector3Array = source[0]
+		var indices: PackedInt32Array = source[1]
 		var triangles := indices.size() / 3
 		if triangles == 0:
 			return

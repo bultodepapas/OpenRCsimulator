@@ -28,6 +28,7 @@ const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
 const RcTrackField = preload("res://render/rc_track_field.gd")
+const Skyline = preload("res://render/sun/skyline.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
@@ -85,6 +86,11 @@ class _BuildContext:
 	var build_countryside: bool = false
 	var rc_track: Dictionary
 	var camera_local_trees := false
+	## SUN-09: meshes whose geometry the eye's skyline reads, captured behind the loading screen.
+	var skyline_nodes: Array[MeshInstance3D] = []
+	var skyline_transforms: Array[Transform3D] = []
+	var skyline_collected := false
+	var skyline_index := 0
 
 	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array,
 			rc_track_input: Dictionary = {}) -> void:
@@ -368,7 +374,38 @@ static func _advance_build(context: _BuildContext) -> void:
 			context.result.set_meta("lighting_snapshot", context.lighting.duplicate(true))
 			context.phase = _BuildPhase.FIELD_READY
 		_BuildPhase.FIELD_READY:
-			context.phase = _BuildPhase.DONE
+			# SUN-09: read each mesh the eye's skyline needs now, behind the loading screen, in chunks under the
+			# scenery work budget. In flight those renderer read-backs cost 13–20 ms frames on Forward+ (2026-11-26).
+			if not context.skyline_collected:
+				_collect_skyline_meshes(context.result, Transform3D.IDENTITY, context)
+				context.skyline_collected = true
+			else:
+				var started := Time.get_ticks_usec()
+				while context.skyline_index < context.skyline_nodes.size():
+					Skyline.capture_source(context.skyline_nodes[context.skyline_index],
+						context.skyline_transforms[context.skyline_index])
+					context.skyline_index += 1
+					if Time.get_ticks_usec() - started >= SCENERY_BUILD_BUDGET_USEC:
+						break
+			if context.skyline_index >= context.skyline_nodes.size():
+				context.phase = _BuildPhase.DONE
+
+
+## The visible mesh instances under `node`, with their transforms relative to the (detached) field root. SubViewports
+## render their own worlds and are skipped, as the skyline skips them.
+static func _collect_skyline_meshes(node: Node, parent: Transform3D, context: _BuildContext) -> void:
+	if node is Viewport:
+		return
+	var relative := parent
+	if node is Node3D:
+		if not (node as Node3D).visible:
+			return
+		relative = parent * (node as Node3D).transform
+		if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+			context.skyline_nodes.append(node as MeshInstance3D)
+			context.skyline_transforms.append(relative)
+	for child in node.get_children():
+		_collect_skyline_meshes(child, relative, context)
 
 
 static func _countryside_layout_is_present(context: _BuildContext) -> bool:
