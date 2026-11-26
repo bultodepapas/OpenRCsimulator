@@ -759,7 +759,7 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 		# changing live packed state before the whole simulation tick is accepted.
 		before=Life.cut(before).state
 		candidate=Life.cut(candidate).state
-	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
+	var endpoint: Dictionary=_firing_sample(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
 	if not endpoint.ok: return PackedFloat64Array([NAN])
 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
 	var accepted: Dictionary
@@ -812,6 +812,13 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 		events.append({"type":"glow_stopped","reason":stop_reason,"time_s":stopped_time})
 	return {"state":out,"events":events}
 
+## NK-6b: step() and _count_segment read only `ok` and `firing_fraction` of point(). A session's native glow stage
+## answers that fraction from the same point evaluation inside the tick it guards; otherwise point() runs.
+static func _firing_sample(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	var fraction: float=owner.native_glow_firing(body,values,time_s) if owner.has_method("native_glow_firing") else NAN
+	if is_finite(fraction): return {ok=true,firing_fraction=fraction}
+	return point(owner,body,values,time_s)
+
 ## Each completed opportunity belongs to its closing (start, end] source-mode
 ## interval, including a fuel-stop tie. Use that interval's endpoint fraction,
 ## preserving the mean-cycle convention; do not project/wrap intermediate states.
@@ -826,7 +833,7 @@ static func _count_segment(owner: Node, start: PackedFloat64Array, end: PackedFl
 	var probability: float=0.0
 	if start[RB.SIZE+7]==1.0 and int(start[RB.SIZE+SOURCE_MODE_INDEX])!=MODE_STARVED \
 			and owner.engine_running and not _injected_cut(owner):
-		var sample: Dictionary=endpoint if not endpoint.is_empty() else point(owner,
+		var sample: Dictionary=endpoint if not endpoint.is_empty() else _firing_sample(owner,
 			end.slice(0,RB.SIZE),end.slice(RB.SIZE),end_time)
 		if not sample.get("ok",false): return false
 		probability=float(sample.firing_fraction)

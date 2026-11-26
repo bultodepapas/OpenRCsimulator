@@ -1047,6 +1047,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	int64_t context_calls_ = 0;
 	// NK-6a: the tick integrator's counters and scratch (one non-reentrant tick owner).
 	int64_t tick_calls_ = 0, tick_answers_ = 0, tick_faults_ = 0;
+	int64_t glow_firing_calls_ = 0, glow_firing_answers_ = 0; // NK-6b
 	nk::R tick_mass_ = 0.0, tick_gravity_ = 0.0;
 	nk::R tick_inertia_[6] = {}, tick_inertia_inv_[6] = {};
 	nk::StageResult tick_stage_result_;
@@ -1235,6 +1236,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("integrate_tick", "model", "state", "continuous", "aux", "t", "dt", "tick",
 			"mass", "gravity", "inertia", "inertia_inv"), &OpenRCNativeKernel::integrate_tick);
 		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_firing", "body", "values", "time_s"),
+			&OpenRCNativeKernel::stage_glow_firing);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -2441,11 +2444,33 @@ public:
 		return out;
 	}
 
+	// NK-6b: GlowFlight.point(owner, body, values, time_s).firing_fraction from the prepared glow stage and the tick
+	// context of the guarded pre-step: the same point evaluation the stage composes. NaN refuses (no glow stage or
+	// context, another layout, a refused stage); the caller then evaluates point(). Not counted as an RK stage.
+	double stage_glow_firing(const PackedFloat64Array &body, const PackedFloat64Array &values, double time_s) {
+		++glow_firing_calls_;
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !tick_.ready || !read_state(body) ||
+				values.size() != static_cast<int64_t>(continuous_scratch_.size()) || !std::isfinite(time_s)) {
+			return nk::kNan;
+		}
+		nk::R state[kStateSize];
+		load(body, state);
+		std::vector<nk::R> &scratch = continuous_scratch_;
+		for (int64_t i = 0; i < values.size(); ++i) scratch[static_cast<size_t>(i)] = values[i];
+		const nk::StageResult result = nk::stage_evaluate(state, scratch.data(), static_cast<int>(values.size()), time_s,
+			stage_, tick_, nullptr);
+		if (!result.shaped || !nk::is_finite(result.glow_firing_fraction)) return nk::kNan;
+		++glow_firing_answers_;
+		return result.glow_firing_fraction.v;
+	}
+
 	Dictionary tick_stats() const {
 		Dictionary out;
 		out["calls"] = tick_calls_;
 		out["answers"] = tick_answers_;
 		out["faults"] = tick_faults_;
+		out["glow_firing_calls"] = glow_firing_calls_;
+		out["glow_firing_answers"] = glow_firing_answers_;
 		return out;
 	}
 

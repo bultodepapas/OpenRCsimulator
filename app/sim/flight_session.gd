@@ -3418,6 +3418,19 @@ func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
 	return facts
 
 
+## NK-6b: GlowFlight.point(self, body, values, time_s).firing_fraction for the step policy's accepted endpoint and
+## counted segments, from the native glow stage that evaluates this tick's RK stages. Only inside the tick whose guarded
+## pre-step installed the native context, without injected failures, an RC track, a pending weather reset or a derived
+## session class (whose point inputs may differ). NaN means "evaluate point()".
+func native_glow_firing(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> float:
+	if not native_glow_firing_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 			or _failures != null or not _rc_track.is_empty() or _weather_pending_reset 			or get_script().resource_path != SELF_PATH:
+		return NAN
+	var fraction: float = _native_stage.glow_firing(body, values, time_s)
+	if is_finite(fraction):
+		native_glow_firing_answers += 1
+	return fraction
+
+
 ## NK-5f: gear_collapsed(s) with Ground.collapsed's checks in its order; where it computes the compressions, those
 ## published for this endpoint (published_gear_compressions) stand in when available. Same caller scope.
 func published_gear_collapsed(s: PackedFloat64Array) -> bool:
@@ -5671,6 +5684,10 @@ var native_endpoint_facts_enabled := true
 var native_endpoint_fact_answers := 0
 ## NK-5i: this class's script, for published_endpoint_facts' derived-class refusal (as observer_air_and_wind's).
 const SELF_PATH := "res://sim/flight_session.gd"
+## NK-6b test hook: false always evaluates the glow step policy's endpoint point(), for equivalence checks.
+var native_glow_firing_enabled := true
+## Diagnostic: glow endpoint samples the native stage answered.
+var native_glow_firing_answers := 0
 ## NK-5g test hook: false always evaluates the reference _pre_step, for equivalence checks.
 var native_pre_step_enabled := true
 ## Diagnostic: guarded pre-steps the native stage answered.

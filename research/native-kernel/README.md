@@ -564,6 +564,11 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   selects it; `{}` refuses before any evaluation, `{fault}` carries the reference's refusal, and otherwise the
   endpoint is committed by `Simulation._commit_step`. `tick_stats()` counts calls, answers and faults
   ([evidence](../../docs/research/native-kernel/NK-6a/README.md)).
+- `stage_glow_firing(body, values, time_s)` (NK-6b) answers `GlowFlight.point(...).firing_fraction`, the only point
+  value the glow step policy's endpoint and counted segments read, from the prepared glow stage's own lifecycle
+  point. `FlightSession.native_glow_firing` asks only inside the tick its guarded pre-step installed, and
+  `GlowFlight._firing_sample` evaluates `point()` on NaN
+  ([evidence](../../docs/research/native-kernel/NK-6b/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

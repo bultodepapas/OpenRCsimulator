@@ -107,6 +107,7 @@ struct StageResult {
 	std::vector<R> preview_wheel_rates;
 	bool has_preview_source_off = false; // NK-5b: liquid gas preview's finite source-off shaft rate
 	R preview_source_off_rpm_rate = 0.0;
+	R glow_firing_fraction = kNan; // NK-6b: the glow lifecycle point's firing fraction
 };
 
 // A callback into immutable native weather only. Its context is local to one RK stage (the tick's aux) or to one
@@ -370,6 +371,7 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		out.rotor = result.rotor;
 		out.has_body_derivative = true;
 		out.body_derivative = result.body_derivative;
+		out.glow_firing_fraction = result.firing_fraction;
 		return out;
 	}
 	ElectricStagePoint source;
