@@ -500,6 +500,7 @@ diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 | `nk_weather*`, `nk_spatial*`, `nk_wake*` | Stage-time weather, atmosphere, local spatial flow and transported/quasistatic wake |
 | `nk_helicopter*` | Helicopter controls, rotor/airframe forces, drive, body derivatives and ground contact |
 | `nk_legacy_ground.hpp` | Legacy no-wheel-state flat/lake contact law for valid older or workshop models |
+| `nk_tick.hpp` | `simulation.gd` legacy joint tick (`_rk4_substeps`, `_locate_substeps`, stage validity), `rigid_body.gd` `derivative`, `integrator.gd` RK4, `event_step.gd` and `event_bracket.gd` (NK-6a) |
 | `nk_kernel.cpp` | `OpenRCNativeKernel` (RefCounted): prepare, per-call and per-tick methods, probes, counters, benches |
 
 These rows identify implemented code, not release qualification. Installed fleet, lifecycle and package evidence
@@ -554,9 +555,19 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   compressions. `FlightSession.published_endpoint_facts` asks only within the `stepped` publication of a natively
   measured endpoint, without an RC track or pending weather reset; the sampler evaluates the reference on an empty
   answer ([evidence](../../docs/research/native-kernel/NK-5i/README.md)).
+- `integrate_tick(model, state, continuous, aux, t, dt, tick, mass, gravity, inertia, inertia_inv)` (NK-6a,
+  `nk_tick.hpp`) integrates a legacy, endpoint-free joint tick without a step policy whose stage is this kernel's
+  `stage`. After the reference pre-step installs `aux`, it runs Simulation's tick to the accepted endpoint: the
+  tick's own stage, the rigid-body derivative, RK4, substeps, the declared-event locator and bracket, every
+  stage-validity check and refusal message. The model's rotor-momentum, substep, event-transition, post-step filter
+  and auxiliary-projection callbacks are called where the reference calls them. `Simulation._native_integrator`
+  selects it; `{}` refuses before any evaluation, `{fault}` carries the reference's refusal, and otherwise the
+  endpoint is committed by `Simulation._commit_step`. `tick_stats()` counts calls, answers and faults
+  ([evidence](../../docs/research/native-kernel/NK-6a/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
-  replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
+  replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
+  the helicopter tick and observers remain in GDScript.
 - D6: preparation rejects malformed data, unsupported laws, pending configuration changes and exceeded resource
   budgets. Family adapters admit the capabilities listed above. Rejection preserves the reference callbacks;
   a later configuration mutation faults before the next native evaluation rather than using stale coefficients.

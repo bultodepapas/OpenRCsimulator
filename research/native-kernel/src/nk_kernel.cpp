@@ -43,6 +43,8 @@
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
 #include "nk_pre_step.hpp"
+#include "nk_tick.hpp"
+#include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/packed_int64_array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -1043,6 +1045,13 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool stage_timing_ = false;
 	double stage_ns_ = 0.0;
 	int64_t context_calls_ = 0;
+	// NK-6a: the tick integrator's counters and scratch (one non-reentrant tick owner).
+	int64_t tick_calls_ = 0, tick_answers_ = 0, tick_faults_ = 0;
+	nk::R tick_mass_ = 0.0, tick_gravity_ = 0.0;
+	nk::R tick_inertia_[6] = {}, tick_inertia_inv_[6] = {};
+	nk::StageResult tick_stage_result_;
+	nk::TickRk4Scratch tick_rk4_;
+	std::vector<nk::R> tick_combined_, tick_first_, tick_next_, tick_event_times_;
 	bool rejection_diagnostics_enabled_ = false;
 	bool rejection_valid_ = false;
 	bool diagnostic_context_ready_ = false;
@@ -1223,6 +1232,9 @@ protected:
 			&OpenRCNativeKernel::set_tick_context);
 		godot::ClassDB::bind_method(D_METHOD("set_power_context", "throttle", "enabled"), &OpenRCNativeKernel::set_power_context);
 		godot::ClassDB::bind_method(D_METHOD("stage", "body", "continuous", "t"), &OpenRCNativeKernel::stage);
+		godot::ClassDB::bind_method(D_METHOD("integrate_tick", "model", "state", "continuous", "aux", "t", "dt", "tick",
+			"mass", "gravity", "inertia", "inertia_inv"), &OpenRCNativeKernel::integrate_tick);
+		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -1945,6 +1957,8 @@ public:
 			{"8.0", 8.0}, {"80.0", 80.0}, {"86400.0", 86400.0}, {"90.0", 90.0},
 			{"100000.0", 100000.0},
 			{"1e-30", nk::kGd1eMinus30}, {"1.0e-30", 1.0e-30},
+			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
+			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			{"9223372036854775808.0", 9223372036854775808.0},
 		};
 		for (const auto &entry : table) {
@@ -2110,6 +2124,23 @@ public:
 			const nk::StageResult result = nk::stage_evaluate(state, continuous_scratch_.data(), static_cast<int>(continuous.size()), t,
 				stage_, tick_, rejection_diagnostics_enabled_ ? &rejection_ : nullptr);
 			if (result.shaped) {
+				out = stage_dictionary(result, body);
+			} else if (rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive &&
+					rejection_trial_is_valid(body, continuous, t)) {
+				capture_stage_rejection(body, continuous, t);
+			}
+		}
+		if (stage_timing_) {
+			stage_ns_ += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
+		}
+		return out;
+	}
+
+	// The joint-stage dictionary of a shaped result, as `stage` returns it (NK-6a builds it only where a callback reads it).
+	Dictionary stage_dictionary(const nk::StageResult &result, const PackedFloat64Array &body) const {
+		Dictionary out;
+		{
+			{
 				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
 				static const godot::StringName kLoads("loads"), kDerivative("derivative"), kRotor("rotor_momentum");
 				// NK-5c: build every result key once, not on each RK stage.
@@ -2171,14 +2202,250 @@ public:
 					}
 					out[k_stage_context] = context;
 				}
-			} else if (rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive &&
-					rejection_trial_is_valid(body, continuous, t)) {
-				capture_stage_rejection(body, continuous, t);
 			}
+		}
+		return out;
+	}
+
+	// NK-6a: one counted fixed-wing stage evaluation from left-first scalars, with `stage`'s counters, timing and
+	// rejection diagnostics. The caller has checked that the stage is prepared for this continuous size.
+	void tick_stage(const nk::R *s, int size, double t, nk::StageResult &result) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
+		++stage_calls_;
+		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
+		result = nk::stage_evaluate(s, s + kStateSize, size - kStateSize, t, stage_, tick_,
+			rejection_diagnostics_enabled_ ? &rejection_ : nullptr);
+		if (!result.shaped && rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive) {
+			const PackedFloat64Array body = pack(s, kStateSize);
+			const PackedFloat64Array values = pack(s + kStateSize, size - kStateSize);
+			if (rejection_trial_is_valid(body, values, t)) capture_stage_rejection(body, values, t);
 		}
 		if (stage_timing_) {
 			stage_ns_ += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
 		}
+	}
+
+	// Simulation `_joint_stage_is_valid` for the dictionary `stage` would build from this result.
+	static bool tick_joint_valid(const nk::StageResult &r, int extra) {
+		if (!r.shaped) return false;
+		if (r.has_body_derivative && !nk::tick_finite(r.body_derivative.data(), kStateSize)) return false;
+		return nk::tick_finite(r.loads.data(), 6) && static_cast<int>(r.derivative.size()) == extra &&
+			nk::tick_finite(r.derivative.data(), extra) && nk::tick_finite(r.rotor.data(), 3);
+	}
+
+	// Simulation `derive` for a valid joint stage: its body derivative or rigid_body.gd's with the stage's rotor
+	// momentum, then its continuous derivative.
+	bool tick_derive(const nk::R *s, const nk::StageResult &joint, nk::R *out, const char *&error) const {
+		if (joint.has_body_derivative) {
+			for (int i = 0; i < kStateSize; ++i) out[i] = joint.body_derivative[static_cast<size_t>(i)];
+		} else {
+			nk::tick_rb_derivative(s, tick_mass_, tick_inertia_, tick_inertia_inv_, joint.loads.data(), tick_gravity_,
+				joint.rotor.data(), out);
+		}
+		if (!nk::tick_finite(out, kStateSize)) {
+			error = "RK stage derivative is nonfinite or malformed";
+			return false;
+		}
+		for (size_t i = 0; i < joint.derivative.size(); ++i) out[kStateSize + i] = joint.derivative[i];
+		return true;
+	}
+
+	static PackedFloat64Array tick_slice(const std::vector<nk::R> &values, int from, int to) {
+		return pack(values.data() + from, to - from);
+	}
+
+	static bool tick_packed_finite(const Variant &value, int64_t expected) {
+		if (value.get_type() != Variant::PACKED_FLOAT64_ARRAY) return false;
+		const PackedFloat64Array values = value;
+		if (expected >= 0 && values.size() != expected) return false;
+		const double *data = values.ptr();
+		for (int64_t i = 0; i < values.size(); ++i) {
+			if (!std::isfinite(data[i])) return false;
+		}
+		return true;
+	}
+
+	static bool tick_state_valid(const Variant &value) {
+		if (!tick_packed_finite(value, kStateSize)) return false;
+		const PackedFloat64Array values = value;
+		nk::R s[kStateSize];
+		load(values, s);
+		return nk::tick_body_valid(s);
+	}
+
+	Dictionary tick_fault(const String &reason) {
+		++tick_faults_;
+		Dictionary out;
+		out["fault"] = reason;
+		return out;
+	}
+
+	// NK-6a: Simulation.step's legacy joint tick from the tick's first stage to its accepted endpoint, after the
+	// reference pre_tick installed `aux` (simulation.gd). The model's callbacks (rotor momentum, substeps, event
+	// transition, post-step filter, auxiliary projection) are called where and with what the reference calls them.
+	// {} refuses before any evaluation, leaving the tick to the reference; {fault} carries the reference's refusal;
+	// otherwise {state, continuous, aux, loads, events} is the endpoint the reference would commit.
+	Dictionary integrate_tick(godot::Object *model, const PackedFloat64Array &state, const PackedFloat64Array &continuous,
+			const PackedFloat64Array &aux, double t, double dt, int64_t tick, double mass, double gravity,
+			const PackedFloat64Array &inertia, const PackedFloat64Array &inertia_inv) {
+		static const godot::StringName k_rotor_momentum("rotor_momentum"), k_substeps_joint("substeps_joint"),
+			k_substeps("substeps"), k_events("events"), k_post_tick("post_tick"), k_post_tick_joint("post_tick_joint"),
+			k_block_aux("block_aux"), k_transition("transition"), k_index("index"), k_type("type"), k_fault("fault"),
+			k_state("state"), k_continuous("continuous"), k_aux("aux"), k_loads("loads"), k_events_out("events");
+		if (model == nullptr || heli_stage_ready_ || !stage_ready_ || !tick_.ready || state.size() != kStateSize ||
+				continuous.is_empty() || continuous.size() != static_cast<int64_t>(continuous_scratch_.size()) ||
+				inertia.size() != 6 || inertia_inv.size() != 6) {
+			return Dictionary();
+		}
+		++tick_calls_;
+		const int extra = static_cast<int>(continuous.size());
+		const int size = kStateSize + extra;
+		tick_combined_.resize(static_cast<size_t>(size));
+		for (int i = 0; i < kStateSize; ++i) tick_combined_[static_cast<size_t>(i)] = state[i];
+		for (int i = 0; i < extra; ++i) tick_combined_[static_cast<size_t>(kStateSize + i)] = continuous[i];
+		tick_mass_ = mass;
+		tick_gravity_ = gravity;
+		for (int i = 0; i < 6; ++i) {
+			tick_inertia_[i] = inertia[i];
+			tick_inertia_inv_[i] = inertia_inv[i];
+		}
+		tick_rk4_.size(size);
+		const nk::R *combined = tick_combined_.data();
+
+		// The tick's own joint stage (H2: stage 1 reuses it).
+		nk::StageResult current;
+		tick_stage(combined, size, t, current);
+		if (!tick_joint_valid(current, extra)) return tick_fault("step rejected: joint stage evaluation is nonfinite or malformed");
+		const Variant rotor = godot::Callable(model->get(k_rotor_momentum)).call(aux);
+		if (!tick_packed_finite(rotor, -1) || (PackedFloat64Array(rotor).size() != 0 && PackedFloat64Array(rotor).size() != 3)) {
+			return tick_fault("step rejected: rotor momentum is nonfinite or malformed");
+		}
+		const char *stage_error = nullptr;
+		tick_first_.resize(static_cast<size_t>(size));
+		tick_derive(combined, current, tick_first_.data(), stage_error);
+
+		// Substeps: the joint callback reads the tick's stage dictionary.
+		Variant declared = int64_t(1);
+		const godot::Callable substeps_joint = model->get(k_substeps_joint);
+		const godot::Callable substeps = model->get(k_substeps);
+		if (substeps_joint.is_valid()) {
+			const PackedFloat64Array body = tick_slice(tick_combined_, 0, kStateSize);
+			declared = substeps_joint.call(body, tick_slice(tick_combined_, kStateSize, size), t, stage_dictionary(current, body));
+		} else if (substeps.is_valid()) {
+			declared = substeps.call(tick_slice(tick_combined_, 0, kStateSize), tick_slice(tick_combined_, kStateSize, size), t);
+		}
+		if (declared.get_type() != Variant::INT || int64_t(declared) < 1 || int64_t(declared) > nk::kTickMaxSubsteps) {
+			return tick_fault("step rejected: substep count is not an integer within 1..16");
+		}
+		const int pieces = static_cast<int>(int64_t(declared));
+		if (stage_error != nullptr) return tick_fault(String("step rejected: ") + stage_error);
+
+		// The RK stage derivative `f`.
+		auto f = [&](const nk::R *s, nk::R stage_t, nk::R *out) -> bool {
+			if (!nk::tick_finite(s, size) || !nk::tick_body_valid(s)) {
+				stage_error = "RK stage state is nonfinite, malformed, or has a degenerate quaternion";
+				return false;
+			}
+			tick_stage(s, size, stage_t.v, tick_stage_result_);
+			if (!tick_joint_valid(tick_stage_result_, extra)) {
+				stage_error = "RK joint stage evaluation is nonfinite or malformed";
+				return false;
+			}
+			return tick_derive(s, tick_stage_result_, out, stage_error);
+		};
+		tick_next_.resize(static_cast<size_t>(size));
+		tick_event_times_.clear();
+		nk::TickStatus status = nk::TickStatus::Ok;
+		bool located = true;
+		String event_type;
+		const Array events = model->get(k_events);
+		if (!events.is_empty()) {
+			const Dictionary event = events[0];
+			const godot::Callable transition = event.get(k_transition, Variant());
+			const int index = static_cast<int>(int64_t(event.get(k_index, Variant())));
+			event_type = String(event.get(k_type, Variant()));
+			auto project = [&](const nk::R *in, int count, int at, std::vector<nk::R> &out) -> bool {
+				const Variant projected = transition.call(pack(in, count), at);
+				if (projected.get_type() != Variant::PACKED_FLOAT64_ARRAY) return false;
+				const PackedFloat64Array values = projected;
+				out.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) out[static_cast<size_t>(i)] = values[i];
+				return true;
+			};
+			status = nk::tick_locate_substeps(combined, size, t, dt, f, tick_first_.data(), index, project,
+				transition.is_valid(), pieces, located, tick_next_, tick_event_times_, tick_rk4_);
+		} else if (pieces == 1) {
+			status = nk::tick_rk4_step_at(combined, size, t, dt, f, tick_first_.data(), tick_next_.data(), tick_rk4_);
+		} else {
+			status = nk::tick_rk4_substeps(combined, size, t, dt, f, tick_first_.data(), pieces, tick_next_, tick_rk4_);
+		}
+		if (status == nk::TickStatus::Abort || stage_error != nullptr) {
+			return tick_fault(String("step rejected: ") + (stage_error != nullptr ? stage_error : ""));
+		}
+		if (!located) return tick_fault("step rejected: the event locator could not bound the tick");
+		Array tick_events;
+		if (!events.is_empty()) {
+			const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
+			const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
+			for (const nk::R time_s : tick_event_times_) {
+				if (event_type.is_empty() || !nk::is_finite(time_s) || time_s.v < earliest.v || time_s.v > latest.v) {
+					return tick_fault("step rejected: step policy returned malformed events");
+				}
+				Dictionary event;
+				event[String("type")] = event_type;
+				event[String("time_s")] = time_s.v;
+				tick_events.append(event);
+			}
+		}
+		if (static_cast<int>(tick_next_.size()) != size || !nk::tick_finite(tick_next_.data(), size) ||
+				!nk::tick_body_valid(tick_next_.data())) {
+			return tick_fault("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion");
+		}
+
+		// The post-step body filter owns only the rigid body.
+		PackedFloat64Array accepted_body = tick_slice(tick_next_, 0, kStateSize);
+		const godot::Callable post_tick = model->get(k_post_tick);
+		const godot::Callable post_tick_joint = model->get(k_post_tick_joint);
+		if (post_tick.is_valid() || post_tick_joint.is_valid()) {
+			Array arguments;
+			arguments.append(state.duplicate());
+			arguments.append(accepted_body.duplicate());
+			arguments.append(tick + 1);
+			if (post_tick_joint.is_valid()) {
+				arguments.append(continuous.duplicate());
+				arguments.append(tick_slice(tick_next_, kStateSize, size));
+			}
+			const Variant filtered = (post_tick_joint.is_valid() ? post_tick_joint : post_tick).callv(arguments);
+			if (!tick_state_valid(filtered)) {
+				return tick_fault("step rejected: post-step contact filter returned a malformed body state");
+			}
+			accepted_body = PackedFloat64Array(filtered).duplicate();
+		}
+		const PackedFloat64Array accepted_continuous = tick_slice(tick_next_, kStateSize, size);
+		PackedFloat64Array accepted_aux = aux;
+		const godot::Callable block_aux = model->get(k_block_aux);
+		if (block_aux.is_valid()) {
+			const Variant projected = block_aux.call(accepted_continuous, accepted_aux.duplicate());
+			if (!tick_packed_finite(projected, aux.size())) {
+				return tick_fault("step rejected: continuous auxiliary projection is nonfinite or malformed");
+			}
+			accepted_aux = projected;
+		}
+		++tick_answers_;
+		Dictionary out;
+		out[k_state] = accepted_body;
+		out[k_continuous] = accepted_continuous;
+		out[k_aux] = accepted_aux;
+		out[k_loads] = pack(current.loads.data(), 6);
+		out[k_events_out] = tick_events;
+		return out;
+	}
+
+	Dictionary tick_stats() const {
+		Dictionary out;
+		out["calls"] = tick_calls_;
+		out["answers"] = tick_answers_;
+		out["faults"] = tick_faults_;
 		return out;
 	}
 
