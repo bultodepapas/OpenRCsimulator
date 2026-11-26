@@ -42,7 +42,10 @@
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
+#include "nk_pre_step.hpp"
 #include <godot_cpp/variant/callable.hpp>
+#include <godot_cpp/variant/packed_int64_array.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/ref.hpp>
 
 namespace {
@@ -901,6 +904,91 @@ bool read_deflections(const PackedFloat64Array &d, nk::Deflections &out) {
 	return true;
 }
 
+// NK-5g: GDScript exp/log/sin/cos are these engine utility functions; calling them keeps the pre-step's results
+// the engine's own, bit for bit, whatever libm this library links.
+double engine_exp(double x) { return godot::UtilityFunctions::exp(x); }
+double engine_log(double x) { return godot::UtilityFunctions::log(x); }
+double engine_sin(double x) { return godot::UtilityFunctions::sin(x); }
+double engine_cos(double x) { return godot::UtilityFunctions::cos(x); }
+
+bool config_bool(Decoder &dec, const Dictionary &d, const char *key, bool &out) {
+	if (!d.has(key) || d[key].get_type() != Variant::BOOL) return dec.fail(std::string(key) + " must be a bool");
+	out = static_cast<bool>(d[key]);
+	return true;
+}
+
+bool config_int(Decoder &dec, const Dictionary &d, const char *key, int64_t &out) {
+	if (!d.has(key) || d[key].get_type() != Variant::INT) return dec.fail(std::string(key) + " must be an int");
+	out = static_cast<int64_t>(d[key]);
+	return true;
+}
+
+// NK-5g: StageConfig.pre_step_config_for(session), checked against the prepared stage it extends.
+bool decode_pre_step(Decoder &dec, const Dictionary &config, const nk::StageModel &m, nk::PreStepModel &p) {
+	p = nk::PreStepModel();
+	int64_t flap_aux = -1, flap_input = -1, input_count = 0, turbulence_index = -1, turbulence_seed = 0;
+	if (!dec.only(config, "pre_step", {"servo_rate", "rpm_passthrough", "rpm_turbine", "rpm_shaft", "idle_rpm",
+				"max_rpm", "rpm_lag", "flaps", "flap_extension_time", "flap_retraction_time", "flap_elevator_mix",
+				"flap_aux", "flap_input", "retractable", "input_count", "lake_present", "downwash_length",
+				"turbulence", "turbulence_index", "turbulence_sigma", "turbulence_tau", "turbulence_seed",
+				"weight_on_wheels_threshold", "turbulence_uniform_denominator", "turbulence_max_uniform"}) ||
+			!dec.number(config, "servo_rate", p.servo_rate, true) ||
+			!config_bool(dec, config, "rpm_passthrough", p.rpm_passthrough) ||
+			!config_bool(dec, config, "rpm_turbine", p.rpm_turbine) || !config_bool(dec, config, "rpm_shaft", p.rpm_shaft) ||
+			!config_bool(dec, config, "flaps", p.flaps) || !config_bool(dec, config, "retractable", p.retractable) ||
+			!config_bool(dec, config, "lake_present", p.lake_present) || !config_bool(dec, config, "turbulence", p.turbulence) ||
+			!config_int(dec, config, "flap_aux", flap_aux) || !config_int(dec, config, "flap_input", flap_input) ||
+			!config_int(dec, config, "input_count", input_count) ||
+			!config_int(dec, config, "turbulence_index", turbulence_index) ||
+			!config_int(dec, config, "turbulence_seed", turbulence_seed) ||
+			!dec.number(config, "downwash_length", p.downwash_length, true) ||
+			!dec.number(config, "weight_on_wheels_threshold", p.weight_on_wheels_threshold, true)) {
+		return false;
+	}
+	// Propulsion.rpm_step reads prop.idle_rpm, max_rpm and lag; only that branch needs them.
+	p.rpm_lag_ready = config.has("idle_rpm") && config.has("max_rpm") && config.has("rpm_lag");
+	if (p.rpm_lag_ready && (!dec.number(config, "idle_rpm", p.idle_rpm, true) ||
+			!dec.number(config, "max_rpm", p.max_rpm, true) || !dec.number(config, "rpm_lag", p.rpm_lag, true))) {
+		return false;
+	}
+	if (p.flaps && (!dec.number(config, "flap_extension_time", p.flap_extension_time, true) ||
+			!dec.number(config, "flap_retraction_time", p.flap_retraction_time, true) ||
+			!dec.number(config, "flap_elevator_mix", p.flap_elevator_mix, true))) {
+		return false;
+	}
+	const nk::StageLayout &L = m.layout;
+	if (input_count != L.input_count || p.retractable != m.retraction.enabled || (p.retractable && L.gear_aux < 0) ||
+			p.flaps != m.aero.flaps.enabled || flap_aux < -1 || flap_aux >= L.aux_size || flap_input < -1 ||
+			flap_input >= input_count || (p.flaps && (flap_aux < 0 || flap_input < 0))) {
+		return dec.fail("pre-step layout differs from the prepared stage");
+	}
+	p.flap_aux = static_cast<int>(flap_aux);
+	p.flap_input = static_cast<int>(flap_input);
+	p.input_count = static_cast<int>(input_count);
+	if (p.turbulence) {
+		std::vector<nk::R> sigma;
+		if (turbulence_index != L.turbulence || turbulence_index < 0 || turbulence_index + 7 != L.aux_size ||
+				!dec.vec(config, "turbulence_sigma", sigma, true, 3) || !dec.number(config, "turbulence_tau", p.turbulence_tau, true) ||
+				!dec.number(config, "turbulence_uniform_denominator", p.turbulence_uniform_denominator, true) ||
+				!dec.number(config, "turbulence_max_uniform", p.turbulence_max_uniform, true)) {
+			return dec.fail("pre-step turbulence differs from the prepared weather layout");
+		}
+		for (int i = 0; i < 3; ++i) {
+			if (!nk::is_finite(sigma[i]) || sigma[i].v < 0.0) return dec.fail("turbulence sigma must be finite and nonnegative");
+			p.turbulence_sigma[i] = sigma[i];
+		}
+		// WindTurbulence.step's own refusals: a positive finite tau and a seed in [0, 4294967295].
+		if (!nk::is_finite(p.turbulence_tau) || p.turbulence_tau.v <= 0.0 || turbulence_seed < 0 ||
+				turbulence_seed > 4294967295LL) {
+			return dec.fail("turbulence tau or seed is out of range");
+		}
+		p.turbulence_index = static_cast<int>(turbulence_index);
+		p.turbulence_seed = turbulence_seed;
+	}
+	p.ready = true;
+	return true;
+}
+
 } // namespace
 
 class OpenRCNativeKernel : public godot::RefCounted {
@@ -929,6 +1017,11 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
 	nk::ContactReach contact_reach_; // NK-5d: proxy bounds of the session's collision world
 	std::vector<nk::R> compressions_scratch_; // NK-5e: endpoint compressions without a per-tick allocation
+	nk::PreStepModel pre_model_; // NK-5g: the prepared stage's pre-step (FlightSession._pre_step)
+	nk::PreStepScratch pre_scratch_;
+	std::vector<double> pre_out_;
+	int64_t pre_rng_state_ = 0;
+	int64_t pre_step_calls_ = 0, pre_step_answers_ = 0;
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
 	// The binding converts Godot arrays once per call, into storage sized at
@@ -1094,6 +1187,12 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("prepare_pre_step", "config"), &OpenRCNativeKernel::prepare_pre_step);
+		godot::ClassDB::bind_method(D_METHOD("pre_step", "aux", "inputs", "dt", "state", "continuous", "time_now",
+			"engine_running", "flap_mix_simulator", "deflections", "rng_state"), &OpenRCNativeKernel::pre_step);
+		godot::ClassDB::bind_method(D_METHOD("pre_step_rng_state"), &OpenRCNativeKernel::pre_step_rng_state);
+		godot::ClassDB::bind_method(D_METHOD("pre_step_stats"), &OpenRCNativeKernel::pre_step_stats);
+		godot::ClassDB::bind_method(D_METHOD("pre_step_rng_probe", "state", "count"), &OpenRCNativeKernel::pre_step_rng_probe);
 		godot::ClassDB::bind_method(D_METHOD("contact_reach", "previous", "candidate", "hull", "extra_reach", "lake_threshold"),
 			&OpenRCNativeKernel::contact_reach);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
@@ -1543,6 +1642,84 @@ public:
 		return contact_reach_.reach_clear(previous.ptr(), candidate.ptr(), hull.ptr(), hull.size(), extra_reach, lake_threshold);
 	}
 
+	// NK-5g: prepare FlightSession._pre_step over the prepared stage (StageConfig.pre_step_config_for). A refusal
+	// leaves the pre-step unprepared and the session evaluates the reference.
+	Dictionary prepare_pre_step(const Dictionary &config) {
+		Decoder dec;
+		nk::PreStepModel candidate;
+		const bool ok = stage_ready_ && decode_pre_step(dec, config, stage_, candidate);
+		pre_model_ = ok ? candidate : nk::PreStepModel();
+		if (ok) {
+			pre_scratch_.aux.reserve(static_cast<size_t>(stage_.layout.aux_size));
+			pre_scratch_.anchors.reserve(static_cast<size_t>(stage_.layout.anchor_count) * 3);
+			pre_scratch_.compressions.reserve(stage_.ground.gear.contacts.size());
+			pre_out_.reserve(static_cast<size_t>(stage_.layout.aux_size));
+		}
+		Dictionary out;
+		out["ok"] = ok;
+		out["error"] = stage_ready_ ? String(dec.error.c_str()) : String("no prepared stage");
+		return out;
+	}
+
+	// NK-5g: FlightSession._pre_step(aux, inputs, dt) from the committed sim.state, sim.continuous and sim.time(),
+	// engine_running, the manual flap mix owner, _deflections(aux) (empty without a downwash lag) and sim.modes[1].
+	// Empty refuses: the session evaluates the reference. After an answer, pre_step_rng_state() is sim.modes[1].
+	PackedFloat64Array pre_step(const PackedFloat64Array &aux, const PackedFloat64Array &inputs, double dt,
+			const PackedFloat64Array &state, const PackedFloat64Array &continuous, double time_now, bool engine_running,
+			bool flap_mix_simulator, const PackedFloat64Array &deflections, int64_t rng_state) {
+		++pre_step_calls_;
+		if (!stage_ready_ || !pre_model_.ready || !read_state(state)) return PackedFloat64Array();
+		nk::PreStepInput in;
+		in.aux = aux.ptr();
+		in.aux_size = static_cast<int>(aux.size());
+		in.inputs = inputs.ptr();
+		in.input_size = static_cast<int>(inputs.size());
+		in.dt = dt;
+		in.state = state.ptr();
+		in.state_size = static_cast<int>(state.size());
+		in.continuous = continuous.ptr();
+		in.continuous_size = static_cast<int>(continuous.size());
+		in.time_now = time_now;
+		in.engine_running = engine_running;
+		in.flap_mix_simulator = flap_mix_simulator;
+		in.rng_state = rng_state;
+		if (!deflections.is_empty()) {
+			if (!read_deflections(deflections, in.deflections)) return PackedFloat64Array();
+			in.has_deflections = true;
+		}
+		static const nk::PreStepEngine engine{engine_exp, engine_log, engine_sin, engine_cos};
+		int64_t next_state = rng_state;
+		if (!nk::pre_step(stage_, pre_model_, in, engine, pre_scratch_, pre_out_, next_state)) return PackedFloat64Array();
+		pre_rng_state_ = next_state;
+		++pre_step_answers_;
+		PackedFloat64Array out;
+		out.resize(static_cast<int64_t>(pre_out_.size()));
+		double *dst = out.ptrw();
+		for (size_t i = 0; i < pre_out_.size(); ++i) dst[i] = pre_out_[i];
+		return out;
+	}
+
+	int64_t pre_step_rng_state() const { return pre_rng_state_; }
+
+	Dictionary pre_step_stats() const {
+		Dictionary out;
+		out["ready"] = pre_model_.ready;
+		out["calls"] = pre_step_calls_;
+		out["answers"] = pre_step_answers_;
+		return out;
+	}
+
+	// NK-5g test probe: `count` WindTurbulence randi() draws from a RandomNumberGenerator restored to the raw `state`
+	// (any seed: the seed only fixes the default stream), then the raw state read back.
+	godot::PackedInt64Array pre_step_rng_probe(int64_t state, int64_t count) const {
+		godot::PackedInt64Array out;
+		if (count < 0 || count > 1000000) return out;
+		nk::PreStepPcg32 rng(state);
+		for (int64_t i = 0; i < count; ++i) out.push_back(rng.randi());
+		out.push_back(rng.raw_state());
+		return out;
+	}
+
 	// NK-5e: flight_session.gd gear_compressions(s) at the accepted endpoint, for its contact observer: the stage's
 	// ground (posed by this tick's context when retractable) through nk::wheels_compressions, as the component
 	// oracle's. Empty when the stage, tick context, state (Simulation.state_is_valid), endpoint gear aux or ground
@@ -1555,7 +1732,7 @@ public:
 			if (!std::isfinite(body[i])) return PackedFloat64Array();
 		}
 		const double norm_sq = body[6] * body[6] + body[7] * body[7] + body[8] * body[8] + body[9] * body[9];
-		if (!std::isfinite(norm_sq) || !(norm_sq > 1e-24)) return PackedFloat64Array();
+		if (!std::isfinite(norm_sq) || !(norm_sq > nk::kGd1eMinus24)) return PackedFloat64Array(); // GDScript 1e-24
 		const nk::GroundContext *ground = &stage_.ground;
 		if (stage_.retraction.enabled) {
 			// The endpoint pose is the tick context's only when both gear values carry the same bits it validated.
@@ -1742,6 +1919,7 @@ public:
 			clear_diagnostic_context();
 		}
 		heli_stage_ready_ = false;
+		pre_model_ = nk::PreStepModel(); // a new stage needs its own pre-step preparation
 		Decoder dec;
 		nk::StageModel candidate;
 		const bool ok = decode_stage(dec, config, candidate);

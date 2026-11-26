@@ -129,6 +129,9 @@ var _reach_proxies: Array = []
 var _reach_size := -1
 ## NK-5e: the loaded library binds stage_compressions (checked once per installation).
 var _compressions_bound := false
+## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
+var _pre_step_bound := false
+var _pre_step_turbulent := false
 var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
@@ -409,6 +412,12 @@ func install(session: Node) -> Callable:
 	_wing_wake_bound = _native.has_method("stage_wing_wake")
 	_contact_reach_bound = _native.has_method("contact_reach")
 	_compressions_bound = _native.has_method("stage_compressions") and _family != "helicopter"
+	_pre_step_bound = false
+	_pre_step_turbulent = false
+	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
+		var pre_config: Dictionary = StageConfig.pre_step_config_for(session)
+		_pre_step_bound = bool(_native.prepare_pre_step(pre_config).get("ok", false))
+		_pre_step_turbulent = _pre_step_bound and bool(pre_config.turbulence)
 	if _contact_reach_bound and _family != "helicopter":
 		_prepare_reach_world(session._collision_world) # at installation, not on the first flying tick
 	_installed = true
@@ -431,6 +440,8 @@ func uninstall(session: Node) -> Callable:
 	_installed_model = null
 	_contact_reach_bound = false
 	_compressions_bound = false
+	_pre_step_bound = false
+	_pre_step_turbulent = false
 	_reach_world = {}
 	_reach_proxies = []
 	_reach_size = -1
@@ -479,6 +490,24 @@ func contact_reach(session: Node, previous: PackedFloat64Array, candidate: Packe
 			or not proxies is Array or (proxies as Array).size() != _reach_size:
 		_prepare_reach_world(world)
 	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold))
+
+
+## NK-5g: the session's _pre_step(aux, inputs, dt) through the prepared stage; empty means "use the reference". With
+## turbulence an answer also leaves the reference's RNG state in sim.modes[1], as _pre_step does.
+func pre_step(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	if not _installed or not _pre_step_bound or _native == null: return PackedFloat64Array()
+	var sim: Node = session.sim
+	var modes: PackedInt64Array = sim.modes
+	if _pre_step_turbulent and modes.size() < 2: return PackedFloat64Array()
+	var deflections := PackedFloat64Array()
+	if session.downwash_index() >= 0:
+		var d: Dictionary = session._deflections(aux)
+		deflections = PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+	var next: PackedFloat64Array = _native.pre_step(aux, inputs, dt, sim.state, sim.continuous, sim.time(),
+		session.engine_running, session._flap_mix_owner == "simulator", deflections, modes[1] if modes.size() > 1 else 0)
+	if not next.is_empty() and _pre_step_turbulent:
+		sim.modes[1] = int(_native.pre_step_rng_state())
+	return next
 
 
 ## NK-5e: the session's gear_compressions(s) at the accepted endpoint `s` with its aux, from the fixed-wing stage

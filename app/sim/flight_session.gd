@@ -5611,7 +5611,16 @@ func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: f
 		return PackedFloat64Array() # kernel rejects before any native stage can use stale coefficients
 	# NK-5a: only this guarded call may evaluate the pre-step's wing wake through the prepared native stage.
 	_native_wake_admitted = _native_stage != null
-	var next := _pre_step(aux, inputs, dt)
+	var next := PackedFloat64Array()
+	# NK-5g: the guarded tick's whole pre-step through the prepared native stage. The reference evaluates every
+	# refusal and every branch the native pre-step does not cover (failures, pending resets, an RC-track overlay).
+	if _native_wake_admitted and native_pre_step_enabled and _failures == null and not _weather_pending_reset \
+			and not _shaft_pending_reset and _rc_track.is_empty():
+		next = _native_stage.pre_step(self, aux, inputs, dt)
+		if not next.is_empty():
+			native_pre_step_answers += 1
+	if next.is_empty():
+		next = _pre_step(aux, inputs, dt)
 	_native_wake_admitted = false
 	if _native_stage != null and next.size() == aux.size():
 		if not _native_stage.tick_context(self, next, inputs):
@@ -5632,6 +5641,10 @@ var _native_endpoint_admitted := false
 var native_endpoint_compressions_enabled := true
 ## Diagnostic: accepted endpoints whose compressions the native stage answered.
 var native_endpoint_answers := 0
+## NK-5g test hook: false always evaluates the reference _pre_step, for equivalence checks.
+var native_pre_step_enabled := true
+## Diagnostic: guarded pre-steps the native stage answered.
+var native_pre_step_answers := 0
 
 
 func _drop_tick_facts() -> void:

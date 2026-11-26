@@ -5,6 +5,7 @@ extends RefCounted
 const Propulsion := preload("res://physics/propulsion.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
+const WindTurbulence := preload("res://physics/wind_turbulence.gd")
 const REFERENCE_STAGE_METHOD := &"_wheel_evaluate"
 
 
@@ -40,3 +41,42 @@ static func config_for(session: Node) -> Dictionary:
 		slipstream = not prop.get("slipstream", {}).is_empty(),
 		rotor_dynamics = Propulsion.has_rotor_dynamics(prop) or (sim.model.stage.is_valid() and stage_method != REFERENCE_STAGE_METHOD),
 	}
+
+
+## NK-5g: the fixed inputs of FlightSession._pre_step that the native pre-step reads besides its prepared stage. Each
+## value comes from the guarded aircraft, shaft integrator, lake or weather. The native preparation checks the layout
+## against the stage it extends and refuses anything it cannot reproduce.
+static func pre_step_config_for(session: Node) -> Dictionary:
+	var model: Dictionary = session.aircraft.model
+	var prop: Dictionary = model.propulsion
+	var flaps_on: bool = session.flaps_available()
+	var flaps: Dictionary = model.get("flaps", {}) if flaps_on else {}
+	var weather: RefCounted = session._weather
+	var turbulent: bool = weather.has_turbulence()
+	var config := {
+		servo_rate = model.controls.servo_rate,
+		rpm_passthrough = session.shaft_is_coupled() or session.turbine_is_continuous(),
+		rpm_turbine = Turbine.is_turbine(prop), rpm_shaft = Propulsion.has_shaft(prop),
+		flaps = flaps_on,
+		# Flaps.advance reads float(config.get(key, 1.5)); the manual mix reads the fraction itself.
+		flap_extension_time = flaps.get("extension_time", 1.5), flap_retraction_time = flaps.get("retraction_time", 1.5),
+		flap_elevator_mix = flaps.get("elevator_mix_per_flap_fraction", NAN),
+		flap_aux = session.flap_aux_index(), flap_input = session.flap_input_index(),
+		retractable = session.gear_is_retractable(), input_count = session._input_count(),
+		lake_present = not session._lake.is_empty(),
+		# FlightSession._gear_weight_on_wheels' threshold in its own spelling: the engine parses both alike.
+		weight_on_wheels_threshold = 1.0e-5,
+		downwash_length = model.get("surfaces", {}).get("horizontal", {}).get("downwash_lag_length", NAN),
+		turbulence = turbulent, turbulence_index = session.turbulence_index() if turbulent else -1,
+		turbulence_sigma = weather.turbulence_rms() if turbulent else PackedFloat64Array(),
+		turbulence_tau = weather.turbulence_tau() if turbulent else 0.0,
+		turbulence_seed = weather.turbulence_seed() if turbulent else 0,
+		turbulence_uniform_denominator = WindTurbulence.UINT53_DENOMINATOR,
+		turbulence_max_uniform = WindTurbulence.MAX_OPEN_UNIFORM,
+	}
+	# Propulsion.rpm_step reads prop.idle_rpm, prop.max_rpm and prop.lag; only that branch needs them.
+	if prop.has("idle_rpm") and prop.has("max_rpm") and prop.has("lag"):
+		config.idle_rpm = prop.idle_rpm
+		config.max_rpm = prop.max_rpm
+		config.rpm_lag = prop.lag
+	return config

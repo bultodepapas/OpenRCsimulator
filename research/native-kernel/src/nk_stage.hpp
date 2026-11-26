@@ -109,17 +109,20 @@ struct StageResult {
 	R preview_source_off_rpm_rate = 0.0;
 };
 
-// A callback into immutable native weather only. Its context is local to one RK stage.
+// A callback into immutable native weather only. Its context is local to one RK stage (the tick's aux) or to one
+// pre-step air sample (NK-5g: the incoming aux, as FlightSession.air_data reads sim.aux before the tick installs).
 struct StageWindContext {
 	const StageModel *model;
 	const TickContext *tick;
+	const std::vector<R> *aux = nullptr; // overrides tick->aux when set
 };
 
 inline bool stage_wind_sample(void *opaque, const R *position, R time, R *wind) {
 	const auto &context = *static_cast<const StageWindContext *>(opaque);
 	const StageModel &m = *context.model;
+	const std::vector<R> &aux = context.aux != nullptr ? *context.aux : context.tick->aux;
 	const auto sample = m.spatial_weather ? spatial_weather_wind(m.spatial, position, time) :
-		weather_wind(m.weather, position, time, context.tick->aux, m.layout.turbulence, m.dt);
+		weather_wind(m.weather, position, time, aux, m.layout.turbulence, m.dt);
 	for (int i = 0; i < 3; ++i) wind[i] = sample[i];
 	return spatial_flow_finite3(wind);
 }

@@ -539,6 +539,11 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   an empty answer ([evidence](../../docs/research/native-kernel/NK-5e/README.md)).
   The session publishes that endpoint's compressions to the `stepped` observers after it; the statistics sampler
   reads them within the same publication (NK-5f, [evidence](../../docs/research/native-kernel/NK-5f/README.md)).
+- `prepare_pre_step(config)` and `pre_step(aux, inputs, dt, state, continuous, time_now, engine_running,
+  flap_mix_simulator, deflections, rng_state)` (NK-5g, `nk_pre_step.hpp`) return `FlightSession._pre_step`'s next
+  aux and `sim.modes[1]` for the prepared fixed-wing stage. Engine `exp`/`log`/`sin`/`cos` are the engine's utility
+  functions and `RandomPCG` is reproduced in integers. `_kernel_pre_step` asks after the configuration guard passed
+  and evaluates the reference on an empty answer ([evidence](../../docs/research/native-kernel/NK-5g/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
