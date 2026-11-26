@@ -57,6 +57,7 @@ inline bool retractable_pose(const PreparedGear &base, const RetractableModel &m
 		for (int axis = 0; axis < 3; ++axis) contact.position[axis] = point[axis];
 		contact.stiffness = 0.0;
 		contact.damping = 0.0;
+		contact.max_compression = 0.0; // RetractableGear.pose: a wheel in transit has no admitted travel
 		contact.max_steering = 0.0;
 		contact.anchor_stiffness = 0.0;
 		contact.anchor_damping = 0.0;

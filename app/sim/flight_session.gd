@@ -1163,7 +1163,7 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_deflection_key", "_deflection_cache", "_has_committed_aircraft", "_pending_controller_start",
 	"_scenery_damage", "soft_contacts", "prop_strike", "crash", "_last_scenery_event", "_last_lake_event",
 	"_contact_tick", "_contact_events", "_active_hull_ids", "_soft_contacts_cache_tick",
-	"_cost_support_previous", "_cost_support_tick", "_cost_support_state", "_cost_support_aux",
+	"_cost_support_previous", "_cost_support_tick", "_cost_support_state", "_cost_support_aux", "_native_facts_tick",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
 	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
 	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error", "_stage_backend_requested", "_stage_backend_explicit"]
@@ -2591,6 +2591,8 @@ func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 	_native_endpoint_admitted = native_endpoint
 	_observe_contact_tick(tick)
 	_native_endpoint_admitted = false
+	# NK-5i: this publication's later `stepped` observers may ask the native stage about the same endpoint.
+	_native_facts_tick = tick if native_endpoint else -1
 	var crash_pause_pending := false
 	if _pending_contact_tick == tick:
 		_last_scenery_event = _pending_scenery_event
@@ -2837,6 +2839,7 @@ func _clear_pending_contacts() -> void:
 func _reset_contact_history() -> void:
 	_cost_support_previous = PackedFloat64Array()
 	_cost_support_tick = -1
+	_native_facts_tick = -1
 	_cost_support_state = PackedFloat64Array()
 	_cost_support_aux = PackedFloat64Array()
 	_hull_scrape_cache_key = PackedByteArray()
@@ -2852,6 +2855,7 @@ func _reset_contact_history() -> void:
 func _restore_contact_history(record: Dictionary) -> void:
 	_cost_support_previous = PackedFloat64Array()
 	_cost_support_tick = int(record.tick)
+	_native_facts_tick = -1
 	# Rebuilt from events, not measured: nothing is published until the observer measures an endpoint again.
 	_cost_support_state = PackedFloat64Array()
 	_cost_support_aux = PackedFloat64Array()
@@ -3394,6 +3398,24 @@ func published_gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
 			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
 		return PackedFloat64Array()
 	return _cost_support_previous.duplicate()
+
+
+## NK-5i: the statistics sample's evaluations of the accepted endpoint now being published, from the native stage in
+## one answer: [air_data(s, sim.time()).V, environment.ground(s[0], s[1]) as height, slope north, slope east,
+## published_gear_collapsed(s) as 1.0 or 0.0, then gear_compressions(s)]. The values equal those calls'. Empty unless
+## the native stage measured this publication's endpoint (the guarded tick context of sim.tick, with `s` and sim.aux
+## carrying the published bits), and there is no RC track, pending weather reset or derived session class (whose
+## air_data may differ); the caller then evaluates the reference. For `stepped` observers after the session's handler.
+func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
+	if not native_endpoint_facts_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	var facts: PackedFloat64Array = _native_stage.endpoint_facts(s, sim.aux, sim.time())
+	if not facts.is_empty():
+		native_endpoint_fact_answers += 1
+	return facts
 
 
 ## NK-5f: gear_collapsed(s) with Ground.collapsed's checks in its order; where it computes the compressions, those
@@ -5641,6 +5663,14 @@ var _native_endpoint_admitted := false
 var native_endpoint_compressions_enabled := true
 ## Diagnostic: accepted endpoints whose compressions the native stage answered.
 var native_endpoint_answers := 0
+## NK-5i: the tick whose `stepped` publication carries a natively measured endpoint (-1: none); set by _on_sim_stepped.
+var _native_facts_tick := -1
+## Test hook: false always leaves the statistics sample to the reference evaluations, for equivalence checks.
+var native_endpoint_facts_enabled := true
+## Diagnostic: published endpoints whose statistics facts the native stage answered.
+var native_endpoint_fact_answers := 0
+## NK-5i: this class's script, for published_endpoint_facts' derived-class refusal (as observer_air_and_wind's).
+const SELF_PATH := "res://sim/flight_session.gd"
 ## NK-5g test hook: false always evaluates the reference _pre_step, for equivalence checks.
 var native_pre_step_enabled := true
 ## Diagnostic: guarded pre-steps the native stage answered.

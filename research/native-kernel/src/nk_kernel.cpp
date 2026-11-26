@@ -495,6 +495,16 @@ bool decode_gear(Decoder &dec, const Dictionary &gear, nk::PreparedGear &out) {
 		for (int k = 0; k < 3; ++k) {
 			w.position[k] = position[k];
 		}
+		// NK-5i: Ground.collapsed's travel limit, read without new refusals: a missing or non-numeric value stays NAN
+		// and only the endpoint facts that would compare it refuse.
+		if (c.has("max_compression")) {
+			const Variant limit = c["max_compression"];
+			if (limit.get_type() == Variant::FLOAT) {
+				w.max_compression = static_cast<double>(limit);
+			} else if (limit.get_type() == Variant::INT) {
+				w.max_compression = static_cast<double>(static_cast<int64_t>(limit));
+			}
+		}
 		out.contacts.push_back(w);
 	}
 	return true;
@@ -1017,6 +1027,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
 	nk::ContactReach contact_reach_; // NK-5d: proxy bounds of the session's collision world
 	std::vector<nk::R> compressions_scratch_; // NK-5e: endpoint compressions without a per-tick allocation
+	std::vector<nk::R> facts_aux_;            // NK-5i: the endpoint aux for its air sample
+	std::vector<nk::R> facts_scratch_;        // NK-5i: the endpoint facts answer
 	nk::PreStepModel pre_model_; // NK-5g: the prepared stage's pre-step (FlightSession._pre_step)
 	nk::PreStepScratch pre_scratch_;
 	std::vector<double> pre_out_;
@@ -1190,6 +1202,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_facts", "s", "aux", "time_s"),
+			&OpenRCNativeKernel::stage_endpoint_facts);
 		godot::ClassDB::bind_method(D_METHOD("prepare_pre_step", "config"), &OpenRCNativeKernel::prepare_pre_step);
 		godot::ClassDB::bind_method(D_METHOD("pre_step", "aux", "inputs", "dt", "state", "continuous", "time_now",
 			"engine_running", "flap_mix_simulator", "deflections", "rng_state"), &OpenRCNativeKernel::pre_step);
@@ -1760,6 +1774,47 @@ public:
 		load(s, state);
 		if (!nk::wheels_compressions(state, *ground, compressions_scratch_)) return PackedFloat64Array();
 		return pack(compressions_scratch_);
+	}
+
+	// NK-5i: the statistics sampler's evaluations of the accepted endpoint (statistics/fixed_wing_adapter.gd sample)
+	// in one answer: [V, terrain height, slope north, slope east, collapsed (1/0), c_0 .. c_{n-1}], as
+	// FlightSession.air_data(s, t).V (pre_step_air with the endpoint aux), Environment.ground(north, east) without an
+	// RC track (the stage's surface table and lake), gear_compressions(s) (stage_compressions) and Ground.collapsed's
+	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
+	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
+	// a refused air sample or a contact without a numeric travel limit.
+	PackedFloat64Array stage_endpoint_facts(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
+		const PackedFloat64Array compressions = stage_compressions(s, aux);
+		if (compressions.is_empty() || !std::isfinite(time_s) || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
+			return PackedFloat64Array();
+		}
+		const nk::GroundContext &ground = stage_.retraction.enabled ? tick_.posed_ground : stage_.ground;
+		if (static_cast<int64_t>(ground.gear.contacts.size()) != compressions.size()) return PackedFloat64Array();
+		facts_aux_.resize(static_cast<size_t>(aux.size()));
+		for (int64_t i = 0; i < aux.size(); ++i) {
+			facts_aux_[static_cast<size_t>(i)] = aux[i];
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		nk::Air air;
+		if (!nk::pre_step_air(state, nk::R(time_s), facts_aux_, stage_, air)) return PackedFloat64Array();
+		const nk::Vec3 terrain = nk::terrain_sample_validated(state[0], state[1], ground.surfaces, ground.lake);
+		bool collapsed = false;
+		for (int64_t i = 0; i < compressions.size(); ++i) {
+			const double limit = ground.gear.contacts[static_cast<size_t>(i)].max_compression.v;
+			if (std::isnan(limit)) return PackedFloat64Array();
+			if (compressions[i] > limit) collapsed = true;
+		}
+		facts_scratch_.resize(5 + static_cast<size_t>(compressions.size()));
+		facts_scratch_[0] = air.V;
+		facts_scratch_[1] = terrain[0];
+		facts_scratch_[2] = terrain[1];
+		facts_scratch_[3] = terrain[2];
+		facts_scratch_[4] = collapsed ? 1.0 : 0.0;
+		for (int64_t i = 0; i < compressions.size(); ++i) {
+			facts_scratch_[5 + static_cast<size_t>(i)] = compressions[i];
+		}
+		return pack(facts_scratch_);
 	}
 
 	double stage_wing_wake(const PackedFloat64Array &s, const PackedFloat64Array &air, const PackedFloat64Array &d,

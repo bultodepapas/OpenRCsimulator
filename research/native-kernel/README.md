@@ -548,6 +548,12 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   once inside the engine against a deep snapshot taken at preparation. Watches remain only for ±0 floats, packed
   float arrays holding a zero, Callables and the containers that hold them. A NaN keeps the full leaf walk
   ([evidence](../../docs/research/native-kernel/NK-5h/README.md)).
+- `stage_endpoint_facts(s, aux, time_s)` (NK-5i) answers the statistics sampler's evaluations of the accepted endpoint
+  in one call: `air_data(s, t).V` (the NK-5g air sample with the endpoint aux), `Environment.ground` (stage surfaces
+  and lake), `Ground.collapsed`'s comparison with each posed contact's decoded `max_compression`, and the endpoint
+  compressions. `FlightSession.published_endpoint_facts` asks only within the `stepped` publication of a natively
+  measured endpoint, without an RC track or pending weather reset; the sampler evaluates the reference on an empty
+  answer ([evidence](../../docs/research/native-kernel/NK-5i/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.

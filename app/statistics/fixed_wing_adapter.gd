@@ -12,6 +12,8 @@ var _eligible: Callable
 var _attached := false
 ## NK-5f: the session publishes its accepted-endpoint measurements (published_gear_compressions/collapsed).
 var _publishes := false
+## NK-5i: and the native stage's answer for this sample's endpoint evaluations (published_endpoint_facts).
+var _endpoint_facts := false
 
 
 func configure(owner: Node, aircraft_id: String, consumer: Callable, eligible: Callable = Callable()) -> void:
@@ -19,6 +21,7 @@ func configure(owner: Node, aircraft_id: String, consumer: Callable, eligible: C
 	_consumer = consumer
 	_eligible = eligible
 	_publishes = session.has_method("published_gear_compressions") and session.has_method("published_gear_collapsed")
+	_endpoint_facts = _publishes and session.has_method("published_endpoint_facts")
 	profile = load("res://statistics/profiles.gd").resolve(aircraft_id, session.aircraft.model, session.contact_contract())
 	profile.initial_tick = int(session.sim.tick)
 	profile.generation_id = str(session.statistics_generation)
@@ -67,21 +70,31 @@ func sample(published := false) -> Dictionary:
 	var s: PackedFloat64Array = session.sim.state
 	if s.size() != 13:
 		return {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = false}
+	# NK-5i: within this publication the native stage may answer the endpoint evaluations below in one call, with the
+	# same values: [air V, terrain height and slopes, collapsed, compressions]. Empty: evaluate them here.
+	var facts: PackedFloat64Array = session.published_endpoint_facts(s) if published and _endpoint_facts \
+		else PackedFloat64Array()
 	var q: PackedFloat64Array = s.slice(RB.ATT, RB.ATT + 4)
 	var velocity: PackedFloat64Array = M.q_rotate(q, s.slice(RB.VEL, RB.VEL + 3))
 	var rates: PackedFloat64Array = s.slice(RB.RATE, RB.RATE + 3)
 	var speed: float = sqrt(velocity[0] ** 2 + velocity[1] ** 2 + velocity[2] ** 2)
 	var angular: float = sqrt(rates[0] ** 2 + rates[1] ** 2 + rates[2] ** 2)
-	var air: Dictionary = session.air_data(s, session.sim.time())
+	var tas: float = facts[0] if not facts.is_empty() else float(session.air_data(s, session.sim.time()).get("V", NAN))
 	# UI-FS-08-R2: height and attitude use the same current field/lake/circuit as
 	# physical contacts. Keep the public sampler's malformed-table refusal.
-	var terrain: PackedFloat64Array = session.environment.ground(s[0], s[1]) \
-		if Terrain.is_valid_surface_table(session.ground_surfaces) else PackedFloat64Array([NAN, NAN, NAN])
+	var terrain: PackedFloat64Array
+	if not facts.is_empty():
+		terrain = facts.slice(1, 4)
+	else:
+		terrain = session.environment.ground(s[0], s[1]) \
+			if Terrain.is_valid_surface_table(session.ground_surfaces) else PackedFloat64Array([NAN, NAN, NAN])
 	var normal: PackedFloat64Array = M.v3(-terrain[1], -terrain[2], -1.0)
 	var body_normal: PackedFloat64Array = M.q_rotate(M.q_conj(q), normal)
 	var bank: float = atan2(body_normal[1], -body_normal[2])
 	var pitch: float = atan2(body_normal[0], sqrt(body_normal[1] ** 2 + body_normal[2] ** 2))
-	var compression: PackedFloat64Array = _compressions(s, published)
+	# The native answer carries the measured compressions; only their `> 0.00001` contact flags are read here, the
+	# same as from _compressions' clear values above the reach bound.
+	var compression: PackedFloat64Array = facts.slice(5) if not facts.is_empty() else _compressions(s, published)
 	var physical := false
 	var intended := false
 	var stop := bool(profile.get("landing_available", false))
@@ -121,19 +134,19 @@ func sample(published := false) -> Dictionary:
 		deployed = float(session.sim.aux[session.gear_aux_index()]) >= 0.95
 	var controlled: bool = absf(bank) <= deg_to_rad(15.0) \
 		and absf(pitch - float(profile.get("rest_pitch_rad", 0.0))) <= deg_to_rad(20.0) \
-		and angular <= 1.0 and deployed and not _collapsed(s, published)
+		and angular <= 1.0 and deployed and not (facts[4] != 0.0 if not facts.is_empty() else _collapsed(s, published))
 	if uses_hull:
 		intended = bool(hull.facts.intended_support) if not hull.is_empty() else false
 		stop = bool(hull.facts.stop_support) if not hull.is_empty() else false
 		controlled = bool(hull.facts.controlled) if not hull.is_empty() else false
 	var reference_height: float = 0.0 if uses_hull else terrain[0]
 	var result := {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = is_finite(terrain[0]) \
-		and is_finite(float(air.get("V", NAN))) and session.sim.fault_reason.is_empty() and hull_valid,
+		and is_finite(tas) and session.sim.fault_reason.is_empty() and hull_valid,
 		supported = physical, intended_support = intended and bool(profile.get("landing_available", false)),
 		stop_support = stop, clearance_ok = not physical and -s[2] - reference_height >= \
 		float(profile.get("rest_height_m", 0.0)) + float(profile.get("clearance_m", 0.25)),
 		controlled = controlled, ground_speed_3d = speed, angular_speed = angular,
-		tas = float(air.get("V", NAN)), groundspeed = sqrt(velocity[0] ** 2 + velocity[1] ** 2),
+		tas = tas, groundspeed = sqrt(velocity[0] ** 2 + velocity[1] ** 2),
 		position = s.slice(RB.POS, RB.POS + 3), velocity_ned = velocity,
 		incident = incident, gear_up_contact = gear_up,
 		terminal = not session.crash.is_empty() or bool(observation.get("terminal", false)),

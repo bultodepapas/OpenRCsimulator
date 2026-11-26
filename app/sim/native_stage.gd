@@ -133,6 +133,8 @@ var _native_body_loads := Callable()
 var _native_body_rotor := Callable()
 ## NK-5e: the loaded library binds stage_compressions (checked once per installation).
 var _compressions_bound := false
+## NK-5i: and stage_endpoint_facts (the statistics sampler's endpoint evaluations in one answer).
+var _facts_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
 var _pre_step_bound := false
 var _pre_step_turbulent := false
@@ -419,6 +421,7 @@ func install(session: Node) -> Callable:
 	_wing_wake_bound = _native.has_method("stage_wing_wake")
 	_contact_reach_bound = _native.has_method("contact_reach")
 	_compressions_bound = _native.has_method("stage_compressions") and _family != "helicopter"
+	_facts_bound = _compressions_bound and _native.has_method("stage_endpoint_facts")
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
@@ -447,6 +450,7 @@ func uninstall(session: Node) -> Callable:
 	_installed_model = null
 	_contact_reach_bound = false
 	_compressions_bound = false
+	_facts_bound = false
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	_reach_world = {}
@@ -522,6 +526,14 @@ func pre_step(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array
 func endpoint_compressions(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 	if not _installed or not _compressions_bound or _native == null: return PackedFloat64Array()
 	return _native.stage_compressions(s, aux)
+
+
+## NK-5i: [V, terrain height, slope north, slope east, collapsed (1/0), compressions...] at the accepted endpoint `s`
+## with its aux and time, from the fixed-wing stage and the tick context of the guarded pre-step; empty means "use
+## the reference". The session owns the publication checks (FlightSession.published_endpoint_facts).
+func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	if not _installed or not _facts_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_endpoint_facts(s, aux, time_s)
 
 
 func _prepare_reach_world(world: Dictionary) -> void:

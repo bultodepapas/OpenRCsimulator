@@ -25,6 +25,8 @@ struct WheelContact {
 	R wheel_inertia = 0.00003;
 	R spin_relaxation = 0.03;
 	R brake_torque = 0.0;
+	// NK-5i: Ground.collapsed's travel limit (m); NAN when the contact carries none. No contact law reads it.
+	R max_compression = kNan;
 };
 
 struct PreparedGear {
