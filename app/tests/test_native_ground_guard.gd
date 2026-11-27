@@ -12,6 +12,8 @@ extends SceneTree
 ## - NK-6k: wherever the native stage proves the propeller clear, HullContact.prop_disc_depth's depth is <= 0, for
 ##   perturbed states on the runway, at the lake's bank and over its water, from level to nosed over, some with
 ##   quaternions off unit length; away from the lake, and without a lake, it proves every clear state.
+## - NK-6l: wherever the native stage answers the guard's hull checks, HullContact.terminal has no event and
+##   HullContact.contacts no contact, for perturbed tick pairs from clear of the ground to below it.
 ## Paired sessions with all of them on and all off fly byte-identical through a takeoff roll, a lake-shore taxi, a
 ## hard landing that collapses the gear and a nose-over that strikes the propeller. Skips (passes) without a verified
 ## native library.
@@ -67,6 +69,7 @@ func _run() -> void:
 		probe.free()
 		_collapse(id)
 		_strike(id)
+		_hull(id)
 		_pair(id, "roll")
 		_pair(id, "shore")
 		_pair(id, "hard_landing")
@@ -87,6 +90,7 @@ func _session(id: String, enabled: bool, start: String, with_lake := true) -> No
 	s.guard_published_collapse_enabled = enabled
 	s.native_guard_collapse_enabled = enabled
 	s.native_prop_strike_enabled = enabled
+	s.native_hull_guard_enabled = enabled
 	s.start_choice = start
 	s.setup_stage_backend(NativeStage.BACKEND_NATIVE)
 	s.setup(Catalog.data_for(id, Catalog.default_battery_mode(id)), id)
@@ -275,6 +279,66 @@ func _turn(state: PackedFloat64Array, max_turn: float) -> void:
 	state[RB.ATT + 3] = q.z / n
 
 
+## NK-6l: tick pairs around a rolling endpoint, a third of them at the lake's bank or over its water. The terminal
+## answer is checked where the guard asks for it: aircraft without finite fuel.
+func _hull(id: String) -> void:
+	var s := _session(id, true, Flight.START_RUNWAY)
+	s.read_raw = func() -> Dictionary: return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.2}
+	for i in 120:
+		_tick(s)
+	var origin: PackedFloat64Array = s.sim.state.duplicate()
+	var bank := LakeCollision._polygon_bounds(_lake.bank_ne_m)
+	var terminal_checked: bool = not s.finite_fuel_is_active()
+	var stats := {quiet = 0, empty = 0, events = 0, touching = 0, unsound_quiet = 0, unsound_empty = 0, refused_far_empty = 0}
+	for i in 3000:
+		var previous := origin.duplicate()
+		if i % 3 == 0:
+			previous[RB.POS] = lerpf(bank[0], bank[1], _rng.randf_range(-0.2, 1.2))
+			previous[RB.POS + 1] = lerpf(bank[2], bank[3], _rng.randf_range(-0.2, 1.2))
+		else:
+			previous[RB.POS] += _rng.randf_range(-20.0, 20.0)
+			previous[RB.POS + 1] += _rng.randf_range(-20.0, 20.0)
+		previous[RB.POS + 2] += _rng.randf_range(-0.4, 0.4)
+		for axis: int in 3:
+			previous[RB.VEL + axis] += _rng.randf_range(-3.0, 3.0)
+		_turn(previous, 0.5)
+		var state := previous.duplicate()
+		for axis: int in 3:
+			state[RB.POS + axis] += _rng.randf_range(-0.05, 0.05)
+		_turn(state, 0.05)
+		var bits: int = s._native_stage.hull_guard(previous, state, s._hull_contact)
+		var contacts: Array = HullContact.contacts(previous, state, s._hull_contact)
+		if not contacts.is_empty():
+			stats.touching += 1
+		if bits & 2:
+			stats.empty += 1
+			if not contacts.is_empty():
+				stats.unsound_empty += 1
+		elif contacts.is_empty() and HullContact._hull_clear_of_lake(state, s._hull_contact):
+			# Away from the lake by the reference's own bound (the reach padded for the quaternion's length).
+			stats.refused_far_empty += 1
+		if terminal_checked:
+			var hit: Dictionary = HullContact.terminal(previous, state, s._hull_contact)
+			if int(hit.index) >= 0:
+				stats.events += 1
+			if bits & 1:
+				stats.quiet += 1
+				if int(hit.index) >= 0:
+					stats.unsound_quiet += 1
+	_check(id + ": every native empty-contacts answer matches HullContact.contacts",
+		stats.unsound_empty == 0 and stats.empty > 1000, str(stats))
+	_check(id + ": away from the lake the native stage proves every empty contact set", stats.refused_far_empty == 0,
+		str(stats))
+	_check(id + ": contacts occur and stay with the reference", stats.touching > 100, str(stats))
+	if terminal_checked:
+		_check(id + ": every native quiet terminal matches HullContact.terminal",
+			stats.unsound_quiet == 0 and stats.quiet > 1000, str(stats))
+	_check(id + ": another hull dictionary is refused",
+		s._native_stage.hull_guard(s.sim.previous, s.sim.state, s._hull_contact.duplicate()) == 0)
+	print("NK6L_HULL %s terminal_checked=%s %s" % [id, str(terminal_checked), str(stats)])
+	s.free()
+
+
 func _state(position: PackedFloat64Array) -> PackedFloat64Array:
 	var s := PackedFloat64Array()
 	s.resize(RB.SIZE)
@@ -378,6 +442,9 @@ func _pair(id: String, scenario: String) -> void:
 		var_to_bytes(a.prop_strike) == var_to_bytes(b.prop_strike), str([a.prop_strike, b.prop_strike]))
 	if scenario == "nose_over":
 		_check("%s nose-over: the propeller strikes" % id, not a.prop_strike.is_empty())
+	if scenario in ["roll", "nose_over"]:
+		_check("%s %s: the native stage answered the guard's hull checks" % [id, scenario], a.native_hull_guard_answers > 100,
+			str(a.native_hull_guard_answers))
 	if scenario == "roll":
 		_check("%s roll: the native guard answered the collapse" % id, a.native_guard_collapse_answers > 1000,
 			str(a.native_guard_collapse_answers))

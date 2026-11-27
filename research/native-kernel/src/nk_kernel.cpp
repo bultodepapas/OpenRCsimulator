@@ -1057,6 +1057,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	GlowValidity glow_validity_;
 	int64_t glow_mass_calls_ = 0;
 	std::vector<nk::R> terminal_amounts_;
+	bool hull_guard_ready_ = false;
+	double hull_guard_crash_depth_ = 0.0;
 	bool prop_strike_ready_ = false;
 	nk::R prop_hub_[3] = {0.0, 0.0, 0.0};
 	nk::R prop_axis_[3] = {0.0, 0.0, 0.0};
@@ -1236,6 +1238,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("prepare_hull_guard", "crash_depth"), &OpenRCNativeKernel::prepare_hull_guard);
+		godot::ClassDB::bind_method(D_METHOD("stage_hull_guard", "previous", "s"), &OpenRCNativeKernel::stage_hull_guard);
 		godot::ClassDB::bind_method(D_METHOD("prepare_prop_strike", "hub", "axis", "radius"),
 			&OpenRCNativeKernel::prepare_prop_strike);
 		godot::ClassDB::bind_method(D_METHOD("stage_prop_strike_clear", "s"), &OpenRCNativeKernel::stage_prop_strike_clear);
@@ -2123,6 +2127,7 @@ public:
 		heli_stage_ready_ = false;
 		liquid_terminal_ready_ = false; // NK-6h: each installation prepares its own terminal bounds
 		prop_strike_ready_ = false; // NK-6k: and its own propeller disc
+		hull_guard_ready_ = false; // NK-6l: and its own guard crash depth
 		glow_terminal_ready_ = false;
 		pre_model_ = nk::PreStepModel(); // a new stage needs its own pre-step preparation
 		Decoder dec;
@@ -3041,6 +3046,41 @@ public:
 		}
 		++terminal_quiet_;
 		return 1;
+	}
+
+	// NK-6l: the crash depth of the session's hull (HullContact.crash_depth of FlightSession._hull_contact) for the
+	// pre-tick guard's hull checks. Each installation prepares its own.
+	bool prepare_hull_guard(double crash_depth) {
+		hull_guard_ready_ = stage_ready_ && !heli_stage_ready_ && stage_.hull.present && std::isfinite(crash_depth);
+		hull_guard_crash_depth_ = crash_depth;
+		return hull_guard_ready_;
+	}
+
+	// NK-6l: the pre-tick guard's hull checks on the stage's hull. Bit 1: HullContact.terminal(previous, s, hull) must
+	// return no event (terminal_geometry_quiet: no point newly penetrates, lies deeper than the crash depth or meets
+	// the lake). Bit 2: HullContact.contacts(previous, s, hull) must return no contact (above the reach, or the lake
+	// out of reach and every point at or above the datum). 0: the reference answers both.
+	int64_t stage_hull_guard(const PackedFloat64Array &previous, const PackedFloat64Array &s) {
+		if (!hull_guard_ready_ || heli_stage_ready_ || !stage_ready_ || !stage_.hull.present || !read_state(previous) ||
+				!read_state(s)) return 0;
+		int64_t bits = terminal_geometry_quiet(previous, s, hull_guard_crash_depth_) == 1 ? 1 : 0;
+		nk::R now[kStateSize];
+		load(s, now);
+		for (int i = 0; i < 10; ++i) {
+			if (!nk::is_finite(now[i])) return bits;
+		}
+		const nk::HullPrepared &hull = stage_.hull;
+		if ((-now[2]).v > hull.reach.v) return bits | 2;
+		if (hull.lake.present && !nk::hull_clear_of_lake(now, hull)) return bits;
+		const nk::R dn[3] = {2.0 * (now[7] * now[9] - now[6] * now[8]), 2.0 * (now[8] * now[9] + now[6] * now[7]),
+			1.0 - 2.0 * (now[7] * now[7] + now[8] * now[8])};
+		const int count = static_cast<int>(hull.points.size() / 3);
+		for (int i = 0; i < count; ++i) {
+			const nk::R *r = &hull.points[static_cast<size_t>(i) * 3];
+			const nk::R depth = now[2] + dn[0] * r[0] + dn[1] * r[1] + dn[2] * r[2];
+			if (!(depth.v <= 0.0)) return bits;
+		}
+		return bits | 2;
 	}
 
 	// NK-6h: the session's hull crash depth (HullContact.crash_depth of its live geometry) and whether its fuel

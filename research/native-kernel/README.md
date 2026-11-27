@@ -607,6 +607,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   strike: the disc's flat-datum depth is at most 0 and the disc is horizontally clear of a valid lake's bank. Every
   other case, strikes included, evaluates the reference
   ([evidence](../../docs/research/native-kernel/NK-6k/README.md)).
+- `prepare_hull_guard` and `stage_hull_guard(previous, s)` (NK-6l) prove the session guard's `HullContact.terminal`
+  has no event and its `HullContact.contacts` no contact; 0 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6l/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

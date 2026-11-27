@@ -2816,7 +2816,7 @@ func hull_support_observation() -> Dictionary:
 
 ## The observer owns the accepted-tick presentation sample; the next input guard can reuse it.
 func _refresh_soft_contacts() -> void:
-	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	soft_contacts = [] if _native_hull_guard() & 2 else HullContact.contacts(sim.previous, sim.state, _hull_contact)
 	_soft_contacts_cache_previous = sim.previous.duplicate()
 	_soft_contacts_cache_state = sim.state.duplicate()
 	_soft_contacts_cache_tick = sim.tick
@@ -3254,7 +3254,8 @@ func _session_after_input() -> bool:
 					or _soft_contacts_cache_state != sim.state:
 				_refresh_soft_contacts()
 			# Glow terminal hull decisions already ran with the previous fuel snapshot inside the accepted tick.
-			var hit: Dictionary = {index = -1} if finite_fuel_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
+			var hit: Dictionary = {index = -1} if finite_fuel_is_active() or _native_hull_guard() & 1 \
+				else HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
 					sim.previous, str(hit.rule)))
@@ -3435,6 +3436,27 @@ func _check_prop_strike() -> void:
 	engine_running = false
 	_append_contact_event(ContactEvents.strike_event(prop_strike, sim.tick, HullContact.law(), _contact_bindings))
 	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
+
+
+## NK-6l: the native stage's answer for the guard's hull checks of this endpoint (bit 1: HullContact.terminal has no
+## event, bit 2: HullContact.contacts has no contact; 0: evaluate both), while the endpoint is the one being natively
+## published (_native_endpoint_admitted) or the last one natively published (_native_facts_tick), with its
+## installation's hull, without an RC track, for this class.
+func _native_hull_guard() -> int:
+	if not native_hull_guard_enabled or _native_stage == null or sim.tick <= 0 \
+			or not (_native_endpoint_admitted or _native_facts_tick == sim.tick) \
+			or not _rc_track.is_empty() or get_script().resource_path != SELF_PATH:
+		return 0
+	var bits: int = _native_stage.hull_guard(sim.previous, sim.state, _hull_contact)
+	if bits != 0:
+		native_hull_guard_answers += 1
+	return bits
+
+
+## NK-6l test hook: false leaves the guard's hull checks to GDScript.
+var native_hull_guard_enabled := true
+## Diagnostic: guard hull checks the native stage answered.
+var native_hull_guard_answers := 0
 
 
 ## NK-6k: the native stage proves HullContact.prop_disc_depth's depth <= 0 for the endpoint it published
