@@ -619,6 +619,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `stage_wheel_rows(s, aux, steer, anchors, speeds, brake)` (NK-6o) gives the ground audio `Ground.evaluate`'s
   per-wheel diagnostics and `Wheels.frame` at a published endpoint, through an optional row collector on the
   qualified wheel law; [] evaluates the reference ([evidence](../../docs/research/native-kernel/NK-6o/README.md)).
+- `state_valid`, `scenery_state_valid`, `arrays_finite` and `inertia_cached` (NK-6q) are pure, exact ports of
+  `Simulation.step`'s own checks and the session's state checks. `Simulation` uses them only when the installed
+  model's stage belongs to the kernel ([evidence](../../docs/research/native-kernel/NK-6q/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
