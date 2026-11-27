@@ -11,6 +11,12 @@ const HARMONICS_2T: Array[float] = [1.0, 0.48, 0.30, 0.18, 0.11, 0.065, 0.035]
 const HARMONICS_4T: Array[float] = [1.0, 0.32, 0.43, 0.17, 0.13, 0.055, 0.025]
 const SOURCE_FORCE_PCM_GAIN := 0.0003
 const MAX_SOURCE_MECHANICAL_PEAK := 0.12
+## Per-sample literals of render_telemetry's loop, shared with its native copy so both read the same parsed values.
+const _ENVELOPE_FLOOR := 0.000001
+const _VALVE_SECOND_WEIGHT := 0.28
+const _PROPELLER_SECOND_WEIGHT := 0.15
+const _PCM_LIMIT := 0.98
+const _NATIVE_CLASS := &"OpenRCNativeKernel"
 
 ## The render(rpm, max_rpm, frames) signature matches render/engine_voice.gd.
 ## Call set_telemetry() before render() to supply the family and combustion telemetry.
@@ -31,6 +37,11 @@ var _has_physical_anchor := false
 var _physical_opportunity_count := -1
 var _physical_fire_count := -1
 var _suppress_combustion_until_opportunity := false
+## NK-6m: false keeps the per-sample loop in GDScript (test hook; the native copy is byte-identical).
+var native_loop_enabled := true
+## NK-6m: this voice's own kernel object once the verified native library is loaded (each worker owns its voice).
+var _native: Object = null
+var _native_unavailable := false
 
 
 static func cycle_revolutions(family: String) -> int:
@@ -294,49 +305,75 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 	var accumulator: float = _fraction_accumulator
 	var fires: bool = _opportunity_fires
 	var scheduled_any: bool = false
-	for i: int in frame_count:
-		var cycle_position: float = shaft / cycle_revs_f
-		var opportunity: int = floori(cycle_position)
-		if scheduled < 0:
-			accumulator = fposmod(1.0 - firing_fraction, 1.0)
-			scheduled = opportunity - 1
-		while scheduled < opportunity:
-			accumulator += opportunity_fraction # _schedule_opportunity(), inlined
-			fires = accumulator >= 1.0
-			if fires:
-				accumulator -= 1.0
-			scheduled_any = true
-			scheduled += 1
-		var cycle_phase: float = fposmod(cycle_position, 1.0)
-		envelope += fade_alpha * (target_envelope - envelope)
-		var combustion: float = 0.0
-		if combustion_enabled and fires and envelope > 0.000001:
-			var wave: float = 0.0 # _exhaust_wave(), inlined
-			for k: int in harmonic_count:
-				wave += harmonic_weights[k] * sin(harmonic_angles[k] * cycle_phase)
-			combustion = wave * combustion_gain * envelope
-		var mechanical: float = 0.0
-		if mechanical_enabled:
-			var crank_phase: float = fposmod(shaft, 1.0)
-			if source_ok:
-				var crank_angle: float = TAU_VALUE * crank_phase
-				mechanical = source_c1 * cos(crank_angle) + source_s1 * sin(crank_angle)
-				if mechanical_second:
-					mechanical += source_c2 * cos(2.0 * crank_angle) + source_s2 * sin(2.0 * crank_angle)
-			else:
-				mechanical = mechanical_gain * sin(TAU_VALUE * crank_phase)
-				if mechanical_second:
-					mechanical += mechanical_second_gain * sin(tau_second * crank_phase)
-		var valve: float = 0.0
-		if valve_enabled:
-			valve = valve_gain * (sin(TAU_VALUE * cycle_phase) + 0.28 * (sin(tau_second * cycle_phase) if valve_second else 0.0))
-		var propeller: float = 0.0
-		if propeller_enabled:
-			var blade_phase: float = fposmod(shaft * blade_count_f, 1.0)
-			propeller = propeller_gain * (sin(TAU_VALUE * blade_phase) + 0.15 * (sin(tau_second * blade_phase) if propeller_second else 0.0))
-		var sample: float = clampf(combustion + mechanical + valve + propeller, -0.98, 0.98)
-		out[i] = Vector2(sample, sample)
-		shaft += shaft_step
+	# NK-6m: the native kernel runs this same loop with the same block constants and literals, byte for byte
+	# (test_glow_audio compares both); GDScript remains the reference and the fallback.
+	var native: Object = _native_loop()
+	var block: Array = []
+	if native != null:
+		var harmonics: PackedFloat64Array = harmonic_angles.duplicate()
+		harmonics.append_array(harmonic_weights)
+		block = native.glow_voice_block(PackedFloat64Array([cycle_revs_f, firing_fraction, opportunity_fraction,
+			fade_alpha, target_envelope, 1.0 if combustion_enabled else 0.0, combustion_gain, _ENVELOPE_FLOOR,
+			1.0 if mechanical_enabled else 0.0, 1.0 if source_ok else 0.0, source_c1, source_s1, source_c2, source_s2,
+			1.0 if mechanical_second else 0.0, mechanical_gain, mechanical_second_gain, 1.0 if valve_enabled else 0.0,
+			valve_gain, 1.0 if valve_second else 0.0, _VALVE_SECOND_WEIGHT, 1.0 if propeller_enabled else 0.0,
+			propeller_gain, 1.0 if propeller_second else 0.0, _PROPELLER_SECOND_WEIGHT, blade_count_f, shaft_step,
+			TAU_VALUE, tau_second, _PCM_LIMIT]), harmonics,
+			PackedFloat64Array([shaft, envelope, float(scheduled), accumulator, 1.0 if fires else 0.0]), frame_count)
+	if block.size() == 2 and block[0] is PackedVector2Array and block[1] is PackedFloat64Array \
+			and (block[0] as PackedVector2Array).size() == frame_count and (block[1] as PackedFloat64Array).size() == 6:
+		out = block[0]
+		var next: PackedFloat64Array = block[1]
+		shaft = next[0]
+		envelope = next[1]
+		scheduled = int(next[2])
+		accumulator = next[3]
+		fires = next[4] != 0.0
+		scheduled_any = next[5] != 0.0
+	else:
+		for i: int in frame_count:
+			var cycle_position: float = shaft / cycle_revs_f
+			var opportunity: int = floori(cycle_position)
+			if scheduled < 0:
+				accumulator = fposmod(1.0 - firing_fraction, 1.0)
+				scheduled = opportunity - 1
+			while scheduled < opportunity:
+				accumulator += opportunity_fraction # _schedule_opportunity(), inlined
+				fires = accumulator >= 1.0
+				if fires:
+					accumulator -= 1.0
+				scheduled_any = true
+				scheduled += 1
+			var cycle_phase: float = fposmod(cycle_position, 1.0)
+			envelope += fade_alpha * (target_envelope - envelope)
+			var combustion: float = 0.0
+			if combustion_enabled and fires and envelope > _ENVELOPE_FLOOR:
+				var wave: float = 0.0 # _exhaust_wave(), inlined
+				for k: int in harmonic_count:
+					wave += harmonic_weights[k] * sin(harmonic_angles[k] * cycle_phase)
+				combustion = wave * combustion_gain * envelope
+			var mechanical: float = 0.0
+			if mechanical_enabled:
+				var crank_phase: float = fposmod(shaft, 1.0)
+				if source_ok:
+					var crank_angle: float = TAU_VALUE * crank_phase
+					mechanical = source_c1 * cos(crank_angle) + source_s1 * sin(crank_angle)
+					if mechanical_second:
+						mechanical += source_c2 * cos(2.0 * crank_angle) + source_s2 * sin(2.0 * crank_angle)
+				else:
+					mechanical = mechanical_gain * sin(TAU_VALUE * crank_phase)
+					if mechanical_second:
+						mechanical += mechanical_second_gain * sin(tau_second * crank_phase)
+			var valve: float = 0.0
+			if valve_enabled:
+				valve = valve_gain * (sin(TAU_VALUE * cycle_phase) + _VALVE_SECOND_WEIGHT * (sin(tau_second * cycle_phase) if valve_second else 0.0))
+			var propeller: float = 0.0
+			if propeller_enabled:
+				var blade_phase: float = fposmod(shaft * blade_count_f, 1.0)
+				propeller = propeller_gain * (sin(TAU_VALUE * blade_phase) + _PROPELLER_SECOND_WEIGHT * (sin(tau_second * blade_phase) if propeller_second else 0.0))
+			var sample: float = clampf(combustion + mechanical + valve + propeller, -_PCM_LIMIT, _PCM_LIMIT)
+			out[i] = Vector2(sample, sample)
+			shaft += shaft_step
 	_shaft_phase_cycles = shaft
 	_combustion_envelope = envelope
 	_scheduled_opportunity = scheduled
@@ -346,6 +383,19 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 		last_firing_fraction = opportunity_fraction
 	phase = fposmod(_shaft_phase_cycles, 1.0)
 	return out
+
+
+## NK-6m: this voice's kernel object, created on its own thread once the verified library has loaded the class.
+func _native_loop() -> Object:
+	if not native_loop_enabled:
+		return null
+	if _native == null and not _native_unavailable and ClassDB.class_exists(_NATIVE_CLASS):
+		var candidate: Object = ClassDB.instantiate(_NATIVE_CLASS)
+		if candidate != null and candidate.has_method(&"glow_voice_block"):
+			_native = candidate
+		else:
+			_native_unavailable = true # a library without this method: keep GDScript for this voice
+	return _native
 
 
 func _has_authoritative_cycle_state(snapshot: Dictionary, cycle_revs: int) -> bool:

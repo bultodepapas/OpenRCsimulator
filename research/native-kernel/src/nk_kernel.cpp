@@ -44,6 +44,7 @@
 #include "nk_contact_reach.hpp"
 #include "nk_pre_step.hpp"
 #include "nk_tick.hpp"
+#include "nk_glow_voice.hpp"
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/packed_int64_array.hpp>
@@ -1238,6 +1239,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("glow_voice_block", "parameters", "harmonics", "state", "frames"),
+			&OpenRCNativeKernel::glow_voice_block);
 		godot::ClassDB::bind_method(D_METHOD("prepare_hull_guard", "crash_depth"), &OpenRCNativeKernel::prepare_hull_guard);
 		godot::ClassDB::bind_method(D_METHOD("stage_hull_guard", "previous", "s"), &OpenRCNativeKernel::stage_hull_guard);
 		godot::ClassDB::bind_method(D_METHOD("prepare_prop_strike", "hub", "axis", "radius"),
@@ -1846,6 +1849,30 @@ public:
 	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
 	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
 	// a refused air sample or a contact without a numeric travel limit.
+	// NK-6m: the glow voice's per-sample loop (nk_glow_voice.hpp), audio only. parameters in GlowVoiceParameter order,
+	// harmonics as the angles then the weights, state in GlowVoiceState order. Returns [PCM, state + scheduled_any (1/0)],
+	// or [] for malformed input.
+	Array glow_voice_block(const PackedFloat64Array &parameters, const PackedFloat64Array &harmonics,
+			const PackedFloat64Array &state, int64_t frames) const {
+		Array out;
+		if (parameters.size() != nk::kGvParameterCount || harmonics.size() % 2 != 0 || harmonics.size() > 64 ||
+				state.size() != nk::kGvStateCount || frames < 0 || frames > (int64_t(1) << 20)) return out;
+		godot::PackedVector2Array pcm;
+		pcm.resize(frames);
+		double next[nk::kGvStateCount];
+		for (int i = 0; i < nk::kGvStateCount; ++i) next[i] = state[i];
+		const int64_t count = harmonics.size() / 2;
+		const bool any = nk::glow_voice_block(parameters.ptr(), harmonics.ptr(), harmonics.ptr() + count, count, next, frames,
+			frames > 0 ? reinterpret_cast<float *>(pcm.ptrw()) : nullptr);
+		PackedFloat64Array next_state;
+		next_state.resize(nk::kGvStateCount + 1);
+		for (int i = 0; i < nk::kGvStateCount; ++i) next_state[i] = next[i];
+		next_state[nk::kGvStateCount] = any ? 1.0 : 0.0;
+		out.append(pcm);
+		out.append(next_state);
+		return out;
+	}
+
 	// NK-6k: FlightSession._prop_disc (HullContact.prop_disc of the model's propulsion): hub and unit axis in body FRD
 	// and radius. Each installation prepares its own.
 	bool prepare_prop_strike(const PackedFloat64Array &hub, const PackedFloat64Array &axis, double radius) {

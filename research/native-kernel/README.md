@@ -610,6 +610,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `prepare_hull_guard` and `stage_hull_guard(previous, s)` (NK-6l) prove the session guard's `HullContact.terminal`
   has no event and its `HullContact.contacts` no contact; 0 evaluates the reference
   ([evidence](../../docs/research/native-kernel/NK-6l/README.md)).
+- `glow_voice_block(parameters, harmonics, state, frames)` (NK-6m) runs the glow voice's per-sample synthesis loop
+  byte-identically to `GlowVoice.render_telemetry`'s GDScript loop, which remains the reference and the fallback. It is
+  audio only and reads no stage state ([evidence](../../docs/research/native-kernel/NK-6m/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
