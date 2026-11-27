@@ -45,6 +45,7 @@
 #include "nk_pre_step.hpp"
 #include "nk_tick.hpp"
 #include "nk_glow_voice.hpp"
+#include "nk_glow_finish.hpp"
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/packed_int64_array.hpp>
@@ -1060,6 +1061,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::vector<nk::R> terminal_amounts_;
 	bool hull_guard_ready_ = false;
 	double hull_guard_crash_depth_ = 0.0;
+	std::vector<nk::R> glow_finish_out_;
+	int64_t glow_finish_answers_ = 0;
 	bool prop_strike_ready_ = false;
 	nk::R prop_hub_[3] = {0.0, 0.0, 0.0};
 	nk::R prop_axis_[3] = {0.0, 0.0, 0.0};
@@ -1239,6 +1242,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("glow_steady_finish_component", "start", "end", "dt", "terms", "firing"),
+			&OpenRCNativeKernel::glow_steady_finish_component);
+		godot::ClassDB::bind_method(D_METHOD("glow_finish_answers"), &OpenRCNativeKernel::glow_finish_answers);
 		godot::ClassDB::bind_method(D_METHOD("glow_voice_block", "parameters", "harmonics", "state", "frames"),
 			&OpenRCNativeKernel::glow_voice_block);
 		godot::ClassDB::bind_method(D_METHOD("prepare_hull_guard", "crash_depth"), &OpenRCNativeKernel::prepare_hull_guard);
@@ -2693,7 +2699,28 @@ public:
 			status = nk::resource_advance(combined, size, t, dt, f, tick_first_.data(), glow_events, glow_layout, transition,
 				glow_ok, tick_next_, reports, tick_rk4_);
 			policy_ok = false;
-			if (status == nk::TickStatus::Ok && glow_ok && stage_error == nullptr) {
+			static const godot::StringName k_steady_key("steady"), k_plan_transitions_key("transitions");
+			const Variant steady = glow_plan.get(k_steady_key, Variant());
+			if (status == nk::TickStatus::Ok && glow_ok && stage_error == nullptr && reports.empty() &&
+					steady.get_type() == Variant::PACKED_FLOAT64_ARRAY && PackedFloat64Array(steady).size() == nk::kGfTermCount &&
+					glow_plan.get(k_plan_transitions_key, Variant()).get_type() == Variant::ARRAY &&
+					Array(glow_plan.get(k_plan_transitions_key, Variant())).is_empty()) {
+				// NK-6n: a steady tick's finish without its GDScript call; any refusal leaves it to finish below.
+				const PackedFloat64Array terms = steady;
+				const double firing = glow_firing_at(tick_next_.data(), tick_next_.data() + kStateSize,
+					static_cast<int64_t>(tick_next_.size()) - kStateSize, (nk::R(t) + nk::R(dt)).v);
+				if (std::isfinite(firing) &&
+						nk::glow_steady_finish(tick_combined_, tick_next_, kStateSize, dt, terms.ptr(), firing, glow_finish_out_)) {
+					static const godot::StringName k_steady_state("state"), k_steady_events("events");
+					Dictionary finished;
+					finished[k_steady_state] = pack(glow_finish_out_.data(), static_cast<int>(glow_finish_out_.size()));
+					finished[k_steady_events] = Array();
+					glow_result = finished;
+					policy_ok = true;
+					++glow_finish_answers_;
+				}
+			}
+			if (!policy_ok && status == nk::TickStatus::Ok && glow_ok && stage_error == nullptr) {
 				static const godot::StringName k_ok("ok"), k_state_key("state"), k_events_key("events"),
 					k_type_key("type"), k_time_key("time_s"), k_id_key("id"), k_residual_key("surface_residual"),
 					k_unit_key("surface_unit"), k_error_key("time_error_bound_s"), k_transitions_key("transitions");
@@ -2877,21 +2904,48 @@ public:
 	// context of the guarded pre-step: the same point evaluation the stage composes. NaN refuses (no glow stage or
 	// context, another layout, a refused stage); the caller then evaluates point(). Not counted as an RK stage.
 	double stage_glow_firing(const PackedFloat64Array &body, const PackedFloat64Array &values, double time_s) {
-		++glow_firing_calls_;
-		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !tick_.ready || !read_state(body) ||
-				values.size() != static_cast<int64_t>(continuous_scratch_.size()) || !std::isfinite(time_s)) {
+		if (!read_state(body)) {
+			++glow_firing_calls_;
 			return nk::kNan;
 		}
 		nk::R state[kStateSize];
 		load(body, state);
+		std::vector<nk::R> values_in(static_cast<size_t>(values.size()));
+		for (int64_t i = 0; i < values.size(); ++i) values_in[static_cast<size_t>(i)] = values[i];
+		return glow_firing_at(state, values_in.data(), values.size(), time_s);
+	}
+
+	// stage_glow_firing on raw arrays (NK-6n reads the bounded end state in place).
+	double glow_firing_at(const nk::R *body, const nk::R *values, int64_t count, double time_s) {
+		++glow_firing_calls_;
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !tick_.ready ||
+				count != static_cast<int64_t>(continuous_scratch_.size()) || !std::isfinite(time_s)) {
+			return nk::kNan;
+		}
+		nk::R state[kStateSize];
+		for (int i = 0; i < kStateSize; ++i) state[i] = body[i];
 		std::vector<nk::R> &scratch = continuous_scratch_;
-		for (int64_t i = 0; i < values.size(); ++i) scratch[static_cast<size_t>(i)] = values[i];
-		const nk::StageResult result = nk::stage_evaluate(state, scratch.data(), static_cast<int>(values.size()), time_s,
+		for (int64_t i = 0; i < count; ++i) scratch[static_cast<size_t>(i)] = values[i];
+		const nk::StageResult result = nk::stage_evaluate(state, scratch.data(), static_cast<int>(count), time_s,
 			stage_, tick_, nullptr);
 		if (!result.shaped || !nk::is_finite(result.glow_firing_fraction)) return nk::kNan;
 		++glow_firing_answers_;
 		return result.glow_firing_fraction.v;
 	}
+
+	// NK-6n: GlowFlight.finish's steady-tick answer (nk_glow_finish.hpp) for given states, terms and endpoint firing
+	// fraction; empty where finish must run. For equivalence tests; the tick calls the same function.
+	PackedFloat64Array glow_steady_finish_component(const PackedFloat64Array &start, const PackedFloat64Array &end,
+			double dt, const PackedFloat64Array &terms, double firing) const {
+		if (terms.size() != nk::kGfTermCount || start.size() != end.size()) return PackedFloat64Array();
+		std::vector<nk::R> a(static_cast<size_t>(start.size())), b(static_cast<size_t>(end.size())), out;
+		for (int64_t i = 0; i < start.size(); ++i) a[static_cast<size_t>(i)] = start[i];
+		for (int64_t i = 0; i < end.size(); ++i) b[static_cast<size_t>(i)] = end[i];
+		if (!nk::glow_steady_finish(a, b, kStateSize, dt, terms.ptr(), firing, out)) return PackedFloat64Array();
+		return pack(out.data(), static_cast<int>(out.size()));
+	}
+
+	int64_t glow_finish_answers() const { return glow_finish_answers_; }
 
 	// NK-6e: GlowFlight.valid(values, install) and GlowFlight.mass_context(owner, values).ok for the prepared glow stage.
 	// The installation's own bounds arrive once from the session (prepare_glow_validity); the configuration guard keeps

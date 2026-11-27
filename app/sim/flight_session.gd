@@ -181,6 +181,7 @@ func _remember_out_of_trim_airframe() -> void:
 
 const EventStep: Script = preload("res://physics/event_step.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+const GlowLifecycle := preload("res://physics/glow/lifecycle.gd")
 const FuelSample := preload("res://sim/fuel_sample.gd")
 const CheckpointJson := preload("res://sim/checkpoint_json.gd")
 ## Fixed original wet-CG datum; live contact mobility and linear fuel sampling at swept crossing fractions.
@@ -5703,8 +5704,42 @@ func native_glow_step_plan() -> Dictionary:
 		return {}
 	var transitions: Array[Dictionary] = []
 	var events: Array = GlowFlight._recording_events(self, transitions)
-	return {events = events, transitions = transitions,
+	var plan := {events = events, transitions = transitions,
 		unusable_fuel_kg = float(aircraft.model.propulsion.glow.unusable_fuel_kg)}
+	var steady: PackedFloat64Array = _native_glow_finish_terms()
+	if not steady.is_empty():
+		plan.steady = steady
+	return plan
+
+
+## NK-6n: GlowFlight.finish's terms for the kernel's steady-tick answer, where finish would cut nothing, take its
+## prepared-evaluator branch and read the endpoint firing fraction from the native stage (NK-6b's conditions):
+## [identity cycle, family cycle, max rpm, stall rpm, overheat temperature, then _accepted_validated's literals and
+## the lifecycle tolerances, as GDScript parses them]. Empty: finish runs. The kernel answers only ticks without
+## resource events or transitions, and refuses every failure and lifecycle stop (nk_glow_finish.hpp).
+func _native_glow_finish_terms() -> PackedFloat64Array:
+	if not native_glow_finish_enabled or not native_glow_firing_enabled or not engine_running or _failures != null \
+			or not _rc_track.is_empty() or _weather_pending_reset or _native_endpoint_tick != sim.tick + 1:
+		return PackedFloat64Array()
+	var install: Dictionary = aircraft.model.propulsion.glow
+	var evaluator: Variant = get_meta(GlowFlight.EVALUATOR_META, null)
+	if not evaluator is GlowLifecycle.PreparedEvaluator \
+			or get_meta(GlowFlight.EVALUATOR_IDENTITY_META, {}) != install.identity:
+		return PackedFloat64Array()
+	var model: Dictionary = evaluator._model
+	var settings: Dictionary = evaluator._settings
+	var family: String = str(install.profile.family)
+	# _state_error compares the identity's cycle as stored, so only a number may stand for it here.
+	if family not in GlowLifecycle.FAMILIES or str(model.get("family", "")) != family \
+			or typeof(install.profile.identity.get("cycle_revolutions")) not in [TYPE_INT, TYPE_FLOAT]:
+		return PackedFloat64Array()
+	return PackedFloat64Array([float(install.profile.identity.cycle_revolutions), 1.0 if family == "glow_2t" else 2.0,
+		float(model.operation.max_rpm), float(settings.stall_rpm), float(settings.temperature_firing_hot_zero_k),
+		1.0e-14, 1.0e-12, GlowLifecycle.PHASE_TOLERANCE, GlowLifecycle.FIRE_TOLERANCE])
+
+
+## NK-6n test hook: false always calls GlowFlight.finish from the kernel.
+var native_glow_finish_enabled := true
 
 
 ## BAT-11: the ESC samples its filtered pack voltage at the accepted endpoint and holds the new output limit

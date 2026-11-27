@@ -613,6 +613,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `glow_voice_block(parameters, harmonics, state, frames)` (NK-6m) runs the glow voice's per-sample synthesis loop
   byte-identically to `GlowVoice.render_telemetry`'s GDScript loop, which remains the reference and the fallback. It is
   audio only and reads no stage state ([evidence](../../docs/research/native-kernel/NK-6m/README.md)).
+- `integrate_tick` answers `GlowFlight.finish` itself for a steady glow tick (NK-6n, `nk_glow_finish.hpp`): no
+  resource events or transitions, the plan's steady terms present, and no failure or lifecycle stop. Every refusal
+  calls finish ([evidence](../../docs/research/native-kernel/NK-6n/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

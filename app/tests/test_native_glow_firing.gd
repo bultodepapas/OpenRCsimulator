@@ -198,6 +198,7 @@ func _pair(id: String, weather: String, scenario: String) -> void:
 				other.free()
 			return
 		s.native_glow_firing_enabled = native
+		s.native_glow_finish_enabled = false # NK-6n answers steady ticks without finish, which asks for this fraction
 		var holder := {tick = 0}
 		s.set_meta(&"nk6b_holder", holder)
 		s.read_raw = func() -> Dictionary:
