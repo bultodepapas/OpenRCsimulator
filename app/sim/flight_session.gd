@@ -817,6 +817,7 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 		stage_backend_error = candidate.reason
 		_native_stage = null
 		return
+	_context_engine_running = engine_running
 	if not candidate.tick_context(self, sim.aux, sim.inputs, time_now):
 		stage_backend_error = candidate.reason
 		candidate.uninstall(self)
@@ -3607,6 +3608,26 @@ func native_glow_firing(body: PackedFloat64Array, values: PackedFloat64Array, ti
 	return fraction
 
 
+## F5b: GlowFlight.point(...).firing_fraction at the accepted endpoint for presentation (flight audio), from the native
+## glow stage outside the tick. The stage keeps the context of the last guarded pre-step, which produced this endpoint:
+## the inputs are unchanged until the next session tick, and every other reading point() makes must match it too, so
+## this answers only without failures, an RC track or a pending weather reset, unpaused and with no hold, and with the
+## engine running now and at that pre-step. NaN: evaluate GlowFlight.telemetry.
+func presented_glow_firing() -> float:
+	if not native_glow_audio_enabled or _native_stage == null or _failures != null or not _rc_track.is_empty() \
+			or _weather_pending_reset or sim.paused or not holds.is_empty() or not engine_running \
+			or not _context_engine_running or get_script().resource_path != SELF_PATH or not glow_is_active() \
+			or not _flight_ready():
+		return NAN
+	return _native_stage.glow_firing(sim.state, sim.continuous, sim.time())
+
+
+## F5b test hook: false makes flight audio evaluate GlowFlight.telemetry every frame.
+var native_glow_audio_enabled := true
+## engine_running when the native stage's tick context was last set.
+var _context_engine_running := false
+
+
 ## NK-5f: gear_collapsed(s) with Ground.collapsed's checks in its order; where it computes the compressions, those
 ## published for this endpoint (published_gear_compressions) stand in when available. Same caller scope.
 func published_gear_collapsed(s: PackedFloat64Array) -> bool:
@@ -6048,6 +6069,7 @@ func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: f
 			stage_backend_error = _native_stage.reason
 			return PackedFloat64Array()
 		_native_endpoint_tick = sim.tick + 1 # NK-5e: the endpoint this guarded context belongs to
+		_context_engine_running = engine_running
 	return next
 
 

@@ -17,6 +17,7 @@ const GroundAudioModel = preload("res://audio/ground_audio_model.gd")
 const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
 const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
 const Cadence = preload("res://render/presentation_cadence.gd")
+const GlowAudioState = preload("res://audio/glow_audio_state.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
@@ -296,7 +297,10 @@ func snapshot() -> Dictionary:
 	if not Atmosphere.state.is_empty():
 		elevation = float(Atmosphere.state.get("sun_elevation_deg", elevation))
 	var glow_state: Dictionary = {}
-	if session.has_method("glow_state"):
+	# F5b: a glow aircraft's audio keys without GlowFlight.telemetry's full point() evaluation (glow_audio_state.gd).
+	if not glow_family.is_empty() and session.has_method("presented_glow_firing"):
+		glow_state = GlowAudioState.build(session)
+	if glow_state.is_empty() and session.has_method("glow_state"):
 		var accepted_glow: Variant = session.call("glow_state")
 		if accepted_glow is Dictionary:
 			glow_state = accepted_glow.duplicate()
