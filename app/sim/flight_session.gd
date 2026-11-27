@@ -4074,6 +4074,8 @@ var _probe_reach := 0.0
 var probe_reach_cache_enabled := true
 ## Test hook: false always evaluates HullContact.prop_disc_depth.
 var prop_clear_bound_enabled := true
+## Test hook: false keeps _prop_disc_clear's lake test horizontal (the NK-6e bound).
+var prop_lake_height_bound_enabled := true
 ## NK-6e: the lake whose bank bounds _prop_disc_clear last computed, and those bounds.
 var _prop_bounds_lake: Variant = null
 var _prop_bounds := PackedFloat64Array()
@@ -4082,8 +4084,11 @@ var _prop_bounds := PackedFloat64Array()
 ## NK-6e: true only where HullContact.prop_disc_depth must answer a depth <= 0, so _check_prop_strike may stop.
 ## Every disc point lies within |hub| + radius of the origin, scaled by the attitude quaternion's norm bound as
 ## _disc_near_lake scales it; above that height the flat datum is out of reach. The lake's water or bank decides only
-## within its bank bounds, so the disc's horizontal reach must miss them. An invalid lake or a nonfinite state keeps
-## the full evaluation, which reports its own NaN.
+## within its bank bounds, so the disc's horizontal reach must miss them, or lie wholly above the lake's highest
+## possible support: bank terrain lies between the datum and the mean water level, and waves rise by at most their
+## validated amplitude (_disc_near_lake's and LakeSurface.sweep_probe's bound). Flying over the lake, that vertical
+## test spares the covered-terrain sample each tick. An invalid lake or a nonfinite state keeps the full evaluation,
+## which reports its own NaN.
 func _prop_disc_clear(s: PackedFloat64Array) -> bool:
 	if not prop_clear_bound_enabled or s.size() != RB.SIZE:
 		return false
@@ -4101,6 +4106,9 @@ func _prop_disc_clear(s: PackedFloat64Array) -> bool:
 		return true
 	if not LakeSurface.is_valid_definition(_lake):
 		return false
+	if prop_lake_height_bound_enabled and s[RB.POS + 2] + reach \
+			< minf(0.0, float(_lake.water_level_down_m) - float(_lake.wave_bounds.max_amplitude_m)):
+		return true
 	if not is_same(_lake, _prop_bounds_lake):
 		_prop_bounds = HullContact._polygon_bounds(_lake.bank_ne_m)
 		_prop_bounds_lake = _lake

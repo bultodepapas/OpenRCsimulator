@@ -2,10 +2,10 @@ extends SceneTree
 ## NK-6e session reach bounds:
 ## - FlightSession._prop_disc_clear(s) is sound: wherever it lets _check_prop_strike stop, HullContact.prop_disc_depth
 ##   answers a depth <= 0 (random positions over the field and the lake, heights, attitudes, unnormalized quaternions);
-##   it also clears real flight states;
+##   it also clears real flight states, over the lake too (above its highest possible support);
 ## - _contact_probe_reach's identity cache answers the recomputed reach bit for bit through gear cycles;
 ## - flights with both enabled and both disabled are byte-identical (fixed and retractable gear, glow, takeoff and
-##   landing near the lake).
+##   landing near the lake, and a low pass over the lake).
 
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
@@ -35,7 +35,7 @@ func _run() -> void:
 	for id: String in ["f4u-corsair-250", "jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "p51d-mustang-120"]:
 		_soundness(id)
 		_probe_cache(id)
-		for scenario: String in ["takeoff", "landing"]:
+		for scenario: String in ["takeoff", "landing", "overflight"]:
 			_pair(id, scenario)
 	print("session reach bounds: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -70,7 +70,8 @@ func _soundness(id: String) -> void:
 	for i in range(0, shore.size(), 2):
 		center += Vector2(shore[i], shore[i + 1])
 	center /= float(shore.size() / 2)
-	var stats := {cleared = 0, kept = 0, unsound = 0}
+	var stats := {cleared = 0, kept = 0, unsound = 0, cleared_over_lake_bank = 0}
+	var bank: PackedFloat64Array = HullContact._polygon_bounds(_lake.bank_ne_m)
 	var first := ""
 	for i in SAMPLES:
 		var body: PackedFloat64Array = s.sim.state.duplicate()
@@ -89,6 +90,8 @@ func _soundness(id: String) -> void:
 			stats.kept += 1
 			continue
 		stats.cleared += 1
+		if body[RB.POS] >= bank[0] and body[RB.POS] <= bank[1] and body[RB.POS + 1] >= bank[2] and body[RB.POS + 1] <= bank[3]:
+			stats.cleared_over_lake_bank += 1
 		var depth: float = float(HullContact.prop_disc_depth(body, s._prop_disc, s._lake, _rng.randf_range(0.0, 60.0)).depth)
 		if not (depth <= 0.0):
 			stats.unsound += 1
@@ -96,10 +99,18 @@ func _soundness(id: String) -> void:
 				first = "depth %f at %s " % [depth, str(body)]
 	_check(id + ": every cleared state has a nonpositive disc depth", stats.unsound == 0, first + str(stats))
 	_check(id + ": the bound clears and keeps states", stats.cleared > SAMPLES / 10 and stats.kept > SAMPLES / 10, str(stats))
+	_check(id + ": it clears states over the lake's bank box", stats.cleared_over_lake_bank > SAMPLES / 50, str(stats))
 	# A flying state well above the field clears.
 	var flying: PackedFloat64Array = s.sim.state.duplicate()
 	flying[RB.POS + 2] = -40.0
 	_check(id + ": a state 40 m above the runway clears", s._prop_disc_clear(flying))
+	var over_water: PackedFloat64Array = flying.duplicate()
+	over_water[RB.POS] = center.x
+	over_water[RB.POS + 1] = center.y
+	_check(id + ": a state 40 m above the lake clears", s._prop_disc_clear(over_water))
+	s.prop_lake_height_bound_enabled = false
+	_check(id + ": the horizontal lake test alone keeps it", not s._prop_disc_clear(over_water))
+	s.prop_lake_height_bound_enabled = true
 	print("NK6E_PROP %s %s" % [id, str(stats)])
 	s.free()
 
@@ -132,9 +143,22 @@ func _probe_cache(id: String) -> void:
 func _pair(id: String, scenario: String) -> void:
 	var pair: Array = []
 	for enabled in [true, false]:
-		var s := _session(id, Flight.START_AIRBORNE if scenario == "landing" else Flight.START_RUNWAY)
+		var s := _session(id, Flight.START_AIRBORNE if scenario in ["landing", "overflight"] else Flight.START_RUNWAY)
 		s.prop_clear_bound_enabled = enabled
+		s.prop_lake_height_bound_enabled = enabled
 		s.probe_reach_cache_enabled = enabled
+		if scenario == "overflight":
+			# A low, slow pass across the lake: the vertical lake bound decides while the disc is over its bank box.
+			var shore: PackedFloat64Array = _lake.shoreline_ne_m
+			var center := Vector2(0.0, 0.0)
+			for k in range(0, shore.size(), 2):
+				center += Vector2(shore[k], shore[k + 1])
+			center /= float(shore.size() / 2)
+			var body: PackedFloat64Array = s.sim.state.duplicate()
+			body[RB.POS] = center.x - 40.0
+			body[RB.POS + 1] = center.y
+			body[RB.POS + 2] = -8.0
+			s.sim.reset(body)
 		if scenario == "landing":
 			var body: PackedFloat64Array = s.sim.state.duplicate()
 			body[RB.POS + 2] = minf(body[RB.POS + 2], -3.0)
@@ -144,8 +168,9 @@ func _pair(id: String, scenario: String) -> void:
 		var holder := {tick = 0}
 		s.set_meta(&"holder", holder)
 		s.read_raw = func() -> Dictionary:
-			return {roll = 0.0, pitch = (0.2 if holder.tick > 400 else 0.0) if scenario == "takeoff" else -0.05, yaw = 0.0,
-				throttle = 1.0 if scenario == "takeoff" else 0.0}
+			return {roll = 0.0, pitch = (0.2 if holder.tick > 400 else 0.0) if scenario == "takeoff" \
+				else (0.0 if scenario == "overflight" else -0.05), yaw = 0.0,
+				throttle = 1.0 if scenario == "takeoff" else (0.6 if scenario == "overflight" else 0.0)}
 		pair.append(s)
 	var stats := {ticks = 0, mismatched = 0}
 	for tick in 1440 if scenario == "takeoff" else 960:
@@ -161,6 +186,7 @@ func _pair(id: String, scenario: String) -> void:
 		if not pair[0].crash.is_empty() or not pair[1].crash.is_empty():
 			break
 	_check("%s %s: flights are byte-identical with the bounds on and off" % [id, scenario], stats.mismatched == 0, str(stats))
+	print("NK6E_PAIR %s %s %s height %.1f" % [id, scenario, str(stats), -float(pair[0].sim.state[RB.POS + 2])])
 	for s: Node in pair:
 		s.free()
 
