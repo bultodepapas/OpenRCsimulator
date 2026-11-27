@@ -1,6 +1,7 @@
 extends SceneTree
 
 const CloudTransport = preload("res://render/weather/cloud_transport.gd")
+const Atmosphere = preload("res://render/atmosphere.gd")
 
 var _failures := 0
 var _checks := 0
@@ -68,8 +69,31 @@ func _initialize() -> void:
 	var classic_aloft_offset := CloudTransport.legacy_offset(classic_aloft, 1.0)
 	_check("classic aloft mode uses the selected aloft wind",
 		is_equal_approx(classic_aloft_offset.x, 3.04) and absf(classic_aloft_offset.y - 4.0) < 1e-6)
+	_atmosphere_validation_cache(state)
 	print("cloud transport: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## F5b: Atmosphere keeps CloudTransport.validate's answer for the same transport; reassignment and edits in place
+## (caught by the content hash) ask again, so every answer equals a fresh validation.
+func _atmosphere_validation_cache(state: Dictionary) -> void:
+	var saved: Dictionary = Atmosphere._cloud_transport
+	var agree := true
+	Atmosphere._cloud_transport = state.duplicate(true)
+	agree = agree and Atmosphere._cloud_transport_valid() == CloudTransport.validate(Atmosphere._cloud_transport)
+	var first := Atmosphere._cloud_transport_valid()
+	Atmosphere._cloud_transport.layers[0].anchor_offset[0] = 64.0 # in place: out of the noise period
+	var after_edit := Atmosphere._cloud_transport_valid()
+	agree = agree and after_edit == CloudTransport.validate(Atmosphere._cloud_transport)
+	Atmosphere._cloud_transport.layers[0].anchor_offset[0] = 3.0
+	agree = agree and Atmosphere._cloud_transport_valid() == CloudTransport.validate(Atmosphere._cloud_transport)
+	Atmosphere._cloud_transport = {}
+	agree = agree and Atmosphere._cloud_transport_valid() == CloudTransport.validate({})
+	Atmosphere._cloud_transport = state.duplicate(true)
+	agree = agree and Atmosphere._cloud_transport_valid()
+	_check("atmosphere's kept validation equals a fresh one through edits and reassignments",
+		agree and first and not after_edit)
+	Atmosphere._cloud_transport = saved
 
 
 func _check(label: String, condition: bool) -> void:

@@ -46,6 +46,13 @@ static var _appearance_profile: Dictionary = {}
 static var _appearance: Dictionary = {}
 static var _appearance_enabled := false
 static var _cloud_transport: Dictionary = {}
+## F5b: CloudTransport.validate's answer for the transport it last checked (identity and content hash). The cloud
+## update asked it three times per frame for the same transport, about 27 µs each; every assignment replaces the
+## dictionary, and the hash also catches an edit in place.
+static var _transport_checked: Dictionary = {}
+static var _transport_checked_hash := 0
+static var _transport_checked_ok := false
+static var _transport_check_valid := false
 static var _last_cloud_sim_time := 0.0
 ## One active presentation cache. Offsets and the packed sky arrays are bounded by MAX_LAYERS.
 ## Material uniforms are still checked on every call so a newly built sky receives them.
@@ -171,7 +178,7 @@ static func selected_cloud_seed(fallback: int = Spec.ATMOSPHERE.cloud_seed) -> i
 
 
 static func cloud_transport_checkpoint() -> Dictionary:
-	if not CloudTransport.validate(_cloud_transport):
+	if not _cloud_transport_valid():
 		var selection := SkyConfig.defaults()
 		var checked: Dictionary = SkyConfig.validate(selection)
 		var resolved: Dictionary = SkyAppearance.resolve(checked.profile, checked.config)
@@ -306,8 +313,20 @@ static func _shadow_layer_index() -> int:
 	return best_index
 
 
+## CloudTransport.validate(_cloud_transport), kept for the same transport (see _transport_checked).
+static func _cloud_transport_valid() -> bool:
+	var hash_value: int = _cloud_transport.hash()
+	if _transport_check_valid and is_same(_cloud_transport, _transport_checked) and hash_value == _transport_checked_hash:
+		return _transport_checked_ok
+	_transport_checked_ok = CloudTransport.validate(_cloud_transport)
+	_transport_checked = _cloud_transport
+	_transport_checked_hash = hash_value
+	_transport_check_valid = true
+	return _transport_checked_ok
+
+
 static func _cloud_offsets_at(sim_time_s: float) -> Array:
-	if CloudTransport.validate(_cloud_transport):
+	if _cloud_transport_valid():
 		if not _appearance_enabled:
 			return [CloudTransport.legacy_offset_pair(_cloud_transport, sim_time_s)]
 		if not _cloud_transport.layers.is_empty():
@@ -317,7 +336,7 @@ static func _cloud_offsets_at(sim_time_s: float) -> Array:
 
 
 static func _legacy_cloud_offset_at(sim_time_s: float) -> Vector2:
-	return CloudTransport.legacy_offset(_cloud_transport, sim_time_s) if CloudTransport.validate(_cloud_transport) else cloud_offset(sim_time_s)
+	return CloudTransport.legacy_offset(_cloud_transport, sim_time_s) if _cloud_transport_valid() else cloud_offset(sim_time_s)
 
 
 static func _linear_color(color: Color) -> Vector3:
