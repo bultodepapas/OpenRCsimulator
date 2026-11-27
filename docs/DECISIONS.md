@@ -753,3 +753,16 @@ rendered-frame cadence to test temporary reductions in pixel load.
 Keep camera composition separate from aircraft/session admission. A water-plane look target records actual presented CG separately, uses the source lake plane and requires current engine-frame/session-tick evidence. It changes presentation only. Workshop trial IDs and strict ground harnesses retain their real admission boundaries; a proposed shot does not authorize weakening them to make a camera recipe run.
 
 The master uses distinct, frozen lighting sessions with explicit context changes; it does not imply one continuous day. Bind source time arguments and actual readback, because an inherited clock can override a named preset and a frozen sun does not freeze adaptive exposure. Revisit geometry or integration after real rehearsal, regenerating all dependent instructions together. [Current production package](../tools/trailer/preproduction/README.md), [direction contract](../tools/trailer/preproduction/direction-and-continuity.md).
+
+### The accident ledger samples gear support once per frame
+
+**F1, 2026-11-26; explicit owner decision.** The accident ledger (`economy/incident.gd`) holds ticks whose only events
+are persistent gear-support samples and observes them once per frame with each wheel's peak compression. It observes
+every other event, a crash or a restore at its own tick, after the held samples. A checkpoint, an evaluation, an
+archive flush or a ledger action releases the held samples first. Per tick, the bound, revalidation and SHA-256 of
+every sample cost about 0.36 ms of each rolling 240 Hz tick.
+
+Peaks, recommendations and assessed components equal per-tick observation
+([test](../app/tests/test_accident_ledger_hold.gd)). The evidence tick of a held sample and the internal revision
+counts are per frame. `has_damage()` can lag by up to one frame. Persistent hull contacts remain per tick. Revisit if
+a gear damage rule needs per-tick sample timing.
