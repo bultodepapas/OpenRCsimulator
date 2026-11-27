@@ -2278,6 +2278,108 @@ public:
 		return nk::tick_body_valid(s);
 	}
 
+	// NK-6d: the glow plan's recording events, checked as ResourceStep.advance checks its definitions; only the stock
+	// surfaces (rotor stop, main tank unusable, feed line empty) are admitted, so a pickup event keeps the reference.
+	static bool decode_glow_plan(const Dictionary &plan, std::vector<nk::ResourceEvent> &events,
+			std::vector<godot::Callable> &transitions, nk::ResourceGlowLayout &layout) {
+		static const godot::StringName k_events("events"), k_transitions("transitions"), k_unusable("unusable_fuel_kg"),
+			k_id("id"), k_type("type"), k_surface("surface"), k_transition("transition"), k_sense("sense"),
+			k_unit("surface_unit"), k_enabled("enabled"), k_priority("priority"), k_tolerance("surface_tolerance");
+		const Variant events_value = plan.get(k_events, Variant());
+		const Variant unusable = plan.get(k_unusable, Variant());
+		if (events_value.get_type() != Variant::ARRAY || plan.get(k_transitions, Variant()).get_type() != Variant::ARRAY ||
+				unusable.get_type() != Variant::FLOAT || !std::isfinite(double(unusable))) return false;
+		layout.unusable_fuel_kg = double(unusable);
+		const Array list = events_value;
+		if (list.is_empty()) return false;
+		for (int64_t i = 0; i < list.size(); ++i) {
+			if (list[i].get_type() != Variant::DICTIONARY) return false;
+			const Dictionary event = list[i];
+			const Variant id = event.get(k_id, Variant());
+			const Variant type = event.get(k_type, Variant());
+			const Variant unit = event.get(k_unit, Variant());
+			const Variant sense = event.get(k_sense, Variant());
+			const Variant surface = event.get(k_surface, Variant());
+			const Variant transition = event.get(k_transition, Variant());
+			if (id.get_type() != Variant::STRING || String(id).strip_edges().is_empty() || type.get_type() != Variant::STRING ||
+					String(type).strip_edges().is_empty() || unit.get_type() != Variant::STRING ||
+					String(unit).strip_edges().is_empty() || surface.get_type() != Variant::CALLABLE ||
+					transition.get_type() != Variant::CALLABLE || !godot::Callable(surface).is_valid() ||
+					!godot::Callable(transition).is_valid()) return false;
+			nk::ResourceEvent decoded;
+			const String sense_name = sense.get_type() == Variant::STRING ? String(sense) : String();
+			if (sense_name == String("falling")) decoded.sense = nk::ResourceSense::Falling;
+			else if (sense_name == String("rising")) decoded.sense = nk::ResourceSense::Rising;
+			else if (sense_name == String("either")) decoded.sense = nk::ResourceSense::Either;
+			else return false;
+			decoded.has_enabled = event.has(k_enabled);
+			if (decoded.has_enabled && (event.get(k_enabled, Variant()).get_type() != Variant::CALLABLE ||
+					!godot::Callable(event.get(k_enabled, Variant())).is_valid())) return false;
+			const Variant priority = event.get(k_priority, int64_t(100));
+			if (priority.get_type() != Variant::INT) return false;
+			decoded.priority = static_cast<int>(int64_t(priority));
+			if (event.has(k_tolerance)) {
+				const Variant tolerance = event.get(k_tolerance, Variant());
+				if ((tolerance.get_type() != Variant::FLOAT && tolerance.get_type() != Variant::INT) ||
+						!std::isfinite(double(tolerance)) || double(tolerance) <= 0.0) return false;
+				decoded.tolerance = double(tolerance);
+			}
+			const godot::CharString id_utf8 = String(id).utf8();
+			decoded.id = std::string(id_utf8.get_data());
+			for (const nk::ResourceEvent &other : events) if (other.id == decoded.id) return false;
+			if (decoded.id == "rotor_stop" && !decoded.has_enabled) decoded.surface = nk::ResourceSurface::RotorStop;
+			else if (decoded.id == "main_tank_unusable" && decoded.has_enabled) decoded.surface = nk::ResourceSurface::MainTankUnusable;
+			else if (decoded.id == "feed_line_empty" && decoded.has_enabled) decoded.surface = nk::ResourceSurface::FeedLineEmpty;
+			else return false; // a pickup or other event: its surface stays with the reference
+			decoded.type = std::string(String(type).utf8().get_data());
+			decoded.unit = std::string(String(unit).utf8().get_data());
+			decoded.index = static_cast<int>(i);
+			events.push_back(decoded);
+			transitions.push_back(godot::Callable(transition));
+		}
+		return true;
+	}
+
+	// Simulation._unpack_policy_result for a policy's Dictionary: {} with `events` and `next` filled, or {fault}.
+	Dictionary unpack_policy_result(const Dictionary &result, double t, double dt, Array &events, std::vector<nk::R> &next) {
+		static const godot::StringName k_failure("failure"), k_state("state"), k_receipt("integration_receipt"),
+			k_events("events"), k_type("type"), k_time("time_s");
+		if (result.has(k_failure)) {
+			const Variant failure = result.get(k_failure, Variant());
+			if (result.size() == 1 && failure.get_type() == Variant::STRING && !String(failure).is_empty() &&
+					String(failure).length() <= 256) return tick_fault(String("step rejected: ") + String(failure));
+			return tick_fault("step rejected: malformed step-policy failure receipt");
+		}
+		if (result.get(k_state, Variant()).get_type() != Variant::PACKED_FLOAT64_ARRAY) {
+			return tick_fault("step rejected: step policy returned no state");
+		}
+		if (result.has(k_receipt)) {
+			return tick_fault("step rejected: integration receipt requires an opt-in endpoint owner and bounded finite payload");
+		}
+		const Variant raw = result.get(k_events, Array());
+		if (raw.get_type() != Variant::ARRAY) return tick_fault("step rejected: step policy returned malformed events");
+		const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
+		const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
+		const Array items = raw;
+		for (int64_t i = 0; i < items.size(); ++i) {
+			const Variant item = items[i];
+			if (item.get_type() != Variant::DICTIONARY) return tick_fault("step rejected: step policy returned malformed events");
+			const Dictionary event = item;
+			const Variant type = event.get(k_type, Variant());
+			const Variant time = event.get(k_time, Variant());
+			if (type.get_type() != Variant::STRING || String(type).is_empty() ||
+					(time.get_type() != Variant::FLOAT && time.get_type() != Variant::INT) || !std::isfinite(double(time)) ||
+					double(time) < earliest.v || double(time) > latest.v) {
+				return tick_fault("step rejected: step policy returned malformed events");
+			}
+			events.append(event.duplicate(true));
+		}
+		const PackedFloat64Array state = result.get(k_state, Variant());
+		next.resize(static_cast<size_t>(state.size()));
+		for (int64_t i = 0; i < state.size(); ++i) next[static_cast<size_t>(i)] = state[i];
+		return Dictionary();
+	}
+
 	Dictionary tick_fault(const String &reason) {
 		++tick_faults_;
 		Dictionary out;
@@ -2310,7 +2412,25 @@ public:
 		const godot::Callable policy = model->get(k_step_policy);
 		godot::Object *policy_owner = nullptr;
 		godot::PackedInt64Array plan;
-		if (policy.is_valid()) {
+		// NK-6d: GlowFlight.step (a static policy bound to its session) gives its recording resource events.
+		static const godot::StringName k_glow_step("step"), k_glow_plan("native_glow_step_plan"), k_glow_finish("finish");
+		godot::Object *glow_owner = nullptr;
+		godot::Object *glow_script = nullptr;
+		Dictionary glow_plan;
+		std::vector<nk::ResourceEvent> glow_events;
+		std::vector<godot::Callable> glow_transitions;
+		nk::ResourceGlowLayout glow_layout;
+		if (policy.is_valid() && policy.get_method() == k_glow_step) {
+			const Array bound = policy.get_bound_arguments();
+			if (bound.size() != 1 || bound[0].get_type() != Variant::OBJECT) return Dictionary();
+			glow_owner = bound[0];
+			glow_script = policy.get_object();
+			if (glow_owner == nullptr || glow_script == nullptr || !glow_owner->has_method(k_glow_plan)) return Dictionary();
+			glow_plan = glow_owner->call(k_glow_plan);
+			if (glow_plan.is_empty() || !decode_glow_plan(glow_plan, glow_events, glow_transitions, glow_layout)) {
+				return Dictionary();
+			}
+		} else if (policy.is_valid()) {
 			policy_owner = policy.get_object();
 			if (policy_owner == nullptr || policy.get_method() != k_electric_step || !policy_owner->has_method(k_electric_plan)) {
 				return Dictionary();
@@ -2322,6 +2442,7 @@ public:
 			plan = planned;
 			if (plan.size() != 4 || plan[2] < kStateSize || plan[2] + 1 >= kStateSize + continuous.size()) return Dictionary();
 		}
+		const bool step_policy = policy_owner != nullptr || glow_script != nullptr;
 		++tick_calls_;
 		const int extra = static_cast<int>(continuous.size());
 		const int size = kStateSize + extra;
@@ -2363,7 +2484,7 @@ public:
 			return tick_fault("step rejected: substep count is not an integer within 1..16");
 		}
 		const int pieces = static_cast<int>(int64_t(declared));
-		if (policy_owner != nullptr && pieces > 1) {
+		if (step_policy && pieces > 1) {
 			return tick_fault(String("step rejected: the step policy owns the tick and cannot honour ") +
 				String::num_int64(pieces) + String(" contact substeps"));
 		}
@@ -2390,7 +2511,57 @@ public:
 		const Array events = model->get(k_events);
 		bool policy_ok = true;
 		std::vector<nk::TickPolicyEvent> policy_events;
-		if (policy_owner != nullptr) {
+		Variant glow_result;
+		if (glow_script != nullptr) {
+			// GlowFlight.step: ResourceStep.advance over the recording events, then GlowFlight.finish.
+			std::vector<Variant> glow_details;
+			auto transition = [&](const nk::ResourceEvent &event, const std::vector<nk::R> &in, nk::R at,
+					std::vector<nk::R> &out, int &details) -> bool {
+				const Variant transitioned = glow_transitions[static_cast<size_t>(event.index)].call(pack(in), at.v);
+				if (transitioned.get_type() != Variant::DICTIONARY) return false;
+				const Dictionary result = transitioned;
+				static const godot::StringName k_ok("ok"), k_state_key("state"), k_event_key("event");
+				if (!bool(result.get(k_ok, false)) || result.get(k_state_key, Variant()).get_type() != Variant::PACKED_FLOAT64_ARRAY) {
+					return false;
+				}
+				const PackedFloat64Array values = result.get(k_state_key, Variant());
+				out.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) out[static_cast<size_t>(i)] = values[i];
+				details = static_cast<int>(glow_details.size());
+				glow_details.push_back(result.get(k_event_key, Dictionary()));
+				return true;
+			};
+			std::vector<nk::ResourceReport> reports;
+			bool glow_ok = false;
+			status = nk::resource_advance(combined, size, t, dt, f, tick_first_.data(), glow_events, glow_layout, transition,
+				glow_ok, tick_next_, reports, tick_rk4_);
+			policy_ok = false;
+			if (status == nk::TickStatus::Ok && glow_ok && stage_error == nullptr) {
+				static const godot::StringName k_ok("ok"), k_state_key("state"), k_events_key("events"),
+					k_type_key("type"), k_time_key("time_s"), k_id_key("id"), k_residual_key("surface_residual"),
+					k_unit_key("surface_unit"), k_error_key("time_error_bound_s"), k_transitions_key("transitions");
+				Array reported;
+				for (const nk::ResourceReport &report : reports) {
+					Dictionary entry;
+					entry[k_type_key] = String::utf8(report.event->type.c_str());
+					entry[k_time_key] = report.time_s.v;
+					entry[k_id_key] = String::utf8(report.event->id.c_str());
+					entry[k_residual_key] = report.residual.v;
+					entry[k_unit_key] = String::utf8(report.event->unit.c_str());
+					entry[k_error_key] = report.time_error.v;
+					const Variant details = report.details >= 0 ? glow_details[static_cast<size_t>(report.details)] : Variant();
+					if (details.get_type() == Variant::DICTIONARY) entry.merge(Dictionary(details), true);
+					reported.append(entry);
+				}
+				Dictionary bounded;
+				bounded[k_ok] = true;
+				bounded[k_state_key] = pack(tick_next_);
+				bounded[k_events_key] = reported;
+				glow_result = glow_script->call(k_glow_finish, pack(tick_combined_), t, dt, glow_owner, bounded,
+					glow_plan.get(k_transitions_key, Variant()));
+				policy_ok = true;
+			}
+		} else if (policy_owner != nullptr) {
 			// FlightSession._electric_step: battery step (one piece) or contact pieces, then pack supervision; a fixed
 			// source keeps the rotor-stop event step. Any failure makes the policy return [NAN].
 			const bool dynamic = plan[0] != 0;
@@ -2454,7 +2625,22 @@ public:
 		}
 		if (!located) return tick_fault("step rejected: the event locator could not bound the tick");
 		Array tick_events;
-		if (policy_owner != nullptr && !policy_ok) {
+		if (glow_script != nullptr) {
+			if (!policy_ok) {
+				tick_next_.assign(1, nk::R(nk::kNan)); // ResourceStep failed: the policy returned [NAN]
+			} else if (glow_result.get_type() == Variant::DICTIONARY) {
+				const Dictionary unpacked_fault = unpack_policy_result(glow_result, t, dt, tick_events, tick_next_);
+				if (!unpacked_fault.is_empty()) return unpacked_fault;
+			} else if (glow_result.get_type() == Variant::PACKED_FLOAT64_ARRAY) {
+				const PackedFloat64Array values = glow_result;
+				tick_next_.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) tick_next_[static_cast<size_t>(i)] = values[i];
+			} else {
+				return tick_fault(glow_result.get_type() == Variant::NIL ?
+					"step rejected: the event locator could not bound the tick" :
+					"step rejected: step policy returned a malformed result");
+			}
+		} else if (policy_owner != nullptr && !policy_ok) {
 			// The policy returned [NAN]: Simulation finds no events and refuses the integrated state.
 			tick_next_.assign(1, nk::R(nk::kNan));
 		} else if (policy_owner != nullptr) {

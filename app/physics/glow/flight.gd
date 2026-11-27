@@ -731,12 +731,19 @@ static func project_stop(values: PackedFloat64Array,index: int,owner: Node) -> P
 ## SF-04: the accepted result is {state, events}: the bounded rotor-stop and tank-exhaustion boundaries, then
 ## a `glow_stopped` lifecycle transition with its reason when a running engine stops within the tick.
 static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative: Callable,first: PackedFloat64Array,owner: Node) -> Variant:
-	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	if combined.size()<SIZE+RB.SIZE:
 		return PackedFloat64Array([NAN])
 	# Only committed transitions are observed; rejected RK/root trials never
 	# publish counters. Discard this local ledger if any later part of the tick fails.
 	var transitions: Array[Dictionary]=[]
+	var resource_events: Array=_recording_events(owner,transitions)
+	var bounded: Dictionary=ResourceStep.advance(combined,time_s,dt,derivative,first,resource_events)
+	if not bounded.ok: return PackedFloat64Array([NAN])
+	return finish(combined,time_s,dt,owner,bounded,transitions)
+
+## The resource events whose committed transitions append {before, after, time_s} to `transitions`.
+## NK-6d: the native kernel integrates with these same events (FlightSession.native_glow_step_plan).
+static func _recording_events(owner: Node, transitions: Array[Dictionary]) -> Array:
 	var resource_events: Array=_resource_events(owner)
 	for event: Dictionary in resource_events:
 		var transition: Callable=event.transition
@@ -746,8 +753,13 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 			if result.get("ok",false):
 				transitions.append({before=connected,after=result.state.duplicate(),time_s=at})
 			return result
-	var bounded: Dictionary=ResourceStep.advance(combined,time_s,dt,derivative,first,resource_events)
-	if not bounded.ok: return PackedFloat64Array([NAN])
+	return resource_events
+
+## The accepted half of step(): lifecycle acceptance, counters, fuel stops and published events of the bounded
+## {state, events} integration. NK-6d: the native kernel calls it after its own integration of the same events.
+static func finish(combined: PackedFloat64Array,time_s: float,dt: float,owner: Node,bounded: Dictionary,
+		transitions: Array[Dictionary]) -> Variant:
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	var values: PackedFloat64Array=bounded.state.slice(RB.SIZE)
 	var before: Dictionary=unpack(combined.slice(RB.SIZE),install)
 	var was_running: bool=bool(before.running)

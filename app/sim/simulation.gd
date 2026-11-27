@@ -731,12 +731,12 @@ func _commit_step(accepted_body_state: PackedFloat64Array, accepted_continuous: 
 
 
 ## NK-6a: the native kernel that integrates this tick, or null for the reference. Only a legacy, endpoint-free joint
-## tick whose stage is the kernel's own `stage` qualifies, without a step policy or with the finite-pack policy the
-## kernel ports (NK-6c, `_electric_step`); the kernel may still refuse.
+## tick whose stage is the kernel's own `stage` qualifies, without a step policy or with a policy the kernel ports:
+## the finite pack (NK-6c, `_electric_step`) or the glow resource step (NK-6d, `GlowFlight.step`); it may still refuse.
 func _native_integrator() -> Object:
 	if not native_tick_enabled or continuous.is_empty() or model.callback_protocol != VehicleModel.PROTOCOL_LEGACY \
 			or not _joint_interval_protocol.is_empty() or _endpoint_enabled() \
-			or (model.step_policy.is_valid() and model.step_policy.get_method() != &"_electric_step") \
+			or (model.step_policy.is_valid() and model.step_policy.get_method() not in [&"_electric_step", &"step"]) \
 			or model.step_policy_interval.is_valid() or model.stage.get_method() != &"stage":
 		return null
 	var owner: Object = model.stage.get_object()

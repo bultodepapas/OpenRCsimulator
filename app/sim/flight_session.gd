@@ -5436,6 +5436,19 @@ func native_electric_step_plan(combined: PackedFloat64Array, dt: float) -> Packe
 	return PackedInt64Array([1 if dynamic else 0, count, RB.SIZE + _rotor_index(), 1 if dynamic and battery_is_pack() else 0])
 
 
+## NK-6d: GlowFlight.step's plan for the native kernel's integration of this tick: the recording resource events
+## step() builds (GlowFlight._recording_events), their shared transition ledger and the unusable tank reserve. The
+## kernel evaluates the stock surfaces itself, calls the events' transitions and then GlowFlight.finish. Empty keeps
+## the reference policy: the hook off or a derived session class (whose policy inputs may differ).
+func native_glow_step_plan() -> Dictionary:
+	if not native_glow_step_enabled or get_script().resource_path != SELF_PATH or not glow_is_active():
+		return {}
+	var transitions: Array[Dictionary] = []
+	var events: Array = GlowFlight._recording_events(self, transitions)
+	return {events = events, transitions = transitions,
+		unusable_fuel_kg = float(aircraft.model.propulsion.glow.unusable_fuel_kg)}
+
+
 ## BAT-11: the ESC samples its filtered pack voltage at the accepted endpoint and holds the new output limit
 ## for the next tick. Only the zero-rate supervisor slots change; the integrated state is untouched.
 func _supervise_pack(state: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -5698,6 +5711,8 @@ var native_endpoint_facts_enabled := true
 var native_endpoint_fact_answers := 0
 ## NK-5i: this class's script, for published_endpoint_facts' derived-class refusal (as observer_air_and_wind's).
 const SELF_PATH := "res://sim/flight_session.gd"
+## NK-6d test hook: false keeps the glow step policy (GlowFlight.step) in the reference transaction.
+var native_glow_step_enabled := true
 ## NK-6c test hook: false keeps the finite-pack step policy (_electric_step) in the reference transaction.
 var native_electric_step_enabled := true
 ## NK-6b test hook: false always evaluates the glow step policy's endpoint point(), for equivalence checks.

@@ -500,7 +500,7 @@ diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 | `nk_weather*`, `nk_spatial*`, `nk_wake*` | Stage-time weather, atmosphere, local spatial flow and transported/quasistatic wake |
 | `nk_helicopter*` | Helicopter controls, rotor/airframe forces, drive, body derivatives and ground contact |
 | `nk_legacy_ground.hpp` | Legacy no-wheel-state flat/lake contact law for valid older or workshop models |
-| `nk_tick.hpp` | `simulation.gd` legacy joint tick (`_rk4_substeps`, `_locate_substeps`, stage validity), `rigid_body.gd` `derivative`, `integrator.gd` RK4, `event_step.gd` and `event_bracket.gd` (NK-6a); `electric_battery_step.gd`, `electric_stop.gd` and `electric_contact_step.gd` for the finite-pack policy (NK-6c) |
+| `nk_tick.hpp` | `simulation.gd` legacy joint tick (`_rk4_substeps`, `_locate_substeps`, stage validity), `rigid_body.gd` `derivative`, `integrator.gd` RK4, `event_step.gd` and `event_bracket.gd` (NK-6a); `electric_battery_step.gd`, `electric_stop.gd` and `electric_contact_step.gd` for the finite-pack policy (NK-6c); `resource_event_step.gd` with the stock glow surfaces (NK-6d) |
 | `nk_kernel.cpp` | `OpenRCNativeKernel` (RefCounted): prepare, per-call and per-tick methods, probes, counters, benches |
 
 These rows identify implemented code, not release qualification. Installed fleet, lifecycle and package evidence
@@ -567,7 +567,14 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   `FlightSession._electric_step`. Its pure plan (`native_electric_step_plan`: dynamic battery, contact pieces,
   rotor index, pack supervision) comes first. The kernel then runs the battery step or the contact pieces, with
   rotor-stop and battery-exhaustion events in the policy's order, and calls back `_project_electric_stop` and
-  `_supervise_pack` ([evidence](../../docs/research/native-kernel/NK-6c/README.md)).
+  `_supervise_pack` ([evidence](../../docs/research/native-kernel/NK-6c/README.md)). NK-6d admits `GlowFlight.step`
+  with this sequence:
+  - It reads the session's recording resource events (`native_glow_step_plan`), only the stock rotor-stop,
+    main-tank and feed-line surfaces.
+  - It runs `resource_event_step.gd` over those surfaces natively and calls the events' recording transitions.
+  - It hands the bounded result to `GlowFlight.finish`, which the reference policy also calls.
+  - It unpacks the policy result as `Simulation._unpack_policy_result` does
+    ([evidence](../../docs/research/native-kernel/NK-6d/README.md)).
 - `stage_glow_firing(body, values, time_s)` (NK-6b) answers `GlowFlight.point(...).firing_fraction`, the only point
   value the glow step policy's endpoint and counted segments read, from the prepared glow stage's own lifecycle
   point. `FlightSession.native_glow_firing` asks only inside the tick its guarded pre-step installed, and

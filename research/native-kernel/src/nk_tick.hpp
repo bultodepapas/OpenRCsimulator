@@ -6,8 +6,10 @@
 // error, so the port stops there (TickStatus::Abort). Event transitions are pure owner callbacks.
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
+#include <string>
 #include <vector>
 
 #include "nk_math.hpp"
@@ -729,6 +731,425 @@ inline TickStatus tick_contact_advance(const R *combined, int size, R at, R dt, 
 	}
 	out = state;
 	ok = true;
+	return TickStatus::Ok;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NK-6d: resource_event_step.gd `advance` for GlowFlight.step. The stock glow surfaces are evaluated here (rotor
+// stop, main tank unusable, feed line empty); transitions stay with the owner's recording callbacks. Every failure
+// makes the policy return [NAN], so failure messages are not ported.
+
+// resource_event_step.gd: TIME_TOL 1e-12, MAX_SEGMENTS 256, MAX_ROOT_TRIALS 128, MAX_DT_S 60.0, SURFACE_TOL 1e-10.
+constexpr double kResourceTimeTol = 1e-12;
+constexpr int kResourceMaxSegments = 256;
+constexpr int kResourceMaxRootTrials = 128;
+constexpr double kResourceMaxDt = 60.0;
+constexpr double kResourceSurfaceTol = 1e-10;
+constexpr int kResourceBudget = 200000; // advance's default max_surface_evaluations
+
+enum class ResourceSense { Falling, Rising, Either };
+enum class ResourceSurface { RotorStop, MainTankUnusable, FeedLineEmpty };
+
+struct ResourceEvent {
+	ResourceSurface surface = ResourceSurface::RotorStop;
+	ResourceSense sense = ResourceSense::Falling;
+	int priority = 100;
+	R tolerance = kResourceSurfaceTol;
+	bool has_enabled = false;
+	int index = 0; // its position in the owner's event list (transition callback)
+	std::string id; // ordering key of _event_before
+	std::string type, unit; // the report's `type` and `surface_unit` (UTF-8)
+};
+
+// Glow layout (glow/flight.gd): rpm at the continuous block's start, fuel kg next, feed-line liquid at 17, the
+// source mode at 18 (0 starved, 1 main tank, 2 pre-primed line).
+struct ResourceGlowLayout {
+	int body = kTickBody;
+	R unusable_fuel_kg = 0.0;
+};
+
+struct ResourceSample {
+	bool ok = false;
+	bool enabled = true;
+	R value = 1.0;
+};
+
+// resource_event_step.gd `_surface_sample` with the stock glow closures.
+inline ResourceSample resource_surface_sample(const ResourceEvent &event, const R *state, const ResourceGlowLayout &glow,
+		int64_t remaining, int64_t &evaluations) {
+	ResourceSample out;
+	if (remaining <= 0) return out;
+	evaluations += 1;
+	const int g = glow.body;
+	if (event.has_enabled) {
+		const int64_t mode = static_cast<int64_t>(state[g + 18].v);
+		out.enabled = event.surface == ResourceSurface::MainTankUnusable ? mode == 1 :
+			event.surface == ResourceSurface::FeedLineEmpty ? mode == 2 : true;
+	}
+	if (!out.enabled) {
+		out.ok = true;
+		out.value = 1.0;
+		return out;
+	}
+	switch (event.surface) {
+		case ResourceSurface::RotorStop: out.value = state[g]; break;
+		case ResourceSurface::MainTankUnusable: out.value = state[g + 1] - state[g + 17] - glow.unusable_fuel_kg; break;
+		case ResourceSurface::FeedLineEmpty: out.value = state[g + 17]; break;
+	}
+	if (!is_finite(out.value)) return out;
+	out.ok = true;
+	return out;
+}
+
+inline bool resource_crossed(R start_value, R end_value, ResourceSense sense) {
+	switch (sense) {
+		case ResourceSense::Falling: return start_value.v > 0.0 && end_value.v <= 0.0;
+		case ResourceSense::Rising: return start_value.v < 0.0 && end_value.v >= 0.0;
+		case ResourceSense::Either:
+			return (start_value.v > 0.0 && end_value.v <= 0.0) || (start_value.v < 0.0 && end_value.v >= 0.0);
+	}
+	return false;
+}
+
+inline bool resource_crossed_extrema(R start_value, R minimum, R maximum, ResourceSense sense) {
+	switch (sense) {
+		case ResourceSense::Falling: return start_value.v > 0.0 && minimum.v <= 0.0;
+		case ResourceSense::Rising: return start_value.v < 0.0 && maximum.v >= 0.0;
+		case ResourceSense::Either:
+			return (start_value.v > 0.0 && minimum.v <= 0.0) || (start_value.v < 0.0 && maximum.v >= 0.0);
+	}
+	return false;
+}
+
+// resource_event_step.gd `_event_before`: priority, then id (String <, code-point order for these ASCII ids).
+inline bool resource_event_before(const ResourceEvent &a, const ResourceEvent &b) {
+	if (a.priority != b.priority) return a.priority < b.priority;
+	return a.id < b.id;
+}
+
+struct ResourceTrial {
+	bool ok = false;
+	std::vector<R> state;
+	std::vector<R> minimum, maximum; // per event
+};
+
+// resource_event_step.gd `_trial`. `values` are the events' start values (by event position).
+template <class F>
+inline TickStatus resource_trial(const R *state, int size, R time_s, R dt, F &f, const R *first,
+		const std::vector<const ResourceEvent *> &events, const std::vector<R> &values, const ResourceGlowLayout &glow,
+		int64_t remaining, int64_t &evaluations, ResourceTrial &out, TickRk4Scratch &sc) {
+	out.ok = false;
+	if (remaining <= 0) return TickStatus::Ok;
+	const size_t count = events.size();
+	out.minimum = values;
+	out.maximum = values;
+	bool tracker_ok = true;
+	int64_t used = 0;
+	std::vector<R> initial_buffer;
+	const R *initial = first;
+	if (initial == nullptr) {
+		initial_buffer.resize(static_cast<size_t>(size));
+		if (!f(state, time_s, initial_buffer.data())) return TickStatus::Abort;
+		initial = initial_buffer.data();
+	}
+	if (!tick_finite(initial, size)) return TickStatus::Ok;
+	auto tracked = [&](const R *stage, R at, R *rate) -> bool {
+		if (!tick_finite(stage, size)) {
+			tracker_ok = false;
+			for (int i = 0; i < size; ++i) rate[i] = 0.0;
+			return true;
+		}
+		for (size_t e = 0; e < count; ++e) {
+			const ResourceSample sample = resource_surface_sample(*events[e], stage, glow, remaining - used, used);
+			if (!sample.ok) {
+				tracker_ok = false;
+				for (int i = 0; i < size; ++i) rate[i] = 0.0;
+				return true;
+			}
+			if (sample.enabled) {
+				out.minimum[e] = minf(out.minimum[e], sample.value);
+				out.maximum[e] = maxf(out.maximum[e], sample.value);
+			}
+		}
+		if (!f(stage, at, rate)) return false;
+		if (!tick_finite(rate, size)) {
+			tracker_ok = false;
+			for (int i = 0; i < size; ++i) rate[i] = 0.0;
+		}
+		return true;
+	};
+	out.state.resize(static_cast<size_t>(size));
+	const TickStatus status = tick_rk4_step_at(state, size, time_s, dt, tracked, initial, out.state.data(), sc);
+	if (status != TickStatus::Ok) return status;
+	if (!tracker_ok || !tick_finite(out.state.data(), size)) {
+		evaluations += used;
+		return TickStatus::Ok;
+	}
+	for (size_t e = 0; e < count; ++e) {
+		const ResourceSample sample = resource_surface_sample(*events[e], out.state.data(), glow, remaining - used, used);
+		if (!sample.ok) {
+			evaluations += used;
+			return TickStatus::Ok;
+		}
+		if (sample.enabled) {
+			out.minimum[e] = minf(out.minimum[e], sample.value);
+			out.maximum[e] = maxf(out.maximum[e], sample.value);
+		}
+	}
+	evaluations += used;
+	out.ok = true;
+	return TickStatus::Ok;
+}
+
+struct ResourceRoot {
+	bool ok = false;
+	std::vector<R> state;
+	R offset = 0.0, residual = 0.0, time_error = 0.0;
+};
+
+// resource_event_step.gd `_locate`.
+template <class F>
+inline TickStatus resource_locate(const R *start, int size, R time_s, R dt, F &f, const R *first, const ResourceEvent &event,
+		R start_value, R end_value, const ResourceGlowLayout &glow, int64_t remaining, int64_t &evaluations,
+		ResourceRoot &out, TickRk4Scratch &sc) {
+	out.ok = false;
+	const R sign = event.sense == ResourceSense::Rising || (event.sense == ResourceSense::Either && start_value.v < 0.0) ?
+		R(-1.0) : R(1.0);
+	R lo = 0.0;
+	R hi = dt;
+	R low_value = sign * start_value;
+	R high_value = sign * end_value;
+	bool bisect = false;
+	int64_t used = 0;
+	if (low_value.v <= 0.0 || high_value.v > 0.0) return TickStatus::Ok;
+	const std::vector<const ResourceEvent *> one = {&event};
+	const std::vector<R> one_value = {start_value};
+	ResourceTrial trial;
+	TickStatus status = resource_trial(start, size, time_s, dt, f, first, one, one_value, glow, remaining, used, trial, sc);
+	if (status != TickStatus::Ok) return status;
+	if (!trial.ok) {
+		evaluations += used;
+		return TickStatus::Ok;
+	}
+	std::vector<R> high_state = trial.state;
+	ResourceSample high_sample = resource_surface_sample(event, high_state.data(), glow, remaining - used, used);
+	if (!high_sample.ok) {
+		evaluations += used;
+		return TickStatus::Ok;
+	}
+	high_value = sign * high_sample.value;
+	if (high_value.v > 0.0) {
+		evaluations += used;
+		return TickStatus::Ok;
+	}
+	auto settled = [&]() {
+		return (hi - lo).v <= kResourceTimeTol && absf(high_value).v <= event.tolerance.v;
+	};
+	for (int iteration = 0; iteration < kResourceMaxRootTrials; ++iteration) {
+		if (settled()) {
+			evaluations += used;
+			out.ok = true;
+			out.state = high_state;
+			out.offset = hi;
+			out.residual = high_sample.value;
+			out.time_error = hi - lo;
+			return TickStatus::Ok;
+		}
+		const R old_width = hi - lo;
+		const R next = tick_bracket_propose(lo, hi, low_value, high_value, kResourceTimeTol, bisect);
+		if (!is_finite(next)) break;
+		status = resource_trial(start, size, time_s, next, f, first, one, one_value, glow, remaining - used, used, trial, sc);
+		if (status != TickStatus::Ok) return status;
+		if (!trial.ok) {
+			evaluations += used;
+			return TickStatus::Ok;
+		}
+		const ResourceSample sample = resource_surface_sample(event, trial.state.data(), glow, remaining - used, used);
+		if (!sample.ok) {
+			evaluations += used;
+			return TickStatus::Ok;
+		}
+		const R residual = sign * sample.value;
+		if (residual.v > 0.0) {
+			lo = next;
+			low_value = residual;
+		} else {
+			hi = next;
+			high_value = residual;
+			high_state = trial.state;
+			high_sample = sample;
+		}
+		bisect = (hi - lo).v > (R(0.5) * old_width).v;
+	}
+	evaluations += used;
+	if (settled()) {
+		out.ok = true;
+		out.state = high_state;
+		out.offset = hi;
+		out.residual = high_sample.value;
+		out.time_error = hi - lo;
+	}
+	return TickStatus::Ok;
+}
+
+// One applied event of the step: the report fields; the owner adds its transition details.
+struct ResourceReport {
+	const ResourceEvent *event = nullptr;
+	R time_s = 0.0, residual = 0.0, time_error = 0.0;
+	int details = -1; // index into the transition results kept by the caller
+};
+
+// resource_event_step.gd `advance`. `transition(event, in, at, out, details_index)` calls the owner's transition and
+// returns false unless it gave {ok: true, state: finite packed array of this size}.
+template <class F, class T>
+inline TickStatus resource_advance(const R *s, int size, R time_s, R dt, F &f, const R *first,
+		const std::vector<ResourceEvent> &event_list, const ResourceGlowLayout &glow, T &transition, bool &ok,
+		std::vector<R> &out, std::vector<ResourceReport> &reported, TickRk4Scratch &sc) {
+	ok = false;
+	reported.clear();
+	if (size < kTickBody || !tick_finite(s, size) || !is_finite(time_s) || !is_finite(dt) || dt.v <= 0.0 ||
+			dt.v > kResourceMaxDt || !is_finite(time_s + dt) || (time_s + dt).v <= time_s.v ||
+			(first != nullptr && !tick_finite(first, size)) || event_list.empty()) {
+		return TickStatus::Ok;
+	}
+	std::vector<const ResourceEvent *> events;
+	for (const ResourceEvent &event : event_list) events.push_back(&event);
+	const size_t count = events.size();
+	const int64_t budget = kResourceBudget;
+	std::vector<R> accepted(s, s + size);
+	R elapsed = 0.0;
+	R step = dt;
+	const R *initial = first;
+	int64_t evaluations = 0;
+	std::vector<R> start_values(count), end_values(count);
+	std::vector<char> start_enabled(count);
+	ResourceTrial trial;
+	for (int segment = 0; segment < kResourceMaxSegments; ++segment) {
+		// _surface_values
+		if (budget - evaluations <= 0) return TickStatus::Ok;
+		for (size_t e = 0; e < count; ++e) {
+			const ResourceSample sample = resource_surface_sample(*events[e], accepted.data(), glow, budget - evaluations,
+				evaluations);
+			if (!sample.ok) return TickStatus::Ok;
+			start_values[e] = sample.enabled ? sample.value : R(1.0);
+			start_enabled[e] = sample.enabled ? 1 : 0;
+		}
+		TickStatus status = resource_trial(accepted.data(), size, time_s + elapsed, step, f, initial, events, start_values,
+			glow, budget - evaluations, evaluations, trial, sc);
+		if (status != TickStatus::Ok) return status;
+		if (!trial.ok) return TickStatus::Ok;
+		const std::vector<R> endpoint = trial.state;
+		std::vector<size_t> crossings;
+		bool internal_crossing = false;
+		for (size_t e = 0; e < count; ++e) {
+			const ResourceSample end_sample = resource_surface_sample(*events[e], endpoint.data(), glow,
+				budget - evaluations, evaluations);
+			if (!end_sample.ok) return TickStatus::Ok;
+			if (!end_sample.enabled) continue;
+			end_values[e] = end_sample.value;
+			const bool crossed_end = resource_crossed(start_values[e], end_sample.value, events[e]->sense);
+			const bool crossed_inside = resource_crossed_extrema(start_values[e], trial.minimum[e], trial.maximum[e],
+				events[e]->sense);
+			if (crossed_end) crossings.push_back(e);
+			else if (crossed_inside) internal_crossing = true;
+		}
+		if (internal_crossing) {
+			step = step * R(0.5);
+			if (step.v < kResourceTimeTol) return TickStatus::Ok;
+			continue;
+		}
+		if (!crossings.empty()) {
+			struct Located { size_t event; ResourceRoot root; };
+			std::vector<Located> located;
+			for (const size_t e : crossings) {
+				Located entry{e, ResourceRoot()};
+				status = resource_locate(accepted.data(), size, time_s + elapsed, step, f, initial, *events[e], start_values[e],
+					end_values[e], glow, budget - evaluations, evaluations, entry.root, sc);
+				if (status != TickStatus::Ok) return status;
+				if (!entry.root.ok) return TickStatus::Ok;
+				located.push_back(entry);
+			}
+			std::sort(located.begin(), located.end(), [&](const Located &a, const Located &b) {
+				if (a.root.offset.v != b.root.offset.v) return a.root.offset.v < b.root.offset.v;
+				return resource_event_before(*events[a.event], *events[b.event]);
+			});
+			const R earliest = located[0].root.offset;
+			std::vector<Located> tied;
+			for (const Located &candidate : located) {
+				if ((candidate.root.offset - earliest).v <= kResourceTimeTol) tied.push_back(candidate);
+				else break;
+			}
+			std::sort(tied.begin(), tied.end(), [&](const Located &a, const Located &b) {
+				return resource_event_before(*events[a.event], *events[b.event]);
+			});
+			const R boundary = tied[0].root.offset;
+			// _crossed_before
+			bool missed = false;
+			for (size_t e = 0; e < count && !missed; ++e) {
+				if (!start_enabled[e]) continue;
+				const ResourceSample sample = resource_surface_sample(*events[e], tied[0].root.state.data(), glow,
+					budget - evaluations, evaluations);
+				if (!sample.ok) return TickStatus::Ok;
+				if (sample.enabled && absf(sample.value).v > events[e]->tolerance.v &&
+						resource_crossed(start_values[e], sample.value, events[e]->sense)) missed = true;
+			}
+			if (missed) {
+				if (earliest.v > 0.0 && earliest.v < step.v) {
+					step = earliest;
+				} else {
+					step = step * R(0.5);
+					if (step.v < kResourceTimeTol) return TickStatus::Ok;
+				}
+				continue;
+			}
+			std::vector<R> root_state = tied[0].root.state;
+			int applied = 0;
+			const R at = time_s + elapsed + boundary;
+			for (const Located &candidate : tied) {
+				const ResourceEvent &event = *events[candidate.event];
+				const ResourceSample at_root = resource_surface_sample(event, root_state.data(), glow, budget - evaluations,
+					evaluations);
+				if (!at_root.ok) return TickStatus::Ok;
+				if (!at_root.enabled || absf(at_root.value).v > event.tolerance.v) continue;
+				std::vector<R> next;
+				int details = -1;
+				if (!transition(event, root_state, at, next, details) || static_cast<int>(next.size()) != size ||
+						!tick_finite(next.data(), size)) {
+					return TickStatus::Ok;
+				}
+				root_state = next;
+				applied += 1;
+				ResourceReport report;
+				report.event = &event;
+				report.time_s = at;
+				report.residual = at_root.value;
+				report.time_error = candidate.root.time_error;
+				report.details = details;
+				reported.push_back(report);
+			}
+			if (applied == 0) return TickStatus::Ok;
+			if (!tick_finite(root_state.data(), size)) return TickStatus::Ok;
+			accepted = root_state;
+			elapsed = elapsed + boundary;
+			if (elapsed.v >= dt.v) {
+				out = accepted;
+				ok = true;
+				return TickStatus::Ok;
+			}
+			step = dt - elapsed;
+			initial = nullptr;
+			continue;
+		}
+		accepted = endpoint;
+		elapsed = elapsed + step;
+		if (elapsed.v >= dt.v) {
+			out = accepted;
+			ok = true;
+			return TickStatus::Ok;
+		}
+		step = dt - elapsed;
+		initial = nullptr;
+	}
 	return TickStatus::Ok;
 }
 

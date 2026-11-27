@@ -11,6 +11,8 @@ extends SceneTree
 ##   and a vanishing mass: each must end like the reference, with its refusal reason and restored state;
 ## - NK-6c: the finite-pack electrics (`id@pack`, the catalog's default battery mode) through their step policy
 ##   (_electric_step: battery step, contact pieces, pack supervision), with rotor-stop and battery-exhaustion events;
+## - NK-6d: the glow aircraft (engines started) through GlowFlight.step: the resource step over the stock surfaces,
+##   then GlowFlight.finish, with fuel exhaustion through the tank and line events;
 ## - refusals: the reference keeps ticks the kernel does not own (other step policies, a reference stage, the hook off).
 ## Skips (passes) without a verified native library.
 
@@ -108,7 +110,7 @@ func _run() -> void:
 		_pair(id, "calm", "fuel")
 		_pair(id, "calm", "stop")
 		_pair(id, "calm", "battery")
-	for id: String in ["f4u-corsair-250", "turbo-lumber-evolution", "jensen-das-ugly-stik-60"]:
+	for id: String in ["f4u-corsair-250", "turbo-lumber-evolution", "jensen-das-ugly-stik-60", "stik-glow-61fx-2t"]:
 		if id in _fleet and _start_for[id] == Flight.START_RUNWAY:
 			for weather: String in ["gusty", "turbulent", "spatial"]:
 				_pair(id, weather, "takeoff")
@@ -118,6 +120,7 @@ func _run() -> void:
 	_check("the fleet located a rotor-stop event", _events_seen.has("rotor_stop"), str(_events_seen))
 	_check("the fleet located a fuel-exhaustion event", _events_seen.has("fuel_exhausted"), str(_events_seen))
 	_check("the finite packs located a battery-exhaustion event", _events_seen.has("battery_exhausted"), str(_events_seen))
+	_check("the glow aircraft stopped through their resource events", _events_seen.has("glow_stopped"), str(_events_seen))
 	_check("some flight ticks were subdivided", _subdivided > 0, str(_subdivided))
 	for reason: String in FAULTS.values():
 		_check("the fleet met the refusal \"%s\"" % reason, _reasons_seen.has(reason), str(_reasons_seen.keys()))
@@ -157,6 +160,8 @@ func _session(id: String, start: String, weather: String) -> Node:
 	if not s.is_flyable():
 		s.free()
 		return null
+	if s.glow_is_active() and not bool(s.glow_state().get("running", false)):
+		s.glow_start() # the starter action the application offers; deterministic for both sides of a pair
 	return s
 
 
@@ -261,7 +266,13 @@ func _pair(id: String, weather: String, scenario: String) -> void:
 	if scenario == "gear_cycle" and not pair[0].gear_is_retractable():
 		_free(pair)
 		return
-	if scenario in ["fuel", "stop", "battery"]:
+	if scenario == "fuel" and pair[0].glow_is_active():
+		var install: Dictionary = pair[0].aircraft.model.propulsion.glow
+		for s: Node in pair:
+			var values: PackedFloat64Array = s.sim.continuous
+			values[1] = values[17] + float(install.unusable_fuel_kg) + 0.0002 # a few seconds above the reserve
+			s.sim.continuous = values
+	elif scenario in ["fuel", "stop", "battery"]:
 		var type := "fuel_exhausted" if scenario == "fuel" else "rotor_stop"
 		var index := _event_index(pair[0], type) if scenario != "battery" else -1
 		var rotor := _policy_rotor(pair[0])
@@ -279,7 +290,8 @@ func _pair(id: String, weather: String, scenario: String) -> void:
 		battery = 2400}.get(scenario, 960)
 	var stats := _fly(pair, ticks, scenario, label)
 	if scenario == "fuel":
-		_check(label + ": the fuel ran out through the located event", stats.events.has("fuel_exhausted"), str(stats))
+		_check(label + ": the fuel ran out through the located event", stats.events.has("fuel_exhausted") \
+			or stats.events.has("glow_stopped"), str(stats))
 	_free(pair)
 
 
@@ -340,6 +352,7 @@ func _fault_case(id: String, fault: String) -> void:
 	if fault in EVENT_FAULTS and _silent_events.has(id):
 		return
 	var results: Array = []
+	var policy_model := false
 	for driven in [true, false]:
 		var s := _session(id, _start_for[id], "calm")
 		if s == null:
@@ -383,6 +396,7 @@ func _fault_case(id: String, fault: String) -> void:
 		var stages := _stage_calls(s)
 		b.step()
 		var after: Dictionary = kernel.tick_stats()
+		policy_model = model.step_policy.is_valid()
 		results.append({snapshot = var_to_bytes([b.tick, b.state, b.previous, b.continuous, b.aux, b.modes,
 			b.last_loads, b.last_events, b.fault_reason, b.paused]), fault = b.fault_reason, events = b.last_events.duplicate(),
 			calls = int(after.calls) - int(before.calls), answers = int(after.answers) - int(before.answers),
@@ -391,7 +405,7 @@ func _fault_case(id: String, fault: String) -> void:
 		b.free()
 		s.free()
 	var expected: String = FAULTS[fault]
-	if fault == "substeps_four" and _policy_rotor_spec(id):
+	if fault == "substeps_four" and policy_model:
 		expected = "step rejected: the step policy owns the tick and cannot honour 4 contact substeps"
 	var native: Dictionary = results[0]
 	var reference: Dictionary = results[1]
@@ -428,10 +442,6 @@ func _fault_case(id: String, fault: String) -> void:
 		_check(label + ": the event was located", not native.events.is_empty(), detail)
 		for event: Dictionary in native.events:
 			_events_seen[str(event.type)] = true
-
-
-func _policy_rotor_spec(id: String) -> bool:
-	return id.ends_with("@pack")
 
 
 func _inject(b: Node, m: RefCounted, fault: String) -> void:
