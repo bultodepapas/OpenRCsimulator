@@ -3628,19 +3628,26 @@ var native_terminal_quiet_enabled := true
 var native_terminal_quiet_answers := 0
 
 
-## NK-6h: true when HullContact.terminal_at_properties(previous, s, _hull_contact, the liquid contact sample at fraction
-## 0) must answer {ok, no event}: the native stage computes that sample's properties as the stage's live mass and
+## NK-6h/6i: true when HullContact.terminal_at_properties(previous, s, _hull_contact, the liquid or glow contact sample at
+## fraction 0) must answer {ok, no event}: the native stage computes that sample's properties as the stage's live mass and
 ## checks them as validate_properties does, and no hull point newly penetrates, lies past the crash depth or meets the
 ## lake. On a rolling tick that skips the sample (about 36 µs) and the terminal (about 22 µs). Only inside the tick
 ## whose guarded pre-step installed the native context, for this class.
 func _native_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array) -> bool:
 	if not native_terminal_quiet_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
-			or get_script().resource_path != SELF_PATH or not liquid_fuel_is_active():
+			or get_script().resource_path != SELF_PATH:
 		return false
-	var index: int = _liquid_index()
-	if _terminal_before_values.size() != index + 2:
-		return false
-	if _native_stage.liquid_terminal_quiet(previous, s, _terminal_before_values[index]) != 1:
+	var answer := -1
+	if liquid_fuel_is_active():
+		var index: int = _liquid_index()
+		if _terminal_before_values.size() == index + 2:
+			answer = _native_stage.liquid_terminal_quiet(previous, s, _terminal_before_values[index])
+	elif glow_is_active():
+		# NK-6i: the glow sample at fraction 0 reads the start store's total and line fuel.
+		if _terminal_before_values.size() == GlowFlight.SIZE + wheel_count():
+			answer = _native_stage.glow_terminal_quiet(previous, s, _terminal_before_values[1],
+				_terminal_before_values[GlowFlight.LINE_FUEL_INDEX])
+	if answer != 1:
 		return false
 	native_terminal_quiet_answers += 1
 	return true

@@ -1058,6 +1058,9 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	int64_t glow_mass_calls_ = 0;
 	std::vector<nk::R> terminal_amounts_;
 	bool liquid_terminal_ready_ = false;
+	bool glow_terminal_ready_ = false;
+	double glow_terminal_crash_depth_ = 0.0;
+	std::vector<double> glow_terminal_stores_;
 	double liquid_terminal_crash_depth_ = 0.0;
 	int64_t terminal_calls_ = 0;
 	int64_t terminal_quiet_ = 0;
@@ -1264,6 +1267,10 @@ protected:
 			&OpenRCNativeKernel::prepare_liquid_terminal);
 		godot::ClassDB::bind_method(D_METHOD("stage_liquid_terminal_quiet", "previous", "s", "usable_before"),
 			&OpenRCNativeKernel::stage_liquid_terminal_quiet);
+		godot::ClassDB::bind_method(D_METHOD("prepare_glow_terminal", "crash_depth", "stores", "sample_static_ok"),
+			&OpenRCNativeKernel::prepare_glow_terminal);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_terminal_quiet", "previous", "s", "total", "line"),
+			&OpenRCNativeKernel::stage_glow_terminal_quiet);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -2030,6 +2037,7 @@ public:
 		}
 		heli_stage_ready_ = false;
 		liquid_terminal_ready_ = false; // NK-6h: each installation prepares its own terminal bounds
+		glow_terminal_ready_ = false;
 		pre_model_ = nk::PreStepModel(); // a new stage needs its own pre-step preparation
 		Decoder dec;
 		nk::StageModel candidate;
@@ -2908,6 +2916,47 @@ public:
 		return pack(loads.data(), 6);
 	}
 
+	// NK-6h/6i: the geometry half of a quiet HullContact.terminal_at_properties: both states pass its input and
+	// attitude checks, and every hull point is out of reach, above ground or already touching before the tick, with
+	// none lake-covered or past the crash depth. The caller has checked the properties.
+	int64_t terminal_geometry_quiet(const PackedFloat64Array &previous, const PackedFloat64Array &s, double crash_depth) {
+		// terminal_at_properties' input checks.
+		nk::R before[kStateSize];
+		nk::R now[kStateSize];
+		load(previous, before);
+		load(s, now);
+		for (int i = 0; i < kStateSize; ++i) if (!nk::is_finite(before[i]) || !nk::is_finite(now[i])) return 0;
+		const nk::R q_norm = before[6] * before[6] + before[7] * before[7] + before[8] * before[8] + before[9] * before[9];
+		if (!nk::is_finite(q_norm) || nk::absf(q_norm - 1.0).v > 1.0e-9) return 0;
+		const nk::HullPrepared &hull = stage_.hull;
+		if ((-now[2]).v > hull.reach.v) {
+			++terminal_quiet_;
+			return 1;
+		}
+		const nk::R dn[3] = {2.0 * (now[7] * now[9] - now[6] * now[8]), 2.0 * (now[8] * now[9] + now[6] * now[7]),
+			1.0 - 2.0 * (now[7] * now[7] + now[8] * now[8])};
+		const nk::R db[3] = {2.0 * (before[7] * before[9] - before[6] * before[8]), 2.0 * (before[8] * before[9] + before[6] * before[7]),
+			1.0 - 2.0 * (before[7] * before[7] + before[8] * before[8])};
+		const bool lake_sampled = hull.lake.present && !nk::hull_clear_of_lake(now, hull);
+		const int count = static_cast<int>(hull.points.size() / 3);
+		for (int i = 0; i < count; ++i) {
+			const nk::R *r = &hull.points[static_cast<size_t>(i) * 3];
+			if (lake_sampled) {
+				const std::array<nk::R, 3> rotated = nk::q_rotate3(now + 6, r);
+				const std::array<nk::R, 3> point = {now[0] + rotated[0], now[1] + rotated[1], now[2] + rotated[2]};
+				if (nk::hull_lake_sample(hull, point).covered) return 0; // the lake's own terminal candidate
+			}
+			const nk::R depth = now[2] + dn[0] * r[0] + dn[1] * r[1] + dn[2] * r[2];
+			if (depth.v <= 0.0) continue;
+			if (depth.v > crash_depth) return 0;
+			const nk::R depth_before = before[2] + db[0] * r[0] + db[1] * r[1] + db[2] * r[2];
+			if (depth_before.v > 0.0) continue;
+			return 0; // a new penetration: the reference grades its impact energy
+		}
+		++terminal_quiet_;
+		return 1;
+	}
+
 	// NK-6h: the session's hull crash depth (HullContact.crash_depth of its live geometry) and whether its fuel
 	// sample (FuelSample.build) accepts every in-range liquid amount, from the installation. The configuration guard
 	// refuses a tick after a later change.
@@ -2939,41 +2988,52 @@ public:
 		terminal_amounts_[static_cast<size_t>(liquid.bound_index)] = inventory_usable;
 		const nk::LiquidMassProperties p = nk::liquid_mass_evaluate(liquid.mass, terminal_amounts_.data(), static_cast<int>(resource_count));
 		if (!p.ok || nk::live_hull_properties_error(p)[0] != '\0') return 0;
-		// terminal_at_properties' input checks.
-		nk::R before[kStateSize];
-		nk::R now[kStateSize];
-		load(previous, before);
-		load(s, now);
-		for (int i = 0; i < kStateSize; ++i) if (!nk::is_finite(before[i]) || !nk::is_finite(now[i])) return 0;
-		const nk::R q_norm = before[6] * before[6] + before[7] * before[7] + before[8] * before[8] + before[9] * before[9];
-		if (!nk::is_finite(q_norm) || nk::absf(q_norm - 1.0).v > 1.0e-9) return 0;
-		const nk::HullPrepared &hull = stage_.hull;
-		if ((-now[2]).v > hull.reach.v) {
-			++terminal_quiet_;
-			return 1;
+		return terminal_geometry_quiet(previous, s, liquid_terminal_crash_depth_);
+	}
+
+	// NK-6i: the glow counterpart of prepare_liquid_terminal. stores: [capacity_kg, unusable_kg] of the contact sample's
+	// tanks in its order (the main tank, then the feed line when installed); sample_static_ok: FuelSample.build accepts
+	// those tanks at both ends of each store's range.
+	bool prepare_glow_terminal(double crash_depth, const PackedFloat64Array &stores, bool sample_static_ok) {
+		glow_terminal_ready_ = stage_ready_ && !heli_stage_ready_ && stage_.glow.ready && stage_.hull.present &&
+			stage_.hull.stiffness.empty() && std::isfinite(crash_depth) && sample_static_ok &&
+			(stores.size() == 2 || stores.size() == 4);
+		glow_terminal_crash_depth_ = crash_depth;
+		glow_terminal_stores_.clear();
+		for (int64_t i = 0; glow_terminal_ready_ && i < stores.size(); ++i) {
+			if (!std::isfinite(stores[i])) glow_terminal_ready_ = false;
+			glow_terminal_stores_.push_back(stores[i]);
 		}
-		const nk::R dn[3] = {2.0 * (now[7] * now[9] - now[6] * now[8]), 2.0 * (now[8] * now[9] + now[6] * now[7]),
-			1.0 - 2.0 * (now[7] * now[7] + now[8] * now[8])};
-		const nk::R db[3] = {2.0 * (before[7] * before[9] - before[6] * before[8]), 2.0 * (before[8] * before[9] + before[6] * before[7]),
-			1.0 - 2.0 * (before[7] * before[7] + before[8] * before[8])};
-		const bool lake_sampled = hull.lake.present && !nk::hull_clear_of_lake(now, hull);
-		const int count = static_cast<int>(hull.points.size() / 3);
-		for (int i = 0; i < count; ++i) {
-			const nk::R *r = &hull.points[static_cast<size_t>(i) * 3];
-			if (lake_sampled) {
-				const std::array<nk::R, 3> rotated = nk::q_rotate3(now + 6, r);
-				const std::array<nk::R, 3> point = {now[0] + rotated[0], now[1] + rotated[1], now[2] + rotated[2]};
-				if (nk::hull_lake_sample(hull, point).covered) return 0; // the lake's own terminal candidate
+		return glow_terminal_ready_;
+	}
+
+	// NK-6i: 1 when HullContact.terminal_at_properties for the glow contact sample at fraction 0 must answer
+	// {ok, no event}: GlowFlight.properties(total, line) from the prepared glow mass is valid, FuelSample.build accepts
+	// the main (total - line) and line amounts, and the geometry is quiet. 0 where the reference must evaluate.
+	int64_t stage_glow_terminal_quiet(const PackedFloat64Array &previous, const PackedFloat64Array &s, double total,
+			double line) {
+		++terminal_calls_;
+		if (!glow_terminal_ready_ || heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !stage_.hull.present ||
+				!stage_.hull.stiffness.empty() || !read_state(previous) || !read_state(s)) return 0;
+		const nk::R total_r = total;
+		const nk::R line_r = line;
+		if (!nk::is_finite(total_r) || !nk::is_finite(line_r)) return 0;
+		// FuelSample.build's amount checks for {main: total - line, line: line}.
+		const nk::R amounts[2] = {total_r - line_r, line_r};
+		const int stores = static_cast<int>(glow_terminal_stores_.size() / 2);
+		if (stores == 1 && line_r.v != 0.0) return 0; // no feed line store: the sample records the main tank only
+		for (int k = 0; k < stores; ++k) {
+			const double capacity = glow_terminal_stores_[static_cast<size_t>(2 * k)];
+			const double unusable = glow_terminal_stores_[static_cast<size_t>(2 * k + 1)];
+			const double amount = amounts[k].v;
+			const double tolerance = capacity * 1.0e-9;
+			if (!std::isfinite(amount) || amount < 0.0 || capacity - amount < -tolerance || amount - unusable < -tolerance) {
+				return 0;
 			}
-			const nk::R depth = now[2] + dn[0] * r[0] + dn[1] * r[1] + dn[2] * r[2];
-			if (depth.v <= 0.0) continue;
-			if (depth.v > liquid_terminal_crash_depth_) return 0;
-			const nk::R depth_before = before[2] + db[0] * r[0] + db[1] * r[1] + db[2] * r[2];
-			if (depth_before.v > 0.0) continue;
-			return 0; // a new penetration: the reference grades its impact energy
 		}
-		++terminal_quiet_;
-		return 1;
+		const nk::LiquidMassProperties p = nk::glow_raw_mass(stage_.glow, total_r, line_r);
+		if (!p.ok || nk::live_hull_properties_error(p)[0] != '\0') return 0;
+		return terminal_geometry_quiet(previous, s, glow_terminal_crash_depth_);
 	}
 
 	// NK-6f: the GP-19 endpoint diagnostics of HullContact.loads (properties empty: the prepared hull) or

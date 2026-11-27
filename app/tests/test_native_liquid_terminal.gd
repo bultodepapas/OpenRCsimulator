@@ -1,6 +1,6 @@
 extends SceneTree
-## NK-6h: the native stage may answer HullContact.terminal_at_properties for a liquid aircraft's contact sample at
-## fraction 0 only where the reference returns {ok, no event} (FlightSession._native_terminal_quiet).
+## NK-6h/6i: the native stage may answer HullContact.terminal_at_properties for a liquid or glow aircraft's contact
+## sample at fraction 0 only where the reference returns {ok, no event} (FlightSession._native_terminal_quiet).
 ## - Random tick pairs touching the field and the lake, with random start stores: every quiet answer matches the
 ##   reference's {ok, no event}; new penetrations, deep points and lake-covered points are left to the reference.
 ## - Takeoff rolls, a hard landing and a nose-over fly byte-identical with the answer on and off.
@@ -41,10 +41,10 @@ func _run() -> void:
 	_field = FieldLoader.load_from().field
 	_lake = LakeLoader.load_from(LakeLoader.DEFAULT_PATH).lake
 	var tested := 0
-	for id: String in ["f4u-corsair-250", "p51d-mustang-120"]:
+	for id: String in ["f4u-corsair-250", "p51d-mustang-120", "stik-glow-61fx-2t", "stik-glow-fs64v-4t"]:
 		var probe := _session(id, true)
 		if probe == null or probe.stage_backend_identity().backend != NativeStage.BACKEND_NATIVE \
-				or not probe._native_stage._liquid_terminal_bound:
+				or not (probe._native_stage._liquid_terminal_bound or probe._native_stage._glow_terminal_bound):
 			print("NK6H_SKIP %s" % id)
 			if probe != null:
 				probe.free()
@@ -77,13 +77,25 @@ func _session(id: String, enabled: bool) -> Node:
 	s.set_field(_field)
 	s.set_lake_context(_lake)
 	s.reset()
+	if s.glow_is_active() and not bool(s.glow_state().get("running", false)):
+		s.glow_start()
 	return s
 
 
 func _soundness(s: Node, id: String) -> void:
-	var config: Dictionary = s.aircraft.model.propulsion.liquid_fuel
-	var limit: float = float(config.capacity_kg) - float(config.unusable_kg)
-	var index: int = s._liquid_index()
+	var glow: bool = s.glow_is_active()
+	var limit: float
+	var line_limit := 0.0
+	var index: int
+	if glow:
+		var install: Dictionary = s.aircraft.model.propulsion.glow
+		limit = float(install.total_capacity_kg)
+		line_limit = float(install.get("feed_line", {}).get("capacity_kg", 0.0))
+		index = 1
+	else:
+		var config: Dictionary = s.aircraft.model.propulsion.liquid_fuel
+		limit = float(config.capacity_kg) - float(config.unusable_kg)
+		index = s._liquid_index()
 	var base_values: PackedFloat64Array = s.sim.continuous.duplicate()
 	var bank := LakeCollision._polygon_bounds(_lake.bank_ne_m)
 	var origin: PackedFloat64Array = s.sim.state.duplicate()
@@ -115,15 +127,18 @@ func _soundness(s: Node, id: String) -> void:
 			state[RB.POS + axis] += _rng.randf_range(-0.05, 0.05) if rough else _rng.randf_range(-0.003, 0.003)
 		var before := base_values.duplicate()
 		before[index] = _rng.randf_range(-0.05 * limit, 1.05 * limit) if i % 9 else NAN
+		if glow and line_limit > 0.0:
+			before[17] = _rng.randf_range(-0.05 * line_limit, 1.05 * line_limit)
 		var after := before.duplicate()
-		var sampler: Callable = LiquidFlight.contact_sampler(s, before, after)
+		var sampler: Callable = s._contact_mass_sampler(before, after) if glow else LiquidFlight.contact_sampler(s, before, after)
 		if not sampler.is_valid():
 			continue # the reference never asks the terminal without a sampler
 		var reference: Dictionary = HullContact.terminal_at_properties(previous, state, s._hull_contact, sampler.call(0.0))
 		var none: bool = reference.get("ok", false) and int(reference.event.index) < 0
 		if none:
 			stats.reference_none += 1
-		var quiet: int = s._native_stage.liquid_terminal_quiet(previous, state, before[index])
+		var quiet: int = s._native_stage.glow_terminal_quiet(previous, state, before[1], before[17]) if glow \
+			else s._native_stage.liquid_terminal_quiet(previous, state, before[index])
 		if quiet == 1:
 			stats.quiet += 1
 			if not none:

@@ -597,7 +597,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `prepare_liquid_terminal` and `stage_liquid_terminal_quiet(previous, s, usable_before)` (NK-6h) answer
   `HullContact.terminal_at_properties` for a liquid aircraft's contact sample at fraction 0 only where it must return
   `{ok, no event}`, with the sample's properties from the stage's live mass; 0 evaluates the reference
-  ([evidence](../../docs/research/native-kernel/NK-6h/README.md)).
+  ([evidence](../../docs/research/native-kernel/NK-6h/README.md)). `prepare_glow_terminal` and
+  `stage_glow_terminal_quiet(previous, s, total, line)` (NK-6i) do the same for a glow aircraft's sample
+  ([evidence](../../docs/research/native-kernel/NK-6i/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

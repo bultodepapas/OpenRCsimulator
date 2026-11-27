@@ -12,6 +12,7 @@ const LakeSurface := preload("res://physics/lake_surface.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const FuelSample := preload("res://sim/fuel_sample.gd")
+const GlowFlight := preload("res://physics/glow/flight.gd")
 const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 const ElectricAdapter := preload("res://sim/native/electric_stage_adapter.gd")
@@ -143,6 +144,8 @@ var _glow_mass_bound := false
 var _hull_rows_bound := false
 ## NK-6h: the liquid installation prepared its quiet hull terminal (prepare_liquid_terminal).
 var _liquid_terminal_bound := false
+## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
+var _glow_terminal_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
 var _pre_step_bound := false
 var _pre_step_turbulent := false
@@ -436,6 +439,7 @@ func install(session: Node) -> Callable:
 	_hull_rows_bound = _family != "helicopter" and _native.has_method("stage_hull_scrape_rows")
 	_liquid_terminal_bound = _family == "liquid" and _native.has_method("prepare_liquid_terminal") \
 		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
+	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
@@ -469,6 +473,7 @@ func uninstall(session: Node) -> Callable:
 	_glow_mass_bound = false
 	_hull_rows_bound = false
 	_liquid_terminal_bound = false
+	_glow_terminal_bound = false
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	_reach_world = {}
@@ -575,6 +580,41 @@ static func _glow_validity_bounds(session: Node) -> Dictionary:
 func liquid_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array, usable_before: float) -> int:
 	if not _installed or not _liquid_terminal_bound or _native == null: return -1
 	return int(_native.stage_liquid_terminal_quiet(previous, s, usable_before))
+
+
+## NK-6i: 1 when HullContact.terminal_at_properties for the glow contact sample at fraction 0 must answer no event;
+## 0 or -1 to evaluate the reference. total and line are the start store's fuel coordinates. The session owns the
+## tick checks and calls only with a valid sampler, whose start store passed GlowFlight.mass_context.
+func glow_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array, total: float, line: float) -> int:
+	if not _installed or not _glow_terminal_bound or _native == null: return -1
+	return int(_native.stage_glow_terminal_quiet(previous, s, total, line))
+
+
+## NK-6i: the glow contact sample's tanks (GlowFlight.mass_context of the installed store) as [capacity, unusable]
+## pairs, and whether FuelSample.build accepts them at both ends of each store's range.
+func _prepare_glow_terminal(session: Node) -> bool:
+	var context: Dictionary = GlowFlight.mass_context(session, session.sim.continuous)
+	if not context.get("ok", false) or not context.get("tanks") is Array:
+		return false
+	var tanks: Array = context.tanks
+	if tanks.is_empty() or tanks.size() > 2:
+		return false
+	var stores := PackedFloat64Array()
+	for tank: Variant in tanks:
+		if not tank is Dictionary or typeof(tank.get("capacity_kg")) not in [TYPE_FLOAT, TYPE_INT] \
+				or typeof(tank.get("unusable_kg")) not in [TYPE_FLOAT, TYPE_INT]:
+			return false
+		stores.append(float(tank.capacity_kg))
+		stores.append(float(tank.unusable_kg))
+	var unit := {ok = true, mass_kg = 1.0, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]), inverse = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])}
+	var static_ok := true
+	for end in 2:
+		var remaining := {}
+		for k in tanks.size():
+			remaining[str(tanks[k].id)] = stores[2 * k + 1] if end == 0 else stores[2 * k]
+		static_ok = static_ok and FuelSample.build(unit, tanks, remaining, 1, 0.0, true).get("ok", false)
+	return bool(_native.prepare_glow_terminal(HullContact.crash_depth(session._hull_contact), stores, static_ok))
 
 
 ## NK-6h: FuelSample.build of the liquid contact sample accepts every in-range amount: its tanks pass at the bounds of
