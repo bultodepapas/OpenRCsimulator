@@ -135,7 +135,6 @@ func _run() -> void:
 	_check("quiet Pause rows are left-aligned while Continue stays centered",
 		app.pause_menu.restart_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
 		and app.pause_menu.settings_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
-		and app.pause_menu.session_options_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
 		and app.pause_menu.help_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
 		and app.pause_menu.continue_button.alignment == HORIZONTAL_ALIGNMENT_CENTER)
 	_check("the session is held and paused", session.holds.has("menu") and session.sim.paused)
@@ -155,23 +154,31 @@ func _run() -> void:
 	_check("Down navigates the menu -> Restart", ui.focus_name() == "Restart", ui.focus_name())
 	await ui.tap(KEY_UP)
 	_check("navigation keys never reach the flight commands", session.commands == commands)
-	await ui.tap(KEY_R)
 	await ui.tap(KEY_T)
 	await ui.tap(KEY_P)
-	_check("R, T and P do nothing behind the menu", session.sim.tick == tick and session.sim.paused and not main.recorder.recording)
+	_check("T and P do nothing behind the menu", session.sim.tick == tick and session.sim.paused and not main.recorder.recording)
+	_check("Pause shows Resume with Esc and Restart with R", app.pause_menu.continue_button.find_child("KeyHint", false, false) != null
+		and app.pause_menu.restart_button.find_child("KeyHint", false, false) != null)
 
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_DOWN)
-	_check("Session options follows the primary recovery actions", ui.focus_name() == "SessionOptions", ui.focus_name())
-	await ui.tap(KEY_ENTER)
-	_check("Session options expands its secondary actions", app.pause_menu.session_options_container.visible
-		and app.pause_menu.workshop_button.is_visible_in_tree())
-	_check("Settings stays on the primary pause list", app.pause_menu.settings_button.is_visible_in_tree())
+	# UI-40a: every action is visible in sections; a short window folds the less frequent rows under More options.
+	_check("a short window offers More options and keeps the essentials and exits visible",
+		app.pause_menu.is_short_layout() == (root.get_visible_rect().size.y < 1000.0)
+		and app.pause_menu.more_button.visible == app.pause_menu.is_short_layout()
+		and app.pause_menu.controls_button.is_visible_in_tree() and app.pause_menu.end_button.is_visible_in_tree())
+	app.pause_menu.set_more_options_open(true)
+	await ui.settle()
+	_check("This flight, the application row and the exits are all visible",
+		app.pause_menu.session_options_container.is_visible_in_tree() and app.pause_menu.workshop_button.is_visible_in_tree()
+		and app.pause_menu.settings_button.is_visible_in_tree() and app.pause_menu.end_button.is_visible_in_tree()
+		and app.pause_menu.quit_button.is_visible_in_tree())
+	_check("the exits come last, after the application row", app.pause_menu.exit_options_container.get_index()
+		> app.pause_menu.tools_row.get_index())
+	if app.pause_menu.is_short_layout():
+		await ui.tap(KEY_ESCAPE)
+		_check("Back first folds More options on a short window", app.pause_menu != null
+			and not app.pause_menu.session_options_container.visible and session.sim.paused)
 	await ui.tap(KEY_ESCAPE)
-	_check("Back first closes Session options", app.pause_menu != null and not app.pause_menu.session_options_container.visible
-		and session.holds.has("menu") and session.sim.paused)
-	await ui.tap(KEY_ESCAPE)
-	_check("Esc again: back to the flight", app.pause_menu == null and session.holds.is_empty() and not session.sim.paused)
+	_check("Esc: back to the flight", app.pause_menu == null and session.holds.is_empty() and not session.sim.paused)
 	await _wait(0.4)
 	_check("flying again: ticks, sound", session.sim.tick > tick and soundscape.gain > 0.0
 		and (glow_player == null or not glow_player.stream_paused) and _peak_db() > -100.0,
@@ -295,29 +302,23 @@ func _run() -> void:
 	await _wait(0.3)
 	app.open_pause()
 	await ui.settle()
-	await ui.tap(KEY_DOWN) # Restart
-	await ui.tap(KEY_DOWN) # Session options
-	await ui.tap(KEY_ENTER)
+	app.pause_menu.set_more_options_open(true)
+	await ui.settle()
 	var traversed_session_options: Array[String] = []
-	for i in 8:
+	for i in 12:
 		if ui.focus_name() == app.pause_menu.failure_settings_button.name:
 			break
 		await ui.tap(KEY_DOWN)
 		traversed_session_options.append(ui.focus_name())
 	_check("failure settings are reachable by keyboard",
 		ui.focus_name() == app.pause_menu.failure_settings_button.name, str(traversed_session_options))
-	await ui.tap(KEY_ESCAPE) # Session options collapses before the pause screen closes
 	var traversed_pause_controls: Array[String] = []
-	for i in 8:
-		if ui.focus_name() == app.pause_menu.exit_options_button.name:
+	for i in 12:
+		if ui.focus_name() == "End":
 			break
 		await ui.tap(KEY_DOWN)
 		traversed_pause_controls.append(ui.focus_name())
-	_check("Exit options are reachable on the primary pause list",
-		ui.focus_name() == app.pause_menu.exit_options_button.name, str(traversed_pause_controls))
-	await ui.tap(KEY_ENTER)
-	await ui.tap(KEY_DOWN)
-	_check("End flight reachable by keyboard", ui.focus_name() == "End", ui.focus_name())
+	_check("End flight reachable by keyboard on the primary pause list", ui.focus_name() == "End", str(traversed_pause_controls))
 	await ui.tap(KEY_ENTER)
 	var note: String = recorder.note
 	var path := note.get_slice("trace saved: ", 1).get_slice(" (", 0)
@@ -437,8 +438,8 @@ func _run_pause_layout_checks() -> void:
 			not scroll.get_v_scroll_bar().visible,
 			"screen=%s panel=%s scroll=%s" % [str(layout_viewport.size),
 			str(panel_rect), str(scroll.get_global_rect())])
-		_check("100% Pause rail stays at its original 384px width",
-			is_equal_approx(panel_rect.size.x, 384.0), str(panel_rect))
+		_check("100% Pause rail stays at its base width",
+			is_equal_approx(panel_rect.size.x, float(pause.WIDTH)), str(panel_rect))
 		_check("default Resume stays inside the pause panel",
 			scroll.get_global_rect().encloses(pause.continue_button.get_global_rect()))
 		pause.queue_free()
@@ -476,19 +477,19 @@ func _run_pause_layout_checks() -> void:
 	await process_frame
 	var scale_panel: PanelContainer = scale_pause.find_children("*", "PanelContainer", true, false)[0] as PanelContainer
 	var scale_screen := scale_pause.get_node("Screen") as Control
-	_check("live Pause starts with a 384px rail at 100%",
-		is_equal_approx(scale_panel.custom_minimum_size.x, 384.0), str(scale_panel.custom_minimum_size))
+	_check("live Pause starts with its base rail width at 100%",
+		is_equal_approx(scale_panel.custom_minimum_size.x, 432.0), str(scale_panel.custom_minimum_size))
 	ScreenTheme.text_scale = 2.0
 	scale_screen.theme = ScreenTheme.build()
 	await process_frame
 	_check("live theme change expands the Pause rail at 200%",
-		scale_panel.custom_minimum_size.x > 384.0 and scale_panel.custom_minimum_size.x <= 768.0,
+		scale_panel.custom_minimum_size.x > 432.0 and scale_panel.custom_minimum_size.x <= 864.0,
 		str(scale_panel.custom_minimum_size))
 	ScreenTheme.text_scale = 1.0
 	scale_screen.theme = ScreenTheme.build()
 	await process_frame
-	_check("live theme revert restores the 384px Pause rail at 100%",
-		is_equal_approx(scale_panel.custom_minimum_size.x, 384.0), str(scale_panel.custom_minimum_size))
+	_check("live theme revert restores the base Pause rail at 100%",
+		is_equal_approx(scale_panel.custom_minimum_size.x, 432.0), str(scale_panel.custom_minimum_size))
 	scale_pause.queue_free()
 	scale_session.queue_free()
 	scale_parent.queue_free()
@@ -548,8 +549,7 @@ func _run_pause_layout_checks() -> void:
 		str(continue_rect), enlarged_scroll.scroll_vertical, enlarged_scroll.get_v_scroll_bar().max_value])
 	_check("200% Continue remains enabled and keyboard-focusable",
 		not continue_button.disabled and continue_button.focus_mode != Control.FOCUS_NONE)
-	enlarged_pause._toggle_group("exit")
-	_check("200% exit options open and Quit remains operable",
+	_check("200% exits are visible and Quit remains operable",
 		enlarged_pause.exit_options_container.visible and enlarged_pause.quit_button.visible
 		and not enlarged_pause.quit_button.disabled
 		and enlarged_pause.quit_button.focus_mode != Control.FOCUS_NONE)

@@ -143,11 +143,15 @@ func _home_and_flight() -> void:
 	app.open_pause()
 	await ui.settle()
 	_check("field-world flights expose a Sky and lighting action", app.pause_menu.time_of_day_button.text == "Sky and lighting")
-	await ui.tap(KEY_DOWN) # Restart
-	await ui.tap(KEY_DOWN) # Session options
-	await ui.tap(KEY_ENTER)
-	await ui.tap(KEY_DOWN) # Sky and lighting (UI-33: this flight's tools come first in Session options)
-	_check("Sky and lighting is reachable inside Session options", ui.focus_name() == "TimeOfDay", ui.focus_name())
+	# UI-40a: Sky and lighting leads this flight's session tools, folded under More options below 1000 px.
+	for step in 12:
+		if ui.focus_name() in ["TimeOfDay", "MoreOptions"]:
+			break
+		await ui.tap(KEY_DOWN)
+	if ui.focus_name() == "MoreOptions":
+		await ui.tap(KEY_ENTER)
+		await ui.tap(KEY_DOWN)
+	_check("Sky and lighting is reachable from the pause menu", ui.focus_name() == "TimeOfDay", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var field_dialog: CanvasLayer = app.time_of_day_dialog

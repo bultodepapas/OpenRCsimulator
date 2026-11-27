@@ -324,6 +324,9 @@ var _update_later_tag := ""
 var _update_save_error: int = OK
 ## The editor and previous flight stay detached while a trial runs; return restores their exact state.
 var _workshop_screens: Array[Dictionary] = []
+## UI-40j: the Workshop reopens on the page last used in this app run.
+var _last_workshop_page := "setup"
+var _first_flight_hint_save_pending := false
 var _workshop_previous_flight: Node
 var _workshop_previous_keyboard: Callable
 var _workshop_previous_sky_transport: Dictionary = {}
@@ -1380,12 +1383,15 @@ func open_livery_picker(from: Control = null) -> void:
 	dialog.create_skin_requested.connect(open_skin_tools)
 	dialog.load_skin_requested.connect(open_skin_tools.bind(true))
 	dialog.selected.connect(func(id: String) -> void:
-		close_livery_picker()
+		# UI-40c: try-on — the paint applies at once and the panel stays open beside the model.
 		if home == null or home.selected_id() != vehicle_id:
+			close_livery_picker()
 			return
 		var resolved: String = id if not home.activity_id.is_empty() else AirplaneBuilder.resolve_livery_choice(choices, id)
 		if resolved != home.livery_id:
 			set_livery(id)
+		if is_instance_valid(dialog):
+			dialog.mark_selected(id)
 	)
 	if not screens.push("liveries", dialog, from): dialog.free()
 
@@ -3222,6 +3228,14 @@ func _on_overlay_settings_changed(settings: Dictionary) -> void:
 
 func _on_first_flight_hint_done() -> void:
 	preferences.first_flight_hint_seen = true
+	# The file write (~15 ms) waits for the next Pause, the end of the flight or exit, never a flying frame.
+	_first_flight_hint_save_pending = true
+
+
+func _flush_first_flight_hint() -> void:
+	if not _first_flight_hint_save_pending:
+		return
+	_first_flight_hint_save_pending = false
 	Preferences.save_to(preferences_path, preferences) # a failed save only means the hint shows again next time
 
 
@@ -3689,6 +3703,7 @@ func open_pause() -> void:
 		return
 	if flight == null or pause_menu != null or _quit_audio_pending:
 		return
+	_flush_first_flight_hint()
 	_release_controller_holds()
 	var session: Node = flight.session
 	session.cancel_calibration()
@@ -3718,6 +3733,7 @@ func open_pause() -> void:
 	pause_menu.statistics_button.visible = statistics_service != null and not trial_pause \
 		and session.has_signal("statistics_lifecycle")
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
+	pause_menu.set_flight_overlays(flight.get("_overlays")) # UI-40a: time, height and airspeed at the top
 	pause_menu.active_alerts_button.visible = flight.get("_overlays") != null \
 		and flight.get("_overlays").has_method("warning_snapshot")
 	pause_menu.end_requested.connect(end_flight)
@@ -3789,6 +3805,8 @@ func open_workshop(from: Control = null) -> void:
 	editor.set("trial_conditions", tr("Trial field: %s") % field_name + "\n" + tr("Wind: %s") % WeatherSettings.summary(weather)
 		+ "\n" + tr("Light: %s") % TimeOfDay.format_time(int(lighting.get("local_seconds", 43200)))
 		+ "\n" + tr("Full fuel · normal control rates · current controller"))
+	editor.set("initial_page", _last_workshop_page)
+	editor.tree_exiting.connect(func() -> void: _last_workshop_page = str(editor.call("current_page")))
 	editor.closed.connect(close_workshop)
 	editor.trial_requested.connect(_start_workshop_trial)
 	screens.push("workshop", editor, from)
@@ -4210,6 +4228,7 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	_flush_first_flight_hint()
 	if _flight_dynamic_resolution != null:
 		_flight_dynamic_resolution.stop(get_viewport())
 	if is_instance_valid(statistics_service):
@@ -5073,6 +5092,7 @@ func _flight_identity(trial: bool) -> String:
 
 ## End a flight or return from a trial only after a trace is saved or explicitly resolved.
 func end_flight() -> void:
+	_flush_first_flight_hint()
 	if _loading_active:
 		cancel_flight_loading()
 		return

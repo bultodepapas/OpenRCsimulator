@@ -44,9 +44,11 @@ func run() -> void:
 					if route == "settings": pages = [0,1,2,3,4] # Display, Interface, Sound, Graphics, Camera (CAM-17)
 					if route == "failures": pages = ["settings","availability"]
 					if route == "random": pages = ["default", "error"]
+					if route == "help": pages = ["flight", "aircraft", "radio", "about"] # UI-40h
 					for page in pages:
 						if route == "settings": screen._show_category(page)
 						if route == "failures": screen.call("_show_" + str(page))
+						if route == "help": screen.show_page(page)
 						if route == "random":
 							if page == "error": screen.show_error("Could not prepare random flight: candidate rejected")
 							else: screen.set_scenario({})

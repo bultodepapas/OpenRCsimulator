@@ -7,6 +7,7 @@ const Home := preload("res://ui/home.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const PlayerNotes := preload("res://ui/player_notes.gd") # UI-40d
 const Roster := preload("res://app_state/vehicle_roster.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
@@ -101,8 +102,11 @@ func _run() -> void:
 		home.get_node_or_null("Sidebar") == null and home.get_node_or_null("HomeFooter") == null
 		and left_rail.size.x <= home.get_viewport_rect().size.x * 0.25)
 	# UI-39: the RC garage page is gone; its vehicles are Vehicles catalog entries.
-	_check("navigation keeps four destinations, with Workshop routed as an action",
-		nav.get_child_count() == 4 and home.workshop_button.get_parent() == nav
+	_check("navigation keeps three pages plus the Workshop and Radio & controls destinations",
+		# UI-40p: Radio & controls joins the rail on the desktop layout; compact windows keep it in the utility row.
+		nav.get_child_count() == (5 if home.controls_button.get_parent() == nav else 4)
+		and home.workshop_button.get_parent() == nav and home.input_chip.get_parent() == header_actions
+		and home.input_chip.visible == (home.controls_button.get_parent() == nav) and home.input_chip.text.contains("Keyboard")
 		and home._pages.size() == 3 and home.get_node_or_null("HomeRail/HomeNavigation/NavGarage") == null)
 	_check("Fly is full width in the pinned primary action strip", fly.get_parent() == primary_actions
 		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
@@ -126,7 +130,8 @@ func _run() -> void:
 		and selected_catalog_button.text.contains(home.tr(selected_catalog_entry.name))
 		and selected_catalog_button.text.contains(home.tr("Flyable"))
 		and selected_catalog_button.tooltip_text.contains(home.tr(selected_catalog_entry.summary))
-		and selected_catalog_button.tooltip_text.contains(home.tr(selected_catalog_entry.status_note)))
+		and selected_catalog_button.tooltip_text.contains(home.tr(PlayerNotes.player_note(selected_catalog_entry)))
+		and not selected_catalog_button.tooltip_text.contains(home.tr(selected_catalog_entry.status_note)))
 	_check("selected catalog row has a persistent accent and pressed state",
 		selected_catalog_button.button_pressed and selected_catalog_style.border_width_left >= 3
 		and selected_catalog_style.border_color == UiTheme.FOCUS)
@@ -322,6 +327,11 @@ func _run() -> void:
 			home.get_viewport_rect().encloses(home.language_button.get_global_rect())
 			and home.get_viewport_rect().encloses(home.settings_button.get_global_rect())
 			and home.language_button.get_global_rect().end.x <= home.settings_button.global_position.x)
+	home._select_page(1)
+	for frame in 4: await process_frame
+	_check("enlarged text keeps the vehicle list in the rail", not home.is_hangar_shown()
+		and home._pages[1].is_ancestor_of(home._catalog_list) and home._catalog_list.columns == 1)
+	home._select_page(0)
 	UiTheme.text_scale = 1.0
 	home.theme = normal_theme
 	TranslationServer.set_locale("en")
@@ -331,12 +341,65 @@ func _run() -> void:
 	home._select_page(1) # Repeated activation in the same frame must not connect a second reveal callback.
 	for frame in 6: await process_frame
 	var selected_catalog: Control = home._catalog_buttons[home._catalog_ids.find(home.aircraft_id)]
-	_check("opening the catalog reveals the current aircraft", scroll.get_global_rect().encloses(selected_catalog.get_global_rect()))
+	# UI-40o: at normal text the list lives in the Hangar beside the rail, in its own scroll.
+	var list_scroll: ScrollContainer = home._hangar_scroll if home.is_hangar_shown() else scroll
+	_check("normal text shows the vehicle list in the Hangar", home.is_hangar_shown()
+		and home._hangar_scroll.is_ancestor_of(selected_catalog))
+	_check("opening the catalog reveals the current aircraft", list_scroll.get_global_rect().encloses(selected_catalog.get_global_rect()))
+	var vehicle_count: int = home._catalog_ids.size()
+	home.set_hangar_filter("ground")
+	var ground_rows: Array = home._catalog_buttons.filter(func(button: Button) -> bool: return button.visible)
+	_check("the Cars & trucks filter shows only ground vehicles", not ground_rows.is_empty()
+		and ground_rows.all(func(button: Button) -> bool:
+			return Home.hangar_family(home._catalog_ids[home._catalog_buttons.find(button)]) == "ground")
+		and home._hangar_count_label.text == "%d of %d" % [ground_rows.size(), vehicle_count], home._hangar_count_label.text)
+	home.set_hangar_filter("all")
+	home.hangar_search.text = "corsair"
+	home.hangar_search.text_changed.emit(home.hangar_search.text)
+	var found: Array = home._catalog_buttons.filter(func(button: Button) -> bool: return button.visible)
+	_check("search by name narrows the Hangar", found.size() >= 1 and found.all(func(button: Button) -> bool:
+		return button.text.to_lower().contains("corsair") or button.tooltip_text.to_lower().contains("corsair")), str(found.size()))
+	home.hangar_search.text = "no such vehicle"
+	home.hangar_search.text_changed.emit(home.hangar_search.text)
+	_check("a search without results says so", home._hangar_empty_label.visible
+		and home._catalog_buttons.all(func(button: Button) -> bool: return not button.visible))
+	home.hangar_search.text = ""
+	home.hangar_search.text_changed.emit("")
+	_check("clearing the search lists every vehicle again", home._catalog_buttons.all(func(button: Button) -> bool: return button.visible)
+		and not home._hangar_empty_label.visible and home._hangar_count_label.text == "%d vehicles" % vehicle_count)
+	# Review findings: a filter left from an earlier visit, a filtered-away focused row, the corner paint row.
+	home.set_hangar_filter("drone")
+	home.open_aircraft_catalog()
+	for frame in 2: await process_frame
+	_check("Change aircraft resets the Hangar filter and focuses the selected aircraft", home._hangar_filter == "all"
+		and home._catalog_buttons.all(func(button: Button) -> bool: return button.visible) and selected_catalog.has_focus(),
+		ui.focus_name())
+	home.set_hangar_filter("ground")
+	var after_filter: Control = root.gui_get_focus_owner()
+	_check("filtering away the focused row keeps focus on a visible Hangar control", after_filter != null
+		and after_filter.is_visible_in_tree() and home._hangar_panel.is_ancestor_of(after_filter), ui.focus_name())
+	home.set_hangar_filter("all")
+	var overlaps := PackedStringArray()
+	for id: String in home._catalog_ids:
+		home.set_aircraft(id)
+		for frame in 2: await process_frame
+		if home.livery_button.is_visible_in_tree() and home._hangar_panel.get_global_rect().end.y 				> home.livery_button.get_global_rect().position.y + 0.5:
+			overlaps.append(id)
+	_check("the Hangar ends above the corner paint for every vehicle", overlaps.is_empty(), str(overlaps))
+	home.set_aircraft("sebart-avanti-s-a200-p100rx")
+	for frame in 2: await process_frame
+	home._select_page(0)
+	for frame in 2: await process_frame
+	_check("the Hangar closes with the Vehicles page", not home._hangar_panel.visible)
+	home._select_page(1)
+	for frame in 4: await process_frame
 	home._page_buttons[1].grab_focus()
 	await ui.tap(KEY_DOWN)
-	_check("catalog navigation reaches the available paint selector", home.livery_button.has_focus(), ui.focus_name())
-	await ui.tap(KEY_DOWN)
-	_check("catalog navigation reaches the selected aircraft from paint", selected_catalog.has_focus(), ui.focus_name())
+	# UI-40c: the paint keeps its corner beside the rail, so the list leads straight to the selected aircraft.
+	_check("catalog navigation reaches the selected aircraft", selected_catalog.has_focus(), ui.focus_name())
+	home.fly_button.grab_focus()
+	await ui.tap(KEY_RIGHT)
+	_check("Fly reaches the available paint selector in its corner", home.livery_button.has_focus(), ui.focus_name())
 	var async_home: Control = Home.new()
 	root.add_child(async_home)
 	await ui.settle()
@@ -347,7 +410,7 @@ func _run() -> void:
 	var requested_catalog_id: String = Catalog.player_ids()[Catalog.player_ids().size() - 1]
 	var requested_catalog_index: int = async_home._catalog_ids.find(requested_catalog_id)
 	var requested_catalog_button: Button = async_home._catalog_buttons[requested_catalog_index]
-	var async_scroll: ScrollContainer = async_home.get_node("HomeRail/HomeContentScroll")
+	var async_scroll: ScrollContainer = async_home._hangar_scroll if async_home.is_hangar_shown() 		else async_home.get_node("HomeRail/HomeContentScroll") # UI-40o
 	var requested_ids := PackedStringArray()
 	async_home.aircraft_requested.connect(func(id: String) -> void: requested_ids.append(id))
 	requested_catalog_button.grab_focus()

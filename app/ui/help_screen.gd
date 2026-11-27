@@ -26,6 +26,17 @@ var _help_panel: PanelContainer
 var _help_columns: BoxContainer
 var _help_scroll: ScrollContainer
 var _key_tables: Array[GridContainer] = []
+## UI-40h: one page per task, chosen with the same tabs as Settings.
+var _tabs: Array[Button] = []
+var _pages: Array[VBoxContainer] = []
+var _page_ids: PackedStringArray = []
+var _tab_grid: GridContainer
+
+## UI-40h: which page lists a shortcut row, by the row's first key. Rows not named here stay on the Flight page,
+## so a new shortcut can never disappear from Help.
+const AIRCRAFT_PAGE_KEYS := [KEY_BRACKETLEFT, KEY_PAGEUP, KEY_COMMA, KEY_G, KEY_F, KEY_O, KEY_U, KEY_N, KEY_H, KEY_J,
+	KEY_F6, KEY_I, KEY_B]
+const RADIO_PAGE_KEYS := [KEY_K, KEY_ENTER]
 
 
 func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLANE) -> void:
@@ -71,51 +82,74 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	header.add_child(close_button)
 	shell.add_child(header)
 	shell.move_child(header, 0)
-	page.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel", true))
+	# UI-40h: Help by task. Each shortcut row sits on exactly one page.
+	var tab_row := GridContainer.new()
+	_tab_grid = tab_row
+	tab_row.name = "HelpTabs"
+	tab_row.add_theme_constant_override("h_separation", 8)
+	tab_row.add_theme_constant_override("v_separation", 8)
+	shell.add_child(tab_row)
+	shell.move_child(tab_row, 1)
+	var tab_group := ButtonGroup.new()
+	var shortcuts: Array = Reference.shortcut_table(_vehicle_type)
+	var developer_rows: Array = shortcuts.filter(_is_developer_row)
+	var aircraft_rows: Array = shortcuts.filter(func(row: Array) -> bool: return _row_on(row, AIRCRAFT_PAGE_KEYS))
+	var radio_rows: Array = shortcuts.filter(func(row: Array) -> bool: return _row_on(row, RADIO_PAGE_KEYS))
+	var flight_rows: Array = shortcuts.filter(func(row: Array) -> bool:
+		return not developer_rows.has(row) and not aircraft_rows.has(row) and not radio_rows.has(row))
 
+	# Flight: the sticks, recovery, camera and overlays, plus where to set up the next flight.
+	var flight_page := _add_page(page, tab_row, tab_group, "flight", "Flight")
+	flight_page.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel", true))
 	var columns := BoxContainer.new()
 	_help_columns = columns
 	columns.add_theme_constant_override("separation", 48)
-	page.add_child(columns)
+	flight_page.add_child(columns)
 	var left := _column(columns)
 	left.add_child(_text("WHILE FLYING", "SectionLabel"))
+	left.add_child(_key_table(flight_rows))
 	var right := _column(columns)
 	right.add_theme_constant_override("separation", 5)
 	right.add_child(_text("STICKS", "SectionLabel")) # UI-36 (UI-30 SC-4): not to be confused with WHILE FLYING
-	if _vehicle_type == Reference.ROTORCRAFT:
-		left.add_child(_key_table(Reference.shortcut_table(_vehicle_type), 2, 340))
-		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
-	else:
-		# Keep the existing table widths and use compact row spacing so the complete reference fits at 720p.
-		var pilot_rows: Array = Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]))
-		# UI-36 (UI-30 SC-4): recording and data-reload keys are tools, listed after what a pilot needs.
-		left.add_child(_key_table(pilot_rows.filter(func(row: Array) -> bool: return not _is_developer_row(row))))
-		left.add_child(_text("RECORDING AND DEVELOPER", "SectionLabel"))
-		left.add_child(_key_table(pilot_rows.filter(_is_developer_row)))
-		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
-		right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]), 4, 145))
-	right.add_child(_text("RADIO", "SectionLabel"))
-	radio_help_label = _text("", "SecondaryLabel", true)
-	radio_help_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	_update_radio_help_text()
-	right.add_child(radio_help_label)
+	right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
 	right.add_child(_text("RIGHT NOW", "SectionLabel"))
 	field_conditions_label = _text("Choose a runway or airborne start on Home. Configure wind, gusts, turbulence and field air density before flying. Flight models are experimental.", "SecondaryLabel", true)
 	field_conditions_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_update_field_conditions_text()
 	right.add_child(field_conditions_label)
 
-	if _vehicle_type == Reference.AIRPLANE:
-		page.add_child(_text("Flight companions", "SectionLabel"))
-		page.add_child(_text("Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or Pause → Session options.", "SecondaryLabel", true))
-		page.add_child(_text("Apply changes sound and labels immediately. Flight settings take effect after Restart flight. Remove companions now clears the current roster; disable companions and Apply to keep them off after restarting. Aircraft-to-aircraft contact is disabled.", "SecondaryLabel", true))
+	# Aircraft: trims, gear, flaps, canopy, rates, smoke and engine controls; a helicopter's arm, hold and modes.
+	if not aircraft_rows.is_empty():
+		var aircraft_page := _add_page(page, tab_row, tab_group, "aircraft", "Aircraft")
+		aircraft_page.add_child(_text("AIRCRAFT", "SectionLabel"))
+		aircraft_page.add_child(_key_table(aircraft_rows, 4, 300))
 
-	# About spans the body; the focusable scroll area exposes the full reference at small sizes.
-	page.add_child(_text("ABOUT", "SectionLabel"))
+	# Radio: calibration keys and the transmitter setup.
+	var radio_page := _add_page(page, tab_row, tab_group, "radio", "Radio")
+	radio_page.add_child(_text("RADIO", "SectionLabel"))
+	if not radio_rows.is_empty():
+		radio_page.add_child(_key_table(radio_rows))
+	radio_help_label = _text("", "SecondaryLabel", true)
+	radio_help_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_update_radio_help_text()
+	radio_page.add_child(radio_help_label)
+
+	# About: version and licence, flight companions, then recording and developer tools.
+	var about_page := _add_page(page, tab_row, tab_group, "about", "About")
+	about_page.add_child(_text("ABOUT", "SectionLabel"))
 	about_label = _text("", "SecondaryLabel", true)
 	about_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
 	about_label.custom_minimum_size.x = 0
-	page.add_child(about_label)
+	about_page.add_child(about_label)
+	if _vehicle_type == Reference.AIRPLANE:
+		about_page.add_child(_text("FLIGHT COMPANIONS", "SectionLabel"))
+		about_page.add_child(_text("Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu.", "SecondaryLabel", true))
+		about_page.add_child(_text("Apply changes sound and labels immediately. Flight settings take effect after Restart flight. Remove companions now clears the current roster; disable companions and Apply to keep them off after restarting. Aircraft-to-aircraft contact is disabled.", "SecondaryLabel", true))
+	if not developer_rows.is_empty():
+		# UI-36 (UI-30 SC-4): recording and data-reload keys are tools, listed after what a pilot needs.
+		about_page.add_child(_text("RECORDING AND DEVELOPER", "SectionLabel"))
+		about_page.add_child(_key_table(developer_rows))
+	show_page("flight")
 	screen.resized.connect(_resize_help)
 	screen.theme_changed.connect(_resize_help)
 
@@ -131,6 +165,8 @@ func _resize_help() -> void:
 	var area: Vector2 = get_viewport().get_visible_rect().size
 	_help_panel.custom_minimum_size = Vector2(minf(1200, area.x - 48), area.y - 48)
 	_help_columns.vertical = preload("res://ui/ui_theme.gd").text_scale > 1.25 or area.x < 1180
+	# UI-40h: the tabs wrap to two rows where the columns stack, so long translations never push Close offscreen.
+	_tab_grid.columns = 2 if _help_columns.vertical else _tabs.size()
 	# The scroll viewport receives the space left by the header; a fixed minimum can push Close offscreen.
 	for table in _key_tables:
 		table.columns = 2 if _help_columns.vertical else int(table.get_meta("wide_columns"))
@@ -172,7 +208,7 @@ func _scroll_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("ui_down"):
 			_help_scroll.get_v_scroll_bar().value += 40
 		elif event.is_action_pressed("ui_up"):
-			_help_scroll.get_v_scroll_bar().value -= 40
+			_scroll_up()
 		else: return
 		_help_scroll.accept_event()
 		return
@@ -191,6 +227,11 @@ func _scroll_input(event: InputEvent) -> void:
 			if source == _scroll_source:
 				_scroll_direction = 0
 			return
+		if direction < 0 and _at_top():
+			_scroll_direction = 0
+			_focus_current_tab()
+			_help_scroll.accept_event()
+			return
 		_scroll_direction = direction
 		_scroll_device = event.device
 		_scroll_source = source
@@ -203,13 +244,34 @@ func _scroll_input(event: InputEvent) -> void:
 	var page := maxf(48, _help_scroll.size.y * 0.8)
 	match event.keycode:
 		KEY_DOWN: bar.value += 40
-		KEY_UP: bar.value -= 40
+		KEY_UP:
+			if not (event.echo and _at_top()): # a held Up rests at the top; a new press reaches the tab
+				_scroll_up()
 		KEY_PAGEDOWN: bar.value += page
 		KEY_PAGEUP: bar.value -= page
 		KEY_HOME: bar.value = bar.min_value
 		KEY_END: bar.value = bar.max_value
 		_: return
 	_help_scroll.accept_event()
+
+
+## UI-40h: Up at the top of a page returns to its tab, so every page stays reachable without the mouse.
+func _scroll_up() -> void:
+	if _at_top():
+		_focus_current_tab()
+	else:
+		_help_scroll.get_v_scroll_bar().value -= 40
+
+
+func _at_top() -> bool:
+	var bar := _help_scroll.get_v_scroll_bar()
+	return bar.value <= bar.min_value
+
+
+func _focus_current_tab() -> void:
+	var index := _page_ids.find(current_page())
+	if index >= 0:
+		_tabs[index].grab_focus()
 
 
 func _update_field_conditions_text() -> void:
@@ -270,6 +332,47 @@ func _key_table(rows: Array, columns := 2, description_width := 340) -> GridCont
 		what.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		grid.add_child(what)
 	return grid
+
+
+## UI-40h: shows one Help page by id ("flight", "aircraft", "radio", "about"); unknown ids keep the current page.
+func show_page(id: String) -> void:
+	var index := _page_ids.find(id)
+	if index < 0:
+		return
+	for page_index in _pages.size():
+		_pages[page_index].visible = page_index == index
+		_tabs[page_index].set_pressed_no_signal(page_index == index)
+	if _help_scroll != null:
+		_help_scroll.scroll_vertical = 0
+
+
+func current_page() -> String:
+	for index in _pages.size():
+		if _pages[index].visible:
+			return _page_ids[index]
+	return ""
+
+
+func _add_page(host: VBoxContainer, tab_row: GridContainer, group: ButtonGroup, id: String, caption: String) -> VBoxContainer:
+	var tab := Widgets.button(caption, "HomeTab", caption.capitalize().replace(" ", "") + "Tab")
+	tab.toggle_mode = true
+	tab.button_group = group
+	tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tab.pressed.connect(show_page.bind(id))
+	tab_row.add_child(tab)
+	var page := VBoxContainer.new()
+	page.name = caption.capitalize().replace(" ", "") + "Page"
+	page.add_theme_constant_override("separation", 8)
+	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	host.add_child(page)
+	_tabs.append(tab)
+	_pages.append(page)
+	_page_ids.append(id)
+	return page
+
+
+static func _row_on(row: Array, first_keys: Array) -> bool:
+	return not row[0].is_empty() and row[0][0] in first_keys
 
 
 ## Trace recording, the flight log and the data reload serve evidence and development rather than flying.

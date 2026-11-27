@@ -14653,3 +14653,96 @@ msgstr "Semplifica l’ombreggiatura dell’erba conservando le marcature della 
 
 msgid "Simple"
 msgstr "Semplice"
+
+msgid "THIS FLIGHT"
+msgstr "QUESTO VOLO"
+
+msgid "Radio & controls"
+msgstr "Radio e comandi"
+
+msgid "Radio & controls · %s"
+msgstr "Radio e comandi · %s"
+
+msgid "not connected"
+msgstr "non collegato"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "Configura, calibra e prova la radio o il gamepad."
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "Tempo %s · Altezza %s · Velocità %s"
+
+msgid "Back to the start with the same setup."
+msgstr "Torna alla partenza con la stessa configurazione."
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "Termina questo volo e apre il catalogo degli aerei."
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "Pausa: cambia aereo, torna alla Home o regola questo volo."
+
+msgid "Reference flight model."
+msgstr "Modello di volo di riferimento."
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "Sperimentale: fisica stimata, non ancora confrontata con l’aereo reale."
+
+msgid "Model only; it cannot fly yet."
+msgstr "Solo il modello; non può ancora volare."
+
+msgid "About"
+msgstr "Informazioni"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "Al Campo del club volano in circuito da 1 a 3 Ugly Stik sperimentali. Sono disattivati per impostazione predefinita: inizia con uno. Apri Aerei accompagnatori da Home → Dettagli del volo o dal menu di pausa."
+
+msgid "FLIGHT COMPANIONS"
+msgstr "AEREI ACCOMPAGNATORI"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "COLLEGA UNA RADIO O UN GAMEPAD"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. Collegalo via USB o Bluetooth. Su una radio EdgeTX scegli USB Joystick (Classic) e spegni la RF."
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. Sceglilo come Controller di volo."
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. Premi Configura questo dispositivo… per modo stick, calibrazione, prova dal vivo e interruttori principali."
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "Recupera un profilo da una versione precedente o esporta la diagnostica per segnalare un errore."
+
+msgid "HANGAR"
+msgstr "HANGAR"
+
+msgid "Airplanes"
+msgstr "Aerei"
+
+msgid "Helicopters"
+msgstr "Elicotteri"
+
+msgid "Drones"
+msgstr "Droni"
+
+msgid "Airships"
+msgstr "Dirigibili"
+
+msgid "Cars & trucks"
+msgstr "Auto e camion"
+
+msgid "Search by name"
+msgstr "Cerca per nome"
+
+msgid "%d of %d"
+msgstr "%d di %d"
+
+msgid "%d vehicles"
+msgstr "%d modelli"
+
+msgid "No vehicle matches this search."
+msgstr "Nessun modello corrisponde alla ricerca."
+
+msgid "Hangar"
+msgstr "Hangar"

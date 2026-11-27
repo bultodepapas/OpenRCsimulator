@@ -1,9 +1,12 @@
 extends CanvasLayer
 
 const UiTheme := preload("res://ui/ui_theme.gd")
+const KeyCap := preload("res://ui/key_cap.gd")
 const RepairDetails := preload("res://economy/repair_details.gd")
 
 signal restart_requested
+## UI-40b: "More options" asks the flight for its Pause menu (the same request as Escape).
+signal options_requested
 signal inspect_requested
 signal costing_mode_requested(mode: String)
 signal purchase_package_requested(package_id: String)
@@ -54,6 +57,7 @@ var _report_column: VBoxContainer
 var _report_actions: HFlowContainer
 var _inspect_button: Button
 var _restart_button: Button
+var _options_button: Button
 var _hide_archived_button: Button
 var _details_scroll: ScrollContainer
 var _details_content: VBoxContainer
@@ -473,7 +477,13 @@ func _build_ui() -> void:
 	actions.add_theme_constant_override("h_separation", _scaled(10))
 	actions.add_theme_constant_override("v_separation", _scaled(8))
 	column.add_child(actions)
-	_inspect_button = _button("Inspect wreck", "PrimaryButton")
+	# UI-40b: after a crash the pilot most often wants to fly again, so Restart leads (primary, focused, with its key);
+	# inspecting, the breakdown and the Pause options (change aircraft, return Home) follow.
+	_restart_button = _button("Restart flight", "PrimaryButton")
+	_restart_button.name = "RestartFlight"
+	_restart_button.pressed.connect(_on_restart_pressed)
+	actions.add_child(_with_key_hint(_restart_button, KEY_R))
+	_inspect_button = _button("Inspect wreck")
 	_inspect_button.name = "InspectWreck"
 	_inspect_button.pressed.connect(_on_inspect_pressed)
 	actions.add_child(_inspect_button)
@@ -482,10 +492,11 @@ func _build_ui() -> void:
 	_details_button.toggle_mode = true
 	_details_button.toggled.connect(_set_expanded)
 	actions.add_child(_details_button)
-	_restart_button = _button("Restart flight")
-	_restart_button.name = "RestartFlight"
-	_restart_button.pressed.connect(_on_restart_pressed)
-	actions.add_child(_restart_button)
+	_options_button = _button("More options")
+	_options_button.name = "MoreOptions"
+	_options_button.tooltip_text = tr("Pause: change aircraft, return to Home or adjust this flight.")
+	_options_button.pressed.connect(_on_options_pressed)
+	actions.add_child(_with_key_hint(_options_button, KEY_ESCAPE))
 	_hide_archived_button = _button("Hide accident report")
 	_hide_archived_button.name = "HideArchivedReport"
 	_hide_archived_button.visible = false
@@ -564,7 +575,7 @@ func _build_ui() -> void:
 	_restore_button.visible = false
 	_restore_button.pressed.connect(_reopen_report)
 	_surface.add_child(_restore_button)
-	for button: Button in [_inspect_button, _details_button, _restart_button, _hide_archived_button, _restore_button]:
+	for button: Button in [_inspect_button, _details_button, _restart_button, _options_button, _hide_archived_button, _restore_button]:
 		button.custom_minimum_size.y = _scaled(54)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_ALL
@@ -589,7 +600,7 @@ func _layout() -> void:
 	if _report_actions != null:
 		_report_actions.add_theme_constant_override("h_separation", _scaled(4) if compact_timber else _scaled(10))
 		_report_actions.add_theme_constant_override("v_separation", _scaled(4) if compact_timber else _scaled(8))
-		for button: Button in [_inspect_button, _details_button, _restart_button, _hide_archived_button]:
+		for button: Button in [_inspect_button, _details_button, _restart_button, _options_button, _hide_archived_button]:
 			if compact_timber:
 				button.custom_minimum_size.y = _scaled(48)
 				button.add_theme_font_size_override("font_size", _scaled(20))
@@ -1337,6 +1348,7 @@ func _set_expanded(expanded: bool) -> void:
 	if _details_scroll == null:
 		return
 	_details_scroll.visible = expanded
+	_apply_action_visibility()
 	_rebuild_details()
 	_layout()
 	_details_button.text = tr("Hide damage breakdown") if expanded else tr("Show damage breakdown")
@@ -1367,7 +1379,7 @@ func _reopen_report() -> void:
 	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if _terminal and not _archived else Control.MOUSE_FILTER_IGNORE
 	_apply_action_visibility()
 	if _terminal and not _reopen_only:
-		_inspect_button.grab_focus()
+		_restart_button.grab_focus() # UI-40b: flying again is the primary action
 	else:
 		_hide_archived_button.grab_focus()
 	_layout()
@@ -1391,6 +1403,35 @@ func _hide_read_only_report() -> void:
 func _on_restart_pressed() -> void:
 	if _terminal and not _reopen_only and _report_panel.visible:
 		restart_requested.emit()
+
+
+func _on_options_pressed() -> void:
+	if _terminal and not _reopen_only and _report_panel.visible:
+		options_requested.emit()
+
+
+## UI-40b: the button with its key cap beside it; the cap follows the button's visibility.
+func _with_key_hint(button: Button, key: Key) -> Control:
+	var row := HBoxContainer.new()
+	row.name = button.name + "Row"
+	row.add_theme_constant_override("separation", _scaled(6))
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(button)
+	var cap := KeyCap.for_key(key)
+	cap.name = "KeyHint"
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(cap)
+	return row
+
+
+## Shows or hides an action together with its key-hint row, so a hidden action leaves no empty slot.
+func _set_action_visible(button: Button, shown: bool) -> void:
+	button.visible = shown
+	var row := button.get_parent() as Control
+	if row != null and row != _report_actions and row.name == button.name + "Row":
+		row.visible = shown
 
 
 ## Routes controller actions without forcing callers to depend on the current button layout.
@@ -1433,6 +1474,9 @@ func controller_action(action: String) -> bool:
 			return true
 		if focused == _restart_button and _terminal and not _reopen_only and _report_panel.visible:
 			restart_requested.emit()
+			return true
+		if focused == _options_button and _terminal and not _reopen_only and _report_panel.visible:
+			options_requested.emit()
 			return true
 		if focused == _details_button and _report_panel.visible:
 			_set_expanded(not _expanded)
@@ -1493,9 +1537,10 @@ func _visible_action_controls() -> Array[Control]:
 			controls.append(_details_button)
 			controls.append(_hide_archived_button)
 		else:
+			controls.append(_restart_button)
 			controls.append(_inspect_button)
 			controls.append(_details_button)
-			controls.append(_restart_button)
+			controls.append(_options_button)
 		if _cost_actions.visible:
 			controls.append(_diy_button)
 			controls.append(_shop_button)
@@ -1508,15 +1553,19 @@ func _apply_action_visibility() -> void:
 	if _inspect_button == null:
 		return
 	_inspect_button.visible = not _reopen_only
-	_restart_button.visible = not _reopen_only
+	_set_action_visible(_restart_button, not _reopen_only)
+	_set_action_visible(_options_button, not _reopen_only)
 	_details_button.visible = not _minimized
 	_hide_archived_button.visible = _reopen_only and not _minimized
-	_cost_actions.visible = not _archived and not _minimized and _report.get("costing_available", false) == true
+	# UI-40b: the cost options (DIY or shop labour, purchase plan) belong to the breakdown and fold with it, so the
+	# card leads with Restart, Inspect, the breakdown and More options.
+	_cost_actions.visible = not _archived and not _minimized and _expanded and _report.get("costing_available", false) == true
 
 
+## UI-40b: the terminal card opens on Restart (the name is kept for the existing callers).
 func _focus_inspect() -> void:
 	if _terminal and not _suspended and _report_panel != null and _report_panel.visible:
-		_inspect_button.grab_focus()
+		_restart_button.grab_focus()
 
 
 func _button(text: String, variation: String = "") -> Button:

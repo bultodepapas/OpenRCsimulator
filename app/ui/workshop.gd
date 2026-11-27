@@ -20,7 +20,10 @@ const PresentationRebind := preload("res://workshop/presentation_rebind.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const CustomizationPanel := preload("res://ui/workshop_customization.gd")
 const LightingPanel := preload("res://ui/workshop_lighting.gd")
-const PAGE_IDS := ["appearance", "lighting", "smoke", "audio", "setup", "compare"]
+## UI-40j: task order — how it looks, how it flies, then lights, smoke, sound and the comparison.
+const PAGE_IDS := ["appearance", "setup", "lighting", "smoke", "audio", "compare"]
+const PAGE_TITLES := {"appearance": "Appearance", "setup": "Flight setup", "lighting": "Lighting", "smoke": "Smoke",
+	"audio": "Mechanical audio", "compare": "Compare"}
 const WorkshopPreview := preload("res://ui/workshop_preview.gd")
 const Thumbnail := preload("res://ui/workshop_thumbnail.gd")
 
@@ -48,6 +51,9 @@ const PRESET_LABELS := {"mini": "Mini", "giant": "Giant", "light": "Light", "hea
 
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
+## UI-40j: the page the Workshop opens on (the host passes the one last used in this app run); unknown ids keep
+## Flight setup.
+var initial_page := "setup"
 var variants_root := VARIANT_ROOT
 ## Folder of the Aircraft Creator library; "" is the store's default. Tests point it at a temporary folder.
 var creator_store_root := ""
@@ -289,8 +295,15 @@ func _ready() -> void:
 	_sync_controls()
 	_compile_recipe()
 	_mark_baseline()
+	if initial_page != _active_page and PAGE_IDS.has(initial_page):
+		_set_page(initial_page)
 	_focus_default.call_deferred()
 	if recovery_enabled: _start_recovery.call_deferred()
+
+
+## The page shown now (one of PAGE_IDS), so the host can reopen the Workshop where the pilot left it.
+func current_page() -> String:
+	return _active_page
 
 
 func _enter_tree() -> void:
@@ -433,28 +446,22 @@ func _build_ui() -> void:
 	_identity_line.add_theme_constant_override("separation", 8)
 	page.add_child(_identity_line)
 	var group := ButtonGroup.new()
-	for spec: Array in [["appearance", "Appearance"], ["lighting", "Lighting"], ["smoke", "Smoke"], ["audio", "Mechanical audio"], ["setup", "Flight setup"], ["compare", "Compare"]]:
-		var tab := _button(spec[1], "", "Page" + str(spec[0]).capitalize())
+	for page_id: String in PAGE_IDS:
+		# UI-40g: the same glass tab as Settings, Help and the Hangar.
+		var tab := _button(PAGE_TITLES[page_id], "HomeTab", "Page" + page_id.capitalize())
 		tab.toggle_mode = true
 		tab.button_group = group
-		tab.button_pressed = spec[0] == "setup"
+		tab.button_pressed = page_id == "setup"
 		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		tab.add_theme_font_size_override("font_size", UiTheme._font_size(UiTheme.SIZE.small))
-		var selected_style: StyleBoxFlat = _screen.theme.get_stylebox("normal", "Button").duplicate()
-		selected_style.bg_color = UiTheme.PRIMARY.normal
-		selected_style.border_color = UiTheme.FOCUS
-		selected_style.border_width_bottom = 3
-		tab.add_theme_stylebox_override("pressed", selected_style)
-		tab.add_theme_stylebox_override("hover_pressed", selected_style)
-		tab.pressed.connect(_set_page.bind(spec[0]))
+		tab.pressed.connect(_set_page.bind(page_id))
 		_identity_line.add_child(tab)
-		_page_buttons[spec[0]] = tab
+		_page_buttons[page_id] = tab
 	_page_selector = OptionButton.new()
 	_page_selector.name = "WorkshopPage"
 	_page_selector.fit_to_longest_item = false
 	_page_selector.clip_text = true
 	_page_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for page_title: String in ["Appearance", "Lighting", "Smoke", "Mechanical audio", "Flight setup", "Compare"]: _page_selector.add_item(tr(page_title))
+	for page_id: String in PAGE_IDS: _page_selector.add_item(tr(PAGE_TITLES[page_id]))
 	_page_selector.select(PAGE_IDS.find(_active_page))
 	_page_selector.item_selected.connect(func(index: int) -> void: _set_page(PAGE_IDS[index]))
 	_identity_line.add_child(_page_selector)

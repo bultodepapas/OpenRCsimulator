@@ -23,6 +23,7 @@ const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const PlayerNotes := preload("res://ui/player_notes.gd") # UI-40d
 const Landscapes := preload("res://landscapes/catalog.gd")
 const LandscapeImport := preload("res://ui/landscape_import.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
@@ -156,6 +157,9 @@ var language_button: Button
 var help_button: Button
 var quit_button: Button
 var controls_button: Button
+## UI-40p: the header chip naming the flight input ("● Keyboard", "● TX16S"); it opens Radio & controls.
+var input_chip: Button
+var _utility_row: HFlowContainer
 var settings_button: Button
 var control_label: Label
 var controller_prompt_label: Label
@@ -209,6 +213,23 @@ var _conditions_row: GridContainer
 var _nav_buttons: Array[Button] = []
 var _catalog_buttons: Array[Button] = []
 var _catalog_ids: PackedStringArray = []
+## UI-40o: the Hangar. Outside enlarged text the vehicle list leaves the narrow rail for a wide panel beside it,
+## with family filters and a name search, so a long catalog stays easy to browse; the rail keeps the summary.
+const HANGAR_FILTERS: Array[Array] = [["all", "All"], ["airplane", "Airplanes"], ["helicopter", "Helicopters"],
+	["drone", "Drones"], ["airship", "Airships"], ["ground", "Cars & trucks"]]
+var _catalog_list: GridContainer
+var _other_vehicles_heading: Label
+var _hangar_panel: PanelContainer
+var _hangar_body: VBoxContainer
+var _hangar_scroll: ScrollContainer
+var _hangar_count_label: Label
+var _hangar_empty_label: Label
+var hangar_search: LineEdit
+var _hangar_filter_buttons: Dictionary[String, Button] = {}
+var _hangar_filter := "all"
+var _hangar_mode := false
+var _catalog_title: Label
+var _catalog_intro: Label
 var _flight_status_label: Label
 var _flight_details: VBoxContainer
 var _details_button: Button
@@ -223,6 +244,8 @@ var _detail_name_label: Label
 var _detail_capability_label: Label
 var _detail_summary_label: Label
 var _detail_note_label: Label
+var _detail_technical_heading: Label
+var _detail_technical_label: Label
 
 
 func _init() -> void:
@@ -282,6 +305,15 @@ func _init() -> void:
 	_header_actions.add_theme_constant_override("separation", 8)
 	_header_actions.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(_header_actions)
+	# UI-40p: which input flies the next flight, always visible; it opens Radio & controls.
+	input_chip = _button("", "QuietButton")
+	input_chip.name = "InputChip"
+	input_chip.custom_minimum_size.y = 38
+	input_chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	input_chip.autowrap_mode = TextServer.AUTOWRAP_OFF
+	input_chip.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	input_chip.pressed.connect(func() -> void: controls_requested.emit(input_chip))
+	_header_actions.add_child(input_chip)
 	language_button = _button("", "QuietButton")
 	language_button.name = "Language"
 	language_button.custom_minimum_size.x = 200.0
@@ -317,7 +349,8 @@ func _init() -> void:
 	var flight_nav := _nav_button("Flight", "Flight", 0)
 	nav.add_child(flight_nav)
 	# UI-39: the catalog page lists every vehicle; the former RC garage page is gone (node name kept for tools).
-	var aircraft_nav := _nav_button("Vehicles", "Aircraft", 1)
+	# UI-40o: named after the Hangar it opens.
+	var aircraft_nav := _nav_button("Hangar", "Aircraft", 1)
 	nav.add_child(aircraft_nav)
 	var practice_nav := _nav_button("Practice", "Practice", 2)
 	nav.add_child(practice_nav)
@@ -330,6 +363,16 @@ func _init() -> void:
 	Widgets.mark_row(workshop_button, "open")
 	nav.add_child(workshop_button)
 	_nav_buttons.append(workshop_button)
+	# UI-40p: the radio is a destination of its own (an RC pilot's most used setup), not a footer utility.
+	controls_button = _button("Radio & controls", "HomeNav")
+	controls_button.name = "ControllerSettings"
+	controls_button.custom_minimum_size.y = 38
+	controls_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	controls_button.tooltip_text = "Set up, calibrate and test your radio or gamepad."
+	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
+	Widgets.mark_row(controls_button, "open")
+	nav.add_child(controls_button)
+	_nav_buttons.append(controls_button)
 
 	_scroll = ScrollContainer.new()
 	_scroll.name = "HomeContentScroll"
@@ -453,6 +496,7 @@ func _init() -> void:
 	control_label = _label("", "SecondaryLabel", false)
 	control_label.name = "FlightInputSummary"
 	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	control_label.visible = false # UI-40p: the header chip names the flight input; this keeps its text and tooltip
 	flight_page.add_child(control_label)
 	controller_prompt_label = _label("", "SecondaryLabel", false)
 	controller_prompt_label.name = "MenuInputSummary"
@@ -542,8 +586,10 @@ func _init() -> void:
 	aircraft_page.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_page_host.add_child(aircraft_page)
 	_pages.append(aircraft_page)
-	aircraft_page.add_child(_label("VEHICLE CATALOG", "SectionTitle"))
+	_catalog_title = _label("VEHICLE CATALOG", "SectionTitle")
+	aircraft_page.add_child(_catalog_title)
 	var catalog_intro := _label("Choose a vehicle for the next session.", "SecondaryLabel")
+	_catalog_intro = catalog_intro
 	catalog_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catalog_intro.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_page.add_child(catalog_intro)
@@ -584,9 +630,13 @@ func _init() -> void:
 	_catalog_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_catalog_preview_label.visible = false
 	aircraft_page.add_child(_catalog_preview_label)
-	var catalog_list := VBoxContainer.new()
+	var catalog_list := GridContainer.new()
+	_catalog_list = catalog_list
 	catalog_list.name = "AircraftCatalog"
-	catalog_list.add_theme_constant_override("separation", 6)
+	catalog_list.columns = 1
+	catalog_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	catalog_list.add_theme_constant_override("h_separation", 8)
+	catalog_list.add_theme_constant_override("v_separation", 6)
 	aircraft_page.add_child(catalog_list)
 	for id: String in Roster.ids():
 		var entry: Dictionary = Roster.entry(id)
@@ -594,6 +644,7 @@ func _init() -> void:
 		if activity and _catalog_ids.size() == Catalog.player_ids().size():
 			var group := _label("OTHER RC VEHICLES", "SectionLabel")
 			group.name = "OtherVehiclesHeading"
+			_other_vehicles_heading = group
 			catalog_list.add_child(group)
 		var item := _button("", "HomeAction")
 		item.name = ("Vehicle_%s" if activity else "Aircraft_%s") % id.replace("-", "_")
@@ -613,7 +664,7 @@ func _init() -> void:
 		item.add_theme_stylebox_override("hover_pressed", selected_style)
 		item.add_theme_color_override("font_pressed_color", UiTheme.FOCUS)
 		item.add_theme_color_override("font_hover_pressed_color", UiTheme.FOCUS)
-		item.tooltip_text = "%s\n%s" % [tr(entry.summary), tr(entry.status_note)]
+		item.tooltip_text = "%s\n%s" % [tr(entry.summary), tr(PlayerNotes.player_note(entry))]
 		item.pressed.connect(_request_vehicle.bind(id))
 		catalog_list.add_child(item)
 		_catalog_buttons.append(item)
@@ -736,18 +787,11 @@ func _init() -> void:
 	primary_actions.add_child(fly_button)
 	# Long translated labels wrap as whole buttons while preserving the text size.
 	var utility_row := HFlowContainer.new()
+	_utility_row = utility_row
 	utility_row.name = "HomeUtilities"
 	utility_row.add_theme_constant_override("h_separation", 4)
 	utility_row.add_theme_constant_override("v_separation", 4)
 	_left_layout.add_child(utility_row)
-	controls_button = _button("Controls", "QuietButton")
-	controls_button.name = "ControllerSettings"
-	controls_button.custom_minimum_size.y = 34
-	controls_button.custom_minimum_size.x = 120
-	controls_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	controls_button.tooltip_text = tr("Devices, profiles and radio calibration")
-	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
-	utility_row.add_child(controls_button)
 	help_button = _button("Help", "QuietButton")
 	help_button.name = "Help"
 	help_button.custom_minimum_size.y = 34
@@ -761,13 +805,21 @@ func _init() -> void:
 	quit_button.custom_minimum_size.x = 64
 	quit_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
+	# UI-40n (UI-30 HN-4): Quit keeps its own end of the row, away from Help.
+	var utility_gap := Control.new()
+	utility_gap.name = "UtilityGap"
+	utility_gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	utility_gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	utility_row.add_child(utility_gap)
 	utility_row.add_child(quit_button)
 	_refresh_statistics_summary()
-	for utility_button: Button in [language_button, settings_button, controls_button, help_button, quit_button]:
+	input_chip.clip_text = true
+	input_chip.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	for utility_button: Button in [language_button, settings_button, help_button, quit_button]:
 		utility_button.clip_text = false
 		utility_button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		utility_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	for header_button in [language_button, settings_button]:
+	for header_button in [language_button, settings_button, input_chip]:
 		header_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 
 	_build_catalog_detail()
@@ -789,10 +841,201 @@ func _build_catalog_detail() -> void:
 	_detail_capability_label = _label("", "SectionLabel", false)
 	_detail_summary_label = _label("", "SecondaryLabel", false)
 	_detail_note_label = _label("", "SecondaryLabel", false)
-	for label: Label in [_detail_name_label, _detail_capability_label, _detail_summary_label, _detail_note_label]:
+	# UI-40d: the engineering note is kept for the curious, under its own heading in the details card.
+	_detail_technical_heading = _label("Technical details", "SectionLabel", false)
+	_detail_technical_heading.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_INHERIT
+	_detail_technical_label = _label("", "SecondaryLabel", false)
+	for label: Label in [_detail_name_label, _detail_capability_label, _detail_summary_label, _detail_note_label,
+			_detail_technical_heading, _detail_technical_label]:
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
+		if label != _detail_technical_heading:
+			label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
 		lines.add_child(label)
+
+
+func _build_hangar() -> void:
+	_hangar_panel = PanelContainer.new()
+	_hangar_panel.name = "Hangar"
+	_hangar_panel.theme_type_variation = "Card"
+	_hangar_panel.visible = false
+	add_child(_hangar_panel)
+	_hangar_body = VBoxContainer.new()
+	_hangar_body.add_theme_constant_override("separation", 8)
+	_hangar_panel.add_child(_hangar_body)
+	var heading := HBoxContainer.new()
+	var title := _label("HANGAR", "SectionTitle")
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	heading.add_child(title)
+	_hangar_count_label = _label("", "SecondaryLabel")
+	_hangar_count_label.name = "HangarCount"
+	_hangar_count_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
+	_hangar_count_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(_hangar_count_label)
+	_hangar_body.add_child(heading)
+	var filters := HFlowContainer.new()
+	filters.name = "HangarFilters"
+	filters.add_theme_constant_override("h_separation", 6)
+	filters.add_theme_constant_override("v_separation", 6)
+	_hangar_body.add_child(filters)
+	var group := ButtonGroup.new()
+	var families := {}
+	for id: String in _catalog_ids:
+		families[hangar_family(id)] = true
+	for filter: Array in HANGAR_FILTERS:
+		if filter[0] != "all" and not families.has(filter[0]):
+			continue
+		var chip := Widgets.button(filter[1], "HomeTab", "HangarFilter_%s" % filter[0])
+		chip.toggle_mode = true
+		chip.button_group = group
+		chip.custom_minimum_size.y = 34
+		chip.set_pressed_no_signal(filter[0] == _hangar_filter)
+		chip.pressed.connect(set_hangar_filter.bind(str(filter[0])))
+		filters.add_child(chip)
+		_hangar_filter_buttons[str(filter[0])] = chip
+	filters.visible = families.size() > 1
+	hangar_search = LineEdit.new()
+	hangar_search.name = "HangarSearch"
+	hangar_search.placeholder_text = "Search by name"
+	hangar_search.clear_button_enabled = true
+	hangar_search.text_changed.connect(func(_text: String) -> void: _apply_hangar_filter())
+	_hangar_body.add_child(hangar_search)
+	_hangar_scroll = ScrollContainer.new()
+	_hangar_scroll.name = "HangarList"
+	_hangar_scroll.follow_focus = true
+	_hangar_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_hangar_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_hangar_body.add_child(_hangar_scroll)
+	_hangar_empty_label = _label("No vehicle matches this search.", "SecondaryLabel")
+	_hangar_empty_label.name = "HangarEmpty"
+	_hangar_empty_label.visible = false
+	_hangar_body.add_child(_hangar_empty_label)
+
+
+## The Hangar family of a roster id: the filter chips group airplanes, helicopters, drones, airships and cars.
+static func hangar_family(id: String) -> String:
+	match Roster.family(id):
+		Roster.MULTIROTOR: return "drone"
+		Roster.AIRSHIP: return "airship"
+		Roster.GROUND: return "ground"
+	return "helicopter" if Catalog.is_rotorcraft(id) else "airplane"
+
+
+## Shows one family ("all", "airplane", "helicopter", "drone", "airship" or "ground") in the Hangar.
+func set_hangar_filter(filter: String) -> void:
+	if not _hangar_filter_buttons.has(filter):
+		return
+	_hangar_filter = filter
+	for key: String in _hangar_filter_buttons:
+		_hangar_filter_buttons[key].set_pressed_no_signal(key == filter)
+	_apply_hangar_filter()
+
+
+## The Hangar ends above the corner paint row, which appears and disappears with the selected vehicle's paints.
+func _update_hangar_bottom() -> void:
+	if not _hangar_mode or _hangar_panel == null or not is_inside_tree():
+		return
+	var paint_reserve := 0.0
+	if _livery_row != null and _livery_row.get_parent() == _preview_paint_slot and _livery_row.visible:
+		paint_reserve = _livery_row.get_combined_minimum_size().y + 16.0
+	_hangar_panel.offset_bottom = get_viewport_rect().size.y - 24.0 - paint_reserve
+
+
+## The selected vehicle's row, or the first row the Hangar filters still show.
+func _catalog_focus_target() -> Button:
+	var selected := _catalog_buttons[maxi(0, _catalog_ids.find(selected_id()))]
+	if selected.visible:
+		return selected
+	for button: Button in _catalog_buttons:
+		if button.visible:
+			return button
+	return selected
+
+
+func is_hangar_shown() -> bool:
+	return _hangar_mode and _hangar_panel != null and _hangar_panel.visible
+
+
+## Filters and search apply only while the Hangar is shown; the rail list always lists every vehicle.
+func _apply_hangar_filter() -> void:
+	if _catalog_list == null:
+		return
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	# A typed Array[Button] refuses has() with any other control (a slider in Conditions, for example).
+	var focused_row := focused is Button and _catalog_buttons.has(focused)
+	var query := hangar_search.text.strip_edges().to_lower() if hangar_search != null else ""
+	var shown := 0
+	for index in _catalog_ids.size():
+		var id: String = _catalog_ids[index]
+		var visible := true
+		if _hangar_mode:
+			var entry: Dictionary = Roster.entry(id)
+			visible = (_hangar_filter == "all" or hangar_family(id) == _hangar_filter) and (query.is_empty()
+				or tr(Roster.short_name(id)).to_lower().contains(query) or str(entry.get("name", "")).to_lower().contains(query)
+				or tr(str(entry.get("summary", ""))).to_lower().contains(query))
+		_catalog_buttons[index].visible = visible
+		shown += 1 if visible else 0
+	if _other_vehicles_heading != null:
+		_other_vehicles_heading.visible = not _hangar_mode
+	if _hangar_count_label != null:
+		_hangar_count_label.text = tr("%d of %d") % [shown, _catalog_ids.size()] if shown != _catalog_ids.size() \
+			else tr("%d vehicles") % _catalog_ids.size()
+	if _hangar_empty_label != null:
+		_hangar_empty_label.visible = _hangar_mode and shown == 0
+	if focused_row and not (focused as Control).visible:
+		var target := _catalog_focus_target()
+		(target if target.visible else hangar_search as Control).grab_focus()
+	_update_livery_row() # the Hangar nav and the corner paint lead to the first visible row
+
+
+## UI-40o: moves the list into the Hangar beside the rail (Vehicles page, normal text) or back into the rail.
+func _place_hangar(viewport_size: Vector2, inset: float, span: float, rail_width: float, top: float, compact: bool,
+		large_text: bool) -> void:
+	if _catalog_list == null:
+		return
+	var hangar := not large_text and _pages[1].visible
+	if _hangar_panel == null:
+		if not hangar:
+			return # built on the first Hangar visit, so a Home rebuild never pays for it
+		_build_hangar()
+	var target: Node = _hangar_scroll if hangar else _pages[1]
+	if _catalog_list.get_parent() != target:
+		var focused := get_viewport().gui_get_focus_owner()
+		var restore := is_instance_valid(focused) and _catalog_list.is_ancestor_of(focused)
+		_catalog_list.reparent(target, false)
+		if target == _pages[1]:
+			_pages[1].move_child(_catalog_list, _catalog_preview_label.get_index() + 1)
+		if restore:
+			focused.grab_focus()
+	_hangar_mode = hangar
+	_hangar_panel.visible = hangar
+	# The Hangar names the list; the rail keeps the selected vehicle's statistics.
+	_catalog_title.visible = not hangar
+	_catalog_intro.visible = not hangar
+	if hangar:
+		var left := inset + span + rail_width + (16.0 if compact else 32.0)
+		# Compact windows trade a little scene width for two columns, so most of the list shows without scrolling.
+		var width := clampf(viewport_size.x * (0.33 if compact else 0.28), 340.0, 600.0)
+		_hangar_panel.offset_left = left
+		_hangar_panel.offset_right = left + width
+		_hangar_panel.offset_top = top
+		_update_hangar_bottom()
+		_catalog_list.columns = 2 if width >= 420.0 else 1
+	else:
+		_catalog_list.columns = 1
+	var dense := hangar and compact
+	for chip: Button in _hangar_filter_buttons.values():
+		if dense:
+			_set_responsive_font(chip, 18)
+		else:
+			chip.remove_theme_font_size_override("font_size")
+		chip.custom_minimum_size.y = 30.0 if dense else 34.0
+	for item: Button in _catalog_buttons:
+		if dense:
+			_set_responsive_font(item, 18)
+		else:
+			item.remove_theme_font_size_override("font_size")
+		item.custom_minimum_size.y = 46.0 if dense else 54.0
+	_apply_hangar_filter()
 
 
 func _update_catalog_detail() -> void:
@@ -804,7 +1047,10 @@ func _update_catalog_detail() -> void:
 	_detail_capability_label.text = tr("Flyable") if entry.get("status") == Catalog.FLYABLE \
 		else tr("Experimental") if entry.get("status") == Catalog.EXPERIMENTAL else tr("Preview only")
 	_detail_summary_label.text = tr(entry.get("summary", ""))
-	_detail_note_label.text = tr(entry.get("status_note", ""))
+	_detail_note_label.text = tr(PlayerNotes.player_note(entry))
+	_detail_technical_label.text = tr(entry.get("status_note", ""))
+	_detail_technical_heading.visible = not _detail_technical_label.text.is_empty()
+	_detail_technical_label.visible = _detail_technical_heading.visible
 
 
 func _update_catalog_detail_visibility() -> void:
@@ -835,7 +1081,7 @@ func _request_vehicle(id: String) -> void:
 	_requested_aircraft_id = id
 	_update_catalog_texts()
 	var selected_index := _catalog_ids.find(id)
-	if selected_index >= 0 and is_inside_tree():
+	if selected_index >= 0 and is_inside_tree() and _catalog_buttons[selected_index].visible:
 		_catalog_buttons[selected_index].grab_focus()
 	if is_inside_tree() and _pages[1].visible:
 		_schedule_selected_aircraft_reveal()
@@ -907,7 +1153,7 @@ func _update_catalog_texts() -> void:
 		var entry: Dictionary = Roster.entry(id)
 		var capability := tr("Flyable") if entry.status == Catalog.FLYABLE else tr("Experimental") if entry.status == Catalog.EXPERIMENTAL else tr("Preview only")
 		item.text = "%s\n%s" % [tr(Roster.short_name(id)), capability]
-		item.tooltip_text = "%s\n%s\n%s" % [tr(entry.name), tr(entry.summary), tr(entry.status_note)]
+		item.tooltip_text = "%s\n%s\n%s" % [tr(entry.name), tr(entry.summary), tr(PlayerNotes.player_note(entry))]
 		item.set_pressed_no_signal(id == shown_id)
 
 
@@ -935,7 +1181,7 @@ func _update_flight_capability() -> void:
 		_flight_status_label.text = tr("Experimental")
 	else:
 		_flight_status_label.text = tr("Preview only")
-	_flight_status_label.tooltip_text = tr(entry.status_note)
+	_flight_status_label.tooltip_text = tr(PlayerNotes.player_note(entry))
 
 
 func _toggle_flight_details() -> void:
@@ -954,7 +1200,7 @@ func _ready() -> void:
 	get_viewport().gui_focus_changed.connect(_on_gui_focus_changed)
 	_apply_responsive_layout()
 	_select_page(0)
-	var page_first_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button]
+	var page_first_controls: Array[Control] = [previous_button, _catalog_focus_target(), natural_random_button]
 	for index in _page_buttons.size():
 		var tab := _page_buttons[index]
 		tab.focus_neighbor_top = tab.get_path_to(_page_buttons[posmod(index - 1, _page_buttons.size())])
@@ -963,12 +1209,6 @@ func _ready() -> void:
 		var nav_button := _nav_buttons[index]
 		nav_button.focus_neighbor_top = nav_button.get_path_to(_nav_buttons[maxi(index - 1, 0)])
 		nav_button.focus_neighbor_bottom = nav_button.get_path_to(_nav_buttons[mini(index + 1, _nav_buttons.size() - 1)])
-	var utilities: Array[Button] = [controls_button, help_button, quit_button]
-	for index in utilities.size():
-		var utility := utilities[index]
-		utility.focus_neighbor_top = utility.get_path_to(fly_button)
-		utility.focus_neighbor_left = utility.get_path_to(utilities[posmod(index - 1, utilities.size())])
-		utility.focus_neighbor_right = utility.get_path_to(utilities[(index + 1) % utilities.size()])
 	for header_button in [language_button, settings_button]:
 		header_button.focus_neighbor_bottom = header_button.get_path_to(_page_buttons[0])
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
@@ -986,7 +1226,7 @@ func _ready() -> void:
 		if index > 0: action.focus_neighbor_top = action.get_path_to(practice_actions[index - 1])
 		if index + 1 < practice_actions.size(): action.focus_neighbor_bottom = action.get_path_to(practice_actions[index + 1])
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
-	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
+	_link_entry_focus()
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_update_texts()
@@ -1026,10 +1266,10 @@ func _select_page(index: int) -> void:
 		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
 			start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
-		var catalog_selection := maxi(0, _catalog_ids.find(selected_id()))
-		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button]
+		var first_controls: Array[Control] = [previous_button, _catalog_focus_target(), natural_random_button]
 		_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(first_controls[selected])
-		if selected == 1 and livery_button.is_visible_in_tree():
+		# Only a paint row inside the list comes first; the corner paint is reached from FLY (UI-40c).
+		if selected == 1 and _livery_row.get_parent() == _pages[1] and livery_button.is_visible_in_tree():
 			_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(livery_button)
 		if has_focus():
 			_page_buttons[selected].grab_focus()
@@ -1042,9 +1282,13 @@ func _select_page(index: int) -> void:
 func open_aircraft_catalog() -> void:
 	if not is_inside_tree():
 		return
+	# UI-40o: a filter or search left from an earlier visit must not hide the aircraft just flown.
+	if hangar_search != null:
+		hangar_search.text = ""
+	set_hangar_filter("all")
 	_select_page(1)
 	var selected := _catalog_ids.find(selected_id())
-	if selected >= 0:
+	if selected >= 0 and _catalog_buttons[selected].visible:
 		_catalog_buttons[selected].grab_focus()
 	_schedule_selected_aircraft_reveal()
 
@@ -1053,6 +1297,10 @@ func _reveal_selected_aircraft() -> void:
 	if not is_inside_tree() or not _pages[1].visible: return
 	var selected := _catalog_ids.find(selected_id())
 	if selected >= 0:
+		if _hangar_mode and _hangar_scroll.is_ancestor_of(_catalog_buttons[selected]):
+			if _catalog_buttons[selected].is_visible_in_tree():
+				_hangar_scroll.ensure_control_visible(_catalog_buttons[selected]) # UI-40o: the list is in the Hangar
+			return
 		if _launch_notices.get_parent() == _page_host and not _catalog_buttons[selected].has_focus():
 			return # Keep new notices at the top unless opening the focused aircraft explicitly.
 		_scroll.ensure_control_visible(_catalog_buttons[selected])
@@ -1085,17 +1333,22 @@ func _apply_responsive_layout() -> void:
 	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (
 		compact or _fly_caption.visible or launch_warning.visible or note_label.visible or failure_launch_notice.visible))
 	if _livery_row != null:
-		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
-		if _pages[0].visible:
-			paint_parent = _preview_paint_slot
-		_preview_paint_slot.offset_right = -inset - span
-		_preview_paint_slot.offset_left = _preview_paint_slot.offset_right - minf(rail_width, viewport_size.x - rail_width - 3.0 * inset - 2.0 * span)
+		# UI-40c: one fixed place for the paint on every page — the bottom-left corner of the scene, beside the rail
+		# and level with FLY. Only enlarged text on a short window keeps it inside the Vehicles list.
+		var paint_parent: Node = _preview_paint_slot
+		if (navigation_in_scroll or large_text) and not _pages[0].visible:
+			paint_parent = _pages[1]
+		_preview_paint_slot.anchor_left = 0.0
+		_preview_paint_slot.anchor_right = 0.0
+		_preview_paint_slot.offset_left = inset + span + rail_width + (16.0 if compact else 24.0)
+		_preview_paint_slot.offset_right = _preview_paint_slot.offset_left + minf(rail_width,
+			viewport_size.x - _preview_paint_slot.offset_left - inset - span)
 		_preview_paint_slot.offset_bottom = -24.0
 		if _livery_row.get_parent() != paint_parent:
 			var restore_paint_focus := livery_button.has_focus()
 			_livery_row.reparent(paint_parent, false)
 			if paint_parent != _preview_paint_slot:
-				paint_parent.move_child(_livery_row, 2 if paint_parent == _pages[1] else _scroll.get_index())
+				paint_parent.move_child(_livery_row, 2)
 			if restore_paint_focus:
 				livery_button.grab_focus()
 	if navigation_in_scroll != _navigation_in_scroll:
@@ -1112,10 +1365,11 @@ func _apply_responsive_layout() -> void:
 		_navigation_in_scroll = navigation_in_scroll
 		if restore_navigation_focus:
 			focused.grab_focus()
-		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button]
+		var first_page_controls: Array[Control] = [previous_button, _catalog_focus_target(), natural_random_button]
 		for index in _page_buttons.size():
 			_page_buttons[index].focus_neighbor_bottom = _page_buttons[index].get_path_to(first_page_controls[index])
 	_update_livery_row()
+	_place_controls_entry(not compact and not large_text)
 	# Long concurrent notices can otherwise force the pinned actions below the viewport. Put the whole
 	# notice group at the start of the existing scroll body; the corrective action and Fly stay pinned.
 	# An empty visible container still reserves the parent's separation and can overflow Practice.
@@ -1145,7 +1399,7 @@ func _apply_responsive_layout() -> void:
 	if livery_button != null:
 		livery_button.autowrap_mode = TextServer.AUTOWRAP_OFF if large_text else int(livery_button.get_meta(HOME_AUTOWRAP_META))
 		livery_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if large_text else TextServer.OVERRUN_NO_TRIMMING
-	for utility: Button in [controls_button, help_button, quit_button]:
+	for utility: Button in _utility_buttons():
 		_set_utility_margins(utility, not compact and not large_text and viewport_size.y <= 1080.0)
 		if compact:
 			# Keep translated utility labels inside the compact rail without truncation.
@@ -1163,7 +1417,12 @@ func _apply_responsive_layout() -> void:
 	_version_label.visible = _version_shown and not large_text
 	_set_responsive_font(_brand_label, UiTheme.SIZE.header, true)
 	var header_height := maxf(_header.get_combined_minimum_size().y, _header_actions.get_combined_minimum_size().y)
-	var header_action_width := maxf(420.0, language_button.custom_minimum_size.x + settings_button.custom_minimum_size.x + 8.0)
+	# A long device name is trimmed here; the tooltip and accessible name keep it complete.
+	input_chip.custom_minimum_size.x = clampf(input_chip.get_theme_font("font").get_string_size(
+		input_chip.text, HORIZONTAL_ALIGNMENT_LEFT, -1, input_chip.get_theme_font_size("font_size")).x + 32.0, 120.0, 280.0)
+	var chip_width := input_chip.custom_minimum_size.x + 8.0 if input_chip.visible else 0.0
+	var header_action_width := maxf(420.0, chip_width + language_button.custom_minimum_size.x
+		+ settings_button.custom_minimum_size.x + 8.0)
 	_header.offset_left = inset + span
 	_header.offset_right = inset + span + 620.0
 	_header.offset_top = header_top
@@ -1179,8 +1438,12 @@ func _apply_responsive_layout() -> void:
 	_top_scrim.offset_bottom = 150.0 if compact else 176.0
 	_left_layout.offset_left = inset + span
 	_left_layout.offset_right = inset + span + rail_width
+	_place_hangar(viewport_size, inset, span, rail_width, maxf(88.0 if compact else 108.0, header_top + header_height + 16.0),
+		compact, large_text)
 	if _catalog_detail != null:
 		var detail_left := inset + span + rail_width + 32.0
+		if _hangar_mode:
+			detail_left = _hangar_panel.offset_right + 24.0
 		# Enlarged detail text needs horizontal room to wrap before it reaches the bottom of the window.
 		var detail_width := minf(viewport_size.x - detail_left - inset,
 			clampf(viewport_size.x * 0.50, 660.0, 1100.0) if large_text else clampf(viewport_size.x * 0.22, 360.0, 460.0))
@@ -1206,6 +1469,8 @@ func _apply_responsive_layout() -> void:
 	for action: Button in [statistics_button, natural_random_button, failures_button, trim_practice_button]:
 		_set_compact_action_density(action, practice_compact)
 	for button in _nav_buttons:
+		if button.get_parent() != _navigation:
+			continue # UI-40p: Radio & controls sits in the utility row on compact and enlarged-text layouts
 		button.custom_minimum_size.y = 36.0 if compact else 40.0
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_set_responsive_font(button, 20 if compact else UiTheme.SIZE.nav)
@@ -1221,7 +1486,7 @@ func _apply_responsive_layout() -> void:
 		_set_responsive_font(condition_button, 18 if compact else UiTheme.SIZE.button)
 		condition_button.custom_minimum_size.y = 38.0 if compact else 48.0
 	_set_responsive_font(_details_button, 18 if compact else UiTheme.SIZE.button)
-	for utility in [controls_button, help_button, quit_button]:
+	for utility in _utility_buttons():
 		utility.custom_minimum_size.y = 32.0 if compact else 34.0
 		utility.autowrap_mode = TextServer.AUTOWRAP_OFF
 	_set_responsive_font(control_label, 20 if compact else UiTheme.SIZE.small)
@@ -1235,6 +1500,70 @@ func _apply_responsive_layout() -> void:
 		_scroll.queue_sort()
 	if update_notice != null:
 		update_notice.offset_top = maxf(112.0, _header_actions.get_global_rect().end.y + 16.0)
+
+
+## UI-40p: Radio & controls is a destination in the rail on the desktop layout, with the input chip in the header.
+## Compact and enlarged-text layouts keep it in the pinned utility row (it never scrolls away or widens the rail)
+## and drop the chip, whose information stays in the entry's tooltip.
+func _place_controls_entry(in_navigation: bool) -> void:
+	var parent: Node = _navigation if in_navigation else _utility_row
+	if controls_button.get_parent() != parent:
+		var had_focus := controls_button.has_focus()
+		controls_button.reparent(parent, false)
+		if parent == _utility_row:
+			_utility_row.move_child(controls_button, 0)
+		if had_focus:
+			controls_button.grab_focus()
+	controls_button.theme_type_variation = "HomeNav" if in_navigation else "QuietButton"
+	# The utility row keeps its former short label, so enlarged text still fits the pinned row.
+	controls_button.text = "Radio & controls" if in_navigation else "Controls"
+	var gap := _utility_row.get_node_or_null("UtilityGap") as Control
+	if gap != null:
+		gap.visible = in_navigation
+	controls_button.size_flags_horizontal = Control.SIZE_FILL if in_navigation else Control.SIZE_EXPAND_FILL
+	for glyph in controls_button.get_children():
+		if glyph is Widgets.RowGlyph:
+			(glyph as Control).visible = in_navigation
+	if not in_navigation:
+		controls_button.remove_theme_font_size_override("font_size")
+	input_chip.visible = in_navigation
+	_link_entry_focus()
+
+
+## Keyboard/gamepad links for the rail destinations and the pinned utility row, wherever Radio & controls sits:
+## the rail is walked top to bottom, the utility row wraps left/right, and Down from the primary action enters it.
+func _link_entry_focus() -> void:
+	# Page tabs keep their own Down links into their pages; only the two rail actions are linked here.
+	var rail: Array[Button] = []
+	for button in _nav_buttons:
+		if button.get_parent() == _navigation:
+			rail.append(button)
+	for index in rail.size():
+		var button := rail[index]
+		if button != workshop_button and button != controls_button:
+			continue
+		button.focus_neighbor_top = button.get_path_to(rail[maxi(index - 1, 0)])
+		button.focus_neighbor_bottom = button.get_path_to(rail[mini(index + 1, rail.size() - 1)])
+		if button == controls_button:
+			controls_button.focus_neighbor_left = NodePath()
+			controls_button.focus_neighbor_right = NodePath()
+	var primary: Control = review_conditions_button if review_conditions_button.visible else fly_button
+	var utilities := _utility_buttons()
+	for index in utilities.size():
+		var utility := utilities[index]
+		utility.focus_neighbor_top = utility.get_path_to(primary)
+		utility.focus_neighbor_bottom = NodePath()
+		utility.focus_neighbor_left = utility.get_path_to(utilities[posmod(index - 1, utilities.size())])
+		utility.focus_neighbor_right = utility.get_path_to(utilities[(index + 1) % utilities.size()])
+	fly_button.focus_neighbor_bottom = fly_button.get_path_to(utilities[0])
+	review_conditions_button.focus_neighbor_bottom = review_conditions_button.get_path_to(utilities[0])
+
+
+func _utility_buttons() -> Array[Button]:
+	var buttons: Array[Button] = [help_button, quit_button]
+	if controls_button.get_parent() == _utility_row:
+		buttons.push_front(controls_button)
+	return buttons
 
 
 func _update_notice_focus_links() -> void:
@@ -1457,7 +1786,8 @@ func _refresh_selection() -> void:
 	aircraft_name_label.text = _aircraft_display_name()
 	aircraft_name_label.tooltip_text = tr(e.name)
 	aircraft_summary_label.text = tr(e.summary)
-	aircraft_status_label.text = tr(e.status_note)
+	aircraft_status_label.text = tr(PlayerNotes.player_note(e))
+	aircraft_status_label.tooltip_text = tr(e.status_note)
 	_update_flight_capability()
 	_update_catalog_texts()
 	if focused_catalog_index >= 0 and focused_catalog_index < _catalog_buttons.size():
@@ -1693,29 +2023,34 @@ func _update_livery() -> void:
 func _update_livery_row() -> void:
 	if _livery_row == null or _pages.size() < 2:
 		return
-	_livery_row.visible = (_pages[0].visible or _pages[1].visible) and livery_button.visible
+	# UI-40c: in its fixed corner the paint stays on every page; inside the Vehicles list it follows that page.
+	var in_corner := _livery_row.get_parent() == _preview_paint_slot
+	_livery_row.visible = (in_corner or _pages[0].visible or _pages[1].visible) and livery_button.visible
 	if livery_button.visible:
 		var selected_paint := str(_livery_choices[_livery_index()].label)
 		var action := tr("Change skin")
 		livery_button.accessibility_name = "%s · %s" % [action, selected_paint]
 		# The compact catalog scroll can be shorter than two enlarged lines.
-		livery_button.text = livery_button.accessibility_name if _pages[1].visible and UiTheme.text_scale >= 1.5 else action + "\n" + selected_paint
+		livery_button.text = livery_button.accessibility_name if not in_corner and UiTheme.text_scale >= 1.5 else action + "\n" + selected_paint
 		livery_button.tooltip_text = "%s\n%s" % [tr("Choose paint (%d)") % _livery_choices.size(), selected_paint]
 	if not is_inside_tree():
 		return
-	var selected: Button = _catalog_buttons[maxi(0, _catalog_ids.find(selected_id()))]
-	var beside_model := _pages[0].visible and _livery_row.visible
+	var selected := _catalog_focus_target()
+	var beside_model := in_corner and _livery_row.visible
 	fly_button.focus_neighbor_right = fly_button.get_path_to(livery_button if beside_model else language_button)
 	next_button.focus_neighbor_right = next_button.get_path_to(livery_button) if beside_model else NodePath()
-	_page_buttons[1].focus_neighbor_bottom = _page_buttons[1].get_path_to(livery_button if _pages[1].visible and _livery_row.visible else selected)
+	_page_buttons[1].focus_neighbor_bottom = _page_buttons[1].get_path_to(
+		livery_button if not in_corner and _pages[1].visible and _livery_row.visible else selected)
 	if beside_model:
 		livery_button.focus_neighbor_left = livery_button.get_path_to(next_button if fly_button.disabled else fly_button)
-		livery_button.focus_neighbor_top = livery_button.get_path_to(settings_button)
+		# UI-40o: under the Hangar, Up returns to the list; elsewhere it reaches the header.
+		livery_button.focus_neighbor_top = livery_button.get_path_to(selected if _hangar_mode else settings_button)
 		livery_button.focus_neighbor_bottom = NodePath()
 	else:
 		livery_button.focus_neighbor_left = NodePath()
 		livery_button.focus_neighbor_top = livery_button.get_path_to(_page_buttons[1])
 		livery_button.focus_neighbor_bottom = livery_button.get_path_to(selected)
+	_update_hangar_bottom()
 
 
 func _livery_index() -> int:
@@ -1849,6 +2184,7 @@ func _notification(what: int) -> void:
 		set_landscape(landscape_id)
 		_show_start_choice(start_choice) # re-render the translated label; never re-record the remembered choice
 		_update_texts()
+		_apply_hangar_filter() # UI-40o: the Hangar counter is built with tr()
 	elif what == NOTIFICATION_THEME_CHANGED and is_node_ready():
 		_apply_responsive_layout.call_deferred()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN and is_node_ready():
@@ -2077,7 +2413,8 @@ func _update_texts() -> void:
 	aircraft_name_label.text = _aircraft_display_name()
 	aircraft_name_label.tooltip_text = tr(shown.name)
 	aircraft_summary_label.text = tr(shown.summary)
-	aircraft_status_label.text = tr(shown.status_note)
+	aircraft_status_label.text = tr(PlayerNotes.player_note(shown))
+	aircraft_status_label.tooltip_text = tr(shown.status_note)
 	_update_flight_capability()
 	_update_catalog_texts()
 	_update_details_disclosure()
@@ -2207,6 +2544,18 @@ func _update_control() -> void:
 	else:
 		control_label.text = tr("Flight input: %s") % _flight_device_name
 		control_label.tooltip_text = tr("Flight controller: %s. Review your bindings in Controls.") % _flight_device_name
+	if input_chip != null:
+		var chip_text := "● " + (tr("Keyboard") if _flight_device_name.is_empty() else _flight_device_name)
+		var chip_changed := chip_text != input_chip.text
+		input_chip.text = chip_text
+		input_chip.tooltip_text = control_label.tooltip_text
+		input_chip.accessibility_name = control_label.text
+		if _flight_device_name.is_empty():
+			input_chip.remove_theme_color_override("font_color")
+		else:
+			input_chip.add_theme_color_override("font_color", UiTheme.FOCUS) # a selected device reads as ready
+		if chip_changed and is_inside_tree():
+			_apply_responsive_layout.call_deferred()
 	if _menu_device_name.is_empty():
 		controller_prompt_label.text = tr("Menu input: Keyboard")
 		controller_prompt_label.tooltip_text = tr("Press A / Cross to claim gamepad menu controls.")
@@ -2258,12 +2607,10 @@ func _update_launch_admission() -> bool:
 	fly_button.focus_mode = Control.FOCUS_NONE if fly_button.disabled else Control.FOCUS_ALL
 	if review_conditions_button.visible:
 		review_conditions_button.focus_neighbor_top = review_conditions_button.get_path_to(start_button if _pages[0].visible else _page_buttons[1] if _pages[1].visible else _page_buttons[2])
-		review_conditions_button.focus_neighbor_bottom = review_conditions_button.get_path_to(controls_button)
 		if fly_had_focus:
 			review_conditions_button.grab_focus()
 	var primary_action: Control = review_conditions_button if review_conditions_button.visible else fly_button
-	for utility: Control in [controls_button, help_button, quit_button]:
-		utility.focus_neighbor_top = utility.get_path_to(primary_action)
+	_link_entry_focus()
 	start_button.focus_neighbor_bottom = start_button.get_path_to(primary_action)
 	if is_node_ready():
 		_update_notice_focus_links()

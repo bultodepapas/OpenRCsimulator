@@ -43,12 +43,12 @@ func _run() -> void:
 	_check("Pause names the aircraft and the field", pause != null and pause.identity_label.visible
 		and pause.identity_label.text.contains(tr(Catalog.entry(Catalog.DEFAULT_ID).name))
 		and pause.identity_label.text.contains("Club field"), pause.identity_label.text if pause != null else "no Pause")
-	_check("Change aircraft is a top-level action directly above Exit options", pause != null and pause.change_aircraft_button.visible
-		and pause.change_aircraft_button.get_parent() == pause.exit_options_button.get_parent()
-		and pause.change_aircraft_button.get_index() == pause.exit_options_button.get_index() - 1)
+	_check("Change aircraft is an always-visible This-flight action", pause != null and pause.change_aircraft_button.visible
+		and pause.change_aircraft_button.get_parent() == pause.essentials_container
+		and pause.change_aircraft_button.is_visible_in_tree())
 
 	# Three activations from Pause: Change aircraft, the next catalog entry, Fly.
-	for i in 8: # Restart, Session options, Settings, Help, Change aircraft
+	for i in 12: # Restart, then the This-flight rows down to Change aircraft
 		if ui.focus_name() == "ChangeAircraft":
 			break
 		await ui.tap(KEY_DOWN)

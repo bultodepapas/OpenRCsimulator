@@ -60,7 +60,6 @@ func _run() -> void:
 	var pause := PauseMenu.new()
 	stack.push("pause", pause)
 	pause.controls_requested.connect(_open)
-	pause.session_options_button.pressed.emit()
 	for _frame in 3:
 		await process_frame
 	for device: int in [-1, 7]:

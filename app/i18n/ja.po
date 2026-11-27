@@ -13877,3 +13877,96 @@ msgstr "草の陰影を簡略化しながら、滑走路の標示と地形の目
 
 msgid "Simple"
 msgstr "簡易"
+
+msgid "THIS FLIGHT"
+msgstr "このフライト"
+
+msgid "Radio & controls"
+msgstr "送信機と操作"
+
+msgid "Radio & controls · %s"
+msgstr "送信機と操作 · %s"
+
+msgid "not connected"
+msgstr "未接続"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "送信機またはゲームパッドの設定、キャリブレーション、テスト。"
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "時間 %s · 高度 %s · 対気速度 %s"
+
+msgid "Back to the start with the same setup."
+msgstr "同じ設定でスタート地点に戻ります。"
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "このフライトを終了し、機体カタログを開きます。"
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "ポーズ：機体の変更、ホームに戻る、またはこのフライトの調整。"
+
+msgid "Reference flight model."
+msgstr "基準となる飛行モデルです。"
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "実験的：推定した物理特性で、まだ実機と比較されていません。"
+
+msgid "Model only; it cannot fly yet."
+msgstr "モデルのみで、まだ飛行できません。"
+
+msgid "About"
+msgstr "このソフトについて"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "クラブフィールドでは、Ugly Stikの僚機が1～3機、実験的に周回飛行します。初期設定ではオフです。まずは1機から始めてください。ホーム → フライト詳細 → 僚機、または一時停止メニューから開けます。"
+
+msgid "FLIGHT COMPANIONS"
+msgstr "僚機"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "送信機またはゲームパッドを接続"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. USB または Bluetooth で接続します。EdgeTX 送信機では USB Joystick (Classic) を選び、RF をオフにします。"
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. 「フライトコントローラー」で選びます。"
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. 「このデバイスを設定…」を押して、スティックモード、校正、ライブテスト、主なスイッチを設定します。"
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "以前のバージョンのプロファイルを復元するか、不具合報告用に診断情報を書き出します。"
+
+msgid "HANGAR"
+msgstr "格納庫"
+
+msgid "Airplanes"
+msgstr "飛行機"
+
+msgid "Helicopters"
+msgstr "ヘリコプター"
+
+msgid "Drones"
+msgstr "ドローン"
+
+msgid "Airships"
+msgstr "飛行船"
+
+msgid "Cars & trucks"
+msgstr "カー・トラック"
+
+msgid "Search by name"
+msgstr "名前で検索"
+
+msgid "%d of %d"
+msgstr "%d / %d"
+
+msgid "%d vehicles"
+msgstr "%d 機種"
+
+msgid "No vehicle matches this search."
+msgstr "検索に一致する機体はありません。"
+
+msgid "Hangar"
+msgstr "格納庫"

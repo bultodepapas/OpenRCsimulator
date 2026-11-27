@@ -4,6 +4,7 @@ extends CanvasLayer
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const PlayerNotes := preload("res://ui/player_notes.gd") # UI-40d
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 
@@ -278,7 +279,8 @@ func _refresh_scenario() -> void:
 
 	var entry: Dictionary = Catalog.entry(str(_scenario.get("aircraft_id", "")))
 	aircraft_name_label.text = tr(str(entry.get("name", "")))
-	aircraft_status_label.text = tr(str(entry.get("status_note", "")))
+	aircraft_status_label.text = tr(PlayerNotes.player_note(entry)) # UI-40d: the technical note stays in the tooltip
+	aircraft_status_label.tooltip_text = tr(str(entry.get("status_note", "")))
 	if str(_scenario.get("provenance", "generated")) in ["customized", "custom_from_natural_random"]:
 		aircraft_status_label.text = "%s\n%s" % [tr("Custom from Natural Random"), aircraft_status_label.text]
 

@@ -292,7 +292,7 @@ func run() -> void:
 				# The blocked state keeps keyboard access to the corrective action.
 				h.set_weather_config(Weather.spatial_defaults())
 				await frames()
-				h.controls_button.grab_focus()
+				h._utility_buttons()[0].grab_focus() # UI-40p: Radio & controls may sit in the rail, above
 				await ui.tap(KEY_UP)
 				check("%s/%.1f page %d directional navigation reaches corrective action" % [locale, scale, page],h.review_conditions_button.has_focus())
 			h.set_weather_config(Weather.defaults())

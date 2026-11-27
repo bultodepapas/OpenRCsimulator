@@ -185,7 +185,18 @@ func _run() -> void:
 			and trial_control != null and trial_control.disabled
 			and scale_reason != null and scale_reason.text.contains("finite-glow installation data must remain fixed")
 			and host.flight == null)
+	# UI-40j: the Workshop reopens on the page last used in this app run.
+	editor._set_page("lighting")
 	host.close_workshop()
+	await ui.settle()
+	host.open_workshop()
+	await ui.settle()
+	var reopened: Node = host.screens.top()
+	check("Workshop reopens on the page last used", reopened != editor and reopened.call("current_page") == "lighting",
+		str(reopened.call("current_page")))
+	reopened._set_page("setup")
+	host.close_workshop()
+	await ui.settle()
 	host.home.set_start_choice("airborne")
 	host.start_flight()
 	check("original aircraft still starts", host.flight != null and host.flight.startup_error.is_empty())

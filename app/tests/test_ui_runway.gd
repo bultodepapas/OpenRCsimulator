@@ -201,8 +201,6 @@ func _home_fly_roundtrip_and_radio() -> void:
 	for i in 12: # Other menu tracks may add actions; still reach End through real key events.
 		if ui.focus_name() == "End":
 			break
-		if ui.focus_name() == "ExitOptions":
-			await ui.tap(KEY_ENTER)
 		await ui.tap(KEY_DOWN)
 	_check("pause navigation reaches End", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)

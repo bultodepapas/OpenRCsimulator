@@ -198,7 +198,7 @@ func run() -> void:
 			await settle()
 			var flight_setup: Node = app.screens.top()
 			check(flight_setup.calibrate_button.visible and flight_setup.calibrate_button.text == flight_setup.tr("Save controller settings and calibrate") and flight_setup.calibration_scope_help.text == flight_setup.tr("The profile is saved and device selections are applied before calibration. Cancelling keeps them."), "%s %.1f live flight discloses the save boundary" % [flight_locale, flight_scale])
-			flight_setup.legacy_import_button.grab_focus()
+			flight_setup.setup_assistant_button.grab_focus() # UI-40p: legacy recovery moved under Advanced
 			await settle()
 			await ui.tap(KEY_TAB)
 			await settle()
@@ -219,7 +219,7 @@ func run() -> void:
 				Input.parse_input_event(wheel)
 				await settle()
 				check(focus_scroll.scroll_vertical < scroll_before_wheel and flight_setup.calibrate_button.has_focus() and flight_setup.current_profile() == draft_before_scroll and roles_before_scroll == [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")], "explicit wheel scroll wins while focused and preserves draft and roles")
-				flight_setup.legacy_import_button.grab_focus()
+				flight_setup.setup_assistant_button.grab_focus()
 				await settle()
 				for pressed in [true, false]:
 					var pad := InputEventJoypadButton.new()

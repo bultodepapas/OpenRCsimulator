@@ -413,6 +413,12 @@ func unit_system() -> String:
 	return Units.resolve(settings.units, language)
 
 
+## UI-40a: a copy of the last accepted telemetry sample and the resolved unit system, for the Pause summary line.
+## Read-only: nothing here feeds back into the flight.
+func pause_snapshot() -> Dictionary:
+	return {"telemetry": _last_telemetry.duplicate(), "system": unit_system()}
+
+
 ## Every frame: advances the refresh clock; true when the numbers are due (then call refresh_numbers()). Building
 ## the full snapshot only at 10 Hz keeps the per-frame cost to the sticks (HUD-12).
 func tick(delta: float) -> bool:

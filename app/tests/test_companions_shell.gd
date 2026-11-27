@@ -491,11 +491,7 @@ func _check_capture_shell() -> void:
 
 func _open_pause_companions(app: Node) -> void:
 	var menu: CanvasLayer = app.pause_menu
-	if not menu.session_options_container.visible:
-		menu.session_options_button.grab_focus()
-		await ui.tap(KEY_ENTER)
-		await ui.settle()
-	menu.companions_button.grab_focus()
+	menu.companions_button.grab_focus() # UI-40a: Pause shows every action without a disclosure
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 

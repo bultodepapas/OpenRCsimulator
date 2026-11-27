@@ -148,6 +148,10 @@ var _camera_aids_picker: OptionButton
 var _camera_magnifier_picker: OptionButton
 var _camera_invert_toggle: CheckButton
 var _graphics_info: Label
+## UI-40f: the one-line graphics summary shown on the page; the full diagnostic text lives under Details.
+var _graphics_summary: Label
+## UI-40e: the focused option's explanation (its tooltip), shown in the status line for keyboard and gamepad users.
+var _focus_description := ""
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
 var _opaque_toggle: CheckButton
@@ -239,6 +243,7 @@ func _notification(what: int) -> void:
 
 func _ready() -> void:
 	_surface.resized.connect(_update_layout)
+	get_viewport().gui_focus_changed.connect(_on_focus_changed) # UI-40e; disconnected when Settings is freed
 	_update_layout()
 	_refresh_shadow_info()
 	# UI-35a (UI-30 AL-4): start on the first category, so a pad or keyboard moves straight into the settings.
@@ -425,7 +430,9 @@ func _build() -> void:
 	_shadow_group_button.toggle_mode = true
 	_shadow_group_button.toggled.connect(func(expanded: bool) -> void:
 		_shadow_group.visible = expanded
-		_refresh_shadow_group_button())
+		_refresh_shadow_group_button()
+		if expanded:
+			_reveal_details.call_deferred())
 	_shadow_group = VBoxContainer.new()
 	_shadow_group.name = "ShadowGroup"
 	_shadow_group.add_theme_constant_override("separation", 10)
@@ -480,7 +487,10 @@ func _build() -> void:
 		_draft.aircraft_lighting_show_vfx = enabled
 		_on_presentation_option_changed())
 	_add_row(lighting_page, "Aircraft show effects", _lighting_vfx_toggle)
-	graphics_page.add_child(_graphics_info)
+	# UI-40f: the page shows a one-line summary; the reconstruction/Reflex diagnostics move under Details.
+	_graphics_summary = _label("", "SecondaryLabel", true)
+	_graphics_summary.name = "GraphicsSummary"
+	graphics_page.add_child(_graphics_summary)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
 	defaults_button.tooltip_text = tr("Returns graphics settings to the recommendation for this GPU and measures it again on the next flight.")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
@@ -495,6 +505,14 @@ func _build() -> void:
 		graphics_restart_requested.emit("standard" if HighGraphics.active() else "high"))
 	graphics_actions.add_child(_graphics_restart_button)
 	graphics_page.add_child(_shadow_group)
+	# UI-40f: quality first; the vendor-specific Reflex option and the diagnostics sit under Details. FSR sharpness
+	# stays on the page because it matters as soon as an FSR mode is chosen.
+	graphics_page.move_child(_scene_detail_picker.get_parent(), 0)
+	var reflex_row := _reflex_picker.get_parent()
+	reflex_row.reparent(_shadow_group, false)
+	_shadow_group.move_child(reflex_row, 0)
+	_graphics_info.name = "GraphicsDiagnostics"
+	_shadow_group.add_child(_graphics_info)
 
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
@@ -1142,6 +1160,19 @@ func _restore_shadow_defaults() -> void:
 	_sync_controls()
 
 
+## UI-40f: opening Details scrolls its first rows into view, so the press visibly does something.
+func _reveal_details(frames_left := 2) -> void:
+	if not is_inside_tree() or _shadow_group == null or not _shadow_group.is_visible_in_tree():
+		return
+	var body := _scroll.get_global_rect()
+	var top := _shadow_group.get_global_rect().position.y
+	if top > body.end.y - 120.0:
+		_scroll.scroll_vertical += ceili(top - body.position.y - 8.0)
+	var next := _reveal_details.bind(frames_left - 1)
+	if frames_left > 0 and not get_tree().process_frame.is_connected(next):
+		get_tree().process_frame.connect(next, CONNECT_ONE_SHOT)
+
+
 func _refresh_shadow_group_button() -> void:
 	if _shadow_group_button != null:
 		_shadow_group_button.text = tr("Details") + ("  −" if _shadow_group_button.button_pressed else "  +")
@@ -1232,6 +1263,9 @@ func _refresh_graphics_info() -> void:
 		_graphics_info.text += "\n" + _reflex_unavailable_text(str(reflex.reason))
 	elif reflex.pending:
 		_graphics_info.text += "\n" + tr("Reflex mode change is waiting for the next frame.")
+	if _graphics_summary != null:
+		_graphics_summary.text = _graphics_info.text.get_slice("\n", 0)
+		_graphics_summary.tooltip_text = _graphics_info.tooltip_text
 
 
 ## VQ-07h-A7: Automatic's choice for this GPU, how far its estimate is trusted and the first-flight measurement.
@@ -1963,6 +1997,30 @@ func _button(source: String, variation := "", node_name := "") -> Button:
 	return button
 
 
+## UI-40e: keyboard/gamepad users see the same explanation a mouse user gets as a tooltip.
+func _on_focus_changed(focused: Control) -> void:
+	var description := ""
+	if focused != null and _scroll != null and _scroll.is_ancestor_of(focused):
+		description = focused.tooltip_text
+		if description.is_empty() and focused.get_parent() != null:
+			description = (focused.get_parent() as Control).tooltip_text if focused.get_parent() is Control else ""
+	if description == _focus_description:
+		return
+	_focus_description = description
+	_refresh_status_text()
+	_reveal_after_status_change()
+
+
+## The status line can change height with the description; keep the focused control in view once layout settles.
+func _reveal_after_status_change(frames_left := 2) -> void:
+	if not is_inside_tree():
+		return
+	_reveal_focused_control()
+	var next := _reveal_after_status_change.bind(frames_left - 1)
+	if frames_left > 0 and not get_tree().process_frame.is_connected(next):
+		get_tree().process_frame.connect(next, CONNECT_ONE_SHOT)
+
+
 func _set_status(state: String, value := 0) -> void:
 	_status_state = state
 	_status_value = value
@@ -1985,7 +2043,9 @@ func _refresh_status_text() -> void:
 		"calibration_reset_error": _status.text = tr("Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries.") % _status_value
 		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
 		# UI-36 (UI-30 SC-1): one transaction, stated plainly; Keep changes is the only commit.
+		# UI-40e: with an option focused, its explanation replaces the idle note (same line, no layout shift).
 		_: _status.text = tr("Unsaved preview: Keep changes saves it, Close discards it.") if _has_pending_changes() \
+			else _focus_description if not _focus_description.is_empty() \
 			else tr("Changes preview at once. Keep changes saves them; Close discards them.")
 	if _save_error != OK:
 		_status.text = (tr("Could not save settings (error %d).") % _save_error) + ("\n" + _status.text if not _status.text.is_empty() else "")

@@ -1353,6 +1353,7 @@ func _prepare_flight() -> void:
 		add_child(_accident_report)
 		_accident_incident.assessment_changed.connect(_on_accident_assessment)
 		_accident_report.restart_requested.connect(_request_restart)
+		_accident_report.options_requested.connect(func() -> void: pause_requested.emit()) # UI-40b: same as Escape
 		_accident_report.costing_mode_requested.connect(_on_accident_costing_mode_requested)
 		_accident_report.purchase_package_requested.connect(_on_accident_purchase_package_requested)
 		session.contact_events_changed.connect(_on_accident_contacts)

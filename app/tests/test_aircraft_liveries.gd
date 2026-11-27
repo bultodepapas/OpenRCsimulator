@@ -300,13 +300,15 @@ func _test_paint_layout() -> void:
 				var scroll: ScrollContainer = home.get_node("HomeRail/HomeContentScroll")
 				var button: Button = home.livery_button
 				if scale == 1.0:
+					# UI-40c: the paint keeps one fixed corner beside the rail on every page.
 					var paint_rect := button.get_global_rect()
-					_check("paint remains visible after revealing the Corsair: " + label,
-						button.is_visible_in_tree() and paint_rect.position.y >= 0.0
-						and paint_rect.end.y <= scroll.get_global_rect().position.y + 0.5
+					var view := Rect2(Vector2.ZERO, Vector2(viewport_size))
+					_check("paint stays in its corner after revealing the Corsair: " + label,
+						button.is_visible_in_tree() and view.encloses(paint_rect)
+						and not paint_rect.intersects(home._left_layout.get_global_rect())
 						and scroll.size.y > 54.0, str(paint_rect))
-					_check("Aircraft navigation reaches paint by keyboard: " + label,
-						home._page_buttons[1].get_node(home._page_buttons[1].focus_neighbor_bottom) == button)
+					_check("Fly reaches the paint by keyboard on Vehicles: " + label,
+						home.fly_button.get_node(home.fly_button.focus_neighbor_right) == button)
 				else:
 					home._page_buttons[1].grab_focus()
 					for frame in 3: await process_frame
@@ -329,7 +331,8 @@ func _test_paint_layout() -> void:
 				await ui.tap(KEY_RIGHT)
 				_check("Flight reaches the skin action from Fly: " + label, button.has_focus())
 				home._select_page(2)
-				_check("Practice hides the skin action: " + label, not button.is_visible_in_tree())
+				_check("Practice keeps the skin action in its corner: " + label,
+					button.is_visible_in_tree() == (scale == 1.0 or button.get_parent().get_parent() == home._preview_paint_slot))
 				home._select_page(1)
 				home.set_aircraft(STIK)
 				_check("single-paint aircraft keeps the skin workflow reachable: " + label,

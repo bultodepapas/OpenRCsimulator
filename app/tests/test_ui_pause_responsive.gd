@@ -63,20 +63,12 @@ func _run() -> void:
 			TranslationServer.set_locale(locale)
 			for size: Vector2i in viewport_sizes:
 				viewport.size = size
-				pause._toggle_group("")
 				pause.refresh()
 				await process_frame
 				await process_frame
 				await _check_default_layout(pause, size, scale, locale)
 				await _check_session_options(pause, size, scale, locale)
 				await _check_exit_options(pause, size, scale, locale)
-				pause._on_back_requested()
-				await process_frame
-				_check("%s %s %d×%d Back collapses Exit options and keeps its disclosure reachable" % [
-					locale, _scale_label(scale), size.x, size.y,
-				], not pause.exit_options_container.visible
-					and pause.exit_options_button.has_focus()
-					and _scroll_contains(pause, pause.exit_options_button), _layout_detail(pause))
 				var resumes_before := resume_requests.size()
 				pause._on_back_requested()
 				_check("%s %s %d×%d Back from Pause requests Resume" % [
@@ -95,7 +87,7 @@ func _run() -> void:
 		viewport.size = size
 		await process_frame
 		await process_frame
-		var expected_width := minf(768.0, maxf(384.0, size.x * 0.45))
+		var expected_width := minf(PauseMenu.WIDTH * 2.0, maxf(PauseMenu.WIDTH, size.x * 0.45))
 		_check("live 200%% resize to %d×%d recomputes the rail width" % [size.x, size.y],
 			is_equal_approx(_panel(pause).size.x, expected_width)
 			and _panel(pause).get_global_rect().end.x <= size.x + 1.0, _layout_detail(pause))
@@ -108,7 +100,7 @@ func _run() -> void:
 		screen.theme = ScreenTheme.build()
 		await process_frame
 		await process_frame
-		var expected_width := 384.0 if scale == 1.0 else 768.0
+		var expected_width := float(PauseMenu.WIDTH) if scale == 1.0 else PauseMenu.WIDTH * 2.0
 		_check("live %s → theme change → %s recomputes the rail width" % [
 			_scale_label(2.0 if scale == 1.0 else 1.0), _scale_label(scale),
 		], is_equal_approx(_panel(pause).size.x, expected_width), _layout_detail(pause))
@@ -128,7 +120,7 @@ func _check_default_layout(pause: CanvasLayer, size: Vector2i, scale: float, loc
 	var scroll := _scroll(pause)
 	var rail_rect := panel.get_global_rect()
 	var title: Control = (scroll.get_child(0) as VBoxContainer).get_child(0) as Control
-	var expected_width := 384.0 if scale == 1.0 else minf(768.0, maxf(384.0, size.x * 0.45))
+	var expected_width := float(PauseMenu.WIDTH) if scale == 1.0 else minf(PauseMenu.WIDTH * 2.0, maxf(PauseMenu.WIDTH, size.x * 0.45))
 	_check("%s %s %d×%d keeps the sidebar within its intended width" % [
 		locale, _scale_label(scale), size.x, size.y,
 	], is_equal_approx(rail_rect.size.x, expected_width)
@@ -176,7 +168,7 @@ func _check_default_layout(pause: CanvasLayer, size: Vector2i, scale: float, loc
 
 
 func _check_session_options(pause: CanvasLayer, size: Vector2i, scale: float, locale: String) -> void:
-	pause._toggle_group("session")
+	pause.set_more_options_open(true) # UI-40a: short windows fold these rows under More options
 	await process_frame
 	var scroll := _scroll(pause)
 	var target: Button = pause.overlays_button
@@ -186,10 +178,10 @@ func _check_session_options(pause: CanvasLayer, size: Vector2i, scale: float, lo
 		locale, _scale_label(scale), size.x, size.y,
 	], pause.session_options_container.visible and target.is_visible_in_tree()
 		and target.has_focus() and scroll.get_global_rect().encloses(target.get_global_rect()), _layout_detail(pause))
+	pause.set_more_options_open(false)
 
 
 func _check_exit_options(pause: CanvasLayer, size: Vector2i, scale: float, locale: String) -> void:
-	pause._toggle_group("exit")
 	await process_frame
 	var scroll := _scroll(pause)
 	var end_button: Button = pause.end_button

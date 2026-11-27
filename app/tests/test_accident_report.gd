@@ -113,6 +113,12 @@ func _cost_plan_behavior() -> void:
 	view.show_assessment(source, true)
 	await _ui.settle()
 	_check("normal report offers trusted costing controls", view._cost_actions.visible and view._purchase_selector.visible)
+	# UI-40b: the cost options fold with the breakdown (the Lumber report opens it by default).
+	view._set_expanded(false)
+	_check("collapsing the breakdown folds the cost options", not view._cost_actions.visible
+		and not view._visible_action_controls().has(view._diy_button))
+	view._set_expanded(true)
+	_check("expanding the breakdown shows the cost options again", view._cost_actions.visible)
 	_check("automatic cash scope includes services without implying parts only", view._caption_label.text.begins_with("Local game estimate.") and view._caption_label.text.contains("DIY time"))
 	var details := _details_text(view)
 	_check("Lumber selected package retains surplus, overlap and source caveat", details.contains("Included surplus units: 1") and details.contains("Additional duplicate supplied units: 1") and details.contains("Merchant listing was backorder"), details)
@@ -539,6 +545,8 @@ func _report_behavior() -> void:
 	var inspect_events: Array[String] = []
 	report.restart_requested.connect(func() -> void: restart_events.append("restart"))
 	report.inspect_requested.connect(func() -> void: inspect_events.append("inspect"))
+	var options_events: Array[String] = []
+	report.options_requested.connect(func() -> void: options_events.append("options"))
 	var complete: Dictionary = {
 		"identity": {"aircraft_id": "trainer-v2", "incident_id": "evt-007"},
 		"currency": "USD",
@@ -570,7 +578,7 @@ func _report_behavior() -> void:
 	report.show_assessment(complete, true)
 	await _ui.settle()
 	_check_live_panel_bounds(report, "collapsed terminal card")
-	_check("terminal report takes keyboard focus on Inspect and owns controller menu", _ui.focus_name() == "InspectWreck"
+	_check("terminal report takes keyboard focus on Restart and owns controller menu", _ui.focus_name() == "RestartFlight"
 		and report.wants_controller_menu()
 		and ((report.find_child("ReportColumn", true, false) as VBoxContainer).get_child(0).get_child(0) as Label).text == "ACCIDENT REPORT"
 		and report.find_child("RestartFlight", true, false).visible, _ui.focus_name())
@@ -596,7 +604,9 @@ func _report_behavior() -> void:
 	report.show_assessment(complete, true)
 	await _ui.settle()
 	var breakdown_button := report.find_child("DamageBreakdown", true, false) as Button
-	_check("controller navigation reaches the details action", report.controller_action("next") and _ui.focus_name() == "DamageBreakdown")
+	# UI-40b: the card opens on Restart; Inspect and the breakdown follow.
+	_check("controller navigation reaches the details action", report.controller_action("next") and _ui.focus_name() == "InspectWreck"
+		and report.controller_action("next") and _ui.focus_name() == "DamageBreakdown")
 	_check("controller accept expands the breakdown", report.controller_action("accept")
 		and report.find_child("DamageDetailsScroll", true, false).visible)
 	await _ui.settle()
@@ -654,6 +664,13 @@ func _report_behavior() -> void:
 	_check("Restart button signal emits and keeps the report open for caller handling", restart_events.size() == 1
 		and report.find_child("AccidentReportCard", true, false).visible, "count=%d focus=%s" % [restart_events.size(), _ui.focus_name()])
 	_check("controller restart emits the same signal", report.controller_action("restart") and restart_events.size() == 2)
+	var restart_row := restart_button.get_parent()
+	_check("Restart is the primary action with its R key beside it", restart_button.theme_type_variation == "PrimaryButton"
+		and restart_row.find_child("KeyHint", false, false) != null and restart_row.get_index() == 0)
+	var options_button := report.find_child("MoreOptions", true, false) as Button
+	options_button.pressed.emit()
+	_check("More options asks for Pause once and keeps the report", options_events.size() == 1
+		and report.find_child("AccidentReportCard", true, false).visible)
 	var inspect_button := report.find_child("InspectWreck", true, false) as Button
 	inspect_button.pressed.emit()
 	_check("Inspect emits its signal and minimizes to a visible reopen control", inspect_events.size() == 1
@@ -666,9 +683,10 @@ func _report_behavior() -> void:
 	_check("controller accept reopens the terminal report", report.controller_action("accept"))
 	_check("reopen restores the persistent report", report.find_child("AccidentReportCard", true, false).visible
 		and not reopen_button.visible and report.wants_controller_menu())
-	_check("controller navigation aliases move through the report actions", report.controller_action("navigate_down")
-		and _ui.focus_name() == "DamageBreakdown"
-		and report.controller_action("navigate_right") and _ui.focus_name() == "RestartFlight"
+	_check("controller navigation aliases move through the report actions", _ui.focus_name() == "RestartFlight"
+		and report.controller_action("navigate_down") and _ui.focus_name() == "InspectWreck"
+		and report.controller_action("navigate_right") and _ui.focus_name() == "DamageBreakdown"
+		and report.controller_action("navigate_right") and _ui.focus_name() == "MoreOptions"
 		and report.controller_action("navigate_up") and _ui.focus_name() == "DamageBreakdown"
 		and report.controller_action("navigate_left") and _ui.focus_name() == "InspectWreck")
 	_check("controller back collapses to the reopen control and yields the menu", report.controller_action("back")
@@ -702,6 +720,12 @@ func _report_behavior() -> void:
 	_check("controller details and cancel work for the archived report", report.controller_action("details")
 		and report.find_child("DamageDetailsScroll", true, false).visible and report.controller_action("cancel")
 		and report.find_child("ReopenAccidentReport", true, false).visible)
+	# UI-40b: an archived (read-only) report hides Restart; the next live report must show it again with its key row.
+	report.show_assessment(complete, true)
+	await _ui.settle()
+	_check("a live report after an archived one restores Restart and More options",
+		(report.find_child("RestartFlight", true, false) as Control).is_visible_in_tree()
+		and (report.find_child("MoreOptions", true, false) as Control).is_visible_in_tree())
 	await _repair_details_display(report)
 	report.clear_report()
 	_check("clear_report removes the report intentionally", not report.find_child("AccidentReportSurface", true, false).visible
@@ -844,7 +868,7 @@ func _check_live_panel_bounds(report: Node, label: String) -> void:
 		"panel=%s surface=%s" % [str(rect), str(surface_rect)])
 	var action_bounds_fit := true
 	var action_report := PackedStringArray()
-	for action_name: String in ["InspectWreck", "DamageBreakdown", "RestartFlight", "HideArchivedReport"]:
+	for action_name: String in ["RestartFlight", "InspectWreck", "DamageBreakdown", "MoreOptions", "HideArchivedReport"]:
 		var action := report.find_child(action_name, true, false) as Control
 		if action == null or not action.visible:
 			continue

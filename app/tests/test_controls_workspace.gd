@@ -195,7 +195,19 @@ func _test_keyboard_read_only() -> void:
 	var setup: Node = await _open()
 	(setup.workspace.card_for(-1) as Button).pressed.emit()
 	await _settle()
-	for section: String in ["profile", "axes", "aux", "buttons"]:
+	# UI-40p: Profile and Extra channels have nothing to show for the fixed keyboard map; their tabs hide and
+	# Devices guides a first radio connection instead.
+	_check("keyboard hides the empty Profile and Extra channels tabs", not setup._section_buttons.profile.visible
+		and not setup._section_buttons.aux.visible and setup._section_buttons.axes.visible and setup._section_buttons.buttons.visible)
+	setup.select_section("devices")
+	await _settle()
+	_check("keyboard Devices shows the connection guide", setup.connect_guide.is_visible_in_tree())
+	for section: String in ["profile", "aux"]:
+		setup.select_section(section, true)
+		await _settle()
+		_check("%s falls back to Devices with the keyboard" % section, setup._selected_section == "devices"
+			and setup.flight_device_picker.has_focus(), str(root.gui_get_focus_owner()))
+	for section: String in ["axes", "buttons"]:
 		setup.select_section(section, true)
 		await _settle()
 		var block: Control = setup.find_child("KeyboardReadOnly_%s" % section, true, false)
@@ -214,6 +226,16 @@ func _test_keyboard_read_only() -> void:
 	await _settle()
 	_check("a controller restores its editors", (setup.find_child("EditablePage_buttons", true, false) as Control).visible
 		and setup.action_filter.has_focus())
+	_check("a controller restores every tab and hides the connection guide", setup._section_buttons.profile.visible
+		and setup._section_buttons.aux.visible and not setup.connect_guide.visible)
+	_check("Advanced folds legacy recovery and diagnostics", not setup.devices_advanced_group.visible
+		and setup.devices_advanced_group.is_ancestor_of(setup.legacy_import_button)
+		and setup.devices_advanced_group.is_ancestor_of(setup.find_child("ExportControllerDiagnostics", true, false)))
+	setup.select_section("devices")
+	setup.set_devices_advanced_open(true)
+	await _settle()
+	_check("Advanced opens to the recovery and export actions", setup.legacy_import_button.is_visible_in_tree()
+		and setup.devices_advanced_button.button_pressed)
 	setup.free()
 	await process_frame
 

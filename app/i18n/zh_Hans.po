@@ -13826,3 +13826,96 @@ msgstr "简化草地着色，保留跑道标记和地形参照。"
 
 msgid "Simple"
 msgstr "简易"
+
+msgid "THIS FLIGHT"
+msgstr "本次飞行"
+
+msgid "Radio & controls"
+msgstr "遥控器与控制"
+
+msgid "Radio & controls · %s"
+msgstr "遥控器与控制 · %s"
+
+msgid "not connected"
+msgstr "未连接"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "设置、校准并测试你的遥控器或手柄。"
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "时间 %s · 高度 %s · 空速 %s"
+
+msgid "Back to the start with the same setup."
+msgstr "以相同设置回到起点。"
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "结束本次飞行并打开飞机目录。"
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "暂停：更换飞机、返回主界面或调整本次飞行。"
+
+msgid "Reference flight model."
+msgstr "参考飞行模型。"
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "实验性：物理特性为估算值，尚未与真实飞机对比。"
+
+msgid "Model only; it cannot fly yet."
+msgstr "仅有模型，暂时无法飞行。"
+
+msgid "About"
+msgstr "关于"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "俱乐部机场提供 1–3 架实验性的 Ugly Stik 飞行伙伴，它们会绕场飞行。默认关闭；建议从一架开始。可在“主界面 → 更多飞行详情”或暂停菜单中打开“飞行伙伴”。"
+
+msgid "FLIGHT COMPANIONS"
+msgstr "飞行伙伴"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "连接遥控器或手柄"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. 通过 USB 或蓝牙连接。EdgeTX 遥控器请选择 USB Joystick (Classic) 并关闭射频。"
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. 将其选为“飞行控制器”。"
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. 点击“设置此设备…”，完成摇杆模式、校准、实时测试和主要开关。"
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "从旧版本恢复配置文件，或导出诊断信息用于错误报告。"
+
+msgid "HANGAR"
+msgstr "机库"
+
+msgid "Airplanes"
+msgstr "固定翼"
+
+msgid "Helicopters"
+msgstr "直升机"
+
+msgid "Drones"
+msgstr "无人机"
+
+msgid "Airships"
+msgstr "飞艇"
+
+msgid "Cars & trucks"
+msgstr "车辆"
+
+msgid "Search by name"
+msgstr "按名称搜索"
+
+msgid "%d of %d"
+msgstr "%d / %d"
+
+msgid "%d vehicles"
+msgstr "%d 个载具"
+
+msgid "No vehicle matches this search."
+msgstr "没有符合搜索条件的载具。"
+
+msgid "Hangar"
+msgstr "机库"

@@ -524,11 +524,6 @@ func _menu_phase(screen_name: String) -> void:
 			return
 		app.pause_menu.settings_button.pressed.emit()
 	else:
-		if not app.pause_menu.session_options_container.visible:
-			if not _usable_menu_button(app.pause_menu.session_options_button):
-				_end("failed", "session options are not available from pause")
-				return
-			app.pause_menu.session_options_button.pressed.emit()
 		if not _usable_menu_button(app.pause_menu.controls_button):
 			_end("failed", "controls button is not available from pause")
 			return

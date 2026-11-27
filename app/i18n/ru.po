@@ -14627,3 +14627,96 @@ msgstr "Упрощает затенение травы, сохраняя раз�
 
 msgid "Simple"
 msgstr "Упрощённая"
+
+msgid "THIS FLIGHT"
+msgstr "ЭТОТ ПОЛЁТ"
+
+msgid "Radio & controls"
+msgstr "Пульт и управление"
+
+msgid "Radio & controls · %s"
+msgstr "Пульт и управление · %s"
+
+msgid "not connected"
+msgstr "не подключено"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "Настройка, калибровка и проверка пульта или геймпада."
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "Время %s · Высота %s · Скорость %s"
+
+msgid "Back to the start with the same setup."
+msgstr "Вернуться к старту с теми же настройками."
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "Завершает этот полёт и открывает каталог самолётов."
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "Пауза: сменить самолёт, вернуться на «Главную» или настроить этот полёт."
+
+msgid "Reference flight model."
+msgstr "Эталонная модель полёта."
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "Экспериментально: физика оценочная, ещё не сверена с настоящим самолётом."
+
+msgid "Model only; it cannot fly yet."
+msgstr "Только модель; летать пока нельзя."
+
+msgid "About"
+msgstr "О программе"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "На поле клуба доступны экспериментальные самолёты Ugly Stik для полётов по кругу: от 1 до 3. По умолчанию они выключены — начните с одного. Откройте «Самолёты-компаньоны» через Главная → Сведения о полёте или в меню паузы."
+
+msgid "FLIGHT COMPANIONS"
+msgstr "САМОЛЁТЫ-КОМПАНЬОНЫ"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "ПОДКЛЮЧИТЕ АППАРАТУРУ ИЛИ ГЕЙМПАД"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. Подключите по USB или Bluetooth. На аппаратуре EdgeTX выберите USB Joystick (Classic) и отключите радиомодуль."
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. Выберите его как «Контроллер полёта»."
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. Нажмите «Настроить это устройство…»: режим стиков, калибровка, проверка вживую и основные переключатели."
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "Восстановите профиль из старой версии или экспортируйте диагностику для отчёта об ошибке."
+
+msgid "HANGAR"
+msgstr "АНГАР"
+
+msgid "Airplanes"
+msgstr "Самолёты"
+
+msgid "Helicopters"
+msgstr "Вертолёты"
+
+msgid "Drones"
+msgstr "Дроны"
+
+msgid "Airships"
+msgstr "Дирижабли"
+
+msgid "Cars & trucks"
+msgstr "Машины"
+
+msgid "Search by name"
+msgstr "Поиск по названию"
+
+msgid "%d of %d"
+msgstr "%d из %d"
+
+msgid "%d vehicles"
+msgstr "Моделей: %d"
+
+msgid "No vehicle matches this search."
+msgstr "Ничего не найдено."
+
+msgid "Hangar"
+msgstr "Ангар"

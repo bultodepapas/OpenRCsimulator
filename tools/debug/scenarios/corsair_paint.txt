@@ -3,14 +3,17 @@ eval expr="tree.root.set_size(Vector2i(1920,1080))"
 assert expr="tree.root.size == Vector2i(1920,1080)"
 call node=AppRoot method=set_aircraft args=["f4u-corsair-250"]
 call node=AppRoot method=set_livery args=["midnight"]
-press text=Vehicles
+press text=Hangar
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_button.is_visible_in_tree()"
-assert expr="home.livery_button.get_global_rect().end.y <= home._scroll.get_global_rect().position.y + 0.5"
+# UI-40c/o: the paint keeps its corner beside the rail, below the Hangar list.
+assert expr="home._preview_paint_slot.is_ancestor_of(home.livery_button) and home._hangar_panel.get_global_rect().end.y <= home.livery_button.get_global_rect().position.y + 0.5"
 press text="Change skin"
 press text="Coastal Three Tone"
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"
+# UI-40c: the try-on panel stays open beside the model until Done.
+press text=Done
 fly aircraft=f4u-corsair-250 start=runway
 assert expr="flight.livery == 'three_tone' and flight._airplane.livery == 'three_tone'"
 home
