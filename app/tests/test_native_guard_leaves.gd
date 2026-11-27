@@ -10,12 +10,15 @@ extends SceneTree
 ## inside one. A nested container replaced by an equal copy is accepted only when it holds no zero or Callable (content
 ## is what the stage reads); a change inside the copy, including a zero's sign, refuses. A configured NaN keeps the full
 ## leaf walk.
+## NK-6p: a native flight freezes the guarded configuration, so these in-place edits are refused where they are made;
+## this test turns the freeze off to keep covering the guard's comparison of writable containers.
 
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
+const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 
 var _checks := 0
 var _failures := 0
@@ -28,6 +31,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	NativeConfiguration.freeze_guarded_configuration = false
 	var field: Dictionary = FieldLoader.load_from().field
 	var lake: Dictionary = LakeLoader.load_from(LakeLoader.DEFAULT_PATH).lake
 	for id: String in ["f4u-corsair-250", "jensen-das-ugly-stik-60"]:

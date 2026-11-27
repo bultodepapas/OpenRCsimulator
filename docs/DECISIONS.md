@@ -766,3 +766,16 @@ Peaks, recommendations and assessed components equal per-tick observation
 ([test](../app/tests/test_accident_ledger_hold.gd)). The evidence tick of a held sample and the internal revision
 counts are per frame. `has_damage()` can lag by up to one frame. Persistent hull contacts remain per tick. Revisit if
 a gear damage rule needs per-tick sample timing.
+
+### A native flight freezes its guarded configuration
+
+**F1 / NK-6p, 2026-11-27; explicit owner decision.** When the native stage is prepared, the session's guarded
+containers become read-only all the way down: the aircraft dictionary, the hull contact and the lake
+(`NativeConfiguration._freeze_guarded`). Godot cannot make a container writable again. The configuration guard
+therefore proves each frozen root unchanged by its identity and drops its deep comparison per tick (16–42 → 3 µs).
+A later in-place write fails where it is made, as an engine read-only error, instead of faulting the next native tick.
+Replacing a root with another instance still refuses the tick. Writable containers keep the guard's comparison.
+
+No production code writes these containers after setup. The guard's own tests turn the freeze off to keep covering
+that comparison ([test](../app/tests/test_native_frozen_configuration.gd)). Revisit if a feature must edit the
+aircraft during a native flight: it should replace the dictionary at an accepted boundary instead.

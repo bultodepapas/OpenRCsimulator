@@ -29,7 +29,13 @@ func _run() -> void:
 		flight.free()
 		quit(1)
 		return
-	flight.session.aircraft.model.crash_hull = PackedFloat64Array([0,0,0])
+	# NK-6p: a native flight's aircraft is read-only. The synthetic probe enters through a new aircraft and the
+	# reset that prepares it, as a reload would.
+	var probed: Dictionary = flight.session.aircraft.duplicate(true)
+	probed.model.crash_hull = PackedFloat64Array([0,0,0])
+	flight.session.aircraft = probed
+	flight.session.reset()
+	_check("the probed aircraft is prepared", flight.session.stage_backend_error.is_empty())
 	var controller = flight._scenery_damage_director
 	var source: MeshInstance3D = null
 	for candidate: MeshInstance3D in controller._sources:

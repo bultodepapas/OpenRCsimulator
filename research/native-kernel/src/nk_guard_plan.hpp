@@ -105,5 +105,37 @@ inline bool holds_retained(const godot::Variant &value, int depth, int max_depth
 	return leaf == Leaf::Retained;
 }
 
+// NK-6p (owner decision, 2026-11-27): a value that is read-only all the way down cannot change, since Godot cannot
+// make a container writable again. Every Dictionary and Array in it, keys included, must be read-only; an Object
+// (whose own state may change) or excess depth keeps the comparison. Scalars, strings, packed arrays (copy-on-write
+// values a read-only parent cannot take back) and Callables (compared by identity) qualify.
+inline bool frozen(const godot::Variant &value, int depth, int max_depth) {
+	if (depth > max_depth) return false;
+	switch (value.get_type()) {
+		case godot::Variant::DICTIONARY: {
+			const godot::Dictionary dictionary = value;
+			if (!dictionary.is_read_only()) return false;
+			const godot::Array keys = dictionary.keys();
+			const godot::Array values = dictionary.values();
+			for (int64_t i = 0; i < keys.size(); ++i) {
+				if (!frozen(keys[i], depth + 1, max_depth) || !frozen(values[i], depth + 1, max_depth)) return false;
+			}
+			return true;
+		}
+		case godot::Variant::ARRAY: {
+			const godot::Array array = value;
+			if (!array.is_read_only()) return false;
+			for (int64_t i = 0; i < array.size(); ++i) {
+				if (!frozen(array[i], depth + 1, max_depth)) return false;
+			}
+			return true;
+		}
+		case godot::Variant::OBJECT:
+			return false;
+		default:
+			return true;
+	}
+}
+
 } // namespace guard_plan
 } // namespace nk

@@ -81,6 +81,7 @@ class ConfigurationGuard {
 	bool plan_ready_ = false;
 	std::vector<std::size_t> plan_watches_;
 	std::vector<std::pair<std::size_t, Variant>> plan_snapshots_;
+	int64_t plan_frozen_roots_ = 0; // NK-6p: root containers the plan proves by identity alone
 
 	StringName p_sim_ = "sim";
 	StringName p_model_ = "model";
@@ -328,10 +329,13 @@ class ConfigurationGuard {
 	// with the engine against a deep snapshot; nested watches stay only for leaves engine equality settles less
 	// strictly (±0, Callables) and for every container holding one. A NaN, an unsupported value or a snapshot the
 	// engine does not accept keeps the full leaf walk.
+	// NK-6p: a root container that is read-only all the way down needs no snapshot, and an entry of a read-only
+	// container no watch: neither can change while the root watch proves the same instance.
 	bool build_plan() {
 		plan_ready_ = false;
 		plan_watches_.clear();
 		plan_snapshots_.clear();
+		plan_frozen_roots_ = 0;
 		const auto refuse = [this] {
 			plan_watches_.clear();
 			plan_snapshots_.clear();
@@ -341,6 +345,10 @@ class ConfigurationGuard {
 			const Watch &watch = watches_[i];
 			if (watch.source != Parent::DictionaryEntry && watch.source != Parent::ArrayEntry) {
 				plan_watches_.push_back(i);
+				if (watch.container_size >= 0 && guard_plan::frozen(watch.expected, 0, kMaxDepth)) {
+					++plan_frozen_roots_;
+					continue;
+				}
 				if (watch.container_size >= 0) {
 					// A deep copy (nested containers and packed buffers of its own); the engine must accept it.
 					const Variant snapshot = watch.expected.duplicate(true);
@@ -351,6 +359,10 @@ class ConfigurationGuard {
 					plan_snapshots_.emplace_back(i, snapshot);
 				}
 				continue;
+			}
+			if ((watch.source == Parent::DictionaryEntry && watch.parent_dictionary.is_read_only()) ||
+					(watch.source == Parent::ArrayEntry && watch.parent_array.is_read_only())) {
+				continue; // NK-6p: a read-only parent keeps this entry
 			}
 			if (watch.container_size >= 0) {
 				bool refused = false;
@@ -508,6 +520,7 @@ public:
 		out["plan_ready"] = plan_ready_;
 		out["plan_watches"] = static_cast<int64_t>(plan_watches_.size());
 		out["plan_snapshots"] = static_cast<int64_t>(plan_snapshots_.size());
+		out["plan_frozen_roots"] = plan_frozen_roots_;
 		for (const auto &root : plan_snapshots_) {
 			const Watch &watch = watches_[root.first];
 			const godot::String name = godot::String("root ") + godot::String(watch.property);
