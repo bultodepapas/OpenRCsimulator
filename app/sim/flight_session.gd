@@ -3622,6 +3622,14 @@ func presented_glow_firing() -> float:
 	return _native_stage.glow_firing(sim.state, sim.continuous, sim.time())
 
 
+## F5b: [GlowProp torque at (rpm, axial speed), at (rpm, 0)] for flight audio's shaft load from the native glow stage's
+## blade model; empty without one or with the hook off. Pure in its arguments: no tick context is involved.
+func presented_glow_blade_torques(rpm: float, axial_speed: float, density: float) -> PackedFloat64Array:
+	if not native_glow_audio_enabled or _native_stage == null or get_script().resource_path != SELF_PATH:
+		return PackedFloat64Array()
+	return _native_stage.glow_blade_torques(rpm, axial_speed, density)
+
+
 ## F5b test hook: false makes flight audio evaluate GlowFlight.telemetry every frame.
 var native_glow_audio_enabled := true
 ## engine_running when the native stage's tick context was last set.

@@ -1250,6 +1250,8 @@ protected:
 			&OpenRCNativeKernel::stage_wheel_rows);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_blade_torques", "rpm", "axial_speed", "density"),
+			&OpenRCNativeKernel::stage_glow_blade_torques);
 		godot::ClassDB::bind_method(D_METHOD("scenery_state_valid", "s"), &OpenRCNativeKernel::scenery_state_valid);
 		godot::ClassDB::bind_method(D_METHOD("arrays_finite", "inputs", "input_size", "aux", "aux_size", "continuous",
 			"continuous_size"), &OpenRCNativeKernel::arrays_finite);
@@ -2005,6 +2007,20 @@ public:
 	}
 
 	int64_t wheel_rows_answers() const { return wheel_rows_answers_; }
+
+	// F5b: glow/propeller.gd's torque at (rpm, axial speed) and at (rpm, 0) from the prepared glow stage's blade model,
+	// for flight audio's shaft load (Propulsion.thrust_torque()[1] and prop_torque()); NaN where the evaluator refuses
+	// the query, empty without a glow stage. A pure function of the prepared installation and its arguments.
+	PackedFloat64Array stage_glow_blade_torques(double rpm, double axial_speed, double density) const {
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready) return PackedFloat64Array();
+		const nk::GlowBladePoint moving = nk::glow_blade_evaluate(stage_.glow.blade, rpm, axial_speed, density);
+		const nk::GlowBladePoint still = nk::glow_blade_evaluate(stage_.glow.blade, rpm, 0.0, density);
+		PackedFloat64Array out;
+		out.resize(2);
+		out[0] = moving.ok ? moving.torque_nm.v : nk::kNan;
+		out[1] = still.ok ? still.torque_nm.v : nk::kNan;
+		return out;
+	}
 
 	// NK-6q: Simulation.step's own checks and the session's state checks, exact; the reference runs them in GDScript.
 	// Pure functions of their arguments: no prepared stage is needed.

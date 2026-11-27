@@ -6,6 +6,30 @@ extends RefCounted
 ## Empty: the caller evaluates session.glow_state().
 
 const GlowFlight := preload("res://physics/glow/flight.gd")
+const GlowProp := preload("res://physics/glow/propeller.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
+const M := preload("res://physics/math3d.gd")
+
+
+## [Propulsion.thrust_torque(v_air, rpm, prop, rho)[1], Propulsion.prop_torque(rpm, 0.0, prop, rho)] for flight
+## audio's shaft load. For a glow propeller both rebuild and validate a blade evaluator on every call (about 20 µs
+## each). The native glow stage's blade model answers both (FlightSession.presented_glow_blade_torques); otherwise, in
+## a frozen native flight (NK-6p), the evaluator GlowFlight prepared from the same installation at reset answers with
+## the same arithmetic and the same query checks.
+static func shaft_torques(session: Node, prop: Dictionary, v_air: PackedFloat64Array, rpm: float) -> PackedFloat64Array:
+	var rho: float = session.air_density()
+	if Propulsion.is_glow(prop) and session.has_method("presented_glow_blade_torques"):
+		var native: PackedFloat64Array = session.presented_glow_blade_torques(rpm, M.dot(v_air, Propulsion.axis(prop)), rho)
+		if native.size() == 2:
+			return native
+	if Propulsion.is_glow(prop) and session.aircraft.is_read_only() \
+			and session.has_meta(GlowFlight.PROPELLER_EVALUATOR_META) \
+			and session.get_meta(GlowFlight.EVALUATOR_IDENTITY_META, {}) == prop.glow.identity:
+		var evaluator: Variant = session.get_meta(GlowFlight.PROPELLER_EVALUATOR_META)
+		var moving: Dictionary = GlowProp.evaluate_prepared(evaluator, rpm, M.dot(v_air, Propulsion.axis(prop)), rho)
+		var still: Dictionary = GlowProp.evaluate_prepared(evaluator, rpm, 0.0, rho)
+		return PackedFloat64Array([moving.torque_nm if moving.ok else NAN, still.torque_nm if still.ok else NAN])
+	return PackedFloat64Array([Propulsion.thrust_torque(v_air, rpm, prop, rho)[1], Propulsion.prop_torque(rpm, 0.0, prop, rho)])
 
 
 static func build(session: Node) -> Dictionary:

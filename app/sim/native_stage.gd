@@ -533,6 +533,13 @@ func scenery_state_valid(s: PackedFloat64Array) -> bool:
 	return _native.scenery_state_valid(s)
 
 
+## F5b: the glow propeller's torque at (rpm, axial speed) and at (rpm, 0) from the prepared glow stage; empty without one.
+func glow_blade_torques(rpm: float, axial_speed: float, density: float) -> PackedFloat64Array:
+	if not _installed or _family != "glow":
+		return PackedFloat64Array()
+	return _native.stage_glow_blade_torques(rpm, axial_speed, density)
+
+
 ## NK-5a: Aero.wing_wake_velocity for the session's pre-step downwash lag through the prepared fixed-wing stage.
 ## The caller passes its own air_data(s), _deflections(aux) and _ground_up(s); NaN means "use the reference".
 func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up: float) -> float:
