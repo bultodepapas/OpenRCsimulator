@@ -70,6 +70,10 @@ var _damage_profile: Dictionary = {}
 var _profile_hash := ""
 ## observe(): persistent support samples held for one observation per frame (false: every tick, as before).
 var hold_support_samples := true
+## A released batch's JSON size and digests from per-wheel templates (false: the engine serializes every event).
+var support_templates := true
+var _support_templates: Dictionary = {}
+var _support_join_checked := false
 var _held: Dictionary = {}
 var _held_refusal: Dictionary = {}
 var _profile_error := ""
@@ -190,6 +194,7 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_assessment = {components = {}, terminal = false, total_loss = false, unresolved = []}
 	_seen = {}
 	_seen_order = []
+	_support_templates = {}
 	_proof_floor_tick = -1
 	_tick_event_count = 0
 	_open_contacts = {}
@@ -613,21 +618,116 @@ func _release_held(previous: Dictionary) -> Dictionary:
 	var snapshot: Dictionary = held.snapshot
 	for event: Dictionary in snapshot.events:
 		event.measure.compression_m = held.peaks[event.point_index]
-	var result := _observe_now(snapshot, held.bindings, false, false)
+	var texts := _support_texts(snapshot, held.bindings) if support_templates else {}
+	var result := _observe_now(snapshot, held.bindings, false, false, texts)
 	return result if not result.get("ok", false) and previous.is_empty() else previous
 
 
-func _observe_now(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored := false) -> Dictionary:
+## F1: a released batch's JSON size and event digests without serializing each event. Per wheel, a template is the
+## engine's own canonical text of the same event with its tick, event ID and compression replaced by sentinels; each
+## of those values is serialized by the engine, so the assembled text equals JSON.stringify(). A new template and the
+## batch join are checked once against the engine. Only a batch that validates gets texts (validation is pure), so
+## every refusal keeps the reference order. Returns {size, digests}, or {} for the reference path.
+func _support_texts(snapshot: Dictionary, bindings: Dictionary) -> Dictionary:
+	var events: Array = snapshot.events
+	if not Events.validate_events(events, int(snapshot.tick), bindings):
+		return {}
+	var size := events.size() + 1
+	var digests := PackedStringArray()
+	for event: Dictionary in events:
+		var template := _support_template(event)
+		if template.is_empty():
+			return {}
+		var compression: Variant = event.measure.compression_m
+		var id_text := JSON.stringify(event.event_id)
+		var tick_text := JSON.stringify(event.tick)
+		var full: PackedStringArray = template.full
+		var values: Array = [id_text, JSON.stringify(compression, "", true, true), tick_text]
+		var order: PackedInt32Array = template.full_order
+		var text: String = full[0] + values[order[0]] + full[1] + values[order[1]] + full[2] + values[order[2]] + full[3]
+		digests.append(text.sha256_text())
+		var short_compression := JSON.stringify(compression)
+		size += int(template.short_bytes) + id_text.to_utf8_buffer().size() + short_compression.length() + tick_text.length()
+		if not template.checked:
+			var short: PackedStringArray = template.short
+			order = template.short_order
+			values[1] = short_compression
+			var short_text: String = short[0] + values[order[0]] + short[1] + values[order[1]] + short[2] + values[order[2]] + short[3]
+			if text != JSON.stringify(event, "", true, true) or short_text != JSON.stringify(event):
+				support_templates = false
+				return {}
+			template.checked = true
+	if not _support_join_checked:
+		if size != JSON.stringify(events).to_utf8_buffer().size():
+			support_templates = false
+			return {}
+		_support_join_checked = true
+	return {size = size, digests = digests}
+
+
+const _SUPPORT_SENTINELS := ["@@openrc-support-event-id@@", "@@openrc-support-compression@@", "@@openrc-support-tick@@"]
+
+
+## The cached template of a validated support event's wheel, rebuilt when its constant values differ.
+func _support_template(event: Dictionary) -> Dictionary:
+	var measure: Dictionary = event.measure
+	var travel: Variant = measure.travel_limit_m
+	var cached: Dictionary = _support_templates.get(event.point_index, {})
+	if not cached.is_empty() and cached.contact_id == event.contact_id and cached.lifecycle == event.lifecycle \
+			and typeof(cached.travel) == typeof(travel) and cached.travel == travel:
+		return cached
+	var probe: Dictionary = event.duplicate(true)
+	probe.event_id = _SUPPORT_SENTINELS[0]
+	probe.measure.compression_m = _SUPPORT_SENTINELS[1]
+	probe.tick = _SUPPORT_SENTINELS[2]
+	var full := _template_pieces(JSON.stringify(probe, "", true, true))
+	var short := _template_pieces(JSON.stringify(probe))
+	if full.is_empty() or short.is_empty():
+		return {}
+	var short_bytes := 0
+	for piece: String in short.pieces:
+		short_bytes += piece.to_utf8_buffer().size()
+	var template := {contact_id = event.contact_id, lifecycle = event.lifecycle, travel = travel, full = full.pieces,
+		full_order = full.order, short = short.pieces, short_order = short.order, short_bytes = short_bytes,
+		checked = false}
+	_support_templates[event.point_index] = template
+	return template
+
+
+## The text around each quoted sentinel, in order, and which sentinel fills each gap. {} unless each occurs once.
+static func _template_pieces(text: String) -> Dictionary:
+	var at: Array = []
+	for slot: int in _SUPPORT_SENTINELS.size():
+		var quoted := JSON.stringify(_SUPPORT_SENTINELS[slot])
+		var position := text.find(quoted)
+		if position < 0 or text.find(quoted, position + 1) >= 0:
+			return {}
+		at.append([position, slot, quoted.length()])
+	at.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0])
+	var pieces := PackedStringArray()
+	var order := PackedInt32Array()
+	var cursor := 0
+	for entry: Array in at:
+		pieces.append(text.substr(cursor, entry[0] - cursor))
+		order.append(entry[1])
+		cursor = entry[0] + entry[2]
+	pieces.append(text.substr(cursor))
+	return {pieces = pieces, order = order}
+
+
+## texts: _support_texts() of a validated batch (its size and digests), or {} to serialize and validate here.
+func _observe_now(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored := false,
+		texts: Dictionary = {}) -> Dictionary:
 	var tick_value: Variant = snapshot.get("tick", -1)
 	if not tick_value is int or tick_value < 0 or tick_value > 9007199254740991:
 		return {ok = false, status = "invalid_tick"}
 	var tick: int = tick_value
 	var events: Variant = snapshot.get("events", [])
 	if not events is Array or events.size() > MAX_EVENTS_PER_TICK \
-		or JSON.stringify(events).to_utf8_buffer().size() > MAX_EVENT_BYTES:
+		or (int(texts.size) if not texts.is_empty() else JSON.stringify(events).to_utf8_buffer().size()) > MAX_EVENT_BYTES:
 		_record_refusal(tick, crashed, "Contact evidence exceeded its bound; coverage is incomplete.", true)
 		return {ok = false, status = "overflow"}
-	if not Events.validate_events(events, tick, bindings):
+	if texts.is_empty() and not Events.validate_events(events, tick, bindings):
 		_record_refusal(tick, crashed, "Contact evidence is invalid; inspection required.", false)
 		return {ok = false, status = "invalid_events"}
 	for event: Dictionary in events:
@@ -639,9 +739,10 @@ func _observe_now(snapshot: Dictionary, bindings: Dictionary, crashed: bool, res
 	# proof of an identical payload, and an evicted payload can never be reverified.
 	var fresh: Array = []
 	var fresh_digests := {}
-	for event: Dictionary in events:
+	for index: int in events.size():
+		var event: Dictionary = events[index]
 		var id: String = event.event_id
-		var digest := _event_digest(event)
+		var digest: String = texts.digests[index] if not texts.is_empty() else _event_digest(event)
 		if _seen.has(id):
 			if _seen[id] != digest:
 				_record_refusal(tick, crashed, "Contact evidence was rejected; inspection required.", false)
