@@ -3357,6 +3357,8 @@ func _external_number_is_in_range(value: Variant, minimum: float, maximum: float
 func _check_prop_strike() -> void:
 	if not prop_strike.is_empty() or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
 		return
+	if _prop_disc_clear(sim.state):
+		return # NK-6e: the disc cannot reach the datum or the lake here
 	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
 	if float(disc.depth) <= 0.0:
 		return
@@ -3416,6 +3418,16 @@ func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not facts.is_empty():
 		native_endpoint_fact_answers += 1
 	return facts
+
+
+## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(self, values).ok (true) from the native
+## glow stage, inside the tick whose guarded pre-step installed its context, for this class only (a derived session may
+## read other data): 1 or 0 as the reference decides, -1 to evaluate the reference.
+func _native_glow_mass_check(values: PackedFloat64Array, with_mass: bool) -> int:
+	if not native_glow_mass_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH:
+		return -1
+	return _native_stage.glow_mass_check(values, with_mass)
 
 
 ## NK-6b: GlowFlight.point(self, body, values, time_s).firing_fraction for the step policy's accepted endpoint and
@@ -3535,8 +3547,16 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
 			or candidate_values.size() != previous_values.size():
 		return Callable()
-	var before_context: Dictionary = GlowFlight.mass_context(self, previous_values)
-	if not before_context.get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
+	# NK-6e: inside the guarded tick the native glow stage answers both stores' validity; the contact sample then
+	# builds the start store's context only if a contact asks for it (it is pure, so the values are the same).
+	var context: Dictionary = {}
+	var previous_ok: int = _native_glow_mass_check(previous_values, true)
+	var candidate_ok: int = _native_glow_mass_check(candidate_values, true) if previous_ok == 1 else previous_ok
+	if previous_ok < 0 or candidate_ok < 0:
+		context = GlowFlight.mass_context(self, previous_values)
+		if not context.get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
+			return Callable()
+	elif previous_ok == 0 or candidate_ok == 0:
 		return Callable()
 	var before: float = previous_values[1]
 	var after: float = candidate_values[1]
@@ -3555,6 +3575,9 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 		var properties: Dictionary = GlowFlight.properties(self, total, line)
 		if not properties.get("ok", false):
 			return {ok = false}
+		if context.is_empty():
+			context.merge(GlowFlight.mass_context(self, previous_values))
+		var before_context: Dictionary = context
 		var remaining: Dictionary = {str(before_context.tanks[0].id): total-line}
 		if before_context.tanks.size()>1: remaining[str(before_context.tanks[1].id)]=line
 		var result: Dictionary = FuelSample.build(properties, before_context.tanks, remaining,
@@ -3848,8 +3871,14 @@ func _native_contact_reach(previous: PackedFloat64Array, candidate: PackedFloat6
 
 ## The farthest gear or propeller probe that the lake sweep adds to the hull, measured as it measures them.
 func _contact_probe_reach() -> float:
+	var gear: Dictionary = current_landing_gear()
+	# NK-6e: the same posed gear and propeller disc (by identity) measure the same reach. current_landing_gear() keeps
+	# its dictionary until the gear moves, and the native flights this serves refuse in-place configuration edits.
+	if probe_reach_cache_enabled and _probe_reach_gear != null and is_same(gear, _probe_reach_gear) \
+			and is_same(_prop_disc, _probe_reach_disc):
+		return _probe_reach
 	var reach := 0.0
-	var contacts: Variant = current_landing_gear().get("contacts", [])
+	var contacts: Variant = gear.get("contacts", [])
 	if contacts is Array:
 		for contact: Variant in contacts:
 			var point: PackedFloat64Array = LakeCollision._gear_probe_point(contact)
@@ -3857,7 +3886,52 @@ func _contact_probe_reach() -> float:
 				reach = maxf(reach, M.norm(point))
 	if LakeCollision._prop_disc_is_valid(_prop_disc):
 		reach = maxf(reach, M.norm(_prop_disc.hub) + float(_prop_disc.radius))
+	_probe_reach_gear = gear
+	_probe_reach_disc = _prop_disc
+	_probe_reach = reach
 	return reach
+
+
+## NK-6e: the gear and disc _contact_probe_reach last measured, and its answer.
+var _probe_reach_gear: Variant = null
+var _probe_reach_disc: Variant = null
+var _probe_reach := 0.0
+## Test hook: false always measures the probe reach.
+var probe_reach_cache_enabled := true
+## Test hook: false always evaluates HullContact.prop_disc_depth.
+var prop_clear_bound_enabled := true
+## NK-6e: the lake whose bank bounds _prop_disc_clear last computed, and those bounds.
+var _prop_bounds_lake: Variant = null
+var _prop_bounds := PackedFloat64Array()
+
+
+## NK-6e: true only where HullContact.prop_disc_depth must answer a depth <= 0, so _check_prop_strike may stop.
+## Every disc point lies within |hub| + radius of the origin, scaled by the attitude quaternion's norm bound as
+## _disc_near_lake scales it; above that height the flat datum is out of reach. The lake's water or bank decides only
+## within its bank bounds, so the disc's horizontal reach must miss them. An invalid lake or a nonfinite state keeps
+## the full evaluation, which reports its own NaN.
+func _prop_disc_clear(s: PackedFloat64Array) -> bool:
+	if not prop_clear_bound_enabled or s.size() != RB.SIZE:
+		return false
+	var hub: PackedFloat64Array = _prop_disc.get("hub", PackedFloat64Array())
+	if hub.size() != 3:
+		return false
+	var qq: float = s[RB.ATT] * s[RB.ATT] + s[RB.ATT + 1] * s[RB.ATT + 1] + s[RB.ATT + 2] * s[RB.ATT + 2] \
+		+ s[RB.ATT + 3] * s[RB.ATT + 3]
+	var reach: float = (sqrt(hub[0] * hub[0] + hub[1] * hub[1] + hub[2] * hub[2]) + float(_prop_disc.get("radius", NAN))) \
+		* (1.0 + 4.0 * qq) + 0.01
+	if not is_finite(reach) or not is_finite(s[RB.POS]) or not is_finite(s[RB.POS + 1]) or not is_finite(s[RB.POS + 2]) \
+			or -s[RB.POS + 2] <= reach:
+		return false
+	if _lake.is_empty():
+		return true
+	if not LakeSurface.is_valid_definition(_lake):
+		return false
+	if not is_same(_lake, _prop_bounds_lake):
+		_prop_bounds = HullContact._polygon_bounds(_lake.bank_ne_m)
+		_prop_bounds_lake = _lake
+	return s[RB.POS] + reach < _prop_bounds[0] or s[RB.POS] - reach > _prop_bounds[1] \
+		or s[RB.POS + 1] + reach < _prop_bounds[2] or s[RB.POS + 1] - reach > _prop_bounds[3]
 
 
 ## The sampled lake sweep's own input checks (its sampler is valid here); it refuses the tick when one fails.
@@ -5172,8 +5246,10 @@ func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
 
 ## The optional RPM boundary mirror is telemetry, never a second evolving shaft state.
 func _coupled_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
-	if glow_is_active() and not GlowFlight.valid(values,aircraft.model.propulsion.glow):
-		return PackedFloat64Array([NAN])
+	if glow_is_active():
+		var native_valid: int = _native_glow_mass_check(values, false) # NK-6e
+		if native_valid == 0 or (native_valid < 0 and not GlowFlight.valid(values,aircraft.model.propulsion.glow)):
+			return PackedFloat64Array([NAN])
 	var out: PackedFloat64Array = sampled.duplicate()
 	if out.is_empty() or (battery_is_dynamic() and not _battery_values_valid(values)):
 		return PackedFloat64Array([NAN])
@@ -5711,6 +5787,8 @@ var native_endpoint_facts_enabled := true
 var native_endpoint_fact_answers := 0
 ## NK-5i: this class's script, for published_endpoint_facts' derived-class refusal (as observer_air_and_wind's).
 const SELF_PATH := "res://sim/flight_session.gd"
+## NK-6e test hook: false always evaluates GlowFlight.valid and mass_context for the contact sampler and projection.
+var native_glow_mass_enabled := true
 ## NK-6d test hook: false keeps the glow step policy (GlowFlight.step) in the reference transaction.
 var native_glow_step_enabled := true
 ## NK-6c test hook: false keeps the finite-pack step policy (_electric_step) in the reference transaction.

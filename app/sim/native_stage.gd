@@ -136,6 +136,7 @@ var _compressions_bound := false
 ## NK-5i: and stage_endpoint_facts (the statistics sampler's endpoint evaluations in one answer).
 var _facts_bound := false
 var _glow_firing_bound := false
+var _glow_mass_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
 var _pre_step_bound := false
 var _pre_step_turbulent := false
@@ -424,6 +425,8 @@ func install(session: Node) -> Callable:
 	_compressions_bound = _native.has_method("stage_compressions") and _family != "helicopter"
 	_facts_bound = _compressions_bound and _native.has_method("stage_endpoint_facts")
 	_glow_firing_bound = _family == "glow" and _native.has_method("stage_glow_firing")
+	_glow_mass_bound = _family == "glow" and _native.has_method("prepare_glow_validity") \
+		and bool(_native.prepare_glow_validity(_glow_validity_bounds(session)))
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
@@ -454,6 +457,7 @@ func uninstall(session: Node) -> Callable:
 	_compressions_bound = false
 	_facts_bound = false
 	_glow_firing_bound = false
+	_glow_mass_bound = false
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	_reach_world = {}
@@ -537,6 +541,28 @@ func endpoint_compressions(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pa
 func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 	if not _installed or not _facts_bound or _native == null: return PackedFloat64Array()
 	return _native.stage_endpoint_facts(s, aux, time_s)
+
+
+## NK-6e: the glow installation's bounds that GlowFlight.valid and mass_context read, captured at installation; the
+## configuration guard refuses a tick after any later change to them.
+static func _glow_validity_bounds(session: Node) -> Dictionary:
+	var install: Dictionary = session.aircraft.model.propulsion.glow
+	var line: Dictionary = install.get("feed_line", {})
+	var family: Variant = install.profile.get("family")
+	var cycle: Variant = install.profile.identity.get("cycle_revolutions")
+	if typeof(cycle) not in [TYPE_INT, TYPE_FLOAT]:
+		return {}
+	return {max_rpm = float(install.profile.operation.max_rpm), total_capacity_kg = float(install.total_capacity_kg),
+		capacity_fuel_kg = float(install.capacity_fuel_kg), line_capacity_kg = float(line.get("capacity_kg", 0.0)),
+		unusable_fuel_kg = float(install.unusable_fuel_kg), cycle_revolutions = float(cycle), has_line = not line.is_empty(),
+		family_ok = family in ["glow_2t", "glow_4t"] and cycle == (1 if family == "glow_2t" else 2)}
+
+
+## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(values).ok (true) from the prepared glow
+## stage: 1 or 0 as the reference decides, -1 to use the reference. The session owns the tick checks.
+func glow_mass_check(values: PackedFloat64Array, with_mass: bool) -> int:
+	if not _installed or not _glow_mass_bound or _native == null: return -1
+	return _native.stage_glow_mass_check(values, with_mass)
 
 
 ## NK-6b: GlowFlight.point(owner, body, values, time_s).firing_fraction from the prepared glow stage and the tick

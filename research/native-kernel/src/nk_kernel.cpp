@@ -1048,6 +1048,14 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	// NK-6a: the tick integrator's counters and scratch (one non-reentrant tick owner).
 	int64_t tick_calls_ = 0, tick_answers_ = 0, tick_faults_ = 0;
 	int64_t glow_firing_calls_ = 0, glow_firing_answers_ = 0; // NK-6b
+	// NK-6e: the glow installation's bounds for GlowFlight.valid and mass_context.
+	struct GlowValidity {
+		bool ready = false;
+		nk::R max_rpm = 0.0, total_capacity = 0.0, capacity = 0.0, line_capacity = 0.0, unusable = 0.0, cycle = 0.0;
+		bool has_line = false, family_ok = false;
+	};
+	GlowValidity glow_validity_;
+	int64_t glow_mass_calls_ = 0;
 	nk::R tick_mass_ = 0.0, tick_gravity_ = 0.0;
 	nk::R tick_inertia_[6] = {}, tick_inertia_inv_[6] = {};
 	nk::StageResult tick_stage_result_;
@@ -1238,6 +1246,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_firing", "body", "values", "time_s"),
 			&OpenRCNativeKernel::stage_glow_firing);
+		godot::ClassDB::bind_method(D_METHOD("prepare_glow_validity", "bounds"), &OpenRCNativeKernel::prepare_glow_validity);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_mass_check", "values", "with_mass"),
+			&OpenRCNativeKernel::stage_glow_mass_check);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -1964,6 +1975,8 @@ public:
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.
 			{"2.220446049250313e-16", nk::kFloat64Epsilon},
+			// NK-6e: glow/flight.gd valid()'s mixture bound.
+			{"2.8", 2.8},
 			{"9223372036854775808.0", 9223372036854775808.0},
 		};
 		for (const auto &entry : table) {
@@ -2736,9 +2749,88 @@ public:
 		return result.glow_firing_fraction.v;
 	}
 
+	// NK-6e: GlowFlight.valid(values, install) and GlowFlight.mass_context(owner, values).ok for the prepared glow stage.
+	// The installation's own bounds arrive once from the session (prepare_glow_validity); the configuration guard keeps
+	// them. -1 refuses (not prepared); otherwise 1 valid or 0 invalid, as the reference decides.
+	bool prepare_glow_validity(const Dictionary &bounds) {
+		glow_validity_ = GlowValidity();
+		const char *names[] = {"max_rpm", "total_capacity_kg", "capacity_fuel_kg", "line_capacity_kg", "unusable_fuel_kg",
+				"cycle_revolutions"};
+		double read[6];
+		for (int i = 0; i < 6; ++i) {
+			const Variant value = bounds.get(String(names[i]), Variant());
+			if ((value.get_type() != Variant::FLOAT && value.get_type() != Variant::INT) || !std::isfinite(double(value))) return false;
+			read[i] = double(value);
+		}
+		const Variant has_line = bounds.get("has_line", Variant());
+		const Variant family_ok = bounds.get("family_ok", Variant());
+		if (has_line.get_type() != Variant::BOOL || family_ok.get_type() != Variant::BOOL) return false;
+		glow_validity_.max_rpm = read[0];
+		glow_validity_.total_capacity = read[1];
+		glow_validity_.capacity = read[2];
+		glow_validity_.line_capacity = read[3];
+		glow_validity_.unusable = read[4];
+		glow_validity_.cycle = read[5];
+		glow_validity_.has_line = bool(has_line);
+		glow_validity_.family_ok = bool(family_ok);
+		glow_validity_.ready = true;
+		return true;
+	}
+
+	// GlowFlight.valid: unpack's checks, Life._state_error(state, true), then valid's own bounds, in their order.
+	static bool glow_values_valid(const double *v, int64_t n, const GlowValidity &g) {
+		if (n < 19) return false;
+		for (int64_t i = 0; i < n; ++i) {
+			if (!std::isfinite(v[i])) return false;
+		}
+		if (!(v[7] == 0.0 || v[7] == 1.0) || v[8] != std::floor(v[8]) || v[8] < 0.0 || v[8] >= 7.0) return false;
+		if (!g.family_ok) return false;
+		const int64_t opportunities = static_cast<int64_t>(v[9]);
+		const int64_t fires = static_cast<int64_t>(v[10]);
+		if (opportunities < 0 || fires < 0 || fires > opportunities) return false;
+		if (v[11] < 0.0 || v[11] >= 1.0) return false;
+		if (v[2] <= 0.0 || v[6] < 0.0) return false;
+		if (v[1] < 0.0 || v[5] < 0.0 || v[3] < 0.0 || v[3] > 1.0 || v[4] < 0.0 || v[4] > 1.0) return false;
+		if (v[0] < 0.0 || v[0] > g.max_rpm.v || v[1] > g.total_capacity.v || v[12] < 0.0 || v[12] > 2.8) return false;
+		const nk::R line = v[17];
+		const nk::R main = nk::R(v[1]) - line;
+		const nk::R line_capacity = g.has_line ? g.line_capacity : nk::R(0.0);
+		if (!nk::is_finite(line) || line.v < 0.0 || line.v > line_capacity.v || main.v < 0.0 || main.v > g.capacity.v ||
+				v[18] != std::floor(v[18]) || v[18] < 0.0 || v[18] > 2.0) return false;
+		const nk::R residue = g.has_line ?
+			nk::R(4.0) * nk::R(nk::kFloat64Epsilon) * nk::maxf(nk::absf(nk::R(v[1])), nk::absf(line)) : nk::R(0.0);
+		if (main.v < g.unusable.v && (g.unusable - main).v > residue.v) return false;
+		if (!g.has_line && (line.v != 0.0 || v[18] == 2.0)) return false;
+		if (v[18] == 2.0 && line.v <= 0.0) return false;
+		const int64_t mode = static_cast<int64_t>(v[18]);
+		if (mode == 1 && main.v <= g.unusable.v) return false;
+		if (mode == 0 && v[7] == 1.0) return false;
+		if (v[6] < 0.0 || v[6] >= g.cycle.v || v[9] != std::floor(v[9]) || v[10] != std::floor(v[10])) return false;
+		return true;
+	}
+
+	int64_t stage_glow_mass_check(const PackedFloat64Array &values, bool with_mass) {
+		++glow_mass_calls_;
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !glow_validity_.ready) return -1;
+		const double *v = values.ptr();
+		const int64_t n = values.size();
+		if (n < 19) return 0;
+		if (!with_mass) return glow_values_valid(v, n, glow_validity_) ? 1 : 0;
+		// GlowFlight.mass_context: valid, the store bounds, then properties(total, line).ok.
+		const nk::R total = v[1];
+		const nk::R line = v[17];
+		const nk::R main = total - line;
+		const nk::R line_capacity = glow_validity_.has_line ? glow_validity_.line_capacity : nk::R(0.0);
+		if (!glow_values_valid(v, n, glow_validity_) || !nk::is_finite(total) || !nk::is_finite(line) || total.v < 0.0 ||
+				line.v < 0.0 || line.v > line_capacity.v || main.v < 0.0 || main.v > glow_validity_.capacity.v ||
+				total.v > glow_validity_.total_capacity.v || (!glow_validity_.has_line && line.v != 0.0)) return 0;
+		return nk::glow_raw_mass(stage_.glow, total, line).ok ? 1 : 0;
+	}
+
 	Dictionary tick_stats() const {
 		Dictionary out;
 		out["calls"] = tick_calls_;
+		out["glow_mass_calls"] = glow_mass_calls_;
 		out["answers"] = tick_answers_;
 		out["faults"] = tick_faults_;
 		out["glow_firing_calls"] = glow_firing_calls_;

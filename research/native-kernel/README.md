@@ -580,6 +580,11 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   point. `FlightSession.native_glow_firing` asks only inside the tick its guarded pre-step installed, and
   `GlowFlight._firing_sample` evaluates `point()` on NaN
   ([evidence](../../docs/research/native-kernel/NK-6b/README.md)).
+- `prepare_glow_validity(bounds)` and `stage_glow_mass_check(values, with_mass)` (NK-6e) answer
+  `GlowFlight.valid(values)` and `GlowFlight.mass_context(values).ok` from the installation's bounds and the
+  prepared glow mass. `FlightSession._native_glow_mass_check` asks inside the guarded tick for the contact mass
+  sampler and the auxiliary projection; -1 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6e/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
