@@ -626,8 +626,8 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - D6: preparation rejects malformed data, unsupported laws, pending configuration changes and exceeded resource
   budgets. Family adapters admit the capabilities listed above. Rejection preserves the reference callbacks;
   a later configuration mutation faults before the next native evaluation rather than using stale coefficients.
-  Since NK-6p a fixed-wing native flight freezes the guarded containers, so an in-place write fails where it is made
-  and the guard proves the frozen roots by identity
+  Since NK-6p a fixed-wing native flight freezes the guarded containers, so a container write fails where it is made
+  and the guard proves the frozen roots by identity; packed leaves, which stay writable in place, keep bitwise watches
   ([decision](../../docs/DECISIONS.md#a-native-flight-freezes-its-guarded-configuration),
   [evidence](../../docs/research/native-kernel/NK-6p/README.md)).
 

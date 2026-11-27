@@ -3,6 +3,9 @@ extends SceneTree
 ## - After preparation the aircraft dictionary, the hull contact and the lake are read-only all the way down, and the
 ##   guard's per-tick plan proves those roots by identity, without their deep snapshots.
 ## - Replacing a frozen root with an equal writable copy still refuses the configuration.
+## - A packed array stays writable in place under a read-only parent; its bitwise watch refuses an alias write and a
+##   direct element write (Good Enemy review of NK-6p).
+## - Preparation alone does not freeze: only the kernel's acceptance does.
 ## - With the freeze off the containers stay writable and the plan keeps its snapshots.
 ## - Flights are byte-identical with the freeze on and off.
 ## Skips (passes) without a verified native library.
@@ -13,6 +16,12 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
+const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
+const ElectricAdapter := preload("res://sim/native/electric_stage_adapter.gd")
+const LiquidAdapter := preload("res://sim/native/liquid_stage_adapter.gd")
+const GlowAdapter := preload("res://sim/native/glow_stage_adapter.gd")
+const PrescribedAdapter := preload("res://sim/native/prescribed_stage_adapter.gd")
 
 var _checks := 0
 var _failures := 0
@@ -41,6 +50,7 @@ func _run() -> void:
 		_frozen(id, s)
 		s.free()
 		_unfrozen(id)
+		_preparation_alone(id)
 		_pair(id)
 	NativeConfiguration.freeze_guarded_configuration = true
 	if tested == 0:
@@ -109,8 +119,80 @@ func _frozen(id: String, s: Node) -> void:
 	_check(id + ": an equal writable copy of a frozen root refuses", not s._native_stage.configuration_matches(s))
 	s._hull_contact = original
 	_check(id + ": the original root matches again", s._native_stage.configuration_matches(s))
-	print("NK6P_FROZEN %s frozen_roots=%d snapshots=%d" % [id, int(profile.get("plan_frozen_roots", 0)),
-		int(profile.get("plan_snapshots", 0))])
+	# A packed array stays writable in place under a read-only parent: the engine shares its buffer with every
+	# alias. Its bitwise watch must refuse an alias write and a direct element write.
+	for root_name: String in ["aircraft", "_hull_contact", "lake"]:
+		var root: Dictionary = s.environment.lake if root_name == "lake" else s.get(root_name)
+		var leaf := _first_packed(root)
+		_check(id + ": the " + root_name + " holds a packed leaf", not leaf.is_empty())
+		if leaf.is_empty():
+			continue
+		var alias: PackedFloat64Array = leaf[0][leaf[1]]
+		var old: float = alias[0]
+		alias[0] = old + 1.0
+		_check(id + ": an alias write into the " + root_name + "'s packed leaf reaches it",
+			(leaf[0][leaf[1]] as PackedFloat64Array)[0] == old + 1.0)
+		_check(id + ": the guard refuses an alias write into the " + root_name + "'s packed leaf",
+			not s._native_stage.configuration_matches(s))
+		alias[0] = old
+		_check(id + ": the restored " + root_name + " matches again", s._native_stage.configuration_matches(s))
+	var element := _first_packed(s.aircraft)
+	if not element.is_empty():
+		var held: float = (element[0][element[1]] as PackedFloat64Array)[0]
+		element[0][element[1]][0] = held + 2.0
+		_check(id + ": the guard refuses a direct element write under a read-only parent",
+			not s._native_stage.configuration_matches(s))
+		element[0][element[1]][0] = held
+		_check(id + ": the restored element matches again", s._native_stage.configuration_matches(s))
+	print("NK6P_FROZEN %s frozen_roots=%d snapshots=%d watches=%d" % [id, int(profile.get("plan_frozen_roots", 0)),
+		int(profile.get("plan_snapshots", 0)), int(profile.get("plan_watches", 0))])
+
+
+## [parent, key] of the first non-empty PackedFloat64Array found depth-first, or [].
+func _first_packed(value: Variant) -> Array:
+	if value is Dictionary:
+		for key: Variant in value:
+			var child: Variant = value[key]
+			if child is PackedFloat64Array and not (child as PackedFloat64Array).is_empty():
+				return [value, key]
+			var found := _first_packed(child)
+			if not found.is_empty():
+				return found
+	elif value is Array:
+		for index: int in (value as Array).size():
+			var child: Variant = value[index]
+			if child is PackedFloat64Array and not (child as PackedFloat64Array).is_empty():
+				return [value, index]
+			var found := _first_packed(child)
+			if not found.is_empty():
+				return found
+	return []
+
+
+## The freeze waits for the kernel's acceptance: NativeConfiguration.prepare alone leaves the containers writable,
+## so a refused native stage cannot leave a reference flight frozen.
+func _preparation_alone(id: String) -> void:
+	var s: Node = Flight.new()
+	s.start_choice = Flight.START_RUNWAY
+	s.setup_stage_backend(NativeStage.BACKEND_REFERENCE)
+	s.setup(Catalog.data_for(id, Catalog.default_battery_mode(id)), id)
+	s.set_field(_field)
+	s.set_lake_context(_lake)
+	s.reset()
+	var builder: Callable = WeatherAdapter.config_for
+	if s.glow_is_active():
+		builder = GlowAdapter.config_for
+	elif s.liquid_fuel_is_active():
+		builder = LiquidAdapter.config_for
+	elif Propulsion.is_electric(s.aircraft.model.propulsion):
+		builder = ElectricAdapter.config_for
+	elif not PrescribedAdapter.kind_for(s).is_empty():
+		builder = PrescribedAdapter.config_for
+	var boundary: Dictionary = NativeConfiguration.prepare(s, builder)
+	_check(id + ": preparation alone accepts the configuration", boundary.get("ok", false), str(boundary.get("reason")))
+	_check(id + ": preparation alone leaves the aircraft writable", not s.aircraft.is_read_only()
+		and not (s.aircraft.model as Dictionary).is_read_only() and not s._hull_contact.is_read_only())
+	s.free()
 
 
 func _unfrozen(id: String) -> void:

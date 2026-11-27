@@ -374,10 +374,6 @@ func prepare(session: Node) -> Dictionary:
 	if not result.get("ok", false): return _refuse("native stage refused: " + str(result.get("error", "invalid prepared source")))
 	_configuration_identity = boundary.identity
 	_weather_identity = boundary.weather_identity
-	var weather_guard: Dictionary = _native.prepare_weather_guard(session, _weather_identity)
-	var configuration_guard: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
-	if not weather_guard.get("ok", false) or not configuration_guard.get("ok", false):
-		return _refuse("native preparation identity changed before installation")
 	if not _macos_domain_context.is_empty():
 		if not _native.has_method("prepare_macos_domain_guard"):
 			return _refuse("Mac stock packed context guard is unavailable")
@@ -385,6 +381,13 @@ func prepare(session: Node) -> Dictionary:
 		if not domain_guard.get("ok", false):
 			return _refuse("Mac stock packed context guard refused")
 		_macos_domain_context["native_guard"] = domain_guard.duplicate(true)
+	# NK-6p: the kernel accepted the stage; freeze before the guard builds its plan (a fixed-wing flight only).
+	if _family != "helicopter" and NativeConfiguration.freeze_guarded_configuration:
+		NativeConfiguration.freeze_guarded(session)
+	var weather_guard: Dictionary = _native.prepare_weather_guard(session, _weather_identity)
+	var configuration_guard: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
+	if not weather_guard.get("ok", false) or not configuration_guard.get("ok", false):
+		return _refuse("native preparation identity changed before installation")
 	_prepared = true
 	reason = ""
 	return {ok = true, reason = ""}

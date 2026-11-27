@@ -105,10 +105,30 @@ inline bool holds_retained(const godot::Variant &value, int depth, int max_depth
 	return leaf == Leaf::Retained;
 }
 
-// NK-6p (owner decision, 2026-11-27): a value that is read-only all the way down cannot change, since Godot cannot
-// make a container writable again. Every Dictionary and Array in it, keys included, must be read-only; an Object
-// (whose own state may change) or excess depth keeps the comparison. Scalars, strings, packed arrays (copy-on-write
-// values a read-only parent cannot take back) and Callables (compared by identity) qualify.
+// NK-6p (owner decision, 2026-11-27): a value whose containers are read-only all the way down keeps its shape, since
+// Godot cannot make a container writable again. Every Dictionary and Array in it, keys included, must be read-only;
+// an Object (whose own state may change) or excess depth keeps the comparison. Scalars, strings and Callables
+// (compared by identity) cannot change in place. Packed arrays can: the engine shares a packed array's buffer with
+// every alias, and an element write through one, even through the read-only parent, changes it in place. So a
+// packed array qualifies here only because the plan keeps its bitwise watch (packed()).
+inline bool packed(const godot::Variant &value) {
+	switch (value.get_type()) {
+		case godot::Variant::PACKED_BYTE_ARRAY:
+		case godot::Variant::PACKED_INT32_ARRAY:
+		case godot::Variant::PACKED_INT64_ARRAY:
+		case godot::Variant::PACKED_FLOAT32_ARRAY:
+		case godot::Variant::PACKED_FLOAT64_ARRAY:
+		case godot::Variant::PACKED_STRING_ARRAY:
+		case godot::Variant::PACKED_VECTOR2_ARRAY:
+		case godot::Variant::PACKED_VECTOR3_ARRAY:
+		case godot::Variant::PACKED_COLOR_ARRAY:
+		case godot::Variant::PACKED_VECTOR4_ARRAY:
+			return true;
+		default:
+			return false;
+	}
+}
+
 inline bool frozen(const godot::Variant &value, int depth, int max_depth) {
 	if (depth > max_depth) return false;
 	switch (value.get_type()) {

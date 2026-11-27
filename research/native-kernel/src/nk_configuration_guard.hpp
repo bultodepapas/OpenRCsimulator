@@ -330,7 +330,8 @@ class ConfigurationGuard {
 	// strictly (±0, Callables) and for every container holding one. A NaN, an unsupported value or a snapshot the
 	// engine does not accept keeps the full leaf walk.
 	// NK-6p: a root container that is read-only all the way down needs no snapshot, and an entry of a read-only
-	// container no watch: neither can change while the root watch proves the same instance.
+	// container no watch: neither can be replaced while the root watch proves the same instance. A packed array
+	// keeps its bitwise watch: its elements stay writable in place under a read-only parent.
 	bool build_plan() {
 		plan_ready_ = false;
 		plan_watches_.clear();
@@ -362,7 +363,9 @@ class ConfigurationGuard {
 			}
 			if ((watch.source == Parent::DictionaryEntry && watch.parent_dictionary.is_read_only()) ||
 					(watch.source == Parent::ArrayEntry && watch.parent_array.is_read_only())) {
-				continue; // NK-6p: a read-only parent keeps this entry
+				// NK-6p: a read-only parent keeps this entry, but not a packed array's elements.
+				if (guard_plan::packed(watch.expected)) plan_watches_.push_back(i);
+				continue;
 			}
 			if (watch.container_size >= 0) {
 				bool refused = false;

@@ -26,15 +26,16 @@ const VEHICLE_FIELDS := ["input_size", "aux_size", "modes_size", "continuous_siz
 
 
 ## NK-6p (owner decision, 2026-11-27): a native flight freezes the configuration its guard watches. Godot cannot
-## make a container writable again, so the guard proves each frozen root unchanged by its identity, without a deep
-## comparison per tick, and a later write into it fails where it is made instead of faulting the next tick.
+## make a container writable again, so the guard proves each frozen root's shape by its identity, without a deep
+## comparison per tick, and a later container write fails where it is made instead of faulting the next tick.
+## Packed arrays stay writable in place (the engine shares their buffers with every alias), so the guard keeps a
+## bitwise watch on each. NativeStage freezes only after the kernel accepted the stage.
 ## Test hook: false keeps the containers writable and the guard's deep comparison.
 static var freeze_guarded_configuration := true
 
 
-## Every Dictionary and Array the fixed-wing guard watches, read-only all the way down (scalars and packed arrays
-## need nothing: a read-only parent cannot take them back).
-static func _freeze_guarded(session: Node) -> void:
+## Every Dictionary and Array the fixed-wing guard watches, read-only all the way down.
+static func freeze_guarded(session: Node) -> void:
 	for field: String in SESSION_FIELDS:
 		NativeWeather._freeze_containers(session.get(field))
 	for field: String in ENVIRONMENT_FIELDS:
@@ -115,8 +116,6 @@ static func prepare(session: Node, builder: Callable) -> Dictionary:
 		return {ok = false, reason = "native stage gravity differs from its live source"}
 	if config.has("inertia") and var_to_bytes(config.inertia) != var_to_bytes(session.sim.inertia):
 		return {ok = false, reason = "native stage inertia differs from its live source"}
-	if freeze_guarded_configuration:
-		_freeze_guarded(session)
 	var identity := _capture_identity(session, expected_stage, "fixed_wing", SESSION_FIELDS)
 	var detached: Dictionary = config.duplicate(true)
 	NativeWeather._freeze_containers(detached)

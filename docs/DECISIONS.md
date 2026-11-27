@@ -769,12 +769,15 @@ a gear damage rule needs per-tick sample timing.
 
 ### A native flight freezes its guarded configuration
 
-**F1 / NK-6p, 2026-11-27; explicit owner decision.** When the native stage is prepared, the session's guarded
-containers become read-only all the way down: the aircraft dictionary, the hull contact and the lake
-(`NativeConfiguration._freeze_guarded`). Godot cannot make a container writable again. The configuration guard
-therefore proves each frozen root unchanged by its identity and drops its deep comparison per tick (16–42 → 3 µs).
-A later in-place write fails where it is made, as an engine read-only error, instead of faulting the next native tick.
-Replacing a root with another instance still refuses the tick. Writable containers keep the guard's comparison.
+**F1 / NK-6p, 2026-11-27; explicit owner decision.** Once the kernel accepts a fixed-wing native stage, the
+session's guarded containers become read-only all the way down: the aircraft dictionary, the hull contact and the lake
+(`NativeConfiguration.freeze_guarded`). Godot cannot make a container writable again. The configuration guard
+therefore proves each frozen root's shape by its identity and drops its deep comparison per tick (16–42 → 6–8 µs).
+A later container write fails where it is made, as an engine read-only error, instead of faulting the next native
+tick. Packed arrays are the exception: the engine shares a packed array's buffer with every alias, so an element
+write changes it in place even under a read-only parent. Each packed leaf therefore keeps a bitwise watch, and such
+a write still faults the next native tick. Replacing a root with another instance still refuses the tick. Writable
+containers keep the guard's comparison.
 
 No production code writes these containers after setup. The guard's own tests turn the freeze off to keep covering
 that comparison ([test](../app/tests/test_native_frozen_configuration.gd)). Revisit if a feature must edit the

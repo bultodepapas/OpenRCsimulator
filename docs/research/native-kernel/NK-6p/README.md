@@ -21,48 +21,66 @@ object, but a writable container cannot share its snapshot.
 - `nk_guard_plan.hpp`: `frozen()` holds for a value whose containers are read-only all the way down, keys included,
   with no Object. Scalars, strings, packed arrays and Callables qualify: a read-only parent cannot take them back.
 - `nk_configuration_guard.hpp`: the per-tick plan keeps each root's identity watch, but a frozen root needs no deep
-  snapshot, and an entry of a read-only container needs no watch. Writable containers keep NK-5h's plan. The
-  profile reports `plan_frozen_roots`.
+  snapshot, and an entry of a read-only container needs no watch unless it is a packed array (below). Writable
+  containers keep NK-5h's plan. The profile reports `plan_frozen_roots`.
+- `native_stage.gd`: the freeze waits until the kernel has accepted the stage and the macOS domain guard (where
+  present) has passed, just before the configuration guard builds its plan. A refused stage leaves a writable
+  reference flight.
 
-An in-place write into a frozen container now fails where it is made, as an engine read-only error. Before, the
-next native tick refused it. Replacing a root with another instance still refuses the tick.
+A container write into a frozen root now fails where it is made, as an engine read-only error. Before, the next
+native tick refused it. Replacing a root with another instance still refuses the tick.
+
+### Packed arrays stay writable in place
+
+The Good Enemy review of the first commit found that Godot 4.8-beta2 shares a packed array's buffer with every
+alias. An element write changes the array inside a read-only parent, through an alias or directly
+(`aircraft.model.crash_hull[0] = x`), with no engine error. The first commit dropped those leaves' watches, so the
+guard missed such a write (probe: the write reached the aircraft and `configuration_matches` stayed true). Each
+packed leaf under a frozen root now keeps its bitwise watch (35–64 per aircraft), and such a write still faults the
+next native tick. The first commit also froze before the kernel accepted the stage.
 
 ## Evidence
 
-- `app/tests/test_native_frozen_configuration.gd`: 30 checks, none failed, for the Corsair, Ugly Stik 60 and glow
+- `app/tests/test_native_frozen_configuration.gd`: 78 checks, none failed, for the Corsair, Ugly Stik 60 and glow
   Stik 61FX.
   - After preparation the aircraft, the hull contact and the lake are read-only all the way down, and the plan proves
     three frozen roots by identity.
   - A root replaced by an equal writable copy refuses the configuration, and the original matches again.
+  - An element write into a packed leaf of the aircraft, the hull contact or the lake, through an alias or directly,
+    reaches it and is refused; the restored value matches again.
+  - `NativeConfiguration.prepare` alone leaves the aircraft writable.
   - With the freeze off the containers stay writable and the plan keeps its snapshots.
   - Flights are byte-identical with the freeze on and off.
-- `test_native_guard_leaves.gd` (185 checks) and `test_native_session.gd` pass. Their in-place edits now run with the
+- `test_native_guard_leaves.gd` (185 checks) and `test_native_session.gd` pass. Their in-place edits run with the
   freeze off, to keep covering the comparison of writable containers. `test_native_session` also checks that a
   native flight's model is read-only.
 - All nineteen installer gates are identical for binary
-  `f3e72aa574f1d646652962e2c9c83701002a9b187618f8a477c5250e10dd3521`, and the mutant build still fails. Accepted
+  `b586af923a64ab6324ded772c95fff8d2a3637114c6bbb281ff20bef3318c4d3`, and the mutant build still fails. Accepted
   results (tool root, not in Git):
-  - `stage-20261127T195350936875Z.json` `32e998d02428bc1b8ba513d7fa397e18a59a8f9a4dd943835f00b78bb98f6d06`
-  - `stage_mutant-20261127T195417278807Z.json` `9aebab7405f77b9a976257ddb8052121244b7becfa93906ed120b4e36ec2fac3`
-  - `trajectory-20261127T195441832853Z.json` `b460dd2971da0dcfdd44186eca7c639f4d89aff08766f353df47583a00b343fc`
-  - `legacy-ground-20261127T195816941363Z.json` `da7130d3c6988f45394c8cc93e80d7dca0de496f2bfba2028d53e12c604f3ee4`
+  - `stage-20261127T213413378953Z.json` `66b505997ef3d5a977123135856ea869ddb630ef8c996d107450d267840ccfef`
+  - `stage_mutant-20261127T213439398372Z.json` `51e004409210c3e7743e9173640e1a3417b76f87018d7ea4831682e166318e75`
+  - `trajectory-20261127T213505527545Z.json` `d80ec23fd852eef9315e6bcc50b70dc15e9118f89b6d38e4a66cebce2afbddb6`
+  - `legacy-ground-20261127T213845818576Z.json` `75d3ee712a926985ca4df0c194a81ddd6463ff4f56e2ec6cee3fdb6d4e408f35`
 - `test_scenery_destruction_runtime.gd` wrote its synthetic hull probe into the frozen aircraft. It now installs the
   probe through a new aircraft and the reset that prepares it, and passes on the native backend (9 checks).
   `test_accident_integration.gd` simulates its developer reload with a replaced aircraft (100 checks).
-- Full local suite on the F: build tree with the native stage installed: 1,166 of 1,192 scripts pass. None of the
-  other 26 fails on a read-only write. They fail without this change too: the companion profiles' solver pin awaits a
-  rebind, the sparse build tree lacks research fixtures, a race test runs the multirotor session (no native stage),
-  `test_yaw_damping`'s open R02 gate, load-sensitive UI timing, or runner false positives.
-- Live app, native backend: Ugly Stik and Corsair flights, a restart, a return Home and the Workshop opened in flight
-  logged no read-only error.
+- Full local suite with the first commit's binary, on the F: build tree with the native stage installed: 1,166 of
+  1,192 scripts pass. None of the other 26 fails on a read-only write. They fail without this change too: the
+  companion profiles' solver pin awaits a rebind, the sparse build tree lacks research fixtures, a race test runs the
+  multirotor session (no native stage), `test_yaw_damping`'s open R02 gate, load-sensitive UI timing, or runner
+  false positives. With the fix, the 38 scripts that prepare a native stage or test the guard, the accident ledger
+  or the session all pass.
+- Live app, native backend (first commit): Ugly Stik and Corsair flights, a restart, a return Home and the Workshop
+  opened in flight logged no read-only error.
 
 ## Gain
 
 Headless, the guard's own profile (whole plan) and `NativeStage.configuration_matches` (with the weather guard and
-ownership checks):
+ownership checks), before NK-6p and now. The packed leaves' watches (69–100 plan watches) cost 2.5–4.5 µs of the
+plan; the first commit's unsound plan took 3.1 µs.
 
 | Aircraft | Plan | `configuration_matches` |
 | --- | ---: | ---: |
-| Corsair | 22.1 → 3.1 µs | 37.8 → 7.3 µs |
-| Ugly Stik 60 | 15.9 → 3.1 µs | 30.7 → 7.1 µs |
-| Glow Stik 61FX | 42.1 → 3.1 µs | 64.0 → 7.0 µs |
+| Corsair | 22.1 → 7.5 µs | 37.8 → 12.0 µs |
+| Ugly Stik 60 | 15.9 → 5.5 µs | 30.7 → 9.9 µs |
+| Glow Stik 61FX | 42.1 → 6.6 µs | 64.0 → 12.0 µs |
