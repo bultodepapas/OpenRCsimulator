@@ -390,5 +390,35 @@ func _initialize() -> void:
 		object_value["point_ned"] = ImpactSnapshot.Snapshot.new()
 		_check("Object values are rejected from snapshots", not EventNormalizer.validate_events([object_value], 7, bindings))
 
+	_test_support_events_valid_by_construction()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
+
+
+## support_event returns its event without re-validating it: every event it builds must pass
+## _support_event_is_valid, and validate_events must accept it, for each lifecycle, edge value and binding.
+func _test_support_events_valid_by_construction() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4421
+	var bindings := {"support_points": [{"id": "main_left"}, {"id": "main_right"}, {"id": " tail "}, {"id": ""}, {}]}
+	var values := [0.0, -0.0, 1.0e-300, -1.0e-300, 0.002, -0.004, 0.05, 1.0e9, NAN, INF, -INF]
+	var built := 0
+	var invalid := 0
+	var lifecycles := {}
+	for i in 4000:
+		var index: int = rng.randi_range(-1, 5)
+		var compression: float = values[rng.randi_range(0, values.size() - 1)] if i % 3 == 0 else rng.randf_range(-0.01, 0.03)
+		var previous: float = values[rng.randi_range(0, values.size() - 1)] if i % 5 == 0 else rng.randf_range(-0.01, 0.03)
+		var travel: float = values[rng.randi_range(0, values.size() - 1)] if i % 7 == 0 else rng.randf_range(0.001, 0.05)
+		var tick: int = [0, 1, 2, 977, -3][rng.randi_range(0, 4)]
+		var event: Dictionary = EventNormalizer.support_event(index, compression, previous, travel, tick, bindings)
+		if event.is_empty():
+			continue
+		built += 1
+		lifecycles[event.lifecycle] = true
+		if not EventNormalizer._support_event_is_valid(event, tick, bindings) \
+				or not EventNormalizer.validate_events([event], tick, bindings):
+			invalid += 1
+	_check("every support event built is valid by construction (%d built, %d invalid)" % [built, invalid],
+		invalid == 0 and built > 500)
+	_check("support events cover every lifecycle", lifecycles.size() == 3)

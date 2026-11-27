@@ -302,7 +302,11 @@ static func support_event(index: int, compression_m: float, previous_compression
 	event.format = SUPPORT_FORMAT
 	event["point_index"] = index
 	event["measure"] = {"compression_m": maxf(0.0, compression_m), "travel_limit_m": travel_m}
-	return event if _support_event_is_valid(event, tick, bindings) else {}
+	# _support_event_is_valid holds by construction: the inputs are checked above, the id and event_id come from the
+	# same bindings and tick, and the compression is clamped at zero. validate_events still checks every support
+	# event that arrives from outside. A rolling tick builds one per supported wheel, so the redundant check cost
+	# about 9 µs each; test_aircraft_contact_events covers the invariant.
+	return event
 
 
 static func _support_event_is_valid(event: Dictionary, tick: int, bindings: Dictionary) -> bool:
@@ -428,13 +432,23 @@ static func _optional_fields_are_valid(event: Dictionary) -> bool:
 
 
 static func _event_keys_are_known(event: Dictionary) -> bool:
+	for key: Variant in event.keys():
+		if typeof(key) != TYPE_STRING or not _known_key_set.has(str(key)):
+			return false
+	return true
+
+
+## _COMMON_KEYS and _OPTIONAL_KEYS as a set, built once when the script loads (every rolling tick validates one
+## support event per wheel). Read-only after initialization.
+static var _known_key_set: Dictionary = _build_known_key_set()
+
+
+static func _build_known_key_set() -> Dictionary:
 	var allowed: Dictionary = {}
 	for key: String in _COMMON_KEYS + _OPTIONAL_KEYS:
 		allowed[key] = true
-	for key: Variant in event.keys():
-		if typeof(key) != TYPE_STRING or not allowed.has(str(key)):
-			return false
-	return true
+	allowed.make_read_only()
+	return allowed
 
 
 static func _event_add_snapshot_values(event: Dictionary, impact: ImpactSnapshot.Snapshot) -> void:
