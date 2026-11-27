@@ -1057,6 +1057,10 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	GlowValidity glow_validity_;
 	int64_t glow_mass_calls_ = 0;
 	std::vector<nk::R> terminal_amounts_;
+	bool prop_strike_ready_ = false;
+	nk::R prop_hub_[3] = {0.0, 0.0, 0.0};
+	nk::R prop_axis_[3] = {0.0, 0.0, 0.0};
+	double prop_radius_ = 0.0;
 	bool liquid_terminal_ready_ = false;
 	bool glow_terminal_ready_ = false;
 	double glow_terminal_crash_depth_ = 0.0;
@@ -1232,6 +1236,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("prepare_prop_strike", "hub", "axis", "radius"),
+			&OpenRCNativeKernel::prepare_prop_strike);
+		godot::ClassDB::bind_method(D_METHOD("stage_prop_strike_clear", "s"), &OpenRCNativeKernel::stage_prop_strike_clear);
 		godot::ClassDB::bind_method(D_METHOD("stage_guard_collapsed", "s", "aux"),
 			&OpenRCNativeKernel::stage_guard_collapsed);
 		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_facts", "s", "aux", "time_s"),
@@ -1835,6 +1842,66 @@ public:
 	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
 	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
 	// a refused air sample or a contact without a numeric travel limit.
+	// NK-6k: FlightSession._prop_disc (HullContact.prop_disc of the model's propulsion): hub and unit axis in body FRD
+	// and radius. Each installation prepares its own.
+	bool prepare_prop_strike(const PackedFloat64Array &hub, const PackedFloat64Array &axis, double radius) {
+		prop_strike_ready_ = stage_ready_ && !heli_stage_ready_ && hub.size() == 3 && axis.size() == 3 &&
+			std::isfinite(radius) && radius > 0.0;
+		for (int i = 0; prop_strike_ready_ && i < 3; ++i) {
+			if (!std::isfinite(hub[i]) || !std::isfinite(axis[i])) prop_strike_ready_ = false;
+			prop_hub_[i] = hub[i];
+			prop_axis_[i] = axis[i];
+		}
+		prop_radius_ = radius;
+		return prop_strike_ready_;
+	}
+
+	// NK-6k: 1 when HullContact.prop_disc_depth(s, disc, the stage's lake, any finite time).depth <= 0, so
+	// FlightSession._check_prop_strike finds no strike: the lake is absent, or valid with the disc's lowest point outside
+	// the bank bounds expanded by sample_covered_terrain_validated's margin and the disc, padded as _disc_near_lake pads
+	// it, horizontally clear of them. The reference then keeps its flat-datum depth, computed here in its order.
+	// -1 for the reference otherwise, strikes included.
+	int64_t stage_prop_strike_clear(const PackedFloat64Array &s) {
+		if (!prop_strike_ready_ || heli_stage_ready_ || !stage_ready_ || !read_state(s) || !stage_.ground.lake_valid) return -1;
+		const double *v = s.ptr();
+		for (int i = 0; i < 10; ++i) {
+			if (!std::isfinite(v[i])) return -1;
+		}
+		const nk::R q[4] = {v[6], v[7], v[8], v[9]};
+		const nk::R w = q[0], x = q[1], y = q[2], z = q[3];
+		// hull_contact.gd _down_row, then prop_disc_depth's lowest rim point.
+		const nk::R down[3] = {2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)};
+		const nk::R *a = prop_axis_;
+		const nk::R along = down[0] * a[0] + down[1] * a[1] + down[2] * a[2];
+		const nk::R p[3] = {down[0] - along * a[0], down[1] - along * a[1], down[2] - along * a[2]};
+		const nk::R p_len = nk::sqrt_(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]);
+		nk::R lowest[3] = {prop_hub_[0], prop_hub_[1], prop_hub_[2]};
+		if (p_len.v > 1.0e-9) {
+			const nk::R k = nk::R(prop_radius_) / p_len;
+			for (int i = 0; i < 3; ++i) lowest[i] = lowest[i] + p[i] * k;
+		}
+		const nk::R depth = nk::R(v[2]) + down[0] * lowest[0] + down[1] * lowest[1] + down[2] * lowest[2];
+		if (!(depth.v <= 0.0)) return -1;
+		const nk::LakeTerrain &lake = stage_.ground.lake;
+		if (!lake.present) return 1;
+		const double *b = lake.bank_aabb;
+		const double margin = 0.025; // LakeSurface.SAMPLE_EPSILON_M
+		const std::array<nk::R, 3> point = nk::q_rotate3(q, lowest);
+		const nk::R north = nk::R(v[0]) + point[0];
+		const nk::R east = nk::R(v[1]) + point[1];
+		if (!(north.v < b[0] - margin || north.v > b[1] + margin || east.v < b[2] - margin || east.v > b[3] + margin)) {
+			return -1;
+		}
+		const std::array<nk::R, 3> hub = nk::q_rotate3(q, prop_hub_);
+		const nk::R hub_north = nk::R(v[0]) + hub[0];
+		const nk::R hub_east = nk::R(v[1]) + hub[1];
+		const nk::R qq = w * w + x * x + y * y + z * z;
+		const nk::R pad = nk::R(prop_radius_) * (1.0 + 4.0 * qq) + 0.001;
+		const bool clear = (hub_north + pad).v < b[0] || (hub_north - pad).v > b[1] || (hub_east + pad).v < b[2] ||
+			(hub_east - pad).v > b[3];
+		return clear ? 1 : -1;
+	}
+
 	// NK-6j: FlightSession.gear_collapsed(s) for the pre-tick guard, from the endpoint compressions of the tick context
 	// the guarded pre-step installed (stage_compressions refuses whatever it cannot answer exactly): 1 collapsed, 0 not,
 	// -1 for the reference.
@@ -2055,6 +2122,7 @@ public:
 		}
 		heli_stage_ready_ = false;
 		liquid_terminal_ready_ = false; // NK-6h: each installation prepares its own terminal bounds
+		prop_strike_ready_ = false; // NK-6k: and its own propeller disc
 		glow_terminal_ready_ = false;
 		pre_model_ = nk::PreStepModel(); // a new stage needs its own pre-step preparation
 		Decoder dec;

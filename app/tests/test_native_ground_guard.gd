@@ -9,8 +9,12 @@ extends SceneTree
 ##   (FlightSession._guard_gear_collapsed).
 ## - NK-6j: the guard's gear collapse from the native stage's endpoint compressions equals gear_collapsed for perturbed
 ##   states on, into and past the gear's travel.
-## Paired sessions with all of them on and all off fly byte-identical through a takeoff roll, a lake-shore taxi and a
-## hard landing that collapses the gear. Skips (passes) without a verified native library.
+## - NK-6k: wherever the native stage proves the propeller clear, HullContact.prop_disc_depth's depth is <= 0, for
+##   perturbed states on the runway, at the lake's bank and over its water, from level to nosed over, some with
+##   quaternions off unit length; away from the lake, and without a lake, it proves every clear state.
+## Paired sessions with all of them on and all off fly byte-identical through a takeoff roll, a lake-shore taxi, a
+## hard landing that collapses the gear and a nose-over that strikes the propeller. Skips (passes) without a verified
+## native library.
 
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
@@ -20,6 +24,8 @@ const CollisionSetup := preload("res://scenery/collision_setup.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const M := preload("res://physics/math3d.gd")
+const HullContact := preload("res://physics/hull_contact.gd")
 
 const SAMPLES := 4000
 var _checks := 0
@@ -60,16 +66,18 @@ func _run() -> void:
 		_soundness(probe, id)
 		probe.free()
 		_collapse(id)
+		_strike(id)
 		_pair(id, "roll")
 		_pair(id, "shore")
 		_pair(id, "hard_landing")
+		_pair(id, "nose_over")
 	if tested == 0:
 		print("NK6G_GROUND_GUARD_SKIP no native session")
 	print("native ground guard: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
 
-func _session(id: String, enabled: bool, start: String) -> Node:
+func _session(id: String, enabled: bool, start: String, with_lake := true) -> Node:
 	var s: Node = Flight.new()
 	s.input_enabled = true
 	s.crash_auto_restart = false
@@ -78,6 +86,7 @@ func _session(id: String, enabled: bool, start: String) -> Node:
 	s.lake_bank_proof_enabled = enabled
 	s.guard_published_collapse_enabled = enabled
 	s.native_guard_collapse_enabled = enabled
+	s.native_prop_strike_enabled = enabled
 	s.start_choice = start
 	s.setup_stage_backend(NativeStage.BACKEND_NATIVE)
 	s.setup(Catalog.data_for(id, Catalog.default_battery_mode(id)), id)
@@ -87,7 +96,8 @@ func _session(id: String, enabled: bool, start: String) -> Node:
 	s.set_field(_field)
 	if not _world.is_empty():
 		s.set_collision_world(_world)
-	s.set_lake_context(_lake)
+	if with_lake:
+		s.set_lake_context(_lake)
 	s.reset()
 	if s.glow_is_active() and not bool(s.glow_state().get("running", false)):
 		s.glow_start()
@@ -174,6 +184,97 @@ func _collapse(id: String) -> void:
 	s.free()
 
 
+## NK-6k: perturbed endpoints around a rolling one, a third of them at the lake's bank or over its water.
+func _strike(id: String) -> void:
+	var s := _session(id, true, Flight.START_RUNWAY)
+	s.read_raw = func() -> Dictionary: return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.2}
+	for i in 120:
+		_tick(s)
+	var origin: PackedFloat64Array = s.sim.state.duplicate()
+	var bank := LakeCollision._polygon_bounds(_lake.bank_ne_m)
+	var time_s: float = float(s.sim.tick) * s.sim.dt()
+	var stats := {answered = 0, strikes = 0, unsound = 0, refused = 0, refused_far_clear = 0}
+	for i in 3000:
+		var state := origin.duplicate()
+		if i % 3 == 0:
+			state[RB.POS] = lerpf(bank[0], bank[1], _rng.randf_range(-0.2, 1.2))
+			state[RB.POS + 1] = lerpf(bank[2], bank[3], _rng.randf_range(-0.2, 1.2))
+		else:
+			state[RB.POS] += _rng.randf_range(-20.0, 20.0)
+			state[RB.POS + 1] += _rng.randf_range(-20.0, 20.0)
+		state[RB.POS + 2] += _rng.randf_range(-0.3, 0.3)
+		var q := Quaternion(Vector3(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1), _rng.randf_range(-1, 1)).normalized(),
+			_rng.randf_range(-0.6, 0.6)) * Quaternion(state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3], state[RB.ATT])
+		var n := sqrt(float(q.w) * q.w + float(q.x) * q.x + float(q.y) * q.y + float(q.z) * q.z)
+		if i % 4 == 1:
+			n *= 1.0 + _rng.randf_range(-1.0e-3, 1.0e-3) # the stage's quaternion is not exactly unit
+		state[RB.ATT] = q.w / n
+		state[RB.ATT + 1] = q.x / n
+		state[RB.ATT + 2] = q.y / n
+		state[RB.ATT + 3] = q.z / n
+		var answer: int = s._native_stage.prop_strike_clear(state, s._prop_disc, s._lake)
+		var depth: float = float(HullContact.prop_disc_depth(state, s._prop_disc, s._lake, time_s).depth)
+		if depth > 0.0:
+			stats.strikes += 1
+		if answer == 1:
+			stats.answered += 1
+			if not (depth <= 0.0):
+				stats.unsound += 1
+			continue
+		stats.refused += 1
+		# 5 m clears every hub offset and radius here: only the lake's neighbourhood may keep the reference.
+		var far: bool = state[RB.POS] < bank[0] - 5.0 or state[RB.POS] > bank[1] + 5.0 \
+			or state[RB.POS + 1] < bank[2] - 5.0 or state[RB.POS + 1] > bank[3] + 5.0
+		if far and depth <= 0.0:
+			stats.refused_far_clear += 1
+	_check(id + ": every native propeller clearance has prop_disc_depth <= 0", stats.unsound == 0 and stats.answered > 1000,
+		str(stats))
+	_check(id + ": away from the lake the native stage proves every clear state", stats.refused_far_clear == 0, str(stats))
+	_check(id + ": strikes occur and stay with the reference", stats.strikes > 50, str(stats))
+	_check(id + ": another disc or lake dictionary is refused",
+		s._native_stage.prop_strike_clear(origin, s._prop_disc.duplicate(), s._lake) == -1
+		and s._native_stage.prop_strike_clear(origin, s._prop_disc, s._lake.duplicate()) == -1)
+	print("NK6K_STRIKE %s %s" % [id, str(stats)])
+	s.free()
+	# Without a lake the flat-datum depth decides alone: every clear endpoint is answered natively.
+	var dry := _session(id, true, Flight.START_RUNWAY, false)
+	dry.read_raw = func() -> Dictionary: return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.2}
+	for i in 120:
+		_tick(dry)
+	var dry_origin: PackedFloat64Array = dry.sim.state.duplicate()
+	var dry_stats := {answered = 0, strikes = 0, unsound = 0, refused_clear = 0}
+	for i in 1000:
+		var state := dry_origin.duplicate()
+		state[RB.POS + 2] += _rng.randf_range(-0.3, 0.3)
+		_turn(state, 0.6)
+		var answer: int = dry._native_stage.prop_strike_clear(state, dry._prop_disc, dry._lake)
+		var depth: float = float(HullContact.prop_disc_depth(state, dry._prop_disc, dry._lake, time_s).depth)
+		if depth > 0.0:
+			dry_stats.strikes += 1
+		if answer == 1:
+			dry_stats.answered += 1
+			if not (depth <= 0.0):
+				dry_stats.unsound += 1
+		elif depth <= 0.0:
+			dry_stats.refused_clear += 1
+	_check(id + ": without a lake the native stage proves every clear state and only those",
+		dry_stats.unsound == 0 and dry_stats.refused_clear == 0 and dry_stats.answered > 300 and dry_stats.strikes > 50,
+		str(dry_stats))
+	print("NK6K_STRIKE_DRY %s %s" % [id, str(dry_stats)])
+	dry.free()
+
+
+## Rotate the state's attitude by a random angle up to max_turn, renormalized in float64.
+func _turn(state: PackedFloat64Array, max_turn: float) -> void:
+	var q := Quaternion(Vector3(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1), _rng.randf_range(-1, 1)).normalized(),
+		_rng.randf_range(-max_turn, max_turn)) * Quaternion(state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3], state[RB.ATT])
+	var n := sqrt(float(q.w) * q.w + float(q.x) * q.x + float(q.y) * q.y + float(q.z) * q.z)
+	state[RB.ATT] = q.w / n
+	state[RB.ATT + 1] = q.x / n
+	state[RB.ATT + 2] = q.y / n
+	state[RB.ATT + 3] = q.z / n
+
+
 func _state(position: PackedFloat64Array) -> PackedFloat64Array:
 	var s := PackedFloat64Array()
 	s.resize(RB.SIZE)
@@ -232,6 +333,25 @@ func _pair(id: String, scenario: String) -> void:
 			s.sim.state = state
 			s.sim.previous = state.duplicate()
 		raw = func() -> Dictionary: return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	elif scenario == "nose_over":
+		# test_prop_strike's nose-over: pitch the resting airplane nose-down until the blade tips sit 1 cm above the
+		# runway, rolling at 4 m/s at full power.
+		for s: Node in [a, b]:
+			var rest: PackedFloat64Array = s.sim.state.duplicate()
+			var state := rest.duplicate()
+			var pitch := 0.0
+			while pitch > -0.6:
+				pitch -= 0.002
+				var qn := M.q_mul(RB._att(rest), M.q_from_euler(0, pitch, 0))
+				for k in 4:
+					state[RB.ATT + k] = qn[k]
+				if HullContact.prop_disc_depth(state, s._prop_disc).depth > -0.01:
+					break
+			var forward := M.q_rotate(M.q_conj(RB._att(state)), M.v3(4.0, 0.0, 0.3))
+			for k in 3:
+				state[RB.VEL + k] = forward[k]
+			s.sim.state = state
+			s.sim.previous = state.duplicate()
 	a.read_raw = raw
 	b.read_raw = raw
 	var same := true
@@ -251,10 +371,17 @@ func _pair(id: String, scenario: String) -> void:
 		_check("%s hard landing: both decide the same crash on the same tick" % id, a.sim.tick == b.sim.tick
 			and why_a == str(b.crash.get("why", "")) and a.crash.get("speed") == b.crash.get("speed")
 			and a.crash.get("sink") == b.crash.get("sink"), str([why_a, str(b.crash.get("why", ""))]))
-	print("NK6G_PAIR %s %s ticks=%d crash=%s why=%s native_collapse=%d" % [id, scenario, a.sim.tick,
-		str(not a.crash.is_empty()), why_a, a.native_guard_collapse_answers])
+	print("NK6G_PAIR %s %s ticks=%d crash=%s why=%s native_collapse=%d native_strike=%d strike_tick=%s" % [id, scenario,
+		a.sim.tick, str(not a.crash.is_empty()), why_a, a.native_guard_collapse_answers, a.native_prop_strike_answers,
+		str(a.prop_strike.get("tick", "-"))])
+	_check("%s %s: both decide the same propeller strike" % [id, scenario],
+		var_to_bytes(a.prop_strike) == var_to_bytes(b.prop_strike), str([a.prop_strike, b.prop_strike]))
+	if scenario == "nose_over":
+		_check("%s nose-over: the propeller strikes" % id, not a.prop_strike.is_empty())
 	if scenario == "roll":
 		_check("%s roll: the native guard answered the collapse" % id, a.native_guard_collapse_answers > 1000,
 			str(a.native_guard_collapse_answers))
+		_check("%s roll: the native stage answered the propeller check" % id, a.native_prop_strike_answers > 300,
+			str(a.native_prop_strike_answers))
 	a.free()
 	b.free()

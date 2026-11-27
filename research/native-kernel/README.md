@@ -603,6 +603,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `stage_guard_collapsed(s, aux)` (NK-6j) answers the pre-tick guard's `gear_collapsed` from the endpoint compressions
   of the installed tick context; -1 evaluates the reference
   ([evidence](../../docs/research/native-kernel/NK-6j/README.md)).
+- `prepare_prop_strike` and `stage_prop_strike_clear(s)` (NK-6k) prove `FlightSession._check_prop_strike` finds no
+  strike: the disc's flat-datum depth is at most 0 and the disc is horizontally clear of a valid lake's bank. Every
+  other case, strikes included, evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6k/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

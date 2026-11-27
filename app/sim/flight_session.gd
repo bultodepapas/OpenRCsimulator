@@ -3424,6 +3424,8 @@ func _check_prop_strike() -> void:
 		return
 	if _prop_disc_clear(sim.state):
 		return # NK-6e: the disc cannot reach the datum or the lake here
+	if _native_prop_strike_clear():
+		return # NK-6k: the native stage proves the disc clear of the datum and the lake
 	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
 	if float(disc.depth) <= 0.0:
 		return
@@ -3433,6 +3435,25 @@ func _check_prop_strike() -> void:
 	engine_running = false
 	_append_contact_event(ContactEvents.strike_event(prop_strike, sim.tick, HullContact.law(), _contact_bindings))
 	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
+
+
+## NK-6k: the native stage proves HullContact.prop_disc_depth's depth <= 0 for the endpoint it published
+## (_native_facts_tick, as NK-6j), with its installation's disc and lake, without an RC track, for this class. The
+## reference answers every refusal, every strike among them.
+func _native_prop_strike_clear() -> bool:
+	if not native_prop_strike_enabled or _native_stage == null or sim.tick <= 0 or _native_facts_tick != sim.tick \
+			or not _rc_track.is_empty() or get_script().resource_path != SELF_PATH:
+		return false
+	if _native_stage.prop_strike_clear(sim.state, _prop_disc, _lake) != 1:
+		return false
+	native_prop_strike_answers += 1
+	return true
+
+
+## NK-6k test hook: false leaves the propeller strike check to GDScript.
+var native_prop_strike_enabled := true
+## Diagnostic: propeller strike checks the native stage answered.
+var native_prop_strike_answers := 0
 
 
 ## NK-6g: the pre-tick guard's gear_collapsed(sim.state). The endpoint it guards is the one the contact observer just

@@ -142,6 +142,10 @@ var _glow_firing_bound := false
 var _glow_mass_bound := false
 ## NK-6f: and stage_hull_scrape_rows (the hull-scrape observation's endpoint diagnostics).
 var _hull_rows_bound := false
+## NK-6k: the installation prepared its propeller disc (prepare_prop_strike); the session's disc and lake it read.
+var _prop_strike_bound := false
+var _strike_disc: Dictionary = {}
+var _strike_lake: Dictionary = {}
 ## NK-6h: the liquid installation prepared its quiet hull terminal (prepare_liquid_terminal).
 var _liquid_terminal_bound := false
 ## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
@@ -440,6 +444,7 @@ func install(session: Node) -> Callable:
 	_liquid_terminal_bound = _family == "liquid" and _native.has_method("prepare_liquid_terminal") \
 		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
 	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
+	_prop_strike_bound = _family != "helicopter" and _native.has_method("prepare_prop_strike") and _prepare_prop_strike(session)
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
@@ -558,6 +563,31 @@ func endpoint_compressions(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pa
 func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 	if not _installed or not _facts_bound or _native == null: return PackedFloat64Array()
 	return _native.stage_endpoint_facts(s, aux, time_s)
+
+
+## NK-6k: 1 when HullContact.prop_disc_depth(s, disc, lake, time).depth <= 0 for this installation's propeller disc
+## and lake, which the session passes by identity; -1 to use the reference. The session owns the tick checks.
+func prop_strike_clear(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary) -> int:
+	if not _installed or not _prop_strike_bound or _native == null or not is_same(disc, _strike_disc) \
+			or not is_same(lake, _strike_lake):
+		return -1
+	return int(_native.stage_prop_strike_clear(s))
+
+
+## NK-6k: hand the session's propeller disc to the native stage; its lake is the one the stage configuration read.
+func _prepare_prop_strike(session: Node) -> bool:
+	_strike_disc = {}
+	_strike_lake = {}
+	var disc: Variant = session.get("_prop_disc")
+	var lake: Variant = session.get("_lake")
+	if not disc is Dictionary or disc.is_empty() or not lake is Dictionary or not disc.get("hub") is PackedFloat64Array \
+			or not disc.get("axis") is PackedFloat64Array or typeof(disc.get("radius")) != TYPE_FLOAT:
+		return false
+	if not bool(_native.prepare_prop_strike(disc.hub, disc.axis, float(disc.radius))):
+		return false
+	_strike_disc = disc
+	_strike_lake = lake
+	return true
 
 
 ## NK-6j: FlightSession.gear_collapsed(s) for the pre-tick guard from the installed tick context's endpoint
