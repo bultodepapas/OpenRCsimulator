@@ -36,10 +36,10 @@ func _reference(events: Array) -> Array:
 	return [JSON.stringify(events).to_utf8_buffer().size(), digests]
 
 
-func _batch(bindings: Dictionary, tick: int, compressions: Array, travels: Array) -> Dictionary:
+func _batch(bindings: Dictionary, tick: int, compressions: Array, travels: Array, previous := 0.01) -> Dictionary:
 	var events: Array = []
 	for index: int in compressions.size():
-		var event := Events.support_event(index, compressions[index], 0.01, travels[index], tick, bindings)
+		var event := Events.support_event(index, compressions[index], previous, travels[index], tick, bindings)
 		if not event.is_empty():
 			events.append(event)
 	return {tick = tick, events = events}
@@ -64,8 +64,10 @@ func _run() -> void:
 func _adversarial() -> void:
 	var ids := ["contact_main_left", "wheel \"quoted\" \\ back", "tab\tnew\nline\u0001", "rueda_ñandú_引擎_🛞", "x"]
 	var bindings := {support_points = []}
+	var renamed := {support_points = []}
 	for id: String in ids:
 		bindings.support_points.append({id = id})
+		renamed.support_points.append({id = id + "_renamed"})
 	var ledger := Incident.new()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 6061
@@ -73,6 +75,7 @@ func _adversarial() -> void:
 		1.7976931348623157e308]
 	var mismatches := 0
 	var samples := 0
+	var lifecycles := {}
 	for round: int in 400:
 		var tick: int = rng.randi_range(1, 2000000) if round % 4 else rng.randi_range(1, 9007199254740991)
 		var compressions: Array = []
@@ -80,17 +83,22 @@ func _adversarial() -> void:
 		for index: int in ids.size():
 			compressions.append(special[rng.randi() % special.size()] if round % 3 == 0 else rng.randf_range(0.0, 0.2))
 			travels.append(0.1 if round % 5 else special[1 + rng.randi() % (special.size() - 1)])
-		var snapshot := _batch(bindings, tick, compressions, travels)
+		# Every seventh round renames the contacts at the same indices; every sixth starts new contacts.
+		var round_bindings: Dictionary = renamed if round % 7 == 0 else bindings
+		var snapshot := _batch(round_bindings, tick, compressions, travels, 0.0 if round % 6 == 0 else 0.01)
 		if snapshot.events.is_empty():
 			continue
 		samples += 1
-		var texts: Dictionary = ledger._support_texts(snapshot, bindings)
+		for event: Dictionary in snapshot.events:
+			lifecycles[event.lifecycle] = true
+		var texts: Dictionary = ledger._support_texts(snapshot, round_bindings)
 		var reference := _reference(snapshot.events)
 		if texts.is_empty() or int(texts.size) != reference[0] or texts.digests != reference[1]:
 			mismatches += 1
 	check("adversarial batches serialize exactly (%d batches)" % samples, mismatches == 0 and samples > 300,
 		str(mismatches))
 	check("the templates stayed enabled", ledger.support_templates)
+	check("the batches cover the new, persistent and ended lifecycles", lifecycles.size() == 3, str(lifecycles.keys()))
 
 
 func _refusals() -> void:
@@ -104,6 +112,7 @@ func _refusals() -> void:
 	var wrong_tick: Dictionary = snapshot.duplicate(true)
 	wrong_tick.tick = 41
 	check("a batch at another tick gets no texts", ledger._support_texts(wrong_tick, bindings).is_empty())
+	check("an empty batch gets no texts", ledger._support_texts({tick = 40, events = []}, bindings).is_empty())
 	# 64 wheels with long non-ASCII IDs: valid, but larger than MAX_EVENT_BYTES. Both paths refuse it as an overflow.
 	var wide := {support_points = []}
 	var compressions: Array = []
@@ -147,13 +156,14 @@ func _flight() -> void:
 		ledger.begin(STIK, str(session.aircraft.input_identity.sha256))
 		ledgers.append(ledger)
 	var releases := 0
+	var statuses: Array = [[], []]
 	for tick in 2400:
 		var dt: float = session.sim.dt()
 		session._physics_process(dt)
 		session.sim._physics_process(dt)
 		var snapshot: Dictionary = session.contact_events()
-		for ledger: Incident in ledgers:
-			ledger.observe(snapshot.duplicate(true), bindings, not session.crash.is_empty())
+		for k: int in ledgers.size():
+			statuses[k].append(ledgers[k].observe(snapshot.duplicate(true), bindings, not session.crash.is_empty()))
 		if tick % 4 == 3:
 			if not ledgers[0]._held.is_empty():
 				releases += 1
@@ -164,6 +174,9 @@ func _flight() -> void:
 	var states: Array = []
 	for ledger: Incident in ledgers:
 		states.append(var_to_bytes([ledger._seen, ledger._seen_order, ledger._summaries, ledger._assessment,
-			ledger._open_contacts, ledger._last_tick, ledger._tick_event_count, ledger.journal, ledger._revision]))
+			ledger._open_contacts, ledger._last_tick, ledger._tick_event_count, ledger.journal, ledger._revision,
+			ledger._journal_bytes, ledger._proof_floor_tick, ledger._evidence_overflow, ledger._held_refusal,
+			ledger.terminal, ledger._confirmed_facts, ledger._fact_revisions, ledger._prior_history_unknown]))
 	check("ledgers with and without templates end in the same state", states[0] == states[1])
+	check("both ledgers answered every observation alike", statuses[0] == statuses[1])
 	session.free()

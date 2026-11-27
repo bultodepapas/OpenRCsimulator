@@ -630,11 +630,13 @@ func _release_held(previous: Dictionary) -> Dictionary:
 ## every refusal keeps the reference order. Returns {size, digests}, or {} for the reference path.
 func _support_texts(snapshot: Dictionary, bindings: Dictionary) -> Dictionary:
 	var events: Array = snapshot.events
-	if not Events.validate_events(events, int(snapshot.tick), bindings):
+	if events.is_empty() or not Events.validate_events(events, int(snapshot.tick), bindings):
 		return {}
 	var size := events.size() + 1
 	var digests := PackedStringArray()
 	for event: Dictionary in events:
+		if event.format != Events.SUPPORT_FORMAT:
+			return {}
 		var template := _support_template(event)
 		if template.is_empty():
 			return {}
