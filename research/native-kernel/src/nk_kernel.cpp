@@ -1056,6 +1056,10 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	};
 	GlowValidity glow_validity_;
 	int64_t glow_mass_calls_ = 0;
+	int64_t hull_rows_calls_ = 0;
+	int64_t hull_rows_answers_ = 0;
+	nk::HullDiagnostics hull_diagnostics_;
+	std::vector<nk::R> hull_rows_scratch_;
 	nk::R tick_mass_ = 0.0, tick_gravity_ = 0.0;
 	nk::R tick_inertia_[6] = {}, tick_inertia_inv_[6] = {};
 	nk::StageResult tick_stage_result_;
@@ -1249,6 +1253,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_glow_validity", "bounds"), &OpenRCNativeKernel::prepare_glow_validity);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_mass_check", "values", "with_mass"),
 			&OpenRCNativeKernel::stage_glow_mass_check);
+		godot::ClassDB::bind_method(D_METHOD("stage_hull_scrape_rows", "s", "properties"),
+			&OpenRCNativeKernel::stage_hull_scrape_rows);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -2831,6 +2837,8 @@ public:
 		Dictionary out;
 		out["calls"] = tick_calls_;
 		out["glow_mass_calls"] = glow_mass_calls_;
+		out["hull_rows_calls"] = hull_rows_calls_;
+		out["hull_rows_answers"] = hull_rows_answers_;
 		out["answers"] = tick_answers_;
 		out["faults"] = tick_faults_;
 		out["glow_firing_calls"] = glow_firing_calls_;
@@ -2884,6 +2892,53 @@ public:
 			return PackedFloat64Array();
 		}
 		return pack(loads.data(), 6);
+	}
+
+	// NK-6f: the GP-19 endpoint diagnostics of HullContact.loads (properties empty: the prepared hull) or
+	// loads_at_properties (properties = [ok, mass, cg x3, inertia x6, inverse x6]: the geometry-only live hull) for the
+	// session's hull-scrape observation. Returns [1, n, then n x (index, f_up, f_n, f_e, vn, ve)], the reference's own
+	// values, or [0] where the reference must answer: a lake-covered sample (its structured diagnostics are
+	// unavailable), a refused live sample, or a hull of the other kind.
+	PackedFloat64Array stage_hull_scrape_rows(const PackedFloat64Array &s, const PackedFloat64Array &properties) {
+		++hull_rows_calls_;
+		PackedFloat64Array refuse;
+		refuse.push_back(0.0);
+		if (heli_stage_ready_ || !stage_ready_ || !read_state(s) || !stage_.hull.present) return refuse;
+		const bool live = !properties.is_empty();
+		if (live != stage_.hull.stiffness.empty() || (live && properties.size() != 17)) return refuse;
+		nk::R state[kStateSize];
+		load(s, state);
+		hull_diagnostics_.rows.clear();
+		hull_diagnostics_.covered = false;
+		if (live) {
+			const double *v = properties.ptr();
+			nk::LiquidMassProperties p;
+			p.ok = v[0] != 0.0;
+			p.mass_kg = v[1];
+			for (int i = 0; i < 3; ++i) p.cg[static_cast<size_t>(i)] = v[2 + i];
+			for (int i = 0; i < 6; ++i) {
+				p.inertia[static_cast<size_t>(i)] = v[5 + i];
+				p.inverse[static_cast<size_t>(i)] = v[11 + i];
+			}
+			if (!nk::hull_loads_at_properties(state, stage_.hull, p, &hull_diagnostics_).ok) return refuse;
+		} else {
+			std::array<nk::R, 6> loads;
+			nk::hull_loads(state, stage_.hull, loads, &hull_diagnostics_);
+		}
+		if (hull_diagnostics_.covered) return refuse;
+		hull_rows_scratch_.clear();
+		hull_rows_scratch_.push_back(1.0);
+		hull_rows_scratch_.push_back(static_cast<double>(hull_diagnostics_.rows.size()));
+		for (const nk::HullRow &row : hull_diagnostics_.rows) {
+			hull_rows_scratch_.push_back(static_cast<double>(row.index));
+			hull_rows_scratch_.push_back(row.f_up);
+			hull_rows_scratch_.push_back(row.f_n);
+			hull_rows_scratch_.push_back(row.f_e);
+			hull_rows_scratch_.push_back(row.vn);
+			hull_rows_scratch_.push_back(row.ve);
+		}
+		++hull_rows_answers_;
+		return pack(hull_rows_scratch_);
 	}
 
 	// FlightSession._ground_evaluation with the current tick context's aux.

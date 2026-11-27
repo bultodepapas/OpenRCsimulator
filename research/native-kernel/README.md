@@ -585,6 +585,11 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   prepared glow mass. `FlightSession._native_glow_mass_check` asks inside the guarded tick for the contact mass
   sampler and the auxiliary projection; -1 evaluates the reference
   ([evidence](../../docs/research/native-kernel/NK-6e/README.md)).
+- `stage_hull_scrape_rows(s, properties)` (NK-6f) answers the GP-19 endpoint diagnostics rows of `HullContact.loads`
+  (prepared hull) or `loads_at_properties` (live hull, packed mass properties) from the same native hull law.
+  `FlightSession._native_hull_scrape_diagnostics` asks for the hull-scrape observation only under the NK-5i
+  published-endpoint conditions; `[0]` (a lake-covered sample, a refused live sample) evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6f/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

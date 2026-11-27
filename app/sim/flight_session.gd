@@ -2653,8 +2653,11 @@ func hull_scrape_observation() -> Dictionary:
 		if key == _hull_scrape_cache_key:
 			return _hull_scrape_cache.duplicate(true)
 	var diagnostics := {}
-	if finite_fuel_is_active():
-		var properties := mass_properties()
+	var finite := finite_fuel_is_active()
+	var properties: Dictionary = mass_properties() if finite else {}
+	if _native_hull_scrape_diagnostics(finite, properties, diagnostics):
+		pass
+	elif finite:
 		var sampled := HullContact.loads_at_properties(sim.state, _hull_contact, properties, diagnostics)
 		if not sampled.ok:
 			result.reason = "live_mass_contact_unavailable"
@@ -2685,6 +2688,68 @@ func hull_scrape_observation() -> Dictionary:
 	_hull_scrape_cache_key = key
 	_hull_scrape_cache = result.duplicate(true) if not key.is_empty() else {}
 	return result
+
+
+## NK-6f: the diagnostics HullContact.loads (prepared hull) or loads_at_properties (finite fuel, `properties`) collect
+## for the accepted endpoint now being published, from the native stage with the same rows; it costs about 0.5 ms per
+## touching point in GDScript (26 effective-mass inversions). False: evaluate the reference, which also answers a
+## refused live sample. Only under published_endpoint_facts' conditions (this publication's natively measured endpoint,
+## no RC track, pending weather reset or derived session class).
+func _native_hull_scrape_diagnostics(finite: bool, properties: Dictionary, diagnostics: Dictionary) -> bool:
+	if not native_hull_rows_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick or _native_stage == null \
+			or not cost_observations_enabled or _cost_support_tick != sim.tick or not _rc_track.is_empty() \
+			or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(sim.state, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return false
+	var packed := _packed_mass_properties(properties) if finite else PackedFloat64Array()
+	if finite and packed.is_empty():
+		return false
+	var answer: PackedFloat64Array = _native_stage.hull_scrape_rows(sim.state, packed)
+	if answer.size() < 2 or answer[0] != 1.0:
+		return false
+	var count := int(answer[1])
+	var points: Variant = _hull_contact.get("points")
+	if answer.size() != 2 + 6 * count or not points is PackedFloat64Array:
+		return false
+	var rows: Array = []
+	for row_index in count:
+		var at := 2 + 6 * row_index
+		var point := int(answer[at])
+		if point < 0 or 3 * point + 3 > (points as PackedFloat64Array).size():
+			return false
+		var f_up: float = answer[at + 1]
+		var f_n: float = answer[at + 2]
+		var f_e: float = answer[at + 3]
+		var vn: float = answer[at + 4]
+		var ve: float = answer[at + 5]
+		rows.append({index = point, point_ned = HullContact._point_ned(sim.state, points.slice(3 * point, 3 * point + 3)),
+			normal_force_n = f_up, tangent_force_ned_n = PackedFloat64Array([f_n, f_e, 0.0]),
+			relative_tangent_velocity_ned_mps = PackedFloat64Array([vn, ve, 0.0]),
+			friction_power_w = -(f_n * vn + f_e * ve)})
+	diagnostics.clear()
+	diagnostics.merge({available = true, reason = "", rows = rows})
+	native_hull_row_answers += 1
+	return true
+
+
+## EffectiveMass.validate_properties' fields as [ok, mass, cg x3, inertia x6, inverse x6]; empty where its type checks
+## refuse (the reference then answers). The values themselves are checked natively, as validate_properties does.
+static func _packed_mass_properties(properties: Dictionary) -> PackedFloat64Array:
+	if not (properties.has("mass_kg") and properties.has("cg_body_m") and properties.has("inertia") \
+			and properties.has("inverse")) or (properties.has("ok") and typeof(properties.ok) != TYPE_BOOL):
+		return PackedFloat64Array()
+	var cg: Variant = properties.cg_body_m
+	var inertia: Variant = properties.inertia
+	var inverse: Variant = properties.inverse
+	if typeof(properties.mass_kg) not in [TYPE_FLOAT, TYPE_INT] or typeof(cg) != TYPE_PACKED_FLOAT64_ARRAY \
+			or typeof(inertia) != TYPE_PACKED_FLOAT64_ARRAY or typeof(inverse) != TYPE_PACKED_FLOAT64_ARRAY \
+			or cg.size() != 3 or inertia.size() != 6 or inverse.size() != 6:
+		return PackedFloat64Array()
+	var out := PackedFloat64Array([1.0 if not properties.has("ok") or bool(properties.ok) else 0.0, float(properties.mass_kg)])
+	out.append_array(cg)
+	out.append_array(inertia)
+	out.append_array(inverse)
+	return out
 
 
 func contact_events() -> Dictionary:
@@ -5789,6 +5854,10 @@ var native_endpoint_fact_answers := 0
 const SELF_PATH := "res://sim/flight_session.gd"
 ## NK-6e test hook: false always evaluates GlowFlight.valid and mass_context for the contact sampler and projection.
 var native_glow_mass_enabled := true
+## NK-6f test hook: false always evaluates the hull-scrape observation's contact diagnostics in GDScript.
+var native_hull_rows_enabled := true
+## Diagnostic: hull-scrape observations whose contact diagnostics the native stage answered.
+var native_hull_row_answers := 0
 ## NK-6d test hook: false keeps the glow step policy (GlowFlight.step) in the reference transaction.
 var native_glow_step_enabled := true
 ## NK-6c test hook: false keeps the finite-pack step policy (_electric_step) in the reference transaction.

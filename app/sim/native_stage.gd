@@ -137,6 +137,8 @@ var _compressions_bound := false
 var _facts_bound := false
 var _glow_firing_bound := false
 var _glow_mass_bound := false
+## NK-6f: and stage_hull_scrape_rows (the hull-scrape observation's endpoint diagnostics).
+var _hull_rows_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
 var _pre_step_bound := false
 var _pre_step_turbulent := false
@@ -427,6 +429,7 @@ func install(session: Node) -> Callable:
 	_glow_firing_bound = _family == "glow" and _native.has_method("stage_glow_firing")
 	_glow_mass_bound = _family == "glow" and _native.has_method("prepare_glow_validity") \
 		and bool(_native.prepare_glow_validity(_glow_validity_bounds(session)))
+	_hull_rows_bound = _family != "helicopter" and _native.has_method("stage_hull_scrape_rows")
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
@@ -458,6 +461,7 @@ func uninstall(session: Node) -> Callable:
 	_facts_bound = false
 	_glow_firing_bound = false
 	_glow_mass_bound = false
+	_hull_rows_bound = false
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	_reach_world = {}
@@ -556,6 +560,13 @@ static func _glow_validity_bounds(session: Node) -> Dictionary:
 		capacity_fuel_kg = float(install.capacity_fuel_kg), line_capacity_kg = float(line.get("capacity_kg", 0.0)),
 		unusable_fuel_kg = float(install.unusable_fuel_kg), cycle_revolutions = float(cycle), has_line = not line.is_empty(),
 		family_ok = family in ["glow_2t", "glow_4t"] and cycle == (1 if family == "glow_2t" else 2)}
+
+
+## NK-6f: HullContact.loads (properties empty) or loads_at_properties (packed properties) endpoint diagnostics:
+## [1, n, n x (index, f_up, f_n, f_e, vn, ve)], or [0] or empty to use the reference. The session owns the tick checks.
+func hull_scrape_rows(s: PackedFloat64Array, properties: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _hull_rows_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_hull_scrape_rows(s, properties)
 
 
 ## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(values).ok (true) from the prepared glow

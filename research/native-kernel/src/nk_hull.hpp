@@ -124,8 +124,21 @@ inline bool hull_lake_load(const R *s, const HullPrepared &h, int point, const R
 	return true;
 }
 
+// NK-6f: one GP-19 endpoint diagnostic row of hull_contact.gd loads(): the flat branch's own force and velocity values.
+struct HullRow {
+	int index = -1;
+	R f_up = 0.0, f_n = 0.0, f_e = 0.0, vn = 0.0, ve = 0.0;
+};
+
+// Optional diagnostics for the session's hull-scrape observation. `covered` reports a lake-covered sample, where the
+// reference's structured diagnostics are unavailable. Ordinary calls pass neither and compute exactly as before.
+struct HullDiagnostics {
+	std::vector<HullRow> rows;
+	bool covered = false;
+};
+
 // hull_contact.gd loads(s, prepared). `touched` false = the reference's empty array.
-inline bool hull_loads(const R *s, const HullPrepared &h, std::array<R, 6> &out) {
+inline bool hull_loads(const R *s, const HullPrepared &h, std::array<R, 6> &out, HullDiagnostics *diagnostics = nullptr) {
 	out = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 	if (!h.present || (-s[2]).v > h.reach.v) {
 		return false;
@@ -155,6 +168,7 @@ inline bool hull_loads(const R *s, const HullPrepared &h, std::array<R, 6> &out)
 	for (int i = 0; i < count; ++i) {
 		const R *r = &h.points[i * 3];
 		if (lake_sampled && samples[i].covered) {
+			if (diagnostics != nullptr) diagnostics->covered = true;
 			if (hull_lake_compression(points_ned[i], samples[i]).v > 0.0) {
 				++touching;
 			}
@@ -215,6 +229,7 @@ inline bool hull_loads(const R *s, const HullPrepared &h, std::array<R, 6> &out)
 		out[3] += ry * fz - rz * fy;
 		out[4] += rz * fx - rx * fz;
 		out[5] += rx * fy - ry * fx;
+		if (diagnostics != nullptr) diagnostics->rows.push_back({i, f_up, f_n, f_e, vn, ve});
 		touched = true;
 	}
 	return touched;
@@ -278,7 +293,8 @@ inline const char *live_hull_properties_error(const LiquidMassProperties &p) {
 	return "";
 }
 
-inline LiveHullResult hull_loads_at_properties(const R *s, const HullPrepared &geometry, const LiquidMassProperties &p) {
+inline LiveHullResult hull_loads_at_properties(const R *s, const HullPrepared &geometry, const LiquidMassProperties &p,
+		HullDiagnostics *diagnostics = nullptr) {
 	const char *property_error = live_hull_properties_error(p);
 	if (property_error[0] != '\0') return live_hull_failure(property_error);
 	if (!geometry.present || geometry.points.empty() || geometry.points.size() % 3 != 0 || !is_finite(geometry.reach)) {
@@ -318,6 +334,7 @@ inline LiveHullResult hull_loads_at_properties(const R *s, const HullPrepared &g
 			if (depth <= 0.0 && point[2] <= 0.0) continue;
 			const LakeCover terrain = lake_clear ? LakeCover() : hull_lake_sample(geometry, point);
 			if (terrain.covered) {
+				if (diagnostics != nullptr) diagnostics->covered = true;
 				if (!is_finite(terrain.down)) return live_hull_failure("invalid_lake_terrain");
 				may_touch = point[2] > terrain.down;
 			}
@@ -363,7 +380,7 @@ inline LiveHullResult hull_loads_at_properties(const R *s, const HullPrepared &g
 	}
 	LiveHullResult result;
 	result.ok = true;
-	result.touched = hull_loads(s, prepared, result.loads);
+	result.touched = hull_loads(s, prepared, result.loads, diagnostics);
 	return result;
 }
 
