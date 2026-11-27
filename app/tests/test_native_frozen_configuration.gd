@@ -17,6 +17,7 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 const ElectricAdapter := preload("res://sim/native/electric_stage_adapter.gd")
 const LiquidAdapter := preload("res://sim/native/liquid_stage_adapter.gd")
@@ -119,6 +120,26 @@ func _frozen(id: String, s: Node) -> void:
 	_check(id + ": an equal writable copy of a frozen root refuses", not s._native_stage.configuration_matches(s))
 	s._hull_contact = original
 	_check(id + ": the original root matches again", s._native_stage.configuration_matches(s))
+	# Capability answers kept for the frozen aircraft equal a fresh computation, and a replaced aircraft is answered
+	# afresh: a copy whose wheel profile is no longer applied has no brake hardware.
+	s._drop_tick_facts()
+	_check(id + ": the frozen aircraft owns the kept capability answers", is_same(s._frozen_facts_owner, s.aircraft))
+	var brakes: bool = s._wheel_brake_hardware()
+	_check(id + ": the kept wheel-brake answer equals the hardware check", s.wheel_brake_available() == brakes
+		and s.wheel_brake_available() == brakes)
+	var prop: Dictionary = s.aircraft.model.propulsion
+	var fresh_rotor: int = prop.slipstream.pieces.size() if prop.get("slipstream", {}).has("transport_speed_floor") else 0
+	_check(id + ": the kept rotor index equals a fresh computation", s._rotor_index() == fresh_rotor
+		and s._rotor_index() == fresh_rotor)
+	var frozen_aircraft: Dictionary = s.aircraft
+	var changed: Dictionary = frozen_aircraft.duplicate(true)
+	if changed.model.get("wheel_profile") is Dictionary:
+		changed.model.wheel_profile.status = "removed-for-test"
+	s.aircraft = changed
+	_check(id + ": a replaced aircraft is answered afresh", not s.wheel_brake_available()
+		and s.wheel_brake_available() == s._wheel_brake_hardware())
+	s.aircraft = frozen_aircraft
+	_check(id + ": the frozen aircraft keeps its answer", s.wheel_brake_available() == brakes)
 	# A packed array stays writable in place under a read-only parent: the engine shares its buffer with every
 	# alias. Its bitwise watch must refuse an alias write and a direct element write.
 	for root_name: String in ["aircraft", "_hull_contact", "lake"]:
@@ -144,6 +165,14 @@ func _frozen(id: String, s: Node) -> void:
 			not s._native_stage.configuration_matches(s))
 		element[0][element[1]][0] = held
 		_check(id + ": the restored element matches again", s._native_stage.configuration_matches(s))
+	# The frozen lake's validity, kept inside guarded ticks, equals the full check and starts over at each preparation.
+	_check(id + ": the frozen lake owns its kept validity", is_same(s._frozen_lake_owner, s.environment.lake))
+	if s.finite_fuel_is_active():
+		_check(id + ": the kept lake validity equals the full check", s._frozen_lake_valid
+			and LakeSurface.is_valid_definition(s.environment.lake))
+	s.reset()
+	_check(id + ": a new preparation starts the kept lake validity over", not s._frozen_lake_valid
+		and is_same(s._frozen_lake_owner, s.environment.lake))
 	print("NK6P_FROZEN %s frozen_roots=%d snapshots=%d watches=%d" % [id, int(profile.get("plan_frozen_roots", 0)),
 		int(profile.get("plan_snapshots", 0)), int(profile.get("plan_watches", 0))])
 

@@ -804,6 +804,13 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 	if not prepared.ok:
 		stage_backend_error = str(prepared.reason)
 		return
+	if aircraft.is_read_only() and not is_same(aircraft, _frozen_facts_owner):
+		_frozen_facts_owner = aircraft # NK-6p froze it all the way down; see _frozen_facts_owner
+		_frozen_wheel_brake = _FACT_UNKNOWN
+		_frozen_rotor_index = _FACT_UNKNOWN
+	# Each preparation snapshots the lake's packed arrays again, so the kept validity starts over.
+	_frozen_lake_owner = _lake if _lake.is_read_only() else {}
+	_frozen_lake_valid = false
 	_native_stage = candidate # selects the session-owned tick hook, rather than the research pre_tick wrapper
 	candidate.install(self)
 	if not candidate.is_installed():
@@ -4145,8 +4152,19 @@ func _prop_disc_clear(s: PackedFloat64Array) -> bool:
 ## A lake proof already implies a nonempty, finite hull of whole points.
 func _lake_sweep_inputs_valid(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> bool:
 	var dt: float = sim.dt()
-	return LakeSurface.is_valid_definition(_lake) and SceneryCollision._state_is_valid(previous) \
+	return _lake_definition_valid() and SceneryCollision._state_is_valid(previous) \
 		and SceneryCollision._state_is_valid(candidate) and is_finite(dt) and dt > 0.0 and next_tick >= 1
+
+
+## LakeSurface.is_valid_definition(_lake), kept for a frozen lake inside guarded native ticks (_frozen_lake_owner).
+func _lake_definition_valid() -> bool:
+	var guarded: bool = _native_stage != null and _native_endpoint_tick == sim.tick + 1 \
+		and is_same(_lake, _frozen_lake_owner)
+	if guarded and _frozen_lake_valid:
+		return true
+	var valid: bool = LakeSurface.is_valid_definition(_lake)
+	if guarded: _frozen_lake_valid = valid
+	return valid
 
 
 func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) -> Dictionary:
@@ -4974,7 +4992,10 @@ func toggle_gear() -> bool:
 func wheel_brake_available() -> bool:
 	if _fact_wheel_brake != _FACT_UNKNOWN:
 		return _fact_wheel_brake == 1
-	var available: bool = _wheel_brake_hardware()
+	var frozen := is_same(aircraft, _frozen_facts_owner)
+	var available: bool = _frozen_wheel_brake == 1 if frozen and _frozen_wheel_brake != _FACT_UNKNOWN \
+		else _wheel_brake_hardware()
+	if frozen: _frozen_wheel_brake = int(available)
 	if _facts_armed: _fact_wheel_brake = int(available)
 	return available
 
@@ -5386,8 +5407,14 @@ func electric_law() -> String:
 func _rotor_index() -> int:
 	if _fact_rotor_index != _FACT_UNKNOWN:
 		return _fact_rotor_index
+	var frozen := is_same(aircraft, _frozen_facts_owner)
+	if frozen and _frozen_rotor_index != _FACT_UNKNOWN:
+		if _facts_armed: _fact_rotor_index = _frozen_rotor_index
+		return _frozen_rotor_index
 	var prop: Dictionary = aircraft.model.propulsion
 	var index: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
+	# A packed array's size can change in place; only an Array's (or no transport) is frozen.
+	if frozen and (not WashTransport.enabled(prop) or prop.slipstream.pieces is Array): _frozen_rotor_index = index
 	if _facts_armed: _fact_rotor_index = index
 	return index
 
@@ -6046,6 +6073,21 @@ var native_glow_firing_answers := 0
 var native_pre_step_enabled := true
 ## Diagnostic: guarded pre-steps the native stage answered.
 var native_pre_step_answers := 0
+
+
+## F1: capability answers for an aircraft that a native preparation froze read-only all the way down (NK-6p). Its
+## containers and scalars cannot change, so an answer that reads only them holds for that instance. Packed arrays stay
+## writable in place, so no answer kept here reads one. Unlike the per-tick facts, these also serve the session's input
+## and guards outside the kernel tick: the wheel-brake hardware check alone cost 13-15 µs per tick there.
+var _frozen_facts_owner: Dictionary = {}
+var _frozen_wheel_brake := _FACT_UNKNOWN
+var _frozen_rotor_index := _FACT_UNKNOWN
+## The same for the lake, which NK-6p also freezes. Its packed arrays stay writable in place, but inside a guarded native
+## tick the configuration guard has just checked them bit for bit against the prepared lake, so the frozen lake equals
+## the value whose validity was kept. LakeSurface.is_valid_definition compared the whole lake with its cache every
+## tick (8-9 µs for finite-fuel aircraft).
+var _frozen_lake_owner: Dictionary = {}
+var _frozen_lake_valid := false
 
 
 func _drop_tick_facts() -> void:
