@@ -1249,6 +1249,12 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("stage_wheel_rows", "s", "aux", "steer", "anchors", "speeds", "brake"),
 			&OpenRCNativeKernel::stage_wheel_rows);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
+		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
+		godot::ClassDB::bind_method(D_METHOD("scenery_state_valid", "s"), &OpenRCNativeKernel::scenery_state_valid);
+		godot::ClassDB::bind_method(D_METHOD("arrays_finite", "inputs", "input_size", "aux", "aux_size", "continuous",
+			"continuous_size"), &OpenRCNativeKernel::arrays_finite);
+		godot::ClassDB::bind_method(D_METHOD("inertia_cached", "inertia", "cache", "inverse"),
+			&OpenRCNativeKernel::inertia_cached);
 		godot::ClassDB::bind_method(D_METHOD("glow_steady_finish_component", "start", "end", "dt", "terms", "firing"),
 			&OpenRCNativeKernel::glow_steady_finish_component);
 		godot::ClassDB::bind_method(D_METHOD("glow_finish_answers"), &OpenRCNativeKernel::glow_finish_answers);
@@ -2000,6 +2006,57 @@ public:
 
 	int64_t wheel_rows_answers() const { return wheel_rows_answers_; }
 
+	// NK-6q: Simulation.step's own checks and the session's state checks, exact; the reference runs them in GDScript.
+	// Pure functions of their arguments: no prepared stage is needed.
+	// simulation.gd state_is_valid: 13 finite values and a quaternion norm above MIN_QUATERNION_NORM_SQ.
+	bool state_valid(const PackedFloat64Array &s) const {
+		if (s.size() != nk::kTickBody) return false;
+		const double *v = s.ptr();
+		nk::R body[nk::kTickBody];
+		for (int i = 0; i < nk::kTickBody; ++i) body[i] = v[i];
+		return nk::tick_body_valid(body);
+	}
+
+	// scenery_collision.gd _state_is_valid: 13 finite values and |_dot4(q, q) - 1| <= 1.0e-9.
+	bool scenery_state_valid(const PackedFloat64Array &s) const {
+		if (s.size() != nk::kTickBody) return false;
+		const double *v = s.ptr();
+		for (int i = 0; i < nk::kTickBody; ++i) {
+			if (!std::isfinite(v[i])) return false;
+		}
+		const int a = nk::kTickAtt;
+		nk::R q_norm = 0.0; // _dot4: out := 0.0, then out += a[axis] * b[axis]
+		for (int axis = 0; axis < 4; ++axis) q_norm = q_norm + nk::R(v[a + axis]) * nk::R(v[a + axis]);
+		return nk::is_finite(q_norm) && std::fabs((q_norm - nk::R(1.0)).v) <= 1.0e-9;
+	}
+
+	// simulation.gd _array_is_finite(candidate, expected_size) for inputs, aux and continuous.
+	static bool finite_sized(const PackedFloat64Array &values, int64_t expected_size) {
+		if (expected_size >= 0 && values.size() != expected_size) return false;
+		const double *v = values.ptr();
+		for (int64_t i = 0; i < values.size(); ++i) {
+			if (!std::isfinite(v[i])) return false;
+		}
+		return true;
+	}
+
+	bool arrays_finite(const PackedFloat64Array &inputs, int64_t input_size, const PackedFloat64Array &aux, int64_t aux_size,
+			const PackedFloat64Array &continuous, int64_t continuous_size) const {
+		return finite_sized(inputs, input_size) && finite_sized(aux, aux_size) && finite_sized(continuous, continuous_size);
+	}
+
+	// simulation.gd _refresh_inertia_inverse's cache test: _same_array(inertia, cache) (`!=` per entry, so a NaN never
+	// matches) and _array_is_finite(inverse, 6).
+	bool inertia_cached(const PackedFloat64Array &inertia, const PackedFloat64Array &cache, const PackedFloat64Array &inverse) const {
+		if (inertia.size() != cache.size()) return false;
+		const double *a = inertia.ptr();
+		const double *b = cache.ptr();
+		for (int64_t i = 0; i < inertia.size(); ++i) {
+			if (a[i] != b[i]) return false;
+		}
+		return finite_sized(inverse, 6);
+	}
+
 	// NK-5i: the statistics sampler's evaluations of the accepted endpoint (statistics/fixed_wing_adapter.gd sample)
 	// in one answer: [V, terrain height, slope north, slope east, collapsed (1/0), c_0 .. c_{n-1}], as
 	// FlightSession.air_data(s, t).V (pre_step_air with the endpoint aux), Environment.ground(north, east) without an
@@ -2169,6 +2226,8 @@ public:
 			{"8.0", 8.0}, {"80.0", 80.0}, {"86400.0", 86400.0}, {"90.0", 90.0},
 			{"100000.0", 100000.0},
 			{"1e-30", nk::kGd1eMinus30}, {"1.0e-30", 1.0e-30},
+			// NK-6q: scenery_collision.gd _state_is_valid.
+			{"1.0e-9", 1.0e-9},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.

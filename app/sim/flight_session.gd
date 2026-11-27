@@ -3256,7 +3256,7 @@ func _session_after_input() -> bool:
 		if crash.ticks_left <= 0:
 			reset()
 		return false
-	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
+	if physics_enabled and not sim.paused and _flight_ready() and _state_valid(sim.state):
 		if soft_hull_contacts:
 			if _soft_contacts_cache_tick != sim.tick or _soft_contacts_cache_previous != sim.previous \
 					or _soft_contacts_cache_state != sim.state:
@@ -3277,7 +3277,7 @@ func _session_after_input() -> bool:
 		elif _guard_gear_collapsed():
 			_crash(_gear_limit_impact(sim.state))
 	return physics_enabled and not sim.paused and sim.fault_reason.is_empty() \
-		and crash.is_empty() and _flight_ready() and Sim.state_is_valid(sim.state)
+		and crash.is_empty() and _flight_ready() and _state_valid(sim.state)
 
 
 ## Stage one controllerless pilot sample. A rejected packet leaves the last staged packet intact.
@@ -4036,7 +4036,7 @@ func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		# A proof already implies a nonempty, finite hull of whole points (the native reach refuses others).
 		if not mass_at_fraction.is_valid():
 			return {ok = true, event = null}
-		if SceneryCollision._state_is_valid(previous) and SceneryCollision._state_is_valid(candidate) \
+		if _scenery_state_valid(previous) and _scenery_state_valid(candidate) \
 				and SceneryCollision._world_is_valid(_collision_world):
 			return {ok = true, event = null, reason = ""}
 	if mass_at_fraction.is_valid():
@@ -4152,8 +4152,23 @@ func _prop_disc_clear(s: PackedFloat64Array) -> bool:
 ## A lake proof already implies a nonempty, finite hull of whole points.
 func _lake_sweep_inputs_valid(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> bool:
 	var dt: float = sim.dt()
-	return _lake_definition_valid() and SceneryCollision._state_is_valid(previous) \
-		and SceneryCollision._state_is_valid(candidate) and is_finite(dt) and dt > 0.0 and next_tick >= 1
+	return _lake_definition_valid() and _scenery_state_valid(previous) \
+		and _scenery_state_valid(candidate) and is_finite(dt) and dt > 0.0 and next_tick >= 1
+
+
+## NK-6q: Simulation.state_is_valid and SceneryCollision._state_is_valid through the native stage, exact; the reference
+## (no native stage, or this hook false) keeps them in GDScript. About 2.4 µs each, four to six times per tick.
+var native_state_checks_enabled := true
+
+
+func _state_valid(s: PackedFloat64Array) -> bool:
+	return _native_stage.state_valid(s) if _native_stage != null and native_state_checks_enabled \
+		else Sim.state_is_valid(s)
+
+
+func _scenery_state_valid(s: PackedFloat64Array) -> bool:
+	return _native_stage.scenery_state_valid(s) if _native_stage != null and native_state_checks_enabled \
+		else SceneryCollision._state_is_valid(s)
 
 
 ## LakeSurface.is_valid_definition(_lake), kept for a frozen lake inside guarded native ticks (_frozen_lake_owner).

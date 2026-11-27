@@ -524,6 +524,15 @@ func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64A
 	if not accepted: reason = "native tick context refused"
 	return accepted
 
+## NK-6q: Simulation.state_is_valid and SceneryCollision._state_is_valid, exact, through the prepared kernel.
+func state_valid(s: PackedFloat64Array) -> bool:
+	return _native.state_valid(s)
+
+
+func scenery_state_valid(s: PackedFloat64Array) -> bool:
+	return _native.scenery_state_valid(s)
+
+
 ## NK-5a: Aero.wing_wake_velocity for the session's pre-step downwash lag through the prepared fixed-wing stage.
 ## The caller passes its own air_data(s), _deflections(aux) and _ground_up(s); NaN means "use the reference".
 func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up: float) -> float:

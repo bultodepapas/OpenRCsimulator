@@ -396,16 +396,20 @@ func step() -> void:
 	if _fixed_dt != 1.0 / Engine.physics_ticks_per_second:
 		_fail_safe("step rejected: fixed timestep changed; reset required")
 		return
-	if not state_is_valid(state):
+	var checker: Object = _native_checker()
+	if not (state_is_valid(state) if checker == null else checker.state_valid(state)):
 		_fail_safe("step rejected: current state is nonfinite, malformed, or has a degenerate quaternion")
 		return
 	if not _configuration_is_valid():
 		_fail_safe("step rejected: mass, gravity, or inertia is invalid")
 		return
-	if not _refresh_inertia_inverse():
+	if not _refresh_inertia_inverse(checker):
 		return
-	if model.input_size != _last_valid_inputs.size() or not _array_is_finite(inputs, model.input_size) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
-			or not _array_is_finite(continuous, _last_valid_continuous.size()):
+	if model.input_size != _last_valid_inputs.size() or modes.size() != _last_valid_modes.size() \
+			or not (_array_is_finite(inputs, model.input_size) and _array_is_finite(aux, _last_valid_aux.size()) \
+			and _array_is_finite(continuous, _last_valid_continuous.size()) if checker == null \
+			else checker.arrays_finite(inputs, model.input_size, aux, _last_valid_aux.size(), continuous,
+			_last_valid_continuous.size())):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
 	if ((_interval() or not _joint_interval_protocol.is_empty()) and _joint_interval_protocol != model.callback_protocol) \
@@ -847,8 +851,21 @@ func _mass_properties_are_valid() -> bool:
 		and is_finite(c00) and is_finite(determinant)
 
 
-func _refresh_inertia_inverse() -> bool:
-	if _same_array(inertia, _inertia_cache) and _array_is_finite(_inertia_inv, 6):
+## NK-6q: the native kernel behind a native stage answers step()'s own checks exactly (state, inertia cache and
+## array finiteness); every other stage, and this hook set false, keeps them in GDScript.
+static var native_checks_enabled := true
+
+
+func _native_checker() -> Object:
+	if not native_checks_enabled or not model.stage.is_valid():
+		return null
+	var owner: Object = model.stage.get_object()
+	return owner if owner != null and owner.has_method(&"inertia_cached") else null
+
+
+func _refresh_inertia_inverse(checker: Object = null) -> bool:
+	if _same_array(inertia, _inertia_cache) and _array_is_finite(_inertia_inv, 6) if checker == null \
+			else checker.inertia_cached(inertia, _inertia_cache, _inertia_inv):
 		return true
 	var next_inverse := RB.inertia_inverse(inertia)
 	if not _array_is_finite(next_inverse, 6):
