@@ -7,8 +7,10 @@ extends SceneTree
 ##   also finds real hits among unproven pairs).
 ## - The pre-tick guard's gear collapse reads the compressions the contact observer just published
 ##   (FlightSession._guard_gear_collapsed).
-## Paired sessions with both on and both off fly byte-identical through a takeoff roll, a lake-shore taxi and a hard
-## landing that collapses the gear. Skips (passes) without a verified native library.
+## - NK-6j: the guard's gear collapse from the native stage's endpoint compressions equals gear_collapsed for perturbed
+##   states on, into and past the gear's travel.
+## Paired sessions with all of them on and all off fly byte-identical through a takeoff roll, a lake-shore taxi and a
+## hard landing that collapses the gear. Skips (passes) without a verified native library.
 
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
@@ -57,6 +59,7 @@ func _run() -> void:
 		tested += 1
 		_soundness(probe, id)
 		probe.free()
+		_collapse(id)
 		_pair(id, "roll")
 		_pair(id, "shore")
 		_pair(id, "hard_landing")
@@ -74,6 +77,7 @@ func _session(id: String, enabled: bool, start: String) -> Node:
 	s.cost_observations_enabled = true
 	s.lake_bank_proof_enabled = enabled
 	s.guard_published_collapse_enabled = enabled
+	s.native_guard_collapse_enabled = enabled
 	s.start_choice = start
 	s.setup_stage_backend(NativeStage.BACKEND_NATIVE)
 	s.setup(Catalog.data_for(id, Catalog.default_battery_mode(id)), id)
@@ -132,6 +136,42 @@ func _soundness(s: Node, id: String) -> void:
 		str(stats))
 	_check(id + ": pairs over the water are left to the sweep", stats.over_water_box_proofs == 0, str(stats))
 	print("NK6G_SOUNDNESS %s %s" % [id, str(stats)])
+
+
+## NK-6j: after real ticks the guarded context belongs to the endpoint; perturbed states around it must answer as
+## gear_collapsed does wherever the native stage answers.
+func _collapse(id: String) -> void:
+	var s := _session(id, true, Flight.START_RUNWAY)
+	s.read_raw = func() -> Dictionary: return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.2}
+	for i in 120:
+		_tick(s)
+	var origin: PackedFloat64Array = s.sim.state.duplicate()
+	var stats := {answered = 0, collapsed = 0, mismatched = 0, refused = 0}
+	for i in 3000:
+		var state := origin.duplicate()
+		state[RB.POS + 2] += _rng.randf_range(-0.3, 0.6) # from clear of the ground to past the gear's travel
+		state[RB.POS] += _rng.randf_range(-20.0, 20.0)
+		state[RB.POS + 1] += _rng.randf_range(-20.0, 20.0)
+		var q := Quaternion(Vector3(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1), _rng.randf_range(-1, 1)).normalized(),
+			_rng.randf_range(-0.3, 0.3)) * Quaternion(state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3], state[RB.ATT])
+		state[RB.ATT] = q.w
+		state[RB.ATT + 1] = q.x
+		state[RB.ATT + 2] = q.y
+		state[RB.ATT + 3] = q.z
+		var answer: int = s._native_stage.guard_collapsed(state, s.sim.aux)
+		if answer < 0:
+			stats.refused += 1
+			continue
+		stats.answered += 1
+		var reference: bool = s.gear_collapsed(state)
+		if reference:
+			stats.collapsed += 1
+		if (answer == 1) != reference:
+			stats.mismatched += 1
+	_check(id + ": the native guard collapse equals gear_collapsed", stats.mismatched == 0 and stats.answered > 2500, str(stats))
+	_check(id + ": both answers occur", stats.collapsed > 100 and stats.collapsed < stats.answered, str(stats))
+	print("NK6J_COLLAPSE %s %s" % [id, str(stats)])
+	s.free()
 
 
 func _state(position: PackedFloat64Array) -> PackedFloat64Array:
@@ -211,6 +251,10 @@ func _pair(id: String, scenario: String) -> void:
 		_check("%s hard landing: both decide the same crash on the same tick" % id, a.sim.tick == b.sim.tick
 			and why_a == str(b.crash.get("why", "")) and a.crash.get("speed") == b.crash.get("speed")
 			and a.crash.get("sink") == b.crash.get("sink"), str([why_a, str(b.crash.get("why", ""))]))
-	print("NK6G_PAIR %s %s ticks=%d crash=%s why=%s" % [id, scenario, a.sim.tick, str(not a.crash.is_empty()), why_a])
+	print("NK6G_PAIR %s %s ticks=%d crash=%s why=%s native_collapse=%d" % [id, scenario, a.sim.tick,
+		str(not a.crash.is_empty()), why_a, a.native_guard_collapse_answers])
+	if scenario == "roll":
+		_check("%s roll: the native guard answered the collapse" % id, a.native_guard_collapse_answers > 1000,
+			str(a.native_guard_collapse_answers))
 	a.free()
 	b.free()

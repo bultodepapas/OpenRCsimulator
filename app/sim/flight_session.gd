@@ -3438,12 +3438,25 @@ func _check_prop_strike() -> void:
 ## NK-6g: the pre-tick guard's gear_collapsed(sim.state). The endpoint it guards is the one the contact observer just
 ## measured (NK-5e), so published_gear_collapsed reads those compressions while the state and aux bits are unchanged
 ## and evaluates them itself otherwise; both follow Ground.collapsed's checks in its order.
+## NK-6j: the native stage answers from the endpoint compressions of the tick context it installed for this endpoint
+## (_native_facts_tick: the last publication's natively measured endpoint, dropped by resets and restores), without an
+## RC track, for this class; the reference answers every refusal.
 func _guard_gear_collapsed() -> bool:
+	if native_guard_collapse_enabled and _native_stage != null and sim.tick > 0 and _native_facts_tick == sim.tick \
+			and _rc_track.is_empty() and get_script().resource_path == SELF_PATH:
+		var answer: int = _native_stage.guard_collapsed(sim.state, sim.aux)
+		if answer >= 0:
+			native_guard_collapse_answers += 1
+			return answer == 1
 	return published_gear_collapsed(sim.state) if guard_published_collapse_enabled else gear_collapsed(sim.state)
 
 
 ## NK-6g test hook: false evaluates gear_collapsed in the pre-tick guard.
 var guard_published_collapse_enabled := true
+## NK-6j test hook: false leaves the guard's gear collapse to GDScript.
+var native_guard_collapse_enabled := true
+## Diagnostic: pre-tick gear collapse checks the native stage answered.
+var native_guard_collapse_answers := 0
 
 
 ## True when any landing-gear contact at state `s` is compressed past its travel (E1). Always false without gear.

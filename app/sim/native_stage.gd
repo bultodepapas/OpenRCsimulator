@@ -560,6 +560,14 @@ func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: floa
 	return _native.stage_endpoint_facts(s, aux, time_s)
 
 
+## NK-6j: FlightSession.gear_collapsed(s) for the pre-tick guard from the installed tick context's endpoint
+## compressions: 1 or 0, or -1 to use the reference. The session owns the tick checks.
+func guard_collapsed(s: PackedFloat64Array, aux: PackedFloat64Array) -> int:
+	if not _installed or not _compressions_bound or _native == null or not _native.has_method("stage_guard_collapsed"):
+		return -1
+	return int(_native.stage_guard_collapsed(s, aux))
+
+
 ## NK-6e: the glow installation's bounds that GlowFlight.valid and mass_context read, captured at installation; the
 ## configuration guard refuses a tick after any later change to them.
 static func _glow_validity_bounds(session: Node) -> Dictionary:

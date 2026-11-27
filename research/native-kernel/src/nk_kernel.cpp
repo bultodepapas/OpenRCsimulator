@@ -1232,6 +1232,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("stage_guard_collapsed", "s", "aux"),
+			&OpenRCNativeKernel::stage_guard_collapsed);
 		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_facts", "s", "aux", "time_s"),
 			&OpenRCNativeKernel::stage_endpoint_facts);
 		godot::ClassDB::bind_method(D_METHOD("prepare_pre_step", "config"), &OpenRCNativeKernel::prepare_pre_step);
@@ -1833,6 +1835,22 @@ public:
 	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
 	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
 	// a refused air sample or a contact without a numeric travel limit.
+	// NK-6j: FlightSession.gear_collapsed(s) for the pre-tick guard, from the endpoint compressions of the tick context
+	// the guarded pre-step installed (stage_compressions refuses whatever it cannot answer exactly): 1 collapsed, 0 not,
+	// -1 for the reference.
+	int64_t stage_guard_collapsed(const PackedFloat64Array &s, const PackedFloat64Array &aux) {
+		const PackedFloat64Array compressions = stage_compressions(s, aux);
+		if (compressions.is_empty()) return -1;
+		const nk::GroundContext &ground = stage_.retraction.enabled ? tick_.posed_ground : stage_.ground;
+		if (static_cast<int64_t>(ground.gear.contacts.size()) != compressions.size()) return -1;
+		for (int64_t i = 0; i < compressions.size(); ++i) {
+			const double limit = ground.gear.contacts[static_cast<size_t>(i)].max_compression.v;
+			if (std::isnan(limit)) return -1;
+			if (compressions[i] > limit) return 1;
+		}
+		return 0;
+	}
+
 	PackedFloat64Array stage_endpoint_facts(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
 		const PackedFloat64Array compressions = stage_compressions(s, aux);
 		if (compressions.is_empty() || !std::isfinite(time_s) || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
