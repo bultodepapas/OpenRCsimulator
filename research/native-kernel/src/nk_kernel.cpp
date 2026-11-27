@@ -1056,6 +1056,11 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	};
 	GlowValidity glow_validity_;
 	int64_t glow_mass_calls_ = 0;
+	std::vector<nk::R> terminal_amounts_;
+	bool liquid_terminal_ready_ = false;
+	double liquid_terminal_crash_depth_ = 0.0;
+	int64_t terminal_calls_ = 0;
+	int64_t terminal_quiet_ = 0;
 	int64_t hull_rows_calls_ = 0;
 	int64_t hull_rows_answers_ = 0;
 	nk::HullDiagnostics hull_diagnostics_;
@@ -1255,6 +1260,10 @@ protected:
 			&OpenRCNativeKernel::stage_glow_mass_check);
 		godot::ClassDB::bind_method(D_METHOD("stage_hull_scrape_rows", "s", "properties"),
 			&OpenRCNativeKernel::stage_hull_scrape_rows);
+		godot::ClassDB::bind_method(D_METHOD("prepare_liquid_terminal", "crash_depth", "sample_static_ok"),
+			&OpenRCNativeKernel::prepare_liquid_terminal);
+		godot::ClassDB::bind_method(D_METHOD("stage_liquid_terminal_quiet", "previous", "s", "usable_before"),
+			&OpenRCNativeKernel::stage_liquid_terminal_quiet);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -2020,6 +2029,7 @@ public:
 			clear_diagnostic_context();
 		}
 		heli_stage_ready_ = false;
+		liquid_terminal_ready_ = false; // NK-6h: each installation prepares its own terminal bounds
 		pre_model_ = nk::PreStepModel(); // a new stage needs its own pre-step preparation
 		Decoder dec;
 		nk::StageModel candidate;
@@ -2839,6 +2849,8 @@ public:
 		Dictionary out;
 		out["calls"] = tick_calls_;
 		out["glow_mass_calls"] = glow_mass_calls_;
+		out["terminal_calls"] = terminal_calls_;
+		out["terminal_quiet"] = terminal_quiet_;
 		out["hull_rows_calls"] = hull_rows_calls_;
 		out["hull_rows_answers"] = hull_rows_answers_;
 		out["answers"] = tick_answers_;
@@ -2894,6 +2906,74 @@ public:
 			return PackedFloat64Array();
 		}
 		return pack(loads.data(), 6);
+	}
+
+	// NK-6h: the session's hull crash depth (HullContact.crash_depth of its live geometry) and whether its fuel
+	// sample (FuelSample.build) accepts every in-range liquid amount, from the installation. The configuration guard
+	// refuses a tick after a later change.
+	bool prepare_liquid_terminal(double crash_depth, bool sample_static_ok) {
+		liquid_terminal_ready_ = stage_ready_ && !heli_stage_ready_ && stage_.liquid.ready && stage_.hull.present &&
+			stage_.hull.stiffness.empty() && std::isfinite(crash_depth) && sample_static_ok;
+		liquid_terminal_crash_depth_ = crash_depth;
+		return liquid_terminal_ready_;
+	}
+
+	// NK-6h: 1 when HullContact.terminal_at_properties(previous, s, live hull, the liquid contact sample at fraction 0)
+	// must answer {ok, no event}: the sample's properties are valid (the stage's own live mass for that store), the
+	// inputs pass its checks, and no hull point newly penetrates, lies deeper than the crash depth or meets the lake.
+	// 0 where the reference must evaluate. usable_before is the start store's usable fuel coordinate.
+	int64_t stage_liquid_terminal_quiet(const PackedFloat64Array &previous, const PackedFloat64Array &s, double usable_before) {
+		++terminal_calls_;
+		if (!liquid_terminal_ready_ || heli_stage_ready_ || !stage_ready_ || !stage_.liquid.ready || !stage_.hull.present ||
+				!stage_.hull.stiffness.empty() || !read_state(previous) || !read_state(s)) return 0;
+		const nk::LiquidStageModel &liquid = stage_.liquid;
+		const nk::R usable = usable_before;
+		if (!nk::is_finite(usable) || usable.v < 0.0 || usable.v > (liquid.capacity_kg - liquid.unusable_kg).v) return 0;
+		// LiquidFlight.contact_sampler at fraction 0: Liquid.properties of the clamped onboard store, as the stage does.
+		const nk::R onboard = nk::liquid_trial_onboard_mass(usable, liquid.unusable_kg, liquid.capacity_kg);
+		const nk::R inventory_usable = nk::liquid_inventory_usable_mass(onboard, liquid.unusable_kg, liquid.capacity_kg);
+		const size_t resource_count = liquid.mass.resources.size();
+		if (resource_count == 0 || static_cast<size_t>(liquid.bound_index) >= resource_count) return 0;
+		terminal_amounts_.resize(resource_count);
+		for (size_t i = 0; i < resource_count; ++i) terminal_amounts_[i] = liquid.mass.resources[i].reference_kg;
+		terminal_amounts_[static_cast<size_t>(liquid.bound_index)] = inventory_usable;
+		const nk::LiquidMassProperties p = nk::liquid_mass_evaluate(liquid.mass, terminal_amounts_.data(), static_cast<int>(resource_count));
+		if (!p.ok || nk::live_hull_properties_error(p)[0] != '\0') return 0;
+		// terminal_at_properties' input checks.
+		nk::R before[kStateSize];
+		nk::R now[kStateSize];
+		load(previous, before);
+		load(s, now);
+		for (int i = 0; i < kStateSize; ++i) if (!nk::is_finite(before[i]) || !nk::is_finite(now[i])) return 0;
+		const nk::R q_norm = before[6] * before[6] + before[7] * before[7] + before[8] * before[8] + before[9] * before[9];
+		if (!nk::is_finite(q_norm) || nk::absf(q_norm - 1.0).v > 1.0e-9) return 0;
+		const nk::HullPrepared &hull = stage_.hull;
+		if ((-now[2]).v > hull.reach.v) {
+			++terminal_quiet_;
+			return 1;
+		}
+		const nk::R dn[3] = {2.0 * (now[7] * now[9] - now[6] * now[8]), 2.0 * (now[8] * now[9] + now[6] * now[7]),
+			1.0 - 2.0 * (now[7] * now[7] + now[8] * now[8])};
+		const nk::R db[3] = {2.0 * (before[7] * before[9] - before[6] * before[8]), 2.0 * (before[8] * before[9] + before[6] * before[7]),
+			1.0 - 2.0 * (before[7] * before[7] + before[8] * before[8])};
+		const bool lake_sampled = hull.lake.present && !nk::hull_clear_of_lake(now, hull);
+		const int count = static_cast<int>(hull.points.size() / 3);
+		for (int i = 0; i < count; ++i) {
+			const nk::R *r = &hull.points[static_cast<size_t>(i) * 3];
+			if (lake_sampled) {
+				const std::array<nk::R, 3> rotated = nk::q_rotate3(now + 6, r);
+				const std::array<nk::R, 3> point = {now[0] + rotated[0], now[1] + rotated[1], now[2] + rotated[2]};
+				if (nk::hull_lake_sample(hull, point).covered) return 0; // the lake's own terminal candidate
+			}
+			const nk::R depth = now[2] + dn[0] * r[0] + dn[1] * r[1] + dn[2] * r[2];
+			if (depth.v <= 0.0) continue;
+			if (depth.v > liquid_terminal_crash_depth_) return 0;
+			const nk::R depth_before = before[2] + db[0] * r[0] + db[1] * r[1] + db[2] * r[2];
+			if (depth_before.v > 0.0) continue;
+			return 0; // a new penetration: the reference grades its impact energy
+		}
+		++terminal_quiet_;
+		return 1;
 	}
 
 	// NK-6f: the GP-19 endpoint diagnostics of HullContact.loads (properties empty: the prepared hull) or

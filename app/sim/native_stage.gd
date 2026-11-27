@@ -10,6 +10,8 @@ const Wheels := preload("res://physics/ground_wheels.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const HullContact := preload("res://physics/hull_contact.gd")
+const FuelSample := preload("res://sim/fuel_sample.gd")
 const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 const ElectricAdapter := preload("res://sim/native/electric_stage_adapter.gd")
@@ -139,6 +141,8 @@ var _glow_firing_bound := false
 var _glow_mass_bound := false
 ## NK-6f: and stage_hull_scrape_rows (the hull-scrape observation's endpoint diagnostics).
 var _hull_rows_bound := false
+## NK-6h: the liquid installation prepared its quiet hull terminal (prepare_liquid_terminal).
+var _liquid_terminal_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
 var _pre_step_bound := false
 var _pre_step_turbulent := false
@@ -430,6 +434,8 @@ func install(session: Node) -> Callable:
 	_glow_mass_bound = _family == "glow" and _native.has_method("prepare_glow_validity") \
 		and bool(_native.prepare_glow_validity(_glow_validity_bounds(session)))
 	_hull_rows_bound = _family != "helicopter" and _native.has_method("stage_hull_scrape_rows")
+	_liquid_terminal_bound = _family == "liquid" and _native.has_method("prepare_liquid_terminal") \
+		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
@@ -462,6 +468,7 @@ func uninstall(session: Node) -> Callable:
 	_glow_firing_bound = false
 	_glow_mass_bound = false
 	_hull_rows_bound = false
+	_liquid_terminal_bound = false
 	_pre_step_bound = false
 	_pre_step_turbulent = false
 	_reach_world = {}
@@ -561,6 +568,28 @@ static func _glow_validity_bounds(session: Node) -> Dictionary:
 		capacity_fuel_kg = float(install.capacity_fuel_kg), line_capacity_kg = float(line.get("capacity_kg", 0.0)),
 		unusable_fuel_kg = float(install.unusable_fuel_kg), cycle_revolutions = float(cycle), has_line = not line.is_empty(),
 		family_ok = family in ["glow_2t", "glow_4t"] and cycle == (1 if family == "glow_2t" else 2)}
+
+
+## NK-6h: 1 when HullContact.terminal_at_properties for the liquid contact sample at fraction 0 must answer no event;
+## 0 or -1 to evaluate the reference. The session owns the tick checks.
+func liquid_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array, usable_before: float) -> int:
+	if not _installed or not _liquid_terminal_bound or _native == null: return -1
+	return int(_native.stage_liquid_terminal_quiet(previous, s, usable_before))
+
+
+## NK-6h: FuelSample.build of the liquid contact sample accepts every in-range amount: its tanks pass at the bounds of
+## the range LiquidFlight.contact_sampler clamps to (its other checks read only the mass properties, tick and time).
+static func _liquid_sample_static_ok(session: Node) -> bool:
+	var config: Dictionary = session.aircraft.model.propulsion.get("liquid_fuel", {})
+	var tanks: Variant = session.aircraft.model.get("fuel_system", {}).get("tanks", [])
+	if config.is_empty() or not tanks is Array:
+		return false
+	var unit := {ok = true, mass_kg = 1.0, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]), inverse = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])}
+	for amount: float in [float(config.unusable_kg), float(config.capacity_kg)]:
+		if not FuelSample.build(unit, tanks, {str(config.tank_id): amount}, 1, 0.0, true).get("ok", false):
+			return false
+	return true
 
 
 ## NK-6f: HullContact.loads (properties empty) or loads_at_properties (packed properties) endpoint diagnostics:

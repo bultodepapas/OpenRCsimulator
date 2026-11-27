@@ -594,6 +594,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   bounds, which the sweep's horizontal reject tests; the pre-tick guard's gear collapse reads the published endpoint
   compressions (`published_gear_collapsed`)
   ([evidence](../../docs/research/native-kernel/NK-6g/README.md)).
+- `prepare_liquid_terminal` and `stage_liquid_terminal_quiet(previous, s, usable_before)` (NK-6h) answer
+  `HullContact.terminal_at_properties` for a liquid aircraft's contact sample at fraction 0 only where it must return
+  `{ok, no event}`, with the sample's properties from the stage's live mass; 0 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6h/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

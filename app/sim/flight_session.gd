@@ -3614,7 +3614,36 @@ func _resolve_mass_contact_step(previous: PackedFloat64Array, candidate: PackedF
 	var sampler: Callable = _contact_mass_sampler(previous_values, candidate_values)
 	if not sampler.is_valid():
 		return PackedFloat64Array()
-	return _resolve_collision_step(previous, candidate, next_tick, sampler)
+	_terminal_before_values = previous_values
+	var resolved := _resolve_collision_step(previous, candidate, next_tick, sampler)
+	_terminal_before_values = PackedFloat64Array()
+	return resolved
+
+
+## NK-6h: the start store of the contact sample being resolved (empty outside _resolve_mass_contact_step).
+var _terminal_before_values := PackedFloat64Array()
+## NK-6h test hook: false always evaluates the hull terminal at the contact sample's properties.
+var native_terminal_quiet_enabled := true
+## Diagnostic: hull terminal checks the native stage answered as quiet.
+var native_terminal_quiet_answers := 0
+
+
+## NK-6h: true when HullContact.terminal_at_properties(previous, s, _hull_contact, the liquid contact sample at fraction
+## 0) must answer {ok, no event}: the native stage computes that sample's properties as the stage's live mass and
+## checks them as validate_properties does, and no hull point newly penetrates, lies past the crash depth or meets the
+## lake. On a rolling tick that skips the sample (about 36 µs) and the terminal (about 22 µs). Only inside the tick
+## whose guarded pre-step installed the native context, for this class.
+func _native_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array) -> bool:
+	if not native_terminal_quiet_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH or not liquid_fuel_is_active():
+		return false
+	var index: int = _liquid_index()
+	if _terminal_before_values.size() != index + 2:
+		return false
+	if _native_stage.liquid_terminal_quiet(previous, s, _terminal_before_values[index]) != 1:
+		return false
+	native_terminal_quiet_answers += 1
+	return true
 
 
 func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> Callable:
@@ -3674,7 +3703,8 @@ func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloa
 	_resolving_contact = true
 	var filtered: PackedFloat64Array = _resolve_collision_candidate(previous, candidate, next_tick, mass_at_fraction)
 	if mass_at_fraction.is_valid() and soft_hull_contacts and _pending_crash == null and Sim.state_is_valid(filtered) \
-			and not _hull_contact.is_empty() and -filtered[RB.POS + 2] <= float(_hull_contact.reach):
+			and not _hull_contact.is_empty() and -filtered[RB.POS + 2] <= float(_hull_contact.reach) \
+			and not _native_terminal_quiet(previous, filtered):
 		var properties_previous: Dictionary = mass_at_fraction.call(0.0)
 		var terminal_result: Dictionary = HullContact.terminal_at_properties(previous, filtered, _hull_contact, properties_previous)
 		var hit: Dictionary = terminal_result.get("event", {})
