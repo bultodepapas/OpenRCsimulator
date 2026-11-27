@@ -590,6 +590,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   `FlightSession._native_hull_scrape_diagnostics` asks for the hull-scrape observation only under the NK-5i
   published-endpoint conditions; `[0]` (a lake-covered sample, a refused live sample) evaluates the reference
   ([evidence](../../docs/research/native-kernel/NK-6f/README.md)).
+- `contact_reach(..., lake_bank)` (NK-6g) also proves a null lake sweep when its superset box misses the lake bank's
+  bounds, which the sweep's horizontal reject tests; the pre-tick guard's gear collapse reads the published endpoint
+  compressions (`published_gear_collapsed`)
+  ([evidence](../../docs/research/native-kernel/NK-6g/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

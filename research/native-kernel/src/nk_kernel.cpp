@@ -1232,7 +1232,7 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("pre_step_rng_state"), &OpenRCNativeKernel::pre_step_rng_state);
 		godot::ClassDB::bind_method(D_METHOD("pre_step_stats"), &OpenRCNativeKernel::pre_step_stats);
 		godot::ClassDB::bind_method(D_METHOD("pre_step_rng_probe", "state", "count"), &OpenRCNativeKernel::pre_step_rng_probe);
-		godot::ClassDB::bind_method(D_METHOD("contact_reach", "previous", "candidate", "hull", "extra_reach", "lake_threshold"),
+		godot::ClassDB::bind_method(D_METHOD("contact_reach", "previous", "candidate", "hull", "extra_reach", "lake_threshold", "lake_bank"),
 			&OpenRCNativeKernel::contact_reach);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
 		godot::ClassDB::bind_method(D_METHOD("float64_transport", "scalar", "values"), &OpenRCNativeKernel::float64_transport);
@@ -1689,9 +1689,11 @@ public:
 
 	// NK-5d: bit 1 = no collision proxy can be reached this tick, bit 2 = the lake cannot be reached. 0 = no proof.
 	int64_t contact_reach(const PackedFloat64Array &previous, const PackedFloat64Array &candidate,
-			const PackedFloat64Array &hull, double extra_reach, double lake_threshold) const {
+			const PackedFloat64Array &hull, double extra_reach, double lake_threshold, const PackedFloat64Array &lake_bank) const {
 		if (previous.size() != kStateSize || candidate.size() != kStateSize || hull.is_empty()) return 0;
-		return contact_reach_.reach_clear(previous.ptr(), candidate.ptr(), hull.ptr(), hull.size(), extra_reach, lake_threshold);
+		if (!lake_bank.is_empty() && lake_bank.size() != 4) return 0;
+		return contact_reach_.reach_clear(previous.ptr(), candidate.ptr(), hull.ptr(), hull.size(), extra_reach, lake_threshold,
+			lake_bank.is_empty() ? nullptr : lake_bank.ptr());
 	}
 
 	// NK-5g: prepare FlightSession._pre_step over the prepared stage (StageConfig.pre_step_config_for). A refusal

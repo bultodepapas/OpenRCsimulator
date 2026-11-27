@@ -504,14 +504,15 @@ func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up:
 ## NK-5d: contact reach proofs for the accepted tick (FlightSession.REACH_* bits); 0 proves nothing. The proxy
 ## bounds follow the session's collision world by identity; set_collision_world installs a new private copy.
 func contact_reach(session: Node, previous: PackedFloat64Array, candidate: PackedFloat64Array,
-		hull: PackedFloat64Array, extra_reach: float, lake_threshold: float) -> int:
+		hull: PackedFloat64Array, extra_reach: float, lake_threshold: float,
+		lake_bank := PackedFloat64Array()) -> int:
 	if not _installed or not _contact_reach_bound or _native == null: return 0
 	var world: Dictionary = session._collision_world
 	var proxies: Variant = world.get("proxies", [])
 	if not is_same(world, _reach_world) or not is_same(proxies, _reach_proxies) \
 			or not proxies is Array or (proxies as Array).size() != _reach_size:
 		_prepare_reach_world(world)
-	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold))
+	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold, lake_bank))
 
 
 ## NK-5g: the session's _pre_step(aux, inputs, dt) through the prepared stage; empty means "use the reference". With

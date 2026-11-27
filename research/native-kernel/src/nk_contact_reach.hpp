@@ -62,9 +62,11 @@ public:
 	// previous/candidate: 13-value rigid-body states (position first). hull: body points, three per point.
 	// extra_reach: any further probe distance from the centre of gravity (gear contacts, propeller disc).
 	// lake_threshold: the GDScript lake reject's highest possible water "down" minus its contact epsilon,
-	// or NaN for no lake. Returns kSceneryClear | kLakeClear bits that are proven; 0 on any doubt.
+	// or NaN for no lake. lake_bank (NK-6g, optional): LakeCollision._polygon_bounds of the bank, north min/max then
+	// east min/max; the sweep's horizontal reject tests its swept probe box against it. Returns
+	// kSceneryClear | kLakeClear bits that are proven; 0 on any doubt.
 	int reach_clear(const double *previous, const double *candidate, const double *hull, int64_t hull_size,
-			double extra_reach, double lake_threshold) const {
+			double extra_reach, double lake_threshold, const double *lake_bank = nullptr) const {
 		if (previous == nullptr || candidate == nullptr || hull == nullptr || hull_size <= 0 || hull_size % 3 != 0) return 0;
 		if (!std::isfinite(extra_reach) || extra_reach < 0.0) return 0;
 		double radius = extra_reach;
@@ -90,6 +92,12 @@ public:
 		int mask = 0;
 		if (ready_ && scenery_clear(lo, hi)) mask |= kSceneryClear;
 		if (std::isfinite(lake_threshold) && hi[2] < lake_threshold) mask |= kLakeClear;
+		// NK-6g: the sweep's box (CG path widened by its radius) lies inside lo/hi; missing the bank box misses it too.
+		if (std::isfinite(lake_threshold) && lake_bank != nullptr && std::isfinite(lake_bank[0]) &&
+				std::isfinite(lake_bank[1]) && std::isfinite(lake_bank[2]) && std::isfinite(lake_bank[3]) &&
+				(lake_bank[1] < lo[0] || lake_bank[0] > hi[0] || lake_bank[3] < lo[1] || lake_bank[2] > hi[1])) {
+			mask |= kLakeClear;
+		}
 		return mask;
 	}
 

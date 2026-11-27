@@ -3258,14 +3258,14 @@ func _session_after_input() -> bool:
 			if int(hit.index) >= 0:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
 					sim.previous, str(hit.rule)))
-			elif gear_collapsed(sim.state):
+			elif _guard_gear_collapsed():
 				_crash(_gear_limit_impact(sim.state))
 			else:
 				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
 				_check_prop_strike()
 		elif touches_ground(sim.state):
 			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
-		elif gear_collapsed(sim.state):
+		elif _guard_gear_collapsed():
 			_crash(_gear_limit_impact(sim.state))
 	return physics_enabled and not sim.paused and sim.fault_reason.is_empty() \
 		and crash.is_empty() and _flight_ready() and Sim.state_is_valid(sim.state)
@@ -3433,6 +3433,17 @@ func _check_prop_strike() -> void:
 	engine_running = false
 	_append_contact_event(ContactEvents.strike_event(prop_strike, sim.tick, HullContact.law(), _contact_bindings))
 	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
+
+
+## NK-6g: the pre-tick guard's gear_collapsed(sim.state). The endpoint it guards is the one the contact observer just
+## measured (NK-5e), so published_gear_collapsed reads those compressions while the state and aux bits are unchanged
+## and evaluates them itself otherwise; both follow Ground.collapsed's checks in its order.
+func _guard_gear_collapsed() -> bool:
+	return published_gear_collapsed(sim.state) if guard_published_collapse_enabled else gear_collapsed(sim.state)
+
+
+## NK-6g test hook: false evaluates gear_collapsed in the pre-tick guard.
+var guard_published_collapse_enabled := true
 
 
 ## True when any landing-gear contact at state `s` is compressed past its travel (E1). Always false without gear.
@@ -3931,7 +3942,12 @@ func _native_contact_reach(previous: PackedFloat64Array, candidate: PackedFloat6
 			# LakeCollision's own reject threshold: the highest possible water "down" less its contact epsilon.
 			lake_threshold = minf(0.0, float(level) - float(waves.max_amplitude_m)) - LakeSurface.CONTACT_EPSILON_M
 	return _native_stage.contact_reach(self, previous, candidate, aircraft.model.crash_hull, _contact_probe_reach(),
-		lake_threshold)
+		lake_threshold, _lake_bank_bounds if lake_bank_proof_enabled else PackedFloat64Array())
+
+
+## NK-6g test hook: false keeps the lake reach proof vertical only (NK-5d). With it, the proof also passes the bank's
+## bounds, which set_lake_context keeps with every lake; for a valid (finite) bank they equal LakeCollision's own.
+var lake_bank_proof_enabled := true
 
 
 ## The farthest gear or propeller probe that the lake sweep adds to the hull, measured as it measures them.
