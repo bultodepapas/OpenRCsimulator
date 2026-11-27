@@ -3553,6 +3553,30 @@ func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
 	return facts
 
 
+## NK-6o: Wheels.evaluate(s, current_landing_gear(sim.aux), steer, ground_surfaces, anchors, speeds, brake, true,
+## _lake)'s per-wheel diagnostics and frames for the ground audio's observation of the published endpoint:
+## [1, n, n rows of normal_load, longitudinal_force, lateral_force, rim_speed, compression, position (3), normal (3),
+## heading (3), side (3), long_speed], or [0] where the reference has no diagnostics (every wheel beyond the terrain's
+## reach). Empty unless published_endpoint_facts' conditions hold; the caller then evaluates the reference.
+func published_wheel_rows(s: PackedFloat64Array, steer: float, anchors: PackedFloat64Array, speeds: PackedFloat64Array,
+		brake: float) -> PackedFloat64Array:
+	if not native_wheel_rows_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	var rows: PackedFloat64Array = _native_stage.wheel_rows(s, sim.aux, steer, anchors, speeds, brake)
+	if not rows.is_empty():
+		native_wheel_row_answers += 1
+	return rows
+
+
+## NK-6o test hook: false always evaluates the ground audio's wheel diagnostics in GDScript.
+var native_wheel_rows_enabled := true
+## Diagnostic: ground audio observations whose wheel rows the native stage answered.
+var native_wheel_row_answers := 0
+
+
 ## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(self, values).ok (true) from the native
 ## glow stage, inside the tick whose guarded pre-step installed its context, for this class only (a derived session may
 ## read other data): 1 or 0 as the reference decides, -1 to evaluate the reference.

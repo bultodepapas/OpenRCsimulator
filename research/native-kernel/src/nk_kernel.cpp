@@ -1059,6 +1059,10 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	GlowValidity glow_validity_;
 	int64_t glow_mass_calls_ = 0;
 	std::vector<nk::R> terminal_amounts_;
+	std::vector<nk::R> wheel_rows_;
+	std::vector<nk::R> wheel_rows_loads_;
+	std::vector<nk::R> wheel_rows_rates_;
+	int64_t wheel_rows_answers_ = 0;
 	bool hull_guard_ready_ = false;
 	double hull_guard_crash_depth_ = 0.0;
 	std::vector<nk::R> glow_finish_out_;
@@ -1242,6 +1246,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("stage_wheel_rows", "s", "aux", "steer", "anchors", "speeds", "brake"),
+			&OpenRCNativeKernel::stage_wheel_rows);
+		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("glow_steady_finish_component", "start", "end", "dt", "terms", "firing"),
 			&OpenRCNativeKernel::glow_steady_finish_component);
 		godot::ClassDB::bind_method(D_METHOD("glow_finish_answers"), &OpenRCNativeKernel::glow_finish_answers);
@@ -1817,44 +1824,46 @@ public:
 	// oracle's. Empty when the stage, tick context, state (Simulation.state_is_valid), endpoint gear aux or ground
 	// (empty or invalid table, invalid lake) cannot reproduce the reference's terrain branch: the caller then
 	// evaluates the reference.
-	PackedFloat64Array stage_compressions(const PackedFloat64Array &s, const PackedFloat64Array &aux) {
-		if (!stage_ready_ || !tick_.ready || !read_state(s) || stage_.layout.wheel_count <= 0) return PackedFloat64Array();
+	// The ground context of the accepted endpoint s with its aux (NK-5e): a finite state with a usable quaternion, the
+	// tick context's retraction pose when both gear values carry its bits, and a non-empty valid table and lake.
+	// nullptr refuses.
+	const nk::GroundContext *endpoint_ground(const PackedFloat64Array &s, const PackedFloat64Array &aux) const {
+		if (!stage_ready_ || !tick_.ready || !read_state(s) || stage_.layout.wheel_count <= 0) return nullptr;
 		const double *body = s.ptr();
 		for (int i = 0; i < kStateSize; ++i) {
-			if (!std::isfinite(body[i])) return PackedFloat64Array();
+			if (!std::isfinite(body[i])) return nullptr;
 		}
 		const double norm_sq = body[6] * body[6] + body[7] * body[7] + body[8] * body[8] + body[9] * body[9];
-		if (!std::isfinite(norm_sq) || !(norm_sq > nk::kGd1eMinus24)) return PackedFloat64Array(); // GDScript 1e-24
+		if (!std::isfinite(norm_sq) || !(norm_sq > nk::kGd1eMinus24)) return nullptr; // GDScript 1e-24
 		const nk::GroundContext *ground = &stage_.ground;
 		if (stage_.retraction.enabled) {
 			// The endpoint pose is the tick context's only when both gear values carry the same bits it validated.
 			const int64_t index = stage_.layout.gear_aux;
 			if (aux.size() != static_cast<int64_t>(tick_.aux.size()) || index < 0 || index + 1 >= aux.size()) {
-				return PackedFloat64Array();
+				return nullptr;
 			}
 			for (int64_t i = index; i <= index + 1; ++i) {
 				const double expected = tick_.aux[static_cast<size_t>(i)].v;
-				if (std::memcmp(&aux.ptr()[i], &expected, sizeof(double)) != 0) return PackedFloat64Array();
+				if (std::memcmp(&aux.ptr()[i], &expected, sizeof(double)) != 0) return nullptr;
 			}
 			ground = &tick_.posed_ground;
 		}
 		// An empty table (valid here) may send the reference to its flat-ground formula, whose -0.0 can differ.
 		if (ground->gear.empty || ground->surfaces.values.empty() || !ground->surfaces.valid || !ground->lake_valid) {
-			return PackedFloat64Array();
+			return nullptr;
 		}
+		return ground;
+	}
+
+	PackedFloat64Array stage_compressions(const PackedFloat64Array &s, const PackedFloat64Array &aux) {
+		const nk::GroundContext *ground = endpoint_ground(s, aux);
+		if (ground == nullptr) return PackedFloat64Array();
 		nk::R state[kStateSize];
 		load(s, state);
 		if (!nk::wheels_compressions(state, *ground, compressions_scratch_)) return PackedFloat64Array();
 		return pack(compressions_scratch_);
 	}
 
-	// NK-5i: the statistics sampler's evaluations of the accepted endpoint (statistics/fixed_wing_adapter.gd sample)
-	// in one answer: [V, terrain height, slope north, slope east, collapsed (1/0), c_0 .. c_{n-1}], as
-	// FlightSession.air_data(s, t).V (pre_step_air with the endpoint aux), Environment.ground(north, east) without an
-	// RC track (the stage's surface table and lake), gear_compressions(s) (stage_compressions) and Ground.collapsed's
-	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
-	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
-	// a refused air sample or a contact without a numeric travel limit.
 	// NK-6m: the glow voice's per-sample loop (nk_glow_voice.hpp), audio only. parameters in GlowVoiceParameter order,
 	// harmonics as the angles then the weights, state in GlowVoiceState order. Returns [PCM, state + scheduled_any (1/0)],
 	// or [] for malformed input.
@@ -1955,6 +1964,49 @@ public:
 		return 0;
 	}
 
+	// NK-6o: Wheels.evaluate(s, posed gear, steer, surfaces, anchors, speeds, brake, diagnostics, lake)'s diagnostics and
+	// frames for GroundAudioModel.snapshot_contacts, at the endpoint whose ground endpoint_ground accepts: [1, n, n rows
+	// of nk::kWheelRowSize], [0] where every wheel is beyond the terrain's height bound (no diagnostics), or [] for the
+	// reference (another wheel count, a nonfinite input, the reference's failure shape).
+	PackedFloat64Array stage_wheel_rows(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
+			const PackedFloat64Array &anchors, const PackedFloat64Array &speeds, double brake) {
+		const nk::GroundContext *ground = endpoint_ground(s, aux);
+		if (ground == nullptr || speeds.size() != static_cast<int64_t>(ground->gear.contacts.size()) ||
+				!std::isfinite(steer) || !std::isfinite(brake)) return PackedFloat64Array();
+		for (int64_t i = 0; i < anchors.size(); ++i) {
+			if (!std::isfinite(anchors[i])) return PackedFloat64Array();
+		}
+		for (int64_t i = 0; i < speeds.size(); ++i) {
+			if (!std::isfinite(speeds[i])) return PackedFloat64Array();
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		if (!nk::wheels_evaluate(state, *ground, steer, anchors.ptr(), static_cast<int>(anchors.size()), speeds.ptr(),
+				static_cast<int>(speeds.size()), brake, wheel_rows_loads_, wheel_rows_rates_, &wheel_rows_)) {
+			return PackedFloat64Array();
+		}
+		++wheel_rows_answers_;
+		if (wheel_rows_.empty()) return PackedFloat64Array({0.0});
+		const int64_t count = static_cast<int64_t>(wheel_rows_.size()) / nk::kWheelRowSize;
+		if (count != speeds.size()) return PackedFloat64Array();
+		PackedFloat64Array out;
+		out.resize(2 + static_cast<int64_t>(wheel_rows_.size()));
+		double *o = out.ptrw();
+		o[0] = 1.0;
+		o[1] = static_cast<double>(count);
+		for (size_t i = 0; i < wheel_rows_.size(); ++i) o[2 + i] = wheel_rows_[i].v;
+		return out;
+	}
+
+	int64_t wheel_rows_answers() const { return wheel_rows_answers_; }
+
+	// NK-5i: the statistics sampler's evaluations of the accepted endpoint (statistics/fixed_wing_adapter.gd sample)
+	// in one answer: [V, terrain height, slope north, slope east, collapsed (1/0), c_0 .. c_{n-1}], as
+	// FlightSession.air_data(s, t).V (pre_step_air with the endpoint aux), Environment.ground(north, east) without an
+	// RC track (the stage's surface table and lake), gear_compressions(s) (stage_compressions) and Ground.collapsed's
+	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
+	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
+	// a refused air sample or a contact without a numeric travel limit.
 	PackedFloat64Array stage_endpoint_facts(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
 		const PackedFloat64Array compressions = stage_compressions(s, aux);
 		if (compressions.is_empty() || !std::isfinite(time_s) || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {

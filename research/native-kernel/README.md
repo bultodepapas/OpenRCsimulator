@@ -616,6 +616,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `integrate_tick` answers `GlowFlight.finish` itself for a steady glow tick (NK-6n, `nk_glow_finish.hpp`): no
   resource events or transitions, the plan's steady terms present, and no failure or lifecycle stop. Every refusal
   calls finish ([evidence](../../docs/research/native-kernel/NK-6n/README.md)).
+- `stage_wheel_rows(s, aux, steer, anchors, speeds, brake)` (NK-6o) gives the ground audio `Ground.evaluate`'s
+  per-wheel diagnostics and `Wheels.frame` at a published endpoint, through an optional row collector on the
+  qualified wheel law; [] evaluates the reference ([evidence](../../docs/research/native-kernel/NK-6o/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

@@ -61,8 +61,14 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	if _clear_of_ground(state, gear, ground_surfaces, track):
 		return _unloaded_rows(gear_contacts, state, attitude, base_velocity, body_rate, reference_load)
 	var wheel_evaluation: Dictionary = {}
+	# NK-6o: the session's native stage may answer Ground.evaluate's diagnostics and each wheel's frame for the endpoint
+	# it published, with the same values; otherwise they are evaluated here.
+	var rows := PackedFloat64Array()
 	if wheel_count > 0:
-		wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake, track)
+		rows = _native_rows(session, state, steer, anchors, speeds, brake, gear_contacts.size())
+		if rows.is_empty():
+			wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake, track)
+	var native_rows: bool = rows.size() > 1
 	var wheel_diagnostics: Array = wheel_evaluation.get("wheels", [])
 	var environment := session.get("environment") as RefCounted
 	var time_s: float = sim.time()
@@ -70,13 +76,14 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 		var contact: Dictionary = gear_contacts[index]
 		if not contact.has("position"):
 			continue
-		var kinematics := _contact_kinematics(state, contact, steer, ground_surfaces, lake, track, attitude, base_velocity,
-			body_rate)
+		var kinematics := _row_kinematics(rows, index, contact, attitude, base_velocity, body_rate) if native_rows \
+			else _contact_kinematics(state, contact, steer, ground_surfaces, lake, track, attitude, base_velocity, body_rate)
 		var frame: Dictionary = kinematics.frame
 		var point_velocity: PackedFloat64Array = kinematics.point_velocity
 		var normal: PackedFloat64Array = kinematics.normal
 		var approach_speed: float = kinematics.approach_speed
-		var wheel_diag: Dictionary = wheel_diagnostics[index] if index < wheel_diagnostics.size() else {}
+		var wheel_diag: Dictionary = _row_diagnostics(rows, index) if native_rows \
+			else (wheel_diagnostics[index] if index < wheel_diagnostics.size() else {})
 		var force_ned := PackedFloat64Array([0.0, 0.0, 0.0])
 		var rim_speed: float = 0.0
 		if wheel_count > 0 and not wheel_diag.is_empty():
@@ -123,6 +130,45 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 			roll_enabled = true,
 		})
 	return contacts_out
+
+
+## NK-6o: the session's native wheel rows for this observation: [1, n, rows] (n == contacts), [0] where the reference
+## has no diagnostics, or empty to evaluate Ground.evaluate here.
+static func _native_rows(session: Node, state: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, contacts: int) -> PackedFloat64Array:
+	if not session.has_method("published_wheel_rows"):
+		return PackedFloat64Array()
+	var rows: PackedFloat64Array = session.call("published_wheel_rows", state, steer, anchors, speeds, brake)
+	if rows.size() == 1 and rows[0] == 0.0:
+		return rows
+	if rows.size() == 2 + contacts * WHEEL_ROW_SIZE and rows[0] == 1.0 and int(rows[1]) == contacts:
+		return rows
+	return PackedFloat64Array()
+
+
+## Values per native wheel row (nk::kWheelRowSize).
+const WHEEL_ROW_SIZE := 18
+
+
+## Ground.evaluate's diagnostics fields this observation reads, from a native row.
+static func _row_diagnostics(rows: PackedFloat64Array, index: int) -> Dictionary:
+	var at: int = 2 + index * WHEEL_ROW_SIZE
+	return {normal_load = rows[at], longitudinal_force = rows[at + 1], lateral_force = rows[at + 2], rim_speed = rows[at + 3]}
+
+
+## _contact_kinematics from a native row: the same frame values (Wheels.frame), point velocity and approach speed.
+static func _row_kinematics(rows: PackedFloat64Array, index: int, contact: Dictionary, attitude: PackedFloat64Array,
+		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array) -> Dictionary:
+	var at: int = 2 + index * WHEEL_ROW_SIZE
+	var normal := PackedFloat64Array([rows[at + 8], rows[at + 9], rows[at + 10]])
+	var frame := {compression = rows[at + 4], position = PackedFloat64Array([rows[at + 5], rows[at + 6], rows[at + 7]]),
+		normal = normal, heading = PackedFloat64Array([rows[at + 11], rows[at + 12], rows[at + 13]]),
+		side = PackedFloat64Array([rows[at + 14], rows[at + 15], rows[at + 16]]), long_speed = rows[at + 17]}
+	var arm: PackedFloat64Array = contact.position
+	var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
+	var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
+	return {frame = frame, point_velocity = point_velocity, normal = normal,
+		approach_speed = maxf(0.0, -M.dot(point_velocity, normal))}
 
 
 ## One row's wheel frame, point velocity (NED), surface normal and approach speed.

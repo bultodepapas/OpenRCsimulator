@@ -579,6 +579,16 @@ func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: floa
 	return _native.stage_endpoint_facts(s, aux, time_s)
 
 
+## NK-6o: Wheels.evaluate's per-wheel diagnostics and frames at the accepted endpoint `s` with its aux, from the
+## fixed-wing stage and the installed tick context: [1, n, rows], [0] beyond the terrain's reach, or empty to use the
+## reference. The session owns the publication checks (FlightSession.published_wheel_rows).
+func wheel_rows(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float) -> PackedFloat64Array:
+	if not _installed or not _compressions_bound or _native == null or not _native.has_method("stage_wheel_rows"):
+		return PackedFloat64Array()
+	return _native.stage_wheel_rows(s, aux, steer, anchors, speeds, brake)
+
+
 ## NK-6l: the pre-tick guard's hull checks for this installation's hull, which the session passes by identity: bit 1
 ## when HullContact.terminal(previous, s, hull) must return no event, bit 2 when HullContact.contacts(previous, s, hull)
 ## must return no contact; 0 to use the reference for both. The session owns the tick checks.
