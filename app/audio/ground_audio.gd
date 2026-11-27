@@ -21,6 +21,8 @@ const ACCEPTED_OBSERVATION_LAW := "accepted-tick-ground-audio-v1"
 const MAX_EVENT_AGE_S := 0.25 # Presentation latency bound; not a landing/event window.
 ## VQ-01c-R1: longest continuous multi-tick interval one accepted observation may cover.
 const MAX_ACCEPTED_INTERVAL_S := 0.25
+## touchdown_possible_at(): compressions this far below zero cannot load a wheel (1 µm).
+const TOUCHDOWN_COMPRESSION_MARGIN_M := 1e-6
 var _accepted_tick_observation := false
 var _accepted_tick := -1
 var _accepted_rate := 0.0
@@ -33,6 +35,8 @@ var _accepted_drained := 0
 var _accepted_discarded := 0
 var _accepted_overflowed := 0
 var _accepted_refused := 0
+var _skipped_tick := -1
+var _skipped_approach: Dictionary = {}
 
 var _owner: Node
 var _soundscape: Node
@@ -86,7 +90,14 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 			approach_speed_mps = supplied.approach_speed_mps, rolling_speed_mps = supplied.rolling_speed_mps,
 			surface = supplied.surface, roll_enabled = supplied.get("roll_enabled", true)}
 		detached_contacts.append(contact)
-		var observed := Motion.advance(contact, _accepted_states.get(contact.id, {}),
+		var previous: Dictionary = _accepted_states.get(contact.id, {})
+		# A per-tick observer would have seen this wheel airborne on the skipped tick just before this one; its cue keeps
+		# that last airborne sample (note_skipped_tick).
+		if not seed_only and _skipped_tick == tick - 1 and _skipped_tick > since and _skipped_approach.has(contact.id) \
+				and bool(previous.get("initialized", false)) and not bool(previous.get("grounded", false)):
+			previous = previous.duplicate()
+			previous["previous_approach_mps"] = float(_skipped_approach[contact.id])
+		var observed := Motion.advance(contact, previous,
 			0.0 if seed_only else float(tick - since) / rate, seed_only, not seed_only, 1.0 / rate)
 		next_states[contact.id] = observed.state
 		if observed.impact_approach >= 0.0:
@@ -115,6 +126,44 @@ func touchdown_possible() -> bool:
 		if not bool(state.get("grounded", false)):
 			return true
 	return false
+
+
+## touchdown_possible() for one endpoint whose wheel compressions are known: `compressions[i]` belongs to the wheel
+## `identities[i]`. A wheel that is not grounded can only cue on a tick where it is compressed, because its normal
+## force is zero otherwise (GroundAudioModel rows). The tail wheel of a taildragger rolling on its mains, or an
+## aircraft resting on its nose, then no longer forces an observation every tick; the touching tick still does, and so
+## does a tick where a grounded wheel is uncompressed (its liftoff onset). A small margin keeps a contact whose two
+## evaluations round differently. Unknown wheels keep the full answer.
+func touchdown_possible_at(identities: PackedStringArray, compressions: PackedFloat64Array) -> bool:
+	if _accepted_states.is_empty() or identities.size() != compressions.size():
+		return true
+	var covered := 0
+	for index: int in identities.size():
+		if not _accepted_states.has(identities[index]):
+			return true
+		covered += 1
+		var state: Dictionary = _accepted_states[identities[index]]
+		if bool(state.get("grounded", false)):
+			# An unloaded grounded wheel lifts off on this tick: observe its airborne onset exactly.
+			if not (compressions[index] > TOUCHDOWN_COMPRESSION_MARGIN_M):
+				return true
+		elif not (compressions[index] <= -TOUCHDOWN_COMPRESSION_MARGIN_M):
+			return true
+	return covered != _accepted_states.size() and touchdown_possible()
+
+
+## A tick the caller did not observe because touchdown_possible_at() was false: each wheel's approach speed at that
+## tick (GroundAudioModel.approach_speeds). Only the latest skipped tick is kept; an observation on the next tick
+## gives a wheel that was airborne this sample as its last airborne approach, as a per-tick observer would.
+func note_skipped_tick(tick: int, identities: PackedStringArray, approaches: PackedFloat64Array) -> void:
+	_skipped_tick = tick
+	_skipped_approach.clear()
+	if identities.size() != approaches.size():
+		_skipped_tick = -1
+		return
+	for index: int in identities.size():
+		if is_finite(approaches[index]) and approaches[index] >= 0.0:
+			_skipped_approach[identities[index]] = approaches[index]
 
 
 ## Tick of the last accepted observation, or -1.
@@ -157,6 +206,8 @@ func _clear_accepted_observation() -> void:
 	_accepted_tick = -1
 	_accepted_rate = 0.0
 	_accepted_paused = true
+	_skipped_tick = -1
+	_skipped_approach.clear()
 
 
 func _drain_accepted_events(tick: int, rate: float) -> void:

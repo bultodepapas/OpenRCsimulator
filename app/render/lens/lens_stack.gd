@@ -264,9 +264,10 @@ func reset(floor_tick: int = -1) -> void:
 func on_contacts() -> void:
 	if not wants_contacts() or _session == null:
 		return
-	# The signal fires on every committed tick; a tick without events needs no detached deep copy.
+	# The signal fires on every committed tick. Only a new contact can admit a record, so a tick without one needs no
+	# detached deep copy: on the ground every tick carries persistent gear samples.
 	var pending: Variant = _session.get("_contact_events")
-	if pending is Array and (pending as Array).is_empty():
+	if pending is Array and not _has_new_event(pending):
 		return
 	var records := ImpactTrigger.admit(_session.contact_events(), _seen, _floor_tick, _mass_kg)
 	for record: Dictionary in records:
@@ -279,6 +280,13 @@ func on_contacts() -> void:
 		else:
 			_last_surface_tick = int(record.tick)
 			strike_surface(str(record.kind), float(record.strength), point, float(record.speed_mps), record.id)
+
+
+static func _has_new_event(events: Array) -> bool:
+	for event: Variant in events:
+		if event is Dictionary and ImpactTrigger.is_new(event):
+			return true
+	return false
 
 
 ## A person was struck. `player` marks the pilot (the player): always a full strike. `event_key` (the contact event id

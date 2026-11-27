@@ -108,8 +108,62 @@ func _trigger_checks() -> void:
 	var first := ImpactTrigger.admit(snapshot, seen, 10, 1.5)
 	_check("admission ignores events at or before the floor tick", first.size() == 1 and int(first[0].tick) == 20)
 	_check("the same event is admitted only once", ImpactTrigger.admit(snapshot, seen, 10, 1.5).is_empty())
+	_admission_bound_checks()
 	_check("the pilot view scales a distant strike down", ImpactTrigger.view_factor("pilot", 90.0, false) < 0.5)
 	_check("the player's own strike is always full", ImpactTrigger.view_factor("pilot", 90.0, true) == 1.0)
+
+
+## Persistent gear samples arrive three per ground tick. They admit nothing, so they never enter `seen`, and the
+## lens skips a batch without a new event. The trim keeps the same latest ticks as the comparator sort it replaced.
+func _admission_bound_checks() -> void:
+	var support := {"event_id": "as13:support_contact:gear:%d:persistent:4:main", "event_type": "support_contact",
+		"source": "gear", "lifecycle": "persistent", "tick": 0, "measure": {"compression_m": 0.01, "travel_limit_m": 0.05}}
+	var seen := {}
+	var admitted := 0
+	for tick in range(1, 2001):
+		var events: Array = []
+		for leg in 3:
+			var sample := support.duplicate(true)
+			sample.event_id = "as13:support_contact:gear:%d:persistent:%d:leg" % [tick, leg]
+			sample.tick = tick
+			events.append(sample)
+		if tick % 500 == 0:
+			events.append(_event("person", tick))
+		admitted += ImpactTrigger.admit({"events": events}, seen, -1, 1.5).size()
+	_check("persistent samples never enter seen; new events still admit once", seen.size() == 4 and admitted == 4)
+	var persistent_only: Array = [support]
+	var with_new: Array = [support, _event("tree_foliage", 30)]
+	_check("the lens skips a batch without a new event",
+		not LensStack._has_new_event(persistent_only) and LensStack._has_new_event(with_new) and not LensStack._has_new_event([]))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261126
+	var same := true
+	var same_ties := true
+	for trial in 200:
+		var candidate := {}
+		var tick := rng.randi_range(0, 50)
+		var count := ImpactTrigger.MAX_SEEN + 1 + rng.randi_range(0, 40)
+		for index in count:
+			tick += rng.randi_range(0, 2) if trial % 3 != 0 else rng.randi_range(-30, 30) # monotone or shuffled
+			candidate["e%d" % index] = tick
+		var reference := candidate.duplicate()
+		var oldest: Array = reference.keys()
+		oldest.sort_custom(func(x: Variant, y: Variant) -> bool: return int(reference[x]) < int(reference[y]))
+		for index in reference.size() - ImpactTrigger.TRIM_TO:
+			reference.erase(oldest[index])
+		var trimmed := candidate.duplicate()
+		ImpactTrigger._trim(trimmed)
+		var kept: Array = trimmed.values()
+		var expected: Array = reference.values()
+		kept.sort()
+		expected.sort()
+		same = same and trimmed.size() == ImpactTrigger.TRIM_TO and kept == expected
+		# Where the cut tick is unique, the kept keys are identical too.
+		var cut: int = expected[0]
+		if expected.count(cut) == 1 and candidate.values().count(cut) == 1:
+			same_ties = same_ties and trimmed.keys().all(func(key: Variant) -> bool: return reference.has(key))
+	_check("the integer trim keeps the latest TRIM_TO ticks", same)
+	_check("without a tie at the cut it keeps the same events", same_ties)
 
 
 func _pilot_checks() -> void:

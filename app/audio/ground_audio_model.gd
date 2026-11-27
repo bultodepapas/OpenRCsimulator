@@ -70,12 +70,12 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 		var contact: Dictionary = gear_contacts[index]
 		if not contact.has("position"):
 			continue
-		var frame: Dictionary = Wheels.frame(state, contact, steer, ground_surfaces, PackedFloat64Array(), true, lake, track)
-		var arm: PackedFloat64Array = contact.position
-		var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
-		var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
-		var normal: PackedFloat64Array = frame.get("normal", PackedFloat64Array([0.0, 0.0, -1.0]))
-		var approach_speed: float = maxf(0.0, -M.dot(point_velocity, normal))
+		var kinematics := _contact_kinematics(state, contact, steer, ground_surfaces, lake, track, attitude, base_velocity,
+			body_rate)
+		var frame: Dictionary = kinematics.frame
+		var point_velocity: PackedFloat64Array = kinematics.point_velocity
+		var normal: PackedFloat64Array = kinematics.normal
+		var approach_speed: float = kinematics.approach_speed
 		var wheel_diag: Dictionary = wheel_diagnostics[index] if index < wheel_diagnostics.size() else {}
 		var force_ned := PackedFloat64Array([0.0, 0.0, 0.0])
 		var rim_speed: float = 0.0
@@ -123,6 +123,57 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 			roll_enabled = true,
 		})
 	return contacts_out
+
+
+## One row's wheel frame, point velocity (NED), surface normal and approach speed.
+static func _contact_kinematics(state: PackedFloat64Array, contact: Dictionary, steer: float,
+		ground_surfaces: PackedFloat64Array, lake: Dictionary, track: Dictionary, attitude: PackedFloat64Array,
+		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array) -> Dictionary:
+	var frame: Dictionary = Wheels.frame(state, contact, steer, ground_surfaces, PackedFloat64Array(), true, lake, track)
+	var arm: PackedFloat64Array = contact.position
+	var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
+	var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
+	var normal: PackedFloat64Array = frame.get("normal", PackedFloat64Array([0.0, 0.0, -1.0]))
+	return {frame = frame, point_velocity = point_velocity, normal = normal,
+		approach_speed = maxf(0.0, -M.dot(point_velocity, normal))}
+
+
+## The approach_speed_mps of snapshot_contacts()'s near-ground rows, by the same arithmetic, without loads or
+## material queries; `identities` receives the rows' ids in order. Empty where snapshot_contacts() has no near-ground
+## rows (no gear or state, or clear of the ground). For FlightAudio's ticks between ground observations.
+static func approach_speeds(session: Node, identities: PackedStringArray) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	identities.clear()
+	if session == null or not session.has_method("current_landing_gear"):
+		return out
+	var sim: Variant = session.get("sim")
+	if sim == null:
+		return out
+	var state: PackedFloat64Array = sim.state
+	var auxiliary: PackedFloat64Array = sim.aux
+	if state.size() < RB.SIZE or auxiliary.size() < 4:
+		return out
+	var gear: Dictionary = session.call("current_landing_gear", auxiliary)
+	var gear_contacts: Array = gear.get("contacts", [])
+	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")
+	var lake_value: Variant = session.get("_lake")
+	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
+	var track_value: Variant = session.get("_rc_track")
+	var track: Dictionary = track_value if track_value is Dictionary else {}
+	if gear_contacts.is_empty() or _clear_of_ground(state, gear, ground_surfaces, track):
+		return out
+	var steer: float = auxiliary[3]
+	var attitude := M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
+	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
+	var body_rate := state.slice(RB.RATE, RB.RATE + 3)
+	for index: int in range(gear_contacts.size()):
+		var contact: Dictionary = gear_contacts[index]
+		if not contact.has("position"):
+			continue
+		identities.append(str(contact.get("name", "gear_%d" % index)))
+		out.append(float(_contact_kinematics(state, contact, steer, ground_surfaces, lake, track, attitude, base_velocity,
+			body_rate).approach_speed))
+	return out
 
 
 ## VQ-01c-R1: true when snapshot_contacts() would return unloaded far rows for the accepted state, so no

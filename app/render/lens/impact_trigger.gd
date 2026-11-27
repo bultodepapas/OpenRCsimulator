@@ -95,6 +95,10 @@ static func admit(snapshot: Dictionary, seen: Dictionary, floor_tick: int, mass_
 		if typeof(raw) != TYPE_DICTIONARY:
 			continue
 		var event: Dictionary = raw
+		# Only a new contact can classify. Persistent gear samples arrive three per ground tick; remembering them only
+		# filled `seen` and made it trim every 43 ticks.
+		if not is_new(event):
+			continue
 		var id := str(event.get("event_id", ""))
 		var tick := int(event.get("tick", 0))
 		if id.is_empty() or tick <= floor_tick or seen.has(id):
@@ -104,12 +108,38 @@ static func admit(snapshot: Dictionary, seen: Dictionary, floor_tick: int, mass_
 		if not record.is_empty():
 			out.append(record)
 	if seen.size() > MAX_SEEN:
-		# Trim to TRIM_TO at once, so the sort runs once per 128 new events, not on every call.
-		var oldest: Array = seen.keys()
-		oldest.sort_custom(func(x: Variant, y: Variant) -> bool: return int(seen[x]) < int(seen[y]))
-		for index in seen.size() - TRIM_TO:
-			seen.erase(oldest[index])
+		_trim(seen)
 	return out
+
+
+## The lifecycle classify() requires. Callers may skip a batch without one: it cannot admit anything.
+static func is_new(event: Dictionary) -> bool:
+	return str(event.get("lifecycle", "")) == "new"
+
+
+## Keeps the TRIM_TO entries with the latest ticks, at once, so this runs once per 128 new events. Equal ticks at the
+## cut leave in insertion order. A native integer sort finds the cut; no script comparator runs.
+static func _trim(seen: Dictionary) -> void:
+	var drop := seen.size() - TRIM_TO
+	var ticks := PackedInt64Array()
+	for id: Variant in seen:
+		ticks.append(int(seen[id]))
+	ticks.sort()
+	var cut: int = ticks[drop - 1]
+	var at_cut := 0 # entries at the cut tick that still have to leave
+	for index in drop:
+		if ticks[index] == cut:
+			at_cut += 1
+	var doomed: Array = []
+	for id: Variant in seen:
+		var tick := int(seen[id])
+		if tick < cut:
+			doomed.append(id)
+		elif tick == cut and at_cut > 0:
+			doomed.append(id)
+			at_cut -= 1
+	for id: Variant in doomed:
+		seen.erase(id)
 
 
 static func _finite(value: Variant) -> float:

@@ -32,12 +32,14 @@ var _mechanical_sim: Node
 var _accepted_mechanical_mode := false
 var _accepted_ground_mode := false
 ## VQ-01c-R1: accepted endpoints are observed once per rendered frame (see presentation_cadence.gd).
-## Ground contact stays per tick while a touchdown cue is possible near the ground.
+## Ground contact stays per tick while a wheel that is not grounded is compressed near the ground.
 var _mechanical_cadence := Cadence.new()
 var _ground_cadence := Cadence.new()
 var _windsock: WeakRef
 var last_update_usec: int = 0
 var last_mechanical_update_usec: int = 0
+## Test hook: false forces every near-ground tick while any wheel is not grounded, as before the touchdown gate.
+var touchdown_gate_enabled := true
 
 
 func configure(scene: Node3D) -> void:
@@ -154,8 +156,49 @@ func _on_accepted_mechanical_tick(_tick: int, _time: float, _state: PackedFloat6
 		var near_touchdown: bool = _ground_cadence.every_frames > 0 and _accepted_ground_mode \
 			and is_instance_valid(ground_audio) and ground_audio.touchdown_possible() \
 			and not GroundAudioModel.wheels_clear_of_ground(_mechanical_session)
-		if _ground_cadence.on_tick(_tick, near_touchdown):
+		var skipped: bool = near_touchdown and touchdown_gate_enabled and not _airborne_wheel_may_load()
+		if _ground_cadence.on_tick(_tick, near_touchdown and not skipped):
 			_observe_ground_endpoint()
+		elif skipped:
+			var identities := PackedStringArray()
+			var approaches := GroundAudioModel.approach_speeds(_mechanical_session, identities)
+			ground_audio.note_skipped_tick(_tick, identities, approaches)
+
+
+## Near the ground, a wheel that is not grounded can only cue on a tick where it is compressed. The session's contact
+## observer measured this publication's compressions (NK-5e/5f); otherwise they are evaluated here. A full ground
+## observation costs about 0.5 ms, so a raised tail wheel on the takeoff roll, or a nose-over, made every tick pay it.
+func _airborne_wheel_may_load() -> bool:
+	var session: Node = _mechanical_session
+	if not session.has_method("current_landing_gear") or not session.has_method("published_gear_compressions") \
+			or not session.has_method("gear_compressions") or not session.has_method("wheel_count") \
+			or not session.has_method("wheel_index"):
+		return true
+	# Wheel rows only: their load needs the compression measured here. Other contacts (no wheel speeds) keep the
+	# per-tick answer; their lake and track loads sample the terrain differently.
+	var wheels: int = int(session.wheel_count())
+	var first: int = int(session.wheel_index())
+	if wheels <= 0 or first < 0 or first + wheels > _mechanical_sim.continuous.size():
+		return true
+	var gear: Dictionary = session.current_landing_gear()
+	var contacts: Array = gear.get("contacts", [])
+	if contacts.size() != wheels:
+		return true
+	var state: PackedFloat64Array = _mechanical_sim.state
+	var compressions: PackedFloat64Array = session.published_gear_compressions(state)
+	if compressions.is_empty():
+		compressions = session.gear_compressions(state)
+	if compressions.size() != contacts.size():
+		return true
+	# The rows of GroundAudioModel.snapshot_contacts(): contacts with a position, under the same identities.
+	var identities := PackedStringArray()
+	var measured := PackedFloat64Array()
+	for index: int in contacts.size():
+		var contact: Dictionary = contacts[index]
+		if contact.has("position"):
+			identities.append(str(contact.get("name", "gear_%d" % index)))
+			measured.append(compressions[index])
+	return ground_audio.touchdown_possible_at(identities, measured)
 
 
 ## VQ-01c-R1: once per rendered frame, observe the ticks that waited (the current accepted endpoint).
