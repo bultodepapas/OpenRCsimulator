@@ -675,6 +675,12 @@ msgstr "Riavvia il volo"
 msgid "Resume after a radio failsafe"
 msgstr "Riprendi dopo il failsafe della radio"
 
+msgid "Ugly Stick FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."
+msgstr "Vista FPV dell’Ugly Stick. Tieni premuto il tasto destro e trascina il mouse per guardarti intorno. Premi Backspace per ricentrare la vista."
+
+msgid "FPV (when available)"
+msgstr "FPV (se disponibile)"
+
 msgid "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"
 msgstr ""
 "Viste: successiva (Shift+C per tornare indietro), pilota, inseguimento (di "

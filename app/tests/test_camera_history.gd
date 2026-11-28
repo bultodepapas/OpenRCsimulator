@@ -126,6 +126,33 @@ func _run() -> void:
 	count = _count(viewport)
 	CameraSettings.apply_at_start(rig, config)
 	_check("reapplying the same view preference does not notify", _count(viewport) == count)
+	var mount := Transform3D(Basis.IDENTITY, Vector3(0.0, 0.1, -0.6))
+	var datum := Transform3D(Basis.IDENTITY, target)
+	rig.set_fpv_mount(mount, 90.0, 0.025)
+	rig.set_view("fpv")
+	_check("FPV selection waits for the optical pose", _count(viewport) == count)
+	rig.update(target, datum, Basis.IDENTITY, dt, false, flat, velocity)
+	_check("the first FPV placement submits a single cut", _count(viewport) == count + 1
+		and _reason(viewport) == "camera_view_changed" and camera.position.is_equal_approx(target + mount.origin))
+	count = _count(viewport)
+	rig.set_fpv_mount(mount, 90.0, 0.025)
+	rig.set_fpv_mount(mount, 90.0, -1.0)
+	rig.update(target, datum, Basis.IDENTITY, dt, false, flat, velocity)
+	_check("identical or refused lenses preserve camera history", _count(viewport) == count)
+	mount.origin.x += 0.2
+	rig.set_fpv_mount(mount, 95.0, 0.03)
+	rig.update(target, datum, Basis.IDENTITY, dt, false, flat, velocity)
+	_check("an accepted live mount change submits a single cut", _count(viewport) == count + 1
+		and _reason(viewport) == "camera_fpv_mount_changed" and camera.position.is_equal_approx(target + mount.origin))
+	count = _count(viewport)
+	rig.update(target, datum, Basis.IDENTITY, dt, true, flat, velocity, Callable(), true)
+	var wreck := target + Vector3(0.0, -2.0, 1.0)
+	rig.focus(wreck, flat)
+	_check("a lost FPV mount on the wreck cuts to an exterior orbit before submitting", rig.view == "orbit"
+		and (-camera.basis.z).dot((wreck - camera.position).normalized()) > 0.9999 and _count(viewport) == count)
+	rig.commit_history_reset()
+	_check("the final wreck placement submits one cut", _count(viewport) == count + 1)
+	count = _count(viewport)
 	if not RenderingServer.has_method(Reconstruction.HISTORY_RESET_METHOD):
 		_check("official engine reports requests without native submissions", int(_receipt(viewport).submitted) == 0)
 	camera.free()

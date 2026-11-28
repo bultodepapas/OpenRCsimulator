@@ -347,6 +347,8 @@ Verdicts are stored per normalized GPU name and renderer in `user://graphics_cal
 
 ### Universal FPV separates camera pose, vehicle telemetry and OSD style
 
+The first playable adapters compose the body and lens with Godot's built-in transform operators at the rendering boundary. The fixed-wing rig can also expand the basis axes in GDScript for comparison. This ships the same path on the engine's supported platforms while the separately packaged C++ evaluator and its performance gates remain open.
+
 **CAM-FPV planning decision, 2026-11-28.** Each activity owns one camera writer and supplies its drawn body pose. A separate FPV calculation resolves the fixed mount or achieved gimbal joints. CAM will pair a pure C++ calculation with a selectable GDScript reference and qualify presentation loading independently of physics selection. Godot supplies the final camera projection and drawing. The OSD reads detached family measurements and shares alert ownership with the HUD. INAV-style and ArduPilot-style screens use the same measurements. Optional visual replay has its own identity and data. [Execution plan](plans/universal-fpv.md), [native evidence and package constraints](research/universal-fpv/2026-11-28-main.md).
 
 Stock mount admission follows the actual airframe. Cabinless Stiks and the X99 receive a nose view. The five cabin-equipped stock airplanes require nose, two-axis cockpit and fixed-fin views. Cockpit structure and per-instance glazing are part of the asset work. Those requirements and the pending image checks are recorded in the [aircraft mount audit](research/universal-fpv/2026-11-22-aircraft-camera-mounts.md).

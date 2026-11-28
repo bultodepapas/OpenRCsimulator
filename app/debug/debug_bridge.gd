@@ -35,7 +35,7 @@ const SCREEN_OPENERS := {pause = "open_pause", settings = "open_settings", contr
 	workshop = "open_workshop"}
 const MENU_ACTIONS := {accept = &"ui_accept", navigate_up = &"ui_up", navigate_down = &"ui_down",
 	navigate_left = &"ui_left", navigate_right = &"ui_right"}
-const CameraViews := ["pilot", "chase", "orbit", "closeup"]
+const CameraRig := preload("res://render/camera/camera_rig.gd")
 
 const ENV_BRIDGE := "OPENRC_DEBUG_BRIDGE"
 const ENV_TOKEN := "OPENRC_DEBUG_TOKEN"
@@ -64,7 +64,7 @@ const COMMANDS := {
 	"fly": "aircraft=<catalog id> start=<runway|airborne|...>: from Home, select and fly (no menu navigation)",
 	"home": "end the flight and return to Home (like Pause > Exit; a recorder may ask first)",
 	"restart": "restart the flight (Pause > Restart flight)",
-	"view": "name=pilot|chase|orbit|closeup: camera view (no name: the current one)",
+	"view": "name=pilot|chase|flyby|orbit|closeup|fpv: camera view (no name: the current one)",
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
 	"frames": "window=<n> since=<frames_total cursor> epoch=<n> lean=<bool> passive=<bool> target_fps=60 stutter_factor=1.5 stutter_min_extra_ms=4 stall_ms=50 budget_tolerance_ms=0.5 hitch_ms=50 factor=3 samples=<bool> events=<n> reset=<bool>: frame pacing, lows, bounded stutter evidence",
@@ -1344,9 +1344,9 @@ func _cmd_view(request: Dictionary) -> Dictionary:
 		return _fail("no flight camera rig")
 	if request.has("name"):
 		var id := str(request.name)
-		if not CameraViews.has(id) or not rig.set_view(id):
-			return _fail("unknown view '%s'; views: %s" % [id, CameraViews])
-	return _ok({view = rig.view, views = CameraViews})
+		if not rig.set_view(id):
+			return _fail("unavailable view '%s'; views: %s" % [id, rig.available_views()])
+	return _ok({view = rig.view, views = rig.available_views()})
 
 
 func _cmd_record(request: Dictionary) -> Dictionary:
@@ -3254,7 +3254,7 @@ func _cmd_catalog(_request: Dictionary) -> Dictionary:
 		vehicles.append({id = entry.id, name = entry.name, family = entry.family})
 	var home: Variant = app.get("home") if app != null else null
 	return _ok({aircraft = aircraft, vehicles = vehicles, technical_aircraft_ids = Array(Catalog.ids()), landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
-		languages = Preferences.LANGUAGES, screens = SCREEN_OPENERS.keys(), camera_views = CameraViews,
+		languages = Preferences.LANGUAGES, screens = SCREEN_OPENERS.keys(), camera_views = CameraRig.VIEWS + ["fpv"],
 		gizmo_layers = FlightGizmos.LAYERS, selected = _home_selection() if home != null else {},
 		notes = ["start: a runway-less landscape or aircraft falls back (see setup's read-back)",
 			"rotorcraft: runway = helicopter pad, airborne = hover"]})

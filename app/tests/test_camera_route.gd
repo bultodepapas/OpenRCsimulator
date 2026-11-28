@@ -59,6 +59,13 @@ func _frames(flight: Node, count: int) -> void:
 		flight._process(1.0 / 60.0)
 
 
+func _right_drag(flight: Node, relative: Vector2) -> void:
+	var drag := InputEventMouseMotion.new()
+	drag.relative = relative
+	drag.button_mask = MOUSE_BUTTON_MASK_RIGHT
+	flight._unhandled_input(drag)
+
+
 func _run() -> void:
 	var flight: TestFlight = TestFlight.new()
 	flight.options = {"soundscape": "off", "crash-effects": "off", "smoke": "off"}
@@ -136,10 +143,90 @@ func _run() -> void:
 	check("--inspect still starts in the close-up", inspect._rig.view == "closeup")
 	inspect.free()
 	await process_frame
+	await _fpv_tape()
 	await _main_wiring()
 	await _helicopter()
 	print("camera route: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+## Compare complete physical checkpoints for the same commands under three presentation choices.
+func _fpv_tape() -> void:
+	var baseline := []
+	var optical_baseline := []
+	for path: String in ["pilot", "gdscript_reference", "godot_transform_ops"]:
+		var flight := TestFlight.new()
+		flight.options = {"view": "pilot" if path == "pilot" else "fpv", "physics-backend": "gdscript_reference",
+			"soundscape": "off", "crash-effects": "off", "smoke": "off"}
+		root.add_child(flight)
+		var rig: RefCounted = flight._rig
+		if not is_instance_valid(flight.session) or rig == null:
+			check("flight is ready for " + path, false, flight.startup_error)
+			flight.free()
+			return
+		var sim: Node = flight.session.sim
+		flight.session.input_enabled = false
+		sim.process_mode = Node.PROCESS_MODE_DISABLED
+		sim.set_paused(false)
+		if path != "pilot":
+			check("FPV starts at the actual tick-zero nose", rig.view == "fpv" and sim.tick == 0
+				and (flight._airplane.root.transform.affine_inverse() * flight._camera.transform.origin).z < -0.44)
+			rig.use_engine_transform = path == "godot_transform_ops"
+		var matched := true
+		var poses_match := true
+		var aim: Array[Vector3] = []
+		for i in 48:
+			if path != "pilot" and i == 4:
+				_right_drag(flight, Vector2(40, -20))
+			if i == 16:
+				sim.set_paused(true)
+				if path != "pilot":
+					_key(flight, KEY_BACKSPACE)
+					flight.controller_action("view_reset")
+					_right_drag(flight, Vector2(-30, 0))
+				sim.set_paused(false)
+			if i == 23 and path != "pilot":
+				flight._notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
+				_key(flight, KEY_BACKSPACE)
+				flight.controller_action("view_reset")
+				_right_drag(flight, Vector2(-30, 0))
+				flight._notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
+			if path != "pilot" and i == 32:
+				_key(flight, KEY_BACKSPACE)
+			if i in [7, 16, 23, 32]:
+				flight._process(0.0) # End of the preceding batch, just before the next accepted tick.
+			sim.inputs[0] = 0.1 if i < 16 else -0.1
+			sim.step()
+			var packet: Dictionary = sim.checkpoint()
+			matched = matched and sim.tick == i + 1 and not packet.is_empty()
+			flight._render_pose(flight._pose_of(sim.state), flight.session.surfaces(), 0.0)
+			if path == "pilot":
+				baseline.append(packet)
+			else:
+				matched = matched and packet == baseline[i]
+				var datum: Basis = flight._airplane.root.transform.basis
+				aim.append((datum.inverse() * -flight._camera.transform.basis.z).normalized())
+				if path == "gdscript_reference":
+					optical_baseline.append(flight._camera.transform)
+				else:
+					poses_match = poses_match and flight._camera.transform.is_equal_approx(optical_baseline[i])
+		check("48 accepted vehicle checkpoints match for " + path, matched)
+		if path != "pilot":
+			check("mouse drag cannot move earlier catch-up ticks", aim[6].is_equal_approx(Vector3.FORWARD))
+			check("mouse drag moves the drawn lens right and up from its first eligible tick",
+				aim[7].x > 0.005 and aim[7].y > 0.005 and aim[15].x > aim[7].x + 0.04 and aim[15].y > aim[7].y + 0.04)
+			check("pause and focus loss hold attained aim through blocked mouse and reset input",
+				aim[22].is_equal_approx(aim[15]) and aim[31].is_equal_approx(aim[15]))
+			check("Backspace slews the live lens back to the neutral body-frame pose",
+				aim[32].x < aim[31].x and aim[47].is_equal_approx(Vector3.FORWARD))
+			check("FPV reports the exercised optics path " + path, rig.evidence().fpv_optics_backend == path)
+			_key(flight, KEY_1)
+			_key(flight, KEY_3)
+			check("3 returns to the installed nose view", rig.view == "fpv")
+		if path == "godot_transform_ops":
+			check("engine transforms and reference optical poses match throughout the gimbal tape", poses_match)
+		flight.free()
+		await process_frame
 
 
 func _helicopter() -> void:
@@ -150,7 +237,7 @@ func _helicopter() -> void:
 	var rig: RefCounted = heli._rig
 	check("helicopter: starts in the pilot view with its own zoom", rig.view == "pilot" and rig.pilot_zoom == 0.35 and rig.default_pilot_zoom == 0.35)
 	_key(heli, KEY_C, true)
-	check("helicopter Shift+C: back to the close-up", rig.view == "closeup")
+	check("helicopter Shift+C: last admitted stock view", rig.view == "fpv")
 	_key(heli, KEY_1)
 	_key(heli, KEY_EQUAL)
 	check("helicopter =: zoom in from its own zoom", rig.pilot_zoom < 0.35)
@@ -215,6 +302,10 @@ func _main_wiring() -> void:
 	check("normal view does not repeat the exit reset", int(_history(viewport).notifications) == switched_history + 1)
 	flight._crash_director = previous
 	director.free()
+	_key(flight, KEY_3)
+	flight.session.crash = {"reason": "test impact"}
+	_frames(flight, 1)
+	check("a lost nose mount falls back to orbit with crash effects disabled", flight._rig.view == "orbit")
 	flight.free()
 	await process_frame
 

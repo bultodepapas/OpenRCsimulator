@@ -930,7 +930,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"camera_magnifier": return {off = tr("Off"), auto = tr("Automatic"), on = tr("On")}.get(value, str(value))
 		"camera_aids": return {off = tr("Off"), horizon = tr("Keep the horizon in view"), overhead = tr("Smooth overhead passes"),
 			both = tr("Both")}.get(value, str(value))
-		"camera_view": return {pilot = tr("Pilot"), chase = tr("Chase"), flyby = tr("Fly-by"), orbit = tr("Orbit")}.get(value, str(value))
+		"camera_view": return {pilot = tr("Pilot"), chase = tr("Chase"), flyby = tr("Fly-by"), orbit = tr("Orbit"), fpv = tr("FPV (when available)")}.get(value, str(value))
 		"camera_zoom": return {off = tr("Off"), constant = tr("%s (default)") % tr("Constant size"), partial = tr("Keeps looming"),
 			gentle = tr("Gentle")}.get(value, str(value))
 		"camera_fov":

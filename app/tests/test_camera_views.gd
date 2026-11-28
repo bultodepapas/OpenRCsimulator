@@ -77,6 +77,7 @@ func _run() -> void:
 	_horizon_tilt()
 	_overhead_smoothing()
 	_cycle()
+	_fixed_fpv()
 	_near_planes()
 	_chase()
 	_chase_smoothness()
@@ -331,6 +332,50 @@ func _cycle() -> void:
 	_check("unknown view refused", not rig.set_view("cockpit") and rig.view == "closeup")
 	_check("names keep the historical panel text", rig.view_name() == "close-up" and CameraRig.NAMES.pilot == "pilot")
 	cam.queue_free()
+
+
+func _fixed_fpv() -> void:
+	var screen := SubViewport.new()
+	screen.size = Vector2i(800, 600)
+	root.add_child(screen)
+	var cam := PilotCamera.create(screen)
+	var rig := CameraRig.new(cam, SPAN)
+	_check("an activity without an FPV mount keeps its camera choices", CameraRig.is_view("fpv")
+		and not rig.set_view("fpv") and rig.available_views() == CameraRig.VIEWS)
+	var nose := Transform3D(Basis.IDENTITY, Vector3(0.0, 0.0, -2.0))
+	_check("admitting the nose adds exactly one view", rig.set_fpv_mount(nose, 90.0, 0.025)
+		and rig.view == "pilot" and rig.available_views() == CameraRig.VIEWS + ["fpv"])
+	rig.cycle(-1)
+	_check("reverse cycle enters the admitted nose", rig.view == "fpv")
+	# The visual has already interpolated half of a 90-degree right turn. The CG and the
+	# separate body argument intentionally differ from the drawn datum.
+	var half_turn := Basis.IDENTITY.slerp(_level(PI / 2.0), 0.5)
+	var datum := Transform3D(half_turn, Vector3(8.0, 6.0, 4.0))
+	var lens := Vector3(8.0 + sqrt(2.0), 6.0, 4.0 - sqrt(2.0))
+	rig.update(Vector3(80.0, 6.0, 4.0), datum, Basis.IDENTITY, 0.0, true, _flat)
+	_check("first FPV frame follows the drawn structural datum, including the halfway heading",
+		cam.position.distance_to(lens) < 1e-5 and (-cam.basis.z).dot(Vector3(1, 0, -1).normalized()) > 0.99999)
+	_check("4:3 rectilinear picture retains 90-degree HFOV and mount near plane",
+		absf(cam.fov - rad_to_deg(2.0 * atan(0.75))) < 1e-4 and is_equal_approx(cam.near, 0.025))
+	var mirrored := Transform3D(Basis.FLIP_X, Vector3.ZERO)
+	var scaled := Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.0), Vector3.ZERO)
+	_check("invalid optic replacements preserve the live nose", not rig.set_fpv_mount(mirrored, 90.0, 0.025)
+		and not rig.set_fpv_mount(scaled, 90.0, 0.025) and not rig.set_fpv_mount(nose, NAN, 0.025)
+		and not rig.set_fpv_mount(nose, 180.0, 0.025) and not rig.set_fpv_mount(nose, 90.0, cam.far))
+	screen.size = Vector2i(1200, 600)
+	rig.update(Vector3.ZERO, datum, Basis.IDENTITY, 0.01, false, _flat)
+	_check("resizing a live FPV view restores its horizontal framing", rig.view == "fpv"
+		and cam.position.distance_to(lens) < 1e-5 and absf(cam.fov - rad_to_deg(2.0 * atan(0.5))) < 1e-4)
+	rig.fixed_pilot_eye = true
+	rig.cycle(1)
+	_check("calibration enforces its fixed eye even with an admitted mount", rig.view == "pilot"
+		and rig.available_views() == ["pilot"] and not rig.select_view("fpv"))
+	rig.fixed_pilot_eye = false
+	rig.set_view("fpv")
+	rig.clear_fpv_mount()
+	_check("removing the live mount restores the pilot view and original choices", rig.view == "pilot"
+		and not rig.set_view("fpv") and rig.available_views() == CameraRig.VIEWS)
+	screen.free()
 
 
 func _near_planes() -> void:

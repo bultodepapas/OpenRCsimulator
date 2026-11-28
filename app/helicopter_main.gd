@@ -149,10 +149,12 @@ func _ready() -> void:
   shadow_cue.attach(self,_airplane.root,_lighting_snapshot,Callable(self,"_ground_height"),shadow_cue.helicopter_rotors(_airplane))
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
+ _bind_stock_fpv_mount()
  # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).
  _rig.default_pilot_zoom=.35
  _rig.pilot_zoom=_rig.default_pilot_zoom
- _rig.set_view(str(args.get("view","pilot")))
+ if not _rig.set_view(str(args.get("view","pilot"))) and args.get("view","")=="fpv":
+  _refuse("The selected helicopter visual has no admitted FPV mount."); return
  _magnifier=Magnifier.new()
  add_child(_magnifier)
  if not camera_preferences.is_empty(): CameraSettings.apply_at_start(_rig,camera_preferences)
@@ -212,6 +214,7 @@ func _ready() -> void:
   _soundscape_audio=HelicopterAudio.new()
   add_child(_soundscape_audio)
   _soundscape_audio.configure(self)
+ if _rig.view=="fpv": _present(0.0,1.0)
  print("HELICOPTER READY: ",session.aircraft.qualification)
  if args.has("trace"):
   _write_trace(args)
@@ -363,6 +366,8 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  var presentation_paused: bool=_aftermath_paused or not session.holds.is_empty()
  if wreck_active:
   if not _crash_presentation.active:
+   if _rig.view=="fpv": _rig.set_view("orbit")
+   _rig.clear_fpv_mount()
    if _night_kit!=null: _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],false,World.aircraft_local_seconds(lighting_config,session.sim.time()))
    var impact_body: PackedFloat64Array=session.crash.get("body",s)
    var impact_pose: Transform3D=Frames.root_transform(Frames.quat_to_render(impact_body.slice(6,10)),Frames.ned_to_render(impact_body.slice(0,3)),_airplane.cg_model_m)
@@ -417,6 +422,16 @@ func _ground_height(x: float,z: float) -> float:
   height=maxf(height,-float(lake.water_level_down_m)+float(lake.wave_bounds.max_amplitude_m))
  return height
 
+## HX-700 Carenado's tip is at model -Z 0.387 m, Y 0.155 m. The lens is
+## 15 mm forward of the fixed shell, beneath the main rotor. This virtual
+## installation belongs to the stock HX-700 visual paired with X-Cell physics.
+func _bind_stock_fpv_mount() -> void:
+ var root: Node3D=_airplane.get("root")
+ if creator_visual.is_empty() and root!=null and root.get_meta("visual_revision","")=="hx-700-static-glb-hel25b":
+  _rig.set_fpv_mount(Transform3D(Basis.IDENTITY,Vector3(0.0,0.155,-0.402)),90.0,0.015)
+ else: _rig.clear_fpv_mount()
+
+
 func _on_session_resetting() -> void:
  _lens_crash_seen=false
  if _lens!=null: _lens.reset()
@@ -427,7 +442,9 @@ func _on_session_resetting() -> void:
  _collective_telemetry_valid=false
  _aftermath_paused=false
  if _crash_presentation!=null: _crash_presentation.reset()
- if _rig!=null: _rig.reset() # CAM-26: a restarted flight starts the chase settled, as on the airplane route
+ if _rig!=null:
+  _bind_stock_fpv_mount()
+  _rig.reset() # CAM-26: a restarted flight starts the chase settled, as on the airplane route
  if _airplane.get("root") is Node3D: _airplane.root.visible=true
  if _rotors!=null: _rotors.visible=true
 
@@ -626,6 +643,7 @@ func _unhandled_input(event: InputEvent) -> void:
    KEY_C: _rig.cycle(-1 if event.shift_pressed else 1)
    KEY_1: _rig.set_view("pilot")
    KEY_2: _rig.select_view("chase") # again: 3D follow (CAM-09)
+   KEY_3: _rig.set_view("fpv")
    KEY_4: _rig.set_view("flyby")
    KEY_5: _rig.set_view("orbit")
    KEY_EQUAL: _rig.zoom(1)

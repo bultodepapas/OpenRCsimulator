@@ -129,7 +129,7 @@ var sky_config: Dictionary = SkyConfig.defaults()
 ## and blood if the vehicle runs into the driver in the pilot view. Null when disabled.
 var _lens: LensStack
 ## Camera rig mode → lens view (chase, pilot, orbit, and the fixed track overview as a tripod camera).
-const LENS_VIEWS := ["chase", "pilot", "orbit", "flyby"]
+const LENS_VIEWS := ["chase", "pilot", "orbit", "flyby", "fpv"]
 var _lighting := {}
 var _environment: Environment
 var _presentation_context := {}
@@ -215,6 +215,7 @@ func _ready() -> void:
 		set_process(false)
 		return
 	add_child(visual.root)
+	camera_rig.bind_front(vehicle_id, visual)
 	# SA-08: a Projected shadow selection also gives the car its planar shadow, on the drawn course surface.
 	preload("res://render/vehicle_shadow_cue.gd").attach(self, visual.root, _lighting,
 		func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m)
@@ -734,7 +735,8 @@ func _process(delta: float) -> void:
 	var basis := Basis(qa.slerp(qb, alpha))
 	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
 	visual.root.transform = Frames.root_transform(basis, target, visual_cg)
-	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible, func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m)
+	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible,
+		func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m, visual.root)
 	World.update(_environment, 37.0 + session.time_s(), Vector3.ZERO, target, camera)
 	var telemetry: Dictionary = session.telemetry_snapshot()
 	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
@@ -804,7 +806,7 @@ func _start_lens() -> void:
 		"settings": resolved,
 		"camera": camera,
 		"session": session,
-		"view_provider": func() -> String: return str(LENS_VIEWS[clampi(camera_rig.mode, 0, LENS_VIEWS.size() - 1)]),
+		"view_provider": _lens_view,
 		"sky_provider": func() -> String: return str(sky_config.get("preset", "classic")),
 		"field": field,
 		"hull": PackedFloat64Array([0.25, 0.0, 0.0, -0.25, 0.0, 0.0, 0.0, 0.18, 0.0, 0.0, -0.18, 0.0]),
@@ -819,6 +821,12 @@ func _start_lens() -> void:
 		return
 	_lens.person_struck.connect(func(_player: bool) -> void:
 		_lens.show_message(tr("The vehicle struck the driver. Keep it away from where you stand.")))
+
+
+func _lens_view() -> String:
+	if camera_rig.mode == CameraRig.FPV and dashboard.menu_visible:
+		return "orbit"
+	return str(LENS_VIEWS[clampi(camera_rig.mode, 0, LENS_VIEWS.size() - 1)])
 
 
 ## Settings changed during the drive: rebuild the lens from the new preference (presentation only).
@@ -970,8 +978,7 @@ func handle_action(action: String) -> void:
 				_run_was_driven = true
 				dashboard.message("Recovered and repaired. This run is marked as assisted.", "Recuperado y reparado. Esta prueba queda marcada como asistida.")
 		"camera":
-			camera_rig.mode = (camera_rig.mode + 1) % (4 if _course.has("track") else 3)
-			camera_rig.reset()
+			camera_rig.cycle(_course.has("track"))
 			_update_camera_status()
 		"track_view":
 			if _course.has("track"):
@@ -1185,8 +1192,8 @@ func _after_reset() -> void:
 	_landing_pending = false
 	dashboard.plot.clear_history()
 	dashboard.select_spawn(session.spawn_id)
-	if camera_rig.mode == 3: camera_rig.mode = 0
-	camera_rig.reset()
+	if camera_rig.mode == CameraRig.OVERVIEW: camera_rig.mode = 0
+	camera_rig.reset(true)
 	_update_camera_status()
 	open_garage()
 	activity_reset.emit()
