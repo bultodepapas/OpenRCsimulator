@@ -1,10 +1,11 @@
-## BL-08: bounded, opt-in RC blimp black box. It reuses the checksummed `.orfl` packet container of
-## sim/flight_log.gd under its own format, so fixed-wing tools refuse these files. Read-only observer: no
+## BL-08: bounded, opt-in RC blimp black box. It reuses the checksummed `.orfl` packet container
+## in sim/orfl_packet.gd under its own format, so fixed-wing tools refuse these files. Read-only observer: no
 ## evaluations and no input writes. Each row is one accepted tick: the clean sticks [roll, pitch, yaw, throttle]
 ## that drove the interval ending at that tick, then the end state and continuous block. `verify` replays a
 ## complete file from its checkpoint through a fresh session and compares every row byte for byte.
 extends RefCounted
 
+const OrflPacket := preload("res://sim/orfl_packet.gd")
 const OrflContainer := preload("res://sim/flight_log.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
@@ -78,7 +79,7 @@ func start(context: Dictionary = {}, destination := "") -> Error:
 		input_boundary = "clean sticks [roll, pitch, yaw, throttle] driving the interval that ends at the row tick",
 		state_boundary = "accepted tick end: body [n e d u v w q0 q1 q2 q3 p q r] and continuous [motor x4, vector x3, fin x3, soc]",
 	}
-	_file.store_buffer(OrflContainer.MAGIC.to_ascii_buffer())
+	_file.store_buffer(OrflPacket.MAGIC.to_ascii_buffer())
 	if not _write_packet(header):
 		return ERR_FILE_CANT_WRITE
 	recording = true
@@ -172,7 +173,7 @@ func _flush() -> void:
 	if _write_packet({kind = "block", ticks = _ticks, sticks = _sticks, states = _states, continuous = _conts, events = _events}):
 		rows_written += count
 	_clear_buffers()
-	if recording and not _stopping and _file.get_position() >= MAX_BYTES - 2 * OrflContainer.MAX_PACKET:
+	if recording and not _stopping and _file.get_position() >= MAX_BYTES - 2 * OrflPacket.MAX_PACKET:
 		stop("recording byte limit reached")
 
 
@@ -185,22 +186,11 @@ func _clear_buffers() -> void:
 
 
 func _write_packet(value: Dictionary) -> bool:
-	var payload := var_to_bytes(value)
-	if payload.is_empty() or payload.size() > OrflContainer.MAX_PACKET:
-		_failed("Flight log packet exceeds bounded format.", ERR_INVALID_DATA)
+	var result := OrflPacket.append_packet(_file, value, _chain, MAX_BYTES)
+	if not result.ok:
+		_failed(result.error, result.code)
 		return false
-	if _file.get_position() + payload.size() + 36 > MAX_BYTES:
-		_failed("Flight log byte limit exceeded; file is incomplete.", ERR_FILE_CANT_WRITE)
-		return false
-	var digest := OrflContainer.sha256(payload)
-	_file.store_32(payload.size())
-	_file.store_buffer(digest)
-	_file.store_buffer(payload)
-	_file.flush()
-	if _file.get_error() != OK:
-		_failed("Flight log disk write failed; file is incomplete.", ERR_FILE_CANT_WRITE)
-		return false
-	_chain = OrflContainer.sha256(_chain + digest)
+	_chain = result.chain
 	return true
 
 
@@ -229,20 +219,20 @@ static func inspect(file_path: String) -> Dictionary:
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if file == null:
 		return {ok = false, error = "Cannot open flight log: " + file_path}
-	if file.get_length() < 8 or file.get_buffer(8).get_string_from_ascii() != OrflContainer.MAGIC:
+	if file.get_length() < 8 or file.get_buffer(8).get_string_from_ascii() != OrflPacket.MAGIC:
 		return {ok = false, error = "Not an .orfl flight log."}
-	var first := OrflContainer.read_packet(file)
+	var first := OrflPacket.read_packet(file)
 	if not first.ok:
 		return {ok = false, error = first.error}
 	var head: Dictionary = first.value
 	if head.get("kind") != "header" or head.get("format") != FORMAT:
 		return {ok = false, error = "Not an %s file (format %s)." % [FORMAT, str(head.get("format", "?"))]}
-	var chain := OrflContainer.sha256(PackedByteArray() + first.digest)
+	var chain := OrflPacket.sha256(PackedByteArray() + first.digest)
 	var out := {ok = true, complete = false, header = head, ticks = PackedInt64Array(), sticks = PackedFloat64Array(),
 		states = PackedFloat64Array(), continuous = PackedFloat64Array(), events = [], footer = {}}
 	var layout: Dictionary = head.layout
 	while file.get_position() < file.get_length():
-		var packet := OrflContainer.read_packet(file)
+		var packet := OrflPacket.read_packet(file)
 		if not packet.ok:
 			out.error = packet.error
 			return out
@@ -253,7 +243,7 @@ static func inspect(file_path: String) -> Dictionary:
 			out.complete = str(value.get("chain_sha256", "")) == chain.hex_encode() and int(value.get("rows", -1)) == out.ticks.size() \
 				and file.get_position() == file.get_length()
 			break
-		chain = OrflContainer.sha256(chain + packet.digest)
+		chain = OrflPacket.sha256(chain + packet.digest)
 		if value.get("kind") != "block":
 			out.error = "Unknown packet kind."
 			return out
