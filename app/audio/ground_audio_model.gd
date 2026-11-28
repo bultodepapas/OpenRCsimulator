@@ -238,6 +238,25 @@ static func wheels_clear_of_ground(session: Node) -> bool:
 	return _clear_of_ground(sim.state, gear, session.get("ground_surfaces"), track)
 
 
+## NK-7f hook: false builds the airborne rows in GDScript.
+static var native_rows_enabled := true
+static var _rows_native: Object = null
+
+
+static func _rows_kernel() -> Object:
+	if not native_rows_enabled:
+		return null
+	if _rows_native == null:
+		if not ClassDB.class_exists(&"OpenRCNativeKernel"):
+			return null
+		var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+		if kernel == null or not kernel.has_method(&"audio_unloaded_rows"):
+			native_rows_enabled = false
+			return null
+		_rows_native = kernel
+	return _rows_native
+
+
 static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground_surfaces: PackedFloat64Array,
 		track: Dictionary = {}) -> bool:
 	return Terrain.is_valid_surface_table(ground_surfaces) and -state[RB.POS + 2] > float(gear.get("reach", INF)) \
@@ -250,6 +269,25 @@ static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground
 static func _unloaded_rows(gear_contacts: Array, state: PackedFloat64Array, attitude: PackedFloat64Array,
 		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array, reference_load: float) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
+	# NK-7f: the kernel builds the same rows (nk_audio_rows.hpp) from the state; otherwise they are built here.
+	var kernel := _rows_kernel()
+	if kernel != null:
+		var arms := PackedFloat64Array()
+		var ids := PackedStringArray()
+		var well_formed := true
+		for index: int in range(gear_contacts.size()):
+			var contact: Dictionary = gear_contacts[index]
+			if not contact.has("position"):
+				continue
+			var arm: PackedFloat64Array = contact.position
+			well_formed = well_formed and arm.size() == 3
+			arms.append_array(arm)
+			ids.append(str(contact.get("name", "gear_%d" % index)))
+		if well_formed:
+			rows.assign(kernel.audio_unloaded_rows(state, arms, ids, reference_load))
+			if rows.size() == ids.size():
+				return rows
+			rows.clear()
 	var origin := M.v3(state[RB.POS], state[RB.POS + 1], state[RB.POS + 2])
 	for index: int in range(gear_contacts.size()):
 		var contact: Dictionary = gear_contacts[index]

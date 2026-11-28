@@ -643,6 +643,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `mechanical_core_*` (NK-7e, `nk_mechanical_audio_core.hpp`) runs `MechanicalAudio` in accepted-tick mode: the motion
   observer, motion and event voices, writing its players by method bind; GDScript still makes the motion players
   ([evidence](../../docs/research/native-kernel/NK-7e/README.md)).
+- `audio_unloaded_rows` and `audio_source_kinematics` (NK-7f, `nk_audio_rows.hpp`) build flight audio's airborne
+  contact rows and the snapshot's source kinematics from the accepted state, exactly
+  ([evidence](../../docs/research/native-kernel/NK-7f/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

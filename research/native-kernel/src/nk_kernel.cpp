@@ -47,6 +47,7 @@
 #include "nk_soundscape_core.hpp"
 #include "nk_ground_audio_core.hpp"
 #include "nk_mechanical_audio_core.hpp"
+#include "nk_audio_rows.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1035,6 +1036,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::unique_ptr<nk::sound::Core> sound_core_; // NK-7b: this instance's soundscape core, made on first bind
 	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
 	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
+	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
@@ -1318,6 +1320,10 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("mechanical_core_state"), &OpenRCNativeKernel::mechanical_core_state);
 		godot::ClassDB::bind_method(D_METHOD("mechanical_core_accepted_events"),
 			&OpenRCNativeKernel::mechanical_core_accepted_events);
+		godot::ClassDB::bind_method(D_METHOD("audio_unloaded_rows", "state", "arms", "ids", "reference_load"),
+			&OpenRCNativeKernel::audio_unloaded_rows);
+		godot::ClassDB::bind_method(D_METHOD("audio_source_kinematics", "state", "offset", "axis"),
+			&OpenRCNativeKernel::audio_source_kinematics);
 		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
 			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
@@ -2236,6 +2242,17 @@ public:
 		return mechanical_core_ ? mechanical_core_->diagnostics() : godot::Dictionary();
 	}
 	godot::Array mechanical_core_state() const { return mechanical_core_ ? mechanical_core_->state() : godot::Array(); }
+	// NK-7f: ground_audio_model.gd _unloaded_rows and flight_audio.gd snapshot's source kinematics (nk_audio_rows.hpp).
+	godot::Array audio_unloaded_rows(const PackedFloat64Array &state, const PackedFloat64Array &arms, const PackedStringArray &ids,
+			double reference_load) {
+		if (!row_keys_) row_keys_ = std::make_unique<nk::sound::RowKeys>();
+		return nk::sound::unloaded_rows(*row_keys_, state, arms, ids, reference_load);
+	}
+	PackedFloat64Array audio_source_kinematics(const PackedFloat64Array &state, const PackedFloat64Array &offset,
+			const PackedFloat64Array &axis) const {
+		return nk::sound::source_kinematics(state, offset, axis);
+	}
+
 	godot::Array mechanical_core_accepted_events() const {
 		return mechanical_core_ ? mechanical_core_->accepted_events() : godot::Array();
 	}

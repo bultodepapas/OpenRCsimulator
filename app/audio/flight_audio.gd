@@ -318,27 +318,39 @@ func snapshot() -> Dictionary:
 		glow_state["sample_tick"] = int(session.sim.tick)
 	# Doppler source velocity: accepted body velocity rotated to NED, converted at the render boundary.
 	var s: PackedFloat64Array = session.sim.state
-	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
-	var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
 	# Engine/propeller emitter at the installed thrust line, not the imported mesh's origin.
 	var offset: PackedFloat64Array = prop.get("offset", PackedFloat64Array([0.0, 0.0, 0.0]))
-	var source_arm: PackedFloat64Array = M.v3(-offset[0], offset[1], -offset[2])
-	var source_ned: PackedFloat64Array = M.add(s.slice(RB.POS, RB.POS + 3), M.q_rotate(attitude, source_arm))
-	var source_velocity: Vector3 = velocity + Frames.ned_to_render(M.q_rotate(attitude,
-		M.cross(s.slice(RB.RATE, RB.RATE + 3), source_arm)))
+	var turbine: bool = Turbine.is_turbine(prop)
+	var source: Vector3
+	var source_velocity: Vector3
+	var exhaust: Vector3 = Vector3.ZERO
+	# NK-7f: the kernel answers the same kinematics (nk_audio_rows.hpp); otherwise they are evaluated here.
+	var kinematics := _source_kinematics(s, offset, prop.axis if turbine else PackedFloat64Array())
+	if kinematics.size() == 9:
+		source = Vector3(kinematics[0], kinematics[1], kinematics[2])
+		source_velocity = Vector3(kinematics[3], kinematics[4], kinematics[5])
+		exhaust = Vector3(kinematics[6], kinematics[7], kinematics[8])
+	else:
+		var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+		var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
+		var source_arm: PackedFloat64Array = M.v3(-offset[0], offset[1], -offset[2])
+		var source_ned: PackedFloat64Array = M.add(s.slice(RB.POS, RB.POS + 3), M.q_rotate(attitude, source_arm))
+		source = Frames.ned_to_render(source_ned)
+		source_velocity = velocity + Frames.ned_to_render(M.q_rotate(attitude,
+			M.cross(s.slice(RB.RATE, RB.RATE + 3), source_arm)))
+		if turbine:
+			var axis: PackedFloat64Array = prop.axis
+			exhaust = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(-axis[0], -axis[1], -axis[2]))))
 	# AUD-10: jet velocity V_j = gross thrust / mass flow from the accepted state (read-only pure functions), and the
 	# exhaust direction (opposite the thrust axis) for directivity. Static V_j at maximum rpm normalizes it.
 	var jet_velocity: float = 0.0
 	var jet_velocity_max: float = 1.0
-	var exhaust: Vector3 = Vector3.ZERO
-	if Turbine.is_turbine(prop):
+	if turbine:
 		var rho: float = session.air_density()
 		var u: float = M.dot(air.v_air, prop.axis)
 		var flow: float = Turbine.mass_flow(rpm, prop, rho, u)
 		jet_velocity = Turbine.gross_thrust(rpm, prop, rho, u) / flow if flow > 0.0 else 0.0
 		jet_velocity_max = Turbine.gross_thrust(float(prop.max_rpm), prop, rho) / Turbine.mass_flow(float(prop.max_rpm), prop, rho)
-		var axis: PackedFloat64Array = prop.axis
-		exhaust = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(-axis[0], -axis[1], -axis[2]))))
 	# AUD-11b: ISO 9613-1 inputs from the accepted atmosphere. The reference atmosphere is dry ISA air by
 	# construction, so it takes the documented presentation humidity instead of 0 %.
 	var temperature_k: float = float(atmosphere.get("temperature_k", 288.15))
@@ -359,7 +371,7 @@ func snapshot() -> Dictionary:
 		airspeed = air.V,
 		temperature_c = temperature_k - 273.15, pressure_pa = pressure_pa, humidity_molar_pct = humidity,
 		wind_speed = wind.length(), wind_direction = wind,
-		source = Frames.ned_to_render(source_ned), listener = listener_position(), source_velocity = source_velocity,
+		source = source, listener = listener_position(), source_velocity = source_velocity,
 		paused = session.sim.paused, sun_elevation = elevation, time = session.sim.time(),
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
@@ -374,6 +386,26 @@ func snapshot() -> Dictionary:
 		if sock.has_meta("windsock_motion"):
 			result.windsock_inflation = float(sock.get_meta("windsock_motion").inflation)
 	return result
+
+
+## NK-7f: [source, source velocity, exhaust] in render axes from the kernel, or empty (no verified library, the
+## hook off, or a malformed offset/axis), in which case snapshot() evaluates them.
+static var native_kinematics_enabled := true
+static var _kinematics_kernel: Object = null
+
+
+static func _source_kinematics(state: PackedFloat64Array, offset: PackedFloat64Array, axis: PackedFloat64Array) -> PackedFloat64Array:
+	if not native_kinematics_enabled:
+		return PackedFloat64Array()
+	if _kinematics_kernel == null:
+		if not ClassDB.class_exists(&"OpenRCNativeKernel"):
+			return PackedFloat64Array()
+		var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+		if kernel == null or not kernel.has_method(&"audio_source_kinematics"):
+			native_kinematics_enabled = false
+			return PackedFloat64Array()
+		_kinematics_kernel = kernel
+	return _kinematics_kernel.audio_source_kinematics(state, offset, axis)
 
 
 func listener_position() -> Vector3:
