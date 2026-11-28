@@ -633,6 +633,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `prepare_substeps` (NK-6u, `nk_substeps.hpp`) lets `integrate_tick` count the tick's RK4 substeps from the installed
   session's plan (`FlightSession.native_substep_plan`), as `_substeps_joint` and `_substeps` do; a tick the plan does
   not cover still calls them ([evidence](../../docs/research/native-kernel/NK-6u/README.md)).
+- `stage_contact_clear` (NK-6v) proves a tick's contact step touches nothing from the store, reach, state and quiet
+  terminal checks in one call, so `FlightSession._clear_contact_step` skips the reference step
+  ([evidence](../../docs/research/native-kernel/NK-6v/README.md)).
 - `sound_doppler`, `sound_targets`, `sound_humidity`, `sound_absorption_cutoff`, `sound_screening`, `sound_activity`
   and `sound_distance_gain` (NK-7a, `nk_soundscape.hpp`) are the soundscape model's laws, `Wildlife.activity` and
   `PowertrainAudio.distance_gain`, exact; `exp`, `log`, `pow` and `Vector3.angle_to` call the engine's own functions

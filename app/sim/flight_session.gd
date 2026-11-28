@@ -3750,6 +3750,8 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 ## The sampler is pure; rejected candidates publish no contact, damage or continuous-state change.
 func _resolve_mass_contact_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int, previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> PackedFloat64Array:
+	if _clear_contact_step(previous, candidate, next_tick, previous_values, candidate_values, true):
+		return candidate
 	var sampler: Callable = _contact_mass_sampler(previous_values, candidate_values)
 	if not sampler.is_valid():
 		return PackedFloat64Array()
@@ -3854,6 +3856,9 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int, mass_at_fraction: Callable = Callable()) -> PackedFloat64Array:
+	if not mass_at_fraction.is_valid() and _clear_contact_step(previous, candidate, next_tick, PackedFloat64Array(),
+			PackedFloat64Array(), false):
+		return candidate
 	_clear_pending_contacts()
 	_pending_contact_tick = next_tick
 	var accepted_scenery: SceneryCollision.Event = _last_scenery_event
@@ -4121,16 +4126,88 @@ var native_contact_reach_enabled := true
 func _native_contact_reach(previous: PackedFloat64Array, candidate: PackedFloat64Array) -> int:
 	if not native_contact_reach_enabled or _native_stage == null or not aircraft.get("ok", false):
 		return 0
+	return _native_stage.contact_reach(self, previous, candidate, aircraft.model.crash_hull, _contact_probe_reach(),
+		_contact_lake_threshold(), _lake_bank_bounds if lake_bank_proof_enabled else PackedFloat64Array())
+
+
+## LakeCollision's own reject threshold for the reach proofs: the highest possible water "down" less its contact
+## epsilon; NaN without a lake or with malformed wave bounds.
+func _contact_lake_threshold() -> float:
 	var lake_threshold: float = NAN
 	if not _lake.is_empty():
 		var level: Variant = _lake.get("water_level_down_m")
 		var waves: Variant = _lake.get("wave_bounds")
 		if typeof(level) in [TYPE_FLOAT, TYPE_INT] and waves is Dictionary \
 				and typeof(waves.get("max_amplitude_m")) in [TYPE_FLOAT, TYPE_INT]:
-			# LakeCollision's own reject threshold: the highest possible water "down" less its contact epsilon.
 			lake_threshold = minf(0.0, float(level) - float(waves.max_amplitude_m)) - LakeSurface.CONTACT_EPSILON_M
-	return _native_stage.contact_reach(self, previous, candidate, aircraft.model.crash_hull, _contact_probe_reach(),
-		lake_threshold, _lake_bank_bounds if lake_bank_proof_enabled else PackedFloat64Array())
+	return lake_threshold
+
+
+## NK-6v test hook: false always runs the reference contact step.
+var native_clear_contact_enabled := true
+## Diagnostic: contact steps the native stage proved clear.
+var native_clear_contact_answers := 0
+
+
+## NK-6v: the contact step (_resolve_mass_contact_step with its mass sampler, _resolve_collision_step without) of a
+## tick that touches nothing, proved in one native call (NativeStage.clear_contact_step) from the checks its clear
+## path makes: the stores the sampler validates, the scenery and lake reach proofs with the sampled sweeps' own input
+## checks, and the soft hull terminal. On a proof it leaves exactly that path's bookkeeping and the caller returns the
+## candidate; otherwise the reference step runs. Only inside the guarded tick, for this class, with soft hull contacts,
+## no RC track and every native check it composes enabled.
+func _clear_contact_step(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int,
+		previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array, sampled: bool) -> bool:
+	if not native_clear_contact_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH or not soft_hull_contacts or not _rc_track.is_empty() \
+			or not aircraft.get("ok", false) or not native_contact_reach_enabled or not native_state_checks_enabled \
+			or not native_terminal_quiet_enabled:
+		return false
+	var mode := 1 if sampled else 0
+	var store_index := 0
+	if sampled:
+		if liquid_fuel_is_active():
+			if not native_liquid_store_enabled:
+				return false
+			mode |= 2
+			store_index = _liquid_index()
+		elif glow_is_active():
+			if not native_glow_mass_enabled:
+				return false
+			mode |= 4
+			store_index = GlowFlight.SIZE + wheel_count()
+		else:
+			return false
+	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
+		mode |= 8
+		if sampled and SceneryCollision._world_is_valid(_collision_world):
+			mode |= 32
+	if not _lake.is_empty():
+		mode |= 16
+		var dt: float = sim.dt()
+		if sampled and _lake_definition_valid() and is_finite(dt) and dt > 0.0 and next_tick >= 1:
+			mode |= 64
+	var hull_reach: float = NAN
+	if sampled and not _hull_contact.is_empty():
+		mode |= 128
+		hull_reach = float(_hull_contact.reach)
+	var answer: int = _native_stage.clear_contact_step(self, previous, candidate, aircraft.model.crash_hull,
+		_contact_probe_reach(), _contact_lake_threshold(), _lake_bank_bounds if lake_bank_proof_enabled \
+		else PackedFloat64Array(), previous_values, candidate_values, mode, store_index, hull_reach)
+	if answer <= 0:
+		return false
+	if answer == 2:
+		native_terminal_quiet_answers += 1
+	native_clear_contact_answers += 1
+	# The reference's clear path: pending contacts and damage cleared for this tick, the accepted scenery and lake
+	# events kept, and the pending ones it publishes left null (without a lake the lake event passes through).
+	_clear_pending_contacts()
+	_pending_contact_tick = next_tick
+	_clear_pending_scenery_damage()
+	_resolving_contact = false
+	_terminal_before_values = PackedFloat64Array()
+	if _lake.is_empty():
+		_pending_lake_event = _last_lake_event
+	return true
 
 
 ## NK-6g test hook: false keeps the lake reach proof vertical only (NK-5d). With it, the proof also passes the bank's
@@ -6086,7 +6163,8 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 	return count
 
 
-## NK-6u test hook: false leaves every tick's substep count to _substeps_joint and _substeps, for equivalence checks.
+## NK-6u test hook, read at native installation (set it before setup): false leaves every tick's substep count to
+## _substeps_joint and _substeps, for equivalence checks.
 var native_substeps_enabled := true
 
 

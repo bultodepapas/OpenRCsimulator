@@ -155,6 +155,8 @@ var _liquid_terminal_bound := false
 var _liquid_store_bound := false
 ## NK-6u: the kernel counts the installed session's substeps from FlightSession.native_substep_plan.
 var _substeps_bound := false
+## NK-6v: the kernel proves a clear contact step (FlightSession._clear_contact_step).
+var _clear_contact_bound := false
 ## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
 var _glow_terminal_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
@@ -456,6 +458,7 @@ func install(session: Node) -> Callable:
 		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
 	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
 	_prop_strike_bound = _family != "helicopter" and _native.has_method("prepare_prop_strike") and _prepare_prop_strike(session)
+	_clear_contact_bound = _family != "helicopter" and _native.has_method("stage_contact_clear")
 	_substeps_bound = false
 	if _native.has_method("prepare_substeps"): # always, so a plan never outlives its installation
 		_substeps_bound = bool(_native.prepare_substeps(session, session.native_substep_plan() \
@@ -504,6 +507,7 @@ func uninstall(session: Node) -> Callable:
 	if _substeps_bound and _native != null:
 		_native.prepare_substeps(null, {})
 	_substeps_bound = false
+	_clear_contact_bound = false
 	_pre_step_bound = false
 	_prop_strike_bound = false
 	_strike_disc = {}
@@ -576,6 +580,25 @@ func contact_reach(session: Node, previous: PackedFloat64Array, candidate: Packe
 			or not proxies is Array or (proxies as Array).size() != _reach_size:
 		_prepare_reach_world(world)
 	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold, lake_bank))
+
+
+## NK-6v: FlightSession._clear_contact_step's proof in one kernel call (stage_contact_clear): 1 or 2 when the tick's
+## contact step touches nothing, 0 to run the reference step. The proxy bounds follow the session's collision world
+## by identity, as contact_reach's do.
+func clear_contact_step(session: Node, previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		hull: PackedFloat64Array, extra_reach: float, lake_threshold: float, lake_bank: PackedFloat64Array,
+		previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array, mode: int, store_index: int,
+		hull_reach: float) -> int:
+	if not _installed or not _clear_contact_bound or _native == null: return 0
+	if mode & 24:
+		if not _contact_reach_bound: return 0
+		var world: Dictionary = session._collision_world
+		var proxies: Variant = world.get("proxies", [])
+		if not is_same(world, _reach_world) or not is_same(proxies, _reach_proxies) \
+				or not proxies is Array or (proxies as Array).size() != _reach_size:
+			_prepare_reach_world(world)
+	return int(_native.stage_contact_clear(previous, candidate, hull, extra_reach, lake_threshold, lake_bank,
+		previous_values, candidate_values, mode, store_index, hull_reach))
 
 
 ## NK-5g: the session's _pre_step(aux, inputs, dt) through the prepared stage; empty means "use the reference". With

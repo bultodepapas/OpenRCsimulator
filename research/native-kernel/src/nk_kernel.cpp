@@ -1386,6 +1386,9 @@ protected:
 			"mass", "gravity", "inertia", "inertia_inv"), &OpenRCNativeKernel::integrate_tick);
 		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
 		godot::ClassDB::bind_method(D_METHOD("prepare_substeps", "session", "plan"), &OpenRCNativeKernel::prepare_substeps);
+		godot::ClassDB::bind_method(D_METHOD("stage_contact_clear", "previous", "candidate", "hull", "extra_reach",
+			"lake_threshold", "lake_bank", "previous_values", "candidate_values", "mode", "store_index", "hull_reach"),
+			&OpenRCNativeKernel::stage_contact_clear);
 		godot::ClassDB::bind_method(D_METHOD("stage_substep_probe", "model", "state", "continuous", "aux", "t", "dt"),
 			&OpenRCNativeKernel::stage_substep_probe);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_firing", "body", "values", "time_s"),
@@ -3022,6 +3025,54 @@ public:
 		next.resize(static_cast<size_t>(state.size()));
 		for (int64_t i = 0; i < state.size(); ++i) next[static_cast<size_t>(i)] = state[i];
 		return Dictionary();
+	}
+
+	// NK-6v: FlightSession._clear_contact_step's proof that a tick's contact step touches nothing, composed from the
+	// checks the reference makes on its clear path: 1, or 2 when the hull terminal was answered quiet (as
+	// _native_terminal_quiet answers it), when every one holds; 0 runs the reference step. mode bits: 1 a mass sampler
+	// (post_tick_joint), 2 liquid stores at store_index, 4 glow stores (store_index = their expected size), 8 a scenery
+	// world, 16 a lake, 32 the sampled scenery sweep's world is valid, 64 the sampled lake sweep's own inputs are valid,
+	// 128 the hull terminal check applies at hull_reach.
+	int64_t stage_contact_clear(const PackedFloat64Array &previous, const PackedFloat64Array &candidate,
+			const PackedFloat64Array &hull, double extra_reach, double lake_threshold, const PackedFloat64Array &lake_bank,
+			const PackedFloat64Array &previous_values, const PackedFloat64Array &candidate_values, int64_t mode,
+			int64_t store_index, double hull_reach) {
+		const bool sampled = (mode & 1) != 0, liquid = (mode & 2) != 0, glow = (mode & 4) != 0;
+		const bool world = (mode & 8) != 0, lake = (mode & 16) != 0;
+		if (sampled) {
+			// _contact_mass_sampler: both stores valid (NK-6t, NK-6e), or the reference builds or refuses the sampler.
+			if (liquid) {
+				if (stage_liquid_store_valid(previous_values, store_index) != 1 ||
+						stage_liquid_store_valid(candidate_values, store_index) != 1) return 0;
+			} else if (glow) {
+				if (previous_values.size() != store_index || candidate_values.size() != previous_values.size() ||
+						stage_glow_mass_check(previous_values, true) != 1 || stage_glow_mass_check(candidate_values, true) != 1) {
+					return 0;
+				}
+			} else {
+				return 0;
+			}
+		}
+		if (world || lake) {
+			// NK-5d proofs; a sampled sweep also refuses its own invalid inputs before trusting them.
+			const int64_t reach = contact_reach(previous, candidate, hull, extra_reach, lake_threshold, lake_bank);
+			if ((world && (reach & 1) == 0) || (lake && (reach & 2) == 0)) return 0;
+			if (sampled && ((world && (mode & 32) == 0) || (lake && (mode & 64) == 0) || !scenery_state_valid(previous) ||
+					!scenery_state_valid(candidate))) {
+				return 0;
+			}
+		}
+		if (sampled && (mode & 128) != 0 && state_valid(candidate) && -candidate[2] <= hull_reach) {
+			// The soft hull terminal at the contact sample's fraction 0 (NK-6h, NK-6i).
+			int64_t quiet = 0;
+			if (liquid && store_index >= 0 && store_index < previous_values.size()) {
+				quiet = stage_liquid_terminal_quiet(previous, candidate, previous_values[store_index]);
+			} else if (glow && previous_values.size() > 17) {
+				quiet = stage_glow_terminal_quiet(previous, candidate, previous_values[1], previous_values[17]);
+			}
+			return quiet == 1 ? 2 : 0;
+		}
+		return 1;
 	}
 
 	// NK-6u: FlightSession.native_substep_plan for `session`; an empty plan (or any malformed field) clears it.
