@@ -3,6 +3,7 @@
 extends SceneTree
 const Flight := preload("res://main.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const NativeStage := preload("res://sim/native_stage.gd")
 var failures := 0
 var checks := 0
 
@@ -35,7 +36,10 @@ func _run() -> void:
 	probed.model.crash_hull = PackedFloat64Array([0,0,0])
 	flight.session.aircraft = probed
 	flight.session.reset()
-	_check("the probed aircraft is prepared", flight.session.stage_backend_error.is_empty())
+	# Without the verified native library (CI's app shards) the flight falls back to the reference and records why.
+	var native_ok: bool = NativeStage.library_status().get("ok", false)
+	_check("the probed aircraft is prepared", flight.session.aircraft.get("ok", false)
+		and (flight.session.stage_backend_error.is_empty() or not native_ok))
 	var controller = flight._scenery_damage_director
 	var source: MeshInstance3D = null
 	for candidate: MeshInstance3D in controller._sources:

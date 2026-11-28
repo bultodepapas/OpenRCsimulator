@@ -91,6 +91,12 @@ func _run() -> void:
 		_check("live 200%% resize to %d×%d recomputes the rail width" % [size.x, size.y],
 			is_equal_approx(_panel(pause).size.x, expected_width)
 			and _panel(pause).get_global_rect().end.x <= size.x + 1.0, _layout_detail(pause))
+		# Wrapped status lines settle within the menu's bounded recheck frames (PauseMenu._recheck_visible); a slower
+		# layout pass (the Linux CI runner) needs one of them.
+		for frame: int in 3:
+			if pause.continue_button.has_focus() and _scroll_contains(pause, pause.continue_button):
+				break
+			await process_frame
 		_check("live 200%% resize to %d×%d preserves the focused Resume" % [size.x, size.y],
 			pause.continue_button.has_focus() and _scroll_contains(pause, pause.continue_button), _layout_detail(pause))
 
