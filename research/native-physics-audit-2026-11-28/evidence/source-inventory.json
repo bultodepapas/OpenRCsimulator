@@ -1,0 +1,1369 @@
+{
+  "format": "openrc-physics-source-inventory-v1",
+  "base_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "note": "Inventory defines auditable surface; presence is not a claim of exhaustive line-by-line review. Specialist reports list inspected paths.",
+  "source_files": 272,
+  "source_lines": 106404,
+  "files": [
+    {
+      "path": "app/physics/aero.gd",
+      "lines": 1414,
+      "sha256": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8"
+    },
+    {
+      "path": "app/physics/air_data.gd",
+      "lines": 38,
+      "sha256": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50"
+    },
+    {
+      "path": "app/physics/aircraft_contact_contract.gd",
+      "lines": 623,
+      "sha256": "ca8e621e6c438358b5ac0895dd211d596c5445dbf7b3c5e4c7b859d1189e4d6b"
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "lines": 426,
+      "sha256": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "lines": 2674,
+      "sha256": "3a8e07bf7c3c4c0d55d75a2e4e0480a91bcc1ce7b28d4c8942893bc0eca88497"
+    },
+    {
+      "path": "app/physics/aircraft_ground_accuracy.gd",
+      "lines": 428,
+      "sha256": "b440d01a315f18aeb228a1bcb6eec06dde1ef2a9ba494a9168bf0089cd501dc6"
+    },
+    {
+      "path": "app/physics/aircraft_ground_battery.gd",
+      "lines": 104,
+      "sha256": "928dd024a55b13987e4fd7aaf1e007be45b8815694c33842db9c9244738b2fbd"
+    },
+    {
+      "path": "app/physics/aircraft_ground_damage.gd",
+      "lines": 295,
+      "sha256": "912581560817138ef5686108653773a3b3dbb13401021e31d9eec6f886c9be1f"
+    },
+    {
+      "path": "app/physics/aircraft_ground_dynamics.gd",
+      "lines": 280,
+      "sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d"
+    },
+    {
+      "path": "app/physics/aircraft_ground_electric.gd",
+      "lines": 269,
+      "sha256": "1f08b77d0666007daa6296f4cec3b1d95eb53139a3d977d90de8946783708bdd"
+    },
+    {
+      "path": "app/physics/aircraft_ground_impulse.gd",
+      "lines": 492,
+      "sha256": "2c32b7c91a3f9afdaf1865fcb9c9b2d6a9e78bf2ae3ad366040b44cc9b1ead3d"
+    },
+    {
+      "path": "app/physics/aircraft_ground_profile.gd",
+      "lines": 318,
+      "sha256": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2"
+    },
+    {
+      "path": "app/physics/aircraft_ground_source.gd",
+      "lines": 108,
+      "sha256": "7f0a95021be7405eaaed7314e1861e463fbf14bfb677f2b62acd06b2019dce0e"
+    },
+    {
+      "path": "app/physics/aircraft_ground_stage.gd",
+      "lines": 242,
+      "sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056"
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "lines": 1438,
+      "sha256": "7142280d140cad06cf3ea1faa4e4b8ec612dc4b9588eb49abe6e0c603124c6b4"
+    },
+    {
+      "path": "app/physics/aircraft_ground_traction.gd",
+      "lines": 505,
+      "sha256": "f4d70f954442eee6339bb9a3be5e841e1b797ec063df58c34c199c40e51a7883"
+    },
+    {
+      "path": "app/physics/aircraft_ground_unloaded.gd",
+      "lines": 217,
+      "sha256": "60217139cd64b4d576d9a8a7d434881b94dcd2897c2d909e7ac97d0407de8d4b"
+    },
+    {
+      "path": "app/physics/aircraft_modules.gd",
+      "lines": 403,
+      "sha256": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5"
+    },
+    {
+      "path": "app/physics/airship/airship_data.gd",
+      "lines": 697,
+      "sha256": "91bdd61980a45e7da024a890bc2021374c541b1baba2f5f8f6b46110bdb14c24"
+    },
+    {
+      "path": "app/physics/airship/airship_dynamics.gd",
+      "lines": 607,
+      "sha256": "bd7e41681caa293f3912ad2a5dcf9be17b6a40bfd4763ee768a70c6df02d55ef"
+    },
+    {
+      "path": "app/physics/atmosphere.gd",
+      "lines": 177,
+      "sha256": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be"
+    },
+    {
+      "path": "app/physics/battery/battery_data.gd",
+      "lines": 319,
+      "sha256": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c"
+    },
+    {
+      "path": "app/physics/battery/esc_supervisor.gd",
+      "lines": 113,
+      "sha256": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d"
+    },
+    {
+      "path": "app/physics/battery/pack_ecm.gd",
+      "lines": 284,
+      "sha256": "ff5dd20f3c2ac83e747a12126198d29e4f7dc4bc35fd35f2ee23a0fe60ae89d9"
+    },
+    {
+      "path": "app/physics/contact_assembly_resolution.gd",
+      "lines": 794,
+      "sha256": "27d6b5a9cbe07ff6372652d34944b695f6f24e6da3e530a557ee3881d84e422f"
+    },
+    {
+      "path": "app/physics/contact_assembly_strategy.gd",
+      "lines": 52,
+      "sha256": "40a4594da5369ee78d32be55fc6651275ace827e813c5069f785af4dffa0f9f4"
+    },
+    {
+      "path": "app/physics/contact_capacity.gd",
+      "lines": 549,
+      "sha256": "c39caa313d8fde14842f81b1b3daa04ed30172a06ed2dacacd04e5cd54b3bc01"
+    },
+    {
+      "path": "app/physics/control_actuators.gd",
+      "lines": 180,
+      "sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988"
+    },
+    {
+      "path": "app/physics/control_surfaces.gd",
+      "lines": 94,
+      "sha256": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447"
+    },
+    {
+      "path": "app/physics/cruise_trim.gd",
+      "lines": 182,
+      "sha256": "1efe9c4772551532dcf2c833a3ed19a79c88bd0c9ffd8323f84e9f6de11b3e0f"
+    },
+    {
+      "path": "app/physics/dynamics.gd",
+      "lines": 147,
+      "sha256": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f"
+    },
+    {
+      "path": "app/physics/effective_mass.gd",
+      "lines": 140,
+      "sha256": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f"
+    },
+    {
+      "path": "app/physics/electric_battery_step.gd",
+      "lines": 300,
+      "sha256": "3690528e9f9ac5c4576caabbae3acea5c3683139ca49d3879d38f99cb4a57488"
+    },
+    {
+      "path": "app/physics/electric_motor.gd",
+      "lines": 91,
+      "sha256": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10"
+    },
+    {
+      "path": "app/physics/electric_stop.gd",
+      "lines": 24,
+      "sha256": "e6c89c109fdd3f26d7a97b8e542b7398b228136121a56f9e42baebd92363abf6"
+    },
+    {
+      "path": "app/physics/electric_supply.gd",
+      "lines": 290,
+      "sha256": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229"
+    },
+    {
+      "path": "app/physics/event_bracket.gd",
+      "lines": 28,
+      "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf"
+    },
+    {
+      "path": "app/physics/event_step.gd",
+      "lines": 159,
+      "sha256": "b8d29d8d7b990ffbef9e4c9809f542d433bc10948b93242729ebd7cf4ba0a888"
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd",
+      "lines": 91,
+      "sha256": "bb0c9ec1238acbbe4b786db4e54ae61a647658b3656f36257a7de7824d715e1e"
+    },
+    {
+      "path": "app/physics/flaps.gd",
+      "lines": 25,
+      "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9"
+    },
+    {
+      "path": "app/physics/flight_modes.gd",
+      "lines": 109,
+      "sha256": "e7c24d4992a301e68e268c2efd3943508c0a7c1128bf5ef01de01cf636804743"
+    },
+    {
+      "path": "app/physics/fuel_properties.gd",
+      "lines": 157,
+      "sha256": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014"
+    },
+    {
+      "path": "app/physics/gear_damage.gd",
+      "lines": 256,
+      "sha256": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900"
+    },
+    {
+      "path": "app/physics/generalized_coordinates.gd",
+      "lines": 236,
+      "sha256": "dfc38f8a268930683538b182c4c3d07c3aca48bec16bd2ea6bd4aeb4cbaef47d"
+    },
+    {
+      "path": "app/physics/glow/carburetor.gd",
+      "lines": 132,
+      "sha256": "2f172faf92565467067df370293052d2ac253c4d68631e597c9986d58dc42e8a"
+    },
+    {
+      "path": "app/physics/glow/flight.gd",
+      "lines": 903,
+      "sha256": "f800e89f0f59a487675e197bcab4bdad1e4e80e28a86f2e9d54253e3c27ab576"
+    },
+    {
+      "path": "app/physics/glow/four_stroke.gd",
+      "lines": 417,
+      "sha256": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978"
+    },
+    {
+      "path": "app/physics/glow/fuel_feed.gd",
+      "lines": 272,
+      "sha256": "d90e14139fcfc98dd724f7c97f2e5c6d403db59ed935477cd1dc0cd4e81d8101"
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd",
+      "lines": 77,
+      "sha256": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55"
+    },
+    {
+      "path": "app/physics/glow/installation.gd",
+      "lines": 652,
+      "sha256": "743669589c65ac083aa32f5bccf899ef5039f2f9476f943786cec59b28f59593"
+    },
+    {
+      "path": "app/physics/glow/lifecycle.gd",
+      "lines": 785,
+      "sha256": "33de28dbacca94864b5307f9f0d290f452adb613676a6c51ff8885f12fafcfb7"
+    },
+    {
+      "path": "app/physics/glow/operating_point.gd",
+      "lines": 81,
+      "sha256": "fe8f7718eaae59cb17279cb3b4fc2d4072e7e80e2e84376d0250ef55d7f45e7b"
+    },
+    {
+      "path": "app/physics/glow/profile.gd",
+      "lines": 201,
+      "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522"
+    },
+    {
+      "path": "app/physics/glow/propeller.gd",
+      "lines": 153,
+      "sha256": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e"
+    },
+    {
+      "path": "app/physics/glow/source.gd",
+      "lines": 173,
+      "sha256": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338"
+    },
+    {
+      "path": "app/physics/glow/thermal.gd",
+      "lines": 66,
+      "sha256": "597c51aec355366decafe6d70668f61156ca77f69330b72f554a34b98bb48e65"
+    },
+    {
+      "path": "app/physics/glow/two_stroke.gd",
+      "lines": 399,
+      "sha256": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622"
+    },
+    {
+      "path": "app/physics/glow/vibration.gd",
+      "lines": 193,
+      "sha256": "9634f0fbb70a6e092f6f8e5a514b1d9c0d77f971e4fa61ea98bdab52db7515a5"
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "lines": 494,
+      "sha256": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6"
+    },
+    {
+      "path": "app/physics/ground_effect.gd",
+      "lines": 98,
+      "sha256": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a"
+    },
+    {
+      "path": "app/physics/ground_start.gd",
+      "lines": 981,
+      "sha256": "951fe85a58faa16e8b9f6e65f3a8a2ef31e286147fd12452b2c42e8795e7508b"
+    },
+    {
+      "path": "app/physics/ground_support.gd",
+      "lines": 139,
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e"
+    },
+    {
+      "path": "app/physics/ground_surfaces.gd",
+      "lines": 131,
+      "sha256": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128"
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "lines": 306,
+      "sha256": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97"
+    },
+    {
+      "path": "app/physics/ground_traction.gd",
+      "lines": 692,
+      "sha256": "8a36fcd35c3eb3d4e33bf45b9129134af86b43a2d6958ff3a60a97ea7f894649"
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_course.gd",
+      "lines": 499,
+      "sha256": "7e9bc35fc50a7099159b95e9139527a4745d2a28e342359edfb9e735b6481ae3"
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_track.gd",
+      "lines": 387,
+      "sha256": "8e7098ab347384eef95340f4e6a884930b8e4e5a3f6e48feff488e0c7061a0e2"
+    },
+    {
+      "path": "app/physics/ground_vehicle/course.gd",
+      "lines": 560,
+      "sha256": "e2b47e8f339311647342c25018e71093f1cf200071a2d92d4396974a2dc7747e"
+    },
+    {
+      "path": "app/physics/ground_vehicle/four_corner.gd",
+      "lines": 416,
+      "sha256": "1c5107890b587bbea988534cd50f3515545c9faec88b46c70bb9813adcb3ca6f"
+    },
+    {
+      "path": "app/physics/ground_vehicle/nitro_dynamics.gd",
+      "lines": 450,
+      "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+    },
+    {
+      "path": "app/physics/ground_vehicle/quarter_car.gd",
+      "lines": 145,
+      "sha256": "8ff27ae9d66f50f2b6f60b6532f01d27944037a8fa54ff5d951e8e81d8ba37ad"
+    },
+    {
+      "path": "app/physics/ground_vehicle/scenery_walls.gd",
+      "lines": 235,
+      "sha256": "b0aacb3800f4285002da154c97537d846668c7acd4c24661b96285e2fad1d1bb"
+    },
+    {
+      "path": "app/physics/ground_vehicle/support_bench_data.gd",
+      "lines": 180,
+      "sha256": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289"
+    },
+    {
+      "path": "app/physics/ground_vehicle/suspension_bench_data.gd",
+      "lines": 105,
+      "sha256": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb"
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_damage.gd",
+      "lines": 636,
+      "sha256": "a2d8eae35336dc4453a6e2b64e09289d9a024061119d6b8effa045638b987046"
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_data.gd",
+      "lines": 671,
+      "sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae"
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "lines": 2282,
+      "sha256": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46"
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_environment.gd",
+      "lines": 134,
+      "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+    },
+    {
+      "path": "app/physics/ground_wheels.gd",
+      "lines": 274,
+      "sha256": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87"
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "lines": 876,
+      "sha256": "d2b704a24bac85fcb91cac07eff53ea162e760cdba7144e3854164924ff5e1e3"
+    },
+    {
+      "path": "app/physics/hull_crossing.gd",
+      "lines": 189,
+      "sha256": "6492dfdf6255047fdf45882ba6c881769ac55542ff1b09447db045bf3e8d4d8a"
+    },
+    {
+      "path": "app/physics/impact_snapshot.gd",
+      "lines": 129,
+      "sha256": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0"
+    },
+    {
+      "path": "app/physics/integrator.gd",
+      "lines": 50,
+      "sha256": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d"
+    },
+    {
+      "path": "app/physics/intended_hull_support.gd",
+      "lines": 264,
+      "sha256": "c4e9c16ddb9a99a383799bc96df3b051f86a695ac9b44e418171e4be67780819"
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "lines": 799,
+      "sha256": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f"
+    },
+    {
+      "path": "app/physics/linearize.gd",
+      "lines": 163,
+      "sha256": "a0b3713eee03b27ab9f1ddfa0a87c3cc73e7c6ae32645a627db5fcd29e185fde"
+    },
+    {
+      "path": "app/physics/liquid_fuel.gd",
+      "lines": 177,
+      "sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a"
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "lines": 508,
+      "sha256": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "lines": 190,
+      "sha256": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832"
+    },
+    {
+      "path": "app/physics/multirotor/actuator_map.gd",
+      "lines": 74,
+      "sha256": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d"
+    },
+    {
+      "path": "app/physics/multirotor/airframe.gd",
+      "lines": 14,
+      "sha256": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af"
+    },
+    {
+      "path": "app/physics/multirotor/allocator.gd",
+      "lines": 598,
+      "sha256": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "lines": 1685,
+      "sha256": "725ecbc9d164ea73a2b0aad574462c564279339bd6df788a131920aa071ffc4c"
+    },
+    {
+      "path": "app/physics/multirotor/electric_bus.gd",
+      "lines": 124,
+      "sha256": "e7a29eecf04e28b8fcbc1561b36cbc11eda8fb71f09956e58830aaeb58f05839"
+    },
+    {
+      "path": "app/physics/multirotor/flight_controller.gd",
+      "lines": 475,
+      "sha256": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42"
+    },
+    {
+      "path": "app/physics/multirotor/plant.gd",
+      "lines": 121,
+      "sha256": "c11a5900c02d311fd8222917123ebcdae931bff25bf861d8a5a1969f4b8a0ce4"
+    },
+    {
+      "path": "app/physics/multirotor/powertrain.gd",
+      "lines": 20,
+      "sha256": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b"
+    },
+    {
+      "path": "app/physics/multirotor/rates.gd",
+      "lines": 549,
+      "sha256": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc"
+    },
+    {
+      "path": "app/physics/multirotor/rotor.gd",
+      "lines": 35,
+      "sha256": "9210aaf70c8a85d15b378da5594131331e957f20d68741d10f3e7997894abb0e"
+    },
+    {
+      "path": "app/physics/multirotor_data.gd",
+      "lines": 1156,
+      "sha256": "b1aa9b31db8cd1d5c6b4109499ec991bb0fcc1a180390d304659973eeee06ffa"
+    },
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "lines": 187,
+      "sha256": "7fdda97336cffec821a420d0666e6f8eb530ae77c628e767b212b1d31590d785"
+    },
+    {
+      "path": "app/physics/normal_contact_admission.gd",
+      "lines": 303,
+      "sha256": "95f40d4dfc7a7ba671254fb020b25ca8b257445ddc8cc9bb51eedc7628805673"
+    },
+    {
+      "path": "app/physics/physical_identity.gd",
+      "lines": 139,
+      "sha256": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628"
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "lines": 741,
+      "sha256": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f"
+    },
+    {
+      "path": "app/physics/rc_track_crossing.gd",
+      "lines": 166,
+      "sha256": "1e6c7eab68572789712e1e6f08814019cb27df1463baf0d7a5fa8824adead9b5"
+    },
+    {
+      "path": "app/physics/resource_event_step.gd",
+      "lines": 425,
+      "sha256": "2b1a1bc803792300be42904d4c398496819188451e2a27385724b408b27170c6"
+    },
+    {
+      "path": "app/physics/retractable_gear.gd",
+      "lines": 130,
+      "sha256": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4"
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "lines": 137,
+      "sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd",
+      "lines": 525,
+      "sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330"
+    },
+    {
+      "path": "app/physics/rotorcraft/aerodynamic_stage.gd",
+      "lines": 182,
+      "sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd"
+    },
+    {
+      "path": "app/physics/rotorcraft/airframe.gd",
+      "lines": 317,
+      "sha256": "67864cefa926575ad0440e9e8177f4f064dd8a7607bb31f6a6fe1f421ed8bc83"
+    },
+    {
+      "path": "app/physics/rotorcraft/drive.gd",
+      "lines": 121,
+      "sha256": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e"
+    },
+    {
+      "path": "app/physics/rotorcraft/dynamic_inflow.gd",
+      "lines": 54,
+      "sha256": "13dd83f694efd62a2ad0a844c9527b6473c5cc127de91b3dd2af205566d5fb14"
+    },
+    {
+      "path": "app/physics/rotorcraft/electronics.gd",
+      "lines": 363,
+      "sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f"
+    },
+    {
+      "path": "app/physics/rotorcraft/flight_dynamics.gd",
+      "lines": 408,
+      "sha256": "23ac5de0861022db862d834a6abced6e424245561509c92444ca1157eeb03303"
+    },
+    {
+      "path": "app/physics/rotorcraft/geared_coupling.gd",
+      "lines": 148,
+      "sha256": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1"
+    },
+    {
+      "path": "app/physics/rotorcraft/ground_start.gd",
+      "lines": 295,
+      "sha256": "02cd992c5ffc8ca631c26d7f2df5140aa5af7c3e9b7ab7f77e420dc9e5f78eb6"
+    },
+    {
+      "path": "app/physics/rotorcraft/hx700_flex_bench.gd",
+      "lines": 103,
+      "sha256": "eac6e89ddd3bedd2aae0502a41588664e0d3f69f34431ba062dad7575f0b35c6"
+    },
+    {
+      "path": "app/physics/rotorcraft/impact_detector.gd",
+      "lines": 1068,
+      "sha256": "5bd5946dbe1070cdb8cff7f6a2c273c0b829eb280a708fe93e4beb1afb613693"
+    },
+    {
+      "path": "app/physics/rotorcraft/inflow.gd",
+      "lines": 210,
+      "sha256": "9bb479612409de4cbd38d8ab3916ea0a89577a4411fd6ede29c2bad3530e7f9d"
+    },
+    {
+      "path": "app/physics/rotorcraft/lifecycle.gd",
+      "lines": 50,
+      "sha256": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c"
+    },
+    {
+      "path": "app/physics/rotorcraft/main_rotor.gd",
+      "lines": 434,
+      "sha256": "273f33105a9494cd4c78f0f16dfad548051f1ba65902d89ab763b87932af9df9"
+    },
+    {
+      "path": "app/physics/rotorcraft/main_rotor_stage.gd",
+      "lines": 117,
+      "sha256": "e41258cfd75488672b91a719c7b89e209c5a2ac5e0397f407b45b88ba40490bf"
+    },
+    {
+      "path": "app/physics/rotorcraft/performance_context.gd",
+      "lines": 74,
+      "sha256": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0"
+    },
+    {
+      "path": "app/physics/rotorcraft/rotor_disc_terrain.gd",
+      "lines": 447,
+      "sha256": "e5c4528aae83fa42c5ce0a4aa931c871740f584849de40b738c7353922a52f2c"
+    },
+    {
+      "path": "app/physics/rotorcraft/simulation_step_adapter.gd",
+      "lines": 193,
+      "sha256": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c"
+    },
+    {
+      "path": "app/physics/rotorcraft/skid_contact.gd",
+      "lines": 199,
+      "sha256": "5cc5593d2ffb8336511e1fb7576e2e28c798b6e725b530322a837ab2d3539598"
+    },
+    {
+      "path": "app/physics/rotorcraft/swash.gd",
+      "lines": 266,
+      "sha256": "f2d60b93cb08f7a85c9a77cf393212dc09c85eda60732faaef677243606cb923"
+    },
+    {
+      "path": "app/physics/rotorcraft/tail_rotor.gd",
+      "lines": 321,
+      "sha256": "121569733794dd56fc8bafc65add22bb57a7f81ca5db804e1e3c19618f23db2d"
+    },
+    {
+      "path": "app/physics/rotorcraft/trim.gd",
+      "lines": 287,
+      "sha256": "f97dd407d05bc37966e2fb25a088eae3d2a7d8418b049710ded2cdf5dc7ea9b9"
+    },
+    {
+      "path": "app/physics/rotorcraft_data.gd",
+      "lines": 192,
+      "sha256": "f2e43bfce0728c5ab622d19ed7a3b499390b91a114bd659da8615577878d49ba"
+    },
+    {
+      "path": "app/physics/slew_interval.gd",
+      "lines": 30,
+      "sha256": "35c7e1145c2d954698de3102f388dc25ef874b0a42eb3073acb754f55fd0c10a"
+    },
+    {
+      "path": "app/physics/slew_trajectory.gd",
+      "lines": 89,
+      "sha256": "13be929d8345a2bab5cbd92473d6d700d7e84ce226ddf23b0ebe5c6fc83f1dd8"
+    },
+    {
+      "path": "app/physics/slipstream.gd",
+      "lines": 640,
+      "sha256": "aa33272176a6f622136539ed367ebf309300d981a8272823e1fcb90f4551be19"
+    },
+    {
+      "path": "app/physics/swirl_loads.gd",
+      "lines": 383,
+      "sha256": "930ee14099f8dd273bf60a7417f67320d4903b944601eaf67ffc0348fca1a0b0"
+    },
+    {
+      "path": "app/physics/trim.gd",
+      "lines": 473,
+      "sha256": "2a20692b6f1629a0fee381688cd4e86d8628d12f984065106f7875465f57c6fa"
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "lines": 190,
+      "sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0"
+    },
+    {
+      "path": "app/physics/wash_transport.gd",
+      "lines": 101,
+      "sha256": "e71e2ffa272a81a1591900a506b0a9ce1234e9949ac8787d34ab1e19139b5606"
+    },
+    {
+      "path": "app/physics/wheel_coupling.gd",
+      "lines": 155,
+      "sha256": "da6e39d0109f56963194e4609a7d3d4f8c40cb2db1db4058c5b1aca59c9e9e0f"
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd",
+      "lines": 283,
+      "sha256": "219c9654f8cab79bfeb518c0994117eb7387857f9d0f02f03e6c1a573ac5d60b"
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "lines": 248,
+      "sha256": "bdb76ff17b575b19eb0374375fcd62a10c4f6df2a99a74bc816c08094097d2a0"
+    },
+    {
+      "path": "app/physics/wind_aircraft_flow.gd",
+      "lines": 438,
+      "sha256": "0328fc032c902d959da37d8c72f926785af554b1cea86ef34aa0ed883bc90386"
+    },
+    {
+      "path": "app/physics/wind_config.gd",
+      "lines": 318,
+      "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66"
+    },
+    {
+      "path": "app/physics/wind_field.gd",
+      "lines": 209,
+      "sha256": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776"
+    },
+    {
+      "path": "app/physics/wind_spatial_config.gd",
+      "lines": 546,
+      "sha256": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d"
+    },
+    {
+      "path": "app/physics/wind_spatial_field.gd",
+      "lines": 440,
+      "sha256": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644"
+    },
+    {
+      "path": "app/physics/wind_spatial_presets.gd",
+      "lines": 184,
+      "sha256": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72"
+    },
+    {
+      "path": "app/physics/wind_thermal_field.gd",
+      "lines": 430,
+      "sha256": "2e2b33f3cf0ae0247d7bef8a8ff75ea03d814dbd4d4eb1c2a60ae6c9a71e075e"
+    },
+    {
+      "path": "app/physics/wind_turbulence.gd",
+      "lines": 170,
+      "sha256": "f8723c0855ce1410defa302904b876731ff8b17f5329d5e38d60f496007b3fd0"
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "lines": 144,
+      "sha256": "0bac361ded5d5276464121c531dcd21f4b5168ee91d1656382821376d105cf56"
+    },
+    {
+      "path": "app/sim/aircraft_contact_events.gd",
+      "lines": 647,
+      "sha256": "6c0f47ccb9861d73655e96459042de31386eded5b2eeabf9f43059aa23e0856c"
+    },
+    {
+      "path": "app/sim/aircraft_propulsion_runtime.gd",
+      "lines": 240,
+      "sha256": "f1df9fba77eb400d1db8ffa0a96cc84758f1c67e08aa2d0a677b38d8205bec75"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "lines": 351,
+      "sha256": "adf991b551f42ae867f99c30fa3eab12c0d1988f7109cd479be6cf53b1ecc1c1"
+    },
+    {
+      "path": "app/sim/airship/session.gd",
+      "lines": 647,
+      "sha256": "ba279d387e8a18bda1f8617b8b86ed1fc2e5189de5e80e38b35db93a632e41db"
+    },
+    {
+      "path": "app/sim/checkpoint_json.gd",
+      "lines": 35,
+      "sha256": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc"
+    },
+    {
+      "path": "app/sim/electric_contact_step.gd",
+      "lines": 172,
+      "sha256": "98d089caa57a88263f8007abe436949c2d885ded119f02acba1152efcc339d0b"
+    },
+    {
+      "path": "app/sim/environment.gd",
+      "lines": 198,
+      "sha256": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "lines": 501,
+      "sha256": "42e98ae1cde5054a18a944a1aa411bcd0bdd8bc8a90fff1c045ecdfd43cb6fe6"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "lines": 7716,
+      "sha256": "8df9adccef7c46c2b2afb9c73070d84e019354bfc413e261f690b548dba6cedb"
+    },
+    {
+      "path": "app/sim/fuel_sample.gd",
+      "lines": 126,
+      "sha256": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd"
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "lines": 2301,
+      "sha256": "b09dfe9729a7bd0f2a45a193628e3c837c055bfc8dffef5dde917276cd68de8f"
+    },
+    {
+      "path": "app/sim/helicopter_flight_session.gd",
+      "lines": 1444,
+      "sha256": "93bf44b972a66de3e04169f6245dd9496ef69f109d5253ce6575c5f8dd959cb7"
+    },
+    {
+      "path": "app/sim/lake_collision.gd",
+      "lines": 610,
+      "sha256": "29ef252b8b6fdd5280b4ca8fa0e947f857411c3d4c838be0e2640bf1800b6486"
+    },
+    {
+      "path": "app/sim/landing_maneuver.gd",
+      "lines": 58,
+      "sha256": "26a32bba1383b3ccbc2e536f4e626d2f23c6b17ee7cfa4c4000d1c491bc660d3"
+    },
+    {
+      "path": "app/sim/launch_trim_cache.gd",
+      "lines": 440,
+      "sha256": "b0a76fdaf01b6789bb8bb1ac6125f4a637aab18deab7ef2dbf2a4f0c357cbf67"
+    },
+    {
+      "path": "app/sim/launch_trim_job.gd",
+      "lines": 48,
+      "sha256": "4479b311a4f0dbf28ff2bf485828df9c73bbf76b89f42c6f79aac880e7651e4d"
+    },
+    {
+      "path": "app/sim/liquid_fuel_flight.gd",
+      "lines": 167,
+      "sha256": "a92dc9e8173ee03411294aecf01daf30b57f6783cc3c814d4098c643397a0b8f"
+    },
+    {
+      "path": "app/sim/maneuvers.gd",
+      "lines": 100,
+      "sha256": "36a8345e73dbe827e57e0c7eae11beaa969a80e1258a95ccf6ab69298fe556a3"
+    },
+    {
+      "path": "app/sim/manual_trace_save.gd",
+      "lines": 40,
+      "sha256": "b97eac186c3f10eb86be8f49d512d1f436ca83ce17ef87a029177fac3b31d592"
+    },
+    {
+      "path": "app/sim/multirotor/flight_log.gd",
+      "lines": 464,
+      "sha256": "be6a5d80f63775af2b4887c6ab953cad897e439ff42b0d7b09272f640b2d7922"
+    },
+    {
+      "path": "app/sim/multirotor/frame_obstacle_contact.gd",
+      "lines": 420,
+      "sha256": "709c480ab77dba9b996e84fc01e60e60b5c01325d57c6d8f10b6c2f8e4f4be5a"
+    },
+    {
+      "path": "app/sim/multirotor/session.gd",
+      "lines": 1305,
+      "sha256": "2069176b5ca0004d286312fc4cb4ea362309bea3e51c4341a1010fdbf5421115"
+    },
+    {
+      "path": "app/sim/multirotor/swept_prop_contact.gd",
+      "lines": 204,
+      "sha256": "6fded4aa39abf7d497d2e17f3567b8b75ebf0267eced0c06153deca6b3c88788"
+    },
+    {
+      "path": "app/sim/native/electric_stage_adapter.gd",
+      "lines": 48,
+      "sha256": "a638bb9bef5c89471f506501cee63caa6e260c342684c79fd2546cc4cc7cd26a"
+    },
+    {
+      "path": "app/sim/native/glow_stage_adapter.gd",
+      "lines": 71,
+      "sha256": "e4dc07e614397da51c2a5d3b5b40a1c12f91452ce07a27b55f614d2f3eb14de4"
+    },
+    {
+      "path": "app/sim/native/helicopter_stage_adapter.gd",
+      "lines": 84,
+      "sha256": "e440ba22a367253d0de442ae71732a3f7fe90c863827c1ee94596e9da93d88e5"
+    },
+    {
+      "path": "app/sim/native/liquid_stage_adapter.gd",
+      "lines": 70,
+      "sha256": "0b0148d04a04618aa8c1b20aaa5def923595393d79ecadba5063ab9a100ce9a9"
+    },
+    {
+      "path": "app/sim/native/native_configuration.gd",
+      "lines": 183,
+      "sha256": "7431ba2db0e7abd9d431ec9cd56137307f5be5f7281fc356a9d479d2f2ac1d19"
+    },
+    {
+      "path": "app/sim/native/native_weather.gd",
+      "lines": 284,
+      "sha256": "67a10d92b05d011f5663c62ea50df9314a06b82aec78bda261f8446972f89349"
+    },
+    {
+      "path": "app/sim/native/prescribed_stage_adapter.gd",
+      "lines": 48,
+      "sha256": "eab402d540664b2dc5d7322a8b408258951430aa1ac2fa8e3c449a3207248e01"
+    },
+    {
+      "path": "app/sim/native/stage_config.gd",
+      "lines": 82,
+      "sha256": "e1a85e4fed5d43bef5287ac33d3cc56ad052f5b35d47bb241bdb3272e82664b5"
+    },
+    {
+      "path": "app/sim/native/weather_adapter.gd",
+      "lines": 204,
+      "sha256": "ef2d01d39e743a8dbe26b9dd1b1ff451462a46aaf7f96a473e9633afd1526636"
+    },
+    {
+      "path": "app/sim/native_macos_admission.gd",
+      "lines": 131,
+      "sha256": "cbc39f98ca40c5007de24f9da4cfafef9b92a7f6916dd59c1db2a1e46237126e"
+    },
+    {
+      "path": "app/sim/native_macos_domain.gd",
+      "lines": 303,
+      "sha256": "fe7b462422c2d8da2fa05de67d169cfd9810786a7dfc8cb1f4039ce9d1de204d"
+    },
+    {
+      "path": "app/sim/native_macos_package_admission.gd",
+      "lines": 179,
+      "sha256": "34fef803497bfa6b7811714ce0d203dbc4aaa9190f8189c440d48e52349a4a96"
+    },
+    {
+      "path": "app/sim/native_stage.gd",
+      "lines": 1299,
+      "sha256": "6342aa09207da6626dffc5af105d29dd2ea1751716ad1178ee5749c6ec9ac9fd"
+    },
+    {
+      "path": "app/sim/out_of_trim.gd",
+      "lines": 117,
+      "sha256": "ca55dce74f837ee3562037182beba0c1b31a53789b58b1a94f62dc289a0b2378"
+    },
+    {
+      "path": "app/sim/race/gate_crossing.gd",
+      "lines": 76,
+      "sha256": "5575efae31f12f3d67b45add7e3b280f717b50b4ac83c4867dcba522a44dffd7"
+    },
+    {
+      "path": "app/sim/race/race_director.gd",
+      "lines": 389,
+      "sha256": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44"
+    },
+    {
+      "path": "app/sim/race/race_model.gd",
+      "lines": 347,
+      "sha256": "2762e0882441c1c0b731e56919554afff85f552272f20bc8390754f3089f04f3"
+    },
+    {
+      "path": "app/sim/race/track.gd",
+      "lines": 615,
+      "sha256": "83d1c3bf6182f88d377efd618ccabf8e82ac54333598ada9a0667ac71de454a4"
+    },
+    {
+      "path": "app/sim/recorder.gd",
+      "lines": 124,
+      "sha256": "c169362758239a900940032187416f5bd3c0255265245038db206de19268b15b"
+    },
+    {
+      "path": "app/sim/rotorcraft_recorder.gd",
+      "lines": 281,
+      "sha256": "b4b912b494a9344d9c19b8719349e00690dc3c3d6aafa9df6946d4dcd74fc52b"
+    },
+    {
+      "path": "app/sim/scenarios.gd",
+      "lines": 32,
+      "sha256": "0e70abc105875b9b7ac930ac61e8b51f29147f9175299b0f239c64b1526f8d1b"
+    },
+    {
+      "path": "app/sim/scenery_collision.gd",
+      "lines": 757,
+      "sha256": "6eba1c73f1b0709fab41b34546013ef38b0492972b129ee0dc676b2596e2dc39"
+    },
+    {
+      "path": "app/sim/scenery_damage.gd",
+      "lines": 42,
+      "sha256": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48"
+    },
+    {
+      "path": "app/sim/scripted.gd",
+      "lines": 19,
+      "sha256": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf"
+    },
+    {
+      "path": "app/sim/servo_interval_flight.gd",
+      "lines": 178,
+      "sha256": "26e8fcde62da94156f1eff1c4aa1937b51426d3120bb72957171bc4f4a799c42"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "lines": 1510,
+      "sha256": "4a3ca39ee4c8ddca57b287641b4dd237e0938ed3a300173fb7ca6351063f4727"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "lines": 1895,
+      "sha256": "52f24dc06a4f6c2fb523ac1a8f8c40198f872d52b1145b03ac0de1d5b62ab89f"
+    },
+    {
+      "path": "app/sim/trace_chunk_store.gd",
+      "lines": 790,
+      "sha256": "f5747fd6c6d9903958cebaac673a1c4a4fa9a654496fc063222ba929e7265b28"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "lines": 234,
+      "sha256": "d9cb12ae11bac4724661f4f4faf16c2f15c7e9f6a2365c1b7ed3a205b5e474bc"
+    },
+    {
+      "path": "research/native-kernel/src/nk_aero.hpp",
+      "lines": 991,
+      "sha256": "99607811a29dfd2b5ce769bb44ccab9f5cf8ecac68f05ad0b8b4ee920d79555c"
+    },
+    {
+      "path": "research/native-kernel/src/nk_audio_rows.hpp",
+      "lines": 332,
+      "sha256": "e67a348ed3d630684b80c92c6468b5c0b9f020764c7e54e39d685e27bc8af758"
+    },
+    {
+      "path": "research/native-kernel/src/nk_battery.hpp",
+      "lines": 196,
+      "sha256": "c0931428bd4d359317bb0b3587359bfe1d7ba54ac75890a21e79db8a06ee4b9f"
+    },
+    {
+      "path": "research/native-kernel/src/nk_configuration_guard.hpp",
+      "lines": 574,
+      "sha256": "db01cff6e806339268c1cfdd9e98cc8384c6f29b496f2f13a3d12531e85c6f2d"
+    },
+    {
+      "path": "research/native-kernel/src/nk_contact_reach.hpp",
+      "lines": 140,
+      "sha256": "837031a998f153966f938bb4e31c135e21bfab7edf640ec2239265111dacc092"
+    },
+    {
+      "path": "research/native-kernel/src/nk_electric.hpp",
+      "lines": 93,
+      "sha256": "20628da968676c4d1a608356ca236b0b9c5a0356fc58e4ca16bf90fe08ba8640"
+    },
+    {
+      "path": "research/native-kernel/src/nk_electric_binding.hpp",
+      "lines": 288,
+      "sha256": "2c0bd217821798490b3a3a91ce63b0925e4e6ec95625bbddf058eeb7c6334cdf"
+    },
+    {
+      "path": "research/native-kernel/src/nk_electric_coupling.hpp",
+      "lines": 102,
+      "sha256": "cee820d09a222d84324068847384bf87431dfb3b07b83b9b006db4cc9084aacd"
+    },
+    {
+      "path": "research/native-kernel/src/nk_electric_stage.hpp",
+      "lines": 61,
+      "sha256": "d9b21a302f5e041743f0320a2cfdf76ae0c80c69186099785168d2ee125095ef"
+    },
+    {
+      "path": "research/native-kernel/src/nk_gear_binding.hpp",
+      "lines": 250,
+      "sha256": "d5f4492b228a1307d3b9339823ed26201fdb10d087e9adb45e23f5aaa9ea45f6"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_binding.hpp",
+      "lines": 352,
+      "sha256": "e31a7567a71fa296d3f762915e99c1b660224e3b3f263859db438b6d5e409977"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_coupling.hpp",
+      "lines": 153,
+      "sha256": "e135f2bff2bb33bbd2ff49e168911de845cf3f5e3da2afe96706309f8ecfe184"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_feed.hpp",
+      "lines": 197,
+      "sha256": "1b68e2ddf7fcfe6bce2d8cf386c4fb17eaa80355146f0381a4ab8c01e276a835"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_finish.hpp",
+      "lines": 121,
+      "sha256": "74cd947996a3281356e662412e7a3d994aa926afe32458d44203c68150240cf9"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_lifecycle.hpp",
+      "lines": 233,
+      "sha256": "d1c208de17c4561c567b0221f5ba1a95b93e878902c3e9e684dca11725a53a9b"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_mass.hpp",
+      "lines": 43,
+      "sha256": "b02be2100348212fefb7cca79ef120885aba06afebf1aa4eb3a695d6b8e58d66"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_propeller.hpp",
+      "lines": 112,
+      "sha256": "097b08727e35745225f03a6627233513caf6147f54386ed04d92a7d1d526be83"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_source.hpp",
+      "lines": 221,
+      "sha256": "c6bf14fa042edc1f340ce0863dc76225b4bbfe4be97c346986369bf03d638bf8"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_stage.hpp",
+      "lines": 331,
+      "sha256": "e6e8471a504e880767f677ae41140a718a2d5577c4afb62e21c8aeae921a4bba"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_voice.hpp",
+      "lines": 155,
+      "sha256": "b0d90e9cdb23db608a31483b27874ab2a9cbf13397a480a1cd09517ed6e550b2"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_voice_render.hpp",
+      "lines": 367,
+      "sha256": "285b760d981dbb68a9f868cacf375d5ddb9afed41e219ff7caeaca40464f0845"
+    },
+    {
+      "path": "research/native-kernel/src/nk_ground_audio_core.hpp",
+      "lines": 713,
+      "sha256": "74ada08bb5bf36ae1a3b95a03738f3f997087bc90d36705f411567cd861e8661"
+    },
+    {
+      "path": "research/native-kernel/src/nk_guard_plan.hpp",
+      "lines": 191,
+      "sha256": "7dc15cad74bf8752a25a71b11dcf3e21aa6899f5cd36f8448ea5450cfa698b50"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_aero.hpp",
+      "lines": 179,
+      "sha256": "e97c710bd415b3674fd31eb0ca79a78e96308e585739ed14b86f37b9cd137400"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_binding.hpp",
+      "lines": 446,
+      "sha256": "e228870690c2ef2708edb6111483c6239490dd3273cce42c7ff268e01565a6a0"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_controls.hpp",
+      "lines": 176,
+      "sha256": "436627ae5faa05d342d083bf5c18202486c70c8e05fd456eb238ee72370ff2fa"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_inflow.hpp",
+      "lines": 275,
+      "sha256": "37008b61b2410ced2c53c152f61f7f5f3c443100cc80566b81bc90ed087e3849"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_main_rotor.hpp",
+      "lines": 246,
+      "sha256": "497683c06c4579d7e671d3557ab5f06d8fc2fdfe65c572e4777df75d812c45b7"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_skids.hpp",
+      "lines": 145,
+      "sha256": "2e707fed5a0f95a7d918005feeb7931104f0b88f6ee1c80a8ea4bbb88e68ecd7"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_stage.hpp",
+      "lines": 330,
+      "sha256": "6fc489f305ddb5c139fb93aa38aea1e6f24a2bf5ee669f8a2947f36ee30d87ca"
+    },
+    {
+      "path": "research/native-kernel/src/nk_helicopter_tail_rotor.hpp",
+      "lines": 201,
+      "sha256": "675699211154dcd94801e51d794319d5302354862a071f632b432bf272f33de3"
+    },
+    {
+      "path": "research/native-kernel/src/nk_hull.hpp",
+      "lines": 387,
+      "sha256": "1c763835d96d8f0f3325e0223b7cedfc796c4af7737f3e948cdb89bd1df033ce"
+    },
+    {
+      "path": "research/native-kernel/src/nk_kernel.cpp",
+      "lines": 4375,
+      "sha256": "4a9901b12979f651c62702327fd59f49efb4fe2edb11dd5cd46a1bd13d70619e"
+    },
+    {
+      "path": "research/native-kernel/src/nk_legacy_ground.hpp",
+      "lines": 213,
+      "sha256": "10ec2aeed6b758691068e496a4aca09c1b5de7580e230798e3753af0458d5b64"
+    },
+    {
+      "path": "research/native-kernel/src/nk_liquid_binding.hpp",
+      "lines": 259,
+      "sha256": "07d2fa2024152660b22e456bf536473c27fe3afbf57b5f03e59c248a462b538a"
+    },
+    {
+      "path": "research/native-kernel/src/nk_liquid_mass.hpp",
+      "lines": 226,
+      "sha256": "46087995f9bd883fe47860402a6a90ffa485532a986a15c2fa09bf277a82ae08"
+    },
+    {
+      "path": "research/native-kernel/src/nk_liquid_propulsion.hpp",
+      "lines": 296,
+      "sha256": "1b6b4a65a7503cbf6cd3763e3428383fa66e31a67a6f66ec1104c4706a0bac62"
+    },
+    {
+      "path": "research/native-kernel/src/nk_liquid_stage.hpp",
+      "lines": 163,
+      "sha256": "f03c55e76751a74033ce92ba3449f27ae4f4ce9adef9643277f6409127227fa5"
+    },
+    {
+      "path": "research/native-kernel/src/nk_macos_domain_guard.hpp",
+      "lines": 166,
+      "sha256": "0453dffe420e490eaeb2bf3b5e502d8e16b2fa1584e3871d4aaef57363518df6"
+    },
+    {
+      "path": "research/native-kernel/src/nk_math.hpp",
+      "lines": 174,
+      "sha256": "39b5e61910199f2084a908c56ba4e08ab67ade2223f895e43ec4738462bf2aba"
+    },
+    {
+      "path": "research/native-kernel/src/nk_mechanical_audio_core.hpp",
+      "lines": 1253,
+      "sha256": "ca9d8f0ef968a329f8797ece4ebae2412ec9089b55f02d94fae2772faf97addc"
+    },
+    {
+      "path": "research/native-kernel/src/nk_pack_ecm.hpp",
+      "lines": 360,
+      "sha256": "76f2ab91bdb6684d9677be2b208f7f3a5e91919391b19c4da733c29eba712166"
+    },
+    {
+      "path": "research/native-kernel/src/nk_point_sampler.hpp",
+      "lines": 48,
+      "sha256": "1d2624522204a991a95e05f5a30e5187563ccd6c73181794e09d3644db8e4458"
+    },
+    {
+      "path": "research/native-kernel/src/nk_pre_step.hpp",
+      "lines": 368,
+      "sha256": "6fc82b558add88212decb743ffe57b132d2388e8bca26153eff2d2f9beea1008"
+    },
+    {
+      "path": "research/native-kernel/src/nk_prescribed_binding.hpp",
+      "lines": 98,
+      "sha256": "ffabe21a3e510d91450cfc7834eab55a8be90d00ec1c79395d92e2eaef344294"
+    },
+    {
+      "path": "research/native-kernel/src/nk_prescribed_stage.hpp",
+      "lines": 116,
+      "sha256": "54f300a882de0fac0d3667a6396d41ca40adeac5b9daf11e91c083b2bf61bfe0"
+    },
+    {
+      "path": "research/native-kernel/src/nk_prop.hpp",
+      "lines": 254,
+      "sha256": "60bc726938a7d9d73915c35f9849d4a5d046712602c230242dff2326f7fd16cf"
+    },
+    {
+      "path": "research/native-kernel/src/nk_retractable.hpp",
+      "lines": 109,
+      "sha256": "7235bae5c3162151811c8799347fd3da001e6206233c8dd589577fcd36b2282e"
+    },
+    {
+      "path": "research/native-kernel/src/nk_rotor_coupling.hpp",
+      "lines": 101,
+      "sha256": "1831f6ab8fb638d6722f06f906347f29210fdffee5dce3f1cbe6973c41d93f9c"
+    },
+    {
+      "path": "research/native-kernel/src/nk_shadow_parts.hpp",
+      "lines": 121,
+      "sha256": "6b9081e35ad8354ea64d7e6cda0d0007daaa8d2e2003291b6cb7aefdd7a9510b"
+    },
+    {
+      "path": "research/native-kernel/src/nk_soundscape.hpp",
+      "lines": 318,
+      "sha256": "4a88e02833ab6f75cb3e0721225e486653b4b512c12d54dd76929a5df707b3b5"
+    },
+    {
+      "path": "research/native-kernel/src/nk_soundscape_core.hpp",
+      "lines": 957,
+      "sha256": "b788d05e0e482fc4c32d835f2b3e485f3745b8e791e2a05921e6eea344b18a3a"
+    },
+    {
+      "path": "research/native-kernel/src/nk_spatial_weather.hpp",
+      "lines": 406,
+      "sha256": "d510282ad313b8c7d37d08986747390895d54190c163b9f2a1280c1a0c361746"
+    },
+    {
+      "path": "research/native-kernel/src/nk_stage.hpp",
+      "lines": 482,
+      "sha256": "3afc1a6060e1f108852d57735828293b445f7ddc156f89b1cf917173056b91a0"
+    },
+    {
+      "path": "research/native-kernel/src/nk_stage_snapshot.hpp",
+      "lines": 333,
+      "sha256": "4555479889f86ae5e0946bbede7580c16db0559ed8ff87bdfd359214401abbe7"
+    },
+    {
+      "path": "research/native-kernel/src/nk_stats_sample.hpp",
+      "lines": 209,
+      "sha256": "e9d7a44a668bf3ab6f87d860db76c0048227977c60a3417157ed8cf5f58ea0e0"
+    },
+    {
+      "path": "research/native-kernel/src/nk_stats_speed.hpp",
+      "lines": 406,
+      "sha256": "8ef679fc03f54988f12a69e3f7783ae74ef163ed37ab48192c6a67f2ac1ab850"
+    },
+    {
+      "path": "research/native-kernel/src/nk_substeps.hpp",
+      "lines": 92,
+      "sha256": "332ebbb66b38055123cdb1c69ca40e546b7b3712085ab3cd3273914ad8abcde0"
+    },
+    {
+      "path": "research/native-kernel/src/nk_terrain.hpp",
+      "lines": 355,
+      "sha256": "94f86acde542f2fe80bec3401ff4e446a86d9b9f01a2d732228b85f1ebb2ce37"
+    },
+    {
+      "path": "research/native-kernel/src/nk_tick.hpp",
+      "lines": 1156,
+      "sha256": "3574145846530c0495ee074dca3201837528c48faef9c62cfca8990b02715dfb"
+    },
+    {
+      "path": "research/native-kernel/src/nk_variant_identity.hpp",
+      "lines": 82,
+      "sha256": "223887ced0a9c9cb49016023b027e96cc1630d9641f0d6d6e941c21814407c91"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wake.hpp",
+      "lines": 592,
+      "sha256": "a9dd3ea1f423284c36d0ba02d3ecbda281b9019aba54ff9b23cf5b4e31ac4b18"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wake_binding.hpp",
+      "lines": 191,
+      "sha256": "fbc2589893884bd8bbecb191754280473a6a1714e161c4284a6a47605d30364a"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wake_spatial_aero.hpp",
+      "lines": 213,
+      "sha256": "01486b9e7b1a991bbbc02dce72091ff0e6f96f93af1fb90b99ce34dde90339a8"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wake_spatial_binding.hpp",
+      "lines": 152,
+      "sha256": "4e3b4ebb4b17e986879dd118914a1927c9b259d5f76e521915a4eab96dc11aa3"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wake_spatial_flow.hpp",
+      "lines": 147,
+      "sha256": "657082a464f9a3ac1976edca138a9f3d44d60773dd136c906a6e3e2d30ba2b01"
+    },
+    {
+      "path": "research/native-kernel/src/nk_weather.hpp",
+      "lines": 225,
+      "sha256": "b3b1aefaf6e7464a019cd0bd9a6889c0709427bcffc3ae33df791ea6cd0b6e55"
+    },
+    {
+      "path": "research/native-kernel/src/nk_weather_binding.hpp",
+      "lines": 419,
+      "sha256": "6c68360eee532b0a8b8c8f6dbd16cbe4c2c90bf9e432d52c41b1937285dc3242"
+    },
+    {
+      "path": "research/native-kernel/src/nk_weather_guard.hpp",
+      "lines": 481,
+      "sha256": "62cfeceb1c273addcbf6e1999fe45259eb4da8b385b0b0a8f93bf7b0131b67e3"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wheels.hpp",
+      "lines": 298,
+      "sha256": "bf73d3db00a99789a1c9705eda1f906c650055525c20d1f3ab0fdf783db1088a"
+    }
+  ]
+}

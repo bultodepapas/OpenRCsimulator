@@ -1,0 +1,159 @@
+{
+  "schema": "openrc-physics-audit-components-v1",
+  "audited_base": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "started_utc": "2026-11-28T15:40:01.966219+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "compiler": "c++ (Debian 14.2.0-19) 14.2.0",
+  "scope": "Component evidence only. GCC 14.2 is not the qualified Linux GCC 13.3 package. No installed native backend or target latency claim.",
+  "counterexample_interpretation": "A successful witness can confirm baseline discrepancy; it is not a repaired-behavior pass.",
+  "cases": [
+    {
+      "name": "fixed-wing",
+      "scope": "actual native header components",
+      "source": "research/native-physics-audit-2026-11-28/probes/aerospace_probe.py",
+      "source_sha256": "84181460ccdef93f938447e5ef5d02543c87566112b162151162b9f27b39ede4",
+      "steps": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/aerospace_probe.py",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+          ],
+          "returncode": 0,
+          "stdout": "AERO-01 Extra h/b 0.100 sigma 0.475630639 installed wake-only delta Fz -0.110805173 My -0.072228533 common-context Fz -0.399183336 My -0.285856492 disagreement Fz 0.288378162 N My 0.213627958 Nm off My 0.000000000\nAERO-01 Extra h/b 0.250 sigma 0.762383555 installed wake-only delta Fz -0.110805173 My -0.072228533 common-context Fz -0.241546450 My -0.169080439 disagreement Fz 0.130741276 N My 0.096851906 Nm off My 0.000000000\nAERO-01 Extra h/b 2.010 sigma 1.000000000 installed wake-only delta Fz -0.110805173 My -0.072228533 common-context Fz -0.110805173 My -0.072228533 disagreement Fz 0.000000000 N My 0.000000000 Nm off My 0.000000000\nCoverage only: Extra tail-wash Mx \u00b1aileron 0.048892555 0.048892555 delta 0.000000000 Nm\nAERO-04 Extra strip centre 0.107787807 m: neutral 10.000000000 deg, deflected 17.018635000 deg, direct shift 7.018635000 deg\nAERO-04 Extra strip centre 0.346397089 m: neutral 10.000000000 deg, deflected 17.018635000 deg, direct shift 7.018635000 deg\nAERO-04 Extra strip centre 0.637924988 m: neutral 10.000000000 deg, deflected 17.018635000 deg, direct shift 7.018635000 deg\nAERO-02 manufactured spatial accepted 1 direct delta Fz -20.827036757 N held wake 0.000000000 m/s installed pre-step driver 0.000000000 analytic spatial source 4.503325209 native strip source 4.503325209 after 60x240Hz (installed/analytic) 0.000000000 4.472982043 m/s\nAERO-03 Stik 2deg V 9.0 Re 187796 Mach 0.0264 CL 0.266672159483 CD 0.043509596177 CM-ARP -0.053037460984\nAERO-03 Stik 2deg V 15.0 Re 312993 Mach 0.0441 CL 0.266672159483 CD 0.043509596177 CM-ARP -0.053037460984\nAERO-03 Stik 2deg V 25.0 Re 521655 Mach 0.0735 CL 0.266672159483 CD 0.043509596177 CM-ARP -0.053037460984\n",
+          "stderr": ""
+        }
+      ],
+      "ok": true
+    },
+    {
+      "name": "helicopter",
+      "scope": "actual native header components",
+      "source": "research/native-physics-audit-2026-11-28/probes/helicopter_probe.cpp",
+      "source_sha256": "cfab76c15ea6c2e051227b803f1021dac3eea877e650416bbaea9f4da8ecf2d9",
+      "steps": [
+        {
+          "command": [
+            "c++",
+            "-std=c++17",
+            "-O2",
+            "-fno-fast-math",
+            "-ffp-contract=off",
+            "-I",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-kernel/src",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/helicopter_probe.cpp",
+            "-o",
+            "/tmp/openrc-audit-components-r1zfwemd/helicopter"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/tmp/openrc-audit-components-r1zfwemd/helicopter"
+          ],
+          "returncode": 0,
+          "stdout": "XCell W_N=80.4145300000 vh=4.1706868524 mu15=0.1158972378 vi=1.1562122185 theta=0.0597507351\ntilt_deg=-8.0000000000 T_N=80.4145300000 shaft_W=831.6865481576 Tvi_W=92.9762621314 profile_W=738.7102860262 FdotU_W=167.8730925352 residual_W=-167.8730925352 adot=-0.0000000000 vidot=-0.0000000000\ntilt_deg=0.0000000000 T_N=80.4145300000 shaft_W=831.6865481576 Tvi_W=92.9762621314 profile_W=738.7102860262 FdotU_W=-0.0000000000 residual_W=-0.0000000000 adot=0.0000000000 vidot=-0.0000000000\ntilt_deg=8.0000000000 T_N=80.4145300000 shaft_W=831.6865481576 Tvi_W=92.9762621314 profile_W=738.7102860262 FdotU_W=-167.8730925352 residual_W=167.8730925352 adot=0.0000000000 vidot=-0.0000000000\nlateral_u=-0.0000000100 v=14 w=5 adot=-0.0107764466\nlateral_u=0.0000000000 v=14 w=5 adot=0.0000000000\nlateral_u=0.0000000100 v=14 w=5 adot=0.0107764466\ncrossflow20_head=16.7000000000 ok=1 adot_rad_s=-0.0000000000\ncrossflow20_head=16.7000010000 ok=0\ncrossflow20_head=18.2479351818 ok=1 adot_rad_s=431.2824631131\ncrossflow20_head=167.0000000000 ok=1 adot_rad_s=0.0475143483\nground_VoverVh=0.0000000000 native_IGE_OGE=0.8878183568 wake_cos=1.0000000000 h_ray_over_R=1.1000000000\nground_VoverVh=0.7500000000 native_IGE_OGE=0.8878183568 wake_cos=0.7575481337 h_ray_over_R=1.4520529470\nground_VoverVh=1.5000000000 native_IGE_OGE=0.8878183568 wake_cos=0.3801993223 h_ray_over_R=2.8932192546\nground_VoverVh=3.0000000000 native_IGE_OGE=0.8878183568 wake_cos=0.1097722286 h_ray_over_R=10.0207494515\nground_VoverVh=4.0000000000 native_IGE_OGE=0.8878183568 wake_cos=0.0622577483 h_ray_over_R=17.6684835231\nthrust_axis_down=-1.0000000000 ground_factor=0.8878183568\nthrust_axis_down=-0.0000000100 ground_factor=0.8878183568\nthrust_axis_down=0.0000000000 ground_factor=1.0000000000\nthrust_axis_down=0.0000000100 ground_factor=1.0000000000\nthrust_axis_down=1.0000000000 ground_factor=1.0000000000\nJohnson_f=0.0000000000 z=-1.5000000000 vi_over_vh=2.0000000000\nJohnson_f=0.0000000000 z=-0.4500000000 vi_over_vh=1.2500000000\nJohnson_f=0.0000000000 z=1.0000000000 vi_over_vh=0.6180339887\nJohnson_f=0.0000000000 z=-3.0000000000 vi_over_vh=0.3819660113\nM_seam_f=0.0000000000 z=-1.3 x=0.9499999990 vi_over_vh=1.0053983291\nM_seam_f=0.0000000000 z=-1.3 x=0.9500000010 vi_over_vh=1.0053983264\nJohnson_f=1.0000000000 z=-1.5000000000 vi_over_vh=2.7500000000\nJohnson_f=1.0000000000 z=-0.4500000000 vi_over_vh=1.3000000000\nJohnson_f=1.0000000000 z=1.0000000000 vi_over_vh=0.6180339887\nJohnson_f=1.0000000000 z=-3.0000000000 vi_over_vh=0.3819660113\nM_seam_f=1.0000000000 z=-1.3 x=0.9499999990 vi_over_vh=1.1451453198\nM_seam_f=1.0000000000 z=-1.3 x=0.9500000010 vi_over_vh=1.0053983264\nC_seam_f=0 z=-1.428 x=0.7499999990 vi_over_vh=1.3160354702\nC_seam_f=0 z=-1.428 x=0.7500000010 vi_over_vh=1.3196282389\nwindmill_omega=0.0000000000 vz=-20.0000000000 T_N=0.0000000000 Qmain_Nm=0.0000000000 Qtail_Nm=0.0000000000 held_drive_Nm=-0.0000000000\nwindmill_omega=0.0000000000 vz=0.0000000000 T_N=0.0000000000 Qmain_Nm=0.0000000000 Qtail_Nm=0.0000000000 held_drive_Nm=-0.0000000000\nwindmill_omega=0.0000000000 vz=20.0000000000 T_N=0.0000000000 Qmain_Nm=0.0000000000 Qtail_Nm=0.0000000000 held_drive_Nm=-0.0000000000\nwindmill_omega=5.0000000000 vz=-20.0000000000 T_N=0.0757915236 Qmain_Nm=0.0190030020 Qtail_Nm=0.0000011274 held_drive_Nm=-0.0850000000\nwindmill_omega=5.0000000000 vz=0.0000000000 T_N=0.0757915236 Qmain_Nm=0.0190030020 Qtail_Nm=0.0000483273 held_drive_Nm=-0.0850000000\nwindmill_omega=5.0000000000 vz=20.0000000000 T_N=0.0757915236 Qmain_Nm=0.0190030020 Qtail_Nm=0.0000011274 held_drive_Nm=-0.0850000000\nwindmill_omega=167.0000000000 vz=-20.0000000000 T_N=-212.9552754867 Qmain_Nm=-22.4898165904 Qtail_Nm=0.0571034937 held_drive_Nm=-0.2470000000\nwindmill_omega=167.0000000000 vz=0.0000000000 T_N=64.9517709972 Qmain_Nm=4.6779232672 Qtail_Nm=0.0539120240 held_drive_Nm=-0.2470000000\nwindmill_omega=167.0000000000 vz=20.0000000000 T_N=212.9552754867 Qmain_Nm=-19.9394540097 Qtail_Nm=0.0571034937 held_drive_Nm=-0.2470000000\ngeared_J=0.0798000000 kinetic_W=-91.5310000000 external_work_W=-91.5310000000 residual_W=2.8421709430e-14\n",
+          "stderr": ""
+        }
+      ],
+      "ok": true
+    },
+    {
+      "name": "multirotor",
+      "scope": "independent equations and stock data",
+      "source": "research/native-physics-audit-2026-11-28/probes/drone_probe.py",
+      "source_sha256": "c8571fa1917bcd49a238e4949b96106019278f80fc0a5b34bb5b37042818d3c3",
+      "steps": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/drone_probe.py",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+          ],
+          "returncode": 0,
+          "stdout": "bench: RPM, measured/predicted N and relative error %\n   5436  0.372653  0.501407  +34.551\n  10238  1.490611  1.778532  +19.316\n  14754  3.344068  3.693610  +10.453\n  18746  5.609404  5.962780  +6.300\n  22194  8.080680  8.358006  +3.432\n  25601  10.983448  11.121040  +1.253\n  28392  13.797957  13.678029  -0.869\n  31026  16.710532  16.333645  -2.255\n  33213  19.368134  18.717496  -3.359\n  35042  20.947004  20.835758  -0.531\nRPM-coefficient interpolation held-row absolute percentage mean 0.461% (current 7.281%), worst 1.352%; max N 0.025025\nstock most-loaded static hover RPM 8911.915\n50% source-current duty: project 0.493342, ideal bridge inferred 0.544438\naxial: T 1.547299 N, aerodynamic Q 0.016125875 Nm, direction-of-travel work 23.209488 W; shaft 16.125875 W; ratio 1.439270; J 0.727557\nstock hub separation 0.14518316 m, separation/R 2.241519, tip gap 0.01564316 m; 1R, 2R, 4R heights [0.06477, 0.12954, 0.25908]\ncurrent: normal and friction impulses 0.056124011/0.014884224 Ns; body dK -0.006162527 J; coupled dK +0.010903904 J; max free axial speed jump 1.219030831 rad/s; delta r 1.219030831 rad/s\nfree shafts: normal and friction impulses 0.055817203/0.014764473 Ns; body dK -0.006113906 J; coupled dK -0.006135009 J; max free axial speed jump 0.000000000 rad/s; delta r 1.227721477 rad/s\nPractice oval 1 top banner: body witness [ 0.07196773  0.07259158 -0.02699322] outward normal [-0.98480775 -0.17364818  0.        ]\ncurrent: normal and friction impulses 0.058779823/0.013482706 Ns; body dK -0.006492401 J; coupled dK +0.010788070 J; max free axial speed jump 1.234319381 rad/s; delta r 1.234319381 rad/s\nfree shafts: normal and friction impulses 0.058454678/0.013367461 Ns; body dK -0.006440876 J; coupled dK -0.006462519 J; max free axial speed jump 0.000000000 rad/s; delta r 1.243352372 rad/s\n5 mm capsule relative to front right hub x=0.01250000 m, y=0.06948950 m; intersection spans fractions 0.100000..0.300000\nsigned-speed strike threshold: start 265.00, duty 0.200, f=0.1/0.3 speeds 272.044643/285.944038, end 332.647959 rad/s; early/end eligible False/True\nsigned-speed strike threshold: start 302.00, duty 0.055, f=0.1/0.3 speeds 301.735932/301.215175, end 299.467624 rad/s; early/end eligible True/False\n",
+          "stderr": ""
+        }
+      ],
+      "ok": true
+    },
+    {
+      "name": "combustion-turbine",
+      "scope": "actual native header components and independent scalar integration",
+      "source": "research/native-physics-audit-2026-11-28/probes/propulsion_probe.py",
+      "source_sha256": "680ee5caad367ba40ea1bfd11c464f6f4d317f94324b4415bc882ba539ed14fb",
+      "steps": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/propulsion_probe.py",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+          ],
+          "returncode": 0,
+          "stdout": "{\n  \"extra_61fx_2t\": {\n    \"min_power_ratio_glow_J0_to2\": 1.3385489980783862,\n    \"stopped_U20_thrust_N_torque_Nm_dissipation_W\": [\n      -1.031749199828849,\n      -0.10558167847130137,\n      20.634983996576974\n    ]\n  },\n  \"f4u_corsair_250\": {\n    \"brake_50W_above_idle_W\": 108.19498773803896,\n    \"fuel_current_vs_brake_anchored_kg_h_at_idle_plus500W\": [\n      0.4765425638690195,\n      0.538\n    ],\n    \"fuel_current_vs_brake_anchored_kg_h_at_idle_plus50W\": [\n      0.28800000000000003,\n      0.313\n    ],\n    \"idle_indicated_brake_loss_W\": [\n      181.10986,\n      58.19498773803895,\n      122.91487226196105\n    ],\n    \"thrust_N_torque_Nm_at_RPM4500_Uminus20_or0\": [\n      304.63553548646047,\n      15.436715646147682\n    ],\n    \"thrust_N_torque_Nm_source_off_rpm_per_s_at_RPM0_U40\": [\n      0.0,\n      0.0,\n      0.0\n    ],\n    \"thrust_N_torque_Nm_source_off_rpm_per_s_at_RPM100_U20_or40\": [\n      -0.11805077649474903,\n      -0.017216255052889387,\n      -214.1888165681256\n    ],\n    \"thrust_N_torque_Nm_source_off_rpm_per_s_at_RPM3000_U30\": [\n      41.991778536597536,\n      4.848015950409705,\n      -1375.1857059166107\n    ],\n    \"uniform_to_spatial_velocity_delta_m_s\": [\n      -0.12494999999999834,\n      0.0,\n      -1.213052\n    ],\n    \"uniform_to_spatial_wrench_delta_N_Nm\": [\n      0.6526518494492279,\n      0.019674222650799322,\n      0.9500849821742288,\n      -0.005030012482063029,\n      -0.6221157292945012,\n      0.9737501470335603\n    ]\n  },\n  \"os_fs_64v_candidate\": {\n    \"dry_density_ratio_rating_W_opportunities_Hz_brake_W_torque_Nm_indicated_W_premix_kg_s\": [\n      [\n        1.0,\n        838.4685749999999,\n        91.66666666666667,\n        838.468575,\n        0.7278895545734595,\n        897.6905050635306,\n        0.0002550274895020454\n      ],\n      [\n        0.85,\n        838.4685749999999,\n        91.66666666666667,\n        703.8149992404702,\n        0.6109943790073058,\n        763.0369293040009,\n        0.0002167733660767386\n      ]\n    ]\n  },\n  \"os_max_55ax_candidate\": {\n    \"dry_density_ratio_rating_W_opportunities_Hz_brake_W_torque_Nm_indicated_W_premix_kg_s\": [\n      [\n        1.0,\n        1250.347875,\n        266.6666666666667,\n        1250.347875,\n        0.7462464183401147,\n        1337.3717182765822,\n        0.000745152456519918\n      ],\n      [\n        0.85,\n        1250.347875,\n        266.6666666666667,\n        1049.7421172585127,\n        0.6265186760004162,\n        1136.765960535095,\n        0.0006333795880419302\n      ]\n    ]\n  },\n  \"p51d_mustang_120\": {\n    \"brake_50W_above_idle_W\": 173.40636361140352,\n    \"fuel_current_vs_brake_anchored_kg_h_at_idle_plus500W\": [\n      0.48698053530570184,\n      0.538\n    ],\n    \"fuel_current_vs_brake_anchored_kg_h_at_idle_plus50W\": [\n      0.28800000000000003,\n      0.313\n    ],\n    \"idle_indicated_brake_loss_W\": [\n      225.445293,\n      123.40636361140352,\n      102.03892938859647\n    ],\n    \"thrust_N_torque_Nm_at_RPM4500_Uminus20_or0\": [\n      194.42188457235548,\n      8.696607293821684\n    ],\n    \"thrust_N_torque_Nm_source_off_rpm_per_s_at_RPM0_U40\": [\n      0.0,\n      0.0,\n      0.0\n    ],\n    \"thrust_N_torque_Nm_source_off_rpm_per_s_at_RPM100_U20_or40\": [\n      -0.0664321777714745,\n      -0.00653819124564989,\n      -246.17238087968155\n    ],\n    \"thrust_N_torque_Nm_source_off_rpm_per_s_at_RPM3000_U30\": [\n      -28.358781213842068,\n      -2.340543522199933,\n      689.1131016569715\n    ],\n    \"uniform_to_spatial_velocity_delta_m_s\": [\n      -0.1415520000000008,\n      0.0,\n      -1.44157\n    ],\n    \"uniform_to_spatial_wrench_delta_N_Nm\": [\n      1.0671936201647299,\n      0.013810687932211518,\n      0.9740866702421487,\n      -0.0730609913220217,\n      -0.7802547175906049,\n      0.6200425991802538\n    ]\n  },\n  \"sebart_avanti_s_a200\": {\n    \"rpm_command_installed_thrust_N_spool_rate_rpm_s_fuel_kg_s_rotor_power_W\": [\n      [\n        44000.0,\n        0.0,\n        1.84644,\n        0.0,\n        0.001067,\n        0.0\n      ],\n      [\n        44000.0,\n        1.0,\n        1.84644,\n        17600.0,\n        0.001067,\n        297.2286196523621\n      ],\n      [\n        110000.0,\n        0.0,\n        32.200919999999996,\n        -66000.0,\n        0.002459,\n        -2786.518309240895\n      ],\n      [\n        110000.0,\n        1.0,\n        32.200919999999996,\n        44000.0,\n        0.002459,\n        1857.6788728272631\n      ],\n      [\n        154000.0,\n        0.0,\n        92.00000000000001,\n        -92400.0,\n        0.0052,\n        -5461.575886112155\n      ],\n      [\n        154000.0,\n        1.0,\n        92.00000000000001,\n        0.0,\n        0.0052,\n        0.0\n      ]\n    ],\n    \"scalar_RK4_hz_command_t10_s_t90_s_six_second_burn_kg\": [\n      [\n        120.0,\n        0.0,\n        0.05749450046118168,\n        1.1431055033726198,\n        0.008465753369501072\n      ],\n      [\n        120.0,\n        1.0,\n        1.4172527164187934,\n        3.322126437965801,\n        0.020972180590640207\n      ],\n      [\n        240.0,\n        0.0,\n        0.0574934506080404,\n        1.143103707067439,\n        0.008465750752783453\n      ],\n      [\n        240.0,\n        1.0,\n        1.417253205199432,\n        3.3221098869095824,\n        0.020972184090175237\n      ],\n      [\n        480.0,\n        0.0,\n        0.057492925353102894,\n        1.1431028094779485,\n        0.008465751117119733\n      ],\n      [\n        480.0,\n        1.0,\n        1.4172534496922597,\n        3.322107333671143,\n        0.02097218249964862\n      ]\n    ]\n  },\n  \"stik_55ax_2t\": {\n    \"min_power_ratio_glow_J0_to2\": 1.2166867719294303,\n    \"stopped_U20_thrust_N_torque_Nm_dissipation_W\": [\n      -1.4566993489807691,\n      -0.13730975755741212,\n      29.13398697961539\n    ]\n  },\n  \"stik_55ax_2t_apc_13x6\": {\n    \"min_power_ratio_glow_J0_to2\": 1.0976717647568595,\n    \"stopped_U20_thrust_N_torque_Nm_dissipation_W\": [\n      -1.7667717919730848,\n      -0.15659784105643454,\n      35.335435839461695\n    ]\n  },\n  \"stik_61fx_2t\": {\n    \"min_power_ratio_glow_J0_to2\": 1.1312212495287364,\n    \"stopped_U20_thrust_N_torque_Nm_dissipation_W\": [\n      -1.4913472739199816,\n      -0.1284318499769135,\n      29.82694547839963\n    ]\n  },\n  \"stik_fs64v_4t\": {\n    \"min_power_ratio_glow_J0_to2\": 1.0831370320604956,\n    \"stopped_U20_thrust_N_torque_Nm_dissipation_W\": [\n      -2.5494857640589896,\n      -0.2282333075910875,\n      50.98971528117979\n    ]\n  },\n  \"stik_fs64v_4t_apc_13x6\": {\n    \"min_power_ratio_glow_J0_to2\": 1.1100971901036634,\n    \"stopped_U20_thrust_N_torque_Nm_dissipation_W\": [\n      -2.184166601995709,\n      -0.19051486559491732,\n      43.68333203991418\n    ]\n  }\n}\n",
+          "stderr": ""
+        }
+      ],
+      "adjacent_cpp_sha256": "50bac893b4c70a8540b442d23753e01e50d531256beb7acb97c7c42f259a327e",
+      "ok": true
+    },
+    {
+      "name": "electric",
+      "scope": "actual native header components and stock data",
+      "source": "research/native-physics-audit-2026-11-28/probes/electric_probe.py",
+      "source_sha256": "d113a439976cb956504970aef786f1756cc2f7ce6615d32c3597b3c0aca7b824",
+      "steps": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/electric_probe.py",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+          ],
+          "returncode": 0,
+          "stdout": "FPV headroom_C=0 omega=929.26898476 duty=0.055 raw_V=25.31779006 raw_A=-3.92633533 limited_bus_V=68.45177010 pack_A=0.00000000 motor_A=-2.72727273 terminal_Thevenin_V=25.20000000 OSD_cell_V=11.40862835 assigned_loss_W=-0.00000000 ohmic_loss_W=0.00000000 ledger_residual_W=0 bridge_residual_W=4.94e-15\nFPV headroom_C=0.01 omega=929.26898476 duty=0.055 raw_V=25.31777855 raw_A=-3.92633638 limited_bus_V=67.90247952 pack_A=-0.05000000 motor_A=-2.95454545 terminal_Thevenin_V=25.20148846 OSD_cell_V=11.31707992 assigned_loss_W=2.13512455 ohmic_loss_W=0.00007500 ledger_residual_W=4.44e-16 bridge_residual_W=4.44e-15\nF50 source_W=261.96360000 old_duty=0.493342310 old_source_A=5.411965141 old_source_W=129.2377276 corrected_duty=0.544438450 corrected_motor_A=20.14920144 effective_R_ohm=0.132928320\ncalm axial=6.5 rho=1.225 setup_rpm=11380.928904344 matched_rpm=11380.928904344 setup_net_torque_Nm=-1.1102230246252e-15 electrical_shaft_torque_Nm=0.62622547442406 air_load_torque_Nm=0.62622547442406 isolated_net_accel_rad_s2=-5.0464682937507e-12 release_pack_A=35.700652732318 matched_pack_A=35.700652732318 root_residual_Nm=-1.1102230246252e-15\nsteady axial=9.4885840942752 rho=1.225 setup_rpm=11380.928904344 matched_rpm=11376.162471092 setup_net_torque_Nm=-0.0024768162122414 electrical_shaft_torque_Nm=0.62622547442406 air_load_torque_Nm=0.6287022906363 isolated_net_accel_rad_s2=-11.258255510188 release_pack_A=35.700652732318 matched_pack_A=35.807034948096 root_residual_Nm=-8.8817841970013e-16\ncool-dense axial=6.5 rho=1.2690410038559 setup_rpm=11337.89502269 matched_rpm=11248.498517635 setup_net_torque_Nm=-0.044299658761672 electrical_shaft_torque_Nm=0.59956400806455 air_load_torque_Nm=0.64386366682622 isolated_net_accel_rad_s2=-201.36208528033 release_pack_A=34.248821973602 matched_pack_A=36.112778912985 root_residual_Nm=-2.2204460492503e-16\nhot-high axial=6.5 rho=0.94393530968474 setup_rpm=11670.976169203 matched_rpm=11776.115365459 setup_net_torque_Nm=0.056796695082761 electrical_shaft_torque_Nm=0.564141202539 air_load_torque_Nm=0.50734450745624 isolated_net_accel_rad_s2=258.16679583073 release_pack_A=32.319898863053 matched_pack_A=29.724973977926 root_residual_Nm=6.6613381477509e-16\nfixed-wing 32-point power balance max_abs_W=4.8983039846462e-13\n",
+          "stderr": ""
+        }
+      ],
+      "adjacent_cpp_sha256": "0212cb29ce7da600b02d886ad7f7e0b72c3dc75aa702bd5d8bd1d6ee97e2814f",
+      "ok": true
+    },
+    {
+      "name": "native-engine",
+      "scope": "actual native header work/allocation counters",
+      "source": "research/native-physics-audit-2026-11-28/probes/native_engine_probe.cpp",
+      "source_sha256": "4bb12cb95024b25a0bdf2b97517ed84e486556a63fc1f896b705261ddaa1311b",
+      "steps": [
+        {
+          "command": [
+            "c++",
+            "-std=c++17",
+            "-O2",
+            "-fno-fast-math",
+            "-ffp-contract=off",
+            "-I",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-kernel/src",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/native_engine_probe.cpp",
+            "-o",
+            "/tmp/openrc-audit-components-r1zfwemd/native-engine"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/tmp/openrc-audit-components-r1zfwemd/native-engine"
+          ],
+          "returncode": 0,
+          "stdout": "rk4_one alloc=0 bytes=0 rhs_after_k1=3 events=0 event_t=-1 hash=4373a93e209682b7 pass=1\nrk4_eight alloc=2 bytes=512 rhs_after_k1=31 events=0 event_t=-1 hash=990b74ae903c0141 pass=1\ndeclared_clear alloc=4 bytes=1024 rhs_after_k1=3 events=0 event_t=-1 hash=4373a93e209682b7 pass=1\ndeclared_clear_eight alloc=25 bytes=6400 rhs_after_k1=31 events=0 event_t=-1 hash=990b74ae903c0141 pass=1\ndeclared_cross alloc=13 bytes=3080 rhs_after_k1=13 events=1 event_t=0.0020833333333333333 hash=8e83960d502629d3 pass=1\nresource_clear alloc=11 bytes=923 rhs_after_k1=3 events=0 event_t=-1 hash=347d642c7072bb79 pass=1\nresource_cross alloc=28 bytes=3435 rhs_after_k1=16 events=1 event_t=0.0020833333333333264 hash=8d11fa07d0c3ebd6 pass=1\nblade_vs_shaft_different_bits=1813/4096 first=0x1.0e3a57b6b926p+0,0x1.0e3a57b6b925fp+0\n",
+          "stderr": ""
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "finished_utc": "2026-11-28T15:40:09.912884+00:00",
+  "ok": true
+}

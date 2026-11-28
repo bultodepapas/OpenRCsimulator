@@ -1,0 +1,11 @@
+{
+  "format": "openrc-drone-frame-energy-witness-v1",
+  "base_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "scope": "Actual stock production Plant._bounce; prescribed frame-only contact; independent complete-energy calculation; not a complete session or piloted flight.",
+  "checked_ok": true,
+  "checks": 8,
+  "log_sha256": "4902717425e9637b22782c099644494969efe7f536b74b2eff4b8fc5de220ea5",
+  "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nDRONE-03 production _bounce: rigid_delta_j=-0.006492401067 complete_delta_j=0.010788070268 zero_shaft_control_delta_j=-0.006492401067 free_axial_jump_rad_s=1.234319381087\nDRONE_FRAME_ENERGY_COUNTEREXAMPLE: 8 checks, 0 failed\n",
+  "probe_sha256": "96718de43baabe72db9bc0a2a3a28e7907e9e7457a4722cf55f07ba10fbc854a",
+  "interpretation": "A passing probe establishes the baseline counterexample; a repair must reverse the full-energy assertion and preserve controls."
+}
