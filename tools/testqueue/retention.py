@@ -106,11 +106,14 @@ def _size(path: Path) -> int:
 class References:
     """What still needs each input, gathered from durable records only."""
 
-    def __init__(self, queue_root: Path, pool_root: Path | None):
+    def __init__(self, queue_root: Path, pool_root: Path | None, stale_request_hours: float | None = None,
+                 now: float | None = None):
         self.queue_root, self.pool_root = queue_root, pool_root
+        self.stale_request_hours, self.now = stale_request_hours, time.time() if now is None else now
         self.held: dict[str, str] = {}          # normalized snapshot path -> reason
         self.held_digests: dict[str, str] = {}  # archive source digest -> reason
         self.attempts: list[dict] = []
+        self.stale_requests: list[str] = []
         self._local()
         if pool_root is not None:
             self._pool()
@@ -176,9 +179,10 @@ class References:
         for path in sorted((root / "batches").glob("*.json")):
             if path.name.endswith("-state.json"):
                 continue
-            state = _read(path.with_name(path.stem + "-state.json")) or {}
+            state_path = path.with_name(path.stem + "-state.json")
+            state = _read(state_path) or {}
             manifest = _read(path) or {}
-            if state.get("result") not in FINAL_BATCH:
+            if state.get("result") not in FINAL_BATCH and not self._stale(f"batch {path.stem}", path, state_path):
                 self.hold(manifest.get("snapshot") or state.get("snapshot"),
                           f"batch {path.stem} is {state.get('result', 'INCOMPLETE')}")
         for directory in sorted((root / "mcp").glob("*")):
@@ -186,16 +190,38 @@ class References:
             if manifest is None:
                 continue
             batch = _read(directory / "batch.json") or {}
-            if batch.get("result") not in FINAL_BATCH:
+            if batch.get("result") not in FINAL_BATCH and not self._stale(
+                    f"MCP request {directory.name}", *(directory / name for name in
+                                                       ("manifest.json", "batch.json", "supervisor.json"))):
                 self.hold(manifest.get("snapshot"), f"MCP request {directory.name} is {batch.get('result', 'INCOMPLETE')}")
+
+    def _stale(self, label, *paths):
+        """A request without a final result that nothing has touched for long (TQ-07-G4).
+
+        The watchdog stops resuming a request after 6 h; its undispatched rows
+        would run days-old source. It no longer pins its snapshot. Rows it did
+        dispatch keep theirs through their own non-terminal pool receipts.
+        """
+        if not self.stale_request_hours:
+            return False
+        times = []
+        for path in paths:
+            try:
+                times.append(os.lstat(path).st_mtime)
+            except OSError:
+                pass
+        if not times or (self.now - max(times)) / 3600 < self.stale_request_hours:
+            return False
+        self.stale_requests.append(label)
+        return True
 
     hold_all = ""
 
 
 def plan(queue_root: Path, pool_root: Path | None, min_age_hours: float, now: float | None = None,
-         sizes: bool = True) -> dict:
+         sizes: bool = True, stale_request_hours: float | None = None) -> dict:
     now = time.time() if now is None else now
-    refs = References(queue_root, pool_root)
+    refs = References(queue_root, pool_root, stale_request_hours, now)
     candidates, holds = [], []
 
     def consider(kind, path: Path, reason: str | None):
@@ -251,20 +277,23 @@ def plan(queue_root: Path, pool_root: Path | None, min_age_hours: float, now: fl
         bucket["count"] += 1
         bucket["bytes"] += row.get("bytes", 0)
     return {"queue_root": str(queue_root), "pool_root": str(pool_root) if pool_root else None,
-            "min_age_hours": min_age_hours, "summary": summary,
+            "min_age_hours": min_age_hours, "stale_request_hours": stale_request_hours,
+            "stale_requests": len(refs.stale_requests), "summary": summary,
             "largest_holds": sorted(({"reason": k, **v} for k, v in reasons.items()),
                                     key=lambda item: -item["bytes"])[:15],
             "candidates": candidates, "holds": holds}
 
 
-def execute(report: dict, queue_root: Path, pool_root: Path | None, min_age_hours: float) -> dict:
+def execute(report: dict, queue_root: Path, pool_root: Path | None, min_age_hours: float,
+            stale_request_hours: float | None = None) -> dict:
     journal_dir = (pool_root or queue_root) / "retention"
     journal_dir.mkdir(exist_ok=True)
     journal = journal_dir / time.strftime("retention-%Y%m%d-%H%M%S.json")
     write_json(journal, {"state": "PLANNED", "candidates": report["candidates"]})
     # Recompute immediately before removal: work submitted since the dry run
     # can only add references, never remove the need for a held input.
-    fresh = {row["path"] for row in plan(queue_root, pool_root, min_age_hours, sizes=False)["candidates"]}
+    fresh = {row["path"] for row in plan(queue_root, pool_root, min_age_hours, sizes=False,
+                                         stale_request_hours=stale_request_hours)["candidates"]}
     removed, skipped, errors = 0, [], []
     for row in report["candidates"]:
         path = Path(row["path"])
@@ -301,19 +330,24 @@ def main(argv=None):
     parser.add_argument("--pool-config", type=Path, default=None)
     parser.add_argument("--no-pool", action="store_true", help="local authority only")
     parser.add_argument("--min-age-hours", type=float, default=24.0)
+    parser.add_argument("--stale-request-hours", type=float, default=72.0,
+                        help="a batch or MCP request with no final result and no change for this long no longer "
+                             "pins its snapshot (TQ-07-G4); 0 disables")
     parser.add_argument("--details", action="store_true", help="list every candidate and hold")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args(argv)
     if args.min_age_hours < 1:
         parser.error("--min-age-hours must be at least 1")
+    if args.stale_request_hours and args.stale_request_hours < 24:
+        parser.error("--stale-request-hours must be 0 or at least 24")
     queue_root = (args.queue_root or state_root()).resolve()
     pool_root = None if args.no_pool else _pool_root(args.pool_config)
-    report = plan(queue_root, pool_root, args.min_age_hours)
+    report = plan(queue_root, pool_root, args.min_age_hours, stale_request_hours=args.stale_request_hours)
     output = {key: value for key, value in report.items() if args.details or key not in {"candidates", "holds"}}
     output["reclaim_gb"] = round(sum(row.get("bytes", 0) for row in report["candidates"]) / 1e9, 2)
     output["execute"] = args.execute
     if args.execute:
-        output["result"] = execute(report, queue_root, pool_root, args.min_age_hours)
+        output["result"] = execute(report, queue_root, pool_root, args.min_age_hours, args.stale_request_hours)
     print(json.dumps(output, indent=2))
     return 0 if not output.get("result", {}).get("errors") else 1
 

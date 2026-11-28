@@ -942,6 +942,7 @@ python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
 - `retention.py` (TQ-05-F0.1) removes, after `--min-age-hours` (default 24):
   - the `source` copy of finished, unclaimed `checked`/`debug-session` attempts, whatever their outcome except `UNKNOWN`. Those presets keep their evidence outside `source`.
   - local and pool snapshots, and pool archives, that no unfinished job, unresolved submission, non-terminal receipt or non-final batch/MCP request names.
+  - A batch or MCP request without a final result that has not changed for `--stale-request-hours` (default 72; `0` disables) no longer pins its snapshot (TQ-07-G4). The watchdog stops resuming a request after 6 h, so its undispatched rows would run days-old source. Rows it did dispatch keep their snapshot through their own non-terminal receipts. On 28 November this released 45 snapshots (30.2 GB) on `C:` that requests idle for 5–13 days had pinned.
 
   It prints hold reasons, so an abandoned batch that pins inputs is visible. Any unreadable pool receipt holds every pool input. `--execute` journals the plan under `<pool root>/retention/`, then recomputes references and removes only inputs that are still unreferenced. Archives are removed under the builder's lock. Records, verdicts, logs, collected results and `*.pending` files are never removed. The first run, on 20 November 2026, reclaimed 101 GB on `C:`.
 - `local_gc.py` removes `<attempt>/source` only for unclaimed attempts recorded

@@ -102,6 +102,30 @@ class RetentionTests(unittest.TestCase):
         self.assertIn(("local-snapshot", "live"), self.kinds(report, "holds"))
         self.assertIn(("local-snapshot", "pending"), self.kinds(report, "holds"))
 
+    def test_a_stale_request_no_longer_pins_its_snapshot_but_a_live_receipt_still_does(self):
+        # TQ-07-G4: 28 November, 60 snapshots (38.8 GB) on C: were pinned by MCP
+        # requests idle for 5-13 days that the watchdog will never resume.
+        snaps = {name: _tree(self.pool / "snapshots" / name) for name in ("stale", "fresh", "dispatched")}
+        for path in snaps.values():
+            _age(path)
+        for name in ("stale", "fresh", "dispatched"):
+            directory = self.pool / "mcp" / name
+            _write(directory / "manifest.json", {"snapshot": str(snaps[name]), "jobs": []})
+            _write(directory / "batch.json", {"result": "INCOMPLETE", "jobs": []})
+            _write(directory / "supervisor.json", {"state": "NEEDS_OPERATOR"})
+            if name != "fresh":
+                for item in directory.iterdir():
+                    _age(item, time.time() - 5 * 24 * 3600)
+        _write(self.pool / "jobs" / "live.json", {"state": "SUBMITTED", "snapshot": str(snaps["dispatched"]),
+                                                   "last_status": {"state": "RUNNING"}})
+        report = self.plan(stale_request_hours=72)
+        self.assertIn(("pool-snapshot", "stale"), self.kinds(report, "candidates"))
+        self.assertIn(("pool-snapshot", "fresh"), self.kinds(report, "holds"))
+        self.assertIn(("pool-snapshot", "dispatched"), self.kinds(report, "holds"))  # its receipt still pins it
+        self.assertEqual(report["stale_requests"], 2)
+        # Without the threshold (the library default) every unfinished request still pins.
+        self.assertIn(("pool-snapshot", "stale"), self.kinds(self.plan(), "holds"))
+
     def test_pool_inputs_follow_receipts_batches_and_mcp_requests(self):
         snaps = {name: _tree(self.pool / "snapshots" / name) for name in ("done", "running", "batch", "mcp", "orphan")}
         for path in snaps.values():
