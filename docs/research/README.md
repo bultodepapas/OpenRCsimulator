@@ -11,6 +11,29 @@
 
 Some tools use local-only material from `references/`; their reports say when a fresh clone cannot reproduce the original measurement. Commit the resulting evidence and source identity, not private reference files.
 
+## Electric ducted fan investigation
+
+[EDF-00, 2026-11-21](edf-propulsion/README.md) investigates an EDF sibling of the
+existing Vantage Jet / SebArt Avanti S A200, with 128 mm, 152 mm and oversized
+195 mm fan cases. It records primary sources, force/torque/energy contracts,
+fifteen source and integration findings, reproducible sizing arithmetic and a
+validation matrix. The [EDF plan](../plans/edf-propulsion.md) owns implementation
+steps and pending gates; no EDF runtime or physical qualification is delivered.
+The [independent EDF-00-R1 audit](edf-propulsion/external-audit-2026-11-21.md)
+records fifteen proposal corrections, separate software/physical evidence
+dependencies and the inherited CI preflight blocker.
+The [twenty EDF-00-R2 investigations](edf-propulsion/native-research-2026-11-21.md)
+cover physics, native execution, games, tools and community leads. Their useful
+results are integrated into the plan and a proposed
+[native runtime/product contract](edf-propulsion/native-runtime-design.md):
+complete native numerical flight, explicit native-only EDF admission, bounded
+models/workspace, native Godot stand/preview and measured full-callback efficiency.
+The [fourteen scientific studies in EDF-00-R3](edf-propulsion/scientific-literature-2026-11-21.md)
+add a critical power/thrust/dynamics review, corrected-source and geometry
+checks, native mission-energy accounting and stronger physical protocols.
+Electrical power, inferred shaft power, CFD predictions and installed-aircraft
+forces retain separate meanings; paper values do not calibrate the A200 by name.
+
 ## Sources, data and conversions
 
 | Need | Authoritative collection |

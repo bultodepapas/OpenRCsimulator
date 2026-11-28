@@ -1,0 +1,233 @@
+{
+  "format": "openrc-edf-research-calculations-v2",
+  "baseline_commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "externally_audited_research_commit": "719c3cc6b8e3ac32d2f62e08b6df9b646925361f",
+  "scope": "Planning arithmetic and analytic counterexamples only; no runtime, flight, fit, or hardware qualification.",
+  "energy_assumptions": {
+    "cell_nominal_v": 3.7,
+    "series": 14,
+    "nominal_energy_fraction": 0.8,
+    "voltage_sag_losses_auxiliaries_and_cutoff_included": false
+  },
+  "tip_mach_proxy_scope": "Tangential-only casing proxy at a fixed 340 m/s acoustic speed, assuming blades fit within it; not a helical relative-flow bound. Actual blade-tip diameter and local acoustic speed are not identified.",
+  "fan_scenarios": [
+    {
+      "configuration": "DS-98 / DSM6036-600",
+      "casing_inside_diameter_mm": 128.0,
+      "fan_swept_area_cm2": 98.0,
+      "hypothetical_14s_capacity_ah": 9.0,
+      "constant_electrical_input_w": 7000.0,
+      "nominal_voltage_v": 51.800000000000004,
+      "nominal_energy_wh": 466.20000000000005,
+      "nominal_current_a": 135.13513513513513,
+      "time_at_80pct_nominal_energy_min": 3.1968000000000005,
+      "unobstructed_exit_diameter_at_85pct_fsa_mm": 102.98585052153477,
+      "unobstructed_exit_diameter_at_100pct_fsa_mm": 111.70383851240115,
+      "surrogate_72mm_exit_area_over_fsa": 0.4154595999033032,
+      "casing_based_tip_mach_upper_bound_proxy_at_listed_rpm_and_a340": 0.5617906862889983
+    },
+    {
+      "configuration": "DS-130 / DSM7857-470",
+      "casing_inside_diameter_mm": 152.0,
+      "fan_swept_area_cm2": 130.0,
+      "hypothetical_14s_capacity_ah": 14.0,
+      "constant_electrical_input_w": 12000.0,
+      "nominal_voltage_v": 51.800000000000004,
+      "nominal_energy_wh": 725.2,
+      "nominal_current_a": 231.66023166023163,
+      "time_at_80pct_nominal_energy_min": 2.9008000000000003,
+      "unobstructed_exit_diameter_at_85pct_fsa_mm": 118.61406733319428,
+      "unobstructed_exit_diameter_at_100pct_fsa_mm": 128.6550196516137,
+      "surrogate_72mm_exit_area_over_fsa": 0.31319262146556703,
+      "casing_based_tip_mach_upper_bound_proxy_at_listed_rpm_and_a340": 0.46815890524083187
+    },
+    {
+      "configuration": "DS-215 / DSM10066-290",
+      "casing_inside_diameter_mm": 195.0,
+      "fan_swept_area_cm2": 215.0,
+      "hypothetical_14s_capacity_ah": 20.0,
+      "constant_electrical_input_w": 15600.0,
+      "nominal_voltage_v": 51.800000000000004,
+      "nominal_energy_wh": 1036.0,
+      "nominal_current_a": 301.15830115830113,
+      "time_at_80pct_nominal_energy_min": 3.187692307692308,
+      "unobstructed_exit_diameter_at_85pct_fsa_mm": 152.5400035401701,
+      "unobstructed_exit_diameter_at_100pct_fsa_mm": 165.45286401814263,
+      "surrogate_72mm_exit_area_over_fsa": 0.18937228274662193,
+      "casing_based_tip_mach_upper_bound_proxy_at_listed_rpm_and_a340": 0.4204190168774577
+    }
+  ],
+  "mass_accounting": {
+    "baseline_inventory_kg": 11.438578,
+    "proposed_removed_items_kg": {
+      "engine_main": 1.08,
+      "turbine_accessories": 0.3,
+      "thrust_tube": 0.35,
+      "fuel_tank": 0.3,
+      "fuel_flight": 1.29628,
+      "ballast_reference": 0.062298
+    },
+    "retained_inventory_kg": 8.049999999999999,
+    "illustrative_two_6s10ah_tattu_pack_mass_kg": 2.714,
+    "incomplete_128mm_conversion_subtotal_kg": 12.014,
+    "conflicting_specification_two_pack_mass_kg": 2.592,
+    "incomplete_subtotal_with_conflicting_specification_mass_kg": 11.892,
+    "pack_source_conflict": "Description says 1357 g; specification table says 1296 g, 60 A continuous and 90 A pulse. Neither mass identifies an approved high-current EDF supply.",
+    "omissions": "New ESC, ducts, wiring, mounting changes and revised balance; bundled receiver/ECU/avionics masses remain unresolved. This is not EDF all-up mass."
+  },
+  "turbine_direct_law_counterexample": {
+    "rpm": 1.0,
+    "density_kg_m3": 1.225,
+    "axial_velocity_mps": 0.0,
+    "extrapolated_mass_flow_kg_s": -8.506000000005343e-06,
+    "mass_flow_zero_rpm": 6.693440428382236,
+    "computed_gross_thrust_n": -7.866e-06,
+    "scope": "Algebra using accepted table rows; normal-flight reachability and engine execution not established."
+  },
+  "battery_thermal_admission_counterexample": {
+    "mass_kg": 0.01,
+    "specific_heat_j_per_kg_k": 100.0,
+    "cooling_w_per_k": 720.0,
+    "thermal_capacity_j_per_k": 1.0,
+    "dt_s": 0.004166666666666667,
+    "lambda_dt": -3.0,
+    "rk4_amplification": 1.375,
+    "exact_amplification": 0.049787068367863944,
+    "initial_temperature_k": 298.25,
+    "rk4_temperature_after_one_step_k": 298.28749999999997,
+    "exact_temperature_after_one_step_k": 298.15497870683674,
+    "scope": "Scalar bounds and missing guard term verified in source; no admitted complete flight fixture was executed."
+  },
+  "external_audit_oracles": {
+    "scope": "Synthetic analytic oracles and deliberately invalid examples; no Godot execution or measured hardware parameters.",
+    "locked_inertia_energy": {
+      "locked_inertia_kg_m2": 2.0,
+      "rotor_inertia_kg_m2": 0.5,
+      "body_rate_rad_s": 3.0,
+      "relative_spin_rad_s": 4.0,
+      "external_moment_nm": 2.0,
+      "net_shaft_torque_nm": 3.0,
+      "body_acceleration_rad_s2": -0.6666666666666666,
+      "relative_spin_acceleration_rad_s2": 6.666666666666667,
+      "body_energy_j": 9.0,
+      "coupling_energy_j": 6.0,
+      "relative_rotor_energy_j": 4.0,
+      "total_energy_j": 19.0,
+      "energy_rate_w": 18.0,
+      "independent_work_rate_w": 18.0,
+      "power_residual_omitting_cross_term_w": -8.666666666666666
+    },
+    "windmill_passivity_counterexample": {
+      "uniform_air_relative_speed_mps": 20.0,
+      "relative_spin_rad_s": 100.0,
+      "signed_fan_load_nm": -1.0,
+      "invalid_axial_force_n": -1.0,
+      "invalid_aerodynamic_power_w": 80.0,
+      "comparison_axial_force_n": -6.0,
+      "comparison_aerodynamic_power_w": -20.0,
+      "scope": "Zero body rate, complete quasi-steady isolated installation, uniform ambient air, no fluid storage, external heat, mass injection or omitted energy flux; positive result violates passivity. A nonpositive result alone does not prove realism."
+    },
+    "fixed_parameter_rc_storage": {
+      "current_a": 1.0,
+      "r0_ohm": 0.1,
+      "r1_ohm": 1.0,
+      "tau_s": 1.0,
+      "rc_voltage_v": 0.5,
+      "capacitance_f": 1.0,
+      "ocv_minus_terminal_power_w": 0.6,
+      "dissipation_w": 0.35,
+      "polarization_energy_rate_w": 0.25,
+      "balance_residual_w": 0.0,
+      "scope": "Fixed parameters only; variable tau/R requires parameter-work terms for an exact storage interpretation."
+    },
+    "stable_but_inaccurate_rk4": {
+      "decay_rate_per_s": 480.0,
+      "horizon_s": 0.004166666666666667,
+      "initial_value": 1.0,
+      "exact_value": 0.1353352832366127,
+      "refinement": [
+        {
+          "comparison_hz": 240,
+          "steps_over_one_240hz_tick": 1,
+          "value": 0.33333333333333337,
+          "absolute_error": 0.19799805009672067,
+          "relative_error": 1.4630186996435501
+        },
+        {
+          "comparison_hz": 480,
+          "steps_over_one_240hz_tick": 2,
+          "value": 0.14062500000000003,
+          "absolute_error": 0.0052897167633873254,
+          "relative_error": 0.03908601391212281
+        },
+        {
+          "comparison_hz": 960,
+          "steps_over_one_240hz_tick": 4,
+          "value": 0.1355497705071796,
+          "absolute_error": 0.00021448727056688766,
+          "relative_error": 0.0015848584747252497
+        },
+        {
+          "comparison_hz": 1920,
+          "steps_over_one_240hz_tick": 8,
+          "value": 0.13534614195713252,
+          "absolute_error": 1.0858720519812959e-05,
+          "relative_error": 8.023569508350733e-05
+        }
+      ],
+      "scope": "A stable 240 Hz step and improving refinement do not establish a predeclared production-step error budget."
+    },
+    "within_tick_rotor_stop": {
+      "locked_inertia_kg_m2": 0.06,
+      "rotor_inertia_kg_m2": 0.01,
+      "initial_body_rate_rad_s": 0.0,
+      "initial_relative_spin_rad_s": 0.04,
+      "net_internal_torque_before_stop_nm": -0.2,
+      "external_moment_nm": 0.0,
+      "relative_spin_acceleration_rad_s2": -24.0,
+      "exact_stop_time_s": 0.0016666666666666668,
+      "unlocalized_full_tick_trial_spin_rad_s": -0.060000000000000005,
+      "accepted_relative_spin_after_stop_rad_s": 0.0,
+      "body_rate_after_stop_rad_s": 0.006666666666666669,
+      "initial_angular_momentum_kg_m2_s": 0.0004,
+      "final_angular_momentum_kg_m2_s": 0.00040000000000000013,
+      "initial_energy_j": 8.000000000000001e-06,
+      "final_energy_j": 1.3333333333333343e-06,
+      "internal_work_to_stop_j": -6.6666666666666675e-06,
+      "scope": "Constant moving-side torque until stop, then a feasible static hold. Negative trial speed is a locator probe, never an accepted reverse-spin state."
+    },
+    "spatial_station_flow": {
+      "datum_air_velocity_body_mps": [
+        20.0,
+        1.0,
+        0.0
+      ],
+      "body_rate_rad_s": [
+        0.4,
+        0.3,
+        2.0
+      ],
+      "station_arm_body_m": [
+        1.0,
+        -0.2,
+        0.1
+      ],
+      "station_minus_datum_wind_body_mps": [
+        1.0,
+        0.5,
+        -0.2
+      ],
+      "omega_cross_arm_mps": [
+        0.43000000000000005,
+        1.96,
+        -0.38
+      ],
+      "expected_local_air_velocity_body_mps": [
+        19.43,
+        2.46,
+        -0.18
+      ],
+      "scope": "Point kinematics only; not finite-disc aerodynamic validation."
+    }
+  }
+}
