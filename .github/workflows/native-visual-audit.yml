@@ -14,8 +14,49 @@ permissions:
   contents: read
 
 jobs:
+  select-workloads:
+    name: Select the verified capture scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      workloads: ${{ steps.scope.outputs.workloads }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: |
+            .github/workflows
+      - name: Fetch the reviewed first candidate
+        run: git fetch --no-tags --depth=1 --filter=blob:none origin 9d4569310ef223fc129472a20e21aada8ea624f0
+      - id: scope
+        name: Keep final-source field timings and the corrected Moon views
+        env:
+          AUDIT_EVENT: ${{ github.event_name }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          workloads = ["field:lake_shore", "field:lake_overview", "field:pilot_north",
+                       "field:plain_highway", "field:plain_field_entry", "field:postcard_pavilion",
+                       "detail:controls", "detail:moon", "detail:roofs", "detail:windsock",
+                       "detail:storm", "detail:paint"]
+          changed = subprocess.check_output([
+              "git", "diff", "--name-only", "9d4569310ef223fc129472a20e21aada8ea624f0", "HEAD",
+              "--", "app", "assets", "tools"], text=True).splitlines()
+          # Only this source-isolated follow-up can reuse first-candidate detail evidence.
+          # Its field performance still runs on the final shader bytes. Manual runs stay full.
+          lunar_only = (os.environ["AUDIT_EVENT"] == "push" and
+                        changed == ["app/render/world/moon_disc.gdshaderinc"])
+          if lunar_only:
+              workloads = [w for w in workloads if w.startswith("field:") or w == "detail:moon"]
+          print(json.dumps({"lunar_followup": lunar_only, "changed_runtime_and_tools": changed,
+                            "workloads": workloads}, indent=2))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("workloads=" + json.dumps(workloads) + "\n")
+          PY
+
   paired-captures:
     name: Paired 1080p images and software render timing (${{ matrix.renderer }}, ${{ matrix.workload }})
+    needs: select-workloads
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
@@ -23,19 +64,7 @@ jobs:
       max-parallel: 12
       matrix:
         renderer: [gl_compatibility, forward_plus]
-        workload:
-          - field:lake_shore
-          - field:lake_overview
-          - field:pilot_north
-          - field:plain_highway
-          - field:plain_field_entry
-          - field:postcard_pavilion
-          - detail:controls
-          - detail:moon
-          - detail:roofs
-          - detail:windsock
-          - detail:storm
-          - detail:paint
+        workload: ${{ fromJSON(needs.select-workloads.outputs.workloads) }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:

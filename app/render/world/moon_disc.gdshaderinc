@@ -103,8 +103,9 @@ vec3 moon_disc(vec3 d) {
 		float lat = asin(clamp(p.z, -1.0, 1.0));
 		vec2 uv = vec2(lon * 0.159154943 + 0.5, 0.5 - lat * 0.318309886);
 		// Retain 512 texels per projected disc radius, increasing the footprint toward the foreshortened limb.
-		// The plane derivatives stay continuous across the longitude seam.
-		float footprint = sqrt(max(dot(offset_dx, offset_dx), dot(offset_dy, offset_dy)));
+		// The plane derivatives stay continuous across the longitude seam. Retain the radial
+		// footprint as a floor: a diagonal limb must not sharpen relative to its existing filter.
+		float footprint = max(sqrt(max(dot(offset_dx, offset_dx), dot(offset_dy, offset_dy))), aa);
 		float lod = log2(max(512.0 * footprint / max(mu, 0.0625), 1.0));
 		albedo = textureLod(moon_albedo, uv, lod).rgb * moon_albedo_scale;
 		vec3 nm = textureLod(moon_normal, uv, max(lod - 1.0, 0.0)).rgb * 2.0 - 1.0; // half-resolution map

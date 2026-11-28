@@ -1,0 +1,161 @@
+{
+  "format": "openrc-native-moon-floor-v1",
+  "command": "python3 research/performance/native_visual_audit/probe_moon_floor.py",
+  "scope": "Two synthetic local projections and three actual shader sources. Measures pre-fetch texture LOD, radial AA width and normalized radius. Texture response, lighting, edge color, motion and performance require independent evidence.",
+  "shader": "app/render/world/moon_disc.gdshaderinc",
+  "opengl": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "vendor": "Mesa",
+    "egl": "1.5"
+  },
+  "sources": {
+    "baseline": {
+      "revision": "71306784a250d634854f0c8bab3a927cc46a61b8",
+      "sha256": "c341b3cf3f3eaee5ed1b2fad8d2f1393564a13d6286ceba7e68e137ecf050201"
+    },
+    "first_candidate": {
+      "revision": "9d4569310ef223fc129472a20e21aada8ea624f0",
+      "sha256": "6eeb74974dbd723aa22b1608fdba3e6ef2c49e7d96d41ac64862242146eccb57"
+    },
+    "corrected": {
+      "revision": "worktree",
+      "sha256": "0468425bd15236aa2310c5cf657034cf0fb09c3635c1b7173a0dbee2ce8950e3"
+    }
+  },
+  "fixtures": {
+    "center": {
+      "projection": "(gl_FragCoord.xy - vec2(17.0)) * sin(moon_radius) * 0.2",
+      "pixels": [
+        [
+          16,
+          16
+        ],
+        [
+          17,
+          16
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          17,
+          17
+        ]
+      ],
+      "description": "Four equal-radius samples straddle the disc center in one derivative quad.",
+      "measurements": {
+        "baseline": [
+          {
+            "texture_lod": 0.0,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 0.0,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 0.0,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 0.0,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          }
+        ],
+        "first_candidate": [
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          }
+        ],
+        "corrected": [
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          },
+          {
+            "texture_lod": 6.692645072937012,
+            "radial_aa": 9.999999747378752e-05,
+            "disc_radius": 0.1414213478565216
+          }
+        ]
+      }
+    },
+    "upper_right": {
+      "projection": "(vec2(206.5,149.5) + gl_FragCoord.xy - vec2(16.5)) * sin(moon_radius) / 254.9",
+      "pixels": [
+        [
+          16,
+          16
+        ]
+      ],
+      "description": "Local circular projection at native image pixel (1166,390), relative to center (959.5,539.5) with y up and 254.9 px radius. Approximates the 1.2-degree full_high close view.",
+      "measurements": {
+        "baseline": [
+          {
+            "texture_lod": 5.489973545074463,
+            "radial_aa": 0.005486011505126953,
+            "disc_radius": 1.0001423358917236
+          }
+        ],
+        "first_candidate": [
+          {
+            "texture_lod": 5.006216526031494,
+            "radial_aa": 0.005486011505126953,
+            "disc_radius": 1.0001423358917236
+          }
+        ],
+        "corrected": [
+          {
+            "texture_lod": 5.489973545074463,
+            "radial_aa": 0.005486011505126953,
+            "disc_radius": 1.0001423358917236
+          }
+        ]
+      }
+    }
+  },
+  "expected_center_lod": 6.692645077942396,
+  "absolute_tolerance": 2e-05,
+  "checks": {
+    "baseline_center_selects_mip_zero": true,
+    "first_and_corrected_center_match_oracle": true,
+    "first_candidate_selects_finer_limb_lod_by_at_least_quarter_mip": true,
+    "corrected_limb_lod_matches_baseline": true,
+    "radial_aa_and_radius_match_baseline": true
+  },
+  "ok": true
+}
