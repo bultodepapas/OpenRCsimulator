@@ -665,6 +665,8 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   ([evidence](../../docs/research/native-kernel/NK-8b/README.md)).
 - `stats_speed_*` (NK-9a, `nk_stats_speed.hpp`) hold and advance one statistics detector's speed window, exactly as
   `detector.gd`'s speed functions do ([evidence](../../docs/research/native-kernel/NK-9a/README.md)).
+- `stats_sample_*` (NK-9b, `nk_stats_sample.hpp`) build the statistics adapter's published sample in one call, as
+  `fixed_wing_adapter.gd` `sample(true)` does ([evidence](../../docs/research/native-kernel/NK-9b/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

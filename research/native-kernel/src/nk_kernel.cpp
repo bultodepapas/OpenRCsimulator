@@ -51,6 +51,7 @@
 #include "nk_shadow_parts.hpp"
 #include "nk_substeps.hpp"
 #include "nk_stats_speed.hpp"
+#include "nk_stats_sample.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1058,6 +1059,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	};
 	std::unique_ptr<GlowAudioKeys> glow_audio_keys_;
 	std::unique_ptr<nk::stats::SpeedWindow> stats_speed_; // NK-9a: one statistics detector's speed window
+	std::unique_ptr<nk::stats::FixedWingSample> stats_sample_; // NK-9b: one statistics adapter's sample
 	// NK-6u: the installed session's substep plan (nk_substeps.hpp) and the names its tick checks read.
 	struct SubstepNames {
 		godot::StringName joint{"_substeps_joint"}, plain{"_substeps"}, rc_track{"_rc_track"}, electric{"_electric_step"},
@@ -1407,6 +1409,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
 		godot::ClassDB::bind_method(D_METHOD("prepare_substeps", "session", "plan"), &OpenRCNativeKernel::prepare_substeps);
 		godot::ClassDB::bind_method(D_METHOD("stats_speed_bind", "thresholds"), &OpenRCNativeKernel::stats_speed_bind);
+		godot::ClassDB::bind_method(D_METHOD("stats_sample_bind", "plan"), &OpenRCNativeKernel::stats_sample_bind);
+		godot::ClassDB::bind_method(D_METHOD("stats_sample_build", "state", "facts", "deployed", "tick", "dt", "fault_empty",
+			"crashed", "contacts", "observation"), &OpenRCNativeKernel::stats_sample_build);
 		godot::ClassDB::bind_method(D_METHOD("stats_speed_clear"), &OpenRCNativeKernel::stats_speed_clear);
 		godot::ClassDB::bind_method(D_METHOD("stats_speed_clear_counts"), &OpenRCNativeKernel::stats_speed_clear_counts);
 		godot::ClassDB::bind_method(D_METHOD("stats_speed_collect", "sample", "dt", "tick", "clock_s", "incident",
@@ -3117,6 +3122,17 @@ public:
 			return quiet == 1 ? 2 : 0;
 		}
 		return 1;
+	}
+
+	// NK-9b: app/statistics/fixed_wing_adapter.gd sample(true) (nk_stats_sample.hpp); one adapter per kernel instance.
+	bool stats_sample_bind(const Dictionary &plan) {
+		if (!stats_sample_) stats_sample_ = std::make_unique<nk::stats::FixedWingSample>();
+		return stats_sample_->bind(plan);
+	}
+	Dictionary stats_sample_build(const PackedFloat64Array &state, const PackedFloat64Array &facts, bool deployed, int64_t tick,
+			double dt, bool fault_empty, bool crashed, const Dictionary &contacts, const Dictionary &observation) {
+		return stats_sample_ ? stats_sample_->build(state, facts, deployed, tick, dt, fault_empty, crashed, contacts, observation)
+			: Dictionary();
 	}
 
 	// NK-9a: app/statistics/detector.gd's speed window (nk_stats_speed.hpp); one detector per kernel instance.

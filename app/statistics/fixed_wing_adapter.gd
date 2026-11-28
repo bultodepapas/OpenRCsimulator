@@ -14,6 +14,11 @@ var _attached := false
 var _publishes := false
 ## NK-5i: and the native stage's answer for this sample's endpoint evaluations (published_endpoint_facts).
 var _endpoint_facts := false
+## NK-9b: a published sample built in one native call (nk_stats_sample.hpp) while this is set; sample() below stays
+## the specification and answers every other case (no verified library, the hook off, an authored-hull profile,
+## unpublished samples, inputs the kernel does not mirror).
+static var native_sample_enabled := true
+var _native_sample: Object = null
 
 
 func configure(owner: Node, aircraft_id: String, consumer: Callable, eligible: Callable = Callable()) -> void:
@@ -26,6 +31,23 @@ func configure(owner: Node, aircraft_id: String, consumer: Callable, eligible: C
 	profile.initial_tick = int(session.sim.tick)
 	profile.generation_id = str(session.statistics_generation)
 	_configure_damage_observation()
+	_bind_native_sample()
+
+
+## NK-9b: a kernel for this adapter's published samples, bound to the profile values sample() reads.
+func _bind_native_sample() -> void:
+	_native_sample = null
+	if not native_sample_enabled or not _endpoint_facts or not ClassDB.class_exists(&"OpenRCNativeKernel") \
+			or (profile.get("support_kind", "") == "authored_hull" and bool(profile.get("landing_available", false))):
+		return
+	var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+	if kernel == null or not kernel.has_method(&"stats_sample_build"):
+		return
+	if kernel.stats_sample_bind({landing_available = bool(profile.get("landing_available", false)),
+			main_indices = profile.get("main_indices", []), stop_indices = profile.get("stop_indices", []),
+			rest_pitch_rad = float(profile.get("rest_pitch_rad", 0.0)), rest_height_m = float(profile.get("rest_height_m", 0.0)),
+			clearance_m = float(profile.get("clearance_m", 0.25))}):
+		_native_sample = kernel
 
 
 func attach() -> void:
@@ -74,6 +96,19 @@ func sample(published := false) -> Dictionary:
 	# same values: [air V, terrain height and slopes, collapsed, compressions]. Empty: evaluate them here.
 	var facts: PackedFloat64Array = session.published_endpoint_facts(s) if published and _endpoint_facts \
 		else PackedFloat64Array()
+	if _native_sample != null and not facts.is_empty():
+		var native_contacts: Dictionary = session.contact_events()
+		var native_deployed := true
+		if session.gear_is_retractable():
+			native_deployed = float(session.sim.aux[session.gear_aux_index()]) >= 0.95
+		var built: Dictionary = _native_sample.stats_sample_build(s, facts, native_deployed, int(session.sim.tick),
+			float(session.sim.dt()), session.sim.fault_reason.is_empty(), not session.crash.is_empty(), native_contacts,
+			_accident_observation(native_contacts))
+		if not built.is_empty():
+			var native_damage := _damage_observation()
+			if not native_damage.is_empty() and not native_damage.events.is_empty():
+				built.component_failure_observation = native_damage
+			return built
 	var q: PackedFloat64Array = s.slice(RB.ATT, RB.ATT + 4)
 	var velocity: PackedFloat64Array = M.q_rotate(q, s.slice(RB.VEL, RB.VEL + 3))
 	var rates: PackedFloat64Array = s.slice(RB.RATE, RB.RATE + 3)
