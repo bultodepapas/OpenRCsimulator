@@ -359,8 +359,10 @@ def compact_row(row: dict) -> dict:
         if why:
             item["why"] = why
             if why == "import timeout":
-                item["hint"] = ("the host spent the whole timeout importing project assets; "
-                                "raise timeout or prefer a host with a warm import")
+                # Since TQ-07-A8 the import has its own budget (900 s remote, 600 s
+                # local); the job's timeout bounds only the check.
+                item["hint"] = ("the project import outlasted its own budget before the test started; "
+                                "the host is cold or overloaded: prefer a host with a warm import cache")
         if collection.get("missing_required_text"):
             item["missing_markers"] = collection["missing_required_text"][:5]
         log = collection.get("log") or collection.get("diagnostic_log") or _diagnostic_log(collection)

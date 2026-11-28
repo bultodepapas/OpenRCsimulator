@@ -28,7 +28,10 @@ import time
 
 PROTOCOL = 1
 # Optional capabilities a coordinator may rely on; an older agent lacks the list.
-FEATURES = ("identity", "fence", "unjournaled-resume")
+FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget")
+# A checked job's project import runs under this budget, before and apart from
+# the job's own timeout, which bounds the check (TQ-07-A8).
+IMPORT_BUDGET_SECONDS = 900
 LIMIT = 1024 * 1024
 RESERVE = 512 * 1024 * 1024
 MAX_ARCHIVE = 128 * 1024**3
@@ -1333,8 +1336,9 @@ def invoke(root, identifier, stage):
         raise Refused("invalid internal stage")
     command = checked_command(request["engine_path"], str(source / "app"), options, stage)
     if stage != "check" or options.get("workload") != "graphics":
-        # The supervisor owns the stricter total deadline and verified cleanup.
-        result = module.run_checked(command, directory / stage, timeout=options.get("timeout", 600) + 60, **kwargs)
+        # The supervisor owns the stricter per-stage deadline and verified cleanup.
+        budget = IMPORT_BUDGET_SECONDS if stage == "import" else options.get("timeout", 600)
+        result = module.run_checked(command, directory / stage, timeout=budget + 60, **kwargs)
         write_json(directory / (stage + "-result.json"), result)
         return 0
     config = graphics_config(root)
@@ -1515,14 +1519,20 @@ def supervise(root, identifier):
         # Preparation has no engine subprocess. Recheck occupancy at dispatch.
         # status/probe inspect the saved state without waiting for this slot.
         wait_for_engine(directory, state, request)
-        end = time.monotonic() + request["options"].get("timeout", 600)
         started = True
-        imported = execute_stage(root, directory, state, "import", end)
+        # TQ-07-A8: the import has its own budget; the job's timeout bounds the
+        # check alone. A cold import used to consume the 90 s test budget.
+        imported = execute_stage(root, directory, state, "import", time.monotonic() + IMPORT_BUDGET_SECONDS)
         verify_result(directory, "import", imported, request)
         state["import"] = imported
+        if imported.get("reason") == "timeout":
+            state["reason_code"] = "IMPORT_TIMEOUT"
         if digest(request["engine_path"]) != state["engine"]["sha256"]:
             raise Refused("engine executable changed during import")
+        end = time.monotonic() + request["options"].get("timeout", 600)
         result = execute_stage(root, directory, state, "check", end) if imported.get("ok") is True and imported.get("complete") is True else None
+        if (result or {}).get("reason") == "timeout":
+            state["reason_code"] = "CHECK_TIMEOUT"
         if result is not None:
             verify_result(directory, "check", result, request)
         state["checked"] = result

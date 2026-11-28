@@ -40,6 +40,9 @@ _PROCESS_LOCK_SECONDS = 0.2
 _HOSTS_LOCK_SECONDS = 1.0
 _CAPACITY_SECONDS = 1.0
 _RPC_LOCK_SECONDS = 25.0
+# The checked adapter's own project import is bounded at 600 s (adapter.py),
+# separately from the test's timeout; the hard deadline allows for both.
+CHECKED_IMPORT_ALLOWANCE_SECONDS = 660
 
 
 def _exists(path):
@@ -234,18 +237,59 @@ class Worker:
                 self._occupancy_cache = (now, error)
         if isinstance(self._occupancy_cache[1], BaseException):
             raise RuntimeError(f"occupancy probe failed: {self._occupancy_cache[1]}")
-        managed = set()
         # Callers hold ``lock``; never let them wait out another attempt's
         # teardown. Busy ownership is unknown occupancy, which fails closed.
         if not self._process_lock.acquire(timeout=_PROCESS_LOCK_SECONDS):
             raise _OwnershipBusy("managed process ownership is busy (teardown in progress)")
         try:
-            for process in self.active.values():
-                if process is not None:
-                    managed.update(process.pids())
+            managed = self._managed_pids_locked(now)
         finally:
             self._process_lock.release()
         return self._occupancy_cache[1] - managed
+
+    def _hard_budget(self, payload):
+        """Seconds from process creation to the enforced stop (TQ-07-A8).
+
+        The job's ``timeout`` bounds its check. A checked attempt may first
+        import the project, which the adapter bounds separately, so the hard
+        stop allows for both. Fixture workers run no real import.
+        """
+        allowance = 0 if self.fixture else CHECKED_IMPORT_ALLOWANCE_SECONDS
+        return payload["options"]["timeout"] + (allowance if payload["preset"] == "checked" else 0)
+
+    # The occupancy listing is cached for up to 1 s; IDs of a finished attempt
+    # stay "ours" a little longer than that (TQ-07-A7).
+    RELEASED_PID_SECONDS = 2.5
+
+    def _managed_pids_locked(self, now):
+        """Owned process IDs, current and recent. The caller holds ``_process_lock``."""
+        managed = set()
+        for process in self.active.values():
+            if process is not None:
+                known = getattr(process, "known_pids", None)
+                managed.update(known() if callable(known) else process.pids())
+        recent = getattr(self, "_released_pids", {})
+        for pid, expiry in list(recent.items()):
+            if expiry <= now:
+                del recent[pid]
+            else:
+                managed.add(pid)
+        return managed
+
+    def _remember_released(self, process):
+        """Keep a finished attempt's IDs managed while a cached listing may still show them.
+        The caller holds ``_process_lock``."""
+        if process is None:
+            return
+        try:
+            known = getattr(process, "known_pids", None)
+            pids = known() if callable(known) else process.pids()
+        except Exception:  # observation only: a closed process reports nothing new
+            return
+        expiry = time.monotonic() + self.RELEASED_PID_SECONDS
+        recent = self.__dict__.setdefault("_released_pids", {})
+        for pid in pids:
+            recent[pid] = expiry
 
     def _engine_identity(self):
         if not self.engine.is_file():
@@ -942,6 +986,9 @@ class Worker:
         self._closing.add(attempt)
         try:
             with self._process_lock:
+                # A cached occupancy listing may still show these IDs after the
+                # handles close; keep them ours briefly (TQ-07-A7).
+                self._remember_released(process)
                 try:
                     process.close()
                 except BaseException as error:
@@ -1110,7 +1157,9 @@ class Worker:
                             raise
                         # Arm the admitted hard budget from the creation boundary,
                         # before any journal I/O that could block, hang or fail.
-                        deadline = time.monotonic() + payload["options"]["timeout"]
+                        # A checked attempt's own import (the adapter bounds it at
+                        # 600 s) no longer consumes the test's budget (TQ-07-A8).
+                        deadline = time.monotonic() + self._hard_budget(payload)
                         start_completed = True
                         with self._process_lock:
                             self.active[attempt] = process

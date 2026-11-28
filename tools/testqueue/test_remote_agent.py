@@ -246,6 +246,43 @@ class RemoteAgentTests(unittest.TestCase):
                          agent.digest(self.root / "jobs/job1/check/run/engine.log"))
         self.assertEqual(status["checked"]["required_text"], ["0 failed"])
 
+    def test_import_has_its_own_budget_and_the_timeout_bounds_the_check(self):
+        # TQ-07-A8: one deadline used to cover import and check, so a cold import
+        # consumed the 90 s test budget and the test never started.
+        archive = self.sample_archive()
+        request = self.request(archive)
+        request["expected_engine_sha256"] = agent.digest(self.engine)
+        self.accepted(request)
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "execute_stage", wraps=agent.execute_stage) as execute:
+            self.assertEqual(agent.supervise(self.root, "job1"), 0)
+        deadlines = {call.args[3]: call.args[4] for call in execute.call_args_list}
+        self.assertEqual(set(deadlines), {"import", "check"})
+        # The check's 90 s starts after the import; the import had 900 s of its own.
+        self.assertGreater(deadlines["import"] - deadlines["check"], agent.IMPORT_BUDGET_SECONDS - 90 - 60)
+        self.assertEqual(agent.status(self.root, "job1")["outcome"], "PASSED")
+
+    def test_import_timeout_is_typed_and_never_reaches_the_check(self):
+        archive = self.sample_archive()
+        request = self.request(archive)
+        request["expected_engine_sha256"] = agent.digest(self.engine)
+        self.accepted(request)
+        stages = []
+
+        def timed_out(root, directory, state, stage, deadline):
+            stages.append(stage)
+            return {"ok": False, "complete": False, "reason": "timeout"}
+
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "execute_stage", side_effect=timed_out):
+            agent.supervise(self.root, "job1")
+        status = agent.status(self.root, "job1")
+        self.assertEqual(stages, ["import"])
+        self.assertEqual((status["outcome"], status["reason_code"], status["cleanup"]),
+                         ("INFRA_FAILED", "IMPORT_TIMEOUT", "CONFIRMED"))
+
     def test_changed_archive_fails_before_process_start(self):
         archive = self.sample_archive()
         request = self.request(archive)
@@ -280,12 +317,17 @@ class RemoteAgentTests(unittest.TestCase):
         request = self.request(archive)
         request["options"]["timeout"] = 1
         self.accepted(request)
-        with mock.patch.object(agent, "authority_enrolled", return_value=False), mock.patch.object(agent, "external_engine_present", return_value=False):
+        # Since TQ-07-A8 the import stage has its own budget; shrink it so the
+        # hanging runner is stopped at that deadline.
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "IMPORT_BUDGET_SECONDS", 1):
             agent.supervise(self.root, "job1")
         result = agent.status(self.root, "job1")
         self.assertEqual((result["state"], result["outcome"], result["cleanup"], result["evidence"]),
                          ("FINISHED", "INFRA_FAILED", "CONFIRMED", "INCOMPLETE"), result)
         self.assertEqual(result["import"]["reason"], "timeout")
+        self.assertEqual(result["reason_code"], "IMPORT_TIMEOUT")
 
     def test_missing_real_marker_cannot_pass(self):
         archive = self.sample_archive()

@@ -245,7 +245,42 @@ class RemoteStorageGcTests(PoolReconcileTests):
         self.assertEqual(sorted(call for call in calls if call[0] == "gc"),
                          [("gc", "fail1", 300), ("gc", "pass1", 300)])
         self.assertEqual(self.stored("fail1")["storage_gc"]["state"], "RECLAIMED")
-        self.assertEqual(self.pool.gc("mac")["request_ids"], ["time1"])
+        # TQ-07-A4: the refused job is held for a day instead of being retried first every sweep.
+        dry = self.pool.gc("mac")
+        self.assertEqual((dry["request_ids"], dry["held_after_refusal"]), ([], 1))
+
+    def test_refused_failures_no_longer_starve_reclaimable_passes(self):
+        # 28 November: angela's 20-Nov agent refuses every failed job; each sweep
+        # spent its budget on the same refused failures and reclaimed nothing.
+        for index in range(3):
+            self.finished(f"fail{index}", "TEST_FAILED")
+        for index in range(4):
+            self.finished(f"pass{index}", "PASSED")
+        calls = []
+
+        def remote(host, action, payload, timeout=45):
+            calls.append((action, payload.get("request_id")))
+            if action == "gc" and payload["request_id"].startswith("fail"):
+                raise RuntimeError("only a finished job with confirmed cleanup (PASSED with complete evidence, "
+                                   "or a failure on an agent that supports it) can be reclaimed")
+            return {"logical_bytes_removed": 10, "removed_files": 0}
+
+        def collect(identifier):
+            return {"pool_outcome": "PASSED" if identifier.startswith("pass") else "TEST_FAILED",
+                    "diagnostic_only": False}
+
+        with patch.object(self.pool, "collect", side_effect=collect), \
+                patch.object(self.pool, "remote", side_effect=remote):
+            report = self.pool.gc("mac", execute=True)
+            self.assertEqual(report["reclaimed"], 4)  # every pass, in the first sweep
+            self.assertTrue(report["failures_refused_by_agent"])
+            gc_calls = [request for action, request in calls if action == "gc"]
+            self.assertEqual(sum(1 for request in gc_calls if request.startswith("fail")), 1)  # asked once
+            calls.clear()
+            again = self.pool.gc("mac", execute=True)
+        self.assertEqual([action for action, _ in calls], ["gc-incoming"])  # nothing re-asked for a day
+        self.assertEqual(again["reclaimed"], 0)
+        self.assertEqual(self.pool.gc("mac")["request_ids"], [])
 
     def test_sweep_budget_defers_remaining_jobs_and_failures_go_first(self):
         self.finished("apass", "PASSED")

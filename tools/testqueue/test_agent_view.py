@@ -150,7 +150,7 @@ class CompactStatusTests(unittest.TestCase):
                                   "diagnostic_only": True}}
             item = agent_view.compact_row(row)
         self.assertEqual(item["why"], "import timeout")
-        self.assertIn("importing project assets", item["hint"])
+        self.assertIn("import outlasted its own budget", item["hint"])  # TQ-07-A8 wording
         self.assertEqual(item["log_tail"], ["ERROR: GDExtension dynamic library not found"])
         view = agent_view.compact_status({"request_id": "z", "summary": {
             "next_action": "inspect attention[].evidence and attention[].log; fix"}, "jobs": []})

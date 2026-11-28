@@ -756,8 +756,17 @@ let that journal recover first.
 
 Remote jobs never receive `.godot`, so each one used to import the whole project
 cold. With the current assets that took 4–9 minutes on a Mac, and on a loaded
-host it exceeded the default 90-second budget (`why: import timeout`). Each
-remote host now keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
+host it exceeded the default 90-second budget (`why: import timeout`).
+
+The import now has its own budget and the job's `timeout` bounds only the check
+(TQ-07-A8): 900 s on a remote host (`IMPORT_BUDGET_SECONDS`, feature
+`import-budget`) and the adapter's 600 s locally, where the worker's hard stop
+allows `timeout + 660 s` for a checked attempt. An import that outlasts its budget
+ends `INFRA_FAILED` with `reason_code: IMPORT_TIMEOUT`; a check that outlasts the
+timeout carries `CHECK_TIMEOUT`. Older remote agents keep the shared deadline
+until they are redeployed.
+
+Each remote host also keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
 
 - **Seeding.** Before the import stage, and outside the test budget, the
   supervisor copies that directory into the job's `app/.godot/imported/`.

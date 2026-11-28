@@ -590,6 +590,20 @@ class OwnedProcess:
                 raise RuntimeError("Some job process handles could not be witnessed")
             time.sleep(0.01)
 
+    def known_pids(self) -> set[int]:
+        """Every process ID this attempt owns now or owned since it started (TQ-07-A7).
+
+        On Windows each member's handle is retained until teardown, so its ID
+        cannot be reused by another process meanwhile. An occupancy probe that
+        listed a member just before it exited (the import engine handing over to
+        the check engine) must not count that member as an external simulator.
+        """
+        current = self.pids()
+        if os.name == "posix":
+            return current
+        with self._handle_lock:
+            return current | {pid for pid, _ in self._handles}
+
     def pids(self) -> set[int]:
         """Snapshot the process IDs in this job/session; IDs may change immediately."""
         self._require_started()

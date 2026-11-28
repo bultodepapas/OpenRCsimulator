@@ -59,6 +59,20 @@ class ProcessFixture(unittest.TestCase):
         process.start()
         return process
 
+    @unittest.skipUnless(os.name == "nt", "Windows Job Object behavior")
+    def test_known_pids_keep_a_member_that_already_exited(self):
+        # TQ-07-A7: the worker's occupancy listing can be up to 1 s old; a member
+        # that exited meanwhile must still count as ours, not as external Godot.
+        ready = self.root / "child.pid"
+        child = ("import os,time; from pathlib import Path; "
+                 f"Path({str(ready)!r}).write_text(str(os.getpid())); time.sleep(1)")
+        process = self.owned(f"import subprocess,sys,time; subprocess.run([sys.executable, '-c', {child!r}]); "
+                             "time.sleep(30)")
+        child_pid = int(wait_for(lambda: ready.exists() and ready.read_text()))
+        wait_for(lambda: child_pid not in process.pids())
+        self.assertIn(child_pid, process.known_pids())
+        self.assertIn(process.pid, process.known_pids())
+
     def test_exit_status_identity_and_space_containing_arguments(self):
         process = self.owned("import sys; print(sys.argv[1], flush=True); sys.exit(7)",
                              "argument with spaces")

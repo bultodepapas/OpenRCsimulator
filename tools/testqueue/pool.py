@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import itertools
 import json
 import math
 import os
@@ -173,6 +174,10 @@ def _discard_owned_archive_temporary(path, identity):
         path.unlink()
     except OSError as error:
         raise ArchiveTemporaryUnresolved(f'Unpublished archive temporary could not be removed: {path}: {error}') from error
+
+
+def outcome_is_failure(receipt):
+    return ((receipt or {}).get('last_status') or {}).get('outcome') != 'PASSED'
 
 
 def destination_of(host, identity=None):
@@ -1478,6 +1483,35 @@ class Pool:
 
     AUTO_GC_INTERVAL_SECONDS = 1200
     AUTO_GC_BUDGET_SECONDS = 120
+    GC_REFUSAL_SECONDS = 24 * 3600
+
+    def _gc_memory_path(self, host_id):
+        return self.root / 'retention' / f'gc-refusals-{host_id}.json'
+
+    def _gc_memory(self, host_id):
+        """Refusals remembered per host so a sweep does not repeat them (TQ-07-A4)."""
+        try:
+            value = json.loads(self._gc_memory_path(host_id).read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            value = {}
+        if not isinstance(value, dict) or not isinstance(value.get('jobs'), dict):
+            value = {'jobs': {}}
+        return value
+
+    def _save_gc_memory(self, host_id, memory):
+        now = time.time()
+        memory['jobs'] = {key: entry for key, entry in memory['jobs'].items()
+                          if isinstance(entry, dict) and now - entry.get('at', 0) < self.GC_REFUSAL_SECONDS}
+        try:
+            self._gc_memory_path(host_id).parent.mkdir(exist_ok=True)
+            write_json(self._gc_memory_path(host_id), memory)
+        except OSError:
+            pass  # advisory: the next sweep simply asks again
+
+    @staticmethod
+    def _agent_refuses_failures(text):
+        # Agents before failure reclamation answer every failed job with this.
+        return 'only a finished job with confirmed cleanup' in text or 'only a FINISHED/PASSED/COMPLETE/CONFIRMED' in text
 
     def reclaim_for_space(self, decision, budget_seconds=AUTO_GC_BUDGET_SECONDS):
         """Run ``gc`` on remote hosts that just refused placement for disk space.
@@ -1557,16 +1591,32 @@ class Pool:
                 continue
             if self._gc_candidate(receipt, host_id):
                 candidates.append((path.stem, receipt))
-        candidates.sort(key=lambda item: item[1]['last_status'].get('outcome') == 'PASSED')
-        report = {'host': host_id, 'candidates': len(candidates), 'execute': execute}
+        memory = self._gc_memory(host_id)
+        now = time.time()
+        failures_refused = now < memory.get('failures_refused_until', 0)
+        held = {identifier for identifier, entry in memory['jobs'].items()
+                if now - entry.get('at', 0) < self.GC_REFUSAL_SECONDS}
+        failures = [item for item in candidates if item[1]['last_status'].get('outcome') != 'PASSED']
+        passes = [item for item in candidates if item[1]['last_status'].get('outcome') == 'PASSED']
+        if failures_refused:
+            failures = []  # this host's agent cannot reclaim failures; do not ask per job (TQ-07-A4)
+        failures = [item for item in failures if item[0] not in held]
+        passes = [item for item in passes if item[0] not in held]
+        # Failures hold the most bytes, but a sweep must also reach passes: a
+        # backlog of refused failures used to consume every sweep's budget.
+        order = [item for pair in itertools.zip_longest(failures, passes) for item in pair if item is not None]
+        report = {'host': host_id, 'candidates': len(candidates), 'execute': execute,
+                  'held_after_refusal': len(held), 'failures_refused_by_agent': failures_refused}
         if not execute:
-            report['request_ids'] = [identifier for identifier, _ in candidates]
+            report['request_ids'] = [identifier for identifier, _ in order]
             return report
         reclaimed, skipped, total = [], [], 0
-        for index, (identifier, receipt) in enumerate(candidates):
+        for index, (identifier, receipt) in enumerate(order):
             if deadline is not None and time.monotonic() >= deadline:
-                report['deferred'] = len(candidates) - index
+                report['deferred'] = len(order) - index
                 break
+            if failures_refused and outcome_is_failure(receipt):
+                continue  # the agent refused this class earlier in this sweep
             try:
                 collected = self.collect(identifier)
                 outcome = collected.get('pool_outcome')
@@ -1581,8 +1631,16 @@ class Pool:
                 total += result.get('logical_bytes_removed', 0) or 0
                 reclaimed.append(identifier)
                 self._remember_storage_gc(identifier, result)
+                memory['jobs'].pop(identifier, None)
             except Exception as error:  # one job's refusal never stops the sweep
-                skipped.append({'request_id': identifier, 'error': str(error)[:300]})
+                text = str(error)[:300]
+                skipped.append({'request_id': identifier, 'error': text})
+                memory['jobs'][identifier] = {'at': time.time(), 'error': text}
+                if outcome_is_failure(receipt) and self._agent_refuses_failures(text):
+                    memory['failures_refused_until'] = time.time() + self.GC_REFUSAL_SECONDS
+                    report['failures_refused_by_agent'] = failures_refused = True
+                    memory['jobs'].pop(identifier, None)  # a class refusal says nothing about this job
+        self._save_gc_memory(host_id, memory)
         try:
             incoming = self.remote(host, 'gc-incoming', {'operator_confirm': True})
         except Exception as error:
