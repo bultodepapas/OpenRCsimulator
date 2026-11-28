@@ -1,6 +1,6 @@
 # F4U Corsair g2.3: request to the model author
 
-2026-10-25 · OpenRC Simulator team · Base specification: [Blender delivery request](F4U-BLENDER-HANDOFF.md) and the [g2.1 request](F4U-G2-1-REQUEST.md). Review behind this request: [F4U-21](research/f4u-corsair/F4U-21/README.md).
+2026-10-25 · OpenRC Simulator team · Base specification: [Blender delivery request](F4U-BLENDER-HANDOFF.md) and the [accepted g2.1 review](research/f4u-corsair/F4U-19/README.md#g21-review-2026-10-24). Review behind this request: [F4U-21](research/f4u-corsair/F4U-21/README.md).
 
 ## Summary
 
@@ -56,7 +56,7 @@ Model frame: +X right, +Y up, −Z nose, origin D0; mapped from R59 by [extract_
 
 ### C2 Blade normal map
 
-Still open from [After g2.1](F4U-G2-1-REQUEST.md#after-g21), item 1, in all thirteen schemes. `naval_blade_paint` has no normal map, and its roughness fell from 0.72 to 0.37, so the blades show faceted diagonal streaks at 1.6 m. Add R59's normal map on UV0 at scale 0.65, keep the base colour on UV1, and compare the roughness with g2.0 in a close preview.
+Still open from the [g2.1 material review](research/f4u-corsair/F4U-19/README.md#g21-review-2026-10-24), in all thirteen schemes. `naval_blade_paint` has no normal map, and its roughness fell from 0.72 to 0.37, so the blades show faceted diagonal streaks at 1.6 m. Add R59's normal map on UV0 at scale 0.65, keep the base colour on UV1, and compare the roughness with g2.0 in a close preview.
 
 ## Wanted
 
@@ -64,15 +64,18 @@ Still open from [After g2.1](F4U-G2-1-REQUEST.md#after-g21), item 1, in all thir
 
 `core_details` holds only the tailhook (`R27 | asta gancho`, `R27 | punta curva gancho`). Rename it `tailhook`. Keep its geometry, stowed.
 
-I1 (shading dents, [g2.1 request](F4U-G2-1-REQUEST.md#i1-shading-dents)) stays wanted and does not block g2.3.
+### I1 Shading dents
+
+Optional; does not block g2.3. The [accepted g2.1 audit](research/f4u-corsair/F4U-19/README.md#g21-review-2026-10-24) measured neighbouring triangles meeting at more than 10°: `fuselage_core` 23.7%, `canopy_glass` 13.1% and `cowl` 22.9%. The author found no safe reprojection then. The target remains below 10% on each mesh, checked with `research/f4u-corsair/F4U-18/glb_shading.py` (`dihedral >10°`). If a safe correction is found, relax dented vertices or reproject onto R59, then rebake normal and AO maps while preserving the rig and shape. Compare without the normal map as well as in the lit preview.
 
 ## Before you deliver
 
-Run these from the repository root (`C:\DEVELOPMENT\OpenRCsimulator`) for every scheme's GLB and put the outputs in `checks/`:
+Run these Bash commands from the repository root for every scheme's GLB. Set `f4u_glb` to the delivered file and retain the outputs in `checks/`:
 
 ```sh
-python research/f4u-corsair/F4U-04/preflight_glb.py <g2_3>/export/<scheme>.glb --profile f4u-g2
-python research/f4u-corsair/F4U-18/glb_orientation.py <g2_3>/export/<scheme>.glb
+f4u_glb='/path/to/f4u_corsair/g2_3/export/scheme.glb'
+python3 research/f4u-corsair/F4U-04/preflight_glb.py "$f4u_glb" --profile f4u-g2
+python3 research/f4u-corsair/F4U-18/glb_orientation.py "$f4u_glb"
 ```
 
 - The preflight passes with no warnings.

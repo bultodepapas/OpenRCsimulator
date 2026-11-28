@@ -1,12 +1,12 @@
 # Wind, atmosphere and airflow: technical reference
 
-Code audit: 2026-10-31. Baseline: `a73e6f32f388eda1778f2dd27866d6aca146f5d8`, plus the working-tree presentation edits identified under [verification](#verification). This document describes implemented behavior. The [phased engineering roadmap](WIND-ATMOSPHERE-ROADMAP.md) describes proposed changes. Neither existing documentation nor a passing model test is evidence of physical realism.
+This reference covers the environmental inputs used by flight dynamics, their equations, and the vehicle routes that admit them. The [qualification contract](WIND-ATMOSPHERE-ROADMAP.md) owns the tests required to extend those domains. Project priorities are in the [roadmap](../ROADMAP.md).
 
-These are the two authoritative documents for environmental physics and its airflow interfaces. Vehicle, graphics, audio and tooling guides retain their own contracts and link here. Earlier wind/atmosphere guides, the advanced masterplan and dedicated research narratives have been consolidated; their data, source snapshots, recordings, provenance and reproduction tools remain in place and are indexed below. No physics, parameters or golden flights were changed by this audit.
+The original audit examined `a73e6f32f388eda1778f2dd27866d6aca146f5d8` on 31 October 2026, with presentation edits identified under [verification](#verification). Later changes to Home admission, the FPV and airship routes, and thermal and observer queries are identified below. Each [historical result](#historical-evidence) applies to its recorded source, configuration, engine and backend.
 
 ## Scope and architecture
 
-The audit follows configuration → provider → session → stage airflow → loads → accepted state → observers/replay. It includes GDScript and native weather, atmosphere, fixed-wing surface/propulsion/wake interactions, helicopter and multirotor boundaries, ground-vehicle exclusions, UI/CLI/scenarios, companions and presentation. Engine/battery thermal management is a different system: only ambient density/charge and airflow interfaces are covered here. Frozen prototypes and historical source overlays are not production implementations.
+The audit follows configuration → provider → session → stage airflow → loads → accepted state → observers/replay. It includes GDScript and native weather, atmosphere, fixed-wing surface/propulsion/wake interactions, helicopter, multirotor and airship boundaries, ground-vehicle exclusions, UI/CLI/scenarios, companions and presentation. Engine/battery thermal management is a different system: only ambient density/charge and airflow interfaces are covered here. Frozen prototypes and historical source overlays are not production implementations.
 
 | Boundary | Current source and symbols | Responsibility |
 | --- | --- | --- |
@@ -208,9 +208,11 @@ For positive thrust, the slipstream momentum closure includes `vi=0.5*(sqrt(max(
 
 Selecting spatial weather also selects the point-inflow law **even when its instantaneous wind is uniform or zero**. Some old shaft paths use datum inflow without hub rotation; the new point law can therefore change whole-aircraft loads at nonzero body rate despite zero ambient gradient. The exact-zero guarantee belongs to the aerodynamic correction, not arbitrary cross-law whole-flight parity. `test_spatial_propulsion_flow` explicitly exercises this distinction.
 
-### Helicopter, multirotor and ground vehicles
+<a id="helicopter-multirotor-and-ground-vehicles"></a>
 
-[helicopter_flight_session.gd](../app/sim/helicopter_flight_session.gd): `setup_weather` refuses spatial fields, nonzero OU turbulence and vertical atmosphere. Supported mean/gust/custom-uniform air is sampled at the supplied RK state/time. [rotorcraft/flight_dynamics.gd](../app/physics/rotorcraft/flight_dynamics.gd) subtracts ambient wind before rotor/airframe evaluation; hub/fin motion adds local rigid-body velocity. This is not distributed spatial environmental inflow across the rotor disk.
+### Helicopter, multirotor, airship and ground vehicles
+
+The playable X-Cell surrogate uses the [helicopter flight session](../app/sim/helicopter_flight_session.gd). Its `setup_weather` refuses spatial fields, nonzero OU turbulence and vertical atmosphere. Supported mean/gust/custom-uniform air is sampled at the supplied RK state/time. [rotorcraft/flight_dynamics.gd](../app/physics/rotorcraft/flight_dynamics.gd) subtracts ambient wind before rotor/airframe evaluation; hub/fin motion adds local rigid-body velocity. This is not distributed spatial environmental inflow across the rotor disk.
 
 The helicopter's [inflow.gd](../app/physics/rotorcraft/inflow.gd): `target/normalized` computes signed induced velocity from `vh=sqrt(abs(T)/(2*rho*pi*R²))`, normalized climb/crossflow, a piecewise equilibrium law with explicit instability/loss parameters and a terrain-intersection-dependent ground factor. [dynamic_inflow.gd](../app/physics/rotorcraft/dynamic_inflow.gd): `evaluate/derivative` uses a dimensional first-order lag:
 
@@ -226,7 +228,9 @@ The main-rotor normal-speed branch defines `tip=omega*R`, `mu_x,y,z=v_hub/tip`, 
 
 The tail rotor includes main-wake subtraction in vertical hub flow and body-rate contributions in normal flow, solves `_trim` to obtain local collective/normal-flow slopes, caps CT and applies blockage to thrust. It reconstructs induced velocity from capped unblocked CT; its torque uses the same profile/induced-power form. `rotorcraft/airframe.gd:_piece` subtracts wake from rigid-body point air, applies component-area fuselage drag `-rho*A_i*u_i*|u|/2`, and bounded fin/tail normal-force laws. These implement density-aware helicopter loads but do not establish a measured stopped-blade, windmilling or separated rotor wake model.
 
-The [multirotor plant](../app/physics/multirotor/plant.gd) is explicitly research-only, without a playable session. It samples wind/density once at the datum, then adds `omega×hub` per rotor. [rotor.gd](../app/physics/multirotor/rotor.gd) uses `T=cT*omega²`, `Q=cQ*omega²` and horizontal rotor drag `Fxy=-kh*omega*Vhub,xy`; neither density nor axial inflow enters its thrust/torque law. Density affects [airframe drag](../app/physics/multirotor/airframe.gd) only. Thus equal rotor speed at zero flow produces equal static thrust at different atmospheric densities. Rotor-scale environmental gradients cannot produce differential local inflow with the current datum-only query. These are explicit promotion blockers, not a defect in an advertised playable multirotor.
+The playable FPV quad admits calm or steady uniform wind through 8 m/s. Its closed-loop plant samples wind at the body datum each stage and adds `omega × hub` to obtain relative hub velocity. Air density enters airframe drag. The intact forward rotor law uses `T=cT*omega²` and `Q=cQ*omega²` plus horizontal rotor drag. Thrust and torque lack density and axial-inflow terms, and the session admits no spatial field. Wider provider experiments in the separate research plant do not qualify a flight mode. [Session](../app/sim/multirotor/session.gd) · [Controlled plant](../app/physics/multirotor/controlled_plant.gd) · [Rotor law](../app/physics/multirotor/rotor.gd)
+
+The experimental airship admits calm or steady uniform wind through 4 m/s. Its session derives model properties at release density and holds a world-fixed wind for flight. The six-degree-of-freedom hull law transforms this wind into body axes for relative motion and added-mass transport. [Session](../app/sim/airship/session.gd) · [Airship law](../app/physics/airship/airship_dynamics.gd)
 
 The [ground-vehicle environment](../app/physics/ground_vehicle/vehicle_environment.gd) and [session](../app/sim/ground_vehicle/session.gd) consume road, gravity and water; their dynamics do not query physical atmospheric wind. A shared `Environment` class does not establish universal wind coupling. Any future vehicle effect belongs in its model adapter, not the simulation kernel.
 
@@ -243,7 +247,7 @@ Airborne reset begins with an air-relative datum trim then adds initial wind to 
 | Spatial identity | `FlightSession._spatial_weather_receipt` binds complete provider hash/epoch and station/aero laws. Configuration access returns detached copies. |
 | Checkpoints | `FlightSession.checkpoint/restore` wraps the existing propulsion/contact versions for spatial weather and validates the receipt/current and prior samples before adoption. Spatial format is `openrc-flight-checkpoint v12`; later feature wrapping can coexist. |
 | CSV | [trace.gd](../app/sim/trace.gd) selects feature-dependent schemas; spatial v16/v17 preserve base metadata and add datum/k1 coordinates and endpoint/k1 epoch times. The k1 load belongs to the previous body state/time, not the endpoint state. Legacy calm/wind/OU/custom-air formats remain distinct. |
-| ORFL | [flight_log.gd](../app/sim/flight_log.gd) headers retain full weather, checkpoint, trace metadata, solver/backend identities; samples observe accepted-datum air. Reset/publication closes the old accepted recording. Exact replay requires matching source/runtime identity; candidate replay is explicitly solver-changed. |
+| ORFL | [flight_log.gd](../app/sim/flight_log.gd) headers retain full weather, checkpoint, trace metadata, solver/backend identities; samples observe accepted-datum air. Reset/publication closes the old accepted recording. Exact replay requires matching source/runtime identity. Candidate replay uses the recorded command tape when the candidate is compatible. The report distinguishes solver/backend changes from aircraft-only changes. |
 | Native | [nk_weather.hpp](../research/native-kernel/src/nk_weather.hpp), [nk_spatial_weather.hpp](../research/native-kernel/src/nk_spatial_weather.hpp) reproduce field/atmosphere/thermal formulas; [nk_stage.hpp](../research/native-kernel/src/nk_stage.hpp) samples stage position/time and station flow. Native OU uses the already prepared session interval rather than a second RNG. |
 
 `WeatherAdapter` guards built-in provider/configuration identity and rejects changed/custom providers; native construction receives resolved modes. The duplicated GDScript/C++ formulas, validation and point-flow paths require explicit parity maintenance. The application's default backend request and low-level session reference default differ; [native selection](../app/sim/native_stage.gd) and its adapters decide actual admission/fallback. A GDScript-focused test run is not native parity proof. `weather_oracle.gd` and `weather_stage_oracle.gd` contain parity cases, with standalone spatial stages requiring `include-spatial=true`; the full native `build.py` already supplies that option.
@@ -255,7 +259,7 @@ Airborne reset begins with an air-relative datum trim then adds initial wind to 
 | [main.gd](../app/main.gd): `_weather_options` | Fixed-wing preset/file/numeric CLI inputs validate through WindConfig; direct technical defaults are calm. |
 | [preferences.gd](../app/app_state/preferences.gd), [weather_dialog.gd](../app/ui/weather_dialog.gd) | Persist full weather with versioned preferences (v5 uses outer schema 6); separate draft Apply/Cancel, precise untouched values, mode/preset selection. |
 | [spatial_weather_controls.gd](../app/ui/spatial_weather_controls.gd) | Patches represented profile keys while preserving independent upper wind. Timing edits retain the exact gust vector; intensity edits preserve its direction, using the shown reference direction only for a new zero-magnitude gust. Editing gust controls replaces a whole multi-event agenda with one event. Display rounding is not numeric authority. Summary shows ceiling/horizon; it does not expose all horizontal domain limits or edit the ceiling. Thermal agenda is retained, not generated from UI lighting. |
-| [app_root.gd](../app/app_root.gd): `weather_for_aircraft`; [helicopter_main.gd](../app/helicopter_main.gd) | Home helicopter route strips unsupported OU without overwriting saved preferences; spatial/column can still reach session refusal. Direct helicopter weather CLI flags are not parsed (F03). |
+| [app_root.gd](../app/app_root.gd): `weather_for_aircraft`; [helicopter_main.gd](../app/helicopter_main.gd) | Home preserves saved airplane turbulence and removes it from the effective helicopter selection. Home blocks Fly for spatial/column weather and offers Review Conditions. AppRoot rechecks the session admission rule before creating a helicopter flight. Direct helicopter CLI weather remains a separate gap (F03). |
 | [natural_random.gd](../app/scenarios/natural_random.gd), [scenario_config.gd](../app/scenarios/scenario_config.gd) | Resolved seeded recipes require v3 weather. Lighting uses a separate domain; spatial thermal generation is not implemented here. |
 | [companions/manager.gd](../app/ai/companions/manager.gd): `validate_context`, `_before_step`, `_after_step` | Explicitly refuses v5 and weather beyond its gentle envelope. Plans all agents from tick N observations, advances after player tick N+1 commits. No shared spatial-world admission. |
 | [companions/agent.gd](../app/ai/companions/agent.gd): `configure` | Shares uniform mean/gust but sets OU seed `(player_seed+companion_seed+slot*104729)&0xffffffff`. Coincident aircraft generally see different turbulence. Seed zero/slot zero can equal the player seed. |
@@ -269,14 +273,14 @@ Airborne reset begins with an air-relative datum trim then adds initial wind to 
 
 ## Findings
 
-Severity here ranks engineering priority, not measured accident risk. **Defect** means an inspectable contradiction or wrong input; **contract gap** means a promised constraint is not enforced; **limitation** means a deliberately incomplete physical model or consumer. Source arguments below do not imply that a new reproducer was executed unless stated under verification.
+Severity here ranks engineering priority, not measured accident risk. **Defect** means an inspectable contradiction or wrong input; **contract gap** means a promised constraint is not enforced; **limitation** means a deliberately incomplete physical model or consumer. F01–F17 identify the original audit findings. Later dispositions reference their own source and evidence.
 
 | ID / priority / class | Trigger → consequence; code evidence | Required response |
 | --- | --- | --- |
 | F01 / P1 / defect | Active thermal at `0<r<4R`, crossing floor/top: `_cell_velocity` uses `w=P*sin²(pi*h/H)` then zero outside. Radial velocity slope at the ground is `-L*P*pi²*r*exp(-r²/R²)/H²`, nonzero; thermal-soaring preset cell at midlife/r=35 gives about −0.00381 s⁻¹. Thus total field is not C1-zero at the wall as `WindSpatialField.sample_world` claims; top has the analogous kink. `test_balanced_thermal_field` checks boundary values, not these one-sided slopes. Native thermal copies it. | Correct the continuity claim immediately in future code maintenance; version a smoother vertical streamfunction only with derivative/flux/trajectory evidence. No velocity jump or catastrophic instability is established. |
 | F02 / P1 / defect | `SkyConfig.mean_wind_ned` reads legacy speed only; `WindConfig._validate_spatial` requires that speed zero. All spatial presets give zero follow-wind cloud advection through `CloudTransport.build`. | Explicit spatial background/cloud-height policy, shared conversion, regression for v5 plus legacy and explicit-aloft behavior. |
 | F03 / P1 / defect | Direct rotorcraft routing supplies calm default; `helicopter_main` receives arguments but lacks fixed-wing `_weather_options`. `--weather=steady`, files and even invalid weather arguments are silently ignored there. | Resolve CLI weather before route dispatch or reject unsupported flags; retain helicopter capability refusals. |
-| F04 / P1 / capability/UI gap | Home keeps spatial/column weather, `weather_for_aircraft` removes only OU, and helicopter `setup_weather` refuses after launch. | Centralize capability admission and explain unsupported selection before launch; do not silently replace spatial/column with calm. |
+| F04 / Home admission / implemented | Both Home and AppRoot now consult `HelicopterFlightSession.validate_weather_selection`. Effective OU removal preserves saved airplane preferences. | UI-32-R4 exercises refusal before creation, recovery and saved settings, with scoped 1920×1080 English/Spanish captures. [Regression](../app/tests/test_home_launch_conditions.gd) · [Dated evidence](research/menu-investigations/UI-32/README.md#launch-recovery-and-saved-build-diagnostics-ui-32-r4-2026-11-07) |
 | F05 / P1 / defect | `CompanionManager._before_step` records player state/input without wind. `Pilot` traffic prediction falls back to its own `_planning_wind`; independent OU seeds mean it subtracts the wrong wind when predicting the player's banked trajectory. | Include player wind at the same observation tick; test unequal OU windows, heading/curvature and query purity. |
 | F06 / P2 / contract gap | `WindAircraftFlow.matches_stage(air,s,rho)` validates time's type/range only, and accepts no expected time/model/provider. Same-state/rho receipts from another stage/model/provider can pass. Current inspected call sites construct fresh receipts; no live stale reuse was found. | Bind expected time and immutable model/provider identity at receipt consumption; avoid introducing a mutable cross-stage cache. |
 | F07 / P3 / defect | Gust overlap admission compares `t<start+duration`, runtime compares `t-start<duration`. Binary64: `0.2+0.5==0.7`, but `0.7-0.2<0.5`. Four new events at 0.7 plus one ending event can pass a four-overlap bound yet count five runtime supports. Analogous thermal example: 999.9, 120.2, 1120.1. Near-end pulse is negligible and new pulses are zero; no material speed-bound violation is proved. | Align interval predicates in validators and evaluators, test representable neighbors and legacy admission compatibility; preserve pulse arithmetic. |
@@ -287,7 +291,7 @@ Severity here ranks engineering priority, not measured accident risk. **Defect**
 | F12 / P1 qualification / limitation | Scalar nominal spatial RMS and quasi-periodic modes are neither local/component RMS nor a calibrated spectrum/coherence law (`_resolve_modes`, `_turbulence_wind`). | Measure generated covariance/PSD/height dependence and compare held-out site data before realism claims or default changes. |
 | F13 / P1 qualification / limitation | Spatial matched aero retains reference wake; propulsion representation can change hub-rotation semantics; full-angle continuation does not validate gradient stall behavior. | Force ownership ledger, constant-field cross-law decomposition, refinement and held-out differential-gust/wake cases. |
 | F14 / P2 / architecture debt | GDScript/native weather, field math, station flow and continuation duplicate laws; legacy `Environment.wind` validation differs from `wind_world`. There is no packed batch sampling interface; every point reconstructs result arrays/dictionaries. | Enforce one contract and paired oracles; remove measured duplicate construction before considering a new cache or changing resolution. |
-| F15 / P1 promotion / limitation | Research multirotor thrust/torque ignore density/axial inflow and use one datum wind; ground vehicles do not consume wind; helicopter intentionally excludes spatial/OU/column. | Keep per-vehicle gates. Add only explicitly scoped model adapters and validation; no generic kernel weather-force branch. |
+| F15 / P1 promotion / limitation | The playable quad uses one datum wind and its rotor thrust/torque omit density and axial inflow. Airship accepts only calm/steady wind, ground vehicles have no aerodynamic wind loads, and the playable helicopter excludes spatial/OU/column. | Keep per-vehicle gates. Add only explicitly scoped model adapters and validation; no generic kernel weather-force branch. |
 | F16 / P2 / UX/semantic gap | Spatial gust edit reduces a full agenda to one event; “Realistic” label lacks measured qualification; birds/storms are independent visual phenomena. | Make replacement/finite agenda and experimental status explicit; distinguish physical thermal cues from decorative ones. |
 | F17 / P1 / defect | `FlightSession._hand_launch_rpm` uses ground-relative axial speed for v1–v4, subtracting local wind only in the spatial branch. `_reset_hand_launch_start` uses `_weather.sample(0)` for legacy heading, omitting initial OU. The admitted gearless MoonRunner can start at an RPM inconsistent with its first air-relative prop load, or select the wrong runway direction for initial OU. | Initialize from reset-time combined wind/local hub flow for every supported weather law; test steady head/tailwind, seeded OU, release heading, torque balance and replay while preserving the ground-relative throw. |
 
@@ -404,49 +408,13 @@ The following artifacts retain earlier implementation and research evidence. The
 
 ### Observer datum reuse (M5-W-AUD-22 / WOPT-02, 2026-11-09)
 
-`FlightSession.observer_air_and_wind` gives the overlay one full air-data receipt
-and a detached datum wind for the same accepted state/time/provider observation.
-Successful spatial sampling reuses its already sampled datum; failed station
-validation retains invalid air and independently samples the datum for the HUD.
-No frame/stage cache or datum-only substitute is introduced. Legacy weather,
-pending reset, non-endpoint calls and derived session overrides preserve the old
-wind-then-air sequence; the overlay also retains its original Node-adapter path.
-Spatial refusal samples the fallback datum after validation, relying on the
-environment's pure deterministic provider contract.
-
-[Windows checked evidence](research/wind-implementation/M5-W05d-R6/wopt02-20261109.json)
-includes 161 checks through the actual overlay snapshot, 738 existing lean-stage,
-25 fuel-overlay and 12 battery-overlay checks. Entire overlay bytes match an
-independent old-sequence session. Stik at 8/24/64 modes and three times uses
-10 rather than 11 provider calls; X99 at 24 modes uses 9 rather than 10. Refusal
-counts, station order/time, ownership, changed providers, signed zero, pending
-reset and unchanged checkpoints are covered. This is a bounded call-count and
-software-parity result, not a measured frame/FPS gain. Full CI, native package,
-target performance and physical qualification remain separate.
+The overlay obtains air data and detached datum wind from one accepted-state observation. On the tested spatial route, successful station validation reuses its datum. Failed validation keeps invalid air and obtains a fresh HUD datum from the pure provider. Legacy, pending-reset and derived-session paths retain their original ordering. The Windows fixture matched full overlay bytes, with provider calls falling from 11 to 10 for Stik and 10 to 9 for X99. Frame time was unmeasured. [Overlay parity and refusal evidence](research/wind-implementation/M5-W05d-R6/wopt02-20261109.json)
 
 ### Thermal query reuse (M5-W-AUD-21 / WOPT-01, 2026-11-08)
 
-`WindThermalField._cell_velocity` allocates its zero result only on inactive
-returns and evaluates the repeated vertical sine once. The original left-to-right
-multiplication and cell/axis accumulation order remain intact; every query owns
-its result and there is no persistent cache or law/configuration change.
+Each thermal query still owns its result. The active branch reuses the vertical sine while retaining multiplication and accumulation order. Windows headless fixtures compared output bytes, signed zeros, identities and ownership across seeded queries, boundaries and inactive cells. Separate analytic, response and checkpoint checks exercise the surrounding session. These results cover software behavior on their recorded inputs. [Source and checked-log identities](research/wind-implementation/M5-W05d-R6/wopt01-2026-11-08.json)
 
-The [baseline comparator](../research/wind/thermal_parity.gd) compares a retained
-`a3f2e38` provider against the current source on the same engine/host. Windows
-headless checks pass **63,613** result-byte, identity and ownership assertions:
-20,000 seeded queries over 0/1/4/16-cell agendas, lifecycle/taper/height boundaries,
-invalid queries, signed zeros, and mutation of one of two held outputs. Existing
-analytic thermal, aircraft response/refinement and spatial session/checkpoint
-suites pass 73, 33 and 111 checks. The [evidence index](research/wind-implementation/M5-W05d-R6/wopt01-2026-11-08.json)
-records source and checked-log identities.
-
-Reproduce by retaining `git show a3f2e38:app/physics/wind_thermal_field.gd` outside
-`app/`, then running the comparator through the checked runner with
-`-- --baseline=<absolute retained file>`. No baseline is rewritten. Native
-installation/fleet/package, required CI and complete-session/frame performance
-remain separate gates. A changed mirrored source invalidates older native
-receipts and selects the reference until independently requalified. No new
-speedup, FPS, target-hardware or physical claim is made.
+To reproduce the comparison, extract `git show a3f2e38:app/physics/wind_thermal_field.gd` outside `app/`, then run the [baseline comparator](../research/wind/thermal_parity.gd) through the checked runner with `-- --baseline=<absolute retained file>`. Native package selection, current whole-session/frame timing and physical qualification require separate evidence. [Native admission](../research/native-kernel/README.md#normal-flight-backend-selection)
 
 <a id="evidence-wind-implementation-m5-w04b-r1"></a>
 

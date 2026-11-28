@@ -2,7 +2,7 @@
 
 **Continuation:** [follow-up 02](followup-02/README.md) reviews upstream `08f94826`, reproduces additional edit/cancellation boundaries and supplies the [implementation guide](implementation-guide.md). Upstream has resolved the 22 missing UID sidecars; preflight now passes, while other required CI/export checks fail. The results below remain the original `2a3cf04d` audit and have not been relabelled as new runs.
 
-## Verdict
+## Verdict at the audited revision
 
 **The compatibility adapter is useful and substantially implemented; importing a source aircraft into a complete, saved, flyable OpenRC configuration is not implemented.** The main missing bridge is source-aware physical adoption. Visual conversion, parameter reporting, an explicitly different estimated installation, numerical qualification and saved-flight integration are distinct boundaries. They must not be treated as one success.
 
@@ -10,7 +10,7 @@ This audit reviews main at [`2a3cf04dbbdaf486b9c9c8e983463d828f90c64a`](https://
 
 **Fresh evidence:** seven downloaded archives match the earlier recorded SHA-256 values; the production converter admits 18 of 26 model roots as visual sources, with `physics_imported=false` for every success. Fifteen existing focused test scripts pass in an isolated Linux headless fixture on `4.8.beta2.official.cafc17a19`. Additional probes reproduce missing motion reporting, missing PNG cancellation polling and a v4 start/backend mismatch. The baseline's required CI is red before application tests, due to 22 missing tracked Godot UID sidecars. [Verification and limitations](verification.md), [corpus](evidence/corpus-summary.json), [checks](evidence/checks.json), [CI](evidence/ci-baseline.json).
 
-The [closeout plan](closeout-plan.md) owns next-work order. The [handoff](agent-handoff.md) is the next agent's entry point.
+The [eight implementation packets](implementation-evidence.md) record subsequent repairs and experimental flights. Use the [ClearView contract](../../../plans/clearview-aircraft-import.md) for current admission and outstanding gates.
 
 ## Recent commits and what they actually deliver
 
@@ -130,7 +130,7 @@ No downloaded aircraft binary is committed. The retained corpus projection inclu
 
 The existing plans correctly preserve strict admission, ordinary v2 output, separate numerical/calibration claims, immutable storage and delayed unsupported families. Their old baseline tables and milestone wording can nevertheless obscure newer delivered slices. This branch links one closeout order and updates those stale navigation/status statements.
 
-The separate Flight Simulator plans contain valuable later-adapter and wizard work, but their editable MSFS source and estimated RC-design assumptions do not establish the user's general downloaded-aircraft outcome. The [closeout continuity section](closeout-plan.md#4-continuity-and-later-formats) preserves them without importing older runtime or treating a replacement installation as faithful translation.
+The separate Flight Simulator plans contain valuable later-adapter and wizard work, but their editable MSFS source and estimated RC-design assumptions do not establish the user's general downloaded-aircraft outcome. The [Flight Simulator import task](../../../plans/flight-simulator-aircraft-import.md) preserves them without importing older runtime or treating a replacement installation as faithful translation.
 
 This audit did not run full application CI, native numerical campaigns, the actual original simulator, a rendered visual comparison, crash/long-flight journeys, or packaged Windows/macOS/Linux imports. It proves the narrow current-source results above. Its completion does not close G05/G06/G09 or any source-aircraft release claim.
 

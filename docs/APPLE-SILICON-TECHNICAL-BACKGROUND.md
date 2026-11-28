@@ -1,10 +1,8 @@
 # Apple Silicon optimization — technical background
 
-Audited 2026-11-02 against clean source **`46b004c7b469448c29ef96168da4f03cee2c6d23`**. Owner: DT/PT, with VQ/GDU for rendering/engine and SF/FL for simulation. This document and the [master implementation plan](plans/apple-silicon-performance.md) are the two authoritative Apple optimization documents. The background owns implementation facts, limitations and research; the plan owns work, status and acceptance. Dated investigations remain evidence, not competing instructions.
+This technical audit describes source `46b004c7b469448c29ef96168da4f03cee2c6d23` on 2026-11-02. Its package, rendering and native-kernel findings below are historical. Use the [Apple plan](plans/apple-silicon-performance.md) for platform gates and the [roadmap](../ROADMAP.md) for current priorities.
 
-**Conclusion:** first close the native measurement gaps, then attribute the actual workload on the available M1's built-in display. The product's 1080p priority still needs a separate actual-output check. The repository already contains meaningful CPU/loading/rendering optimizations and most Mac experiment preparation. Native Metal is a strong experiment, not a proven faster default. NK-3 is a Linux x86_64 evaluator with architecture-specific exactness requirements, not a ready-made Apple Silicon acceleration path. iOS has no delivery implementation to optimize yet.
-
-This audit used three independent Terra 6.1 Max specialists: Godot/Metal rendering research, Apple diagnostics/platform research, and NK-3/source/evidence review. The lead checked decisive code paths and primary references, challenged scope and reconciled the findings. No optimization, engine upgrade, native helper, hardware benchmark, package publication or performance qualification was performed. The current environment is Linux; the available M1 is a subsequent test host. The shared tree later advanced through unrelated documentation/asset-cleanup commits; audited runtime/tool source was rechecked against this baseline. The user confirms an M1; retained DT-MAC evidence identifies it as an Air with 8 GB, which native inventory must verify before using it as the fanless/low-memory floor.
+The M1 subsequently gained a qualified native physics default for supported flights. The [native-default decision](DECISIONS.md#default-to-native-physics-on-supported-apple-silicon-flights) and [R10 evidence](research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-owner-directed-native-default) identify selection, package and fallback scope. Rendering has separate [MetalFX qualification gates](plans/apple-metalfx.md). On Apple Silicon Retina displays, measure native output and drawable pixels and the internal 3D extent independently.
 
 **Later implementation update (2026-11-02):** DT-MAC-02c/d portable evidence repairs and DT-MAC-02h Mac reference bundle identity now have focused tests. Native preflight verified a MacBookAir10,1 M1/8 GB, and short Aqua/resource/frame screening ran on its built-in panel. This does not revise the historical audit claim above. Results and open gates are in the [dated DT-MAC-02 evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#first-m1-native-screening-2026-11-02).
 
@@ -17,8 +15,6 @@ final-five-minute gains remained 15.1–22.6%. All 73 shared physics/input hash
 windows matched. These are instrumented source-editor results; whole-observer
 uncertainty, product-route, presentation and release gates remain separate, and
 the 60 Hz pacing target was not met. [Sustained comparison and scope](research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison).
-
-Audit verification: the two deliverables and new routing links passed 79 local link/anchor checks using the repository's existing checker logic; all 47 named test scripts exist. Whitespace checks passed. Runtime/tool code was rechecked against the audited baseline after concurrent documentation commits. These are documentation/source checks; no app suite or target-device test was run.
 
 ## 1. Audit coverage and reconciliation
 
@@ -174,9 +170,9 @@ The retained [Apple technology investigation](research/desktop-delivery-investig
 
 ## 5. NK-3, CPU scheduling and numerical constraints
 
-NK-3 replaces vehicle evaluators through existing `VehicleModel` callbacks. It does **not** replace the kernel's validation, discrete supervision, integration transaction, collision or observer publication. [Native adapters](../app/native/), [native guide](../research/native-kernel/README.md).
+On the November 2 baseline, NK-3 replaced vehicle evaluators through `VehicleModel` callbacks. The kernel retained validation, discrete supervision, integration, collision and publication. See the [current native adapters](../app/sim/native/) and [native guide](../research/native-kernel/README.md) for later work.
 
-The current build/receipt/loader/install path is Linux x86_64. `nk::R` uses left-first SSE2 inline assembly to preserve malformed-input NaN behavior; transcendental behavior follows the Linux engine/glibc relationship. macOS ARM64 cannot compile and qualify this by changing a target flag. It needs a platform math strategy, same-host native/reference probes, compiler/SDK pins, dylib/dependency/signature handling and admission receipts. A successful finite-state test does not cover NaNs, signed zero, literals or libm behavior.
+The audited build, receipt and loader targeted Linux x86_64. `nk::R` uses left-first SSE2 inline assembly to preserve malformed-input NaN behavior; transcendental behavior follows the Linux engine/glibc relationship. macOS ARM64 cannot compile and qualify this by changing a target flag. It needs a platform math strategy, same-host native/reference probes, compiler/SDK pins, dylib/dependency/signature handling and admission receipts. A successful finite-state test does not cover NaNs, signed zero, literals or libm behavior.
 
 Clang's strictness must be checked in actual compile commands: `-fno-fast-math` alone does not guarantee disabled contraction. Preserve explicit `-ffp-contract=off` and inspect conflicting overrides. Even that is not parity proof. Never reduce float64, reassociate RK4 or use GPU flight physics as a graphics optimization. [Clang floating-point documentation](https://clang.llvm.org/docs/UsersManual.html#cmdoption-ffp-contract).
 

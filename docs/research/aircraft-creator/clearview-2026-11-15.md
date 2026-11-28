@@ -436,7 +436,7 @@ The same review added a defensive rotorcraft refusal in `check_pair` and loosene
 
 ### Closeout: every corpus aircraft flies (AC-CV, 2026-11-20)
 
-The uncommitted 2026-11-17 closeout worktree (automatic setup, size classes, park jets, X8 and X-Cell donors; see its [packet log](import-closeout-2026-11-17/closeout-plan.md#6-implementation-status)) was committed as `9d11d13a6` and merged with main. Conversion stays main's (25/25 and 189/191); the merge kept main's parity decision and removed the old servo-interval refusal. Changes on top:
+The uncommitted 2026-11-17 closeout worktree (automatic setup, size classes, park jets, X8 and X-Cell donors; see its [packet log](import-closeout-2026-11-17/implementation-evidence.md#6-implementation-status)) was committed as `9d11d13a6` and merged with main. Conversion stays main's (25/25 and 189/191); the merge kept main's parity decision and removed the old servo-interval refusal. Changes on top:
 
 | Gap | Change |
 | --- | --- |

@@ -1,10 +1,6 @@
 # Reusable electric propulsion
 
-2026-11-08 · Revision 11 · Step prefix: **EL** (ROADMAP M4b namespace).
-
-**Status:** Synthetic EL1b–e and EL2a routes and the BAT-10 `pack_ecm` Turbo Lumber Evolution variant are software verified. The experimental Ugly Stick 6S installation is software integrated with ideal and finite-pack modes; its [dated evidence](research/propulsion/ugly-stik-implementation-2026-11-08.md) separates completed checks from remaining qualification. EL2a-P1/P2 reduce measured battery/event tick costs, but the 500 µs target and original-target remeasurement remain open. Turbo Lumber Evolution hardware identification, physical validation and pilot acceptance are open; the shipped Turbo Lumber Evolution pack and powertrain parameters are estimates, not measurements.
-
-This guide owns the electric motor, ESC power stage, supply/stop integration and remaining EL work. Battery fields/laws, pack integration, telemetry and BAT status live in the [battery guide](plans/battery-realism.md); EL2b, EL3-battery, EL4-pack and EL6 continue there. Loader, trim, flight session and trace changes are shared main-line work. Aircraft/model data follows the model owner. Related plans: [coupled shaft](PROPULSION-CORE-PLAN.md), [Turbo Lumber Evolution integration](TIMBER-INTEGRATION-PLAN.md), [atmosphere](WIND-ATMOSPHERE-REFERENCE.md#atmosphere), [ROADMAP](../ROADMAP.md).
+This guide covers the fixed-wing electric motor, ESC power stage and their integration with the propeller and supply. The [battery guide](plans/battery-realism.md) owns pack laws, telemetry and cutoff. The [project roadmap](../ROADMAP.md) owns cross-project priority and acceptance gates.
 
 ## Current software contract
 
@@ -16,7 +12,7 @@ The motor is a stateless, positive-rotation DC-equivalent source: `E = rpm/Kv`, 
 - `ocv_resistance` is the EL2a synthetic pack with SOC, sag, charge/energy accounting, pack-side auxiliary current and exhaustion events. Its accumulated loss energy is not a thermal state.
 - `pack_ecm` adds polarization, average/weakest-cell voltage, pack temperature and sampled ESC low-voltage cutoff; the [battery guide](plans/battery-realism.md) owns its behavior, authoring and limits.
 
-Turbo Lumber Evolution and Ugly Stick · Electric 6S offer finite-pack and ideal-bus flight; use the [battery mode controls](plans/battery-realism.md#2-current-delivery). Both default to pack in ordinary flight. Workshop trials use their principal fixed-voltage data, explicitly labeled with no depletion, and refuse a finite-pack trial request. The Stik installation remains experimental; its [source dossier](../research/propulsion/stik-6s/README.md) records the conditional electrical fit, startup-current limitation and open physical gates.
+MoonRunner X99 uses a [fixed-voltage installation](../app/data/aircraft/moonrunner_x99.json). Turbo Lumber Evolution and Ugly Stick · Electric 6S offer finite-pack and ideal-bus flight; use the [battery mode controls](plans/battery-realism.md#2-current-delivery). Both default to pack in ordinary flight. Workshop trials use their principal fixed-voltage data, explicitly labeled with no depletion, and refuse a finite-pack trial request. The Stik installation remains experimental; its [source dossier](../research/propulsion/stik-6s/README.md) records the conditional electrical fit, startup-current limitation and open physical gates.
 
 When the finite-pack session owns the whole-tick policy, it also owns requested ground-contact subdivisions: compose the existing battery step over those pieces, merge bounded event results atomically, and sample the ESC supervisor once at the outer endpoint. The original one-piece route is retained; the kernel still rejects a foreign whole-tick policy with substeps. [Implementation and regression evidence](research/propulsion/ugly-stik-implementation-2026-11-08.md).
 
@@ -32,30 +28,14 @@ The reference is the E-flite Turbo Timber Evolution BNF Basic B, EFL105250B: 800
 
 EL5/EL6 require calibrated, matched, held-out physical measurements with hardware/firmware, temperature, environment, channel timing and uncertainty recorded. The ROADMAP targets remain ±10% for current/thrust and ±15% for endurance. The project's uncertainty rule passes when `abs(error)+Uerror <= limit`, fails when `max(0,abs(error)-Uerror) > limit`, and otherwise reports inconclusive; this is a project rule, not a manufacturer requirement. Preserve raw observations and the fit/validation split.
 
-## Step register
+## Remaining qualification
 
-| ID | Delivery and evidence | Status |
-| --- | --- | --- |
-| EL1a | Stateless motor source, ideal motoring ESC and fixed bus. [Kernel, 1,057 checks and mutations](research/propulsion/EL1a/README.md) | Complete — software only |
-| EL1a-R1 | Hardware and measurement investigations. [Source/decision matrix](research/propulsion/EL1a-R1/README.md) | Complete — research |
-| EL1a-R2 | Godot, data, numerics, tooling and identifiability investigations. [Probes and matrix](research/propulsion/EL1a-R2/README.md) | Complete — research/tools |
-| EL1b | v2 loader/schema and two synthetic configurations. [Validation evidence](research/propulsion/EL1b/README.md) | Complete — software only |
-| EL1c | Shared source dispatch, equilibrium and trim. [Independent solver checks](research/propulsion/EL1c/README.md) | Complete — software only |
-| EL1d | Coupled session, stop events, checkpoint and telemetry. [Replay, rollback and regression](research/propulsion/EL1d/README.md) | Software verified; performance target missed |
-| EL1e | Synthetic experimental aircraft routes. [Flight and product proof](research/propulsion/EL1e/README.md) | Complete — synthetic fixtures only |
-| EL1e-STIK | Two stock Stiks, preserved basic/technical fixtures and experimental 6S ideal/pack installation. [Implementation evidence](research/propulsion/ugly-stik-implementation-2026-11-08.md) | Software integrated with scoped Linux native equivalence; full fleet, physical/performance and release qualification open |
-| EL1f | Turbo Lumber Evolution configuration and model handoff. [Ownership/input handoff](research/propulsion/EL1f/README.md) | Open — identified hardware/loadout and TT data required |
-| EL2a | OCV/resistance pack, sag, state and exhaustion. [Independent oracle, replay and product proof](research/propulsion/EL2a/README.md) | Software verified; performance target and physical data open |
-| EL2a-P1 | Reduce coupled stage cost with exact behavior preservation. [Paired evidence](research/propulsion/EL2a-P1/README.md) | Complete — battery medians 558–562 µs on the documented WSL host; 500 µs gate open |
-| EL2a-P2 | Bound stop/exhaustion localization and event ordering. [Defects and paired measurements](research/propulsion/EL2a-P2/README.md) | Complete — event medians down 67–90%; event spike and Gate P remain |
-| EL2a-E1 | Synthetic runway startup, takeoff, stall/recovery and landing. [Windows/Linux evidence](research/propulsion/EL2a-E1/README.md) | Complete — software scope only |
-| EL2a-P3 | Smaller motor-stage result with exact session/event preservation. [Native comparison](research/propulsion/EL2a-P3/README.md) | Software complete; whole-session speedup not established under concurrent workloads |
-| EL2b | Battery polarization and model-order selection | Owned by BAT-05/06 in the [battery register](plans/battery-realism.md#7-bat-step-register) |
-| EL3 | Per-ESC ramp, signal-loss and brake/freewheel modes. | Planned — exact controller behavior/data required; cell detection and low-voltage cutoff continue as BAT-11 |
-| EL4 | Motor winding and ESC thermal states and derating. | Deferred — thermal data and energy accounting required; pack temperature continues as BAT-07 |
-| EL5 | Independent static/transient powertrain validation. | Planned — matched motor/ESC/pack/prop measurements required |
-| EL6 | Endurance validation against recorded pack/flight data and cutoff. | Continues as BAT-28 — physical data required |
+| Work | Required evidence |
+| --- | --- |
+| EL1e-STIK / EL1f, catalog installations | For the experimental Stik 6S, qualify the remaining fleet, target performance and release routes against its [installation record](research/propulsion/ugly-stik-implementation-2026-11-08.md). For Turbo Lumber Evolution, identify the actual stock equipment and loadout against the [model handoff](research/propulsion/EL1f/README.md) and [aircraft integration plan](TIMBER-INTEGRATION-PLAN.md). Pilot acceptance remains separate. |
+| EL3, controller behavior | Measure the controller's ramp, signal-loss and brake/freewheel modes. BAT-11 owns cell detection and low-voltage cutoff. |
+| EL4, winding and ESC thermal behavior | Obtain thermal data and close the energy balance before adding thermal states or derating. BAT-07 owns pack temperature. |
+| EL5 / EL6, powertrain and endurance | Apply the held-out measurement rule above. Use the [static validation tools](research/validation/VAL-7a/README.md), [RPM-step diagnostics](research/validation/VAL-7c/README.md) and [propeller coverage](research/propulsion/G1b1/README.md). BAT-28 owns endurance validation. |
+| Electric tick budget | Measure whole-session ticks on the idle original target, recording selected backend, aircraft and regime. Report steady, contact and stop/exhaustion event distributions separately. |
 
-EL2a-P1's 558–562 µs and P2's event-tick reductions were measured on a Ryzen 9 5900X under WSL, not the original target profile. They do not close the whole-session 500 µs/tick gate. [EL2a-E1](research/propulsion/EL2a-E1/README.md) adds synthetic 240/480 Hz maneuver checks; it does not close physical promotion. See [Gate P and original results](research/propulsion/EL2a/README.md#performance).
-
-Detailed source/provenance limits remain in [motor and ESC investigations](research/propulsion/EL1a-R1/01-motor-esc.md), [battery investigations](research/propulsion/EL1a-R1/02-battery.md), [propeller validation](research/propulsion/EL1a-R1/03-propeller-validation.md), [numerics and uncertainty](research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md), [static validation tools](research/validation/VAL-7a/README.md), [RPM-step diagnostics](research/validation/VAL-7c/README.md), and [propeller provenance/coverage](research/propulsion/G1b1/README.md).
+The [motor/ESC investigation](research/propulsion/EL1a-R1/README.md), [numerical study](research/propulsion/EL1a-R2/README.md), [session and event fixtures](research/propulsion/EL1d/README.md) and [maneuver refinement](research/propulsion/EL2a-E1/README.md) document the model and its software checks. [EL2a-P1](research/propulsion/EL2a-P1/README.md) measured 558–562 µs battery medians on a Ryzen 9 5900X under WSL. [P2](research/propulsion/EL2a-P2/README.md) reduced event costs in its paired fixtures. [P3](research/propulsion/EL2a-P3/README.md) established result preservation under concurrent workloads. Target-host tail latency remains open.

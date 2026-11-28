@@ -1,19 +1,8 @@
 # ClearView importer completion plan
 
-**Updated:** 2026-11-20, revision 3. **Status:** ClearView importer v1 closed. Every aircraft root of both corpora (214) imports and test-flies: airplanes and VTOLs on an automatic estimated configuration, elevon flying wings on the stock X8 physics, helicopters on the stock X-Cell .60 physics, the Hindenburg on OpenRC's own RC blimp, and the few the estimate cannot represent on the stock electric trainer physics. Saved-aircraft flight from Home, portable bundles and packaged-target qualification are Creator gates that ClearView inherits. **Owner:** Aircraft Creator / Workshop. **Step IDs:** AC-CV-00…14.
+The two recorded corpora supplied **214 aircraft roots**. All imported and test-flew using OpenRC physics: 149 independent estimates, 10 MoonRunner X99 flying-wing donors, 49 X-Cell helicopter donors, one RC blimp donor and five electric-trainer donors. Two additional packages contained landscapes. These are experimental Workshop routes. Source-faithful physics, saved flight from Home, bundles and packaged-platform qualification remain open. [Corpus evidence](../research/aircraft-creator/clearview-2026-11-15.md#closeout-every-corpus-aircraft-flies-ac-cv-2026-11-20).
 
-This plan owns ClearView-specific work. The [Creator plan](aircraft-creator.md) owns the shared gates (AC-12 numerical qualification, AC-18 Home, AC-19 bundles, AC-20 release evidence). [Dated research](../research/aircraft-creator/clearview-2026-11-15.md#closeout-every-corpus-aircraft-flies-ac-cv-2026-11-20) owns findings and receipts; the [2026-11-17 closeout plan](../research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md) keeps the packet history of the automatic setup and donors. Design decisions live in [DECISIONS](../DECISIONS.md#ac-cv-v1-parity).
-
-## 1. Review of revision 1
-
-Revision 1 (branch `docs/clearview-import-guide`, 2026-11-19) defined seven gates and a nine-box checklist. Its trust boundaries, evidence rules and refusal of invented geometry were sound and are kept. Four problems made it unclosable or misdirected:
-
-| Finding | Evidence | Change |
-| --- | --- | --- |
-| v1 depended on generic Creator gates with no date | AC-12/G05 failed every registered campaign: 60/68, 64/68, 58/68 plus two unresolved, and partial studies ([campaign record](../research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md)). It blocks published flight for **every** Creator aircraft. Home (AC-18), bundles (AC-19) and packaged release (AC-20) are also shared | ClearView v1 closes on its own scope. It inherits the shared gates when they close; it does not wait for them |
-| ClearView was refused what STL/GLB already had | `compiler.gd` strips `source_observations`/`source_installation` before emitting physics. A confirmed ClearView aircraft compiles to the same bytes as an STL/GLB aircraft with the same values (`test_creator_source_installation.gd`: "choice changes definition identity without changing physical bytes"). Yet ClearView was refused the experimental test flight and **Save aircraft** that STL/GLB have | Parity: once the configuration is confirmed, ClearView follows the ordinary Creator gates |
-| The real player blocker was input coverage | 10 of 25 real models from 6 downloads were refused, all for fixable reasons: JPEG metadata segments (4), GIF propeller-disk textures (3), self-intersecting or coincident-corner polygons (2), a `$` editor tag line (1) | Fixed. 25/25 now convert (section 4) |
-| Original-ZIP storage as a separate blob | 64 MiB of third-party bytes per model in the library and in bundles creates rights and quota exposure for no player benefit. The GLB receipt already keeps archive/member SHA-256, parameter bytes, materials and markers | Dropped from v1. The receipt is the provenance. Players keep their own ZIP, and the guide tells them to |
+Aircraft Creator / Workshop owns AC-CV-00…14. Use the [player guide](../AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental) for instructions, the [Creator task](aircraft-creator.md) for shared gates and [AC-CV decisions](../DECISIONS.md#ac-cv-v1-parity) for the scope rationale. The [November 17 packets](../research/aircraft-creator/import-closeout-2026-11-17/implementation-evidence.md) preserve the earlier mutation and handling runs.
 
 ## 2. v1 delivery contract
 
@@ -24,7 +13,7 @@ A player can do all of the following in the normal UI:
 3. Choose **Set up for flight automatically**. It takes the ClearView frame (metres, nose −X, up +Y), estimates the wing leading edge, planform and size class, fills every empty value with labelled estimates and declares the independent OpenRC configuration. A helicopter offers **Fly as a helicopter** instead; an elevon flying wing offers the stock X8 physics; a model the estimate cannot fly offers the stock electric trainer physics, with the reason.
 4. Review the estimates, orientation, size, datum and moving parts; anything the player set is kept.
 5. Test-fly it (Airborne or Hand-launch, labelled experimental).
-6. Save it as a draft or an aircraft revision, then reopen it from the library.
+6. Save a draft, or save a checked estimated configuration as an aircraft revision, then reopen it from the Workshop library. Donor trials cannot be saved as aircraft.
 
 | Area | Requirement |
 | --- | --- |
@@ -38,7 +27,7 @@ A player can do all of the following in the normal UI:
 
 **Outside v1:** ClearView flight-model adoption, runway starts and gear, glow/gasoline, moving elevons and rotors on donor flights, multi-engine, a helicopter or multirotor flight package of their own size, scenery, ClearView sounds/scripts, and original-ZIP storage. AC-CV-10…13 keep the future aircraft families.
 
-## 3. Unchanged boundaries
+## 3. Admission boundaries
 
 - Read captured bytes only. Never extract arbitrary paths, fetch URLs, execute source settings or search the host for files.
 - The kernel, `app/physics`, `app/sim`, AC-12 rules, tolerances and the 68-cell matrix are unchanged.

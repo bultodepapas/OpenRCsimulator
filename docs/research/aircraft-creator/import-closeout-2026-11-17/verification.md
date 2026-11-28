@@ -2,7 +2,7 @@
 
 **Source:** `2a3cf04dbbdaf486b9c9c8e983463d828f90c64a`.
 **Date:** 2026-11-17. **Engine:** `4.8.beta2.official.cafc17a19`, Linux x86_64, headless.
-The [audit](README.md) owns findings; the [closeout plan](closeout-plan.md) owns future acceptance. This file distinguishes executed checks from required future work.
+The [audit](README.md) owns findings; the [Creator task](../../../plans/aircraft-creator.md) owns current acceptance. This file distinguishes executed checks from required future work.
 
 **Later same-day work:** [follow-up 02](followup-02/README.md) retains three new observations on `08f94826`, a checked corpus ledger and the updated upstream CI state. The 15-script runs and original preflight failure below remain evidence only for `2a3cf04d`; they were not rerun or relabelled.
 

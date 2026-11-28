@@ -1,664 +1,296 @@
 # Decisions
 
-Curated architecture and product choices, with the reasons worth preserving. Reviewed 2026-10-28. Read the relevant section before reopening a design; an approved direction is not proof of implementation, physical validity or performance qualification.
-
-[STACK](STACK.md) owns current architecture, the [ownership registry](README.md#tracks-plans-and-step-ids) routes active work, and [LEARNINGS](LEARNINGS.md) records failure patterns. Linked guides and evidence retain detailed contracts, parameters, alternatives and dated results. Repository rules and display priorities remain in [AGENTS](../AGENTS.md).
-
-| Decision area | Read |
-| --- | --- |
-| Platform and qualification | [Product and platform](#product-and-platform) |
-| Solver, events, native code and replay | [Simulation authority](#simulation-authority) |
-| Aerodynamics, propulsion, environment and contact | [Physical models](#physical-models) |
-| Aircraft formats, imported models and Workshop | [Authoring and identity](#authoring-and-identity) |
-| Launches, controls, failures, logs and companions | [Flight sessions and observation](#flight-sessions-and-observation) |
-| Renderers, scenery, cameras, effects and audio | [Presentation](#presentation) |
-| Menus, loading, debugging and releases | [Runtime and delivery](#runtime-and-delivery) |
+Find the reason behind a consequential choice, then read its linked contract and evidence. Each subject has one decision record. Decisions retain their stated scope and date; they do not certify current implementation, physical validity or performance. Start at the [master documentation index](README.md) for other tasks, [architecture](STACK.md) for current boundaries, and the [roadmap](../ROADMAP.md) for priorities.
 
 ## Product and platform
 
-### Native desktop Godot, with an explicit engine pin
+<a id="native-desktop-godot-with-an-explicit-engine-pin"></a>
 
-**Gate 1 / GDU-03.** Godot in `app/` replaced the browser prototype because the owner prioritized native desktop delivery, real-radio input and the editor over the bake-off's higher three.js score. The prototype remains frozen. Official Godot 4.8-beta1 replaced the earlier 4.7.x pin after owner-authorized local verification; this did not requalify every platform or historical benchmark. The owner requested official 4.8-beta2 on 2026-11-01; [GDU-12](research/engine-upgrade/GDU-12/README.md) records the follow-up without replacing historical numerical baselines. The exact pin lives in [get-godot.sh](../app/get-godot.sh), with rationale in the [bake-off](../prototypes/stage0/COMPARISON.md) and [GDU-03 adoption](research/engine-upgrade/GDU-03/README.md). Reconsider the platform only against demonstrated product or implementation limits.
+- [Native desktop Godot, with an explicit engine pin](decisions/platform.md#native-desktop-godot-with-an-explicit-engine-pin).
 
-### Aircraft first; broader vehicles share the foundation
+<a id="aircraft-first-broader-vehicles-share-the-foundation"></a>
 
-**SF-01 / HELI / RCV / DR.** Vehicle breadth uses the common simulation contracts, with each family retaining its own data, session and qualification. Named helicopter and ground-vehicle consumers justified replacing H10's earlier decision to defer interface extraction. Physics groundwork or a playable research surrogate does not establish a qualified new aircraft or racing activity. Current family status belongs in [STACK](STACK.md#supported-vehicle-paths) and the owning guides; [SF-01](research/simulation-foundation/SF-01/README.md) records the extraction rationale.
+- [Aircraft first; broader vehicles share the foundation](decisions/platform.md#aircraft-first-broader-vehicles-share-the-foundation).
 
-### Separate software preservation from product acceptance
+<a id="separate-software-preservation-from-product-acceptance"></a>
 
-**Gate 2 / Gate P / VAL.** Goldens, exact replay and analytic checks protect implementation; independent applicable measurements qualify physical behavior, and pilot, radio and target-hardware gates remain separate. This prevents a model's own coefficients or a development-VM speedup from certifying realism or release performance. The physics budget remains a gate, not a guaranteed runtime bound. Use the [ROADMAP gates](../ROADMAP.md#execution-order-and-release-gates), [VAL-3](research/validation/VAL-3/README.md) and the existing [resolution policy](../AGENTS.md#display-resolution-priorities), rather than copying acceptance numbers into this record.
+- [Separate software preservation from product acceptance](decisions/platform.md#separate-software-preservation-from-product-acceptance).
 
 ## Simulation authority
 
-### One float64 kernel, vehicle-owned laws
+<a id="one-float64-kernel-vehicle-owned-laws"></a>
 
-**SF-01…03.** A session installs one `VehicleModel`; the kernel owns integration, event handling, accepted state and rollback, while models/adapters own vehicle laws and layout. Scalar and packed float64 state preserves small dynamics that Godot rendering types can lose. Rendering converts at the boundary. This eliminates competing tick/checkpoint implementations without adding vehicle branches to the kernel. The [kernel contract](STACK.md#boundaries-and-data-flow) owns coordinates, state layout, timing and callback rules.
+- [One float64 kernel, vehicle-owned laws](decisions/simulation-transactions.md#one-float64-kernel-vehicle-owned-laws).
 
-### Native acceleration keeps the reference as its specification
+<a id="native-acceleration-keeps-the-reference-as-its-specification"></a>
 
-**SF-08 / NK-3.** Keep the GDScript reference selectable and replace only an identified evaluation boundary. Receipts and replay bind the actual backend; unsupported configurations or unverified artifacts retain the reference. Owner-directed NK-3 promotion supersedes the blanket fixed-wing deferral: ordinary application flights request native by default for the verified Linux x86_64 aircraft catalog and admitted conditions, including coupled electric/battery, finite glow, liquid combustion, turbine and helicopter capabilities. The shared kernel and existing start, weather and runtime contracts remain authoritative. Completed flights, startup refusals, runtime refusals and terminal collisions carry separate evidence. Low-level sessions remain reference by default. NK-4 admits Windows x86_64 source/debug runs on the same evidence rule: a MinGW-w64 build with engine-matching math (no `sincos` fusion, the Windows engine's lerp order, SSE2 `sqrtsd`) is bit-identical, so the D3 NaN-class tolerance tier is not used; its installation sits beside the Linux one, never over it ([NK-4](research/native-kernel/NK-4/README.md)). Windows release packages, macOS admission and target-host Gate P remain separate qualifications.
+- [Native acceleration keeps the reference as its specification](decisions/native-execution.md#native-acceleration-keeps-the-reference-as-its-specification).
 
-The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) records the original adoption and its qualified expansion. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) retains its historical rationale and qualification requirements; its blanket port deferral and platform inventory are superseded. Its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
+<a id="preserve-each-event-laws-valid-continuation"></a>
 
-**Owner, 2026-11-20: native is the runtime, GDScript the specification.** Performance and flight-feel work runs on the native backend; confirm the logged backend before measuring. The GDScript reference is not retired: the C++ mirrors it bit for bit, so it remains the specification, the qualification oracle, the fallback and the only physics for imported aircraft, servo law, the airship and the multirotor. Historical `.orfl` baselines and replay keep their recorded backend. A fallback from a native request must be visible, not just a log line. [Legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
+- [Preserve each event law's valid continuation](decisions/simulation-transactions.md#preserve-each-event-laws-valid-continuation).
 
-**DX-06, 2026-11-20; explicit owner preference.** Prefer native development and the native kernel whenever feasible and appropriate, including when planning new simulation work. The [shared native-development rules](../AGENTS.md#native-development) own that preference and its implementation/target-platform criteria. Choosing native does not require first exceeding 500 µs; the budget, reference contract and qualification gates still apply. GDScript remains appropriate where its integration and maintenance advantages serve the task. This is a development direction, not evidence that a new backend, platform or workload is qualified.
+<a id="closed-loop-control-samples-the-accepted-frame-through-an-opt-in-protocol"></a>
 
-**Owner, 2026-11-26: a native core, not native helpers (NK-6).** Offered native helpers inside the GDScript tick transaction or a native tick, the owner chose "núcleo nativo, todo nativo". This supersedes the rule that native code evaluates only model callbacks while `Simulation` integrates. For a model whose stage the kernel owns, the kernel integrates the tick from its first stage to the accepted endpoint. That covers RK4 and its substeps, the declared-event locator and every refusal, with the model's remaining GDScript callbacks called where the reference calls them. Later NK-6 steps port those callbacks, step policies and the helicopter tick. `Simulation` keeps the commit, publication, checkpoints and fault recovery. It runs any tick the kernel does not answer. The GDScript reference stays selectable and is the specification: every native tick must be byte-identical to it, and backend identity, replay and qualification rules are unchanged. [NK-6a](research/native-kernel/NK-6a/README.md).
+- [Closed-loop control samples the accepted frame through an opt-in protocol](decisions/simulation-transactions.md#closed-loop-control-samples-the-accepted-frame-through-an-opt-in-protocol).
 
-**DT-MAC-04n1–n4, source-editor admission.** The Apple ARM64 port retains that
-stage boundary and float64 authority. Initial source-default adoption used an exact
-host, engine, receipt, binary and stock-selection marker. The later
-[DT-MAC-11a decision](#default-to-native-physics-on-supported-apple-silicon-flights)
-removed that marker prerequisite for automatic admission, while retaining the
-screened domain, engine/source/library identity and live guards. Keep
-explicit research opt-in and release diagnostics separate. A changed on-disk
-receipt cannot qualify a different library already loaded in the process. Use a distinct native Mac bundle identity
-that binds the signed dylib, qualification manifest and final reference-bundle
-receipt. Reusing the reference-only identity would make exact replay ambiguous.
-The [Mac native guide](../research/native-kernel/README.md#experimental-macos-arm64)
-owns the implemented contracts and the [source-default evidence](research/native-kernel/DT-MAC-04n4/README.md)
-records the November 14 source-default qualification and its remaining gates.
+<a id="publish-session-changes-only-after-physical-acceptance"></a>
 
-The initial assessment deferred automatic admission. The later source-default
-work enforces a smaller verified domain instead of treating failed fleet rows as
-qualified. Source-editor adoption does not establish normal hardened signing,
-downloaded-package trust, physical realism, FPS or energy gains. Public native
-distribution remains deferred by owner instruction.
+- [Publish session changes only after physical acceptance](decisions/simulation-transactions.md#publish-session-changes-only-after-physical-acceptance).
 
-On November 14, B5 source `9386f5e5...` was adopted on the qualified M1 after
-current-source numerical, fleet, sustained/resource and required CI gates.
-The ledger binds actual canonical Main/replay and prepared Home/flight checks.
-Technical Home checks used headless/Dummy with scenery audio off; normal
-audio-enabled shutdown remains open and was not silently accepted as clean.
+<a id="replay-binds-complete-state-and-execution-identity"></a>
 
-### Preserve each event law's valid continuation
-
-**SF-04 / SF-04b / SF-05.** Share the declared-event protocol where its trial continuation is valid, and retain the rotorcraft domain-guarded locator where negative trial speed would invalidate the law. A whole-tick policy cannot also request kernel contact substeps. Full-load substeps preserve their tested integration semantics; forcing every route through one locator or splitting only selected forces would change them. [SF-04b](research/simulation-foundation/SF-04b/README.md) supersedes the earlier single-locator direction; [SF-05](research/simulation-foundation/SF-05/README.md) owns substep evidence.
-
-### Closed-loop control samples the accepted frame through an opt-in protocol
-
-**DR-16a / SF.** A model that needs feedback control selects `framed-sampled-v1` in its `VehicleModel`: one pure `sample_tick` on the detached accepted frame returns the candidate sampled block and modes, and every stage of that tick (RK4, substeps, the event locator, step-policy trials, reset preparation) receives a detached copy of that one sample. Controller integrators, filters, held commands and arming latches therefore live only in the checkpointed arrays and roll back, reset and restore with the body. The alternative, a controller object written by `pre_tick` and read by `stage`, was reproduced leaving stale commands after a refused tick. Legacy models keep their callback order, counts, results and checkpoint formats; the protocol is selected explicitly, never inferred. One guard spans the sample, the integration and the endpoint transition, so a callback that writes live kernel state or swaps a model field refuses the tick; it is a finite contract on kernel and model state, not a sandbox. A framed model's domain check runs inside its endpoint transition on every accepted tick and is called by the owning session before a reset or restore is committed: installing it as the per-step validator hook ran the guarded frame copy twice a tick and dominated the tick cost. Full-frame reset preparation is detached and sealed to its owner. Revisit if a second closed-loop vehicle needs a different sample schedule: add a generic sampled-event scheduler rather than extra controller updates inside stages. [Kernel contract](STACK.md#boundaries-and-data-flow), [evidence](research/drone-racing/M1-M3-2026-11-11/README.md#kernel-protocol).
-
-### Publish session changes only after physical acceptance
-
-**H8 / GP-14.** Prepare and validate starts, reloads and restores before replacing the accepted flight. Rejection preserves the prior model, state and recording; accepted changes publish explicit old-flight context and commit receipts. An observer fault after physical commit pauses the accepted flight instead of claiming rollback. This prevents recorders, statistics and UI from observing a reset that never happened. Keep the [common start/reload](research/ground-physics/GP-14/README.md#common-start-and-reload-transactions-gp-14e) and [restore](research/ground-physics/GP-14/README.md#accepted-restore-publication-gp-14f) contracts together with the kernel boundary.
-
-### Replay binds complete state and execution identity
-
-**H8 / H9 / H6–7 / FL.** Checkpoints and logs include the continuous, sampled and discrete state needed for continuation, plus source/configuration, timestep and backend identity. Exact replay and a changed-solver candidate are different operations; tolerance qualification is explicit and platform-scoped. Transcendentals retain the `math3d` routing policy, with the adopted built-in `sqrt` exception and, since 2026-11-18, constant normal powers of two (`pow(2.0, n)`, integer literal `n` in −1022…1023, exactly representable like `math3d.MIN_NORMAL_FLOAT64`); this does not promise universal cross-platform byte equality. [Flight-log contract](FLIGHT-LOGGING.md#recorded-data-and-timing), [H8](research/simulation-state/H8/README.md), [H9](research/simulation-state/H9/README.md), [NK-1](../research/native-math-spike/README.md).
+- [Replay binds complete state and execution identity](decisions/simulation-transactions.md#replay-binds-complete-state-and-execution-identity).
 
 ## Physical models
 
-### Extend aerodynamic regimes without hiding missing physics
+<a id="extend-aerodynamic-regimes-without-hiding-missing-physics"></a>
 
-**D9 / D11 / E0a2c / EX-14.** Retain the attached-flow oracle where applicable and use local force/moment laws outside it, with shared physical definitions and consistency checks at regime joins. Aircraft-specific opt-in terms preserve unrelated configurations while new laws qualify. A static fit cannot replace downwash dynamics or establish spin behavior: the Stik's retained post-stall blend and the Extra's fitted polar are separate decisions. The withdrawn P51-22 wing-in-jet repair hypothesis is not an outstanding requirement; its corrected pilot diagnosis remains in evidence. [E0a2c](research/aero-consistency/E0a2c/README.md), [D8b-R2d](research/flight-robustness/D8b-R2/analog/README.md), [EX-14h](research/extra-300-realism/EX-14/README.md#ex-14h--post-stall-wing-polar), [P51-22 correction](research/p51-realism/P51-22/README.md#resolution--2026-10-16).
+- [Extend aerodynamic regimes without hiding missing physics](decisions/physical-models.md#extend-aerodynamic-regimes-without-hiding-missing-physics).
 
-**EX-14i.** Admit an explicit, estimated separated-wing force-offset couple for conventional wings without flaps. Preserve attached-flight behavior and expose the remaining hands-off stall and spiral-spin limits; a previously rotating trajectory is not independent evidence for keeping a missing section moment. [Mechanism and comparisons](research/extra-300-realism/EX-14/README.md#ex-14i--separated-wing-force-offset-2026-11-09).
+<a id="share-mechanics-while-keeping-propulsion-sources-distinct"></a>
 
-**D11i / v0.2.2 (2026-11-10).** The owner authorized a 30% elevator-moment consistency band for the electric Stik, guarded by equality with the donor's raw aerodynamic and reference data in both electrical modes. This accepts a known discrepancy between internal models while retaining explicit lineage rejection and the other aircraft's existing bands. It does not qualify physical elevator response. [Scope and limits](UGLY-STIK-PLAN.md#limits-and-acceptance).
+- [Share mechanics while keeping propulsion sources distinct](decisions/physical-models.md#share-mechanics-while-keeping-propulsion-sources-distinct).
 
-### Share mechanics while keeping propulsion sources distinct
+<a id="keep-finite-resources-and-mass-properties-physically-coherent"></a>
 
-**G2 / NITRO / AV.** Electrical, turbine, two-stroke and true four-stroke sources retain their own power and lifecycle laws; supported coupled routes solve shaft/body reactions at the same integration stages. Installed profiles bind source data and calibration instead of borrowing a rating as installed performance. This permits shared mechanics without pretending all legacy routes use the newest shaft model. [Propulsion contract](PROPULSION-CORE-PLAN.md), [glow guide](GLOW-ENGINES.md), [turbine coupling](research/turbine-realism/AV-20/README.md).
+- [Keep finite resources and mass properties physically coherent](decisions/physical-models.md#keep-finite-resources-and-mass-properties-physically-coherent).
 
-### Keep finite resources and mass properties physically coherent
+<a id="version-physical-weather-separately-from-visual-atmosphere"></a>
 
-**FUEL-00-R1 / FUEL-12 / BAT-13.** The fixed solver datum is the authored reference-inventory CG, not `plan_cg` or the current fill-dependent CG. Fuel changes mass, CG, inertia, contact response and source state through the accepted transaction. Eligible catalog aircraft with `battery_data` use finite packs by default, superseding the earlier ideal-default recommendation; declared ideal/fixed-voltage routes remain explicit exceptions. Pickup geometry and chemistry are not inferred from a generic fuel label. The [fuel standard](FUEL-SYSTEM.md) and [battery specification](research/battery/BAT-04/specification.md) own exact semantics; [Workshop](AIRCRAFT-WORKSHOP.md) owns its source exceptions.
+- [Version physical weather separately from visual atmosphere](decisions/physical-models.md#version-physical-weather-separately-from-visual-atmosphere).
 
-### Version physical weather separately from visual atmosphere
+<a id="ground-support-follows-authored-geometry-and-actual-surfaces"></a>
 
-**M5 / VAL-AUD-R09.** The common environment supplies density and wind to each physical consumer at its declared stage and position, while preserving ground velocity. Telemetry retains its declared sample timing, including the distinction between stage loads and accepted endpoint state. Spatial weather uses an explicit versioned, hashed experimental configuration and matched surface-load differences; visual clouds, sky and lighting do not create a second force system. This preserves reference scenarios and makes unsupported domains rejectable. [Wind guide](WIND-ATMOSPHERE-REFERENCE.md), [spatial weather scope](WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation-m5-w05d-r1), [bounded ISA integration](research/physics-audit-2026-10-14/remediation/R09/integration.md).
+- [Ground support follows authored geometry and actual surfaces](decisions/physical-models.md#ground-support-follows-authored-geometry-and-actual-surfaces).
 
-### Ground support follows authored geometry and actual surfaces
+<a id="helicopter-terrain-follows-the-accepted-scene-context"></a>
 
-**GP-06/07 / E3.** Gear and hull contacts use explicit datums and are checked against the built model; GP-07 derives the Stik hull from that model. Aircraft tyre coefficients receive field scaling, while airframe sliding friction is specified separately per surface. This replaces hand-placed contacts that drifted from the drawing and avoids treating every ground touch as a crash. Contact constants remain sourced values or labeled estimates, not validated material properties. [GP-06](research/ground-physics/GP-06/README.md), [GP-07](research/ground-physics/GP-07/README.md), [ground surface contract](research/ground-surfaces-e3a.md).
+- [Helicopter terrain follows the accepted scene context](decisions/physical-models.md#helicopter-terrain-follows-the-accepted-scene-context).
 
-### Helicopter terrain follows the accepted scene context
+<a id="the-rc-circuit-is-terrain-under-aircraft-never-decoration"></a>
 
-**HELI-33 / A15 H03/H05.** Adopt the successfully published lake context for contact and its presentation consumers, rather than loading a second terrain selection. Keep the composed solid bank/bed input to the existing inflow law; over-water ground effect remains unqualified. Unsupported water contact and unresolved mixed-event order refuse before tick publication. Native helicopter lake sessions use the reference evaluator until their native terrain path supports that context. Bind checkpoints to the changed contact law and terrain identity so an older collision policy cannot claim exact continuation. [Contract and evidence](research/helicopter/HELI-33/README.md), [helicopter guide](HELICOPTER.md).
+- [The RC circuit is terrain under aircraft, never decoration](decisions/physical-models.md#the-rc-circuit-is-terrain-under-aircraft-never-decoration).
 
-### The RC circuit is terrain under aircraft, never decoration
+<a id="the-workshop-admits-the-blimp-as-a-second-family-through-format-dispatch"></a>
 
-**RCV-43.** When the club field shows the RC car circuit, the aircraft wheels roll on the car course's own float64 surface. The hull meets raised dirt (≥ 5 cm) through an exact-surface sweep, and the circuit's walls, tyres and hardware are collision boxes. Hundreds of terraced boxes would cost every runway tick in the shared 32 m bin; a visual-only circuit would let aircraft pass through ramps and barriers. One per-flight decision feeds render, wheels and obstacles. It is part of the configuration hash, checkpoints and flight logs, and only menu-launched flights read the saved setting, so traces and goldens stay unchanged. The thin pad stays with the flat-datum hull laws (≤ 3.5 cm). Revisit if aircraft need sliding hull contact over relief or a general terrain-feature provider. [Evidence](research/rc-monster-truck/RCV-43/README.md).
+- [The Workshop admits the blimp as a second family through format dispatch](decisions/aircraft-authoring.md#the-workshop-admits-the-blimp-as-a-second-family-through-format-dispatch).
 
-**RC-TRACK / DR-32 (2026-11-12).** The FPV quad follows the same setting. When the circuit is shown, its relief is the quad's ground (the same overlay in the session environment), its dressing is in the quad's obstacle inventory, and it is part of the session identity and the flight log options, so a recorded flight replays exactly. The club field is laid out as three areas: the runway for airplanes, the car circuit north of the runway's middle, and the drone race area north of the runway's east end, beside the circuit, with its own painted pad (grass kept off it), away from the rotorcraft pad. The pilot's line-of-sight view now sees the gates 45–100 m away (13–45 m before); FPV is the race view. A test keeps every shipped course's gates and pad 5 m clear of the runway and of the circuit's bounds. Earlier courses stood on the runway, with the finish gate 1.6 m from the circuit's access lane.
+<a id="the-rc-blimp-owns-a-coupled-added-mass-law-with-a-declared-afterbody-loss"></a>
 
-### The Workshop admits the blimp as a second family through format dispatch
+- [The RC blimp owns a coupled added-mass law with a declared afterbody loss](decisions/airship-dynamics.md#the-rc-blimp-owns-a-coupled-added-mass-law-with-a-declared-afterbody-loss).
 
-**BL-19.** The Workshop's entry points route an `openrc-airship v1` base to family modules (`app/workshop/airship_*.gd`): compiler, capabilities, versions, descriptor, dependencies, mass edits and trial identity. The airship is not added to the fixed-wing aircraft catalog, and it is not translated into fake airplane surfaces ([aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard)).
+<a id="the-first-quad-law-is-transparent-and-its-continuations-are-declared"></a>
 
-- **Shared machinery reused.** The store, revisions, recovery, Undo/Redo and presentation profiles work unchanged.
-- **Fixed-wing paths untouched.** Their bytes and identities are unchanged; the existing Workshop suites still pass.
-- **Similarity is unit-driven.** The size transform is driven by each quantity's declared unit and refuses unknown units, so a new field cannot silently escape scaling.
-- **Descriptor derived, not generated.** The blimp's descriptor is derived from its exact base and presentation hash.
+- [The first quad law is transparent, and its continuations are declared](decisions/quad-dynamics.md#the-first-quad-law-is-transparent-and-its-continuations-are-declared).
 
-Revisit if a third family arrives: then extract an explicit family registry instead of adding more format checks. [Workshop guide](AIRCRAFT-WORKSHOP.md#rc-blimp-family).
+<a id="advanced-contact-and-structural-failure-remain-gated-foundations"></a>
 
-### The RC blimp owns a coupled added-mass law with a declared afterbody loss
-
-**BL-03/BL-05/BL-10.** The airship supplies its own `body_derivative`:
-
-- **Coupled solve.** (M_RB + M_A) ν̇ is solved about a fixed datum, with Kirchhoff momentum transport for calm or steady wind. Inflating scalar mass or using a previous-frame acceleration would misstate stopping and oscillation of a near-neutral hull.
-- **Afterbody loss.** Ideal Munk alone made the measured hull diverge in pitch above ~2 m/s. Hopkins' afterbody loss is therefore a declared quantity rather than an undocumented Munk reduction factor. The cancelled load uses the same lateral added mass per length as C_A (Lamb k2 × `hull_scale` × ρπR²), so it never removes more potential load than C_A supplies. The resulting hull is only marginally stable directionally, as real airships are; a gentle proportional pilot holds heading within 0.2° at full-throttle cruise. Fin effectiveness was not retuned to hide this: body interference (raises fin lift) and tail boundary layer (lowers it) are unmeasured (BL-13).
-- **Activity routing.** The activity shares the exclusive ground-activity slot in AppRoot. That keeps every existing "no activity running" guard and exit request, but needs no aircraft-catalog entry.
-
-Revisit when measured restoring/turn data (BL-13) or gust admission (BL-14) need a different hull moment accounting. [Plan](plans/rc-airship.md#14-implementation-status), [BL-12 evidence](research/rc-airship/BL-12/README.md).
-
-### The first quad law is transparent, and its continuations are declared
-
-**DR-05/06/07/09/18…21.** The experimental FPV quad uses static quadratic rotor loads, four motors on one battery bus with a coupled shaft/body acceleration solve, pad penalty contacts and a simulator-owned 240 Hz Acro/Angle controller with bounded allocation, feed-forward and back-calculation anti-windup. It is not Betaflight and not a measured aircraft: every parameter of the shipped build is manufacturer-reported, derived, borrowed or estimated, and says which.
-
-- **240 Hz is kept on evidence.** The sampled loop passed the plan's rise/settling/overshoot screen against 960 Hz closed loops with fresh feedback, with 960 Hz converged against 1920 Hz, so the generic faster-sampling branch was not built. Yaw feed-forward failed that screen (it saturates the yaw torque limit) and is off.
-- **The bridge brakes.** The shipped build declares a damped (signed-current) bridge: active braking and regeneration into the pack, without a current limit. The one-quadrant bus stays as the reference variant; with it the shafts coast and attitude authority disappears for tens of milliseconds after a throttle chop.
-- **Declared simplifications instead of the full hybrid event policy.** Shaft friction is viscous below a small speed so a coasting shaft approaches rest smoothly; aerodynamic loads use the motoring branch only; crash, propeller strike, obstacle strike and pack depletion are decided on the accepted endpoint, so the drive cut and the crash impact law (closing velocity removed, body lifted to the surface) take effect at the end of the detecting tick, not at a sub-tick root. The stiff pad contact is integrated in four substeps near the ground, fewer for a resting quad (below).
-- **No inflow, descent, propwash or ground effect.** Those stay a separate identified law with held-out evidence.
-- **A resting quad is cheap; contact terrain is linearized per 0.1 mm square; ground friction is regularized at 0.02 m/s (DR-18/22-R1, R2, 2026-11-12).** Resting on the pad cost 3.4–3.7 ms a tick (28–58 fps at 1080p) because four contact pieces and about 230 microrelief samples ran every tick. Now a quad within 0.25 m of the terrain that is still (CG speed ≤ 0.25 m/s, rate ≤ 0.5 rad/s) with every rotor below half the hover speed (disarmed or at armed idle) takes `parked_pieces`: the fewest RK4 pieces that keep h·|λ| of its stiffest contact mode, estimated from the data, at or below 2 (the shipped build: 3.99 in one piece, two pieces); a moving or lifting contact keeps four. Friction regularization went from 0.05 to 0.02 m/s: the softer law made a 3.2 ms yaw damper that closed the armed-idle yaw loop above unit gain (a 120 Hz yaw-rate and diagonal-motor flip, about 10 % more idle current), which the stiffer law removes; slope creep falls 2.5 times. Against a 16-piece reference the new policy errs as little as fixed four pieces (takeoff 1.2e-5 m, hop 2.6e-5 m, 1 m drop 1.1e-3 m both). The plant's terrain queries use the field surface linearized inside 1e-4 m squares about their centres with a memo of centre samples, a pure function of position (error about 1e-9 m). The obstacle query and the contact loads use exact fast paths, checked bit for bit against the code they replaced. Rejected: a controller-side ground mode (Betaflight-like airmode start), which hides the friction artefact and changes the qualified controller; per-foot stick-slip friction state (layout and replay change, deferred); optimizing the shared terrain sampler or kernel guards (every vehicle, small gain); a per-tick terrain cache (breaks stage purity).
-
-Revisit when the selected build is measured (DR-40) or a located sub-tick cut is needed for race adjudication. [Plan](plans/drone-racing.md), [evidence](research/drone-racing/M1-M3-2026-11-11/README.md).
-
-### Advanced contact and structural failure remain gated foundations
-
-**GP-09/11/12/16/17/20.** The newer foundation couples body, wheels and shaft under one authority; it does not silently layer a new response over legacy contact. Damage state and event evidence commit only on accepted paths, never from rejected integrator trials, and absent strength data remains unknown. A parsed resource or numerical bench does not admit stock-aircraft collapse, moving-hub handling or calibrated fracture. [Ground-physics masterplan](plans/advanced-ground-flight-physics.md), [coupled foundation](research/ground-physics/GP-11/README.md), [accepted damage contract](research/ground-physics/GP-16/README.md).
+- [Advanced contact and structural failure remain gated foundations](decisions/physical-models.md#advanced-contact-and-structural-failure-remain-gated-foundations).
 
 ## Authoring and identity
 
-### Strict aircraft data and reusable capability admission
+<a id="strict-aircraft-data-and-reusable-capability-admission"></a>
 
-**AS-06…14.** `openrc-aircraft v2` quantities carry units and provenance, with explicit capabilities and module combinations. New sources declare physical IDs; historical ID-less v2 data retain compatibility identities. Shared admission classifies the same model for flight and Workshop, while numerical feasibility still requires validation. New topologies such as elevons, tailless airframes and pushers extend the contract instead of masquerading as conventional tails or creating aircraft-ID branches. V1 remains an explicit historical reader. [Aircraft contract](AIRCRAFT_CONTRACT.md), [shared admission](research/aircraft-standardization/AS-06-14/README.md#shared-flight-admission-as-0714-r1-2026-10-26), [X8 topology](research/skywalker-x8/X8-04/README.md).
+- [Strict aircraft data and reusable capability admission](decisions/aircraft-authoring.md#strict-aircraft-data-and-reusable-capability-admission).
 
-### Stock selection does not redefine technical aircraft identity
+<a id="stock-selection-does-not-redefine-technical-aircraft-identity"></a>
 
-**EL1e-STIK, 2026-11-08.** Keep the prescribed basic Stik as the default and common test reference; substituting the finite 61FX would change its dynamics and saved identities despite the similar engine name. A separate player-selection filter reduces stock Stiks to basic and experimental Electric 6S while retaining all finite-glow technical IDs, tests and saved bases. Preserve a hidden saved selection until an explicit successful stock-choice/Fly save. One electric ID owns ideal and finite-pack modes; Workshop remains explicitly ideal until its separate pack-editing contract exists. Use an independent closed model overlay to preserve basic manifest bytes; share the unchanged donor wheel profile by a closed key alias to keep the global registry and saved dependency hashes intact. This decision does not promote estimated hardware or waive source/replay/native guards. [Current Stik guide](UGLY-STIK-PLAN.md#stock-configurations), [implementation and limits](research/propulsion/ugly-stik-implementation-2026-11-08.md).
+- [Stock selection does not redefine technical aircraft identity](decisions/aircraft-authoring.md#stock-selection-does-not-redefine-technical-aircraft-identity).
 
-### Home lists every vehicle; the aircraft catalog stays aircraft-only
+<a id="home-lists-every-vehicle-the-aircraft-catalog-stays-aircraft-only"></a>
 
-**UI-39, 2026-11-12.** Owner request: select the RC cars, the FPV quad and the RC blimp in Home like any aircraft, and remove the RC garage page. A Home-only roster (`app_state/vehicle_roster.gd`) lists the stock aircraft, then those vehicles. The aircraft catalog is not extended: physics, trim, flight preparation, Workshop and the `[flight] aircraft` / `[liveries]` preferences rely on it being aircraft-only. Home keeps the last aircraft while a vehicle is selected. Fly starts the vehicle in its existing exclusive activity slot. Its setup, wind and start stay in the activity's own menu; the car's in-activity garage is unchanged. The selection persists in the additive `[flight] home_vehicle` and `airship_skin` keys. The blimp's skins are its paints. Revisit this when a vehicle needs Home launch options (start, conditions, failures); give it its own admission rather than borrowing the airplane rules. [Menu plan](plans/menu-redesign.md).
+- [Home lists every vehicle; the aircraft catalog stays aircraft-only](decisions/aircraft-authoring.md#home-lists-every-vehicle-the-aircraft-catalog-stays-aircraft-only).
 
-### Declarative imported models retain authored identity
+<a id="declarative-imported-models-retain-authored-identity"></a>
 
-**AS-09/10 / CR-09c / F4U.** Generated manifests bind source bytes, pivots, hinges, crash sections and supported articulations so shared consumers need no per-aircraft assembly logic. Geometry and animation share their authored kinematics with physical contacts where applicable. Whole-airframe livery GLBs are an accepted F4U delivery tradeoff, not a universal requirement; capacity, paint lists and export poses belong in the aircraft's contract. [Imported construction](research/aircraft-standardization/AS-09-10-import/README.md), [F4U livery rationale](research/f4u-corsair/F4U-16/README.md), [delivery guide](BLENDER-AIRCRAFT-DELIVERY.md).
+- [Declarative imported models retain authored identity](decisions/aircraft-authoring.md#declarative-imported-models-retain-authored-identity).
 
-### One Workshop pipeline; separate physical and appearance builds
+<a id="one-workshop-pipeline-separate-physical-and-appearance-builds"></a>
 
-**AE-12/13/24 / AS.** Compose capability-based transforms and generated descriptors across the fleet instead of copying formulas or editor screens for each aircraft. Physical builds pin their base, dependencies and compiler; presentation revisions remain independently immutable. Old builds are readable without silent rebasing, and fixed-station mass editing does not authorize arbitrary component relocation. This makes ordinary aircraft additions data/asset work while preserving replay identity. [Workshop contract](AIRCRAFT-WORKSHOP.md), [mass-editing decision](research/aircraft-editor/AE-12-13/README.md).
+- [One Workshop pipeline; separate physical and appearance builds](decisions/aircraft-authoring.md#one-workshop-pipeline-separate-physical-and-appearance-builds).
 
-### Aircraft Creator imports a model but never its physics
+<a id="aircraft-creator-imports-a-model-but-never-its-physics"></a>
 
-**AC-00…09.** A player's STL or self-contained GLB supplies geometry only; a separate, complete and evidence-labelled definition supplies mass, aerodynamics, propulsion and controls, compiled into an ordinary `openrc-aircraft v2` record that the existing loader admits unchanged. The alternative — inferring flight behaviour from a mesh, or loosening the bundled-model manifest for runtime files — would present guesses as data and widen a trusted path. Untrusted bytes are captured once and refused by strict bounded readers before the engine's scene importer runs; embedded images are additionally decoded once at admission, because a reader and a decoder can disagree about the same bytes. Identity is SHA-256 over exact bytes written once, and a frozen trial is re-verified against those bytes wherever it is used: GDScript ownership is a convention, not a boundary. An unsaved candidate may fly: publication and storage are separate from the test flight. The physics loader source is left untouched, since its bytes are pinned by solver identities. The first package is estimated and labelled experimental until its numerical domain is qualified; it is no calibration claim. Stock engine primitives (streaming inflate, a loopback listener as the process lock) replace a native I/O utility. [Plan and gates](plans/aircraft-creator.md), [evidence](research/aircraft-creator/README.md). Revisit the lock mechanism if Linux or macOS qualification fails.
+- [Aircraft Creator imports a model but never its physics](decisions/aircraft-imports.md#aircraft-creator-imports-a-model-but-never-its-physics).
 
-### Flight Simulator import performs conversion inside the application
+<a id="flight-simulator-import-performs-conversion-inside-the-application"></a>
 
-**AC-FS-00…11, owner direction 2026-11-16; planned.** The finished feature accepts an advertised supported Flight Simulator source, automatically interprets and converts it, constructs a disclosed editable RC configuration, and asks only for unresolved decisions. A complete unambiguous source with an applicable RC profile must need zero follow-up questions. Prepared GLB and external author tools remain development/recovery routes; they do not satisfy automatic product acceptance. Versioned source rules and target estimates supply authoring inputs upstream of the existing compiler/admission boundaries, preserving provenance and actual geometry. Size, mass, balance, equipment and control edits recompute their dependencies; estimates never become measurements or hidden topology substitutions. Ready-to-fly requires the exact candidate's applicable qualification and lifecycle gates. This direction extends the planned source adapter; it does not change the current geometry-only GLB admission or establish implementation. [Feature plan](plans/flight-simulator-aircraft-import.md), [wizard and acceptance](plans/flight-simulator-import-wizard.md).
+- [Flight Simulator import performs conversion inside the application](decisions/aircraft-imports.md#flight-simulator-import-performs-conversion-inside-the-application).
 
-The follow-up audit makes shared authoring/persistence work a prerequisite: independent property overrides and evidence, recoverable raw edits, valid automatic display names, and publication outcomes tied to Store's actual commit point. A qualified ideal/estimated electrical installation can satisfy the first simulated target while real-hardware compatibility remains a separate evidence claim. Edited inventory/equipment must remain inside the executable qualified envelope. [Audit findings and implementation owners](research/aircraft-creator/flight-simulator-2026-11-16/README.md#automatic-import-contract-audit-2026-11-16).
+<a id="reuse-source-assets-without-erasing-their-terms"></a>
 
-**Source-code refinement, 2026-11-17; planned.** Resolve active, version-qualified source declarations and safe in-root parent references; keep generated-file availability separate from semantic support. Preserve expected parts and node/material identities through normalization. Bound active work through preview and check-to-launch, initially with one active import and one coalesced pending selection. The [eight milestones](plans/flight-simulator-import-milestones.md) separate partial engineering, qualified trial and the complete saved/packaged release; the last requires the full applicable W01–W19 suite, an exact authorized real source and independent evidence. [Pinned code cases and decisions](research/aircraft-creator/flight-simulator-2026-11-16/code-investigations-2026-11-17.md).
-
-**Game-pipeline refinement, 2026-11-17; planned.** Reuse Creator's current services and immutable Store. Bounded metadata discovery precedes expensive selected-closure work where supported; capability completion includes required transitive dependencies, with help tied to their actual causes. Any optional cache uses exact relevant input/context/recipe identity, preserves accepted history and proves equivalence to the correct uncached candidate. Distinct overlay origins and mutable instance edits remain isolated; failed replacement stays private. The [20-repository survey](research/aircraft-creator/flight-simulator-2026-11-16/game-repository-survey-2026-11-17.md) supplies mechanisms and counterexamples; no game engine, external converter or package-code execution is adopted by the research.
-
-### Reuse source assets without erasing their terms
-
-Suitable supplied or freely obtainable assets take precedence over recreating equivalents. Their source identity, conversion and redistribution terms remain distinct from the project's MIT code license. An owner's aircraft-specific name or clearance decision does not clear every downloaded model. The [aircraft licensing record](AIRCRAFT-LICENSING.md) owns those cases, and the [source-delivery index](../assets/source-deliveries/README.md) owns the asset references. Revisit a source when its suitability, provenance or distributable form changes.
+- [Reuse source assets without erasing their terms](decisions/aircraft-authoring.md#reuse-source-assets-without-erasing-their-terms).
 
 ## Flight sessions and observation
 
-### Launch from a supported physical initial condition
+<a id="launch-from-a-supported-physical-initial-condition"></a>
 
-**UI-06d-R3 / D6e-R4 / X8-07.** Interactive geared aircraft prefer a qualified runway start; supported gearless aircraft use hand launch, with airborne selection still available. Valid, supported saved choices take precedence, and a refused selected start does not silently become another start. The interactive level-flight trim is an operating-point choice separate from the low-level reference trim. Release position, throw speed and trim parameters belong in the implementation/evidence, not a second defaults table. [Runway decision](research/menu-investigations/UI-06b/README.md#2026-10-16--fleet-runway-default-ui-06d-r3), [hand launch](research/skywalker-x8/X8-07/README.md), [interactive trim](research/flight-dynamics/power-climb-2026-10-19/README.md#d6e-r4-every-launch-trimmed-for-50--throttle).
+- [Launch from a supported physical initial condition](decisions/flight-sessions.md#launch-from-a-supported-physical-initial-condition).
 
-### Distinguish device ownership, input shaping and aircraft mechanics
+<a id="distinguish-device-ownership-input-shaping-and-aircraft-mechanics"></a>
 
-**D6 / F3 / UI-GP.** Radio and gamepad calibration/readiness are separate from menu navigation and physical servo travel. Device detection does not silently transfer an active flight. Radios retain fresh low-throttle arming and disconnect protection; standard gamepads use verified live-poll readiness rather than the superseded centered-dwell gesture. Device-specific shaping must not become an aircraft force correction. [Controller contract and gates](plans/controller-support.md), [F3-GP-02-R2](research/controller-support-2026-10-14/README.md#gamepad-readiness-2026-10-15-f3-gp-02-r2).
+- [Distinguish device ownership, input shaping and aircraft mechanics](decisions/flight-sessions.md#distinguish-device-ownership-input-shaping-and-aircraft-mechanics).
 
-**UI-15-UX / D6-UX-01.** Controls setup is a graphical layer over the existing draft, capture and calibration contracts, not a second state machine: every visual (device picture, overlay, Setup assistant) edits only the draft through the screen's own paths, and Save stays transactional. The Setup assistant is offered, never auto-opened, and its Reverse means "opposite to the correct setup" (preset default for gamepads); a radio's directions come only from calibration, so Reverse is locked for radios. The FPV quad gets explicit `arm` and `flight_mode` AUX channels; profiles that armed from the `gear` AUX keep doing so, rather than being migrated. Keyboard keys stay fixed and are shown read-only until keyboard remapping (D6-UX-02) is built. [Plan](plans/controls-setup-ux.md), [evidence](research/controls-ux-2026-11-12/README.md#implementation-2026-11-12).
+<a id="rigging-offsets-and-loaded-servos-are-different-models"></a>
 
-**AV-17-R5 / input.** Flap-to-elevator compensation belongs explicitly to the simulator or the transmitter profile. Preserve simulator ownership for missing fields and non-radio command sources; do not infer a transmitter mix from a device name. Keep compensation before failure/servo mechanics, bind transmitter ownership into checkpoints and record it per interval so replay is independent of live devices. This preserves existing flights while allowing pre-mixed channels without duplicate compensation. [Control contract and evidence](research/avanti-realism/AV-17-R5/README.md).
+- [Rigging offsets and loaded servos are different models](decisions/flight-sessions.md#rigging-offsets-and-loaded-servos-are-different-models).
 
-**D6-ETX (2026-11-17, owner decision).** An EdgeTX radio is a radio by its USB pair `1209:4F54` unless SDL already reports a known gamepad; family names only choose a draft. Its airplane functions are bound by moving each switch (the OpenRC layout is a recommendation), because CH7/CH8 order and Linux gamepad remapping are not reliable indices. One profile serves airplane and FPV quad: an AUX control may carry one quad channel (`arm`, `flight_mode`) and one airplane channel (`gear`, `flaps`, `smoke`, `rates`), as each EdgeTX model gives a channel its own meaning; two channels of one vehicle never share a control, and a derived quad binding keeps the quad's own endpoints. Dual rates have an explicit `rates_owner`: `transmitter` (default for every radio, so EdgeTX's native rates are never doubled) or `simulator`, where the radio sends linear sticks and OpenRC applies the flown aircraft's manual rates, selected by a rate switch (low normal, middle sport, high full) that owns the choice. This narrows the earlier exclusion of simulator shaping for radios to the aircraft's own rate profiles; curves and mixes stay on the radio. [Plan](plans/edgetx-airplane-controls.md), [audit](research/radio-input/D6-ETX-00/README.md), [implementation](research/radio-input/D6-ETX-01/README.md).
+<a id="resolve-random-scenarios-and-failures-before-advancing-physics"></a>
 
-### Rigging offsets and loaded servos are different models
+- [Resolve random scenarios and failures before advancing physics](decisions/flight-sessions.md#resolve-random-scenarios-and-failures-before-advancing-physics).
 
-**D6-TRIM-01 / D6-SRV-00.** Optional trim practice adds equivalent rigging angles at actual servo deflection, leaving input commands and the start trim solver distinct; the selected first-flight mode preserves its airframe and pilot trims. Loaded torque, heat and causal servo failure are a separate approved design that remains planned, with aircraft-by-aircraft admission and sourced limits. They must not be inferred from random-failure probability or presented as already installed. [Trim-practice decision](research/radio-input/D6-TRIM-01/README.md), [servo plan](plans/servo-dynamics.md).
+<a id="race-state-commits-with-the-physics-tick"></a>
 
-### Resolve random scenarios and failures before advancing physics
+- [Race state commits with the physics tick](decisions/fpv-racing.md#race-state-commits-with-the-physics-tick).
 
-**NR / EM.** Version and freeze the selected episode, seed, onset and severity so restart/replay preserves the same scenario. Stage physical effects through supported actuator/source capabilities, commit only after an accepted tick, and keep notices outside physical identity. New mechanisms do not redraw old versioned lists. Wing separation remains gated because an intact oracle can mask removed strips; hiding geometry cannot implement structural loss. [Failure contract](plans/failure-mode.md#implementation-checkpoint--current-scope), [EM-29](research/failure-mode/EM-29/README.md), [EM-31](research/failure-mode/EM-31/README.md).
+<a id="race-gates-are-drawn-as-their-collision-panels"></a>
 
-### Race state commits with the physics tick
+- [Race gates are drawn as their collision panels](decisions/fpv-racing.md#race-gates-are-drawn-as-their-collision-panels).
 
-**DR-23…26.** Local gate racing wraps the quad's model: the race phase, countdown, next gate, lap slots and attempt generation are a fixed suffix of the model's sampled and discrete arrays, and one endpoint transition composes the physical endpoint with a pure race director. A lap result therefore can never come from a listener that saw a different tick than the physics, and a refused tick commits neither a GO nor a crossing. Gate crossings are swept on the accepted tick's chord with strict aperture edges, a declared acceleration envelope for its in-plane uncertainty, and an unresolved (never scored) outcome when the uncertainty reaches an edge or the tick's body was corrected. Events are ordered by time with a one-microsecond tie group in which a crash wins. Terminal records go to a bounded, checkpointed outbox and are written to disk only on request; a full outbox refuses a new start. These are local practice rules (`openrc-local-race-v1`), with no federation compliance claim. Revisit if curved-path error near grazing crossings matters: supply located path pieces through an integration receipt. [Evidence](research/drone-racing/M1-M3-2026-11-11/README.md#local-racing).
+<a id="race-records-are-local-per-course-identity-with-geometry-derived-medals"></a>
 
-### Race gates are drawn as their collision panels
+- [Race records are local, per course identity, with geometry-derived medals](decisions/fpv-racing.md#race-records-are-local-per-course-identity-with-geometry-derived-medals).
 
-**DR-28/32 (2026-11-12).** A gate is solid where it is drawn. Each post and bar is a fabric panel box, 0.18 m wide in the gate plane and 0.04 m thick, with a 0.40 m top banner that carries the gate number. The race session collides with exactly these boxes, and the course identity includes their size, so an older race record is not replayed against a different solid. League gates frame the opening with 20–30 cm mesh panels, while the former 6 cm square tube nearly vanished at distance in a 1080p FPV picture. Readability comes from presentation only: striped panels in alternating colours, an LED strip on the aperture edge, the next gate lime and pulsing, the one after amber, a checkered start/finish gate (the last gate closes the lap) and a painted start pad. A second course on the default field, the Tower sprint, uses the existing upright format for a low hurdle, a raised tower gate and high and low passes. T cycles the courses of a field on the pad. Light is never solid. Additive neon halos, a chevron over the next gate, a dotted path from the previous gate to the next, a light washing the next gate, and a start light bar (red per countdown second, green at GO, yellow on the last lap, white at the finish) are drawn as light. They are exposure-compensated (scaled by exposure^-0.5 under the World's eye adaptation) so they keep their colour at night. The exit face of each gate is red, as a wrong-way cue. The compatibility renderer pays per draw call, so each gate's four panels are one merged mesh that carries per-box data in UV and UV2 (one draw, one shadow caster), and its four halos are another. Feet, plates and start lamps are course-wide MultiMeshes. Calm halos and the gate light are not drawn by day, and the exposure compensation is one global shader parameter. A six-gate course went from 79 draw calls and 0.51 ms of render CPU per frame to 20 calls and 0.19 ms, with the same look. Detail is shaded, not modelled: one fragment shader draws each panel as a fabric sleeve between a white PVC tube and an LED diffuser tube (cylinder normals from the flat faces, single LEDs, corner connectors, eyelets, stitching), with fine detail faded by pixel footprint so it never speckles at distance. Posts are cut where the bars cross them, so no coplanar faces flicker while the drawn union stays the collision union. Foot tubes (4 cm) and sandbags (9 cm) at the post feet and the start lamps (4.5 cm proud of the banner) are the only drawn parts outside the collision boxes; they are small, low or flush details that do not collide. The course costs 21 draw calls. Rejected: thicker drawn frames over thin solids (visible but non-colliding geometry in a racing sim); solid-looking decorative flags, banners or ground arrows near the flight path; and tilted dive gates or flags, which wait for a track-format revision. [Plan](plans/drone-racing.md), [course visual](../app/vehicles/multirotor/race_course_visual.gd).
+<a id="fpv-audit-repairs-fix-the-quads-control-energy-scoring-and-result-contracts"></a>
 
-### Race records are local, per course identity, with geometry-derived medals
+- [FPV audit repairs fix the quad's control, energy, scoring and result contracts](decisions/fpv-racing.md#fpv-audit-repairs-fix-the-quads-control-energy-scoring-and-result-contracts).
 
-**DR-37/DR-40 (2026-11-12).** The quad race keeps a local record book (`user://race_results/records.json`) beside the per-attempt result files, which stay the authoritative record of every attempt. Each entry is keyed by the prepared course identity, so a moved gate or another field starts a new entry instead of comparing unlike courses. It stores the best three-lap total with its lap times, the best single lap (an aborted attempt's completed lap counts), the best medal, finishes and attempts. A pad reset during a race is not an attempt. Medal targets are game targets, not pilot data: the straight gate-to-gate path flown three times from the pad at a mean of 5 m/s (bronze), 8 m/s (silver) and 11 m/s (gold). An unreadable book is kept aside and a new one starts. The flow inside the activity explains itself: the OSD says what the start needs (arm, then G; throttle low until GO), every refused start or GO names its cause, a results card shows the time against the best and the next medal, and G or R returns to the pad and flies on without the menu (G also stages the next start). Online leaderboards, ghosts and achievements outside a course were rejected: there is no account or validation path. [Plan](plans/drone-racing.md), [record book](../app/vehicles/multirotor/race_records.gd).
+<a id="quad-crashes-are-graded-and-controllers-arrive-preconfigured"></a>
 
-### FPV audit repairs fix the quad's control, energy, scoring and result contracts
+- [Quad crashes are graded and controllers arrive preconfigured](decisions/fpv-racing.md#quad-crashes-are-graded-and-controllers-arrive-preconfigured).
 
-**DR-14/16/21/25/26/26a (2026-11-17), [FPV audit 2026-11-16](research/drone-racing/audit-2026-11-16/README.md).** Each choice below repairs one finding. Each regression test fails against the audit's baseline behaviour.
+<a id="reuse-flight-logs-for-factual-analysis"></a>
 
-- **Controls.**
-  - A refused managed profile keeps the selected device connected but unready. The quad never substitutes RcInput's built-in pad mapping (A01). The airship already behaved this way.
-  - One physical control has one authority. LB arms, RB changes the mode and the profile's effective Pause button pauses, each only while no configured AUX member or Pause owns that button (A02).
-  - An ordinary hold keeps an arm switch's ON only while the same source, mapping and connection hold. The live position must read ON through the whole hold. An OFF reading, an edge-toggle binding, focus loss or a source change ends that continuity. The menu then says that resuming disarms (A03).
-  - Any change of the selected device's registry connection generation re-resolves the source and verifier behind the menu, before another tick is accepted (A19).
-  - The direct route starts its own `ControllerService` (current store, refusal policy, UI device), because AppRoot's bytes are pinned by the companion behaviour manifest (A04/A05).
-  - Help is generated from the effective bindings (A18).
-- **Energy.** The damped bridge's regeneration is bounded by a declared charge-acceptance law (A06, bus law v2).
-  - The pack accepts at most (capacity − charge)/0.2 s, so a full pack accepts none.
-  - While that limit binds, the bus floats to the voltage at which the motors return only that current. The energy the pack cannot store is counted as pack loss.
-  - Rejected alternatives: clamping charge or SOC, clipping pack current while keeping motor torque, and dropping active braking. The one-quadrant candidate weakened chop authority.
-  - Hover admission solves the loaded shared pack (A08). One physical-invariant list guards raw and prepared models (A09).
-- **Scoring.** The ruleset record adds `terminal_policy`: a crash or depletion decided on a tick's endpoint voids that tick's crossings (A10). An event locator can later narrow this.
-  - The course identity hashes the resolved solid frame boxes (A15).
-  - Both changes create new course identities. Older record-book entries remain as history under their old identities and are not re-ranked.
-  - A pad-reset result keeps its terminal tick and reports the published-only reason code `pad_reset` (A14).
-- **Results.**
-  - Each attempt file has a random 128-bit publication id, kept across retries.
-  - No-clobber publication: identical bytes count as an idempotent success, while other bytes are a conflict that stays pending (A12/A13).
-  - The record book keeps a verified `.prev` copy that the loader recovers. Only complete entries load (A13/A16).
-  - Opening the menu or a start retries pending saves. Leaving with unsaved results takes a second, informed Back to Home (A11).
-  - These are graceful-session guarantees only, with no fsync or crash-durable queue.
+- [Reuse flight logs for factual analysis](decisions/flight-sessions.md#reuse-flight-logs-for-factual-analysis).
 
-### Quad crashes are graded and controllers arrive preconfigured
+<a id="companions-need-their-own-admission-scheduling-and-replay-proof"></a>
 
-**DR-19c/DR-14d (2026-11-17), owner feedback.**
-- **Crashes.** A deterministic gameplay law replaces "every contact ends the flight". Each prop's health is checkpointed state.
-  - The frame and the props are judged separately, by closing speed and by obstacle material.
-  - Most impacts bounce, using the shared energy-bounded scenery impulse, or wear and break props. Only the hardest end the flight.
-  - The previous law stays selectable for practice.
-  - Thresholds are estimates. No source gives fly-on versus walk-of-shame numbers; Betaflight does not disarm on impact by default.
-- **Controllers.**
-  - A recognized EdgeTX radio starts from CH5 arm (high end only), CH6 mode and CH9 restart. CH7/CH8 are avoided because Windows DirectInput can swap them.
-  - Pads restart on View/Back.
-  - Restart needs a fresh OFF and never fires while a menu owns the input.
-  - Saved profiles are never rewritten.
-- Rejected: turtle mode and motor or arm damage, until there is evidence. [Plan §17](plans/drone-racing.md#17-pilot-feedback-2026-11-17-preconfigured-controls-and-graded-crashes).
+- [Companions need their own admission, scheduling and replay proof](decisions/flight-sessions.md#companions-need-their-own-admission-scheduling-and-replay-proof).
 
-### Reuse flight logs for factual analysis
+<a id="separate-damage-evidence-repair-assessment-and-prices"></a>
 
-**FL-01…05 / UI-FS.** Bounded recording observes accepted state without driving physics. Offline replay, CSV and existing plotting tools support analysis; marker debriefs reuse those artifacts instead of introducing another campaign runner or unvalidated coaching score. UI statistics and retained flight history have their own lifecycle, not checkpoint authority. [Flight logging](FLIGHT-LOGGING.md), [FL-05](research/flight-logging/FL-05/README.md), [flight statistics](FLIGHT-STATISTICS.md).
-
-### Companions need their own admission, scheduling and replay proof
-
-**AFC-01/02/03.** Preserve the player's tick driver and advance admitted independent companion sessions through a validated command seam after accepted player ticks. Qualify source/controller/field identity and actual corridor geometry rather than assuming every flyable aircraft is AI-ready. Diagnostic manifests can link existing aircraft logs without claiming fleet restore or shared-world replay. This bounds the first integration and keeps AI outside the single-model kernel. [Companion guide and limits](AI-FLIGHT-COMPANIONS.md), [AFC-02 evidence](research/ai-companions/AFC-02/README.md).
-
-**AFC-02-R6 / AFC-05-R2 (2026-11-09).** Bind an explicit reviewed behavior-source set in addition to solver/data identity; changed mixed-purpose files conservatively require renewal. Keep requested settings, accepted launch configuration and actual airborne count distinct. Resolve turbulence seeds in a versioned fixed-roster domain, reserving the player's and earlier actors' actual initial RNG states and retaining collision nonces. Distinct starting states do not establish independent stochastic streams or fleet continuation. [Contract and evidence](research/ai-companions/AFC-02-R6/README.md).
-
-### Separate damage evidence, repair assessment and prices
-
-**CR-28…39.** Accepted incidents supply observations; component resolution, repair/salvage estimates and dated commercial prices remain distinct. Unknown structural damage is not silently priced as zero or promoted to measured failure. Coverage groups avoid double-counting variants, and provisional bounds remain labeled. Godot wreck presentation does not feed unqualified state back into flight. [Crash contract](CRASH-DAMAGE-PLAN.md), [economics decisions and limits](plans/crash-damage-economics.md).
-
-**CR-40 (2026-11-09).** Admit deterministic local game assessment through a separately generated v3 companion / v2 financial dossier, with exact reviewed installation hashes and a frozen legacy-price-catalog digest. Keep v1 schemas and historical readers closed. Disjoint financial children replace inclusive legacy allocations without changing mass; missing vendor fit may use a labeled authored USD game allowance. The default quote covers assessed local parts/service cash and excludes DIY time. Optional shop labor and package choices bind frozen replayable estimate receipts; automatic estimates stay current-only so render cadence cannot manufacture purchase history. Scoped no-charge rules do not certify reuse or salvage. Whole-build comparisons cannot certify an unresolved incident ceiling. Timed hazards, physical serviceability and the separate X-Cell installation retain their gates. [Contract, evidence and remaining work](research/crash-damage-investigations/CR-40/README.md).
+- [Separate damage evidence, repair assessment and prices](decisions/flight-sessions.md#separate-damage-evidence-repair-assessment-and-prices).
 
 ## Presentation
 
-### Graphics calibration is evidence; Restore is a transaction
+<a id="graphics-calibration-is-evidence-restore-is-a-transaction"></a>
 
-**VQ-07h A1-R2 / A5-R1 (2026-11-21).** Only complete GPU timing measurements may replace a stored calibration or modify Automatic Scene detail. An insufficient completed attempt delays the same adapter/renderer/pixel/MSAA workload for the current process; a later launch or successfully kept Restore can retry. A failed write remains retryable. This bounded policy avoids repeated unmeasurable flights without storing absence of evidence as permanent success; broader workload identity and tier validation remain in the [automatic graphics plan](plans/automatic-graphics.md).
+- [Graphics calibration is evidence; Restore is a transaction](decisions/presentation.md#graphics-calibration-is-evidence-restore-is-a-transaction).
 
-Restore carries an explicit pending operation even when values already match defaults. Revert/Close cancel it; Keep commits display values first and reports a failed calibration deletion as a retryable partial outcome. Successful deletion invalidates partial collectors and updates scene-dependent presentation through its existing owners, preserving reconstruction, camera and window state. The physical RC circuit is a scenario choice, outside graphics defaults and graphics-profile telemetry. [Evidence and implementation receipt](research/visual-quality-implementation/VQ-07/automatic-graphics-audit-2026-11-21/README.md).
+<a id="compatibility-baseline-and-a-windows-nvidia-package"></a>
 
-### Compatibility baseline and a Windows NVIDIA package
+- [Compatibility baseline and a Windows NVIDIA package](decisions/presentation.md#compatibility-baseline-and-a-windows-nvidia-package).
 
-**VQ-07 / GDU-11.** The official-engine build retains Compatibility. Following the owner's 2026-10-28 request, the current-source Windows NVIDIA package defaults to Forward+ and exposes DLSS, DLAA and Reflex as regular saved settings. This supersedes their experimental UI status, not the remaining performance, motion-quality or cross-device gates. Full-resolution Native reconstruction remains the initial choice; Reflex requests On when supported. Matched binaries, runtime hashes and a separate import cache prevent mixing the NVIDIA fork with official-engine resources. Strict AI companion engine admission remains unchanged, and saved companion requests cannot block player-only flights on the fork. Keep the Standard launcher for recovery. [Native package guide](../tools/graphics/native/README.md), [advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
+<a id="compatibility-is-a-frozen-legacy-renderer"></a>
 
-**VQ-07h (owner, 2026-11-18).** The owner delegated the default-renderer decision and asked for a AAA-quality default. The official-engine build therefore remembers a graphics mode (Automatic, Standard or High), and Automatic starts High on Windows x86_64 when a vendored [GPU capability table](../app/data/gpu/capability.json) predicts headroom. On the RTX 3090, High was about 35% faster than Compatibility at 1080p and adds its lighting and shadow features ([matrix](research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md)). The table's relative throughputs are OpenRC estimates from vendor specifications and review aggregates, not copied benchmark data. Each one is extrapolated from the measured 3090: High GPU time ≈ (0.40 + 0.325·MP)/rel ms at the screen's resolution, at least 1080p. Automatic picks High when this estimate is at most 4.3 ms and the GPU is dedicated with at least 4 GB. That covers 82% of the October 2026 Steam top-45 share at 1080p and 26% at 4K. Integrated, unknown and weaker GPUs keep Standard until measured rows replace the estimates. A 2026-11-18 follow-up extends the same rule to Linux x86_64 desktop GPUs. There the adapter name can be generic (`AMD Radeon Graphics (radeonsi, gfx1201, …)`), so Mesa chip codenames decide. Linux laptops, handhelds such as the Steam Deck, and Macs keep Standard. Mac Standard is already Mobile on Metal; on the M1 at 1080p Forward+ measured 21–27% slower ([DT-MAC-03b](research/desktop-delivery-investigations/DT-MAC-03b/README.md), 2026-11-18), which confirms Standard there. Apple Silicon rows are FP32 estimates scaled so that M1 reproduces OpenRC's measured M1 Mobile/Metal frame (23.4 ms GPU at 2560×1600); since 2026-11-19 the M1 row alone also carries its measured 1080p correction (1.09, [plan](plans/automatic-graphics.md)). The same table now drives Scene detail Automatic: estimated throughput below 0.04 of the 3090 starts Low (UHD-class), below 0.15 Medium (Iris Xe, 780M, M1/M2, GTX 1050 Ti), and above that High. **A4 (2026-11-18):** Automatic picks Extreme where it also picks High, High is actually running, the GPU has at least 8 GB and the CPU at least 8 threads, and 1.25× the High estimate still fits the 4.3 ms budget. The factor is the measured [worst case](research/visual-quality-implementation/VQ-07/worst-case-2026-11-18/README.md) on the 3090: night lights, storm, lens rain, planar lake and Extreme. That gives Extreme from the GTX 1070/RTX 3060 class at 1080p, the RTX 4060/3060 Ti class at 1440p and the RTX 3080 Ti/4070 Super/RX 6800 XT class at 4K; Macs and Linux laptops are excluded. A first-flight measurement that misses the frame drops Extreme to High, and none raises a level to Extreme. GPUs missing from the table keep the earlier name markers. The table now also covers 2026 integrated graphics. Its values come from Notebookcheck Time Spy and game averages, set about 10% under the midpoint because these parts throttle with power. It includes Panther Lake Arc B390/B370, Lunar and Arrow Lake 140V/T, Strix Halo 8060S, Strix Point 890M, Krackan and Snapdragon X, and adds RDNA4 RX 9060/9070. A fresh install also gets a per-GPU first-launch MSAA. Integrated GPUs at 0.10 or above start with 2×, and weaker ones start with MSAA off. On the 3090 at 4K, MSAA costs 17–24% GPU, and 2× costs the same as 4× ([knob costs](research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18/README.md)). Dedicated, unknown, Apple and Adreno GPUs keep 4×; Apple and Adreno are tile-based. This applies only to a fresh install, which stores the result once. Upgraders keep their values, and "Restore graphics defaults" returns to the recommendation. The runway meadow and birds stay on, because their GPU cost is within noise. Coverage, 2026-11-18: all 181 named GPUs of the October 2026 Steam survey resolve to a table row. A test fixture (`app/tests/data/steam_gpus_2026_10.json`) keeps this true. It covers NVIDIA Maxwell to Blackwell, laptop and MX parts, AMD Polaris to RDNA4 with GRE variants, Vega and Radeon iGPUs, Intel HD/UHD/Iris/Arc, Adreno and Apple. Apple rows M1–M6 use 3DMark Wild Life Extreme ratios to the measured M1, taking the lowest core bin per name. **Mac native target (owner):** an Apple Silicon Mac on a Retina (2×) display targets the native resolution, as in the [AGENTS exception](../AGENTS.md#display-resolution-priorities). Godot cannot tell built-in panels from external Retina displays, so the rule keys on the backing scale. A fresh install therefore starts full screen. Scene detail judges the GPU at the pixels it actually renders there: the root viewport's applied 3D scale (an explicit reconstruction choice, Automatic or a provider fallback), or before that is applied the scale `Reconstruction.auto_mode` selects: MetalFX Spatial at 2/3 or 85% where available, otherwise Native. As a result an M4 Pro is High at 1080p but Medium on a 14-inch panel. Intel Macs keep the window and the 1080p reference. Base-class chips on 120 Hz ProMotion panels start capped at 60 fps. Other systems keep the 1080p reference. **Measured correction:** AGENTS asks for hardware detection plus measured performance. The first eligible flight on each GPU and renderer therefore measures main-viewport GPU time once, through the shared timing lease ([`auto_calibration.gd`](../app/render/auto_calibration.gd)). It samples for 20 s after 10 s of active, focused, unpaused flight. Hosts without viewport timings are skipped, the same gate as frame diagnostics. The p95 decides:
+- [Compatibility is a frozen legacy renderer](decisions/presentation.md#compatibility-is-a-frozen-legacy-renderer).
 
-- Above 85% of a 60 Hz frame, Automatic Scene detail drops one level.
-- Below 30%, it rises one level, never to Extreme. It cannot rise while SubViewports such as planar reflections add unmeasured GPU work, or when the frame is CPU-bound (A5): the renderer's CPU p95 above 40% of the frame, or real frame intervals missing 60 Hz (or a slower VSync display or frame cap) by 10% and at least 2 ms while the GPU is below 85% and no SubViewport adds unmeasured GPU work. More detail adds draw calls, and GPU verdicts use GPU time only, so a slow CPU never lowers detail or rejects High by itself.
-- In Forward+, a p95 above the whole frame rejects automatic High. That verdict leaves Scene detail alone, so Standard is not penalised twice.
+<a id="apple-features-follow-verified-engine-boundaries"></a>
 
-Verdicts are stored per normalized GPU name and renderer in `user://graphics_calibration.cfg`. Each records the Scene detail level it measured and its workload: output pixels in window pixels, internal 3D pixels after the applied 3D scale, and 3D MSAA (format 4, 2026-11-19; format 3 stored the logical UI canvas, which made 1440p and 4K look like 1080p, so older verdicts are measured again once). A "down" verdict caps every level at or above the measured one, an "up" verdict raises only the measured level, and a higher Automatic level than the measured one, such as Extreme after A4, is measured again. The normalized name agrees across OpenGL and Vulkan, and only a Forward+ slot can reject High, so a verdict cannot oscillate. A verdict applies only within 1.5× of its measured output and internal 3D pixels and at the same 3D MSAA; otherwise the next flight measures again. A stored High rejection vetoes automatic High unless it was measured at more than 1.5× the screen's pixels (a 4K miss says nothing about a 1080p screen; a miss in a 1080p window still holds on a 4K screen). A SubViewport (planar lake, magnifier) active at any point of the sample, not only at its end, blocks an "up" verdict. Hybrid laptops keep one verdict per GPU. An unmeasurable flight stores a neutral verdict. Kept "Restore graphics defaults" deletes all verdicts. Verdicts never change an explicit choice, and settings never adapt continuously: the research found that runtime dynamic settings hide which setting fixed a problem. A Settings choice is saved on Windows and Linux x86_64. The engine picks its renderer before scripts run, so exported builds read `user://renderer.cfg` through `project_settings_override.template`. Editor-binary development, tests, captures and research launches ignore the file, so their evidence stays on the project renderer. The project setting remains Compatibility. Recovery reuses the per-build renderer guard: a Forward+ launch that never confirms, or that the engine replaced with OpenGL, restarts or stays in Standard and blocks High for that build; a new build retries. The first Automatic launch restarts once. Rejected alternatives: changing the project renderer (it would move every capture and every weak GPU to Forward+), and a restart on every launch. [Module](../app/app_state/renderer_preference.gd), [engine and export evidence](research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md#follow-up-saved-graphics-mode-vq-07h-2026-11-18).
+- [Apple features follow verified engine boundaries](decisions/presentation.md#apple-features-follow-verified-engine-boundaries).
 
-### Compatibility is a frozen legacy renderer
+<a id="scene-detail-and-birds"></a>
 
-**Owner, 2026-11-20.** Compatibility (OpenGL) receives no new development investment. New visual features, look calibration and performance acceptance target Forward+ (High) and Mobile; on Compatibility a feature may be disabled or reduced as long as the frame stays correct. Compatibility results do not count as evidence for High, Mac or 4K performance. It stays a supported path, not a deleted one: it is still Standard for integrated and weak GPUs, Intel Macs, Linux laptops and the Steam Deck. Crashes, hitches, compile stalls and frame pacing there are still fixed, and its measurements remain those players' acceptance until [VQ-07h A2](plans/automatic-graphics.md#a2-renderer-strategy-efficient--mobile-behind-measurement) moves them to Mobile. It also stays the engine's OpenGL fallback, the renderer guard's recovery target and the CI capture renderer. Removal needs four gates: the A2 weak-GPU measurement and Windows look acceptance for Mobile, generalized recovery, a Vulkan capture path in CI, and an owner decision on hardware without Vulkan/D3D12/Metal and Intel Macs. Web export is not a reason to keep it; no web build is planned. Evidence and the full policy: [legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
+- [Scene detail and birds](decisions/presentation.md#scene-detail-and-birds).
 
-### Apple features follow verified engine boundaries
+<a id="share-landscape-identity-and-reuse-static-scenery"></a>
 
-**DT-MAC-00-R2.** Plan native Metal and MetalFX through the existing Godot renderer/reconstruction owners, with a recoverable Compatibility/Native baseline. The inspected 4.8-beta1 driver constructs MTL3 despite documentation describing automatic Metal 4 selection; OS capability labels cannot establish a different command backend. Metal 4 submission, newer neural inputs and frame interpolation are separate upstream-first workstreams, with their own synchronization, latency and release gates. This avoids a parallel renderer or chip-name feature policy and preserves the float64 simulation contract. [Source reconciliation](research/desktop-delivery-investigations/DT-MAC-00-R2/godot-compatibility.md) and the [execution plan](plans/apple-silicon-performance.md) own evidence, pending work and acceptance; this direction is not implementation or Mac qualification.
+- [Share landscape identity and reuse static scenery](decisions/presentation.md#share-landscape-identity-and-reuse-static-scenery).
 
-**DT-MAC-02/07 preparation.** The user requested implementation on Windows for later Mac testing. Keep MetalFX behind an explicit trial flag and validate engine/device capabilities. Record selected policy separately from unknown effective scaler execution: viewport properties alone cannot prove a GPU pass. An unacknowledged Temporal history reset falls back to Native and restores saved MSAA; method presence or submission is insufficient. This allows testing stock engine integration without promoting an unqualified renderer or changing the simulation. [Implementation and Windows checks](research/desktop-delivery-investigations/DT-MAC-02/README.md); native adoption gates remain in the plan.
+<a id="one-read-only-camera-rig-with-a-ground-pilot-reference"></a>
 
-**DT-MAC-05b (owner, 2026-11-05).** On Apple Silicon, Standard runs Mobile on native Metal (`rendering_method.arm64`); Intel Macs, Rosetta, Linux and Windows keep Compatibility. The owner accepted that Standard on those Macs takes the RenderingDevice look shared with Forward+/High, with grass up to 15 % darker than Compatibility in sunlit views, instead of calibrating Metal toward OpenGL. The reasons are about 1.4× the GL frame rate on an M1 and the only route to MetalFX. Godot already falls back to OpenGL when the Metal context cannot be created. A per-build renderer guard covers crashes or hangs after initialization: an unconfirmed Metal launch restarts once into Compatibility, Compatibility writes no marker, and a new build retries. **DT-MAC-07a:** MetalFX Spatial becomes a regular Settings choice on supported Metal, and Temporal stays a trial until an engine-acknowledged history reset exists. **DT-MAC-07b (owner, 2026-11-05):** the default reconstruction is "Auto", which selects MetalFX Spatial only when its 3D input stays at least 1,000 rows (1080p-class; Quality on a 2560 × 1600 Retina panel), and Native otherwise and on every other platform. Saved "native" values written before this flag existed are read as "auto", because no other value was choosable; any later explicit Native save is kept. The pinned engine stores MetalFX scaler creation without a null guard, so the same per-build marker blocks MetalFX after an unconfirmed session. Execution evidence is GPU time in the upscale stage, not a runtime status; the UI keeps the "unverified" execution label. [Parity and recovery evidence](research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-05b-apple-silicon-default-renderer-and-recovery-2026-11-05).
+- [One read-only camera rig, with a ground-pilot reference](decisions/presentation.md#one-read-only-camera-rig-with-a-ground-pilot-reference).
 
-**DT-MAC-06b-R1 / 02b-R1 (2026-11-05).** Publish cloud textures only after sampled HDR/seed validation; pending, failed and capacity-limited consumers keep analytic rendering. Ground and sky cache requests are independently identifiable. Conservative density bounds remain opt-in until complete-frame and moving-image evidence supports promotion. Performance receipts must reconcile requested configuration with observed viewport/provider state and reject profiled runs; process callbacks establish responsiveness, not displayed frames. Shoreline clipping commits all ground replacements before publishing a lake or its physical context. [Audit follow-up](research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#optimization-help-follow-up-2026-11-05).
+<a id="effects-consume-accepted-observations-and-per-instance-state"></a>
 
-### Scene detail and birds
+- [Effects consume accepted observations and per-instance state](decisions/presentation.md#effects-consume-accepted-observations-and-per-instance-state).
 
-**VQ-06b-R1 / SC-BIRD D2 / SC-09-R2.** Interactive scene-detail preferences default to an automatic GPU-name heuristic, with explicit saved selection taking precedence; this supersedes the former unconditional High preference. Technical routes without preferences retain High, and CLI/environment overrides take priority. It is a presentation choice, not hardware qualification, and does not change field-tree collision geometry. Birds have a separate saved live control. The runway meadow (L11a-R3) is a saved On/Off graphics setting, default On, whose density follows the scene tier; it replaces raising the already-exceeded view-class totals, so players on slower GPUs can remove its cost. Turning it off is live; turning it on applies at the next field build. Revisit when the owner allocates class headroom or a matching reduction ([meadow research and measurements](research/grass-meadow-techniques-2026-11-03.md)). Parked-engine detail follows the scene tier without requiring a second baked fleet. The [scene-detail record](research/visual-quality-implementation/VQ-06b-scene-detail/README.md#vq-06b-r1-automatic-level), [bird plan](plans/birds-sky-life.md) and [parked-engine decision](research/scenery-implementation/SC-09-R1/README.md#revision-sc-09-r2-parked-engine-detail-follows-scene-detail) own settings and budgets.
+<a id="audio-follows-the-installed-source-with-explicit-fallbacks"></a>
 
-### Share landscape identity and reuse static scenery
-
-**L-PX-01/02 (2026-11-20).** A Phoenix photo preview has a local identity based on its descriptor, six ordered source faces and conversion version. Installation publishes the resulting directory after its face files and manifest are complete. The browser reads previews independently from the flight catalog. A landscape enters the latter when its pilot and spawn poses, ground and obstacle semantics have evidence in OpenRC's field coordinates. [Import guide](LANDSCAPES.md#import-phoenix-scenery) · [Compatibility plan](plans/phoenix-scenery-import.md)
-
-**L21…24 / SC-02a / SC-09.** Explicit catalog registration selects matching visual and collision adapters between sessions; it does not add landscape branches to the kernel. Normal interactive scenery is enabled, while reference captures select their intended state explicitly. Parked aircraft reuse material-preserving static bakes rather than spawning flight sessions. Drawn-cost budgets count actual instances, LODs, submissions and textures instead of one source-triangle total. [Landscape contract](LANDSCAPES.md), [scenery guide](SCENERY-PLAN.md), [LU-34](research/landscape-upgrade/LU-34/README.md).
-
-**SC-24-R1 (2026-11-09).** A selected landscape uses the same physical obstacle inventory across scene-detail presets and GPU recommendations. Every collidable placement keeps a visible representation; Low may substitute simpler batched people and tractors. Only noncollidable ornaments may disappear through graphics policy. RC circuit Automatic selects the circuit-free scenario on every machine; explicit On remains a terrain/scenario choice. This replaces the earlier GPU-dependent physical selection. [Current scenery contract](SCENERY-PLAN.md).
-
-### One read-only camera rig, with a ground-pilot reference
-
-**CAM.** Cameras share the presented aircraft pose and query the existing collision world for clearance; they do not alter simulation or require a duplicate obstacle scene. Ground-pilot view remains the reference. Auto-zoom and FAR use one size target relative to 1080p, so higher-resolution displays preserve screen-relative readability. Optional aids and magnification retain their own pilot/performance gates. [Camera principles](plans/camera-views.md#3-principles), [clearance](research/camera-views/CAM-09/README.md), [reference-height correction](research/camera-views/CAM-23-27/README.md).
-
-### Effects consume accepted observations and per-instance state
-
-**FW / TOD / SM / FW-RGB.** Sky appearance and time, installed lights, smoke and show effects use explicit presentation state and accepted physical observations. They do not advance physics RNG, inject weather forces or silently alter other instances during preview. Authored anchors/outlets separate installation from emitter profiles, and saved appearance upgrades are explicit. This preserves reference flight and prevents preview work from mutating live global state. [Field-world guide](FIELD-WORLD-PLAN.md), [smoke contract](SMOKE.md), [lighting implementation](research/night-flight-lighting/implementation.md).
-
-### Audio follows the installed source, with explicit fallbacks
-
-**AUD-15.** Use licensed recordings where their source fit is identified, superseding the early generated-only choice; retain the phase-aware glow fallback and bounded playback. Accepted physical RPM, source state and contact observations drive sound rather than cosmetic animation or a separate simulated engine. Source fit, listening and target-driver latency remain separate acceptance questions. [Audio guide](AUDIO-PLAN.md), [recorded-source decisions](research/audio/AUD-15/sources.md).
-
-**GP-19-N05 (2026-11-07).** Retain deferred endpoint sampling with conservative touchdown eligibility: a clock-continuity receipt cannot establish the wheel's unobserved liftoff time. This accepts bounded missed threshold-near cues while avoiding fabricated airborne age and keeping observation outside integration. A qualified immutable per-tick contact receipt is the condition for revisiting exact transition timing. The [current audio contract](AUDIO-PLAN.md) owns the uncertainty bound; [correction evidence](research/audio/AUD-15/validation.md#accepted-contact-corrections-gp-19-n0405-2026-11-07) distinguishes classification from listening and performance qualification.
+- [Audio follows the installed source, with explicit fallbacks](decisions/presentation.md#audio-follows-the-installed-source-with-explicit-fallbacks).
 
 ## Runtime and delivery
 
-### Accepted transition identity owns companion restart
-
-**AFC-01-R2 / AFC-03-R2 (2026-11-09).** Session publishes operational kind/generation
-receipts without changing physical checkpoint schemas. Only the latest accepted
-start may rebuild a roster; restore and pending configuration cannot authorize
-resume. The paired Main facade refuses an active fleet before player-only restore;
-an accepted direct Session/debug restore retires it before clocks can diverge.
-Logical removal is synchronous, with disposal deferred when an agent callback is
-active. [Contract and evidence](research/ai-companions/AFC-03-R2/README.md).
-
-### Native controls own interaction; styling follows a shared shell
-
-**UI-21/22.** Keep native focus/input and named session pause holds while laying out the shell from a bounded 1080p reference with compact reflow and localization. Theme and finite motion stay beneath controls, with reduced-motion support and explicit preference rollback. Successive color/glass experiments are consolidated in the current visual system instead of remaining competing directives. [Shell contract](MENU-PLAN.md), [color and surfaces](plans/menu-redesign.md#color-and-surfaces).
-
-### Preserve exact weather values across settings saves
-
-**UI-21/22 / v0.2.2.** Use a bounded, validated binary weather witness when the pinned engine's numeric text cannot preserve the canonical float64 values. Keep legacy schemas for weather that survives text exactly. Schema 7 requires the witness and protects damaged files; its calm text fallback lets older builds read other preferences without overwriting the file. This preserves physical inputs instead of quantizing them to a serializer fixed point. Reconsider the extra representation after an engine upgrade qualifies exact numeric round trips. [Persistence contract](TOOLS.md#preference-file-recovery), [regression checks](../app/tests/test_ui_atmosphere.gd).
-
-### Prepare selected work privately and drain cancellation
-
-**UI-05-R3 / UI-34c / DT-11a.** Bounded selected scene and numeric preparation may run after Home's first draw and stable intent; Fly can adopt matching work. Keep outputs private until validation, live-tree construction on main, and cancellation under an owner that drains outstanding jobs. This replaces stale no-prefetch wording without authorizing unbounded speculative work. The dedicated resource-load workaround came from a Godot 4.7.2 fixture, not a demonstrated universal engine defect. [Current preparation policy](plans/menu-redesign.md#selected-preparation-while-home-is-visible), [loader evidence](research/menu-investigations/UI-34c-R5/README.md).
-
-### Loading bars count completed stages; motion only shows activity
-
-**UI-28-R5 (2026-11-12).** The startup intro and the flight loading surface share one bar. Its fill is the position of the current top-level stage in the known stage order. Sub-stages (field and scenery chunks) only advance it within that stage, and it never moves back. A sweep and a pulsing head show that work continues, including during a long threaded load. No percentage, time estimate or minimum display time: the §12 rule against fabricated overall progress stands. The first Home is built in the flight's staged world builder under the intro, so the intro keeps drawing. UI-28-R5b builds Home the same way under a non-cancellable "Preparing home…" surface. The surface is opaque after an activity ends. After a landscape change it is see-through, so the previous view stays visible and dimmed, and requests made meanwhile wait for the build. The surface shows the stable stage with the sub-stage beneath it. Headless routes stay synchronous. Rejected: time-driven fills, which move without work and stall when work does; building the new landscape behind a live menu, which would race aircraft, lighting and Fly changes against the replacement world. [Evidence](research/menu-investigations/UI-28-R5/README.md), [bar](../app/ui/loading_bar.gd).
-
-### Use the debug bridge and engine diagnostics for agent work
-
-**PT1h-R7/R8.** The opt-in debug-only loopback bridge provides stable state/input/UI operations, invalid-line rejection and main-thread scene mutation. The launcher issues a per-session token; a manually enabled bridge checks a token when configured. Engine profiling and compiler diagnostics avoid implementing another debugger protocol or depending on a stale language parser. The bridge is not exact replay authority; flight logs retain that role. PT1h-R9 attributes GPU cost by elimination (interleaved A-B-A ablation with Godot's measured render times) instead of a GPU capture tool, and rewinds through the existing session checkpoint boundary, handing input back to the pilot by default. PT1h-R10 draws flight-model gizmos with the repository's `ImmediateMesh` overlay pattern instead of a native debug-draw addon, and carries bug reports as the session's own checkpoint JSON (BugIt/BugItGo). PT1h-R11 gives agents an accessibility-style snapshot with per-control refs and field names, one `choose` verb and validated `setup`, and exposes them through a standard-library stdio MCP server instead of an SDK dependency. [Design choice](../tools/debug/README.md#choice-of-design), [limits](../tools/debug/README.md#how-it-works-and-limits), [tool index](tools/README.md).
-
-### Preserve stutter evidence before extending attribution
-
-**PT1h-R15 / S0, 2026-11-19; planning direction.** Extend the existing bounded
-callback recorder and client exporter. Preserve its live detector policy and
-metric formulas; collect one owned incident with explicit lead-up/recovery and
-coverage before adding continuous streaming or native instrumentation. Periodic
-engine maxima, last-read GPU values and physics catch-up are contextual evidence,
-not automatic CPU/GPU cause labels. Keep runtime identity separate from client
-checkout identity, and retain independent clock domains until measured alignment
-is available. GOD TEST owns campaign comparisons; platform profilers remain optional.
-The [24 investigations](research/release-readiness/PT1h-R15/research-2026-11-19.md)
-justify this sequence and its deferred alternatives. The [active plan](plans/stutter-diagnostics.md)
-owns pending S1–S7 work. This decision adds no runtime feature or performance qualification.
-
-**PT1h-R15-S3a, 2026-11-19; offline implementation.** Extend existing debug captures
-and GOD TEST phase reports with observed slow episodes/time, without another recorder
-or runtime instrumentation. Preserve original debug flags and mark disagreement;
-window-edge episodes have unknown boundaries. GOD TEST reduces verified phase
-samples and cannot substitute zero for a missing measurement. The three capture
-formats retain their different thresholds, completion rules and clocks; future
-attachment adapters must preserve originals and prove any joins. The
-[tool integration evidence](research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
-records the eight follow-up investigations and software-only verification.
-
-**GOD-12-R1 / GOD-13-R1, 2026-11-20; source/debug campaign.** The three-aircraft
-runway/menu tour reuses GOD TEST, the continuous frame watcher and the existing
-process sampler. A position-based lap receipt establishes the flown circuit;
-heading rotation alone does not. Passive device-wide GPU observations extend
-capability reporting without claiming per-frame attribution or automatic rendering
-device identification. Completion, raw-data integrity, monitoring availability and
-performance screening remain separate. Resume preserves every planned slot and
-requires the same retained source, engine, observers and host/boot identity.
-macOS uses a verified private launch copy whose sole project change is a unique
-application name, because its user-data path cannot use the Linux profile redirect.
-Startup refuses an explicitly requested benchmark before normal profile access
-when that isolation cannot be established. The [operating contract](../tools/godtest/PERFORMANCE_TOUR.md)
-owns commands and capabilities; the [GOD TEST ledger](plans/god-test.md#13-execution-steps-and-evidence-ledger)
-keeps real-hardware qualification open.
-
-**GOD-12-R2, 2026-11-20; planned scenic/crash sequence.** The next three-aircraft
-tour starts on the runway, climbs low, turns right past the club scenery and rural
-house, completes the declared circuit count, then performs a horizontal roll and
-an intentional terminal aircraft impact. Home and Pause navigation exercise panel
-responsiveness without changing settings; aircraft-preview selection is the explicit
-exception inside the isolated profile. Preserve impact, aftermath and accident-report
-observations before returning Home. Expected aircraft accident, application completion
-and performance remain separate outcomes; an app failure cannot satisfy the crash
-phase. All three aircraft need admitted takeoff/roll profiles. This changes the
-planned workload, not the implemented V1 command or its historical evidence; the
-[revised GOD TEST contract](plans/god-test.md#4a-planned-scenic-and-crash-tour) owns
-route details and acceptance work.
-
-**GOD-12-R3 / GOD-13-R2, 2026-11-20; independent audit.** Requested rendered
-coverage must fail closed when drawing proof is missing; it cannot be downgraded
-to successful headless execution. Independent coverage receipts, per-action settings
-invariants and a terminal report bound to the accepted impact are required for the
-revised tour. Preserve clock/monitoring uncertainty, sampled-device association,
-failed attempts and absolute targets separately from collection success. Qualification
-requires a resolved profile, admitted full-campaign resources and observer/host
-evidence; documentation cannot close unimplemented guards. The
-[source audit](research/god-test/2026-11-20-plan-audit.md) records counterexamples;
-the [GOD TEST plan](plans/god-test.md) owns corrections and remaining acceptance.
-
-**GOD-12-R2f/g / GOD-13-R2, 2026-11-21; implemented measurement foundation.**
-Rebuild acceptance from raw observations and the owning runner's independent
-timestamps, rather than treating summary labels as proof. An original graphics
-request cannot become a successful headless run. Legacy evidence without newly
-required owner receipts remains readable but cannot regain complete monitoring.
-Local simulation pace uses verified ticks and supported fixed windows; omitted
-tails remain inconclusive rather than receiving a positive target. Automatic
-managed submission reserves the full expanded roster, while an execution lease
-is explicitly not an end-to-end completion guarantee. This is intentionally
-conservative: unresolved coverage preserves useful observations and blocks the
-stronger claim. The [implementation evidence](research/god-test/2026-11-21-measurement-hardening.md)
-owns exact checks and limits; target-hardware and scenic/crash acceptance remain
-with the existing plan. Revisit support thresholds only through a versioned,
-predeclared protocol, not after seeing a candidate's results.
-
-**PT1h-R15-S1a/S2a, 2026-11-19; automatic session watch.** Replace the planned
-one-shot collector and two-snapshot union with a bounded multi-incident client
-watch. It reads every new row through cheap passive `since`/`lean` polls guarded by
-epoch and launch identity, and evaluates triggers on raw intervals client-side,
-because bridge budget flags cannot see drops above the target and changing the
-target resets other clients. Incidents keep the client rows plus one capped v1
-snapshot; a full-ring fetch costs about 51 ms on the game thread and would cause
-the stall it reports. A freeze is a main-thread poll unanswered while the network
-thread's `ping` answers. Statistics stay per epoch segment and route.
-[Evidence and audit](research/release-readiness/PT1h-R15/watch-2026-11-19.md).
-
-### Qualify exported artifacts separately from their source tree
-
-**DT / PT1.** Desktop ZIP exports carry one build identity and their actual resources; package inspection, native launch, signing trust and sustained hardware performance are separate checks. Updating remains manual, and installer/web/mobile expansion is not implied by available export templates. Promote the verified artifact bytes rather than rebuilding an assumed equivalent after acceptance. [Delivery contract](DESKTOP-DELIVERY-PLAN.md#current-delivery), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).
-
-**DT-MAC-02h.** Bind the final Mac executable, separate PCK and bundle files through a sibling receipt inside the Mac ZIP, independent of Linux native-solver admission. Keeping the receipt outside the signed app avoids post-signing mutation and circular self-hashes. Manifest v2 binds its digests while retaining the six-file public release set; current publication requires v2, and historical v1 verification remains integrity-only. Artifact consistency does not establish publisher trust. Downloaded/quarantined installation must verify sibling access before this becomes a qualified delivery route. [Release contract](../tools/release/README.md#mac-reference-bundle-identity-dt-mac-02h), [native evidence and remaining gates](research/desktop-delivery-investigations/DT-MAC-02/README.md).
-
-**DT-LNX-00 planning direction; initial export hardening implemented.** The [Linux plan](plans/linux-support-distribution.md) preserves one qualified payload per architecture/build environment across project package wrappers; byte-changing transformations precede receipt finalization and exact-artifact qualification. Source-built Flatpak output receives independent receipts and evidence. Managed channels own their updates; portable formats retain explicit replacement. This avoids invalidating native admission or mixing package-manager ownership. [DT-LNX-02a/b](research/desktop-delivery-investigations/DT-LNX-02/README.md) implements isolated export outputs, exact CI package selection and installed-template verification. Broader distro/ARM64 and Flathub claims remain conditional on the [dated audit's gates](research/desktop-delivery-investigations/DT-LNX-00/README.md), not on format availability.
-
-### Preserve Git history and limit future artifact growth
-
-The adopted repository policy retains history rather than rewriting active clones or migrating existing evidence to LFS. Full history supports build identity; re-encoding tracked evidence would retain its old blobs and can destroy pixel-level proof. Bound new artifacts with the [large-file check](../tools/repo/check_large_files.py) and [evidence conventions](README.md#conventions-for-documents). Historical disk totals and provider quotas are not ongoing design assumptions. Reopen only with an explicit repository migration requirement and a coordinated plan.
-
-### Keep landscape fabric in the presentation layer
-
-**L15c.** Use a bounded two-dimensional modal flag surface with finite-length
-segments and mast guards, sharing accepted wind observations with the windsocks.
-The proposed XPBD prototype failed the reversal/contact comparison and is not
-shipped. Country artwork and quality controls belong to presentation and must not
-alter simulation state or weather RNG. Reconsider a particle solver only when it
-demonstrates better native motion within the measured budgets. The
-[implementation record](research/landscape-flag-windsocks-2026-11-10.md#implementation-record)
-owns software evidence and open hardware/visual qualification; procedural motion
-is not physical cloth calibration.
-
-### Keep host admission outside worktrees and retain uncertain claims
-
-**TQ-00/TQ-01, experimental local implementation.** Use one host-local authority,
-durable attempts and Windows Job supervision above existing port/capture locks.
-Reservations follow verified process-tree teardown. A lost worker retains claims as
-UNKNOWN; heartbeat loss and launcher exit never establish cleanup. Owner capabilities
-also gate existing CLI/MCP controls. See the [operating contract](../tools/testqueue/README.md).
-
-The initial combined worker uses Python's SQLite locally to avoid adding an otherwise
-unused controller/service/plugin deployment to the developer desktop. This is a
-provisional deployment choice, not evidence that existing queues lack these features:
-[Jenkins Lockable Resources](https://plugins.jenkins.io/lockable-resources/) supports
-remote resource clients and stale leases. Local inventory found Java and a Docker CLI,
-but no running Jenkins installation. A live Jenkins contention/restart/disconnect
-comparison remains a TQ-00 gate. OpenRC still needs snapshots, ownership and worker
-containment with either backend; do not build a generic backend framework meanwhile.
-[SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
-workers must use structured transport rather than share this database.
-
-**TQ-04 resilience direction, 2026-11-15; partial implementation under review.** The
-[resilience audit](research/testqueue/2026-11-15-resilience/README.md) reproduces
-avoidable nonlaunch quarantine, dead-scheduler readiness, pre-receipt recovery
-gaps and falsely confirmed nonexecution during local replay. The
-[repair subplan](plans/mcp-queue-resilience.md) keeps the existing authority
-and proof-based release contract, separates observation/progress deadlines from
-explicit owned cancellation, and gates higher concurrency on physical-host and
-resource reservations. Repair these failures before expanding the pool; a new
-queue backend is not a prerequisite. Independent guardians and remote cancel are
-proposed work, not capabilities of the current combined worker.
-
-The [implementation handoff](research/testqueue/2026-11-15-resilience/implementation.md)
-records the candidate repairs and their negative controls. Keep typed nonlaunch
-proof, pending journal fences, identity-first recovery and conservative version-2
-batch migration. Bounded MCP output delivery may lose replies; it must not block
-accepted work or admit new actions after delivery is abandoned. Preserve the
-concurrent upstream operator-abandonment exception as explicit incomplete evidence;
-automatic recovery must never use it or bypass pending journal fences. Fleet
-capacity and native qualification have not changed.
-
-**TQ-04-R8, narrow storage candidate.** Reclaim a redundant successful remote
-input copy only after verifying and pinning the original archive and journaling
-intent; record storage uncertainty separately from process cleanup. Remove failed
-coordinator temporaries only when owned by that invocation. A terminal state or
-file age cannot establish nonuse: source trees can hold capture evidence, abandoned
-attempts can retain unconfirmed cleanup, and shared archives can have readers.
-Broader retention waits for explicit evidence ownership and reader lifetimes in
-the [same repair plan](plans/mcp-queue-resilience.md#storage-cleanup-and-retention-acceptance).
-
-**TQ-04-R8 collection, 2026-11-16; review candidate.** Publish isolated, immutable
-evidence generations bound to the original request and finished status, with an
-explicit collection format and verified reuse. An interrupted copy must not
-overwrite the files behind an earlier passing report. Reobserve/recollect older
-unverified batch results under the same execution identity and preserve their
-history. Local control files are excluded, diagnostic-only results cannot pass,
-and collection does not grant authority to delete a workspace. The selected
-checked-evidence contract is intentionally narrower than a complete per-preset
-artifact inventory; broaden retention only after the ownership, reader-lifetime
-and native durability gates in the [handoff](research/testqueue/2026-11-15-resilience/implementation.md#16-november-re-audit-of-current-main-and-the-review-branch).
-
-**TQ-04-R8 / TQ-05-F0.7, reproducible remote inputs, 2026-11-25.** A remote checked job
-that finished with confirmed cleanup may lose, after the coordinator re-verifies its
-collected evidence, only bytes it can regenerate: archive copies, Godot's import
-cache, Python bytecode and source files whose size and SHA-256 match the job's own
-verified inventory. Files the run wrote or changed stay as reported residue, which
-answers the capture-evidence concern above; `UNKNOWN`, unconfirmed and
-operator-reconciled jobs are never touched. Placement may run this, time-bounded, for
-a host it refuses for disk; a remote `run` refused `BUSY` meanwhile wrote no job and
-is deferred under the same ID. Retained failures
-had filled the Linux host (24 of 25 GB) while rows waited on disk for hours. Local
-`retention.py` already removes whole failed checked sources (TQ-05-F0.1).
-
-**TQ-04-R1, explicit local refusals, 2026-11-25.** An explicit refusal from the
-local authority is settled by that authority's durable submission tombstone after
-`recover` shows no acceptance; it is not inferred from the reply. Transport
-failures stay uncertain, and a refused replay waits ten minutes so a late original
-can still be found. A transient error reply therefore ends the row `REJECTED`
-(relaunch) rather than reserving the host. An acceptance landing between `recover`
-and `cancel_submission` is canceled, never duplicated; an atomic tombstone-if-absent
-operation would remove that window. Checked submissions no longer require the frozen
-worktree to exist; history presets still do.
-
-### Keep a senior lead with bounded, evidence-producing helpers
-
-**DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**
-The user's selected strongest lead retains design, definitive implementation,
-integration and verification. Prefer Terra/max and Sonnet/high helpers for useful
-independent investigation, drafts and challenge; choose task fit and actual
-capabilities before dispatch. The lead may apply examined drafts directly and
-resolve findings itself. Zero helpers or lighter supported effort can be appropriate
-when the task and acceptance checks justify them, subject to explicit user choices.
-
-The [21-question investigation](research/agent-orchestration-2026-11-15.md) supports
-bounded briefs, actual input identities and evidence-based acceptance, while finding
-no universal benefit from more agents, maximum effort or a copied framework.
-Preserve native delegation and existing permissions instead of adding a separate
-orchestration service. [SUBAGENTS](SUBAGENTS.md) owns current behavior and runtime
-limits. Register named Codex roles without global helper-default or concurrency
-keys: integration on 0.144.5 found that the proposed newer scalar fields caused
-configuration fallback. Keep model/effort pins in the profiles and observe native
-runtime limits. Revisit routing and budgets when client behavior changes or representative
-OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gain.
-
-### One shared agent rule source, with task-specific detail
-
-**DX-06 instruction audit, 2026-11-19.** Keep durable project rules in `AGENTS.md` and a small `CLAUDE.md` with an explicit import. Read applicable nested instructions before editing; keep detailed delegation, commands, architecture, current work and dated evidence in their existing homes. This removes repeated startup context without removing the selected lead, helper preferences, physics/evidence contracts or existing authorization.
-
-Current Claude Code can load AGENTS natively, but compatibility and loading vary by client/session configuration. Retain the import rather than a second copy or a Windows-sensitive symlink. Repository prose does not enforce permissions or prove discovery. The [source review](research/agent-orchestration-2026-11-15.md#instruction-file-audit--2026-11-19) records official guidance, GitHub counterexamples and the source audit; [maintenance conventions](README.md#agent-instruction-files) own future edits. No runtime performance or instruction-adherence improvement is claimed without measurement.
-
-### Adapt ClearView visuals upstream of Creator admission
-
-**AC-CV-01…04, 2026-11-15; experimental implementation.** Capture local ZIP bytes and parse a bounded ZIP32/AC3Db subset, then re-admit a self-contained GLB through the existing Creator source boundary. Keep legacy parameters as observations and the original ZIP external with its hash. Do not widen the GLB source slot, copy coefficients into the solver or grant flight availability from conversion metadata. Godot ZIPReader's whole-member API does not expose the raw-stream/output-budget contract required here. Recognize render coordinate markers by a restricted geometric template, retain their float64 evidence exactly, and prepare optional pivots only from unambiguous v6 declarations. Reparenting must preserve both double and render-precision rest geometry; failed optional rigging retains an admitted static model. Manual bindings own role and direction. Saved extras never execute rigging; a closed generic part hint supplies only the axis default for a user-selected part. The GDScript converter remains conditional on independent fidelity and exported-resource campaigns; V5/propeller semantics, Assimp/Blender comparison and original-package storage are still open. [Evidence and revisit gates](research/aircraft-creator/clearview-2026-11-15.md#7-implementation-evidence).
-
-**AC-CV-05, 2026-11-16.** Preserve original parameter bytes as optional bounded GLB metadata and expose a versioned, read-only declaration report. A worker-created receipt binds the derived context to the admitted source object; document setters do not reparse the source on the UI thread or accept a caller's arbitrary dictionary. Serialized provenance remains a declaration, and standalone compilation establishes structure only. Definitions and snapshots carrying this context use v2 so old readers refuse them instead of silently discarding it. Strip the context before physical emission: references affect definition identity, not solver inputs or raw aircraft bytes. Total mass is derived from inventory, the supported power package is fixed, and legacy control rates do not establish travel or servo timing. Adoption requires a separately reviewed mapping and evidence contract; revisit under the remaining AC-CV-05/06 gates. [Player behavior](AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental) and [dated evidence](research/aircraft-creator/clearview-2026-11-15.md#parameter-declaration-review-ac-cv-05-2026-11-16).
-
-**AC-CV-05/06, 2026-11-16.** Require a source/report/package-bound declaration before compiling an independent estimated installation for a recognized ClearView model. Detect the asset metadata namespace independently of an optional parameter report; unavailable or malformed report metadata must not silently select the electric package. Definitions and snapshots with this choice use v3; v1/v2 remain readable without migration. Reopening compares versioned definitions in either stored member so a downgraded snapshot cannot discard the declaration. Preserve existing values and provenance for explicit review, and strip the declaration before physical emission. Recognition is a workflow boundary, not origin authentication. Keep recognized ClearView flight closed at trial creation and verification while AC-12/G05 is unqualified; permit drafts and withhold publication. Revisit only with a qualified configuration/domain and the remaining source-adoption and lifecycle contracts, not a successful visual conversion. [Player behavior](AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental) and [remaining gates](plans/clearview-aircraft-import.md).
-
-**Closeout direction (2026-11-17; not implemented source adoption):** the geometry-only STL/GLB decision does not prohibit translating structured simulator declarations through a separately versioned, evidence-bearing mapping and the ordinary v2 compiler/loader. Prefer established source data; permit reviewed, attributed estimators for genuinely absent fields without pretending those values came from the source. A replacement installation or topology remains an explicitly different configuration. Hashes establish byte consistency, not source truth or external definition-to-physics derivation. Keep the current flight guards until the actual configuration/domain and lifecycle qualify. The [closeout plan](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md) owns this work and its admission tests.
-
-**Closeout packet 1 (2026-11-17):** (1) Nested ClearView model folders are unsupported: a complete nested model is listed as unavailable with its reason, never silently dropped or imported; other nested `params.txt` files (sounds) stay silent. (2) A resolved bound v2 revision must be reproduced byte-for-byte by the installed compiler before it is sealed; a mismatch requires a new revision. Changing package data or loader behavior therefore requires a new `CompileBinding.PROFILE`. Editor reopening keeps its structural check. (3) A servo-interval-law aircraft flies with hard hull contacts, the policy its start check uses, because the law refuses soft contacts. Revisit with a soft-contact-capable law. (4) A workshop trial detaches the previous flight tentatively: its recordings stay open on startup failure and are finalized when the trial commits. Revisit when temporary-trial recording policy is defined. [Packet evidence](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md#6-implementation-status).
-
-**Closeout packet 2 (2026-11-17, owner request):** supersedes the AC-CV-05/06 rule that kept recognized ClearView flight closed. A ClearView visual may test fly as its explicitly declared independent estimate under the historical control law, labelled experimental and "not the ClearView flight model". The trial identity pins the declaration, so a re-pointed or stripped trial is refused. Publication, published flight and the servo-interval law stay closed for these models. Alternative rejected: wait for source-faithful adoption and G05, which no specimen can reach today. The one-click setup uses the documented ClearView render frame and an estimated leading edge, fills only empty fields, and keeps estimates inside the package domain. Estimated tail chords move toward the nearest permitted tail volume, and the battery or a visible nose weight balances the aircraft. Source-derived dimensions are never altered, so out-of-domain models stay refused. Elevon models are refused rather than flown with an invented tail. Revisit when source adoption (Phase 1) or a second package widens the domain. [Packet evidence](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md#packet-2--clearview-models-test-fly-2026-11-17).
-
-**Closeout packet 4 (2026-11-17):** imported models without a propeller fly as an explicitly labelled *electric pusher park jet*: the existing estimated 4S package, mounted as a `single_pusher` (already a stock electric layout) in a slot just behind the wing root. The alternative, a turbine or ducted-fan estimate, has no Creator package. That would need new propulsion data, so it is left for the physics owner. Elevon flying wings stay refused: the loader supports `elevon`/`tailless`, but a Creator closed-form tailless estimator needs new coefficient data and qualification. ClearView v5 `modelMass` is not adopted: across 132 models it is often a shared 5.2 default or several times a plausible flying mass, while v6 values look realistic. The pusher variant is used only by the ClearView setup and never by the servo-interval publication path, so `CompileBinding.PROFILE` and stored revisions are unchanged. [Packet evidence](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md#packet-4--park-jets-and-balance-2026-11-17).
-
-**Closeout packet 6 (2026-11-17, owner request):** models no estimated package can represent may fly as a *donor configuration*. A stock catalog aircraft flies with its exact physics record; the imported model only supplies the appearance (elevon flying wings on the MoonRunner X99/Skywalker X8, helicopters on the X-Cell .60). Every confirmation and HUD label says so. Alternatives rejected: new closed-form tailless or rotorcraft estimators, which need coefficient data and qualification the project does not have yet. Donor trials are not saved or published. [Packet evidence](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md#packet-6--donor-flights-helicopters-and-flying-wings-2026-11-17).
-**Closeout audit (2026-11-17):** the automatic ClearView setup chooses no wingspan under 1.6 m while the only estimated power installation is the ~1 kg 4S/800 kV/12x6 one; smaller models fly as a labelled larger version, grown no further than their body fits (1.85 m from the datum). Evidence: in a handling sweep of all 122 estimated corpus aircraft, 21 of 22 under 1.3 m diverged hands-off within 10 s, 0 of 62 at 1.9 m or more; re-flown at the floor, divergence fell from 17 to 2 of 34. A small power package by size class is the intended replacement ([plan packet 7](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md)).
-
-**Closeout realism batch (2026-11-17, owner request):** supersedes the 1.6 m floor above. The automatic setup measures the wing planform (root/tip chord, dihedral, biplane as an equivalent monoplane of 1.7× one wing's area) and chooses a size class: under 1.45 m the new foam park-flyer airframe package with 3S 1250 kV 9×6 power (tractor or pusher), from 1.45 m the trainer with 4S power. Jets get solver-tuned EDF stand-ins: 4S 1900 kV 6×4.5 (16 N, 70 mm class) and, from 1.9 m, 6S 1200 kV 7×5 (27.5 N, 90 mm class). The original 4S 12×6 pusher stays installed for drafts saved with it; drafts record `airframe_package` only for the park-flyer class, so older snapshots are unchanged. Evidence and limits: [plan packet 8](research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md).
-### AC-CV v1 parity
-
-**AC-CV-06/07, 2026-11-19; supersedes the trial and publication closure above.** A recognized ClearView model with a confirmed, source-bound OpenRC configuration follows the same experimental test-flight and **Save aircraft** gates as an STL or GLB model. The compiler strips source declarations before emitting physics, so the flown bytes equal those of any other source with the same values; the previous refusal protected no physical property and only blocked the importer. Guards replace it: the trial identity pins the configuration and `verify` refuses a ClearView trial without it, and the store refuses a configuration that names another model's bytes. Saved-aircraft flight stays closed for every Creator aircraft until AC-12/G05; the resolver, `published_trial.prepare` and v4 capture keep their ClearView refusals until that gate opens with the same admission for all sources. Input policy, checked against 197 real model roots: skip opaque JPEG APPn metadata (1 MiB cap) and Adobe encoder flags, and decode only the first GIF frame. Collapse coincident corners and drop invisible collapsing slivers (doubled area at or below extent² × 1e-9). Omit and report at most 16 self-intersecting or cancelling surfaces; more refuse, and a fan is never used. Accept float32 rounding up to 1e-4 of a part's size, and show `subdiv` parts unsmoothed with a warning. Hide unreadable `.XYZObject` helpers and leave their hinges manual. Substitute a missing texture only with the single same-named image beside it. Ignore `$` tag lines. Accept flat dialects v0–v5, defaulting a missing pre-v5 `modelName` to `data/body.ac`. Helicopters (`modelType 0`) are visual-only, tagged `openrc_clearview_rotorcraft`, with no fixed-wing configuration, trial or revision. Flying a helicopter as the trainer package would be false, and a helicopter package is separate future work. A model whose emitted meshes exceed 128 is converted again with static leaf parts merged per parent, so models that fit keep their bytes. `GLB_MATERIALS` rises Creator-wide from 32 to 64 because real helicopters need 35–36 combinations; geometry stays bounded by the primitive and triangle limits. Original-ZIP storage is out of v1: the GLB receipt is the provenance and players keep their ZIP. Rejected: waiting for AC-12, AC-18, AC-19 and AC-20 before any ClearView flight. Those gates are shared with STL/GLB, which already fly experimentally, and G05 has no date. Revisit if source declarations ever influence physical bytes. [Plan](plans/clearview-aircraft-import.md) and [evidence](research/aircraft-creator/clearview-2026-11-15.md#importer-v1-coverage-and-parity-ac-cv-2026-11-19).
-
-**AC-CV closeout, 2026-11-20 (owner request: every downloaded aircraft, VTOL and helicopter must fly).** The 2026-11-17 closeout packets (automatic setup, size classes, pusher park jets, X8 and X-Cell donors) are merged on top of the v1 parity rules above, which stay: a confirmed estimate follows the ordinary Creator gates, including the servo-interval law. This supersedes the 2026-11-19 rule that helicopters are visual-only: they test-fly on the stock X-Cell .60 physics with their own appearance. A model whose estimate the compiler still refuses is offered, with the reason, on the stock Ugly Stick electric 6S trainer physics instead of being left unflyable; a slender wingless body without a named rotor (width and height under 0.35 of its length) is an airship and flies on OpenRC's own RC blimp activity instead, its appearance replacing the drawn envelope at the envelope's length. ClearView declares airships as airplanes (Hindenburg: `modelType 1`), so the shape decides. Alternatives rejected: widening package domains or loader limits to admit autogyros, airships and multirotors as fixed-wing estimates (dishonest physics), and a new helicopter or multirotor package (separate work). Donor flights are labelled, never saved as aircraft, and fly the donor's mass, size and power. On textured AC3D surfaces the emission becomes the texture's own colour at 35 %, because ClearView's fixed-function lighting modulates emission by the texture; a flat emissive factor washed every livery out under OpenRC's sun. Helicopter detection uses only the converter's rotorcraft tag.
-
-### Phoenix aeroplanes join the declared estimated-configuration route
-
-**AC-PX / IAQ-03, 2026-11-20.** A converted Phoenix aeroplane or glider carries the asset marker `openrc_phoenix_aeroplane` and becomes the second recognised provider in `source_installation.gd` (`provider()`), next to ClearView. It therefore gets the same explicit "Set up for flight" action, size classes, pusher choice, estimate fitting and balancing, declared source/package association, trial pinning and saved/published-flight block. The proposal comes from the decoded Phoenix definition stored in the GLB receipt (wing span, chords, dihedral, tail and fin layout, hub position, throws); its packages come from the decoded Phoenix data ([next entry](#phoenix-aeroplanes-fly-on-packages-derived-from-their-own-data)); a planform, throw or span outside the estimated packages is fitted or scaled and reported, as for ClearView. Stacked wings fly as one equivalent wing. ClearView-geometry functions (its setup proposer and donors) refuse other providers, and ClearView texts and behaviour are unchanged. Phoenix rotorcraft carry no marker and stay appearance-only. Revisit when a provider-neutral setup contract or a Phoenix-specific package exists. [Plan](plans/imported-aircraft-quality.md#7-progress), [format evidence](research/aircraft-creator/phoenix-stock-format-2026-11-20.md).
-
-### Phoenix aeroplanes fly on packages derived from their own data
-
-**AC-PX / IAQ-03b, 2026-11-20.** "Set up for flight" no longer flies a Phoenix aeroplane on the size class's borrowed UltraStick values. The converter reduces the decoded definition and the installation's airfoil polars (`resources/airfoils/*.sim`) to a dimensionless physics block in the GLB receipt; [`phoenix/physics.gd`](../app/workshop/creator/phoenix/physics.gd) turns it, on the chosen base packages, into an airframe and a power package registered in-process under content-addressed ids (`phoenix-v1|base|scale|flying mass|kind|tag`, the tag covering the block, both base packages' content and `DERIVATION_VERSION`), so a reopened draft re-derives exactly the same packages or refuses. From Phoenix: zero-lift and minimum-drag lift, section profile drag plus 0.3 × the projected frontal area, Phoenix's 0.85 span efficiency, lift limits and stall width from the polar, elevator/rudder plain-flap effectiveness, aileron strip roll power, mass (∝ s³) and CG, and the propeller (diameter, pitch, Froude-scaled Max_RPM; several propellers as one D·N^¼ equivalent). Jets and ducted fans (`turbine`, `Max_Thrust` in N) fly an equivalent pitch-equals-diameter propeller holding the Phoenix thrust-to-weight; a glider without propulsion gets an estimated 0.45 × weight launch motor so starts exist. Static thrust is capped at 2.3 × weight by shrinking the physical diameter, because OpenRC has no propeller-wash model above about twice the weight. When the estimated equipment cannot reach the scaled source mass, the power is re-derived for the mass that actually flies. Section moment, side force, cross-derivative ratios, battery and inertia stay the base package's.
-
-**IAQ-03d (2026-11-20):** Phoenix's own `Fine_tuning` multipliers are applied on top: lift (zero-angle lift and lift limits; the slope stays geometric), elevator/rudder/aileron power, thrust (as a diameter share) and engine power (RPM ∝ P^⅓), clamped to 0.25–2. Declared zero-length ailerons are inactive, so a rudder-steered model keeps only a 10 % token roll power the record accepts. Propeller down/right thrust enters the layout, limited to ±5°. Each derivation change bumps `DERIVATION_VERSION`; a draft whose ids no longer re-derive reopens on its base packages without its flight setup and says "use Set up for flight again" instead of refusing the draft, and changing the scale after set-up blocks compile with the same request.
-
-**IAQ-T1–T5 (2026-11-20):** the translation follows the [decoded Phoenix flight model](research/aircraft-creator/phoenix-flight-model-2026-11-20.md) and is measured against Phoenix's own steady performance computed from those formulas. Fuselage drag uses Phoenix's 0.75 on the frontal area. Propellers keep measured APC data rather than Phoenix's static law (20–30 % lower, which starved half-throttle cruise): advance ratio stretched by the pitch ratio, coefficient by its square root, times Phoenix's blade factor and thrust tuning, the static figure of merit held at most 0.8, Kv calibrated to Phoenix's static Max_RPM, static thrust capped at 3 × weight (real extreme 3D electrics). Phoenix turbines and ducted fans compile to the `turbine` kind with Phoenix's thrust, idle thrust, spool time and its 100 m/s efflux. Phoenix stick expo becomes `controls.rates`. The airborne start reference is the whole aircraft's linear level trim at 7° body angle, about the CG, with the elevator inside 80 % of its travel and at least 1.2 × the stall speed, declared by an optional airframe `wing.start_alpha` that only derived packages carry; the product's half-throttle trim then searches upward from it. Chosen over Phoenix's own propeller law (faithful but starving the product's half-throttle start) and over faster fixed-alpha references (which skipped the band where Phoenix itself levels at half throttle). Evidence: 92 of 110 compiled stock models start airborne (75 before), level maximum speed ours/Phoenix median 1.02 for jets and 1.10 for propellers, half-throttle level speeds at the top of Phoenix's band; 11 of the remaining 18 cannot level at half throttle in Phoenix's own law. **IAQ-T6–T8:** derived packages add the stock ground-effect law, Phoenix flaps as the hinged trailing-edge law (span from Length and Tip_distance; Raymer plain-flap profile drag × Drag_increase/50; the stall shift κ fitted so the flapped peak lift rises by Lift_increase % of the section peak, since the default κ = 1 raised the flapped stall speed) and the model's own planform (aspect ratio 3–30, taper 0.3–1, because the lift slope, span efficiency and aileron power are already the model's); five gliders at their real wing loading then miss the product's fixed hand throw but still start airborne.
-
-This is chosen over a Phoenix flight-model port (no kernel branches, no Lua execution) and over widening the borrowed packages (which would hide unrelated aircraft behind one trainer). It remains an estimated configuration: no handling equivalence with Phoenix is claimed, saved/published flight stays blocked, and AC-12 qualification is unchanged. Evidence: on the local stock install, 110 of 114 aeroplanes and gliders compile with derived packages (refused: two canard Typhoons, a pusher ahead of its CG, one model whose own propeller gives under 0.3 × weight), 105 have an airborne start and 21 a hand launch; `test_creator_phoenix_readers` 144/0 and all 32 Creator suites pass. Revisit with a live flight audit (IAQ-00), a propeller-wash model, or per-model polars beyond the main wing. [Plan](plans/imported-aircraft-quality.md#7-progress), [format evidence](research/aircraft-creator/phoenix-stock-format-2026-11-20.md#35-flight-model-data).
-
-### Creator fixed landing gear
-
-**AC-21 first slice / IAQ-06a (2026-11-20).** A Creator definition may carry an optional `landing_gear` member: a tricycle or taildragger layout with three or four wheel bottoms in the leading-edge frame and the steered wheel's travel. Without it nothing changes; with it the compiler emits `fixed_tricycle`/`fixed_taildragger` and a v2 `landing_gear` block. The springs are not the model's: total stiffness m·ω² with ω 23 rad/s (the Stik's ω·dt < 0.1 rule at 240 Hz), split by each wheel's static load so the aircraft rests level, damping ratio 0.4, and the Stik's dry-pavement tyre coefficients; all are labelled estimated or borrowed. The box-fuselage crash hull is raised wherever it would reach below the gear's resting, tail-up rolling or 12° rotation lines (plus twice the static sag), because the box is an estimate and would otherwise "crash" a standing aircraft. A geared aircraft starts on the runway and is never hand launched, matching the session's rule. Phoenix wheels (centre minus radius, mirrored sides, `isGuide` travel) fill the member on set-up; retractable gear stays extended and says so. Chosen over waiting for a wheel-profile provider and player gear editing, which remain AC-21 work, and over retract rigs (AC-25). Evidence: 71 of 110 compiled Phoenix aeroplanes start on the runway; flight cards show valid takeoffs for the Apprentice (8.8 m roll) and Piper Cub (10.1 m, rudder held against torque) and a valid Apprentice landing; the Cub noses over in a tail-up rollout. [Plan](plans/aircraft-creator.md), [quality plan](plans/imported-aircraft-quality.md#7-progress).
-
-### Creator directional terms follow the Stik study
-
-**IAQ-04a (2026-11-20).** The Creator's closed-form Cnβ used the isolated fin ("fuselage contribution neglected"), so it overstated directional stability by about 45 % on its own UltraStick-like template (0.108 against the donor's 0.074) and left the spiral mode divergent on most Creator aircraft: the flight cards measured hands-off heading changes of 749° in 30 s (median of 97 Phoenix models) against 68° for the stock Ugly Stik. The compiler now applies the terms the Stik study (D10-R2/R5, [study](research/flight-dynamics/stik-lateral-directional-2026-10-18/README.md)) established for the stock aircraft, on the player's box fuselage: the DATCOM fin efficiency η_v(1 + dσ/dβ) divided by the package η already in the fin slope, Raymer's fuselage Cnβ (`aero.surfaces.body_cn_beta`), and the high-wing interference of the player's fuselage in place of the donor's in the wing-body Clβ. Cnr stays on the isolated fin, as in the study. Values beyond the loader's ranges are limited and say so. The template's Cnβ becomes 0.075 (OpenFlightSim UltraStick 0.0723); the Phoenix EasyStar's spiral now converges (half time 1.8 s, hands-off heading −2° in 30 s) and the Apprentice's converges (10.7 s). A rudder step gives more sideslip than before (Apprentice 10.7° → 17.9°), still below the stock Stik's 25.5°. Chosen over tuning Clr or Cnr, which have no geometric basis here; it changes every Creator aircraft's lateral-directional coefficients, so drafts recompile with new values. Revisit with a measured Creator aircraft or a calibrated fuselage model.
-
-### One owner and one strength for direct shadows
-
-**VQ-04b SA-02/SA-20/SA-21 (2026-11-18).** A caster/receiver/light combination has one direct-shadow owner. While a world sun draws native maps, it owns the aircraft's and the wreck's ground shadow; the planar cue and the wreck planes take over only across the engine's own fade band (the complement of its distance fade) and beyond it. The Vertical cue is a declared pilot aid and is exempt. Planar wreck planes are direct-shadow stand-ins, not ambient contact: they vanish without celestial light, and contact darkening belongs to SSAO. Direct-shadow strength means the visibility of the light's disc, not its energy: fixed and flowing time both use the sky table's disc-beam share (full from 0.5° apparent elevation), and native opacity follows it in both. Rejected: energy-weighted opacity (it lightened fixed-time daytime shadows to 0.81 at 30° and counted the energy twice), keeping both routes in Auto (doubled darkness and edges, reproduced at 1080p), and caster/receiver light masks (Godot has no pairwise shadow matrix). **SA-17/SA-18:** native casters follow what the engine actually casts, so alpha-cut field people now cast in Native at no resolved GPU cost, while blended, unshaded and overlay materials stay out with a reported reason. The aircraft landing light keeps its shadow off: its own airframe occludes the beam (up to 36/255 darker for every tested bias), and separating the airframe would need pinned-builder changes. [Shadow plan](plans/shadows.md), [audit](https://github.com/bultodepapas/OpenRCsimulator/blob/audit/shadows-2026-11-17/docs/research/shadow-audit-2026-11-17/findings.md).
+<a id="accepted-transition-identity-owns-companion-restart"></a>
+
+- [Accepted transition identity owns companion restart](decisions/application-lifecycle.md#accepted-transition-identity-owns-companion-restart).
+
+<a id="native-controls-own-interaction-styling-follows-a-shared-shell"></a>
+
+- [Native controls own interaction; styling follows a shared shell](decisions/application-lifecycle.md#native-controls-own-interaction-styling-follows-a-shared-shell).
+
+<a id="preserve-exact-weather-values-across-settings-saves"></a>
+
+- [Preserve exact weather values across settings saves](decisions/application-lifecycle.md#preserve-exact-weather-values-across-settings-saves).
+
+<a id="prepare-selected-work-privately-and-drain-cancellation"></a>
+
+- [Prepare selected work privately and drain cancellation](decisions/application-lifecycle.md#prepare-selected-work-privately-and-drain-cancellation).
+
+<a id="loading-bars-count-completed-stages-motion-only-shows-activity"></a>
+
+- [Loading bars count completed stages; motion only shows activity](decisions/application-lifecycle.md#loading-bars-count-completed-stages-motion-only-shows-activity).
+
+<a id="use-the-debug-bridge-and-engine-diagnostics-for-agent-work"></a>
+
+- [Use the debug bridge and engine diagnostics for agent work](decisions/developer-workflow.md#use-the-debug-bridge-and-engine-diagnostics-for-agent-work).
+
+<a id="preserve-stutter-evidence-before-extending-attribution"></a>
+
+- [Preserve stutter evidence before extending attribution](decisions/stutter-diagnostics.md#preserve-stutter-evidence-before-extending-attribution).
+
+<a id="qualify-exported-artifacts-separately-from-their-source-tree"></a>
+
+- [Qualify exported artifacts separately from their source tree](decisions/release-qualification.md#qualify-exported-artifacts-separately-from-their-source-tree).
+
+<a id="preserve-git-history-and-limit-future-artifact-growth"></a>
+
+- [Preserve Git history and limit future artifact growth](decisions/developer-workflow.md#preserve-git-history-and-limit-future-artifact-growth).
+
+<a id="keep-landscape-fabric-in-the-presentation-layer"></a>
+
+- [Keep landscape fabric in the presentation layer](decisions/presentation.md#keep-landscape-fabric-in-the-presentation-layer).
+
+<a id="keep-host-admission-outside-worktrees-and-retain-uncertain-claims"></a>
+
+- [Keep host admission outside worktrees and retain uncertain claims](decisions/host-admission.md#keep-host-admission-outside-worktrees-and-retain-uncertain-claims).
+
+<a id="keep-a-senior-lead-with-bounded-evidence-producing-helpers"></a>
+
+- [Keep a senior lead with bounded, evidence-producing helpers](decisions/developer-workflow.md#keep-a-senior-lead-with-bounded-evidence-producing-helpers).
+
+<a id="one-shared-agent-rule-source-with-task-specific-detail"></a>
+
+- [One shared agent rule source, with task-specific detail](decisions/developer-workflow.md#one-shared-agent-rule-source-with-task-specific-detail).
+
+<a id="adapt-clearview-visuals-upstream-of-creator-admission"></a>
+
+- [Adapt ClearView visuals upstream of Creator admission](decisions/aircraft-imports.md#adapt-clearview-visuals-upstream-of-creator-admission).
+
+<a id="ac-cv-v1-parity"></a>
+
+- [AC-CV v1 parity](decisions/aircraft-imports.md#ac-cv-v1-parity).
+
+<a id="phoenix-aeroplanes-join-the-declared-estimated-configuration-route"></a>
+
+- [Phoenix aeroplanes join the declared estimated-configuration route](decisions/aircraft-imports.md#phoenix-aeroplanes-join-the-declared-estimated-configuration-route).
+
+<a id="phoenix-aeroplanes-fly-on-packages-derived-from-their-own-data"></a>
+
+- [Phoenix aeroplanes fly on packages derived from their own data](decisions/aircraft-imports.md#phoenix-aeroplanes-fly-on-packages-derived-from-their-own-data).
+
+<a id="creator-fixed-landing-gear"></a>
+
+- [Creator fixed landing gear](decisions/aircraft-authoring.md#creator-fixed-landing-gear).
+
+<a id="creator-directional-terms-follow-the-stik-study"></a>
+
+- [Creator directional terms follow the Stik study](decisions/aircraft-authoring.md#creator-directional-terms-follow-the-stik-study).
+
+<a id="one-owner-and-one-strength-for-direct-shadows"></a>
+
+- [One owner and one strength for direct shadows](decisions/presentation.md#one-owner-and-one-strength-for-direct-shadows).
 
 ## Maintaining this record
 
@@ -666,119 +298,34 @@ This is chosen over a Phoenix flight-model port (no kernel branches, no Lua exec
 - Update the existing topic when a decision changes. Keep a short supersession note only when it prevents a likely mistake; dated reports and Git history retain the full reasoning. Do not append another chronological table or archive.
 - Keep parameters, commands, feature inventories, benchmarks, pass counts and next actions in their authoritative homes. A local optimization or bug fix usually belongs in evidence or [LEARNINGS](LEARNINGS.md), not here.
 - Label approved-but-unimplemented designs and experimental admissions explicitly. Check current contracts and consumers before turning an old status into a present-tense claim.
-- Preserve valuable source/evidence records, verify links and heading targets, and update incoming links when consolidating an entry. New proposals and unresolved choices belong with their owner in the [track registry](README.md#tracks-plans-and-step-ids).
+- Preserve valuable source/evidence records, verify links and heading targets, and update incoming links when consolidating an entry. New proposals and unresolved choices belong with their owner in the [track registry](TRACKS.md).
 
+## Further decisions
 
-### Default to native physics on supported Apple Silicon flights
+<a id="default-to-native-physics-on-supported-apple-silicon-flights"></a>
 
-**DT-MAC-11a, 2026-11-16; explicit owner decision.** Normal macOS ARM64
-Home and Quick Flight sessions request the native evaluator without requiring a
-performance-promotion marker. Keep the stock production-trim domain, immutable
-live configuration, exact engine/OS/library/source identities, package receipts,
-applicable engine-pair binding and runtime guards. Unsupported or unavailable
-native configurations retain reference fallback; explicit reference selection
-remains authoritative. Low-level technical tools keep their reference default.
+- [Default to native physics on supported Apple Silicon flights](decisions/native-execution.md#default-to-native-physics-on-supported-apple-silicon-flights).
 
-This is a product-default policy, not a claim of higher FPS or a passed performance
-campaign. Preserve the failed performance screen and the separate qualification
-tools. Public Developer ID distribution remains deferred. Measurement and package
-limits belong in [DT-MAC-11a](research/desktop-delivery-investigations/DT-MAC-11a/README.md).
+<a id="transparent-telemetry-as-a-separate-product-data-boundary"></a>
 
-### Transparent telemetry as a separate product data boundary
+- [Transparent telemetry as a separate product data boundary](decisions/telemetry.md#transparent-telemetry-as-a-separate-product-data-boundary).
 
-**TELEM-00/01, 2026-11-18; proposed implementation, offline contracts only.**
-Use a small Godot adapter around existing measurements, with affirmative first-run enablement, a persistent off choice and transparent startup/settings status. A recommended enabled choice is not permission to send before acceptance. Keep product telemetry separate from local flight history, raw developer traces and the independent update checker.
+<a id="telemetry-schema-v2-reports-the-physics-backend"></a>
 
-Receive closed minimized batches at a project-controlled service; send disclosure-filtered engineering summaries to GitHub through a trusted server/workflow identity. Direct client-to-GitHub writes expose credentials or player account identity. Broad analytics SDK defaults add unnecessary identity/enrichment and off-state behavior; optional crash diagnostics require separate scope and consent.
+- [Telemetry schema v2 reports the physics backend](decisions/telemetry.md#telemetry-schema-v2-reports-the-physics-backend).
 
-Use memory-only queues, temporary session tokens and receipt-based expiry. Describe raw data as potentially identifiable and public counts as observations, not unique players or guaranteed anonymity. The daily-to-weekly aggregation contract deliberately trades low-volume coverage for short identifier retention and conservative disclosure control.
+<a id="start-graphics-from-the-active-gpu-and-keep-manual-choices"></a>
 
-The [adaptive follow-up](research/telemetry/TELEM-00-R1/README.md) retains the direct receiver and chooses ordinary logged, globally unique raw/dedup tables as the small-pilot candidate. Generic relay acknowledgments, time-partitioned keys and backup retention do not automatically satisfy atomic receipt or physical-copy expiry. Do not activate the raw store until its all-copy lifetime is feasible and qualified; ordinary SQL deletion is insufficient evidence.
+- [Start graphics from the active GPU and keep manual choices](decisions/presentation.md#start-graphics-from-the-active-gpu-and-keep-manual-choices).
 
-Freeze a reviewed publication title and body and preserve an unknown remote-write outcome. A changed public disclosure needs a fresh inventory-bound review that also binds the expected bot; known duplicate/edited/missing artifacts stop for explicit reconciliation, including altered same-key artifacts alongside an exact original. Repository aliases, actual visibility, durable inventory reservations and stale-ledger recovery are production responsibilities. The [offline protocol](plans/telemetry/publication-protocol.md) prepares these boundaries without claiming a ready publisher or formal anonymity.
+<a id="v2--bind-the-shooting-package-to-one-explicit-revision"></a>
 
-[Architecture and alternatives](plans/telemetry/architecture.md), [data contract](plans/telemetry/data-contract.md), [original 38-source-question review](research/telemetry/TELEM-00/README.md). Revisit the adapter/backend choice only when a qualified existing SDK can satisfy the exact consent, identity, logging, retention and performance contracts with less maintained code. Hosting, notice, hardware and publication gates remain open.
+- [V2 — Bind the shooting package to one explicit revision](decisions/trailer-production.md#v2--bind-the-shooting-package-to-one-explicit-revision).
 
-**TELEM-02…11 implementation, 2026-11-18.** The pilot receiver uses Starlette/uvicorn with SQLite instead of FastAPI/PostgreSQL: one never-backed-up raw file with secure delete and WAL truncation makes the 48-hour lifetime a property the operator can check, which a PostgreSQL WAL/replica/backup chain does not; PostgreSQL returns if one node cannot carry the admitted volume. Telemetry controls sit on Settings → Interface beside update checks rather than a seventh Settings tab, which would have narrowed the tab row at 1080p. All nine languages carry translations, but only English and Spanish notices are reviewed; the others keep telemetry off until a reviewed notice is added. A release offers telemetry only when its exact clean tag export packs an operator endpoint, name and contact from repository variables; no code change is needed to activate or to stop offering it in later builds. [Implementation verification](research/telemetry/TELEM-02/README.md).
+<a id="the-accident-ledger-samples-gear-support-once-per-frame"></a>
 
-**TELEM-16/17 disclosure at report time, 2026-11-19 (owner decision).** The whole-table daily rule published nothing at pilot volume (one small GPU family suppressed every day). The rollup now also keeps unsuppressed, ID-free daily cells for fixed dimensions in the operator's aggregate database (180 days), and the weekly insights report applies the 20 session-day floor per cell, folding small cells (and, when needed, the smallest shown cell) into one combined row so no table leaves a withheld remainder. Insights are operator-only: nested dimensions shared between tables can still be differenced and a weekly session-day floor can be filled by one very active player; the v2 report keeps the conservative daily rule as the public form, never published for the same week as insights. Accepted cost: small cells exist in operator storage for 180 days. Release allowlists accept series prefixes (`v0.3.*`) so a new tag cannot be dropped because nobody added it. Revisit if anything beyond the operations repository consumes insights. [Receiver README](../services/telemetry/README.md#weekly-insights-telem-1617).
+- [The accident ledger samples gear support once per frame](decisions/flight-sessions.md#the-accident-ledger-samples-gear-support-once-per-frame).
 
-**TELEM-21 hosting, 2026-11-19 (owner decision).** Host the unchanged receiver on the owner's always-on Proxmox node in an unprivileged container, published with Tailscale Funnel: no cost, no rewrite, full control of logs and copies, and the raw volume excluded from backups by the hypervisor. Rejected: Fly.io (small monthly cost), Cloudflare Workers + D1 (rewrite; D1 keeps 7-day Time Travel copies), Google Cloud e2-micro (US-only, IPv4 charge), Oracle Always Free (idle reclamation), Supabase (rewrite, pausing). Accepted costs: residential availability, and a public node that must not reach the owner's other systems, so Funnel opens only after an isolated node identity. The URL is baked into releases; the node and tailnet names are permanent. Revisit if the node cannot stay available or isolated. [Audit and comparison](research/telemetry/TELEM-AUDIT-2026-11-19/README.md).
+<a id="a-native-flight-freezes-its-guarded-configuration"></a>
 
-**TELEM-04/10 release review, 2026-11-18.** Daily GPU rows keep the summed frame-interval histogram (report v2) so the weekly report can show slow-frame shares within the same 20-session cells; mean FPS alone is capped by VSync and hides stutter. The whole-table suppression floor is unchanged: at low adoption reports will usually be suppressed, and relaxing it is a disclosure decision for the operator. Sessions the game itself restarts with a renderer argument (the RendererGuard Compatibility fallback, a graphics-mode change) stay on the interactive route, otherwise the configurations whose renderer failed would never be measured. A build configured for telemetry fails its export when the endpoint or tag could not actually offer it, instead of shipping silently off.
-
-### Telemetry schema v2 reports the physics backend
-
-**Owner, 2026-11-20 (legacy modes audit).** `activity_summary` gains `physics_backend`, an enum of the native-fallback
-kind (native, reference_selected, reference_domain, reference_stale, reference_missing, not_applicable, unknown), so a
-silent fallback to the slower GDScript physics is visible in the field. It is a new data category, so it ships as
-schema 2 with notice 2026-11-20: the disclosure names it in English and the eight translations, and every saved
-enabled grant from the 2026-11-18 notice is asked again (declined choices stay declined). The refusal text is never
-sent. The receiver accepts v1 under the old notice and v2 under the new one, never a mixed pair, and reports the
-field only as the operator `usage_backend` table. Deploy the receiver before tagging a release with the v2 client;
-`check-release` ingests the v2 example. [Data contract](plans/telemetry/data-contract.md),
-[legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
-
-### Start graphics from the active GPU and keep manual choices
-
-**VQ-07h, 2026-11-21.** Use offline raster estimates, OpenRC workload measurements and
-the planned output size to seed individual graphics options. Unknown or ambiguous models
-start at Low with a visible explanation. Track ownership per quality option across
-GPU changes and renderer recovery. The [automatic graphics plan](plans/automatic-graphics.md#first-launch-policy-on-main)
-owns thresholds, hardware examples and evidence limits. **GFX-IGPU-01, 2026-11-22:**
-recognized integrated or software GPUs below the Low threshold also start at a 75 %
-3D render scale. Lowering pixels was the largest measured gain on a UHD 630; driver
-tuning offered none.
-
-**VQ-07d, 2026-11-22.** Following the owner's low-end default request, enable
-dynamic resolution for eligible new profiles and graphics restores when the
-current renderer exposes completed GPU timing. Keep saved targets and ceilings
-across renderer changes. Preserve the Retina MetalFX Spatial policy and fixed
-fallbacks. The [dynamic resolution plan](plans/dynamic-resolution.md#phase-3--implement-the-controller-and-player-controls-m2)
-owns the starting range, capability checks and remaining qualification.
-
-**VQ-07h-A2-R1 / VQ-07d, 2026-11-23.** Apply a lightweight bundle to new
-profiles on identified constrained GPUs and explain it once in Home. Saved
-profiles keep their settings. Keep ground and tree detail independent so players
-can raise individual settings. Automatic keeps simple tree silhouettes for
-collidable placements. The player's explicit Tree detail Off hides those
-silhouettes and preserves the same collision world. Compatibility uses
-rendered-frame cadence to test temporary reductions in pixel load.
-[Lightweight profile](plans/low-end-gpu-performance.md#lightweight-first-start-profile)
-
-### V2 — Bind the shooting package to one explicit revision
-
-**22 November 2026.** The trailer index selects one active script, numeric shot plan, title plan and direction sheet. Generated shot cards, cut tables, maps and camera recipes derive from that revision; title/assembly validation refuses a mixed current/legacy edit. Preserve older locked scripts and their evidence alongside the current package, but do not treat them as current filming instructions. This avoids several plausible yet conflicting scene orders and camera settings.
-
-Keep camera composition separate from aircraft/session admission. A water-plane look target records actual presented CG separately, uses the source lake plane and requires current engine-frame/session-tick evidence. It changes presentation only. Workshop trial IDs and strict ground harnesses retain their real admission boundaries; a proposed shot does not authorize weakening them to make a camera recipe run.
-
-The master uses distinct, frozen lighting sessions with explicit context changes; it does not imply one continuous day. Bind source time arguments and actual readback, because an inherited clock can override a named preset and a frozen sun does not freeze adaptive exposure. Revisit geometry or integration after real rehearsal, regenerating all dependent instructions together. [Current production package](../tools/trailer/preproduction/README.md), [direction contract](../tools/trailer/preproduction/direction-and-continuity.md).
-
-### The accident ledger samples gear support once per frame
-
-**F1, 2026-11-26; explicit owner decision.** The accident ledger (`economy/incident.gd`) holds ticks whose only events
-are persistent gear-support samples and observes them once per frame with each wheel's peak compression. It observes
-every other event, a crash or a restore at its own tick, after the held samples. A checkpoint, an evaluation, an
-archive flush or a ledger action releases the held samples first. Per tick, the bound, revalidation and SHA-256 of
-every sample cost about 0.36 ms of each rolling 240 Hz tick.
-
-Peaks, recommendations and assessed components equal per-tick observation
-([test](../app/tests/test_accident_ledger_hold.gd)). The evidence tick of a held sample and the internal revision
-counts are per frame. `has_damage()` can lag by up to one frame. Persistent hull contacts remain per tick. Revisit if
-a gear damage rule needs per-tick sample timing.
-
-### A native flight freezes its guarded configuration
-
-**F1 / NK-6p, 2026-11-27; explicit owner decision.** Once the kernel accepts a fixed-wing native stage, the
-session's guarded containers become read-only all the way down: the aircraft dictionary, the hull contact and the lake
-(`NativeConfiguration.freeze_guarded`). Godot cannot make a container writable again. The configuration guard
-therefore proves each frozen root's shape by its identity and drops its deep comparison per tick (16–42 → 6–8 µs).
-A later container write fails where it is made, as an engine read-only error, instead of faulting the next native
-tick. Packed arrays are the exception: the engine shares a packed array's buffer with every alias, so an element
-write changes it in place even under a read-only parent. Each packed leaf therefore keeps a bitwise watch, and such
-a write still faults the next native tick. Replacing a root with another instance still refuses the tick. Writable
-containers keep the guard's comparison.
-
-No production code writes these containers after setup. The guard's own tests turn the freeze off to keep covering
-that comparison ([test](../app/tests/test_native_frozen_configuration.gd)). Revisit if a feature must edit the
-aircraft during a native flight: it should replace the dictionary at an accepted boundary instead.
+- [A native flight freezes its guarded configuration](decisions/native-execution.md#a-native-flight-freezes-its-guarded-configuration).

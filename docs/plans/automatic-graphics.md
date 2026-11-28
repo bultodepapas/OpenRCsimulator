@@ -37,6 +37,8 @@ The display store remembers the last automatically applied value for each manage
 
 ## 1. Audit of the current system
 
+The table records the November 21 audit baseline. Use the first-launch policy above and the linked implementation receipt to identify repairs made since that audit.
+
 ### 1.1 What exists
 
 | Boundary | Existing owner and behavior | Remaining concern |

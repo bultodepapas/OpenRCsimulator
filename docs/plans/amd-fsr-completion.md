@@ -6,7 +6,7 @@
 
 Finish the existing FSR2/FSR3 integration, adopt the latest verified AMD upscaling runtime on supported devices, and implement frame generation as a separately qualified presentation feature. Reuse Godot and AMD implementations and samples. Never author a replacement upscaler or infer support from an AMD GPU name alone.
 
-The current SDK candidate is **AMD FSR SDK 2.4.0**, released on this plan's date. Start with **Windows/Forward+/Vulkan**, where OpenRC already has a native integration. SDK 2.4 removes the previous SDK 2.3 Vulkan blocker for upscaling and frame generation. DX12 is a separate later platform baseline, not a prerequisite for this first delivery. Preserve the official cross-platform engine and Standard recovery path while qualifying the custom engine.
+OpenRC’s isolated Vulkan candidate pins **AMD FSR SDK 2.4.0**. The [build and package guide](../../tools/graphics/native/README.md#amd-sdk-24-candidate) identifies the SDK and candidate separately from the NVIDIA product package. Start with **Windows/Forward+/Vulkan**, where OpenRC already has a native integration. SDK 2.4 removes the previous SDK 2.3 Vulkan blocker for upscaling and frame generation. DX12 is a separate later platform baseline, not a prerequisite for this first delivery. Preserve the official cross-platform engine and Standard recovery path while qualifying the custom engine.
 
 "Ready" means usable settings, verified effective implementation, temporal correctness, failure recovery, reproducible packages, and named-hardware motion/performance/latency evidence. An SDK dispatch or a settings entry is insufficient. Do not describe the complete AMD family as implemented while any included component remains only a proposal.
 

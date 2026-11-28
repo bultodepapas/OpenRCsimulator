@@ -44,7 +44,7 @@
 
 ## Download and fly
 
-**Latest release: [v0.3.3](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.3).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
+**[Latest published release](https://github.com/bultodepapas/OpenRCsimulator/releases/latest).** The versioned download links below are for **v0.3.3**. Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
 
 | Platform | Download and launch |
 | --- | --- |
@@ -179,7 +179,7 @@ To bring in your own model, open **Workshop → Create aircraft… → Import**.
 
 **Club field** has the runway, flightline, vegetation, lake, buildings and night fixtures. **Green paradise** offers an open, flat grass surface without scenery obstacles or a lake. Select the landscape on Home; to change it after flying, return to Home first.
 
-For a Phoenix panorama, open **Home → Flight → Import scenery**. The calibrated revisions of Airfield, Aircraft Carrier X98, Frönäs, Farmland and Aero Club Dolores offer a runway trial in calm conditions. Other site revisions open as previews. [Scenery import guide](docs/LANDSCAPES.md#import-phoenix-scenery)
+For a Phoenix panorama, open **Home → Flight → Import scenery**. The calibrated revisions of Airfield, Aircraft Carrier X98, Frönäs, Farmland and Aero Club Dolores offer a runway trial in calm conditions. Other site revisions open as previews. [Scenery import guide](docs/PHOENIX-SCENERY.md)
 
 | Club field | Green paradise |
 | --- | --- |
@@ -227,7 +227,7 @@ The X-Cell .60 trainer above is the playable helicopter. The advanced HX-700 can
 
 ## Roadmap and donations
 
-**ArduPilot / Mission Planner SITL integration is on the roadmap.** The current priority is to make OpenRC Simulator more robust and efficient, and to improve controller and platform compatibility across Windows, Linux, macOS and ARM. SITL integration is planned, not available in the current download.
+The [current roadmap](ROADMAP.md) owns engineering priorities and acceptance gates. ArduPilot / Mission Planner SITL integration is a longer-term product proposal; it is not available in the current download.
 
 We also want to bring OpenRC Simulator to **Steam**. Steam could make updates and installation easier, help more pilots discover the project, grow the community and give the developer better usage analytics. Its services could also help with a future online multiplayer implementation; multiplayer is not available yet.
 
@@ -267,40 +267,16 @@ Pilot reports, real-world measurements, translations, licensed assets and develo
 
 ## Develop and contribute
 
-The production application is in **`app/`**. Start with [developer setup](docs/TOOLS.md#developer-setup), then choose the relevant [tool and verification workflow](docs/tools/README.md). The documentation map and source define what is implemented; plans describe remaining work.
+**Start at the [documentation index](docs/README.md).** It routes developers and AI agents to the current guide, source owner and evidence for each task. Read only the relevant subject and its scoped instructions.
 
-### Technologies
+The production application is in `app/`. Godot runs the application and rendering; the shared float64 simulation has a GDScript reference and qualified C++ backends. [Architecture](docs/STACK.md) owns the current engine, vehicle boundaries and platform/backend distinctions. The three.js experiment in `prototypes/stage0/three/` is frozen.
 
-| Layer | Current source |
-| --- | --- |
-| **Engine and application** | Pinned official **Godot 4.8-beta2** prerelease; **GDScript** for the application and reference simulation. See the release notes for the packaged engine version. |
-| **Flight dynamics** | Custom **float64**, six-degree-of-freedom rigid-body kernel, **RK4** and fixed **240 Hz** ticks. Vehicle-specific laws enter through `VehicleModel`. |
-| **Native evaluation** | In-house **C++ / GDExtension** backends with GDScript reference/fallback paths. [NK-3 selection and qualification](research/native-kernel/README.md#normal-flight-backend-selection) |
-| **Rendering** | Godot Compatibility/OpenGL and optional Forward+; [graphics modes](tools/graphics/README.md) own reconstruction options and platform limits. |
-| **Aircraft and assets** | Validated `openrc-aircraft v2` data with units, evidence and sources; **Python** source generators and **Blender / glTF** asset pipelines. |
-| **Verification and delivery** | Headless tests, golden flights, exact replay, schema/trace checks, rendered captures and **GitHub Actions** package checks for Windows, Linux and macOS. |
+- [Developer setup](docs/TOOLS.md#developer-setup) — pinned tools, imports and launch.
+- [Contributing](CONTRIBUTING.md) and [agent instructions](AGENTS.md) — change and verification workflow.
+- [Current roadmap](ROADMAP.md) — evidence-backed priorities, dependencies and remaining acceptance gates.
+- [Decisions](docs/DECISIONS.md) — consequential choices, rationale and trade-offs.
 
-```mermaid
-flowchart LR
-    Controls["Radio / gamepad / keyboard"] --> Session["Flight session"]
-    Data["Validated aircraft data"] --> Model["VehicleModel"]
-    Model --> Session
-    Session --> Kernel["Shared float64 kernel · 240 Hz"]
-    Kernel --> View["Rendering / audio / UI"]
-    Kernel --> Logs["Flight logs / replay"]
-```
-
-[Architecture and boundaries](docs/STACK.md) · [Aircraft authoring contract](docs/AIRCRAFT_CONTRACT.md). Simulation state stays separate from rendering, and generated data is rebuilt through its owning pipeline.
-
-| I want to… | Start here |
-| --- | --- |
-| Fix a bug or improve a feature | [Contributing](CONTRIBUTING.md) · [Repository guidance](AGENTS.md) |
-| Add or refine an aircraft | [Aircraft contract](docs/AIRCRAFT_CONTRACT.md) · [Asset sources](assets/source-deliveries/README.md) |
-| Create a landscape | [Landscape authoring](docs/LANDSCAPES.md) |
-| Run tests, captures or exports | [Tool index](docs/tools/README.md) · [Release workflow](docs/TOOLS.md#release-sequence) |
-| Find a track or understand a decision | [Documentation map](docs/README.md) · [Roadmap](ROADMAP.md) · [Decisions](docs/DECISIONS.md) · [Lessons](docs/LEARNINGS.md) |
-
-The three.js experiment in `prototypes/stage0/three/` is a frozen platform comparison; it is not the production simulator.
+Current source, configuration and accepted data establish implemented behavior. Dated investigations qualify only their recorded inputs; the release notes establish what a downloaded build contains.
 
 ## License
 

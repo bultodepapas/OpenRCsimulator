@@ -1,21 +1,13 @@
 # NK-3 native stage evaluator
 
-Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation):
-a GDExtension (godot-cpp) port of continuous aircraft evaluation. ABI 2 is the qualified Linux x86_64
-default for the current aircraft catalog and admitted flight conditions. The original legacy prescribed-RPM
-Ugly Stik delivery remains the rollback baseline. Build outputs stay in the ignored `tmp/native-kernel/`;
-`--install-app` can stage a verified Linux library in ignored `app/native/kernel/`. The application requests native physics by default.
-Unsupported or unverified configurations report a reference fallback; `--physics-backend=gdscript_reference`
-selects the reference explicitly. The low-level `FlightSession` default remains reference for tools and replay.
-Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
-The [promotion record](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29)
-defines the supported Linux scope and separates backend qualification from display and hardware acceptance.
+The ABI 2 C++ GDExtension evaluates aircraft callbacks and can integrate an eligible tick for the stage it owns. The [architecture](../../docs/STACK.md#native-backend-policy) defines the shared transaction. This guide owns backend selection, build and package qualification.
+
+The original prescribed-RPM Ugly Stik is the NK-3 rollback baseline. The [Linux promotion record](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) binds the historical fleet and its admitted conditions to that build.
 
 ## Experimental macOS ARM64
 
 The scalar Apple Clang port uses the existing evaluator ABI and float64 state.
-It is a fixed-wing source experiment, with separate source and package receipts;
-the Linux fleet qualification does not transfer to Mac. Since the
+Source-editor admission is limited to screened stock fixed-wing flights. The source installation and the separately prepared development package each use their own receipts. Since the
 [2026-11-16 decision](../../docs/DECISIONS.md#default-to-native-physics-on-supported-apple-silicon-flights)
 the automatic source-editor route needs no admission marker: an ordinary ARM64
 flight inside the screened stock domain (`app/sim/native_macos_domain.gd`) runs
@@ -26,8 +18,7 @@ The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README
 describes earlier candidates, not qualification of the current source.
 The [source-default ledger](../../docs/research/native-kernel/DT-MAC-04n4/README.md)
 records the November 14 adoption on the qualified M1, its actual installed
-identities and remaining product gates. Its headless/Dummy audio-off Home checks
-do not qualify normal audio-enabled shutdown.
+identities and remaining product gates. It exercised headless/Dummy audio-off Home checks. The later [R10 development bundle](../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-owner-directed-native-default) exercised normal native Home/restart/reentry and audio-enabled shutdown on the recorded M1.
 
 Omit `--experimental-native-macos` to use automatic source-editor admission.
 An explicit `false` disables that route; `true` selects the separate research
@@ -203,8 +194,7 @@ The public six-file release contract has not adopted the experimental ZIP.
 
 ### Packaged CPU-default admission
 
-This separate workflow covers only the CPU native backend. It has not yet
-qualified a package or issued a marker. A candidate is scoped to the verified
+This workflow issues a performance-promotion marker for the CPU backend. No package has earned that marker through this workflow. The later [R10 functional qualification](../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-owner-directed-native-default) used the owner-directed normal route with the optional marker absent or malformed. A candidate is scoped to the verified
 Ugly Stik, ideal battery, calm airborne start, soft-hull and production trim
 on the recorded M1 hardware, OS and signed package. MetalFX, GPU completion,
 physical radio/pilot behavior, scanout and latency remain unqualified.
@@ -454,16 +444,19 @@ above predates this admission boundary; reference fallback does not establish na
 
 ## Normal-flight backend selection
 
-After verification and installation below:
+Ordinary fixed-wing and helicopter flight screens request native. Standalone sessions default to the GDScript reference, and Creator trials select their qualified reference route. Choose reference explicitly with `--physics-backend=gdscript_reference`. Selection starts during session preparation. The console prints requested/actual backend and the reason for any fallback.
+
+| Platform | Source editor | Release or development package |
+| --- | --- | --- |
+| Linux/Windows x86_64 | ABI 2 selects an adapter from validated vehicle/propulsion capabilities, supported weather, configuration and verified install identities. | Both releases require separately qualified native artifacts. Linux package qualification exercises the exported executable on Linux. Windows qualification exercises the exported executable on Windows, including its default route. [Linux release](#linux-release-packages) · [Windows release](#windows-release-packages-nk-4-owner-decision-2026-11-18-native-kernel-always) |
+| macOS ARM64 | Automatic admission screens stock fixed-wing configurations. The performance marker is optional. Other domains, including helicopter, retain reference. | The generic universal export uses reference physics. A separately prepared ARM64 development bundle requires its own receipt, signing and replay qualification. [Mac source and package rules](#experimental-macos-arm64) |
+
+After verification and installation, launch an ordinary flight:
 
 ```bash
 "$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=jensen-das-ugly-stik-60 --weather=calm
 ```
 
-Selection is launch-time only. ABI 2 selects a stage from the validated model's propulsion and vehicle
-capabilities, with native weather and configuration guards. This replaces the baseline stock-aircraft restriction;
-unsupported or unverified configurations report reference fallback. The interactive flight console prints
-requested/actual backend and refusal reason.
 A stale or missing build is also an engine warning on normal flights (`app/app_state/native_fallback.gd`):
 a refused source/package identity on any host except the macOS release, and a missing library on Windows/Linux
 x86_64. Expected domain refusals (lakes, weather, custom spawn) stay a log line. The debug bridge `state` reports

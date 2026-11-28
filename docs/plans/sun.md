@@ -2,7 +2,7 @@
 
 2026-10-19 · Revision 1 · **Implementation plan** · Step prefix: **SUN**
 
-**Status:** 2026-10-19: SUN-00…05, -02b, -05b, -06 (command line) and -09 delivered (software and native capture evidence on llvmpipe); SUN-07 moon glare is FW-MOON-08's (built on `SunGlare.source()`); SUN-08 owner flight acceptance and the eyewear preference (SUN-D1) are open. Evidence: [SUN-00 audit and sources](../research/sun/SUN-00/README.md), [SUN-01…05 results](../research/sun/SUN-01-05/README.md), [SUN-02b, -05b, -06, -09](../research/sun/SUN-02b-06-09/README.md).
+**Status:** 2026-10-19: SUN-00…05, -02b, -05b, -06 (command line) and -09 delivered (software and native capture evidence on llvmpipe); SUN-07 moon glare shipped under FW-MOON-08c; SUN-08 owner flight acceptance and the eyewear preference (SUN-D1) are open. Evidence: [SUN-00 audit and sources](../research/sun/SUN-00/README.md), [SUN-01…05 results](../research/sun/SUN-01-05/README.md), [SUN-02b, -05b, -06, -09](../research/sun/SUN-02b-06-09/README.md).
 
 **Owner:** Visual quality and landscape (the sun's look), with LU (`sun_glare.*` began as LU-04) and Field world (shared `sky.gdshader`, `atmosphere.gd`; moon glare is FW-MOON-08). CAM sets the optics hint on its camera.
 
@@ -49,7 +49,7 @@ The physics, sources and rejected alternatives are in [SUN-00](../research/sun/S
 | SUN-02b | The veil never darkens: target colour ≥ the sky around the source; disc exclusion and ALBEDO encoding (with FW-MOON-08). | Delivered: 0 darkened sky pixels at golden hour (was 195); Day unchanged ([SUN-02b…09](../research/sun/SUN-02b-06-09/README.md)). |
 | SUN-05b | The optics inside the real flight scene (`main.gd`): layering, process order, bleaching, pause, lens, restart, strength, skyline, eyewear. | Delivered: `test_sun_flight.gd` 22/0. |
 | SUN-06 | Pilot eyewear: cap brim and light-brown sunglasses, `--pilot-eyewear` / `OPENRC_PILOT_EYEWEAR` (default none). | Delivered as a command-line/environment option; an interface preference and the default need the UI owner and the owner (SUN-D1). |
-| SUN-07 | Moon glare as a second source of the same overlay (FW-MOON-08 owns it). | Open; API in `SunGlare.source()`. |
+| SUN-07 | Moon glare as a second source of the same overlay (FW-MOON-08 owns it). | Delivered under FW-MOON-08c. [Moon glare evidence](../research/field-world/FW-MOON-08/README.md). |
 | SUN-09 | The field's skyline from the pilot's eye for bleaching and the off-screen veil, built incrementally from the field's geometry. | Delivered: `test_sun_skyline.gd` 14/0 (opengl3), in-flight checks; default-field profile and cost in the evidence. |
 | SUN-08 | Owner flight acceptance: fly across the sun on Day, golden hour and sunset; judge how long the model is lost, the afterimage streak, the veil and the lens flare. Tune `AFTER_RECOVER_S`, `AFTER_MAX_ALPHA`, the patch blur and the `--sun-glare` default from it. | Open (Gate). |
 

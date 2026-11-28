@@ -2,13 +2,9 @@
 
 2026-10-31 · Owner: VQ with UI, FW/TOD/SUN, L/LU/SC, CAM, GDU and vehicle visual owners · Steps: **VQ-04b-S00…S12**.
 
-**Status: configuration/settings slice and bounded Native shelter coverage implemented; broader visual and performance qualification remains open.**
-The [implementation record](../research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md)
-owns checks, captures and limits. Current defaults are preserved; Native is an opt-in, bounded comparison.
-The [S06 shelter follow-up](../research/visual-quality-implementation/VQ-04b/S06-shelters-2026-10-31/README.md)
-records paired 1080p Standard/High captures, range/ownership checks and the remaining startup-image investigation.
-Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects.
-Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
+[Shadow settings](../../app/render/shadow_settings.gd) resolve Auto, Native, Projected and Off. On supported renderers, Auto lets native maps own the aircraft shadow in range and hands it to the planar cue at distance. Projected preserves a ground cue on lightweight profiles at the cost of self-shadowing. The original [settings integration](../research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md) and [shelter evidence](../research/visual-quality-implementation/VQ-04b/S06-shelters-2026-10-31/README.md) cover those individual slices.
+
+Use 1920×1080 first on standard displays. Apple Silicon Retina acceptance needs native panel pixels under the [display policy](../../AGENTS.md#display-resolution-priorities).
 
 The [strict audit of 17 November 2026](https://github.com/bultodepapas/OpenRCsimulator/blob/audit/shadows-2026-11-17/docs/research/shadow-audit-2026-11-17/findings.md)
 (branch `audit/shadows-2026-11-17`) lists 26 findings. Its source-level defects are corrected on main:
@@ -43,14 +39,14 @@ The [strict audit of 17 November 2026](https://github.com/bultodepapas/OpenRCsim
 | SA-25 | `tools/shadows/shadow_cost.py` measures the root GPU per technique, renderer, view and output size against Off, alternating order with repeats and reporting the spread, and attributes every offscreen SubViewport (aircraft and field masks, cloud tiles) by its own GPU time. `capture.gd` gained `--aircraft-cue=on`, `--aircraft-motion=spin`, per-SubViewport timing and 3840 width. | `test_shadow_cost.py`; [closure measurements](../research/visual-quality-implementation/VQ-04b/shadow-audit-closure-2026-11-18/README.md): RTX 3090, 112 runs, both renderers, 1080p/1440p/4K |
 | SA-26 | Qualified on one machine (RTX 3090, Windows, Forward+ and Compatibility) at 1080p, 1440p and 4K for cost, and at 1080p for the visual A/Bs of every finding. Native costs +0.5–0.7 ms at 1080p on High and +1.2–1.5 ms at 4K (PCSS is per pixel); Projected stays ≤ 0.16 ms; Auto ≈ Native minus the handed-off cue. | [Closure measurements](../research/visual-quality-implementation/VQ-04b/shadow-audit-closure-2026-11-18/README.md) |
 
-Still open beyond this machine: moving-flight qualification (frame tails, camera motion, cold bakes) and other GPUs, Mobile/Metal and Macs. The aircraft/vehicle self-shadow limit of Projected (SA-01) and the receiver gaps below remain.
+Still open: moving-flight qualification (frame tails, camera motion and cold bakes), an integrated Windows GPU and native Retina output. The M1 Mobile/Metal cost screen below covers 1080p. The aircraft/vehicle self-shadow limit of Projected (SA-01) and the receiver gaps below remain.
 
 ### Next shadow and light work (evaluated 2026-11-18)
 
 Ranked by player-visible value per cost, from the audit closure, a source inventory of every light family and the [closure measurements](../research/visual-quality-implementation/VQ-04b/shadow-audit-closure-2026-11-18/README.md):
 
-1. **Moving-flight qualification.** Run GOD TEST flights (takeoff, low pass, landing at low sun and at night) on Standard and High at 1080p. On 2026-11-18 a golden-hour Stik flight from a clean U: worktree (real import cache, env-scoped `safe.directory`) was refused three times before starting: twice `EXTERNAL_SIMULATOR` (another session ran Godot test batteries outside the queue) and once `INSUFFICIENT_SPACE`. Each attempt stages about 6 GB on `C:` (snapshot plus isolated copy). Needs a quiet desktop (all Godot runs through the queue) and queue storage off the nearly full `C:`.
-2. **Second-machine cost matrix.** Done on the ANGEL M1 (2026-11-18): on the Mac's product renderer (Mobile/Metal, 1080p) Auto costs +1.6–1.8 ms per frame, Native +1.2–1.4 ms, Projected +0.5–0.9 ms; High's settings cost +8–11 ms. Remaining: one integrated Windows GPU. Then decide whether Automatic should resolve to Projected on modest GPUs (a visible trade: Projected cannot self-shadow), together with the automatic graphics policy.
+1. **Moving-flight qualification.** Run GOD TEST flights (takeoff, low pass, landing at low sun and at night) on Standard and High at 1080p. The November 18 attempts ended before flight because of host occupancy and storage limits. Obtain a completed run with active flight and frame-tail evidence.
+2. **Second-machine cost matrix.** Done on the ANGEL M1 (2026-11-18): on the Mac's product renderer (Mobile/Metal, 1080p) Auto costs +1.6–1.8 ms per frame, Native +1.2–1.4 ms, Projected +0.5–0.9 ms; High's settings cost +8–11 ms. Remaining: one integrated Windows GPU. Automatic already recommends Projected on identified lightweight hardware. Verify the self-shadowing tradeoff and whole-flight cost for that profile. [Automatic graphics](automatic-graphics.md)
 3. **Standard-renderer contact grounding.** High has SSAO; Standard has none, and its grounding comes from the planar contact planes. Evaluate a bounded Compatibility AO or contact term against the planes at 1080p. No plan step owns it yet.
 4. **Compatibility mask redraw frequency.** The moving-aircraft mask costs +0.22 ms of frame time per redraw on Compatibility (fixed per-viewport overhead; simplification, MSAA and atlas do not change it). A bounded redraw cadence is the only lever; decide it with integrated-GPU frame times and a fast-roll visual check.
 5. **Cloud shade on aircraft, buildings and trees (SA-16 remainder).** Imported StandardMaterial3D receivers have no per-instance hook. Measure a multiply overlay limited to the direct share before choosing it.

@@ -32,13 +32,12 @@ The latest [native follow-up](../research/desktop-delivery-investigations/DT-MAC
 verifies a fresh 1–19+21+24+25 pair, the full official extension API and runtime
 SHA vectors. Ordinary acquired textures reach 1920×1080. The incompatible-owner
 control exposed an actual DisplayLink layer resize exception; optional 0026
-fixes it and passes a native active-owner resize regression. Its fresh matched
-pair and package renewal are in progress. A separate disposable RT-view trial
+fixes it and passes a native active-owner resize regression. The later R10 evidence below identifies the matched Engine 26 package and its tested routes. A separate disposable RT-view trial
 now completes producer → MetalFX denoiser → consumer GPU work for bounded opaque
 ground/pilot geometry, with rejection and restoration controls. The product RT
 gate remains closed. Full-flight image quality, sustained pacing and physical
 latency remain open. Native physics packaging and the owner-directed default are
-now delivered separately in the [native closeout](apple-silicon-closeout.md);
+now delivered separately in the [M1 native-default evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-owner-directed-native-default);
 this does not qualify the four MetalFX features. The old R3 ZIP is unchanged.
 
 ## 1. Scope and completion
@@ -138,7 +137,7 @@ These are headless/Dummy checks; actual rendered flight remains separate. Option
 0025 supplies ordinary drawable acquisition observation behind an explicit flag;
 its fresh matched pair and native controls were pending at that checkpoint.
 The later fresh-pair follow-up above records acquired 1080p textures; the
-[native closeout](apple-silicon-closeout.md) records the R10 package and normal
+[M1 native-default evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-owner-directed-native-default) records the R10 package and normal
 Home/native-default checks. Sustained pacing, full fleet/campaign performance
 promotion and physical latency remain open. The older R3 ZIP still uses
 clean19/reference physics. The linked evidence retains each source and package

@@ -1,86 +1,26 @@
-# Native kernel roadmap
+# Native kernel work and qualification
 
-Owner goal (2026-11-27/28): move the game's hot paths into the native kernel, robustly and as efficiently as
-possible, batch by batch with measured returns. This plan records what remains, the lessons that shape the next
-batches, and their order.
+The [project roadmap](../../ROADMAP.md) sets priority. NK owns the aircraft C++ kernel, its GDScript adapters and their qualification. Simulation, configuration, audio and rendering owners review changes at their boundaries. The [backend policy](../STACK.md#native-backend-policy) defines runtime ownership. The [native guide](../../research/native-kernel/README.md) owns build commands, supported routes and receipts.
 
-Ownership and evidence:
-- The [native kernel README](../../research/native-kernel/README.md) owns the coverage list and each batch's evidence.
-- [Optimization priorities](optimization-priorities.md) owns the measured frame costs (F1 per tick, F5b per frame).
-- [STACK](../STACK.md#native-backend-policy) owns the backend policy.
+## Remaining work
 
-## Ground rules that stay
-
-- The GDScript reference remains the specification, the fallback and the replay backend. Each native answer has a
-  hook to turn it off, and a parity test compares the whole consumer output with it on and off. Simulation keeps
-  the commit, publication, checkpoint and rollback transaction ([AGENTS](../../AGENTS.md#native-development)).
-- UI, orchestration and the simulation transaction stay in GDScript by design. "Everything native" means every hot
-  path whose return justifies it. It does not mean every line.
-
-## What remains
-
-Costs were measured headless with the native backend and real timers on 2026-11-28 (Windows x86_64). A live
-session costs more per tick, because observers, statistics and companions run there too.
-
-### Per tick (four per frame at 60 FPS; about 140 µs per tick headless)
-
-| Item | Cost per tick | Note |
+| ID | Work and dependency | Evidence to finish |
 | --- | --- | --- |
-| Configuration and weather guards | 9 + 5 µs | Native, but bounded by engine property reads per root. Freezing more configuration roots would let identity checks replace watches. |
-| Contact step preparation | 8.7 µs | GDScript mode bits recomputed from configuration that cannot change between installs. |
-| Liquid tick context (P-51, Corsair) | 15.6 µs | Its argument building: deflections, the preview predicate and its tick fact. |
-| Glow step plan (glow aircraft) | 16 µs | Recording events and finish terms rebuilt each tick. |
-| Accepted-tick observers | 11–13 µs | Endpoint facts, compressions and cost support. |
-| Simulation guards before the pre-step | 12 µs | Pinned kernel transaction: out of scope. |
+| NK-9c | Verify the current native paths in ordinary muted Corsair, glow Stik and P-51 flights on the owner's workstation at 1920×1080. | Record the actual backend, per-frame timings and positive counts for each exercised path. Check `native_audio_row_answers`, `native_approach_answers` and the glow voice's `native_render_answers` on the matching aircraft/conditions. |
+| NK-6x | Prepare contact mode bits and the lake threshold once from the stage's admitted configuration. | Compare mode bits and threshold at their boundaries. Change the configuration and verify that the stale answer is refused. Measure complete ticks. |
+| NK-6y | Prepare the immutable parts of glow finish terms and the substep preview base. Build liquid tick-context arguments from the admitted aircraft and current deflections. | Compare liquid and glow ticks through resource events and refusal paths. Time the affected aircraft separately. |
+| NK-7n | Read the mechanical snapshot, airborne clearance, endpoint air and shaft torques in one call for the same published frame. | Compare the entire audio consumer output with the hook enabled and disabled, including a stale or unavailable endpoint. Measure the live frame. |
+| NK-7o | Build the glow voice pump's detached telemetry from the admitted glow keys. | Compare hand-over and rendered PCM with the reference. Exercise a running voice and measure hand-over cost per frame separately from worker cost per block. |
+| Guard roots | With the configuration owners, freeze additional roots that cannot change during an accepted flight. Replace property watches only where identity proves the same configuration. | Mutation and alias tests must reject a changed root before use. Measure guard cost on a production tick. |
 
-### Per frame (flight audio after NK-7j–7m)
+The [November 28 Windows profile](https://github.com/bultodepapas/OpenRCsimulator/blob/8d4169f8febfd7d78a028eaa817414217a54f24b/docs/plans/native-kernel-roadmap.md#what-remains) preserves the original headless measurements used to select these batches. Live work includes observers and presentation. Existing Windows measurements cover the [substep count](../research/native-kernel/NK-6u/README.md), [clear-contact step](../research/native-kernel/NK-6v/README.md) and [shadow terrain sampling](../research/native-kernel/NK-8b/README.md) on their recorded workloads.
 
-| Item | Cost per frame | Note |
-| --- | --- | --- |
-| `FlightAudio.snapshot()` | 36–65 µs | The glow keys wrapper costs about 14 µs on top of the kernel's 11; running state, atmosphere, result dictionary and listener 4–13 µs each. |
-| Endpoint observations | 13–23 µs | The mechanical snapshot (11–15) and the airborne clear test (6–8). |
-| Soundscape | 25–44 µs | Glow voice hand-over 21 µs (glow only), wildlife 6.5, fabric 4.5. |
-| Glow voice worker | 119 µs per 256-frame block | NK-6m's per-sample engine trigonometry; byte-identical PCM keeps it. |
+## Qualification
 
-### Evidence gaps
+- Keep a switch back to the reference implementation for each new native answer. Compare the whole consumer output, include a mutation that the comparison detects, and check malformed inputs and refusal boundaries. The stage oracle covers at least 10,000 states. Check exact trajectories, accepted tick counts, actual native calls and checkpoint/fault/restore behavior. [Installer and trajectory gates](../../research/native-kernel/README.md#verification-and-local-installation)
+- Rebuild the candidate, run affected suites and the platform's installer gates, and verify the actual install in both the qualification tree and the working app. Bind engine, toolchain, ABI, source/data and library to the receipt. Repeat the applicable release checks against the actual packaged executable. [Native CI](../../.github/workflows/ci.yml) · [Package verification](../../research/native-kernel/README.md#linux-release-packages)
+- Record matched live timings and counters on the intended host. Keep per-tick, per-frame and per-audio-block results separate. Compare the same workload, output dimensions and observer configuration. [Measurement rules](../learnings/physics.md#measure-the-complete-workload) · [Published endpoint rules](../learnings/physics.md#native-answers-for-published-endpoints)
 
-- macOS has no parity run for any NK-6/7/8 batch.
-- Linux: all nineteen gates passed locally at `d080ca630` (WSL, 2026-11-28); CI requalifies each push. The NK-7
-  parity tests have not run on Linux locally.
-- Live-app timings exist for NK-6u, NK-6v and NK-8b only.
+## Platform evidence still needed
 
-## What we learned
-
-- Presentation readers may use a native answer only for the endpoint they read, under the publication's own
-  conditions; every refusal must reach the unchanged reference
-  ([learning](../learnings/physics.md#native-answers-for-published-endpoints)).
-- Receipts pin raw source bytes, and linkers stamp binaries: line endings and PE timestamps both mislead
-  ([learning](../learnings/runtime-and-delivery.md#clean-builds-and-desktop-evidence)).
-- A plan that walks containers once per path explodes on aliased configurations; budget it and keep the
-  alias-aware fallback ([learning](../learnings/physics.md#native-answers-for-published-endpoints)).
-- Exported builds can lack project shader globals that the editor registers
-  ([learning](../learnings/models-and-rendering.md#rendering-and-visual-evidence)).
-- Estimates from synthetic inputs can be wrong by 3×. NK-7l's measured gain was 15 µs per block, not the
-  estimated 50. Time the real workload before choosing a batch
-  ([measure the complete workload](../learnings/physics.md#measure-the-complete-workload)).
-
-## Plan
-
-Each step needs a parity test with a mutation control, the affected suites, the nineteen installer gates, an
-install in both trees and live timings.
-
-1. **NK-9c · Live verification.** Fly the Corsair, glow Stik and P-51 in the live app (muted). Read the native
-   answer counters (`native_audio_row_answers`, `native_approach_answers`, the glow voice's `native_render_answers`)
-   and per-frame timings. Confirm that no path silently falls back.
-2. **NK-6x · Contact step preparation.** Answer the mode bits and lake threshold from the stage's prepared
-   configuration (about 6 µs per tick).
-3. **NK-6y · Liquid and glow plans.** Keep the frozen-aircraft parts of the glow finish terms and the substep
-   preview base, and build the liquid tick context's arguments natively (about 10 µs per tick on those aircraft).
-4. **NK-7n · Audio endpoint snapshot.** Answer the mechanical snapshot (surface angles, gear) and the airborne clear
-   test with the endpoint air and torques in one call (about 20 µs per frame).
-5. **NK-7o · Glow voice hand-over.** Build the pump's detached telemetry natively from the glow keys (about 15 µs
-   per frame on glow aircraft).
-6. **Guard roots.** With the configuration owners, freeze more guarded roots after native acceptance, so identity
-   checks replace property watches (up to about 10 µs per tick).
-7. **Platform evidence.** Run the NK-6/7/8 parity tests on Linux (WSL) and on Apple Silicon. Record live-app timings
-   at 1920×1080 on the owner's workstation.
+Linux/WSL passed the nineteen installer gates at `d080ca630`. The individual NK-7 parity runs and current-candidate Linux NK-6/7/8 coverage still need recorded results. Apple Silicon needs corresponding batch parity on its admitted ARM64 route. Check NK-9a/b consumer parity on both platforms as well. Retain CI results for the specific candidate, and qualify any claimed package independently. [Linux gate record](https://github.com/bultodepapas/OpenRCsimulator/blob/8d4169f8febfd7d78a028eaa817414217a54f24b/docs/plans/native-kernel-roadmap.md#evidence-gaps) · [NK-7m scope](../research/native-kernel/NK-7m/README.md#scope) · [NK-9b scope](../research/native-kernel/NK-9b/README.md#scope) · [Mac source workflow](../../.github/workflows/native-macos.yml)

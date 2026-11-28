@@ -1,12 +1,14 @@
 # Dynamic resolution in flight
 
-**VQ-07d / PT / UI · implementation plan · 2026-11-22.** Start independent flight trials on Windows, macOS and Linux. Each starts with a fixed-scale comparison. Enable adaptation on a configuration once it shows a pixel-sensitive workload, reliable GPU feedback and a safe change between two readable scales. The feature would adjust the flight viewport's internal 3D pixels. Keep the HUD at output resolution and the simulation on its fixed 240 Hz clock.
+VQ-07d / PT / UI. The [flight owner](../../app/app_root.gd) selects one controller for an active flight viewport. The [completed-GPU controller](../../app/render/flight_dynamic_resolution.gd) needs engine support for completed-frame samples. The [Compatibility controller](../../app/render/flight_compatibility_resolution.gd) uses rendered frame intervals on eligible lightweight hardware. Both use Native bilinear scaling and keep the HUD at output resolution and physics at 240 Hz.
+
+Qualify each configuration against its best readable fixed scale. A useful adaptive result needs a pixel-sensitive workload, reliable feedback and safe transitions between at least two readable sizes. The platform trials below define that comparison.
 
 ## What the branch contributes
 
 The work is on `audit/graphics-performance-technologies-2026-11-15`, reviewed at `0ccfa7d11` against local `main` at `de7832750`. The branch delivered a timing design, a Python controller and 38 offline contract tests. Its milestone M0 covers timing, M1 fixed reconstruction, M2 adaptive flight and M5 package qualification. A GPU poll can repeat old work. A scale request can succeed before the renderer uses it. The specimen tests both failure modes. [Branch design](https://github.com/bultodepapas/OpenRCsimulator/blob/0ccfa7d11cb5f24f8d84cf71738a7cdd4e8a6836/docs/research/graphics-performance-2026-11-15/09-timing-and-drs-design.md) · [Executable reference and tests](https://github.com/bultodepapas/OpenRCsimulator/tree/0ccfa7d11cb5f24f8d84cf71738a7cdd4e8a6836/research/performance/graphics_handoff)
 
-| Finding on main | Consequence for implementation |
+| Finding on the November 22 baseline | Consequence for implementation |
 | --- | --- |
 | Diagnostics already share timing leases. On the pinned Godot 4.8 beta 2, a positive viewport GPU poll has unverified freshness. The RTX 3090 Standard run at 1080p was VSync-limited, with a 1.64 ms median GPU poll. | Reuse the lease and reporting path. Keep this Windows run as a control where adaptation should stay idle. [M0 evidence](../research/visual-quality-implementation/VQ-01c/timing-ownership-2026-11-17/README.md) |
 | On PRIMIS, a minimal Ugly Stik flight on Mobile measured 22.3–22.4 FPS at native 1080p and 34.7–35.2 FPS after manually setting bilinear scale to 0.75. Compatibility, the product's iGPU renderer on that baseline, measured 25.2–27.6 FPS at native. | This identifies a candidate for a matched fixed-scale trial. The original measurements establish neither a readable floor nor an adaptive gain. [Linux comparison](../research/god-test/2026-11-22-linux-uhd630-comparison.md) |
