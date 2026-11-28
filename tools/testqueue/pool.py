@@ -26,7 +26,7 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, rpc, state_root, write_json, submission_receipt
 from tools.testqueue import pool_history
-from tools.testqueue.pool_policy import DISK_RESERVE_BYTES, plan
+from tools.testqueue.pool_policy import DISK_RESERVE_BYTES, plan, platform_set
 from tools.testqueue.presets import validate, scheduling
 from tools.testqueue.snapshots import capture, read_verified_file, verify
 
@@ -1261,8 +1261,10 @@ class Pool:
 
     def _preflight(self, snapshot, script, platform, require, timeout, host_id, settings, expected_manifest_sha256,
                    rendering_driver=None):
-        if platform not in {'any', 'windows', 'darwin', 'linux'}:
-            raise ValueError('invalid job platform')
+        try:
+            platform_set(platform)  # 'any', one OS, or a list of OSes (TQ-07-D1)
+        except ValueError:
+            raise ValueError('invalid job platform') from None
         if host_id is not None and host_id not in {host['id'] for host in self.hosts}:
             raise ValueError('unknown configured host: ' + str(host_id))
         options = validate('checked', {'script': script, 'require': list(require), 'timeout': timeout,

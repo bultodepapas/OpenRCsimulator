@@ -176,9 +176,17 @@ sim_test_status: {"request_id":"mathcheck20261114a"}
 sim_test_recover: {"request_id":"mathcheck20261114a"}
 ```
 
-The MCP default targets the caller's OS. Set `platform` to `windows`, `linux` or
-`darwin` for a specific OS, or explicitly to `any` only for a reviewed portable
-check. A pass on one host does not establish coverage on the other platforms.
+`platform` is `windows`, `linux`, `darwin`, a list of them (for example
+`["linux", "darwin"]`), or `any` for a reviewed portable check. When a job omits
+it, the MCP looks the script up in the reviewed
+[routing registry](routing.json) (TQ-07-D2/D3). A listed script runs on whichever
+of its operating systems has a free host first, and its reviewed markers and
+timeout fill an omitted `require`/`timeout`. A script without an entry keeps the
+caller's OS. An entry claims only operating systems where the pool recorded a pass;
+`python tools/testqueue/routing.py --suggest` lists candidates from the pool's
+receipts for review, and `--check` (also a CI fixture) validates the file. A pass
+on one host does not establish coverage on the other platforms: the result names
+the host and OS it ran on.
 Tests with performance, interactive or composite-suite requirements retain their
 existing dedicated entry points and acceptance gates. Functional checks that need
 real Linux GPU rendering use the GPU lane below.

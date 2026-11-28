@@ -20,7 +20,8 @@ class PoolMcpTests(unittest.TestCase):
         (self.source / "app/project.godot").write_text("config_version=5")
         self.config = self.root / "config.json"
         write_json(self.config, {"state_root": str(self.root / "pool"), "hosts": []})
-        self.jobs = [{"script": "res://tests/test_math3d.gd"}]
+        # Not in the routing registry, so the caller-OS default applies (TQ-07-D2).
+        self.jobs = [{"script": "res://tests/test_fixture_unrouted.gd"}]
         self.directory = self.root / "pool/mcp/test1"
 
     def launch(self, **kwargs):

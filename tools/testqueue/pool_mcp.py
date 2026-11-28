@@ -13,7 +13,8 @@ import time
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
-from tools.testqueue import agent_view
+from tools.testqueue import agent_view, routing
+from tools.testqueue.pool_policy import platform_set
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.pool import Pool, default_config
 from tools.testqueue.pool_batch import _finished_success, reobservation_ids, run_batch
@@ -41,12 +42,27 @@ def _jobs(jobs):
         driver = job.get("rendering_driver")
         if driver is not None and driver not in {"vulkan", "opengl3"}:
             raise ValueError("rendering_driver must be vulkan or opengl3")
-        # GPU-lane jobs default to Linux, the only OS with a graphics host today.
-        target = job.get("platform", "linux" if job.get("rendering_driver") else platform.system().lower())
-        if target not in {"windows", "linux", "darwin", "any"}:
-            raise ValueError("invalid platform")
-        options = validate("checked", {"script": job.get("script"), "require": job.get("require", []),
-                                      "timeout": job.get("timeout", 90), "headless": True})
+        # TQ-07-D2/D3: a reviewed registry entry supplies what the agent omitted,
+        # so a known-portable script can run on whichever listed OS is free.
+        entry = routing.lookup(job.get("script")) if driver is None and isinstance(job.get("script"), str) else None
+        if "platform" in job:
+            target = job["platform"]
+        elif driver is not None:
+            target = "linux"  # GPU-lane jobs: the only OS with a graphics host today
+        elif entry is not None:
+            target = routing.platform_of(entry)
+        else:
+            target = platform.system().lower()
+        try:
+            platform_set(target)
+        except ValueError:
+            raise ValueError("invalid platform") from None
+        if isinstance(target, list):
+            target = sorted(target)
+        require = job["require"] if "require" in job else (entry or {}).get("require", [])
+        timeout = job["timeout"] if "timeout" in job else (entry or {}).get("timeout", 90)
+        options = validate("checked", {"script": job.get("script"), "require": require,
+                                      "timeout": timeout, "headless": True})
         if scheduling("checked", options)["workload"] == "performance":
             raise ValueError("performance tests require a dedicated same-host campaign")
         item = {"script": options["script"], "require": options["require"],

@@ -26,6 +26,7 @@ sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool import Pool, SubmissionDeferred, SubmissionRejected
+from tools.testqueue.pool_policy import platform_set
 from tools.testqueue.presets import scheduling, validate
 
 BATCH_VERSION = 2
@@ -74,8 +75,10 @@ def _manifest(path):
         if driver is not None and driver not in {"vulkan", "opengl3"}:
             raise ValueError("rendering_driver must be vulkan or opengl3")
         platform = item.get("platform", "any")
-        if not isinstance(platform, str) or platform not in {"any", "windows", "linux", "darwin"}:
-            raise ValueError("invalid job platform")
+        try:
+            platform_set(platform)  # 'any', one OS, or a list of OSes (TQ-07-D1)
+        except ValueError:
+            raise ValueError("invalid job platform") from None
         host = item.get("host")
         if host is not None and (not isinstance(host, str) or not host):
             raise ValueError("host must be a nonempty ID")
@@ -183,7 +186,9 @@ def reobservation_ids(pool, rows):
 def _host_lanes(rows):
     """Run disjoint pinned hosts or specific platform requirements in parallel."""
     by_host = all(row["input"]["host"] is not None for row in rows)
-    if not by_host and any(row["input"]["platform"] == "any" for row in rows):
+    # Overlapping OS constraints ('any' or a list) share one placement loop.
+    if not by_host and any(not isinstance(row["input"]["platform"], str) or row["input"]["platform"] == "any"
+                           for row in rows):
         return [rows]
     groups = {}
     for row in rows:
@@ -227,9 +232,11 @@ def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, dea
                 continue
             if stopped.is_set() or time.monotonic() >= deadline:
                 break
-            constraint = (row["input"]["platform"], row["input"]["host"], row["input"].get("rendering_driver"))
-            if any(platform in {"any", constraint[0]} and host in {None, constraint[1]}
-                   and driver == constraint[2] for platform, host, driver in saturated):
+            constraint = (platform_set(row["input"]["platform"]), row["input"]["host"], row["input"].get("rendering_driver"))
+            # A WAITING answer for a constraint proves no host was eligible for it,
+            # so a row whose OS set is the same or narrower would only re-probe.
+            if any(constraint[0] <= platforms and host in {None, constraint[1]}
+                   and driver == constraint[2] for platforms, host, driver in saturated):
                 continue
             row["submission_attempts"] = row.get("submission_attempts", 0) + 1
             started = time.monotonic()

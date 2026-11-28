@@ -40,13 +40,24 @@ def _size(value):
     return type(value) is int and 0 <= value <= 2**63 - 1
 
 
+def platform_set(platform):
+    """The operating systems a job may run on: 'any', one name, or a list of names (TQ-07-D1)."""
+    if platform == "any":
+        return frozenset(_PLATFORMS)
+    if isinstance(platform, str) and platform in _PLATFORMS:
+        return frozenset({platform})
+    if (isinstance(platform, (list, tuple)) and platform and all(isinstance(item, str) for item in platform)
+            and set(platform) <= _PLATFORMS and len(set(platform)) == len(platform)):
+        return frozenset(platform)
+    raise ValueError("platform must be any, windows, linux, darwin or a list of distinct ones")
+
+
 def _validate_job(job):
     if not isinstance(job, dict) or set(job) - _JOB_FIELDS:
         raise ValueError("job must be an object with known fields")
     platform = job.get("platform", "any")
     workload = job.get("workload", "headless")
-    if not isinstance(platform, str) or platform not in _PLATFORMS | {"any"}:
-        raise ValueError("platform must be any, windows, linux or darwin")
+    platform_set(platform)
     if not isinstance(workload, str) or workload not in {"headless", "graphics", "performance"}:
         raise ValueError("workload must be headless, graphics or performance")
     for field in ("source_bytes", "memory_bytes", "disk_bytes"):
@@ -84,8 +95,9 @@ def _candidate(job, host):
     platform = host.get("platform")
     if not isinstance(platform, str) or platform not in _PLATFORMS:
         reasons.append("INVALID_INVENTORY: unknown platform")
-    elif job.get("platform", "any") not in ("any", platform):
-        reasons.append("PLATFORM_MISMATCH: requires " + job["platform"])
+    elif platform not in platform_set(job.get("platform", "any")):
+        wanted = job["platform"]
+        reasons.append("PLATFORM_MISMATCH: requires " + (wanted if isinstance(wanted, str) else "/".join(sorted(wanted))))
 
     capabilities = host.get("capabilities")
     if not isinstance(capabilities, (list, tuple, set)) or any(not isinstance(value, str) for value in capabilities):
