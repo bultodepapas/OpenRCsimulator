@@ -48,6 +48,9 @@ director's focus and the tailhook pose.
 Headless, native backend, production field, `Shadow.receiving_ground` with seven samples, 5,000 calls, three
 rounds: 41.0–42.2 µs with the old sampler, 10.7–11.4 µs with this one, identical results.
 
+Live app, 1920×1080, Corsair airborne on the club field. Two flights; `Shadow.receiving_ground` ran through `main.gd`
+`_ground_height` with the hook toggled in interleaved blocks of 200 calls: 48.5–48.7 → 12.2 µs per frame.
+
 ## Scope
 
-- Windows x86_64 only. The macOS and Linux parity runs and a live-app timing are not done yet.
+- Windows x86_64 only. The macOS and Linux parity runs are not done yet.

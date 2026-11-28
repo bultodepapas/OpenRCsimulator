@@ -81,7 +81,9 @@ airborne tick for the fuel aircraft. On a rolling warbird about half the ticks a
 runway-side scenery, or a hull point is not quiet. Those ticks pay the proof and then the reference, so the roll
 breaks even.
 
+Live app, 1920×1080, Corsair airborne on the club field, native backend. Two flights, with the hook toggled in
+interleaved blocks of 60 ticks: median `Simulation.step` 268–269 → 254–260 µs.
+
 ## Scope
 
 - Windows x86_64 only. The macOS and Linux parity runs are not done yet.
-- No live-app A/B yet.

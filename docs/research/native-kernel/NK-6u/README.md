@@ -71,10 +71,12 @@ Median per-tick `Simulation.step`:
 | Glow Stik 61FX | 134–136 µs | 126–130 µs |
 | Ugly Stik 60 (electric) | 67 µs | 59 µs |
 
+Live app, 1920×1080, Corsair airborne on the club field, native backend. Two flights, with the kernel's plan cleared
+and rebound in interleaved blocks of 60 ticks: median `Simulation.step` 273–274 → 250–255 µs.
+
 ## Scope
 
 - Windows x86_64 only. The macOS and Linux parity runs are not done yet.
-- Live-app tick timings are not measured yet.
 - Malformed retractable gear: if the gear lacked its retraction path or contacts, the callback would raise a script
   error, while the kernel still answers a count. The `openrc-aircraft v2` validator refuses such gear before flight.
 - Independent review: no exactness bug found. The plan's inputs are guarded, the branches and operation order match,
