@@ -46,6 +46,7 @@
 #include "nk_soundscape.hpp"
 #include "nk_soundscape_core.hpp"
 #include "nk_ground_audio_core.hpp"
+#include "nk_mechanical_audio_core.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1033,6 +1034,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::ConfigurationGuard configuration_guard_;
 	std::unique_ptr<nk::sound::Core> sound_core_; // NK-7b: this instance's soundscape core, made on first bind
 	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
+	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
@@ -1301,6 +1303,21 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("ground_core_accepted_tick"), &OpenRCNativeKernel::ground_core_accepted_tick);
 		godot::ClassDB::bind_method(D_METHOD("ground_core_diagnostics"), &OpenRCNativeKernel::ground_core_diagnostics);
 		godot::ClassDB::bind_method(D_METHOD("ground_core_state"), &OpenRCNativeKernel::ground_core_state);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_bind", "event_players", "servo_loop", "servo_loop_length",
+			"gear_loop", "gear_loop_length", "takes", "servo_level", "profile_pitch", "counters"),
+			&OpenRCNativeKernel::mechanical_core_bind);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_bind_motion_player", "key", "player"),
+			&OpenRCNativeKernel::mechanical_core_bind_motion_player);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_observe", "snapshot"), &OpenRCNativeKernel::mechanical_core_observe);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_prepare", "snapshot", "delta"),
+			&OpenRCNativeKernel::mechanical_core_prepare);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_failed"), &OpenRCNativeKernel::mechanical_core_failed);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_finish"), &OpenRCNativeKernel::mechanical_core_finish);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_reset"), &OpenRCNativeKernel::mechanical_core_reset);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_diagnostics"), &OpenRCNativeKernel::mechanical_core_diagnostics);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_state"), &OpenRCNativeKernel::mechanical_core_state);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_accepted_events"),
+			&OpenRCNativeKernel::mechanical_core_accepted_events);
 		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
 			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
@@ -2195,6 +2212,34 @@ public:
 	godot::Dictionary ground_core_diagnostics() const { return ground_core_ ? ground_core_->diagnostics() : godot::Dictionary(); }
 	godot::Array ground_core_state() const { return ground_core_ ? ground_core_->state() : godot::Array(); }
 
+	// NK-7e: audio/mechanical_audio.gd in accepted-tick mode (nk_mechanical_audio_core.hpp). bind makes a fresh core.
+	bool mechanical_core_bind(const godot::Array &event_players, const godot::Variant &servo_loop, double servo_loop_length,
+			const godot::Variant &gear_loop, double gear_loop_length, const godot::Array &takes, double servo_level,
+			double profile_pitch, const godot::PackedInt64Array &counters) {
+		mechanical_core_ = std::make_unique<nk::sound::MechanicalCore>();
+		return mechanical_core_->bind(event_players, servo_loop, servo_loop_length, gear_loop, gear_loop_length, takes,
+			servo_level, profile_pitch, counters);
+	}
+	bool mechanical_core_bind_motion_player(const godot::String &key, const godot::Variant &player) {
+		return mechanical_core_ && mechanical_core_->bind_motion_player(key, player);
+	}
+	bool mechanical_core_observe(const godot::Dictionary &snapshot) {
+		return mechanical_core_ && mechanical_core_->observe(snapshot);
+	}
+	godot::Array mechanical_core_prepare(const godot::Dictionary &snapshot, double delta) {
+		return mechanical_core_ ? mechanical_core_->prepare(snapshot, delta) : godot::Array();
+	}
+	bool mechanical_core_failed() const { return !mechanical_core_ || mechanical_core_->failed(); }
+	bool mechanical_core_finish() { return mechanical_core_ && mechanical_core_->finish(); }
+	void mechanical_core_reset() { if (mechanical_core_) mechanical_core_->reset(); }
+	godot::Dictionary mechanical_core_diagnostics() const {
+		return mechanical_core_ ? mechanical_core_->diagnostics() : godot::Dictionary();
+	}
+	godot::Array mechanical_core_state() const { return mechanical_core_ ? mechanical_core_->state() : godot::Array(); }
+	godot::Array mechanical_core_accepted_events() const {
+		return mechanical_core_ ? mechanical_core_->accepted_events() : godot::Array();
+	}
+
 	// NK-6s: physics/glow/vibration.gd evaluate's numbers for a validated geometry [crank radius, rod, reciprocating
 	// mass, cosine 1x, cosine 2x, cycle revolutions]: [ok (1/0), phase, source force, 1x cosine, 1x sine, 2x cosine,
 	// 2x sine, 1x peak, 2x peak, opportunity Hz, mean fire rate Hz], in its operation order. 0 wherever evaluate fails
@@ -2503,6 +2548,11 @@ public:
 			{"0.94", 0.94}, {"1.12", 1.12}, {"1.18", 1.18}, {"0.85", 0.85}, {"0.025", 0.025}, {"1.35", 1.35},
 			{"0.86", 0.86}, {"0.34", 0.34}, {"0.18", 0.18}, {"0.0001", 0.0001}, {"1e-6", 1e-6},
 			{"10000.0", 10000.0},
+			// NK-7e: audio/mechanical_audio.gd and mechanical_motion.gd.
+			{"60.0", 60.0}, {"39.0", 39.0}, {"0.085", 0.085}, {"0.16", 0.16}, {"0.48", 0.48}, {"0.78", 0.78},
+			{"0.82", 0.82}, {"0.36", 0.36}, {"0.75", 0.75}, {"0.25", 0.25}, {"0.98", 0.98}, {"0.04", 0.04},
+			{"997.0", 997.0}, {"1000.0", 1000.0}, {"0.999", 0.999}, {"0.000001", 0.000001}, {"240.0", 240.0},
+			{"0.0002", 0.0002}, {"0.08", 0.08}, {"0.55", 0.55}, {"1.5", 1.5}, {"0.7", 0.7},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.
