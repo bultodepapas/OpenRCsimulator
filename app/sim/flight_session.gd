@@ -3578,6 +3578,23 @@ func published_endpoint_air() -> PackedFloat64Array:
 var native_endpoint_air_enabled := true
 
 
+## NK-7m: GlowAudioState.shaft_torques(self, propulsion, air_data(sim.state).v_air, rpm) for the accepted endpoint now
+## published, from the native stage: [torque at (rpm, axial speed), torque at (rpm, 0)]. published_endpoint_air's
+## conditions; empty otherwise, and the caller evaluates the reference.
+func published_endpoint_torques(rpm: float) -> PackedFloat64Array:
+	if not native_endpoint_torques_enabled or not native_endpoint_air_enabled or _native_facts_tick <= 0 \
+			or _native_facts_tick != sim.tick or _native_stage == null or not cost_observations_enabled \
+			or _cost_support_tick != sim.tick or not _rc_track.is_empty() or _weather_pending_reset \
+			or get_script().resource_path != SELF_PATH or not _same_bits(sim.state, _cost_support_state) \
+			or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	return _native_stage.endpoint_torques(sim.state, sim.aux, sim.time(), rpm)
+
+
+## NK-7m test hook: false always leaves flight audio's shaft torques to the reference.
+var native_endpoint_torques_enabled := true
+
+
 func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not native_endpoint_facts_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
 			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \

@@ -648,6 +648,14 @@ func endpoint_air(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float)
 	return _native.stage_endpoint_air(s, aux, time_s)
 
 
+## NK-7m: [shaft torque at (rpm, axial speed), at (rpm, 0)] at the published endpoint `s` (stage_endpoint_torques);
+## empty means "use the reference". The session owns the publication checks (FlightSession.published_endpoint_torques).
+func endpoint_torques(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float, rpm: float) -> PackedFloat64Array:
+	if not _installed or not _facts_bound or _native == null or not _native.has_method(&"stage_endpoint_torques"):
+		return PackedFloat64Array()
+	return _native.stage_endpoint_torques(s, aux, time_s, rpm)
+
+
 func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 	if not _installed or not _facts_bound or _native == null: return PackedFloat64Array()
 	return _native.stage_endpoint_facts(s, aux, time_s)

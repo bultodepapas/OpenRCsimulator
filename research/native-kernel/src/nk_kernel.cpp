@@ -1395,6 +1395,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("stage_prop_strike_clear", "s"), &OpenRCNativeKernel::stage_prop_strike_clear);
 		godot::ClassDB::bind_method(D_METHOD("stage_guard_collapsed", "s", "aux"),
 			&OpenRCNativeKernel::stage_guard_collapsed);
+		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_torques", "s", "aux", "time_s", "rpm"),
+			&OpenRCNativeKernel::stage_endpoint_torques);
 		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_air", "s", "aux", "time_s"),
 			&OpenRCNativeKernel::stage_endpoint_air);
 		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_facts", "s", "aux", "time_s"),
@@ -2597,6 +2599,43 @@ public:
 	// NK-7i: FlightSession.wind_at(time_s) at the state's position and air_data(s, time_s)'s v_air and V for the
 	// published endpoint (flight audio's per-frame reads): [wind north, east, down, v_air x, y, z, V] from the prepared
 	// stage, as pre_step_air evaluates them (NK-5g, NK-5i). Spatial weather and every refusal answer empty (GDScript).
+	// NK-7m: GlowAudioState.shaft_torques for the published endpoint (flight audio's shaft load): [torque at (rpm, axial
+	// speed), torque at (rpm, 0)] with the endpoint's v_air and density as pre_step_air evaluates them. A glow stage
+	// answers from its blade model at Propulsion.axis' axial speed; otherwise the Ct/Cp propeller answers
+	// Propulsion.thrust_torque()[1] and prop_torque(rpm, 0). Empty: spatial weather, no propeller tables, any refusal.
+	PackedFloat64Array stage_endpoint_torques(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s,
+			double rpm) {
+		if (heli_stage_ready_ || !stage_ready_ || !tick_.ready || !read_state(s) || !std::isfinite(time_s) ||
+				stage_.spatial_weather || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
+			return PackedFloat64Array();
+		}
+		const bool glow = stage_.glow.ready;
+		if (!glow && (stage_.prop.ct.empty() || stage_.prop.cp.empty())) return PackedFloat64Array();
+		facts_aux_.resize(static_cast<size_t>(aux.size()));
+		for (int64_t i = 0; i < aux.size(); ++i) facts_aux_[static_cast<size_t>(i)] = aux[i];
+		nk::R state[kStateSize];
+		load(s, state);
+		nk::Air air;
+		if (!nk::pre_step_air(state, nk::R(time_s), facts_aux_, stage_, air)) return PackedFloat64Array();
+		const nk::WeatherAir atmosphere = nk::weather_air(stage_.weather, state[2]);
+		const nk::R rho = stage_.has_weather ? atmosphere.density : stage_.density;
+		const nk::R speed = rpm;
+		PackedFloat64Array out;
+		out.resize(2);
+		if (glow) {
+			const nk::R *axis = stage_.prop.axis;
+			const nk::R axial = air.v[0] * axis[0] + air.v[1] * axis[1] + air.v[2] * axis[2];
+			const nk::GlowBladePoint moving = nk::glow_blade_evaluate(stage_.glow.blade, speed, axial, rho);
+			const nk::GlowBladePoint still = nk::glow_blade_evaluate(stage_.glow.blade, speed, 0.0, rho);
+			out[0] = moving.ok ? moving.torque_nm.v : nk::kNan;
+			out[1] = still.ok ? still.torque_nm.v : nk::kNan;
+		} else {
+			out[0] = nk::prop_thrust_torque(air.v, speed, stage_.prop, rho)[1].v;
+			out[1] = nk::prop_torque(speed, 0.0, stage_.prop, rho).v;
+		}
+		return out;
+	}
+
 	PackedFloat64Array stage_endpoint_air(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
 		if (heli_stage_ready_ || !stage_ready_ || !tick_.ready || !read_state(s) || !std::isfinite(time_s) ||
 				stage_.spatial_weather || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {

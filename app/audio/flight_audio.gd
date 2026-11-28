@@ -296,7 +296,11 @@ func snapshot() -> Dictionary:
 	if str(prop.get("kind", "glow_prop")) != "turbine" and rpm > 30.0:
 		# Read-only shaft load at accepted RPM/inflow, normalized to static torque at that RPM.
 		# The mapping to timbre is authored; this is not an acoustic calibration.
-		var torques: PackedFloat64Array = GlowAudioState.shaft_torques(session, prop, air.v_air, rpm)
+		# NK-7m: the published endpoint's torques from the native stage, for the native endpoint air above.
+		var torques: PackedFloat64Array = session.published_endpoint_torques(rpm) \
+			if native_air and session.has_method(&"published_endpoint_torques") else PackedFloat64Array()
+		if torques.size() != 2:
+			torques = GlowAudioState.shaft_torques(session, prop, air.v_air, rpm)
 		var torque: float = torques[0]
 		var reference: float = torques[1]
 		load_amount = clampf(maxf(torque, 0.0) / maxf(reference, 0.00001), 0.0, 1.0)
