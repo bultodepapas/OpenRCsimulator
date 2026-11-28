@@ -342,7 +342,11 @@ func start_fuel_kg() -> float:
 
 
 func liquid_fuel_is_active() -> bool:
-	return aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+	if _fact_liquid != _FACT_UNKNOWN:
+		return _fact_liquid == 1
+	var active: bool = aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+	if _facts_armed: _fact_liquid = int(active)
+	return active
 
 
 func finite_fuel_is_active() -> bool:
@@ -3589,6 +3593,23 @@ var native_wheel_row_answers := 0
 ## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(self, values).ok (true) from the native
 ## glow stage, inside the tick whose guarded pre-step installed its context, for this class only (a derived session may
 ## read other data): 1 or 0 as the reference decides, -1 to evaluate the reference.
+## NK-6t: 1 when LiquidFlight.valid holds for both stores, 0 when it fails for either, -1 to use the reference. Only inside
+## the tick whose guarded pre-step installed the native context, for this class.
+func _native_liquid_store_check(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> int:
+	if not native_liquid_store_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH:
+		return -1
+	var index: int = _liquid_index()
+	var previous_ok: int = _native_stage.liquid_store_valid(previous_values, index)
+	if previous_ok != 1:
+		return previous_ok
+	return _native_stage.liquid_store_valid(candidate_values, index)
+
+
+## NK-6t test hook: false always builds the liquid contact sampler through LiquidFlight.contact_sampler.
+var native_liquid_store_enabled := true
+
+
 func _native_glow_mass_check(values: PackedFloat64Array, with_mass: bool) -> int:
 	if not native_glow_mass_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
 			or get_script().resource_path != SELF_PATH:
@@ -3773,6 +3794,18 @@ func _native_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array)
 
 func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> Callable:
 	if liquid_fuel_is_active():
+		# NK-6t: inside the guarded tick the native liquid stage answers both stores' validity; the sampler itself is
+		# then built only when a contact asks for it. It reads only this tick's clock and the frozen installation, and
+		# every caller (scenery, lake, hull terminal) calls it within this collision step.
+		var checked: int = _native_liquid_store_check(previous_values, candidate_values)
+		if checked == 0:
+			return Callable()
+		if checked == 1:
+			var built: Array[Callable] = []
+			return func(fraction: float) -> Dictionary:
+				if built.is_empty():
+					built.append(LiquidFlight.contact_sampler(self, previous_values, candidate_values))
+				return built[0].call(fraction)
 		return LiquidFlight.contact_sampler(self, previous_values, candidate_values)
 	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
 			or candidate_values.size() != previous_values.size():
@@ -4950,8 +4983,12 @@ func flap_input_index() -> int:
 
 
 func flap_aux_index() -> int:
-	return (AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+	if _fact_flap_aux_index != _FACT_UNKNOWN:
+		return _fact_flap_aux_index
+	var index: int = (AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
 		+ (GEAR_AUX_SIZE if gear_is_retractable() else 0)) if flaps_available() else -1
+	if _facts_armed: _fact_flap_aux_index = index
+	return index
 
 
 func _flap_aux_valid(values: PackedFloat64Array) -> bool:
@@ -5725,12 +5762,16 @@ func _should_capture_substep_context(body: PackedFloat64Array, values: PackedFlo
 
 
 func _substep_preview_supported() -> bool:
-	if not aircraft.get("ok", false) or not shaft_is_coupled():
-		return false
-	var prop: Dictionary = aircraft.model.propulsion
-	return not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
-		and not Turbine.is_turbine(prop) and Propulsion.has_rotor_dynamics(prop) \
-		and (liquid_fuel_is_active() or not propulsion_power_enabled())
+	if _fact_substep_preview_base == _FACT_UNKNOWN:
+		var base: bool = false
+		if aircraft.get("ok", false) and shaft_is_coupled():
+			var prop: Dictionary = aircraft.model.propulsion
+			base = not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
+				and not Turbine.is_turbine(prop) and Propulsion.has_rotor_dynamics(prop)
+		if not _facts_armed:
+			return base and (liquid_fuel_is_active() or not propulsion_power_enabled())
+		_fact_substep_preview_base = int(base)
+	return _fact_substep_preview_base == 1 and (liquid_fuel_is_active() or not propulsion_power_enabled())
 
 
 func _substep_stage_context(response: Dictionary) -> Dictionary:
@@ -6048,7 +6089,8 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 ## NK-2a: capability and layout answers that depend only on the committed aircraft data, memoized for one
 ## kernel tick. The kernel's pre_tick arms the memo; the accepted (stepped) or rejected (faulted) tick drops
 ## it, so data replaced or edited between ticks (load, Workshop, tests) is always read afresh. Direct
-## `_pre_step` calls and solves outside the kernel step never arm it.
+## `_pre_step` calls and solves outside the kernel step never arm it. The wheel index and the substep preview's base also
+## read the shaft integrator, which changes only in a start transaction between ticks.
 const _FACT_UNKNOWN := -2
 var _facts_armed := false
 var _fact_glow := _FACT_UNKNOWN
@@ -6063,6 +6105,10 @@ var _fact_battery_dynamic := _FACT_UNKNOWN
 var _fact_battery_pack := _FACT_UNKNOWN
 var _fact_battery_block_size := _FACT_UNKNOWN
 var _fact_gear_aux_index := _FACT_UNKNOWN
+var _fact_liquid := _FACT_UNKNOWN
+var _fact_wheel_index := _FACT_UNKNOWN
+var _fact_flap_aux_index := _FACT_UNKNOWN
+var _fact_substep_preview_base := _FACT_UNKNOWN
 
 
 func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -6177,6 +6223,10 @@ func _drop_tick_facts() -> void:
 	_fact_battery_pack = _FACT_UNKNOWN
 	_fact_battery_block_size = _FACT_UNKNOWN
 	_fact_gear_aux_index = _FACT_UNKNOWN
+	_fact_liquid = _FACT_UNKNOWN
+	_fact_wheel_index = _FACT_UNKNOWN
+	_fact_flap_aux_index = _FACT_UNKNOWN
+	_fact_substep_preview_base = _FACT_UNKNOWN
 
 
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -6395,14 +6445,20 @@ func wheel_count() -> int:
 
 ## First continuous-state index holding wheel rim speeds, in landing_gear.contacts order.
 func wheel_index() -> int:
+	if _fact_wheel_index != _FACT_UNKNOWN:
+		return _fact_wheel_index
+	var index: int = 0
 	if not aircraft.get("ok", false):
-		return 0
-	if glow_is_active(): return GlowFlight.SIZE
-	var index: int = _rotor_index()
-	if shaft_is_coupled():
-		index += 1 + _battery_block_size()
-	elif turbine_is_continuous():
-		index += 1
+		index = 0
+	elif glow_is_active():
+		index = GlowFlight.SIZE
+	else:
+		index = _rotor_index()
+		if shaft_is_coupled():
+			index += 1 + _battery_block_size()
+		elif turbine_is_continuous():
+			index += 1
+	if _facts_armed: _fact_wheel_index = index
 	return index
 
 

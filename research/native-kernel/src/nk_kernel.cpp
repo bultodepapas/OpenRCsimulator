@@ -1380,6 +1380,8 @@ protected:
 			&OpenRCNativeKernel::stage_hull_scrape_rows);
 		godot::ClassDB::bind_method(D_METHOD("prepare_liquid_terminal", "crash_depth", "sample_static_ok"),
 			&OpenRCNativeKernel::prepare_liquid_terminal);
+		godot::ClassDB::bind_method(D_METHOD("stage_liquid_store_valid", "values", "index"),
+			&OpenRCNativeKernel::stage_liquid_store_valid);
 		godot::ClassDB::bind_method(D_METHOD("stage_liquid_terminal_quiet", "previous", "s", "usable_before"),
 			&OpenRCNativeKernel::stage_liquid_terminal_quiet);
 		godot::ClassDB::bind_method(D_METHOD("prepare_glow_terminal", "crash_depth", "stores", "sample_static_ok"),
@@ -3625,6 +3627,21 @@ public:
 			stage_.hull.stiffness.empty() && std::isfinite(crash_depth) && sample_static_ok;
 		liquid_terminal_crash_depth_ = crash_depth;
 		return liquid_terminal_ready_;
+	}
+
+	// NK-6t: LiquidFlight.valid(owner, values) (not a trial) from the prepared liquid stage: 1 or 0 as the reference
+	// decides, -1 to use the reference. index is the session's liquid store index (_liquid_index()).
+	int64_t stage_liquid_store_valid(const PackedFloat64Array &values, int64_t index) const {
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.liquid.ready) return -1;
+		if (index < 0 || values.size() != index + 2) return 0;
+		const double *v = values.ptr();
+		for (int64_t i = 0; i < values.size(); ++i) {
+			if (!std::isfinite(v[i])) return 0;
+		}
+		const double usable = v[index];
+		const double latch = v[index + 1];
+		const nk::R limit = stage_.liquid.capacity_kg - stage_.liquid.unusable_kg;
+		return ((latch == 0.0 || latch == 1.0) && usable >= 0.0 && usable <= limit.v && (usable != 0.0 || latch == 0.0)) ? 1 : 0;
 	}
 
 	// NK-6h: 1 when HullContact.terminal_at_properties(previous, s, live hull, the liquid contact sample at fraction 0)

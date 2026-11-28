@@ -151,6 +151,8 @@ var _strike_disc: Dictionary = {}
 var _strike_lake: Dictionary = {}
 ## NK-6h: the liquid installation prepared its quiet hull terminal (prepare_liquid_terminal).
 var _liquid_terminal_bound := false
+## NK-6t: the liquid installation answers LiquidFlight.valid (stage_liquid_store_valid).
+var _liquid_store_bound := false
 ## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
 var _glow_terminal_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
@@ -447,6 +449,7 @@ func install(session: Node) -> Callable:
 	_glow_mass_bound = _family == "glow" and _native.has_method("prepare_glow_validity") \
 		and bool(_native.prepare_glow_validity(_glow_validity_bounds(session)))
 	_hull_rows_bound = _family != "helicopter" and _native.has_method("stage_hull_scrape_rows")
+	_liquid_store_bound = _family == "liquid" and _native.has_method("stage_liquid_store_valid")
 	_liquid_terminal_bound = _family == "liquid" and _native.has_method("prepare_liquid_terminal") \
 		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
 	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
@@ -490,6 +493,7 @@ func uninstall(session: Node) -> Callable:
 	_glow_mass_bound = false
 	_hull_rows_bound = false
 	_liquid_terminal_bound = false
+	_liquid_store_bound = false
 	_glow_terminal_bound = false
 	_pre_step_bound = false
 	_prop_strike_bound = false
@@ -667,6 +671,13 @@ static func _glow_validity_bounds(session: Node) -> Dictionary:
 
 ## NK-6h: 1 when HullContact.terminal_at_properties for the liquid contact sample at fraction 0 must answer no event;
 ## 0 or -1 to evaluate the reference. The session owns the tick checks.
+## NK-6t: LiquidFlight.valid(session, values) from the prepared liquid stage: 1 or 0 as the reference decides, -1 to use
+## the reference. The session owns the tick checks (FlightSession._native_liquid_store_check).
+func liquid_store_valid(values: PackedFloat64Array, index: int) -> int:
+	if not _installed or not _liquid_store_bound or _native == null: return -1
+	return int(_native.stage_liquid_store_valid(values, index))
+
+
 func liquid_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array, usable_before: float) -> int:
 	if not _installed or not _liquid_terminal_bound or _native == null: return -1
 	return int(_native.stage_liquid_terminal_quiet(previous, s, usable_before))

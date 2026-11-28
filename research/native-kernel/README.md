@@ -627,6 +627,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   ([evidence](../../docs/research/native-kernel/NK-6r/README.md)).
 - `glow_vibration(geometry, crank_phase, omega, alpha, firing)` (NK-6s) gives `physics/glow/vibration.gd` `evaluate`'s numbers for
   a validated geometry, for flight audio's glow voice ([evidence](../../docs/research/native-kernel/NK-6s/README.md)).
+- `stage_liquid_store_valid(values, index)` (NK-6t) answers `LiquidFlight.valid` from the prepared liquid stage, so a
+  liquid aircraft's contact-mass sampler is built only when a contact asks for it
+  ([evidence](../../docs/research/native-kernel/NK-6t/README.md)).
 - `sound_doppler`, `sound_targets`, `sound_humidity`, `sound_absorption_cutoff`, `sound_screening`, `sound_activity`
   and `sound_distance_gain` (NK-7a, `nk_soundscape.hpp`) are the soundscape model's laws, `Wildlife.activity` and
   `PowertrainAudio.distance_gain`, exact; `exp`, `log`, `pow` and `Vector3.angle_to` call the engine's own functions
