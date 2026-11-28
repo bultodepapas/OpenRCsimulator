@@ -65,6 +65,9 @@ vec3 moon_eclipse_transmission(vec3 position) {
 }
 
 vec3 moon_disc(vec3 d) {
+	if (dot(moon_lin, vec3(1.0)) <= 0.0) {
+		return vec3(0.0);
+	}
 	float c = dot(d, moon_dir);
 	// Offset from the centre on the plane of the sky; undo the refraction squash along the local vertical first.
 	vec3 o = d - moon_dir * c;
@@ -74,14 +77,21 @@ vec3 moon_disc(vec3 d) {
 		up_sky /= up_len;
 		o += up_sky * (dot(o, up_sky) * (1.0 / moon_squash - 1.0));
 	}
-	// Radial position in disc radii and its screen derivative, taken before any branch (derivatives need uniform flow).
-	float rr = length(o) / sin(moon_radius);
+	float radius_sine = sin(moon_radius);
+	vec3 offset = o / radius_sine;
+	float rr = length(o) / radius_sine;
 	float aa = max(fwidth(rr), 1e-4);
-	if (c <= 0.0 || rr > 1.0 + 2.0 * aa || dot(moon_lin, vec3(1.0)) <= 0.0) {
+	// Equal radii in a pixel quad can cover distinct texels. Take both plane derivatives before the spatial cutoff.
+	vec3 offset_dx = vec3(0.0);
+	vec3 offset_dy = vec3(0.0);
+	if (moon_textured) {
+		offset_dx = dFdx(offset);
+		offset_dy = dFdy(offset);
+	}
+	if (c <= 0.0 || rr > 1.0 + 2.0 * aa) {
 		return vec3(0.0);
 	}
 	float edge = clamp((1.0 - rr) / aa + 0.5, 0.0, 1.0);
-	vec3 offset = o / sin(moon_radius);
 	float r = min(rr, 1.0);
 	float mu = sqrt(max(1.0 - r * r, 0.0));                // cos(emission): the normal against the view
 	vec3 normal = offset / max(rr, 1e-6) * r - moon_dir * mu; // the sphere's normal on the side facing the observer
@@ -92,10 +102,10 @@ vec3 moon_disc(vec3 d) {
 		float lon = atan(p.y, p.x);
 		float lat = asin(clamp(p.z, -1.0, 1.0));
 		vec2 uv = vec2(lon * 0.159154943 + 0.5, 0.5 - lat * 0.318309886);
-		// Explicit level of detail from the disc's size on screen: the 2048-texel map spans the visible hemisphere's
-		// diameter with 1024 texels, so 512·aa texels per pixel at the centre, more toward the foreshortened limb.
-		// No screen derivatives of uv, hence no seam at ±180°.
-		float lod = log2(max(512.0 * aa / max(mu, 0.0625), 1.0));
+		// Retain 512 texels per projected disc radius, increasing the footprint toward the foreshortened limb.
+		// The plane derivatives stay continuous across the longitude seam.
+		float footprint = sqrt(max(dot(offset_dx, offset_dx), dot(offset_dy, offset_dy)));
+		float lod = log2(max(512.0 * footprint / max(mu, 0.0625), 1.0));
 		albedo = textureLod(moon_albedo, uv, lod).rgb * moon_albedo_scale;
 		vec3 nm = textureLod(moon_normal, uv, max(lod - 1.0, 0.0)).rgb * 2.0 - 1.0; // half-resolution map
 		vec3 east = vec3(-sin(lon), cos(lon), 0.0);

@@ -1,0 +1,96 @@
+{
+  "format": "openrc-native-shader-math v1",
+  "utc": "2026-11-28T15:16:27.519148+00:00",
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "source_sha256": {
+    "app/render/lake/water.gdshader": "6e40728845e10a4fd0c4d4124c4078ae36599de44750d73c95aa98533abde04f",
+    "app/render/lens/lens_film.gdshader": "def1faa2ebe5facf66233ff272c1a7035828221762ecc25de3e2a6bfd83335be",
+    "app/scenery/vertex_color_linear.gdshaderinc": "61b97ddbb6278497e8f297ac7d6aaef67e258c15ce7d91ffd64dd04afea43ab2",
+    "app/render/landscape_upgrade/countryside_surface.gdshader": "06e67e32b2379fae45603d19e623222b49f6564f0cc730daa612da41ec4cf864",
+    "app/render/windsock_deformation.gdshaderinc": "def2404b78ac467301925dbd87dc6fdbe997735d1aa5118ef5f1709b9687ba97",
+    "app/assets/vehicle-paints/turbo-lumber-evolution/aserradero.gdshader": "534af2a88323165e6dd977830659b56ae1a5de4b27c012ac1a173f7d84c679e1",
+    "app/scenery/pit_shelter_roof.gdshader": "0018da50ff094227420091a8043ea5ab85a2f05dbe6221b73b6b6da764cba2f7",
+    "app/scenery/building_roofs.gdshader": "5aa7e91a83ba08022778701c90a20738763673565248921d477ec65861a18db9",
+    "app/render/world/moon_disc.gdshaderinc": "6eeb74974dbd723aa22b1608fdba3e6ef2c49e7d96d41ac64862242146eccb57"
+  },
+  "scope": "Extracted GLSL numeric behavior on the named OpenGL implementation; no game images, FPS, GPU/CPU frame times, memory benchmark or target qualification.",
+  "probes": {
+    "water_ray_length": {
+      "cases": 30,
+      "max_length_error_m": 1.4156103129991937e-09,
+      "max_absorption_error": 2.6953840714938337e-08,
+      "pass": true,
+      "baseline_2m_center_absorption": 0.6014809589154859,
+      "baseline_2m_45deg_absorption": 0.47823513286983776
+    },
+    "signed_gaussian_rim": {
+      "cases": 9,
+      "max_error": 7.369819083336004e-07,
+      "finite": true,
+      "pass": true,
+      "baseline_limit": "Negative-base pow is undefined by GLSL; a driver's constant-folding is not a portable pass."
+    },
+    "palette_transfer": {
+      "cases": 14,
+      "max_errors_rd_compatibility": [
+        1.172761676659917e-08,
+        1.0869082300857258e-08
+      ],
+      "pass": true,
+      "road_srgb": 0.3176470588235294,
+      "road_linear": 0.0822827071298148
+    },
+    "windsock_rigid_taper": {
+      "cases": 3,
+      "max_error": 5.174792627737901e-08,
+      "pass": true,
+      "scope": "Exact radius derivative in straight rigid section; flexible/folded cloth remains approximate."
+    },
+    "veneer_periodic_coverage": {
+      "cases": 168,
+      "max_error": 3.218650812764068e-06,
+      "pass": true,
+      "one_top_board_mean_coverage": 0.025581395348837212,
+      "baseline_equal_phase_extremes": [
+        0.0,
+        1.0
+      ]
+    },
+    "roof_frame_conditioning": {
+      "cases": 40,
+      "max_error": 5.470937070040094e-08,
+      "pass": true,
+      "scope": "Executes production shelter helper; building inline consumer receives full-scene CI coverage separately."
+    },
+    "moon_center_footprint": {
+      "cases": 4,
+      "lod": {
+        "baseline": [
+          7.498403072357178,
+          7.498403072357178,
+          7.498403072357178,
+          7.498403072357178
+        ],
+        "candidate": [
+          6.692645072937012,
+          6.692645072937012,
+          6.692645072937012,
+          6.692645072937012
+        ]
+      },
+      "expected_conservative_lod": 6.692645077942396,
+      "max_error": 5.005384551282077e-09,
+      "pass": false,
+      "instrumentation": "Insert return of LOD, radial AA and radius immediately after original LOD assignment; texture fetch and radiometry excluded."
+    }
+  },
+  "opengl": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "vendor": "Mesa",
+    "egl": "1.5"
+  },
+  "ok": false,
+  "case_count": 268
+}

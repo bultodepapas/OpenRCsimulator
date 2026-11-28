@@ -132,17 +132,22 @@ void vertex() {
 vec3 normal_from_uv(vec3 base_normal, vec2 uv_dx, vec2 uv_dy,
 		vec3 position_dx, vec3 position_dy, vec3 sampled_normal, float strength) {
 	float determinant = uv_dx.x * uv_dy.y - uv_dx.y * uv_dy.x;
-	if (abs(determinant) < 0.000001) {
+	float uv_scale_sq = max(dot(uv_dx, uv_dx), dot(uv_dy, uv_dy));
+	if (abs(determinant) <= 1e-6 * uv_scale_sq) {
 		return base_normal;
 	}
 	vec3 tangent = (position_dx * uv_dy.y - position_dy * uv_dx.y) / determinant;
 	vec3 bitangent = (position_dy * uv_dx.x - position_dx * uv_dy.x) / determinant;
-	tangent = normalize(tangent - base_normal * dot(base_normal, tangent));
-	bitangent = normalize(bitangent - base_normal * dot(base_normal, bitangent)
-		- tangent * dot(tangent, bitangent));
+	vec3 perpendicular = cross(base_normal, tangent);
+	float signed_area = dot(perpendicular, bitangent);
+	if (signed_area * signed_area <= 1e-12 * dot(tangent, tangent) * dot(bitangent, bitangent)) {
+		return base_normal;
+	}
+	perpendicular = normalize(perpendicular);
+	tangent = cross(perpendicular, base_normal);
+	bitangent = sign(signed_area) * perpendicular;
 	vec3 tangent_normal = sampled_normal * 2.0 - 1.0;
 	tangent_normal.xy *= strength;
-	tangent_normal = normalize(tangent_normal);
 	return normalize(tangent * tangent_normal.x + bitangent * tangent_normal.y
 		+ base_normal * tangent_normal.z);
 }
@@ -182,7 +187,7 @@ void fragment() {
 			roof_underside_metallic, underside), 0.0, 1.0);
 		AO = mix(1.0, arm.r, weather);
 		NORMAL = normal_from_uv(base_normal, roof_uv_dx, roof_uv_dy,
-			position_dx, position_dy, texture(roof_normal, roof_uv_local).rgb,
+			position_dx, position_dy, textureGrad(roof_normal, roof_uv_local, roof_uv_dx, roof_uv_dy).rgb,
 			roof_normal_strength);
 	} else if (wood_surface_tag > 0.5) {
 		vec3 photo_color = texture(wood_albedo, wood_uv_local).rgb;
@@ -196,7 +201,7 @@ void fragment() {
 		SPECULAR = 0.3;
 		AO = 1.0;
 		NORMAL = normal_from_uv(base_normal, wood_uv_dx, wood_uv_dy,
-			position_dx, position_dy, texture(wood_normal, wood_uv_local).rgb,
+			position_dx, position_dy, textureGrad(wood_normal, wood_uv_local, wood_uv_dx, wood_uv_dy).rgb,
 			wood_normal_strength);
 	} else if (slab_surface_tag > 0.5) {
 		ALBEDO = texture(slab_albedo, slab_uv_local).rgb * slab_tint;
@@ -204,7 +209,7 @@ void fragment() {
 		METALLIC = 0.0;
 		SPECULAR = 0.3;
 		NORMAL = normal_from_uv(base_normal, slab_uv_dx, slab_uv_dy,
-			position_dx, position_dy, texture(slab_normal, slab_uv_local).rgb,
+			position_dx, position_dy, textureGrad(slab_normal, slab_uv_local, slab_uv_dx, slab_uv_dy).rgb,
 			slab_normal_strength);
 	}
 	// No ALPHA assignment: roof, timber, and retained vertex-colour geometry stay opaque.

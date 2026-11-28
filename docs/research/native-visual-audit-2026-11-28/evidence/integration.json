@@ -1,0 +1,394 @@
+{
+  "format": "openrc-native-visual-audit-integration-v1",
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "candidate_identity": "The ten shader SHA-256 values in ../verification-ledger.json reviewed_changes identify the tested working-tree contents. Test scripts were unchanged from the stated baseline.",
+  "pinned_engine": "4.8.beta2.official.cafc17a19",
+  "pinned_linux_engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "scope": "Direct headless runtime integration, binding, data and fixture assertions. Each candidate check used a fresh temporary XDG profile. The runner checked diagnostics, process exit status and explicit completion text. Native physics, shader renderer compilation, in-game images and hardware performance are outside this evidence.",
+  "summary": {
+    "successful_candidate_suites": 9,
+    "candidate_numbered_assertions": 2407,
+    "numbered_suites": 8,
+    "roof_geometry_and_bindings": "7 surfaces, 32 triangles, 9 mipmapped maps; also checks clockwise winding and UVs.",
+    "matched_baseline_suites": 4,
+    "initial_candidate_sparse_failures": 2,
+    "successful_candidate_warnings": 1,
+    "candidate_errors_after_hydration": 0,
+    "offline_capture_tool_tests_at_review": 7
+  },
+  "reproduction": {
+    "tracked_inputs": [
+      "app",
+      "assets/aircraft",
+      "assets/landscape",
+      "tools"
+    ],
+    "runner": "python3 tools/godot/run_checked.py --out-dir <fresh-output> --label <suite-name> --timeout 300 --require-text <marker> -- <pinned-engine> --headless --path app --audio-driver Dummy --script <suite>",
+    "marker": "0 failed for app/tests scripts; PASS building roofs: for the standalone roof check",
+    "baseline_import": "Use the pinned checked engine --headless --path app --audio-driver Dummy --import when preparing the checkout."
+  },
+  "attempts": [
+    {
+      "attempt": "baseline-test_lake_world",
+      "case": "test_lake_world",
+      "capture_id": "33493deb-80a2-415e-b4d7-006f58a18d32",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "7c1a8a75dc215cf3b588214c559b5c6f7b5ae7b8d9e353595c045068721e1055",
+      "engine_log_sha256": "a161bbbe543a5a782d227a4196a9e435fd913a917486e3b0a4adf53838d8a7c2",
+      "independently_rehashed_log": true,
+      "assertions": 53,
+      "failed_assertions": 0,
+      "script": "app/tests/test_lake_world.gd",
+      "script_sha256": "d95f04e94f846dc350611360bb9cfc9bb6d045a80f5d57fad74f58dce88cd0fb"
+    },
+    {
+      "attempt": "baseline-test_lens_effects",
+      "case": "test_lens_effects",
+      "capture_id": "4e74541e-da14-4e1f-848b-239b8f2bd3a2",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "bd909504b23a993a1928debb75b9ba9756614fda981f5fc6105fc1181d86e49d",
+      "engine_log_sha256": "d40c17c856ac5c2e6a388be2b8ea36331b107aadd261630b3f1ba042dbad747e",
+      "independently_rehashed_log": true,
+      "assertions": 81,
+      "failed_assertions": 0,
+      "script": "app/tests/test_lens_effects.gd",
+      "script_sha256": "8dc7763531a3323586bef79c8b59d01d44a3fa394467782884f27d6678e731c1",
+      "skipped": [
+        "Packed MultiMesh buffer layout. The headless dummy renderer does not retain MultiMesh data."
+      ]
+    },
+    {
+      "attempt": "baseline-test_world_moon_assets",
+      "case": "test_world_moon_assets",
+      "capture_id": "dfa11089-76dd-40f1-81ac-1a90ef6fc4af",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "8982d56d3b1931eeccba639fcd0f9955cd422462c3a796d7ff07145d9d2d8a33",
+      "engine_log_sha256": "b5cf0c87a4b02c37074f6d86b029cecde2730652971726ea49ff1ee5bef068b2",
+      "independently_rehashed_log": true,
+      "assertions": 21,
+      "failed_assertions": 0,
+      "script": "app/tests/test_world_moon_assets.gd",
+      "script_sha256": "6147c6cef80103aebe3a064f2a5d499551afbd8e778064997a0deee899121d41"
+    },
+    {
+      "attempt": "baseline-test_world_moon_sky",
+      "case": "test_world_moon_sky",
+      "capture_id": "e12399be-491b-45fc-b450-32e789313736",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "bd2464696747b4f41e9c40d2d58b322e1c56a7184cfb0078ab555137f8e12d63",
+      "engine_log_sha256": "482e39595f6629cc55e44eb9defddf368103be2d923170a22e2fb5f84076aca2",
+      "independently_rehashed_log": true,
+      "assertions": 62,
+      "failed_assertions": 0,
+      "script": "app/tests/test_world_moon_sky.gd",
+      "script_sha256": "d58049d18b157938baa24f00586da93a65e046d7b38369bc29cefea706c0ba2f"
+    },
+    {
+      "attempt": "candidate-check_building_roofs",
+      "case": "check_building_roofs",
+      "capture_id": "147d2598-b731-4423-9bcf-3d45802ca439",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "ea6701050583da728d70667f8ef640eaa6ea52147b5a77dded45e857584c699e",
+      "engine_log_sha256": "e7fe0905e350aff1d6fd472f961c0149a0713bde4ac9bee7c57973a286a9585a",
+      "independently_rehashed_log": true,
+      "script": "tools/landscape/check_building_roofs.gd",
+      "script_sha256": "4d8865c997ec45f8672a5e3b92460d2bc84323bc2628a5c1f26d9e3b4c813f13",
+      "roof_geometry": {
+        "surfaces": 7,
+        "triangles": 32,
+        "mipmapped_PBR_maps": 9,
+        "clockwise_faces": true
+      }
+    },
+    {
+      "attempt": "candidate-test_lake_world",
+      "case": "test_lake_world",
+      "capture_id": "448705c5-6484-4ccc-a6e9-73e33515f20d",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "3aa600d259aa95b1c2ceb78159387d78abc5c8cdd41fa1adbd3246517cb59a39",
+      "engine_log_sha256": "a161bbbe543a5a782d227a4196a9e435fd913a917486e3b0a4adf53838d8a7c2",
+      "independently_rehashed_log": true,
+      "assertions": 53,
+      "failed_assertions": 0,
+      "script": "app/tests/test_lake_world.gd",
+      "script_sha256": "d95f04e94f846dc350611360bb9cfc9bb6d045a80f5d57fad74f58dce88cd0fb"
+    },
+    {
+      "attempt": "candidate-test_lens_effects",
+      "case": "test_lens_effects",
+      "capture_id": "a40f4c68-26b7-4a06-a844-9cf10866328e",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "1e0f135bfc3d968e485e6a66fb4ccfbc060b6fc4535ecc429bcb474706e31485",
+      "engine_log_sha256": "d40c17c856ac5c2e6a388be2b8ea36331b107aadd261630b3f1ba042dbad747e",
+      "independently_rehashed_log": true,
+      "assertions": 81,
+      "failed_assertions": 0,
+      "script": "app/tests/test_lens_effects.gd",
+      "script_sha256": "8dc7763531a3323586bef79c8b59d01d44a3fa394467782884f27d6678e731c1",
+      "skipped": [
+        "Packed MultiMesh buffer layout. The headless dummy renderer does not retain MultiMesh data."
+      ]
+    },
+    {
+      "attempt": "candidate-test_storm_bank",
+      "case": "test_storm_bank",
+      "capture_id": "586e19e1-55ed-4d71-bd2d-0bc62488c42e",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "bd039ea951091a465f5c973357399c588b3f9d91bbab566dc260c55b2ea51e76",
+      "engine_log_sha256": "470443a5983c5950f246520ca792ae853302413d3909aac298dc711dc58bd5b6",
+      "independently_rehashed_log": true,
+      "assertions": 55,
+      "failed_assertions": 0,
+      "script": "app/tests/test_storm_bank.gd",
+      "script_sha256": "9bda799c045611513f8f42576837b71336c00dd52c10a393b3d48ef8168710a0"
+    },
+    {
+      "attempt": "candidate-test_vehicle_paint",
+      "case": "test_vehicle_paint",
+      "capture_id": "018a601e-c919-463a-88bc-f4b365e3a573",
+      "ok": false,
+      "completed": true,
+      "engine_exit": 1,
+      "checked_exit": 1,
+      "diagnostic_counts": {
+        "error": 48,
+        "warning": 0
+      },
+      "receipt_sha256": "2c5ea3009d18213d0cbd8db2b9fd12270fea59e14ab5bd8e4d11ae4f07e2e60b",
+      "engine_log_sha256": "6e0a19fa589190c06d014da00359c8895861ac0472224b958a80ef15077fc786",
+      "independently_rehashed_log": true,
+      "assertions": 358,
+      "failed_assertions": 34,
+      "script": "app/tests/test_vehicle_paint.gd",
+      "script_sha256": "ae1a687c68b291835627199aa725bbfd30a69a1d5eecfda32f942b729769b183",
+      "cause": "Sparse checkout omitted tracked aircraft authoring proof files. See corresponding hydrated attempt.",
+      "missing_authoring_paths": [
+        "assets/aircraft/avanti-s-a200/blender-geometry.json",
+        "assets/aircraft/avanti-s-a200/source-manifest.json",
+        "assets/aircraft/extra-300s-60/appearance.json",
+        "assets/aircraft/extra-300s-60/geometry.json",
+        "assets/aircraft/model-bindings.json",
+        "assets/aircraft/stik-electric-6s/customization-bindings.json",
+        "assets/aircraft/stik-electric-6s/model-bindings.json",
+        "assets/aircraft/stik-electric-6s/runtime-proof.json",
+        "assets/aircraft/turbo-lumber-evolution/geometry.json",
+        "assets/aircraft/turbo-lumber-evolution/manual.json",
+        "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+        "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
+        "assets/aircraft/ugly-stik-60/geometry.json"
+      ]
+    },
+    {
+      "attempt": "candidate-test_vehicle_paint-hydrated",
+      "case": "test_vehicle_paint",
+      "capture_id": "ce45b71d-b445-482d-b196-ea5e6a2ea3a9",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "c88ea7e76aa9dc88f1ea61a7465257af9c2f0b721a1087baab7a29a534b9b444",
+      "engine_log_sha256": "22d22d668eb6c3368452788123048896f0d5f30065531dcdeec39f980feea910",
+      "independently_rehashed_log": true,
+      "assertions": 2079,
+      "failed_assertions": 0,
+      "script": "app/tests/test_vehicle_paint.gd",
+      "script_sha256": "ae1a687c68b291835627199aa725bbfd30a69a1d5eecfda32f942b729769b183"
+    },
+    {
+      "attempt": "candidate-test_windsock",
+      "case": "test_windsock",
+      "capture_id": "de9afa4e-3c92-4afb-ab2c-c3bfc50ec6f5",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "3e9ce8e3ea7aa3cf626b9e058bf4ec351e789b54fb3c46d9856320607863e1f1",
+      "engine_log_sha256": "d1492f282b093f121fea2eba7771da2d52cb6c8fb005af5b918f9d5a98991dbb",
+      "independently_rehashed_log": true,
+      "assertions": 19,
+      "failed_assertions": 0,
+      "script": "app/tests/test_windsock.gd",
+      "script_sha256": "3d1b8e65f801f6e23bbd536c91dd32b283e519a9c7f724ceeac7e11840642d13"
+    },
+    {
+      "attempt": "candidate-test_windsock_motion",
+      "case": "test_windsock_motion",
+      "capture_id": "e2427869-7bcf-4b81-80ad-619d86d33eb2",
+      "ok": false,
+      "completed": true,
+      "engine_exit": 30,
+      "checked_exit": 30,
+      "diagnostic_counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "receipt_sha256": "54333cef6074f7b4abeb3e609dde7cbe3269fdd5f665fad6d9e0d683434c736e",
+      "engine_log_sha256": "b0a0e8c78203ab65357bd8d27c76fb48dfcf4d1d6000de1cd9c9e22bad15097b",
+      "independently_rehashed_log": true,
+      "script": "app/tests/test_windsock_motion.gd",
+      "script_sha256": "dda3849c52a8b3a3c15d0954bd334efd970cba8f3bf222f450a281db6ed19af3",
+      "cause": "Sparse checkout omitted tracked aircraft authoring proof files. See corresponding hydrated attempt.",
+      "missing_authoring_paths": [
+        "assets/aircraft/model-bindings.json",
+        "assets/aircraft/ugly-stik-60/geometry.json"
+      ]
+    },
+    {
+      "attempt": "candidate-test_windsock_motion-hydrated",
+      "case": "test_windsock_motion",
+      "capture_id": "1a0f9919-2f51-49c8-ae6d-aa77dcf57b27",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "receipt_sha256": "690b1d7e8fa1ddbfb2fdd8af683b462a71ce263a902f2baf30ec21c449055ea4",
+      "engine_log_sha256": "81dfd0de6b4b97156d67a99a497e76e1e614675d95696db670d7d866a035a8fb",
+      "independently_rehashed_log": true,
+      "assertions": 37,
+      "failed_assertions": 0,
+      "script": "app/tests/test_windsock_motion.gd",
+      "script_sha256": "dda3849c52a8b3a3c15d0954bd334efd970cba8f3bf222f450a281db6ed19af3",
+      "warning": "Native physics stage library not installed. Main exercised the GDScript reference backend."
+    },
+    {
+      "attempt": "candidate-test_world_moon_assets",
+      "case": "test_world_moon_assets",
+      "capture_id": "d1addc76-2f2c-475e-a022-3955660e6636",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "345eb46093a51dc3ff96f3c97d1f74168666081c5dc6a520c92ae42983666011",
+      "engine_log_sha256": "b5cf0c87a4b02c37074f6d86b029cecde2730652971726ea49ff1ee5bef068b2",
+      "independently_rehashed_log": true,
+      "assertions": 21,
+      "failed_assertions": 0,
+      "script": "app/tests/test_world_moon_assets.gd",
+      "script_sha256": "6147c6cef80103aebe3a064f2a5d499551afbd8e778064997a0deee899121d41"
+    },
+    {
+      "attempt": "candidate-test_world_moon_sky",
+      "case": "test_world_moon_sky",
+      "capture_id": "0ca4e154-32d5-4664-bc75-3eb954f21182",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "a19cfb84580f3414cfadf69addca4a91cce5faf6f68ae4da506d17bbf3abc73a",
+      "engine_log_sha256": "482e39595f6629cc55e44eb9defddf368103be2d923170a22e2fb5f84076aca2",
+      "independently_rehashed_log": true,
+      "assertions": 62,
+      "failed_assertions": 0,
+      "script": "app/tests/test_world_moon_sky.gd",
+      "script_sha256": "d58049d18b157938baa24f00586da93a65e046d7b38369bc29cefea706c0ba2f"
+    },
+    {
+      "attempt": "import-baseline",
+      "case": "project_import",
+      "capture_id": "30272c14-9362-4dd0-9d69-02cdc100f8f1",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "receipt_sha256": "cd0c99f5267368fd8be9a6d4f87ac23b7dbda21d59f810f4fd5f5913a1e1e4e7",
+      "engine_log_sha256": "d9e0fff081972464dd6f324bcf65760aac55bc7ae4e7ae2d87650e45ac618248",
+      "independently_rehashed_log": true
+    },
+    {
+      "attempt": "paint-harness-parse",
+      "case": "paint-harness-parse",
+      "capture_id": "60a89cde-f250-48f0-9338-d3dd384b02b8",
+      "ok": true,
+      "completed": true,
+      "engine_exit": 0,
+      "checked_exit": 0,
+      "diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "receipt_sha256": "e8dd6e5c8b80bb8555f09a9d65f207ec01586e682b1d6f243323967f80390713",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "independently_rehashed_log": true
+    }
+  ]
+}

@@ -14,7 +14,11 @@ void vertex() { world_position = VERTEX; }
 void fragment() {
 	// Broad rain shafts have irregular edges, taper into the cloud base, and fade at ground level.
 	float shaft = texture(cloud_texture, vec2(UV.x, 0.48 + UV.y * 0.12)).a;
-	float fine = texture(cloud_texture, vec2(fract(UV.x * 3.0), 0.46)).a;
+	// Keep the clamped source image's seam, but filter from continuous coordinates:
+	// differentiating fract would select coarse mips at each repeated boundary.
+	vec2 fine_uv = vec2(UV.x * 3.0, 0.46);
+	float fine = textureGrad(cloud_texture, vec2(fract(fine_uv.x), fine_uv.y),
+		dFdx(fine_uv), dFdy(fine_uv)).a;
 	float edge = smoothstep(0.0, 0.12, UV.x) * smoothstep(0.0, 0.12, 1.0 - UV.x);
 	float vertical = smoothstep(0.0, 0.15, UV.y) * smoothstep(0.0, 0.20, 1.0 - UV.y);
 	float alpha = (0.24 + shaft * 0.55 + fine * 0.21) * edge * vertical * opacity;

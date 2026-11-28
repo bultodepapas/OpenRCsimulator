@@ -4,6 +4,8 @@
 
 ## Two folders, one rule
 
+[Native visual audit, 2026-11-28](native-visual-audit-2026-11-28/README.md) records ten specialist reviews, independent dispositions, native shader repairs and reproducible numeric/image/performance evidence under VQ-07. Source correctness, rendered acceptance and target-hardware qualification are tracked separately.
+
 | Location | Purpose | Example |
 | --- | --- | --- |
 | `docs/research/` | Reports, sources, measurements, probes and step evidence | [VQ-04a](visual-quality-implementation/VQ-04a/README.md) |

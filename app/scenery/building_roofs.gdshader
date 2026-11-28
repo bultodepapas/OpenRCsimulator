@@ -16,18 +16,24 @@ void fragment() {
 	vec2 uv_dx = dFdx(UV);
 	vec2 uv_dy = dFdy(UV);
 	float determinant = uv_dx.x * uv_dy.y - uv_dx.y * uv_dy.x;
+	float uv_scale_sq = max(dot(uv_dx, uv_dx), dot(uv_dy, uv_dy));
 	vec3 mapped_normal = base_normal;
-	if (abs(determinant) > 0.000001) {
+	// A close-up shrinks both UV derivatives without making their frame singular.
+	if (abs(determinant) > 1e-6 * uv_scale_sq) {
 		vec3 tangent = (position_dx * uv_dy.y - position_dy * uv_dx.y) / determinant;
 		vec3 bitangent = (position_dy * uv_dx.x - position_dx * uv_dy.x) / determinant;
-		tangent = normalize(tangent - base_normal * dot(base_normal, tangent));
-		bitangent = normalize(bitangent - base_normal * dot(base_normal, bitangent)
-			- tangent * dot(tangent, bitangent));
-		vec3 sampled = texture(normal_map, UV).rgb * 2.0 - 1.0;
-		sampled.xy *= normal_strength;
-		sampled = normalize(sampled);
-		mapped_normal = normalize(tangent * sampled.x + bitangent * sampled.y
-			+ base_normal * sampled.z);
+		vec3 perpendicular = cross(base_normal, tangent);
+		float signed_area = dot(perpendicular, bitangent);
+		// A zero projected axis cannot define a normal map. The area sign preserves mirrored UVs.
+		if (signed_area * signed_area > 1e-12 * dot(tangent, tangent) * dot(bitangent, bitangent)) {
+			perpendicular = normalize(perpendicular);
+			tangent = cross(perpendicular, base_normal);
+			bitangent = sign(signed_area) * perpendicular;
+			vec3 sampled = textureGrad(normal_map, UV, uv_dx, uv_dy).rgb * 2.0 - 1.0;
+			sampled.xy *= normal_strength;
+			mapped_normal = normalize(tangent * sampled.x + bitangent * sampled.y
+				+ base_normal * sampled.z);
+		}
 	}
 	vec3 arm = texture(arm_map, UV).rgb;
 	ALBEDO = texture(albedo_map, UV).rgb * tint;

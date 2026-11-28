@@ -1,0 +1,66 @@
+name: Native visual audit
+
+on:
+  push:
+    branches: [audit/native-visual-cohesion-2026-11-28]
+    paths:
+      - .github/workflows/native-visual-audit.yml
+      - 'app/**'
+      - 'assets/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paired-captures:
+    name: Paired 1080p images and software render timing (${{ matrix.renderer }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        renderer: [gl_compatibility, forward_plus]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: |
+            app
+            assets
+            tools
+      - name: Fetch the pinned baseline
+        run: git fetch --no-tags --depth=1 --filter=blob:none origin 71306784a250d634854f0c8bab3a927cc46a61b8
+      - name: Install the virtual display and software renderers
+        timeout-minutes: 10
+        run: |
+          sudo apt-get -o Acquire::Retries=3 update
+          sudo apt-get -o Acquire::Retries=3 install -y xvfb xauth libgl1-mesa-dri mesa-vulkan-drivers libvulkan1 libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Validate source restoration and evidence reduction
+        run: python3 -m unittest discover -s tools/graphics -p test_native_visual_audit.py
+      - name: Capture and compare baseline and candidate
+        env:
+          RENDERER: ${{ matrix.renderer }}
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          audit_python="$(app/tests/visual-env.sh)"
+          python3 -m pip --python "$audit_python" install -r tools/godot/requirements-resources.txt
+          godot="$(app/get-godot.sh)"
+          out="$RUNNER_TEMP/native-visual-audit"
+          xvfb-run -a -s "-screen 0 1920x1080x24" "$audit_python" tools/graphics/native_visual_audit.py \
+            --renderer "$RENDERER" --godot "$godot" --out "$out" --disposable-checkout
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: native-visual-audit-${{ matrix.renderer }}-${{ github.sha }}
+          path: ${{ runner.temp }}/native-visual-audit/
+          if-no-files-found: warn
+          retention-days: 14
