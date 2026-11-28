@@ -6,6 +6,19 @@ const GROUND_SIMPLE := &"openrc_ground_simple"
 
 static var _tree_detail := "full"
 static var _ground_simple := false
+static var _ground_registered := false
+
+
+## The ground shaders' global (every material including grass_surface.gdshaderinc reads it). Normal runs register it
+## from the project's shader_globals; the exported build's headless field pack check did not, and those materials
+## failed to compile. Register it in code when it is missing, before such a material compiles, as atmosphere.gd
+## registers cloud_drift_offset.
+static func ensure_ground_global() -> void:
+	if _ground_registered:
+		return
+	if not RenderingServer.global_shader_parameter_get_list().has(GROUND_SIMPLE):
+		RenderingServer.global_shader_parameter_add(GROUND_SIMPLE, RenderingServer.GLOBAL_VAR_TYPE_BOOL, _ground_simple)
+	_ground_registered = true
 
 
 static func apply(tree: SceneTree, config: Dictionary) -> void:
@@ -17,6 +30,7 @@ static func apply(tree: SceneTree, config: Dictionary) -> void:
 	var simple: bool = config.get("ground_detail", "full") == "simple"
 	if simple != _ground_simple:
 		_ground_simple = simple
+		ensure_ground_global()
 		RenderingServer.global_shader_parameter_set(GROUND_SIMPLE, simple)
 
 

@@ -95,6 +95,8 @@ class _BuildContext:
 	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array,
 			rc_track_input: Dictionary = {}) -> void:
 		var started := Time.get_ticks_usec()
+		# The ground, scenery gravel and lake bank materials below read the ground global.
+		FieldDetailPreferences.ensure_ground_global()
 		field = field_input.duplicate(true)
 		lighting = lighting_input.duplicate(true)
 		extra_grass_exclusions = extra_input.duplicate(true)

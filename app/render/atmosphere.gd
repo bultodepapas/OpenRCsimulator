@@ -18,6 +18,7 @@ const CloudTransport := preload("res://render/weather/cloud_transport.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
 const SunOptics := preload("res://render/sun/sun_optics.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const CloudShadowMap := preload("res://render/cloud_shadow_map.gd")
 const CloudShaderVariants := preload("res://render/cloud_shader_variants.gd")
@@ -922,6 +923,7 @@ static func update_cloud_appearance(root: Node) -> void:
 static func ground_material(grass: Texture2D, lighting: Dictionary = {}) -> ShaderMaterial:
 	var mat: ShaderMaterial = ShaderMaterial.new()
 	_set_cloud_offset(last_cloud_offset) # register before assigning a shader, also in an empty-project pack probe
+	FieldDetailPreferences.ensure_ground_global()
 	mat.shader = GROUND_SHADER
 	mat.set_shader_parameter("grass", grass)
 	mat.set_shader_parameter("tile_m", Spec.GROUND.tile_m)
