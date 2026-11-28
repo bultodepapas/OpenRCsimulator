@@ -663,6 +663,19 @@ func wheel_rows(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float, an
 	return _native.stage_wheel_rows(s, aux, steer, anchors, speeds, brake)
 
 
+## NK-7j: wheel_rows and, from those rows, the ground audio's loaded rows in one call (stage_wheel_audio_rows): empty
+## to use the reference, [rows] to build the audio rows from the wheel rows, [rows, row...] answered. The session owns
+## the publication checks (FlightSession.published_wheel_audio_rows).
+func wheel_audio_rows(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, arms: PackedFloat64Array, ids: PackedStringArray, reference_load: float,
+		time_s: float, surfaces: PackedFloat64Array, support: Dictionary) -> Array:
+	if not _installed or not _compressions_bound or _native == null \
+			or not _native.has_method(&"stage_wheel_audio_rows"):
+		return []
+	return _native.stage_wheel_audio_rows(s, aux, steer, anchors, speeds, brake, arms, ids, reference_load, time_s,
+		surfaces, support)
+
+
 ## NK-6l: the pre-tick guard's hull checks for this installation's hull, which the session passes by identity: bit 1
 ## when HullContact.terminal(previous, s, hull) must return no event, bit 2 when HullContact.contacts(previous, s, hull)
 ## must return no contact; 0 to use the reference for both. The session owns the tick checks.

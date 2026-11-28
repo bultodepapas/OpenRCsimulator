@@ -1295,6 +1295,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
 		godot::ClassDB::bind_method(D_METHOD("stage_wheel_rows", "s", "aux", "steer", "anchors", "speeds", "brake"),
 			&OpenRCNativeKernel::stage_wheel_rows);
+		godot::ClassDB::bind_method(D_METHOD("stage_wheel_audio_rows", "s", "aux", "steer", "anchors", "speeds", "brake",
+			"arms", "ids", "reference_load", "time_s", "surfaces", "support"), &OpenRCNativeKernel::stage_wheel_audio_rows);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
 		godot::ClassDB::bind_method(D_METHOD("sound_doppler", "source", "listener", "source_velocity", "listener_velocity",
@@ -2154,6 +2156,49 @@ public:
 		o[0] = 1.0;
 		o[1] = static_cast<double>(count);
 		for (size_t i = 0; i < wheel_rows_.size(); ++i) o[2 + i] = wheel_rows_[i].v;
+		return out;
+	}
+
+	// NK-7j: stage_wheel_rows for the published endpoint and, from those rows, GroundAudioModel.snapshot_contacts' loaded
+	// rows (nk_audio_rows.hpp loaded_rows) in one call. Empty: evaluate everything; [wheel rows]: the rows are [0] or the
+	// audio rows are refused, so the caller builds them from the wheel rows; [wheel rows, row dictionaries...]: answered.
+	// surfaces: the environment's table; support: its prepared ground support (Environment._ground_support), which
+	// Environment.sample_support uses while its surfaces equal that table. Both must carry the stage's bits, and the
+	// support must be a successful legacy-law preparation; arms and ids: every contact's.
+	godot::Array stage_wheel_audio_rows(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
+			const PackedFloat64Array &anchors, const PackedFloat64Array &speeds, double brake, const PackedFloat64Array &arms,
+			const PackedStringArray &ids, double reference_load, double time_s, const PackedFloat64Array &surfaces,
+			const Dictionary &support) {
+		godot::Array out;
+		const PackedFloat64Array rows = stage_wheel_rows(s, aux, steer, anchors, speeds, brake);
+		if (rows.is_empty()) return out;
+		out.push_back(rows);
+		const nk::GroundContext *ground = rows.size() > 2 ? endpoint_ground(s, aux) : nullptr;
+		if (ground == nullptr) return out;
+		const nk::SurfaceTable &table = ground->surfaces;
+		const auto same_table = [&table](const PackedFloat64Array &values) {
+			return static_cast<size_t>(values.size()) == table.values.size() &&
+				std::memcmp(values.ptr(), table.values.data(), sizeof(double) * table.values.size()) == 0;
+		};
+		const Variant ok = support.get("ok", Variant());
+		const Variant format = support.get("format", Variant());
+		const Variant law = support.get("geometry_law", Variant());
+		const Variant prepared = support.get("surfaces", Variant());
+		const Variant regions = support.get("regions", Variant());
+		if (!same_table(surfaces) || ok.get_type() != Variant::BOOL || !static_cast<bool>(ok) ||
+				format.get_type() != Variant::STRING || godot::String(format) != godot::String("openrc-ground-support v1") ||
+				law.get_type() != Variant::STRING || godot::String(law) != godot::String("legacy-field-relief-v1") ||
+				prepared.get_type() != Variant::PACKED_FLOAT64_ARRAY || !same_table(prepared) ||
+				regions.get_type() != Variant::ARRAY) {
+			return out;
+		}
+		const int64_t count = static_cast<int64_t>(rows[1]);
+		if (rows.size() != 2 + count * nk::kWheelRowSize) return out;
+		if (!row_keys_) row_keys_ = std::make_unique<nk::sound::RowKeys>();
+		const godot::Array audio = nk::sound::loaded_rows(*row_keys_, s, rows.ptr() + 2, count, arms, ids, reference_load,
+			time_s, table, ground->lake, regions);
+		if (audio.size() != count) return out;
+		out.append_array(audio);
 		return out;
 	}
 

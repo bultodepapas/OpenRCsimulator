@@ -3608,6 +3608,34 @@ func published_wheel_rows(s: PackedFloat64Array, steer: float, anchors: PackedFl
 	return rows
 
 
+## NK-7j: published_wheel_rows and, from those rows, GroundAudioModel.snapshot_contacts' loaded rows for the same
+## endpoint in one native answer: [rows, row dictionaries...] where the stage answers both, [rows] where it answers only
+## the wheel rows (the caller builds the audio rows from them), empty for the reference. The wheel rows' own conditions,
+## no ground-vehicle road (Environment.sample_support's other refusal), and `arms`/`ids` covering every contact.
+func published_wheel_audio_rows(s: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, arms: PackedFloat64Array, ids: PackedStringArray,
+		reference_load: float) -> Array:
+	if not native_audio_rows_enabled or environment.road.is_valid():
+		var rows := published_wheel_rows(s, steer, anchors, speeds, brake)
+		return [] if rows.is_empty() else [rows]
+	if not native_wheel_rows_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return []
+	var answer: Array = _native_stage.wheel_audio_rows(s, sim.aux, steer, anchors, speeds, brake, arms, ids,
+		reference_load, sim.time(), environment.surfaces, environment._ground_support)
+	if not answer.is_empty():
+		native_wheel_row_answers += 1
+		if answer.size() > 1:
+			native_audio_row_answers += 1
+	return answer
+
+
+## NK-7j test hook: false builds the ground audio's loaded rows in GDScript from the native wheel rows.
+var native_audio_rows_enabled := true
+## Diagnostic: ground audio observations whose loaded rows the native stage built.
+var native_audio_row_answers := 0
 ## NK-6o test hook: false always evaluates the ground audio's wheel diagnostics in GDScript.
 var native_wheel_rows_enabled := true
 ## Diagnostic: ground audio observations whose wheel rows the native stage answered.

@@ -68,7 +68,13 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	# it published, with the same values; otherwise they are evaluated here.
 	var rows := PackedFloat64Array()
 	if wheel_count > 0:
-		rows = _native_rows(session, state, steer, anchors, speeds, brake, gear_contacts.size())
+		# NK-7j: the native stage may also build this observation's rows from its wheel rows, with the same values.
+		var answer: Array = _native_answer(session, state, steer, anchors, speeds, brake, gear_contacts, reference_load)
+		if answer.size() == 1 + gear_contacts.size():
+			contacts_out.assign(answer.slice(1))
+			return contacts_out
+		rows = _checked_rows(answer[0], gear_contacts.size()) if answer.size() == 1 \
+			else _native_rows(session, state, steer, anchors, speeds, brake, gear_contacts.size())
 		if rows.is_empty():
 			wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake, track)
 	var native_rows: bool = rows.size() > 1
@@ -141,12 +147,37 @@ static func _native_rows(session: Node, state: PackedFloat64Array, steer: float,
 		speeds: PackedFloat64Array, brake: float, contacts: int) -> PackedFloat64Array:
 	if not session.has_method("published_wheel_rows"):
 		return PackedFloat64Array()
-	var rows: PackedFloat64Array = session.call("published_wheel_rows", state, steer, anchors, speeds, brake)
+	return _checked_rows(session.call("published_wheel_rows", state, steer, anchors, speeds, brake), contacts)
+
+
+## A native wheel-row answer in its accepted shapes ([0], or [1, n, rows] with n == contacts); empty otherwise.
+static func _checked_rows(rows: PackedFloat64Array, contacts: int) -> PackedFloat64Array:
 	if rows.size() == 1 and rows[0] == 0.0:
 		return rows
 	if rows.size() == 2 + contacts * WHEEL_ROW_SIZE and rows[0] == 1.0 and int(rows[1]) == contacts:
 		return rows
 	return PackedFloat64Array()
+
+
+## NK-7j: the session's combined answer for this observation (FlightSession.published_wheel_audio_rows): [wheel rows,
+## loaded rows...], [wheel rows] or empty. Every contact must carry a three-value position (one wheel row per contact);
+## otherwise empty, and the wheel rows come from _native_rows.
+static func _native_answer(session: Node, state: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, gear_contacts: Array, reference_load: float) -> Array:
+	if not session.has_method("published_wheel_audio_rows"):
+		return []
+	var arms := PackedFloat64Array()
+	var ids := PackedStringArray()
+	for index: int in gear_contacts.size():
+		var contact: Dictionary = gear_contacts[index]
+		var arm: Variant = contact.get("position")
+		if not arm is PackedFloat64Array or (arm as PackedFloat64Array).size() != 3:
+			return []
+		arms.append_array(arm)
+		ids.append(str(contact.get("name", "gear_%d" % index)))
+	var answer: Array = session.call("published_wheel_audio_rows", state, steer, anchors, speeds, brake, arms, ids,
+		reference_load)
+	return answer if not answer.is_empty() and answer[0] is PackedFloat64Array else []
 
 
 ## Values per native wheel row (nk::kWheelRowSize).
