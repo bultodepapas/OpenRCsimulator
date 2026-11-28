@@ -1,4 +1,4 @@
-## Canonical preparation projection of the committed fixed-wing session.
+## Fixed-wing native preparation and control-deflection packing.
 ## Independent of native loading and session classes to avoid preload cycles.
 extends RefCounted
 
@@ -7,6 +7,13 @@ const Turbine := preload("res://physics/turbine.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const WindTurbulence := preload("res://physics/wind_turbulence.gd")
 const REFERENCE_STAGE_METHOD := &"_wheel_evaluate"
+
+
+## Fixed-wing ABI order. Callers own when servo deflections are sampled; each
+## call returns a fresh packet, including the optional flap lane for ABI 2.
+static func pack_deflections(deflections: Dictionary) -> PackedFloat64Array:
+	return PackedFloat64Array([deflections.elevator, deflections.aileron_right,
+		deflections.aileron_left, deflections.rudder, deflections.get("flap", 0.0)])
 
 
 static func config_for(session: Node) -> Dictionary:

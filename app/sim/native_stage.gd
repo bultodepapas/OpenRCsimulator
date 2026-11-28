@@ -541,7 +541,7 @@ func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64A
 		"wheel":
 			var d: Dictionary = session._deflections(aux)
 			accepted = _native.set_tick_context(aux, inputs,
-				PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), at)
+				StageConfig.pack_deflections(d), at)
 	if not accepted: reason = "native tick context refused"
 	return accepted
 
@@ -569,7 +569,7 @@ func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up:
 	if not v is PackedFloat64Array or (v as PackedFloat64Array).size() != 3: return NAN
 	return _native.stage_wing_wake(s, PackedFloat64Array([v[0], v[1], v[2], float(air.get("V", NAN)), float(air.get("alpha", NAN)),
 		float(air.get("beta", NAN)), float(air.get("qbar", NAN))]),
-		PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), ground_up)
+		StageConfig.pack_deflections(d), ground_up)
 
 
 ## NK-5d: contact reach proofs for the accepted tick (FlightSession.REACH_* bits); 0 proves nothing. The proxy
@@ -615,7 +615,7 @@ func pre_step(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array
 	var deflections := PackedFloat64Array()
 	if session.downwash_index() >= 0:
 		var d: Dictionary = session._deflections(aux)
-		deflections = PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+		deflections = StageConfig.pack_deflections(d)
 	var next: PackedFloat64Array = _native.pre_step(aux, inputs, dt, sim.state, sim.continuous, sim.time(),
 		session.engine_running, session._flap_mix_owner == "simulator", deflections, modes[1] if modes.size() > 1 else 0)
 	if not next.is_empty() and _pre_step_turbulent:

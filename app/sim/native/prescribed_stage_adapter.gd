@@ -4,6 +4,7 @@
 extends RefCounted
 
 const WeatherAdapter := preload("weather_adapter.gd")
+const StageConfig := preload("stage_config.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -36,7 +37,7 @@ static func config_for(session: Node) -> Dictionary:
 static func set_context(session: Node, native: Object, aux: PackedFloat64Array,
 		inputs: PackedFloat64Array, at: float) -> bool:
 	var d: Dictionary = session._deflections(aux)
-	var deflections := PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+	var deflections := StageConfig.pack_deflections(d)
 	var turbine: bool = Turbine.is_turbine(session.aircraft.model.propulsion)
 	# Prescribed turbine stage tests engine_running directly. The gas shaft uses
 	# propulsion_power_enabled(), including the session's existing failure latch.

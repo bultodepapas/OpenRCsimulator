@@ -1,9 +1,10 @@
-## NK-3 research-only preparation and per-tick handoff for the electric joint
+## NK-3 native preparation and per-tick handoff for the electric joint
 ## stage. Session pre_tick, source events and all accepted-step policies stay in
 ## GDScript. This helper does not change application admission.
 extends RefCounted
 
 const WeatherAdapter := preload("weather_adapter.gd")
+const StageConfig := preload("stage_config.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const ECM_FIELDS := ["kind", "series", "branches", "group_capacity_c", "initial_soc", "weak_capacity_factor",
 	"weak_resistance_factor", "weak_soc_offset", "interconnect_ohm", "auxiliary_current_a",
@@ -43,6 +44,6 @@ static func config_for(session: Node) -> Dictionary:
 static func set_context(session: Node, native: Object, aux: PackedFloat64Array,
 		inputs: PackedFloat64Array, at: float) -> bool:
 	var d: Dictionary = session._deflections(aux)
-	var deflections := PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+	var deflections := StageConfig.pack_deflections(d)
 	return native.set_tick_context(aux, inputs, deflections, at) \
 		and native.set_power_context(session.propulsion_throttle(), session.propulsion_power_enabled())
