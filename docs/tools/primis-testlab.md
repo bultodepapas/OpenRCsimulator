@@ -65,7 +65,7 @@ sim_test_run: {"jobs":[{"script":"res://tests/test_x.gd","platform":"linux","ren
 | Rendered job `INFRA_FAILED` with `TeardownUnconfirmed`, or the host goes offline mid-job | Check the CT and watchdog logs for the cause. If memory pressure caused the stop, use a lighter scene or another machine. After the CT restarts, the operator runs `testctl.py pool remote-reconcile --host primis JOB` to clear the quarantine. |
 | `INSUFFICIENT_DISK` on `primis` | Failed jobs keep their source copy for 1 h; an hourly timer then removes it. `pool gc --host primis --execute` removes collected passing jobs. |
 | Status stays `total: 0`; supervisor `ERROR: source changed during snapshot` | Another session edited the tree while it was being frozen. Pass `source` pointing to a clean worktree (for example `git worktree add --detach <dir> HEAD`). |
-| `pool configuration changed` on recovery | The pool config was edited while that job was unfinished. Restore the previous config to recover it. |
+| `pool configuration changed for host primis: <field> differs` | This host's own entry (root, SSH alias or local flag) changed while a job was unfinished. Restore that field to recover the job. Edits to other hosts or settings no longer block recovery ([destination binding](../../tools/testqueue/README.md#destination-binding-and-settlement-tq-07-a1a2)). |
 
 ## Host setup (operator)
 

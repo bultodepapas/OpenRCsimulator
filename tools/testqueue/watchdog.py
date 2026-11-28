@@ -40,6 +40,7 @@ FINAL = {"PASSED", "FAILED"}
 # lost process: resuming it would only repeat the error every pass.
 SKIP_STATES = {"FINISHED", "ERROR"}
 MAX_RESUMES_PER_DAY = 6
+SETTLE_BUDGET_SECONDS = 45.0
 
 
 def _read(path):
@@ -193,6 +194,12 @@ def run_once(config=None, *, max_age_hours=6.0, dry_run=False, serve_engine=None
             results.append({"request_id": identifier, "resumed": False, "error": str(error)[:200]})
     report["results"] = results
     report["resume_history"] = {key: value for key, value in history.items() if value}
+    if not dry_run:
+        # TQ-07-A2: receipts that reserve a host with no batch watching them.
+        try:
+            report["receipts"] = pool.settle_reserving_receipts(SETTLE_BUDGET_SECONDS)
+        except Exception as error:  # one bad pass must not stop supervision
+            report["receipts"] = {"error": str(error)[:200]}
     from tools.testqueue.common import state_root
     report["authority_root"] = str(state_root())
     if serve_engine:

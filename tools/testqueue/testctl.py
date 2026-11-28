@@ -9,6 +9,7 @@ from pathlib import Path
 import platform
 import secrets
 import sys
+import time
 import uuid
 
 REPO = Path(__file__).resolve().parents[2]
@@ -21,9 +22,11 @@ def parser():
     sub = result.add_subparsers(dest="command", required=True)
     serve = sub.add_parser("serve")
     serve.add_argument("--engine", required=True, type=Path)
-    serve.add_argument("--headless-slots", type=int, default=1)
-    serve.add_argument("--capture-slots", type=int, default=1,
-                       help="parallel studio capture capacity (1..4); qualify GPU/RAM/disk headroom before increasing")
+    serve.add_argument("--headless-slots", type=int, default=None,
+                       help="parallel headless capacity (1..8); remembered in capacity.json, default 1")
+    serve.add_argument("--capture-slots", type=int, default=None,
+                       help="parallel studio capture capacity (1..4); remembered in capacity.json, default 1; "
+                            "qualify GPU/RAM/disk headroom before increasing")
     snapshot = sub.add_parser("snapshot")
     snapshot.add_argument("--source", type=Path, default=REPO)
     snapshot.add_argument("--out", required=True, type=Path)
@@ -57,6 +60,32 @@ def parser():
     return result
 
 
+def serve_capacity(root, headless=None, capture=None):
+    """Slot counts for ``serve``: explicit flags win and are remembered (TQ-07-A6).
+
+    A restart without flags (the watchdog's) reuses the remembered counts, so a
+    qualified capacity no longer silently falls back to one slot.
+    """
+    path = Path(root) / "capacity.json"
+    saved = {}
+    if path.exists():
+        try:
+            saved = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            raise ValueError(f"capacity.json is unreadable; fix or remove it: {error}") from error
+        if not isinstance(saved, dict):
+            raise ValueError("capacity.json must hold an object")
+    value = {"headless_slots": headless if headless is not None else saved.get("headless_slots", 1),
+             "capture_slots": capture if capture is not None else saved.get("capture_slots", 1)}
+    if type(value["headless_slots"]) is not int or not 1 <= value["headless_slots"] <= 8:
+        raise ValueError("headless slots must be in 1..8 (qualify isolation before increasing)")
+    if type(value["capture_slots"]) is not int or not 1 <= value["capture_slots"] <= 4:
+        raise ValueError("capture slots must be in 1..4 (qualify graphics headroom before increasing)")
+    if headless is not None or capture is not None:
+        write_json(path, {**value, "updated_at": time.time()})
+    return value["headless_slots"], value["capture_slots"]
+
+
 def main(argv=None):
     arguments = list(sys.argv[1:] if argv is None else argv)
     if arguments and arguments[0] == 'pool':
@@ -64,12 +93,9 @@ def main(argv=None):
         return pool_main(arguments[1:])
     args = parser().parse_args(argv)
     if args.command == "serve":
-        if not 1 <= args.headless_slots <= 8:
-            raise ValueError("headless slots must be in 1..8 (qualify isolation before increasing)")
-        if not 1 <= args.capture_slots <= 4:
-            raise ValueError("capture slots must be in 1..4 (qualify graphics headroom before increasing)")
+        headless, capture = serve_capacity(state_root(), args.headless_slots, args.capture_slots)
         from tools.testqueue.worker import Worker
-        worker = Worker(state_root(), REPO, args.engine, slots=args.headless_slots, capture_slots=args.capture_slots)
+        worker = Worker(state_root(), REPO, args.engine, slots=headless, capture_slots=capture)
         write_json(state_root() / "enrollment.json", {"mode": "enforced", "host": worker.host_id})
         worker.serve()
         return 0

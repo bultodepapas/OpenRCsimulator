@@ -133,9 +133,13 @@ class CollectionTests(unittest.TestCase):
         config = json.loads(self.config.read_text())
         config["changed"] = True
         write_json(self.config, config)
-        with patch("tools.testqueue.pool.rpc") as rpc, \
-                self.assertRaisesRegex(ValueError, "configuration changed"):
-            self.pool.verify_collection(self.identifier, result)
+        with patch("tools.testqueue.pool.rpc") as rpc:
+            # TQ-07-A1: an edit that leaves this host's destination alone is not a refusal.
+            self.assertEqual(self.pool.verify_collection(self.identifier, result), result)
+            config["hosts"][0] = {"id": "local", "ssh": "elsewhere", "root": "/r"}
+            write_json(self.config, config)
+            with self.assertRaisesRegex(ValueError, "configuration changed for host local"):
+                self.pool.verify_collection(self.identifier, result)
         rpc.assert_not_called()
 
     def test_verification_refuses_a_rebound_request_without_contacting_authority(self):

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -211,6 +212,36 @@ class FleetTests(unittest.TestCase):
         self.assertGreaterEqual(again["age_seconds"], 0)
         self.assertTrue(any("idle now: linux=linux" in hint for hint in first["hints"]))
         self.assertTrue(any("unmanaged" in hint for hint in first["hints"]))
+
+    def test_only_fresh_live_receipts_count_as_running_work(self):
+        # TQ-07-A5: on 28 November `angela` showed 29 active jobs and `angel` 50; none was real.
+        with tempfile.TemporaryDirectory() as tmp:
+            jobs = Path(tmp) / "jobs"
+            jobs.mkdir()
+            receipts = {
+                "live": {"host": "linux", "state": "SUBMITTED", "last_status": {"state": "RUNNING"}},
+                "starting": {"host": "linux", "state": "SUBMISSION_UNCONFIRMED"},
+                "silent": {"host": "linux", "state": "SUBMITTED", "last_status": {"state": "RUNNING"}},
+                "forgotten": {"host": "angel", "state": "SUBMITTED", "last_status": {"state": "UNKNOWN"},
+                              "terminal_observation": {"cleanup": "CONFIRMED", "outcome": "PASSED"}},
+                "orphan": {"host": "angela", "state": "SUBMISSION_UNCONFIRMED",
+                           "last_status": {"state": "UNKNOWN", "error": "request not found"}},
+                "deferred": {"host": "linux", "state": "TRANSFER_DEFERRED"},
+            }
+            old = time.time() - 30 * 3600
+            for name, value in receipts.items():
+                path = jobs / (name + ".json")
+                path.write_text(json.dumps(value), encoding="utf-8")
+                if name in {"silent", "orphan"}:
+                    os.utime(path, (old, old))
+            active, unsettled = agent_view._pool_work(Path(tmp))
+        self.assertEqual(active, {"linux": 2})
+        self.assertEqual(unsettled["linux"]["count"], 1)
+        self.assertEqual(unsettled["angela"]["count"], 1)
+        self.assertGreaterEqual(unsettled["angela"]["oldest_hours"], 29.9)
+        self.assertNotIn("angel", unsettled)
+        view = agent_view._host_view({"id": "angela", "online": True, "busy": False}, active, unsettled)
+        self.assertEqual((view["pool_jobs_active"], view["unsettled_receipts"]["count"]), (0, 1))
 
 
 class RunTests(unittest.TestCase):

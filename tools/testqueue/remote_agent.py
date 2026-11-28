@@ -27,6 +27,8 @@ import tarfile
 import time
 
 PROTOCOL = 1
+# Optional capabilities a coordinator may rely on; an older agent lacks the list.
+FEATURES = ("identity", "fence", "unjournaled-resume")
 LIMIT = 1024 * 1024
 RESERVE = 512 * 1024 * 1024
 MAX_ARCHIVE = 128 * 1024**3
@@ -213,6 +215,155 @@ def job_path(root, identifier):
     if not isinstance(identifier, str) or not ID.fullmatch(identifier):
         raise Refused("request_id must be a safe opaque token")
     return root / "jobs" / identifier
+
+
+def fence_path(root, identifier):
+    job_path(root, identifier)  # same validation as a job ID
+    return root / "fences" / (identifier + ".json")
+
+
+def _sync_directory(path):
+    if os.name == "posix":
+        fd = os.open(path, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+
+
+def machine_id():
+    """A digest of the operating system's machine identifier, or None (TQ-07-A1).
+
+    Only the digest leaves the host. Containers report their own identifier.
+    """
+    raw = None
+    try:
+        if sys.platform.startswith("linux"):
+            for name in ("/etc/machine-id", "/var/lib/dbus/machine-id"):
+                try:
+                    raw = Path(name).read_text(encoding="ascii").strip() or None
+                except (OSError, UnicodeDecodeError):
+                    continue
+                if raw:
+                    break
+        elif sys.platform == "darwin":
+            output = subprocess.run(["/usr/sbin/ioreg", "-rd1", "-c", "IOPlatformExpertDevice"],
+                                    capture_output=True, text=True, timeout=5).stdout
+            match = re.search(r'"IOPlatformUUID"\s*=\s*"([0-9A-Fa-f-]{8,64})"', output)
+            raw = match.group(1) if match else None
+        elif os.name == "nt":
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography") as key:
+                raw = str(winreg.QueryValueEx(key, "MachineGuid")[0]) or None
+    except (OSError, ValueError, subprocess.SubprocessError):
+        raw = None
+    return hashlib.sha256(("openrc-machine-v1:" + raw).encode("utf-8")).hexdigest()[:32] if raw else None
+
+
+def store_id(root):
+    """A random identity for this job store, created once (TQ-07-A1).
+
+    It changes when the store is wiped and recreated, so a coordinator cannot
+    read "request not found" from a new store as proof about the old one.
+    """
+    path = Path(root) / "store-id.json"
+    try:
+        value = read_json(path)
+        if isinstance(value, dict) and isinstance(value.get("store_id"), str) and re.fullmatch(r"[0-9a-f]{32}", value["store_id"]):
+            return value["store_id"]
+    except (OSError, ValueError):
+        pass
+    candidate = {"store_id": secrets.token_hex(16), "created_at": time.time()}
+    try:
+        with path.open("xb") as stream:
+            stream.write(encode(candidate) + b"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        value = read_json(path)  # a concurrent creator won; a damaged file stays visible as an error
+        if not isinstance(value, dict) or not isinstance(value.get("store_id"), str):
+            raise Refused("store-id.json is damaged; inspect it before using this store", "CONFLICT")
+        return value["store_id"]
+    try:
+        _sync_directory(path.parent)
+    except OSError:
+        pass  # best effort: a lost identity only makes later settlement refuse, never succeed wrongly
+    return candidate["store_id"]
+
+
+def host_identity(root):
+    return {"machine_id": machine_id(), "store_id": store_id(root)}
+
+
+def _discard_unjournaled_job(directory):
+    """Remove a job directory whose launch died before its journal (TQ-07-A9a).
+
+    The launcher holds the host lock from before ``mkdir`` until after it starts
+    the supervisor and writes ``state.json`` first, so under that lock a
+    directory without a journal was never accepted. Anything unexpected inside
+    it is kept for inspection.
+    """
+    if directory.is_symlink() or not directory.is_dir():
+        raise Refused("job path is not a plain directory; inspect it", "CONFLICT")
+    entries = list(directory.iterdir())
+    if any(entry.name != "state.json.pending" or entry.is_symlink() or not entry.is_file() for entry in entries):
+        raise Refused("an unjournaled job directory has unexpected contents; inspect it", "CONFLICT")
+    for entry in entries:
+        entry.unlink()
+    directory.rmdir()
+    _sync_directory(directory.parent)
+
+
+def fence(root, request):
+    """Durably promise that a request ID will never run here, unless it already did (TQ-07-A2).
+
+    ``fence`` writes its tombstone, then looks for the job directory; ``run``
+    creates the job directory, then looks for the tombstone. Whatever the
+    interleaving, at least one sees the other, so a request is never both
+    fenced and launched. Returns FENCED, KNOWN (with the job's status), or
+    refuses BUSY while a launch may still be in flight.
+    """
+    if not isinstance(request, dict) or set(request) != {"request_id"}:
+        raise Refused("fence requires request_id")
+    identifier = request["request_id"]
+    directory = job_path(root, identifier)
+    journal = state_path(root, identifier)
+    identity = host_identity(root)
+
+    def known():
+        return {"request_id": identifier, "state": "KNOWN", "identity": identity, "status": status(root, identifier)}
+
+    if journal.is_file():
+        return known()
+    tombstone = fence_path(root, identifier)
+    tombstone.parent.mkdir(exist_ok=True)
+    # A tombstone is never removed: another fencer may already have answered
+    # FENCED on the strength of it. Beside a journaled job it is inert, because
+    # both ``fence`` and ``run`` answer from the journal first.
+    try:
+        with tombstone.open("xb") as stream:
+            stream.write(encode({"request_id": identifier, "fenced_at": time.time(), "identity": identity}) + b"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        pass
+    _sync_directory(tombstone.parent)  # the tombstone must be durable before anyone relies on it
+    fenced = {"request_id": identifier, "state": "FENCED", "identity": identity}
+    if not directory.exists():
+        return fenced
+    if journal.is_file():
+        return known()
+    try:
+        lock = Lock(root / "pool.lock")
+    except Refused:
+        raise Refused("a launch of this request may still be in flight; observe it again later", "BUSY")
+    try:
+        if journal.is_file():
+            return known()
+        _discard_unjournaled_job(directory)  # CONFLICT keeps the evidence; the tombstone still holds
+        return fenced
+    finally:
+        lock.close()
 
 
 def state_path(root, identifier):
@@ -730,7 +881,7 @@ def probe(root, request):
                 admission.update(busy=True, busy_code="EXTERNAL_SIMULATOR", busy_reason="External Godot is running")
         except (OSError, subprocess.SubprocessError) as error:
             admission.update(busy=True, busy_code="OCCUPANCY_UNKNOWN", busy_reason=f"Godot process probe failed: {error}")
-    return {"protocol": PROTOCOL,
+    return {"protocol": PROTOCOL, "features": list(FEATURES), "identity": host_identity(root),
             "host": {"hostname": platform.node(), "system": system, "release": platform.release(),
                      "machine": machine, "python": platform.python_version()},
             "capabilities": capabilities,
@@ -750,6 +901,8 @@ def launch(root, request):
         if previous.get("payload_sha256") != payload_sha:
             raise Refused("request_id already belongs to different inputs", "CONFLICT")
         return status(root, identifier)
+    if fence_path(root, identifier).is_file():
+        raise Refused("this request was fenced and will never run here", "FENCED")
     if authority_enrolled():
         raise Refused("host has an enrolled testqueue; submit to that authority", "ENROLLED")
     if request["options"].get("workload") == "graphics" and graphics_config(root) is None:
@@ -771,7 +924,15 @@ def launch(root, request):
         if not engine.is_file() or (os.name != "nt" and not os.access(engine, os.X_OK)):
             raise Refused("engine is unavailable or not executable")
         directory = job_path(root, identifier)
+        if directory.exists():
+            # Under this lock a directory without a journal is a launch that died
+            # before writing it; it was never accepted (TQ-07-A9a).
+            _discard_unjournaled_job(directory)
         directory.mkdir(parents=True, exist_ok=False)
+        if fence_path(root, identifier).is_file():
+            # The other half of the fence handshake: the tombstone won.
+            directory.rmdir()
+            raise Refused("this request was fenced and will never run here", "FENCED")
         state = {"protocol": PROTOCOL, "request_id": identifier, "state": "STARTING", "request": request,
                  "payload_sha256": payload_sha, "accepted_at": time.time(), "cleanup": "UNCONFIRMED",
                  "evidence": "INCOMPLETE", "output": str(directory)}
@@ -1676,7 +1837,7 @@ def collect_incoming(root, request, *, min_age=3600):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("probe", "run", "status", "reclaim-input", "reconcile", "gc",
+    parser.add_argument("action", choices=("probe", "run", "status", "fence", "reclaim-input", "reconcile", "gc",
                                            "gc-incoming", "_supervise", "_invoke"))
     parser.add_argument("--root", required=True)
     parser.add_argument("--request-id")
@@ -1700,6 +1861,8 @@ def main():
             result = probe(root, request)
         elif args.action == "run":
             result = launch(root, request)
+        elif args.action == "fence":
+            result = fence(root, request)
         elif args.action == "reclaim-input":
             if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256"}
                     or not isinstance(request.get("request_id"), str) or not ID.fullmatch(request["request_id"])

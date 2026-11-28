@@ -255,10 +255,48 @@ complete checked evidence, confirmed cleanup and locally verified artifacts
 before the batch passes. Failed tests remain failed. SSH ambiguity retains the
 selected host and request identity. `recover` retries that identical submission
 on the same host only after querying the original authority and only when the
-saved destination permits replay. New receipts bind configuration bytes and the
-local authority root. Restore the original configuration if recovery reports a
-changed destination. Legacy unbound receipts permit observation, not automatic
-replay. A receipt missing dispatch metadata stays `UNKNOWN/UNCONFIRMED`.
+saved destination permits replay. A receipt also missing its dispatch metadata
+stays `UNKNOWN/UNCONFIRMED`.
+
+#### Destination binding and settlement (TQ-07-A1/A2)
+
+Each new receipt binds its own **destination**: the host ID, whether it is the
+local authority, and for a remote host its root, SSH alias and the store identity
+the agent reported (a digest of the OS machine ID plus a random `store_id` kept in
+`<root>/store-id.json`). Editing `config.json` no longer strands work in flight:
+adding a host or changing another host's settings leaves every receipt observable,
+recoverable and collectable. A running supervisor follows the edit. Only a change
+to the receipt's own destination refuses it, naming the field (`root`, `ssh`,
+`local`); the SSH alias may change only when the bound store identity is proved
+again before a replay. A refused destination leaves the receipt untouched, so it
+cannot start reserving its host. The pool keeps every configuration it loads under
+`<pool root>/config-history/<sha256>.json`; an older receipt that bound a whole-file
+digest is resolved from there or from a backup beside the file (`config.json*`).
+Without either it may be observed but never replayed or settled automatically.
+
+Receipts that reserve a host are settled only with proof:
+
+- `PREPARING`: dispatch happens only after `SUBMISSION_UNCONFIRMED` is durable,
+  and a coordinator that binds a destination holds the job lock until then. Under
+  that lock the receipt becomes `TRANSFER_DEFERRED` (`COORDINATOR_INTERRUPTED`)
+  and the same ID retries on the same host. Older receipts wait one hour first,
+  because the first coordinator released the lock before dispatch.
+- A remote `SUBMISSION_UNCONFIRMED` receipt that was never acknowledged, is older
+  than ten minutes and binds a store identity: on `NOT_FOUND` the pool asks the
+  agent to `fence` the request. The agent writes a durable tombstone and then
+  checks for the job directory, while `run` creates the directory and then checks
+  for the tombstone, so a request is either fenced and never launched or launched
+  and reported. Only a `FENCED` reply naming the request and the bound store
+  settles the receipt (`CANCELED_BEFORE_DISPATCH`, `REMOTE_FENCED`). A transport
+  error, a `KNOWN` reply, another store or an agent without `fence` settles
+  nothing. `pool reconcile` uses the same proof without `--operator-confirm`; an
+  operator release still leaves a tombstone where the agent supports it.
+- The watchdog sweeps overdue reserving receipts every pass (45 s budget), so a
+  receipt with no live batch still reaches these proofs; hosts whose observation
+  is slow are skipped for that pass.
+
+A job directory left without its journal by a launch that died is cleared under
+the host lock by the next `run` or `fence` of that ID (TQ-07-A9a).
 
 Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
 interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
@@ -580,6 +618,10 @@ studio renders after checking native GPU/RAM/disk headroom:
 ```powershell
 python tools/testqueue/testctl.py serve --engine .tools/Godot_v4.8-beta2_win64_console.exe --headless-slots 2 --capture-slots 2
 ```
+
+Explicit slot flags are remembered in `<authority root>/capacity.json`. A later
+`serve` without flags, such as the watchdog's restart, reuses them instead of
+falling back to one slot (TQ-07-A6). Pass the flag again to change a count.
 
 Create a fresh frozen snapshot as above, then submit a studio capture:
 

@@ -15,7 +15,7 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue import agent_view
 from tools.testqueue.common import Singleton, write_json
-from tools.testqueue.pool import Pool, default_config, digest
+from tools.testqueue.pool import Pool, default_config
 from tools.testqueue.pool_batch import _finished_success, reobservation_ids, run_batch
 from tools.testqueue.pool_history import expected_seconds
 from tools.testqueue.presets import validate, scheduling
@@ -103,6 +103,10 @@ def _active(directory):
     return False
 
 
+def _without_config_digest(request):
+    return {key: value for key, value in request.items() if key != "config_sha256"} if isinstance(request, dict) else request
+
+
 def launch(request_id, jobs, source=None, *, config=None):
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
@@ -115,7 +119,10 @@ def launch(request_id, jobs, source=None, *, config=None):
     try:
         path = directory / "request.json"
         if path.exists():
-            if _read(path) != request:
+            # The configuration digest records what was current at launch. Each
+            # dispatched row binds its own destination (TQ-07-A1), so an unrelated
+            # configuration edit does not make a repeated launch a different request.
+            if _without_config_digest(_read(path)) != _without_config_digest(request):
                 raise ValueError("request_id already binds different inputs; use the original request")
         else:
             write_json(path, request)
@@ -336,8 +343,8 @@ def recover(request_id, *, config=None):
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
     request = _request(directory, request_id)
-    if digest(pool.config_path) != request["config_sha256"]:
-        raise ValueError("pool configuration changed; restore the original configuration before recovery")
+    if Path(request.get("config", pool.config_path)).resolve() != pool.config_path:
+        raise ValueError("this request belongs to a different pool configuration file; recover it with that file")
     if (directory / "batch.json").exists():
         batch = _read(directory / "batch.json")
         if batch.get("result") in {"PASSED", "FAILED"} and not reobservation_ids(pool, batch["jobs"]):
@@ -410,8 +417,8 @@ def supervise(directory):
         write_json(state_path, {"state": state, "updated_at": time.time(), **timings, **extra})
     try:
         request = _read(directory / "request.json")
-        if digest(request["config"]) != request["config_sha256"]:
-            raise ValueError("pool configuration changed; restore it before recovery")
+        # Configuration edits are allowed: every dispatched row checks its own
+        # bound destination, and rows not yet placed use the current hosts.
         pool = Pool(request["config"])
         manifest = directory / "manifest.json"
         previous = _read(state_path) if state_path.exists() else {}

@@ -366,10 +366,19 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
         failed_verifications = set()
         if state_path.exists():
             state = json.loads(state_path.read_text(encoding="utf-8"))
-            if (state.get("version") not in {1, BATCH_VERSION} or state.get("config_sha256") != config_digest
+            if (state.get("version") not in {1, BATCH_VERSION}
                     or state.get("manifest_sha256") != manifest_digest or state.get("snapshot") != str(snapshot)
                     or [row.get("input") for row in state.get("jobs", [])] != jobs):
                 raise ValueError("batch inputs changed; preserve and recover the original state")
+            changed = False
+            if state.get("config_sha256") != config_digest:
+                # TQ-07-A1: each dispatched row's receipt binds its own destination,
+                # so a configuration edit (a new host, another host's settings) no
+                # longer strands the batch. Keep the history for evidence.
+                history = state.setdefault("config_history", [])
+                history.append({"config_sha256": state.get("config_sha256"), "replaced_at": time.time()})
+                state["config_sha256"] = config_digest
+                changed = True
             ids = [row.get("request_id") for row in state["jobs"]]
             if (len(set(ids)) != len(ids) or any(not isinstance(item, str) or not item.isalnum() for item in ids)
                     or any(row.get("phase") not in {"WAITING", "SUBMITTING", "RETRY_WAIT", "REJECTED",
@@ -378,7 +387,6 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                 raise ValueError("invalid batch state")
             # Older batch receipts could mark FINISHED rows done without
             # collecting their evidence. Recover those same IDs, never submit.
-            changed = False
             reobserve = reobservation_ids(pool, state["jobs"])
             for row in state["jobs"]:
                 attempts = row.get("submission_attempts", 0)
