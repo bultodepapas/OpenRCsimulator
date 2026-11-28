@@ -7,7 +7,7 @@ Reviewed 2026-10-24 for the [F4U plan](../../../F4U-PLAN.md). The author deliver
 | Part | Delivery | Verdict |
 | --- | --- | --- |
 | A, fuselage winding | g1.24, twelve liveries | **Accepted.** All twelve GLBs pass the preflight, including the skin-orientation rule (`fuselage_core` outward 0.831). In the default GLB, `fuselage_core` is the only mesh that differs from the shipped g1.13 (positions, normals, UVs and index sets compared). |
-| B, g2 detail tier | g2.0, Naval 308 only | **Accepted in substance; three corrections requested for g2.1** ([g2.1 request](../../../F4U-G2-1-REQUEST.md)). The rig, contacts and budget fit the contract and the frame cost is unchanged. The propeller paint and the main wheels are worse than g1. |
+| B, g2 detail tier | g2.0, Naval 308 only | **Accepted in substance; three corrections requested for g2.1** ([g2.1 acceptance below](#g21-review-2026-10-24)). The rig, contacts and budget fit the contract and the frame cost is unchanged. The propeller paint and the main wheels are worse than g1. |
 | g2.1 request, F1–F4 and I1 | g2.1, Naval 308 only | **Accepted and integrated (2026-10-24, [below](#integration-of-g21-2026-10-24)).** F1–F4 are done and nothing else changed. One small follow-up remains: the new blade material lost its normal map. I1 (optional) is not met. [Review below](#g21-review-2026-10-24). |
 
 ## g2.0 checks
@@ -57,7 +57,7 @@ Defects:
 
 ## g2.1 review (2026-10-24)
 
-The author delivered `F4U_Corsair_g2_1` for the [g2.1 request](../../../F4U-G2-1-REQUEST.md). Package: 145/145 files match `SHA256SUMS.txt` and the ZIP matches its `.sha256`. GLB SHA-256 `cf4cdad6…fda945b3`.
+The author delivered `F4U_Corsair_g2_1` for the [g2.1 acceptance below](#g21-review-2026-10-24). Package: 145/145 files match `SHA256SUMS.txt` and the ZIP matches its `.sha256`. GLB SHA-256 `cf4cdad6…fda945b3`.
 
 | Item | Result |
 | --- | --- |

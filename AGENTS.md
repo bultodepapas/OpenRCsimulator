@@ -6,19 +6,18 @@ Build OpenRC Simulator incrementally: robust physics, realistic behavior and evi
 
 - Check `git status` and the current branch before editing. Preserve unrelated work and stage only your changes. Commits, pushes and merges are permitted within the user's requested scope; honor the requested branch and existing gates.
 - Before editing a path, read the applicable nested `AGENTS.md` files between the repository root and that path. A session started at the root may not have loaded them. Pass relevant scoped rules to helpers.
-- Current code, configuration and accepted data establish implemented behavior. Plans describe remaining work; dated research records evidence. Read the documents needed for the task:
-Use the disk F: and U: as cache or disposable store. clean afeter use it, fallback D:
+- Current code, configuration and accepted data establish implemented behavior. Start at the [master documentation index](docs/README.md); [ROADMAP](ROADMAP.md) owns current cross-project status, priorities and acceptance gates. Task plans supply detailed contracts; dated research qualifies only its recorded inputs. Read only the documents needed for the task:
 
 | Task | Read |
 | --- | --- |
 | Setup, launch, dependencies or exports | [Tooling guide](docs/TOOLS.md) |
-| Architecture or shared interfaces | [STACK](docs/STACK.md); [track ownership](docs/README.md#tracks-plans-and-step-ids) |
+| Architecture or shared interfaces | [STACK](docs/STACK.md); [track ownership](docs/TRACKS.md) |
 | Godot scenes, resources or worker jobs | [Godot runtime boundaries](docs/STACK.md#godot-runtime-boundaries) |
 | Choose a test, capture or debugging tool | [Tool index](docs/tools/README.md); [verification scope](docs/tools/shared.md#verification-scope) |
 | Aircraft data, geometry or generators | [Aircraft contract](docs/AIRCRAFT_CONTRACT.md); the owning aircraft guide |
 | Flight handling, controls or physics tuning | [Flight logging workflow](docs/FLIGHT-LOGGING.md) |
 | Delegate research, drafts or review | [Subagent guide](docs/SUBAGENTS.md) |
-| Update documentation or instructions | [Documentation map and conventions](docs/README.md) |
+| Update documentation or instructions | [Documentation maintenance](docs/DOCUMENTATION.md) |
 
 For a fresh checkout, follow [developer setup](docs/TOOLS.md#developer-setup). These Bash commands use the repository's pinned engine; shared-host launches also require the admission rules below:
 
@@ -79,6 +78,6 @@ Research/review helpers are source-read-only by default. Give each helper a boun
 
 Write short, precise English. Give each topic one authoritative home and link to it. Preserve active plans, valuable research, primary references and required evidence; consolidate useful material before deleting completed or superseded plans. Do not create cleanup archives or routine cleanup reports.
 
-Reuse suitable free tools, assets and data; preserve licenses, provenance and redistribution rights. Keep unnecessary images, raw logs and temporary outputs out of Git; follow the [evidence conventions](docs/README.md#conventions-for-documents).
+Reuse suitable free tools, assets and data; preserve licenses, provenance and redistribution rights. Keep unnecessary images, raw logs and temporary outputs out of Git; follow the [evidence conventions](docs/DOCUMENTATION.md#evidence-and-link-checks).
 
-Use the owning track's step IDs and include verification evidence in commit messages. Record decisions in [DECISIONS](docs/DECISIONS.md) and reusable lessons under [LEARNINGS criteria](docs/LEARNINGS.md#keeping-this-useful). Keep changing status and dated results out of these instructions.
+Use the owning track's step IDs and include verification evidence in commit messages. Record decisions in the subject file linked from the [decisions index](docs/DECISIONS.md) and reusable lessons under [LEARNINGS criteria](docs/LEARNINGS.md#keeping-this-useful). Keep changing status and dated results out of these instructions.

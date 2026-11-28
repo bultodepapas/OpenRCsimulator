@@ -2,7 +2,7 @@
 
 2026-10-19. Native Windows, pinned Godot 4.7.2 (`ed1daf0bf`), Compatibility renderer,
 NVIDIA RTX 3090. The [contributor guide](../../../LANDSCAPES.md) owns the interface;
-the [implementation plan](../../../plans/landscape-selection.md) owns remaining gates.
+the [contributor qualification](../../../LANDSCAPES.md#qualification) owns remaining gates.
 
 | Check | Result |
 | --- | --- |

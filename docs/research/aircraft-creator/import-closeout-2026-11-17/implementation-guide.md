@@ -1,9 +1,9 @@
 # Aircraft import: implementation guide
 
 **Reviewed production source:** `08f948265d40d83fbb4726a302b9e1c9490ccfce`, 2026-11-17.
-**Purpose:** turn the [closeout phases](closeout-plan.md) into bounded development changes. That plan owns order, status and acceptance; this guide supplies implementation seams, proposed contracts and regression recipes. Existing AC/AC-CV IDs remain authoritative. [Follow-up evidence](followup-02/README.md) distinguishes executed observations from source inspection.
+**Historical design, 2026-11-17.** These proposed contracts and counterexamples describe the audit baseline. The [implementation packets](implementation-evidence.md) record later repairs. Use the [Creator task](../../../plans/aircraft-creator.md) for open acceptance and the [ClearView contract](../../../plans/clearview-aircraft-import.md) for current behavior. [Follow-up evidence](followup-02/README.md) distinguishes executed observations from source inspection.
 
-The production `.gd` and `app/data/` files did not change between the original audit and this source. Upstream supplied the missing UID sidecars and additional translations. Its release preflight passed; full CI and export did not. Do not spend the next packet recreating those sidecars or claiming the importer now flies.
+The production `.gd` and `app/data/` files did not change between the original audit and this source. Upstream supplied the missing UID sidecars and additional translations. Its release preflight passed; full CI and export did not.
 
 **All pseudocode below is a proposed contract, not an existing API or a drop-in patch.** Names in capitals describe work to implement. Keep the actual repository's result envelopes, float64 physical math, resource limits and ownership rules.
 
@@ -235,6 +235,6 @@ Extend `test_creator_trial`, `test_creator_flow`, `test_main_startup_cleanup` an
 
 ## 9. Review the packet, then stop
 
-Before merging each implementation packet, retain the baseline, changed contracts, source/dependency identities, smallest meaningful positive/counterexample runs and the exact remaining gate. The [handoff](agent-handoff.md) supplies that record. Freeze inputs before tests; inspect checked engine logs, not only exit codes.
+Before merging each implementation packet, retain the baseline, changed contracts, source/dependency identities, smallest meaningful positive/counterexample runs and the exact remaining gate. Freeze inputs before tests; inspect checked engine logs, not only exit codes.
 
 Stop when the packet's exit is proven. Do not add a broad wizard rewrite, every codec, all aircraft families, a generic provenance framework or a new catalog to a bounded repair. Numerical and real exported player journeys remain separate owning gates. The final proof is the advertised source aircraft completing import, flight, save, Home selection and restart in the packaged application.

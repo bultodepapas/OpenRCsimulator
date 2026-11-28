@@ -8,7 +8,7 @@
 
 ## Current implementation
 
-Home selects Club field or Green paradise through the explicit landscape catalog. The scenery, lake and vegetation work below describes Club field; Green uses one flat grass mesh without those layers. [Contributor guide](LANDSCAPES.md), [selection plan and remaining gates](plans/landscape-selection.md), [L21–L24 verification](research/landscape-upgrade/L21-24/README.md).
+Home selects Club field or Green paradise through the explicit landscape catalog. The scenery, lake and vegetation work below describes Club field; Green uses one flat grass mesh without those layers. [Contributor guide](LANDSCAPES.md), [selection qualification](LANDSCAPES.md#qualification), [L21–L24 verification](research/landscape-upgrade/L21-24/README.md).
 
 - L0–L7 provide the capture baseline, fixed-sun sky/haze/clouds, shared field builder, treeline cards and far landscape. L6 uses validated CC0 source packages and a small runtime atlas; detailed source meshes remain authoring inputs.
 - LU-16-R2 refines Club's downloaded Colombian SRTM mountains at 1.6–8.6 km north. Four chunks now use 27,648 triangles, source-derived relief/habitat textures and two compressed CC0 photographs for rock and vegetation variation. These mountains remain visual-only. [Sources, captures and repeated cost measurements](research/landscape-upgrade/LU-16-R2/README.md).

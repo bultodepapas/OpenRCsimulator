@@ -2,18 +2,7 @@
 
 Owner: PT debug tooling, coordinated with VQ/DT performance, GOD TEST, UI loading,
 CAM and simulation owners. Prefix: **PT1h-R15-S0…S7**, subordinate to PT1h-R15.
-Updated: **2026-11-19** (lead audit, merge to `main` and S1a/S2a implementation).
-
-**Status:** S0 research, S3a offline analysis, **S1a capture identity and
-S2a automatic session watch are implemented** with focused software checks and a
-headless live-protocol probe. Rendered 1080p qualification, observer-cost
-measurement and S3–S7 remain open. Commands and metric definitions live in the
-[debug guide](../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15).
-Dated evidence: [24 investigations](../research/release-readiness/PT1h-R15/research-2026-11-19.md),
-[tool integration](../research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md) and
-[watch implementation](../research/release-readiness/PT1h-R15/watch-2026-11-19.md).
-The [global performance plan](global-performance-visual-quality.md#4-measurement-and-acceptance-contract)
-owns product gates; this plan does not replace them.
+Use the [project roadmap](../../ROADMAP.md) for priorities and the [debug guide](../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15) for commands and metric definitions. S1a/S2a capture identity and the automatic session watch have focused software and headless protocol coverage. The [24 November F0 measurements](../research/god-test/2026-11-24-flight-tick-cost.md#direct-phase-timing) additionally exercise eight callback phases on ANGEL and PRIMIS. Observer cost on the named release route, physical presentation and broader S3 route markers need separate proof. The [performance contract](global-performance-visual-quality.md#4-measurement-and-acceptance-contract) owns product acceptance.
 
 ## 1. Outcome
 
@@ -26,8 +15,7 @@ displayed frames or low input latency.
 
 ## 2. Audit of the branch plan (2026-11-19)
 
-The lead reviewed the merged branch plan against the code, with an independent
-review and measurements on the pinned engine. Accepted corrections:
+The [19 November source investigation](../research/release-readiness/PT1h-R15/research-2026-11-19.md), [tool integration](../research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md) and [watch checks](../research/release-readiness/PT1h-R15/watch-2026-11-19.md) establish the following constraints for the tested build.
 
 | Finding | Evidence | Change |
 | --- | --- | --- |
@@ -85,50 +73,18 @@ with the running engine, API or hardware.
 | **S2b** | Rendered 1080p qualification on the owner's machine: real flight, menus and first-use loads; observer cost with bridge absent / history only / watch running in matched runs | Open. Freeze an observer-cost ceiling first; do not subtract estimated cost from frames |
 | **S1b** | Launcher-asserted source revision: `debugctl launch` passes git HEAD plus dirty state; bridge reports it as `launcher_revision`, never as runtime identity | Open; one small slice |
 | **S2c** | Agent access: MCP start/status/stop for a background watch with the same policy and outputs | Open; long synchronous MCP calls are not acceptable |
-| **S3** | Scoped phase markers (loading request/ready/attach, camera switch, reset/respawn, pause/focus) as row-aligned context | Open; owners' seams; loading/camera/physics/render symptoms stay distinct |
+| **S3** | Eight engine phases shipped in [F0](../../app/render/frame_phases.gd). Additional scoped route markers (loading request/ready/attach, camera switch, reset/respawn, pause/focus) as row-aligned context | Route markers open; owners' seams; loading/camera/physics/render symptoms stay distinct |
 | **S4** | Offline comparison of two watch or capture directories per route/segment through existing GOD TEST/optimization protocols | Open; refuse mismatched policy/workload; per-run paired deltas; no pooled menus+flight |
 | **S5** | Optional native sidecars (PresentMon, MangoHud, Instruments) with clock correspondence anchored on `request_usec` | Open; unsupported/unaligned channels stay explicit |
-| **S6** | Rendered incident, observer-cost and package qualification across Windows/Linux/Apple | Open; 1080p first; separate platform outcomes |
+| **S6** | Rendered incident, observer-cost and package qualification across Windows/Linux/Apple | Open; use the applicable display target, including native pixels on Apple Silicon Retina; separate platform outcomes |
 | **S7** | Conditional deeper attribution or long recording | Deferred (see §8) |
 
-Next order: S2b → S1b → S2c → S3 → S4 → S5/S6. Each step is separately reviewable.
+S2b measures the watch itself. Compare captures only after identity and route coverage agree, and qualify external clocks independently for S5/S6.
 No step closes product performance gates merely by producing a report.
 
 ## 5. Watch contract (S2a)
 
-The authoritative command and output description is in the
-[debug guide](../../tools/debug/README.md#automatic-session-watch-pt1h-r15-s2).
-Design constraints that later work must preserve:
-
-- **Incremental, passive reads.** `frames since=<cursor> epoch=<E> lean=true passive=true`
-  returns rows after the cursor, exact cumulative totals and identity only. A
-  cursor from another epoch returns no rows; another `launch_instance` starts a
-  new segment and re-reads that history from sequence 1. Rows evicted before a
-  poll are counted gaps; counts in such segments are lower bounds.
-- **Client-side triggers on raw intervals.** `stall` and `stutter` use the
-  bridge's recorded flags. `sustained` counts consecutive intervals above the
-  watcher's budget (default: the bridge target) and re-arms after in-budget rows.
-  `drop` compares the median interval of a 1 s window with the median of the
-  preceding 10 s on the same route, with settling, an absolute floor, hysteresis,
-  a frozen reference and a baseline rebuilt after recovery (about 6 s blind after
-  each restart). `hang` is a `frames` poll timed out after `hang_s` while two
-  `ping` replies (network thread) show the same engine frame; its duration is a
-  client-side lower bound and the resumed interval is the measurement.
-- **Failure handling.** Any end (duration, interrupt, lost bridge, protocol error)
-  still writes the session files; 16 MiB of the output budget is reserved for them.
-- **Incidents.** Lead-up and recovery are row counts; triggers during an open
-  incident join it; `max_incidents` bounds captures while later triggers stay
-  counted. Each incident keeps its client rows (`openrc-debug-frame-incident v1`)
-  and, when the segment is unchanged, one bounded v1 snapshot exported with the
-  standard HTML/CSV/Perfetto pipeline. The interval perturbed by that fetch is
-  excluded from triggering and counted.
-- **Statistics.** Per segment and route, never pooled across them. Exact counts,
-  exact slowest-tail lows up to 5,000 retained intervals, histogram percentiles
-  with stated resolution, and a per-second series. Bridge totals reconcile the
-  watched rows exactly when the segment has no gap.
-- **Limits.** Not presented frames, CPU busy time or GPU completion. Triggers are
-  screening rules, not perceptual thresholds or causes. Polling still costs a
-  small amount of game-thread work and flags the next interval `diagnostic_query`.
+The [debug guide](../../tools/debug/README.md#automatic-session-watch-pt1h-r15-s2) owns command syntax, trigger defaults, output formats and limits. Preserve passive incremental reads, per-launch/epoch identity, cursor gap accounting, route-specific statistics and bounded incident capture. Count later triggers even after the capture limit. Exclude the interval perturbed by the closing snapshot from triggering. Write partial evidence and its stop reason after a timeout, disconnect or interrupted session.
 
 ## 6. Capture identity and alignment
 
@@ -180,7 +136,7 @@ changes. Never pool cold loading, menus and steady flight into one percentage.
 | Capture integrity | Empty cursors, rollover, eviction gaps, epoch/launch change with equal epoch numbers, freeze/lost bridge, storms, incident overlap and limits — covered for S2a by `test_frame_watch.py` |
 | Metric freshness | Periodic-max pulses, measurement off/on, disabled SubViewport, headless |
 | Observer cost (S2b) | Same workload with bridge absent, history only and watch running, in matched runs with an independent timing source |
-| Rendered product (S2b/S6) | 1080p first; Home→Fly, warmed flight, first-use aircraft/scene, camera/reset/pause/focus, cap/refresh; Windows/Linux/Apple separate |
+| Rendered product (S2b/S6) | Applicable display target, including native Apple Silicon Retina pixels; Home→Fly, warmed flight, first-use aircraft/scene, camera/reset/pause/focus, cap/refresh; Windows/Linux/Apple separate |
 
 S6 cannot pass from injected sleeps, headless runs, VM rendering or prettier reports.
 

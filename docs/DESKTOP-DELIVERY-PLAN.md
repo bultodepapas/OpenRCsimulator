@@ -1,10 +1,10 @@
 # Desktop delivery plan
 
-Resolution priority: **1080p primary; above-1080p resolutions (including 1440p, 4K and higher) secondary desirable; 720p tertiary and last**. Follow the [shared policy](../AGENTS.md#display-resolution-priorities). Existing 720p defaults, fixtures and historical results retain their stated scope and do not qualify the primary target.
+Display qualification follows the [shared resolution policy](../AGENTS.md#display-resolution-priorities): 1080p first generally, with native-pixel output and reconstruction for Apple Silicon on Retina displays. Record output, drawable and internal 3D dimensions separately. Historical 720p or 1080p fixtures qualify only their measured configuration.
 
 2026-10-15 · Revision 28 · Step prefix: **DT-**.
 
-**Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
+**Scope:** desktop acceptance requirements and their dated evidence. The [roadmap](../ROADMAP.md) owns current release status and priority; platform guides below own their specific qualification. Borderless fullscreen and desktop-resolution selection are implemented in [Settings](FIRST-LAUNCH.md), alongside unsigned ZIP delivery. Fullscreen-by-default/multiple-display acceptance, installers, public signing/notarization and the DT-13 owner gate remain separate work. The older DT rows and measurements below retain their recorded scope; they do not imply that current package, display or hardware gates have passed.
 
 Research records remain in [DT-00](research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R1](research/desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md). The latter reports inspect Godot/macOS artifacts and synthetic checker behavior; they do not establish native Mac launch or performance.
 

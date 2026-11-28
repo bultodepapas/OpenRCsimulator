@@ -2,7 +2,7 @@
 
 @AGENTS.md
 
-Keep shared project policy in [AGENTS.md](AGENTS.md). This explicit import supports sessions that do not load `AGENTS.md` natively; do not copy its rules here. Before editing, read the applicable nested `AGENTS.md` files as the shared rules require.
+The import above loads the shared [repository rules](AGENTS.md). Before editing, also read the nested `AGENTS.md` files on the path to your change. Use the [documentation index](docs/README.md) for the task guide and the [roadmap](ROADMAP.md) for project priorities.
 
 For delegation, use the ordinary named profiles in [`.claude/agents/`](.claude/agents/):
 

@@ -11,7 +11,7 @@ Reviewed and integrated 2026-10-24 for the [F4U plan](../../../F4U-PLAN.md). The
 | Same airframe as g2.1 | In all 13, every node keeps its parent, section and rest transform. Every mesh has g2.1's positions, normals and UV0, compared triangle by triangle per mesh. Eight schemes give the spinner cap its own material, hence 58 surfaces |
 | Naval 308 | Re-exported (GLB `9fa3b86a…ba2c0851`, was g2.1's `cf4cdad6…`) with the same geometry |
 | Visual review | Godot bench, 1920×1080, left and right three-quarter views of every scheme. Lettering reads correctly on both sides ("308", "U.S. NAVY", "Blue Angels", "Thunderbirds", "CHROME", "40", "12"), and insignia and wing markings are consistent. Sheets are outside the repository under `D:\OpenRCsimulator-evidence\f4u-detail-20261024\results\bench-g22-liveries\` |
-| Open from g2.1 | The blade material still has no normal map in any of the thirteen schemes ([request](../../../F4U-G2-1-REQUEST.md#after-g21)) |
+| Open from g2.1 | The blade material still has no normal map in any of the thirteen schemes ([request](../../../F4U-G2-3-REQUEST.md#c2-blade-normal-map)) |
 
 ## Integration
 

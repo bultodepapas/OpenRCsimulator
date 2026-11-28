@@ -1879,7 +1879,7 @@ or a native graphics result.
 
 ## 2026-11-16 native CPU closeout on ANGEL
 
-The [bounded closeout plan](../../../plans/apple-silicon-closeout.md) reached its
+The bounded native closeout reached its
 screen stop condition. **Reference remains the default.** The native backend
 remains an explicit experimental option; no default-admission marker was created.
 This CPU comparison does not qualify the four MetalFX technologies above.
@@ -2010,3 +2010,7 @@ The [MetalFX source controls](https://github.com/bultodepapas/OpenRCsimulator/ac
 passed on the CI head. The [aggregate CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43921525209)
 remains in progress at delivery. No main merge, public app release or new
 performance qualification is claimed.
+
+## Integration scope recorded after delivery
+
+The subsequent [main-integration record](https://github.com/bultodepapas/OpenRCsimulator/blob/8d4169f8febfd7d78a028eaa817414217a54f24b/docs/plans/apple-silicon-closeout.md#main-integration) retained the task branch solver, domain and companion inputs byte for byte while preserving independent ClearView and Extra 300S work from main. The earlier M1 receipts apply only to those unchanged inputs; they do not qualify the unrelated aircraft/import changes. That record still left aggregate CI pending and supplies no later performance or public-signing acceptance.

@@ -52,7 +52,7 @@ Technical launches ignore Home preferences, for example:
 
 `--cloud-seed` accepts 0–2147483647; `--cloud-motion` accepts `legacy`, `still`, `follow_wind`, or `aloft`; flash values are `full`, `reduced`, `off`; thunder volume is 0–1. Invalid explicit sky options refuse startup. Missing sky data in old preferences/checkpoints resolves to classic. Native technical checkpoints freeze profile, transport and edit history; incompatible catalog retunes are rejected. The existing progressing-world checkpoint restriction remains.
 
-This integration targets the airplane route. Natural Random and helicopter flights currently keep classic; the helicopter route has no sky editor or storm consumer. Tropical bands, tornadoes, spatial wind forces, rain physics and volumetric traversal are not implemented. [Implementation evidence](research/field-world/FW-78/README.md), [native gallery](research/field-world/FW-79/README.md), [distant bank and rain captures](research/field-world/FW-83/README.md), [electrical effects and licenses](research/field-world/FW-84/README.md).
+This integration targets the airplane route. Natural Random and helicopter flights currently keep classic; the helicopter route has no sky editor or storm consumer. Tropical bands, tornadoes, storm-specific spatial airflow, rain physics and volumetric traversal are not implemented. The separate opt-in physical wind v5 already provides bounded spatial airflow; see the [wind reference](WIND-ATMOSPHERE-REFERENCE.md). [Implementation evidence](research/field-world/FW-78/README.md), [native gallery](research/field-world/FW-79/README.md), [distant bank and rain captures](research/field-world/FW-83/README.md), [electrical effects and licenses](research/field-world/FW-84/README.md).
 
 ## Current implementation
 
@@ -90,7 +90,7 @@ FW-66–74 deliver the night-field runtime: one mast with four downloaded lamp h
 
 Keep the detailed dated observations in the linked evidence; this guide owns current behavior and the remaining acceptance gates. Additional village and traffic lighting remains parked.
 
-The active [sky, clouds and storm plan](plans/sky-clouds-weather.md) owns FW-76–90 and the remaining art/flight/performance gates. Nine sky profiles, transport controls and the electrical-effects slice are present as described above. [FW-76 research](research/field-world/FW-76/README.md) retains Godot/GitHub/Reddit/tutorial, free VFX/audio and meteorology sources. Spatial weather and distributed aircraft response remain unimplemented and coordinated with M5-W05/W07.
+The active [sky, clouds and storm plan](plans/sky-clouds-weather.md) owns FW-76–90 and the remaining art/flight/performance gates. Nine sky profiles, transport controls and the electrical-effects slice are present as described above. [FW-76 research](research/field-world/FW-76/README.md) retains Godot/GitHub/Reddit/tutorial, free VFX/audio and meteorology sources. Storm-preset integration with physical spatial weather and distributed aircraft response remains separate work coordinated with M5-W05/W07. The [wind reference](WIND-ATMOSPHERE-REFERENCE.md) owns the already implemented opt-in spatial law.
 
 ## Acceptance and research
 

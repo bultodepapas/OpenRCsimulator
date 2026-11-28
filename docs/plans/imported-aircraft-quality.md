@@ -1,8 +1,6 @@
 # Imported aircraft quality: audit and phased plan
 
-Status: active plan, created 2026-11-20; progress in [§7](#7-progress), next improvements in [§8](#8-re-audit-after-iaq-03b-and-next-improvements-2026-11-20). This file owns `IAQ-00` through `IAQ-08` and the translation steps `IAQ-T1` through `IAQ-T9` ([§9](#9-translation-model-and-tuning-plan-2026-11-20)). It audits how imported aircraft (Creator sources: generic STL/GLB, ClearView conversions and the new Phoenix import) look, fly, control and present in OpenRC today, and orders the work that turns them into first-class aircraft. Format-specific work stays with its owners: [Aircraft Creator](aircraft-creator.md) (AC), [ClearView](clearview-aircraft-import.md) (AC-CV), [Phoenix](phoenix-aircraft-import.md) (AC-PX). This plan sequences and measures their shared player-visible quality; it does not reassign their steps.
-
-The [23 November Phoenix audit and delivery order](phoenix-aircraft-import.md#72-priorities-after-the-installation-audit) updates the Phoenix-specific findings below. Sections 2 and 8 describe earlier builds. Use the dated campaign rows in §7 when comparing counts.
+Aircraft Creator / Workshop owns IAQ-00…08 and IAQ-T1…T9. Use the [Phoenix priorities after the installation audit](phoenix-aircraft-import.md#72-priorities-after-the-installation-audit) for current import coverage, the [translation contracts](#9-translation-model-and-tuning-plan-2026-11-20) for physical targets and the [ClearView contract](clearview-aircraft-import.md) for estimated and donor routes. The November 20 baseline, scores and proposed estimates below describe their recorded inputs. The [progress table](#7-progress) records subsequent work. On November 23, 110 of 114 Phoenix fixed-wing and glider definitions compiled and 91 admitted at least one start (91 airborne, 62 runway, 13 hand launch). Those counts overlap. The checks stopped at start admission. [Windows start matrix and scope](../research/aircraft-creator/phoenix-import-audit-2026-11-23.md#windows-workshop-start-checks-23-november).
 
 ## 1. Method and evidence limits
 
@@ -176,7 +174,7 @@ Since the §2 audit, IAQ-01/02/03/03b delivered materials, moving parts, the pro
 
 ### 8.1 What the stock models carry
 
-| Decoded content | Models | Used today |
+| Decoded content | Models | Used at the November 20 audit |
 | --- | --- | --- |
 | Classes | 107 fixed-wing, 7 gliders, 96 helicopters, 8 multirotors, 2 others | Fixed-wing and gliders only |
 | Landing gear (`gear[]` with wheel collision primitives) | 97 fixed-wing: 80 with a steerable wheel, 21 retractable, 7 on floats | Presence only; Creator records compile `gear = locked_up`, airborne/hand starts |

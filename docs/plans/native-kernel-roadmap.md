@@ -1,32 +1,14 @@
-# Native kernel and optimization roadmap
+# Native kernel work and qualification
 
-Owner goal (2026-11-27/28): run the game's hot paths in the native kernel, robustly and as efficiently as possible,
-batch by batch with measured returns, and keep optimizing whatever then costs most. This plan records what is native,
-what each batch measured, where the time is after v0.4.0, and the remaining work ranked by return against effort.
-
-Owner and scope:
-- Prefix `NK`. Paths: `research/native-kernel/src/`, `app/sim/native_stage.gd`, the published-endpoint answers in
-  `app/sim/flight_session.gd`, their consumers, and `docs/research/native-kernel/`.
-- Rows from other tracks (F0–F6, VQ, DT-MAC, UI, AFC) keep their owners, IDs and acceptance gates. This plan ranks
-  them against native work only.
-- The [native kernel README](../../research/native-kernel/README.md) owns coverage, contracts and admission.
-- Each batch's evidence README owns its figures.
-- [Optimization priorities](optimization-priorities.md#frame-stalls-and-sustained-fps) owns the frame-cost
-  attributions (F0–F6).
-- [STACK](../STACK.md#native-backend-policy) owns the backend policy.
+The [project roadmap](../../ROADMAP.md) sets cross-project priorities. NK owns the aircraft C++ evaluator, stage adapters, published-endpoint answers and their qualification. Other tracks retain their IDs, owners and acceptance gates. The [backend policy](../STACK.md#native-backend-policy) defines the shared transaction. The [native guide](../../research/native-kernel/README.md) owns build, admission and package instructions.
 
 ## Ground rules
 
-- The GDScript reference remains the specification, the fallback and the replay backend
-  ([decision](../DECISIONS.md#native-acceleration-keeps-the-reference-as-its-specification)).
-- Each native answer has a hook that turns it off. A parity test compares the whole consumer output with the hook on,
-  off and full-reference.
-- `Simulation` keeps the commit, publication, checkpoint and rollback transaction
-  ([AGENTS](../../AGENTS.md#native-development)).
-- UI, menus, orchestration and the simulation transaction stay in GDScript by design. "Everything native" means every
-  hot path whose measured return justifies it, not every line.
+Keep the reference selectable and the shared simulation transaction in GDScript. Move a hot path when its measured return justifies maintaining another implementation. For a published endpoint, compare the complete consumer on native, hook-disabled and full-reference paths.
 
 ## Where the time is after v0.4.0
+
+These are dated observations from November 24–28, on the builds and workloads identified below. References to F1 and F5b measurements refer to the [original experiment register](https://github.com/bultodepapas/OpenRCsimulator/blob/8d4169f8febfd7d78a028eaa817414217a54f24b/docs/plans/optimization-priorities.md#frame-stalls-and-sustained-fps); the [current register](optimization-priorities.md) describes how to investigate a recurring symptom. Re-measure a changed candidate before treating these costs as current.
 
 **Which hosts are CPU-limited.** The Windows workstation is CPU-limited in flight. ANGEL (M1) and PRIMIS (Intel UHD
 630) are GPU-limited ([direct phase timing](../research/god-test/2026-11-24-flight-tick-cost.md#direct-phase-timing)).
@@ -67,7 +49,7 @@ stalls, hull-contact ticks and GPU passes return milliseconds. The ranking below
 
 ## What is native: measured returns
 
-Figures are quoted on 2026-11-28 from each batch's README, which owns them and wins if they differ.
+This November 28 comparison quotes the owning batch receipts; each result applies to its recorded inputs.
 
 Unless a row says otherwise:
 - conditions are Windows 11 x86_64, native backend, headless;
@@ -154,38 +136,11 @@ Unless a row says otherwise:
 
 ### Supporting repairs in the same push
 
-These are GDScript or engine-setting repairs. Each is recorded with its date in
-[optimization priorities](optimization-priorities.md#frame-stalls-and-sustained-fps).
-- **Per frame:**
-  - Glow audio keys from the accepted state: 235–391 → 38–49 µs.
-  - Glow shaft-load torques from the blade model: 55–57 → 9 µs.
-  - Cloud transport validated once per frame: `World.update` 214 → about 25 µs.
-  - Retraction poses only on change: 159 → 92 µs.
-- **Per tick:**
-  - Lens contact listener: 1–1.9 ms spikes → 7 µs.
-  - Accident ledger samples gear support once per frame: about 0.36 ms of each rolling tick
-    ([decision](../DECISIONS.md#the-accident-ledger-samples-gear-support-once-per-frame)).
-  - Wheel support events built without re-validation: 18 → 4–6 µs per wheel.
-- **Stalls removed:**
-  - Pipeline cache writes deferred until no flight runs: 21–37 ms stalls gone.
-  - Calibration verdict written on a worker: 133–147 ms frames gone.
-  - Skyline on a worker: 0.72 s → 0.07 s of main-thread work.
-- **Menus:** the Controls opening frame went 650–790 → 212–231 ms, and Settings 280–350 → 90–135 ms.
-
-**Noise-level batches:**
-- NK-5c, NK-6q and NK-6t (glow) measured within the host's run-to-run spread.
-- NK-6h, NK-6i and NK-6j return nothing airborne; NK-6v returns nothing while rolling.
-
-**Platforms:**
-- Every NK-5a to NK-9b gain above was measured on Windows only. CI requalifies Linux and Windows on each push.
-- Linux passed all nineteen installer gates locally at `d080ca630` (WSL, 2026-11-28).
-- No NK-6/7/8 parity test has run on Linux or macOS.
-- macOS packages ship the reference evaluator. The M1 native route is an experimental source-editor build of an
-  earlier snapshot ([macOS ARM64](../../research/native-kernel/README.md#experimental-macos-arm64)).
+The [dated comparison](https://github.com/bultodepapas/OpenRCsimulator/blob/c84c2f8b987617a619f7e77397f025daee28a262/docs/plans/native-kernel-roadmap.md#supporting-repairs-in-the-same-push) separates GDScript, engine-setting and menu repairs from native batch returns. The [frame-cost investigation](optimization-priorities.md#frame-stalls-and-sustained-fps) owns their attributions. NK-5c, NK-6q and NK-6t (glow) fell within run variation. NK-6h–6j had no airborne benefit; NK-6v broke even while rolling.
 
 ## Remaining work ranked by return against effort
 
-**Return** is main-thread time saved per second of flight. A per-tick saving counts × 240; a per-frame saving counts
+The November 28 ranking is a comparison of proposed interventions using the evidence above. The project roadmap owns scheduling. **Return** is main-thread time saved per second of flight. A per-tick saving counts × 240; a per-frame saving counts
 × FPS (60 unless stated). 1 ms/s is 0.1% of the main thread. A felt stall ranks above an equal mean cost, and a cheap
 measurement that may find one ranks above a small certain batch.
 
@@ -203,7 +158,7 @@ measurement that may find one ranks above a small certain batch.
 
 | # | ID · owner | Work | Cost (source) → saving | Effort | Proof or blocker |
 | --- | --- | --- | --- | --- | --- |
-| 1 | NK-9c · F0/F2 | Phase-timed live Windows tour (jet, Corsair, glow Stik; 1080p, muted) with the native answer counters | No end-to-end Windows measurement since NK-6u; the slow-frame excess is unattributed. Enables every later claim | S | Every frame split by `frame_phases.gd`. Counters (`native_audio_row_answers`, `native_approach_answers`, `native_render_answers`) above zero, with no fallback reason |
+| 1 | NK-9c · F0/F2 | Phase-timed live Windows tour (jet, Corsair, glow Stik and P-51 at 1080p, muted) with the native answer counters | No end-to-end Windows measurement since NK-6u; the slow-frame excess is unattributed. Enables every later claim | S | Every frame split by `frame_phases.gd`. Counters (`native_audio_row_answers`, `native_approach_answers`, `native_render_answers`) above zero on each applicable consumer, with no fallback for the measured path |
 | 2 | F1 · CR, sim | Re-measure touching ticks after NK-6f–6l. Then extend the ledger's hold from gear-support samples to persistent hull events, inside `app/economy/incident.gd` (new work); take one `mass_properties()` per accepted tick | F1 cell, 26 November, live Corsair, before NK-6f–6l: ledger about 600, session handler about 300, `mass_properties()` 110 µs per touching tick. A hold that pays the ledger once per 60 Hz frame saves at most 600 µs × 180 ticks ≈ 108 ms/s while a hull point touches | M | Its caller in `main.gd` is pinned by the companion manifest and stays unchanged. Ledger digests, crash audio, checkpoint and replay unchanged |
 | 3 | F4 · DT-MAC | Profile the M1's 500 ms disturbance (`sample` or Instruments) | 12.6–13.9 ms maximum excess per cycle, twice a second, in flight, pause and menus | S after the prerequisite | Full Xcode on ANGEL (owner) |
 | 4 | F3 · UI-34c | Save the first-flight hint preference off the flight frame | About 15 ms once, 10 s into a new player's first flight | S | `app_root.gd` is pinned by the companion manifest: renew its source and profile hash in the same push |
@@ -219,7 +174,7 @@ measurement that may find one ranks above a small certain batch.
 | 14 | F5b · aircraft, camera | Skip `apply_controls` when its inputs are unchanged; chase-camera springs | Live, F5b cell: 17–67 and about 40 µs per frame → up to 1–4 ms/s | M | The aircraft builder is SHA-pinned: hook at the render boundary, only if no other writer touches those nodes. Camera owners' rework |
 | 15 | NK-7o | Glow voice hand-over telemetry from the glow keys | † 21 µs per frame on glow aircraft → about 15 µs, 0.9 ms/s | M | Byte-identical PCM |
 | 16 | NK-5h-R2 · configuration owners | Freeze more guarded roots, so identity checks replace property watches | † Configuration and weather guards 9 + 5 µs per tick → up to about 10 µs, ≤ 2.4 ms/s | M | Owners' review. At the A/B noise floor, so accept only on an A/B above it |
-| 17 | NK-P | NK-6/7/8 parity on Linux; then native macOS for the current source and package | No Linux parity run yet. macOS ships the reference evaluator. Before NK-5/6, NK-3 measured Linux's native stage evaluator at a median 2.11× cheaper tick. On the GPU-limited M1 this mostly shortens catch-up (inference) | S (Linux), L (macOS) | Linux parity suites in WSL; Mac source and package receipts on the M1 |
+| 17 | NK-P | NK-6/7/8 parity on Linux; then native macOS for the current source and package | Current-candidate Linux batch parity outstanding. Generic universal macOS packages use reference; the dedicated ARM64 development package has separate qualification. Before NK-5/6, NK-3 measured Linux's native stage evaluator at a median 2.11× cheaper tick. On the GPU-limited M1 this mostly shortens catch-up (inference) | S (Linux), L (macOS) | Linux parity suites in WSL; Mac source and package receipts on the M1 |
 | 18 | F6 · gated | Simulation on its own thread | Only if F1 and F2 leave PRIMIS-class hosts below real time | L | Owner-reviewed contract |
 
 **Not worth doing now:**
@@ -228,6 +183,26 @@ measurement that may find one ranks above a small certain batch.
 - **Native batches below about 5 µs per tick.** They fall under the workstation's A/B noise floor: NK-6q measured −4
   to −7 in the mean, with single runs from −16 to +5.
 - **Native ports of UI, orchestration, the simulation transaction or the GDScript reference.**
+
+## Native batch boundaries
+
+| ID | Required cases |
+| --- | --- |
+| NK-6x | Prepare contact mode bits and lake threshold once. Compare both at their boundaries and refuse stale configuration before use. Measure whole ticks. |
+| NK-6y | Prepare immutable glow finish terms and substep preview base. Build liquid context from the admitted aircraft and current deflections. Compare liquid and glow ticks across resource events and refusals. |
+| NK-7n | Read mechanical snapshot, airborne clearance, endpoint air and shaft torques for the same published frame. Exercise stale and unavailable endpoints. |
+| NK-7o | Compare detached glow telemetry and rendered PCM for a running voice. Time frame hand-over separately from audio worker blocks. |
+| NK-5h-R2 | Freeze roots with the configuration owners. Check mutation and alias rejection before replacing property watches with identity checks. Measure on a production tick. |
+
+## Qualification
+
+- Keep a switch back to the reference implementation for each new native answer. Compare the whole consumer output, include a mutation that the comparison detects, and check malformed inputs and refusal boundaries. The stage oracle covers at least 10,000 states. Check exact trajectories, accepted tick counts, actual native calls and checkpoint/fault/restore behavior. [Installer and trajectory gates](../../research/native-kernel/README.md#verification-and-local-installation)
+- Rebuild the candidate, run affected suites and the platform's installer gates, and verify the actual install in both the qualification tree and the working app. Bind engine, toolchain, ABI, source/data and library to the receipt. Repeat the applicable release checks against the actual packaged executable. [Native CI](../../.github/workflows/ci.yml) · [Package verification](../../research/native-kernel/README.md#linux-release-packages)
+- Record matched live timings and counters on the intended host. Keep per-tick, per-frame and per-audio-block results separate. Compare the same workload, output dimensions and observer configuration. [Measurement rules](../learnings/physics.md#measure-the-complete-workload) · [Published endpoint rules](../learnings/physics.md#native-answers-for-published-endpoints)
+
+## Platform evidence still needed
+
+Linux/WSL passed the nineteen installer gates at `d080ca630`. The individual NK-7 parity runs and current-candidate Linux NK-6/7/8 coverage still need recorded results. Apple Silicon needs corresponding batch parity on its admitted ARM64 route. Check NK-9a/b consumer parity on both platforms as well. Retain CI results for the specific candidate, and qualify any claimed package independently. [Linux gate record](https://github.com/bultodepapas/OpenRCsimulator/blob/8d4169f8febfd7d78a028eaa817414217a54f24b/docs/plans/native-kernel-roadmap.md#evidence-gaps) · [NK-7m scope](../research/native-kernel/NK-7m/README.md#scope) · [NK-9b scope](../research/native-kernel/NK-9b/README.md#scope) · [Mac source workflow](../../.github/workflows/native-macos.yml)
 
 ## What we learned
 
@@ -239,7 +214,7 @@ measurement that may find one ranks above a small certain batch.
 - **Budget walks over aliased containers.** A plan that walks containers once per path explodes on aliased
   configurations; budget it and keep the alias-aware fallback
   ([learning](../learnings/physics.md#native-answers-for-published-endpoints)).
-- **Exports can lack shader globals.** Exported builds can lack project shader globals that the editor registers
+- **Headless exports can lack shader globals.** Register a missing global before its first material. On a real renderer, check the project setting; listing globals there is an engine error
   ([learning](../learnings/models-and-rendering.md#rendering-and-visual-evidence)).
 - **Time the real workload.** Synthetic estimates were wrong by 3×: NK-7l measured 15 µs per block, not the estimated
   50 ([learning](../learnings/physics.md#measure-the-complete-workload)).
