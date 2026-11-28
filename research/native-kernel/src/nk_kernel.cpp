@@ -1223,6 +1223,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_ground", "gear", "surfaces", "lake", "lake_valid"),
 			&OpenRCNativeKernel::prepare_ground);
 		godot::ClassDB::bind_method(D_METHOD("terrain_sample", "north", "east", "with_lake"), &OpenRCNativeKernel::terrain_sample);
+		godot::ClassDB::bind_method(D_METHOD("stage_terrain_sample", "north", "east", "surfaces"),
+			&OpenRCNativeKernel::stage_terrain_sample);
 		godot::ClassDB::bind_method(D_METHOD("surface_table_is_valid", "surfaces"), &OpenRCNativeKernel::surface_table_is_valid);
 		godot::ClassDB::bind_method(D_METHOD("wheels_evaluate", "s", "steer", "anchors", "speeds", "brake"),
 			&OpenRCNativeKernel::wheels_evaluate);
@@ -1497,6 +1499,20 @@ public:
 		std::vector<double> values;
 		if (!surfaces.is_empty()) values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		return nk::surface_table_is_valid(values);
+	}
+
+	// NK-8b: GroundTerrain.sample(north, east, surfaces) without a lake, for render callers, from the installed
+	// fixed-wing stage's prepared ground when `surfaces` holds that table's exact bytes; empty otherwise (the caller
+	// samples in GDScript). An empty table is GDScript's flat fixture and stays there.
+	PackedFloat64Array stage_terrain_sample(double north, double east, const PackedFloat64Array &surfaces) const {
+		if (!stage_ready_ || heli_stage_ready_) return PackedFloat64Array();
+		const nk::SurfaceTable &table = stage_.ground.surfaces;
+		if (!table.valid || surfaces.is_empty() || static_cast<size_t>(surfaces.size()) != table.values.size() ||
+				std::memcmp(surfaces.ptr(), table.values.data(), sizeof(double) * table.values.size()) != 0) {
+			return PackedFloat64Array();
+		}
+		const nk::Vec3 out = nk::terrain_sample_validated(north, east, table, no_lake_);
+		return pack(out.data(), 3);
 	}
 
 	PackedFloat64Array terrain_sample(double north, double east, bool with_lake) const {

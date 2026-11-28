@@ -157,6 +157,8 @@ var _liquid_store_bound := false
 var _substeps_bound := false
 ## NK-6v: the kernel proves a clear contact step (FlightSession._clear_contact_step).
 var _clear_contact_bound := false
+## NK-8b: the kernel samples the prepared ground for render callers (FlightSession.render_terrain_sample).
+var _render_terrain_bound := false
 ## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
 var _glow_terminal_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
@@ -459,6 +461,7 @@ func install(session: Node) -> Callable:
 	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
 	_prop_strike_bound = _family != "helicopter" and _native.has_method("prepare_prop_strike") and _prepare_prop_strike(session)
 	_clear_contact_bound = _family != "helicopter" and _native.has_method("stage_contact_clear")
+	_render_terrain_bound = _family != "helicopter" and _native.has_method("stage_terrain_sample")
 	_substeps_bound = false
 	if _native.has_method("prepare_substeps"): # always, so a plan never outlives its installation
 		_substeps_bound = bool(_native.prepare_substeps(session, session.native_substep_plan() \
@@ -508,6 +511,7 @@ func uninstall(session: Node) -> Callable:
 		_native.prepare_substeps(null, {})
 	_substeps_bound = false
 	_clear_contact_bound = false
+	_render_terrain_bound = false
 	_pre_step_bound = false
 	_prop_strike_bound = false
 	_strike_disc = {}
@@ -617,6 +621,13 @@ func pre_step(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array
 	if not next.is_empty() and _pre_step_turbulent:
 		sim.modes[1] = int(_native.pre_step_rng_state())
 	return next
+
+
+## NK-8b: GroundTerrain.sample(north, east, surfaces) for render callers from the prepared ground when `surfaces` is its
+## table (byte for byte); empty means "sample in GDScript".
+func render_terrain_sample(north: float, east: float, surfaces: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _render_terrain_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_terrain_sample(north, east, surfaces)
 
 
 ## NK-5e: the session's gear_compressions(s) at the accepted endpoint `s` with its aux, from the fixed-wing stage

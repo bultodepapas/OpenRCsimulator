@@ -193,7 +193,8 @@ func _oracle(a: Node, b: Node, id: String, require_fallbacks: bool) -> void:
 				first = "sample %d (kind %d)" % [i, kind]
 	var answered: int = a.native_clear_contact_answers - before
 	_check("%s: %d random contact steps leave the reference's result and bookkeeping (%d proved clear)" % [id, SAMPLES,
-		answered], mismatched == 0 and answered > SAMPLES / 10 		and (not require_fallbacks or answered < SAMPLES - SAMPLES / 10), first)
+		answered], mismatched == 0 and answered > SAMPLES / 10 \
+		and (not require_fallbacks or answered < SAMPLES - SAMPLES / 10), first)
 
 
 func _pair(id: String, scenario: String) -> void:

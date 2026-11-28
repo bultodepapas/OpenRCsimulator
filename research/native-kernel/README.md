@@ -658,6 +658,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `shadow_parts_bind` and `shadow_part_poses` (NK-8a, `nk_shadow_parts.hpp`) walk a projected shadow's parts to its
   source, composing transforms with the engine's own operator and reading visibility by method bind
   ([evidence](../../docs/research/native-kernel/NK-8a/README.md)).
+- `stage_terrain_sample` (NK-8b) samples the installed stage's prepared ground for render callers when they pass the
+  same surface table, so `main.gd` `_ground_height` reads `FlightSession.render_terrain_sample`
+  ([evidence](../../docs/research/native-kernel/NK-8b/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,

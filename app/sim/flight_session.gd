@@ -4130,6 +4130,22 @@ func _native_contact_reach(previous: PackedFloat64Array, candidate: PackedFloat6
 		_contact_lake_threshold(), _lake_bank_bounds if lake_bank_proof_enabled else PackedFloat64Array())
 
 
+## NK-8b test hook: false always samples render terrain in GDScript.
+var native_render_terrain_enabled := true
+
+
+## NK-8b: GroundTerrain.sample(north, east, ground_surfaces) for render callers (main.gd `_ground_height`, the aircraft
+## shadow's receiving ground): the installed native stage's sample of its prepared ground when that table holds the
+## same bytes, otherwise the GDScript sample. The values are the same.
+func render_terrain_sample(north: float, east: float) -> PackedFloat64Array:
+	var surfaces: PackedFloat64Array = ground_surfaces
+	if native_render_terrain_enabled and _native_stage != null and not surfaces.is_empty():
+		var native: PackedFloat64Array = _native_stage.render_terrain_sample(north, east, surfaces)
+		if native.size() == 3:
+			return native
+	return GroundTerrain.sample(north, east, surfaces)
+
+
 ## LakeCollision's own reject threshold for the reach proofs: the highest possible water "down" less its contact
 ## epsilon; NaN without a lake or with malformed wave bounds.
 func _contact_lake_threshold() -> float:

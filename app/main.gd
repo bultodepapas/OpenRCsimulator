@@ -2471,7 +2471,9 @@ func _camera_clearance(from: Vector3, to: Vector3) -> float:
 func _ground_height(x: float, z: float) -> float:
 	if session == null:
 		return 0.0
-	var terrain: PackedFloat64Array = GroundTerrain.sample(-z, x, session.ground_surfaces)
+	# NK-8b: FlightSession samples the same terrain natively when its native stage holds this table.
+	var terrain: PackedFloat64Array = session.render_terrain_sample(-z, x) if session.has_method(&"render_terrain_sample") \
+		else GroundTerrain.sample(-z, x, session.ground_surfaces)
 	return terrain[0] if _rc_track.is_empty() else RcTrack.composed(terrain, _rc_track, -z, x)[0]
 
 
