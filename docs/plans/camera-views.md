@@ -190,16 +190,18 @@ Defaults: D = 3.5 × span (Stik ≈ 5.3 m), H = 0.35 × D, vertical FOV 55°. FO
 
 ### 5.3 Onboard / FPV (V3)
 
+CAM-11/13 delivery across the five vehicle families is specified in the [Universal FPV plan](universal-fpv.md). It covers mount eligibility, cockpit interiors and glass, gimbal controls, and the existing DR-31 quad view. CAM-12 owns the optional lens distortion described below.
+
 A camera mounted on the airframe, as on a real FPV or "action camera" installation.
 
-- **Mount:** each aircraft declares optional camera mounts (D7): `{id, position (model datum, m), pitch_up_deg, yaw_deg, roll_deg, fov_deg, kind: "fpv" | "wing" | "tail" | "cockpit", source}`. Until an aircraft declares one, a derived default (top of the fuselage, 15 % of the length aft of the spinner, labelled `estimated`) is used and shown as such.
-- **Optics:** settings and mounts state horizontal, vertical and diagonal FOV separately, because lens labels disagree: two RunCam 2.1 mm lenses are listed as H128°/V91°/D165° and H115°/V83°/D150°. Rectilinear rendering is used up to ~110° horizontal; it stretches badly beyond ~120° and cannot reach 180°. Wider lenses use a barrel warp (CAM-12).
+- Mounts use the airframe’s structural datum. Each selectable stock position and each fallback needs the [FPV mount admission and catalog checks](universal-fpv.md#32-mounts-frames-and-optical-geometry).
+- Wide rectilinear lenses stretch the edges. Preserve the drone’s existing 120° horizontal rectilinear view. The FPV plan qualifies the FOV and clipping per mount. CAM-12 can add a separately selectable calibrated warp.
 - **Warp method:** render the onboard camera into a `SubViewport` at 1.2–1.5× resolution with overscan, then warp its texture on a full-screen quad. Do **not** use `hint_screen_texture` in 3D: Godot copies the screen after opaque and before transparent geometry, so the transparent propeller-blur disc, smoke and glare would be missing. Liftoff's post-process fisheye shows the trade-off: cropping the black corners made 120° "almost unplayable" from pixelation, hence the supersampled viewport. A cubemap remap (up to 6 renders) is rejected for cost in Compatibility.
 - **Uptilt:** default 5° for airplanes, range −10…+30°. Fixed-wing practice is near 0° (community practice, unverified); quads use 20–35° freestyle and 40–60° racing because they fly nose-down. An OSD horizon, if added, compensates the uptilt (INAV `osd_camera_uptilt`).
 - **Head look:** right-drag or a head-tracking source rotates the view relative to the mount, recentred by Backspace.
 - **Rigid:** no smoothing (a real camera is bolted on); optional ≤ 2 Hz vibration from rpm is off by default and never shakes in comfort mode.
-- **Near plane** 0.03 m; hide the propeller blur disc and spinner only when they occlude more than a threshold (D8).
-- **Cockpit** (P-51 scale) needs an interior and a pilot figure that the model teams own; out of scope beyond a canopy-frame view at a declared mount.
+- Qualify clipping per installation across the supported look envelope and FOV, including propeller blur, spinner, glazing and ground-shadow depth.
+- Eligible stock cockpits require a usable interior, visible structure and manual yaw/pitch. CAM and the model owner admit the position against the FPV plan.
 - **Analog FPV look** (noise, horizontal tearing, colour-sync loss, black frames as a toy SNR from range, antenna orientation and line-of-sight obstruction) is a later presentation option, never presented as a radio-link model. Analog degrades gradually into snow; digital systems freeze or drop frames instead.
 - **Padlock variants** (SeligSIM F9/F10): the onboard head locks onto a target (the pilot station or runway threshold). Optional, after head look works.
 
@@ -278,7 +280,7 @@ Software checks prove behavior and cost on the VM only. Readability and comfort 
 | CAM-08 | Chase, horizon-locked style, terrain clearance | Synthetic trajectories (circle, loop, vertical line, tail slide, ground roll, reset): continuity, clearance ≥ 0.6 m, jitter budget; captures / done: offset spring (see §5.2), 12 s circle, vertical, tail slide, terrain, teleport, paused |
 | CAM-09 | Chase, 3D follow style, roll-follow, look-ahead, obstacle shortening; fly-by spots clear of obstacles | Loop, axial-roll and vertical-line tests; boom, orbit and fly-by against the club field's real collision world; frame-rate independence / done, [evidence](../research/camera-views/CAM-09/README.md); loop and roll captures on the target display wait for CAM-22, `chase_style`/`chase_roll_follow` settings proposed |
 | CAM-10 | Orbit/inspect replacing the rigid close-up; works paused | Close-up preset capture comparable to CAM-02; mouse never steals focus from overlays/pause / done: orbit added beside the close-up (not replacing it yet); continuity and clamps tested |
-| CAM-11 | Onboard/FPV with derived default mounts; near/far per mode; depth check on the shadow | Captures for every catalog aircraft; z-fighting check on the ground shadow at 1, 5, 50 m / proposed |
+| CAM-11 | Onboard/FPV with admitted mounts and per-installation optics | CAM-FPV fleet and capture gates, including ground-shadow depth at 1, 5 and 50 m. Proposed. |
 | CAM-12 | FPV lens: supersampled `SubViewport` (1.2–1.5×) + barrel warp | Distortion matches the chosen lens model within 1 % of radius; propeller blur and smoke visible (no screen-texture copy); cost within budget, or rejected / proposed |
 | CAM-13 | Aircraft camera mounts in the contract (optional capability), then per-aircraft data by each model team | Contract tests: invalid mounts refuse; aircraft without mounts fly unchanged / proposed (AS owner) |
 | CAM-14 | Fly-by camera: FlightGear placement law plus the sun-behind rule, own fixed-seed draws, key 4, in the C cycle (plan D6 listed pilot, chase, onboard, orbit) and a Settings first view | Placement, re-placement, sides, terrain, pause, teleport and hover tests; live head-on shot / done, [evidence](../research/camera-views/CAM-06-28/README.md#cam-14-fly-by-view); obstacle rejection added in [CAM-09](../research/camera-views/CAM-09/README.md) |
