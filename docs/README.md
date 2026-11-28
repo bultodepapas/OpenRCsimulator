@@ -32,6 +32,7 @@ Use the guides for current behavior, track specifications for task-specific acce
 | --- | --- |
 | Measure a slow frame or stutter | [Graphics tools](tools/graphics.md) · [Session capture and diagnostics](../tools/debug/README.md) · [Full-session benchmark](../tools/godtest/README.md) |
 | Compare native and reference physics | [Backend policy](STACK.md#native-backend-policy) · [Native qualification work](plans/native-kernel-roadmap.md) |
+| Choose an optimization measurement or review measured native returns | [Performance experiment register](plans/optimization-priorities.md) · [Native returns and proposed follow-ups](plans/native-kernel-roadmap.md#remaining-work-ranked-by-return-against-effort) |
 | Qualify a graphics change on hardware | [Display targets](../AGENTS.md#display-resolution-priorities) · [Intel integrated GPU investigation](plans/low-end-gpu-performance.md) · [Apple Silicon qualification](plans/apple-silicon-performance.md) |
 | Run a shared-host test | [Test queue](../tools/testqueue/README.md) · [PRIMIS Linux GPU](tools/primis-testlab.md) · [Apple M1](tools/macos-m1.md) |
 | Package and qualify a release | [Release commands](TOOLS.md#release-sequence) · [Desktop qualification](DESKTOP-DELIVERY-PLAN.md) · [Linux packaging](plans/linux-support-distribution.md) |

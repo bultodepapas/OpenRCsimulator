@@ -162,3 +162,15 @@ inventories, checked reports and unchanged typed frames.
 
 The renewed fixture is `4a3f0c36fa759968d990a97a591eaea7b2d1bb6c69fadd859dece76c688e4cb3`. Only the session source
 pin and overlay, candidate commit and fixture identity changed.
+
+## 2026-11-28 v0.4.0 native-kernel renewal
+
+The native batches from NK-5e to NK-9b changed the pinned `sim/flight_session.gd` and `sim/simulation.gd` files.
+- The [receipt](publication-rebind-2026-11-28.json) binds baseline `d4e04360` and candidate `8d4169f8` to
+  [run 46158202470](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46158202470).
+- GitHub's artifact digests are `98f960bf…` (Windows) and `b8633926…` (Linux).
+- All eight Windows and Linux shaft and weather captures reproduced their retained hashes.
+- The strict packer verified the source inventories, checked reports and unchanged typed frames.
+
+The renewed fixture is `5a8192c8be94d40bf5464de53ac67c330504eda0d10d49bd9235581a12da3ef1`. Only the two source pins,
+the session overlay, the candidate commit and the fixture identity changed.

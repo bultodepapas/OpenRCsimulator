@@ -2,6 +2,8 @@
 
 The [project roadmap](../../ROADMAP.md) selects current work. Use this register to identify which measurement can distinguish causes of a particular slowdown. Apply the [shared measurement and acceptance contract](global-performance-visual-quality.md#4-measurement-and-acceptance-contract) before adopting a repair.
 
+For measured native batch returns and the November 28 comparison of proposed follow-ups, use the [native work and qualification guide](native-kernel-roadmap.md#remaining-work-ranked-by-return-against-effort). Its estimates and local ranking do not replace the project roadmap's priorities or the acceptance gates below.
+
 ### Frame stalls and sustained FPS
 
 The November 2026 Windows, ANGEL and PRIMIS tours showed that a delayed frame can cause extra 240 Hz catch-up ticks in the following frame. An expensive tick can amplify a hitch that began in rendering, presentation or OS work. Keep the two intervals separate. The [frame attribution](../research/god-test/2026-11-24-frame-attribution.md) and [direct phase timings](../research/god-test/2026-11-24-flight-tick-cost.md) identify the builds, routes, windows and hosts.
