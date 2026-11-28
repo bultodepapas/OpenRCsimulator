@@ -1,8 +1,10 @@
-## CAM-FPV-02a. Render the actual stock nose view and compare every pixel with the airframe hidden.
+## CAM-FPV-02a. Default stock Stik paint: startup, and the four look stops with the prop fading or at speed.
 extends SceneTree
 
 const Flight := preload("res://main.gd")
+const Gimbal := preload("res://render/camera/fpv_gimbal.gd")
 const Mounts := preload("res://render/camera/fpv_stock_mounts.gd")
+const PropellerBlur := preload("res://render/propeller_blur.gd")
 const SIZE := Vector2i(1920, 1080)
 
 
@@ -47,28 +49,19 @@ func _run() -> void:
 		return
 	flight.process_mode = Node.PROCESS_MODE_DISABLED
 	flight.set_overlays_visible(false)
-	var visible := await _grab()
-	model.hide()
-	var hidden := await _grab()
-	if not _full_size(visible) or not _full_size(hidden):
-		_fail("missing 1920x1080 nose readback")
+	var blur := flight.get_node_or_null("PropellerBlur") as PropellerBlur
+	if blur == null or not blur.is_visible_in_tree() or blur._disc == null \
+			or blur._disc.mesh == null or blur._disc.mesh.get_surface_count() == 0:
+		_fail("the installed propeller must supply a drawable blur disc")
 		return
-	if visible.save_png(out.path_join("visible.png")) != OK or hidden.save_png(out.path_join("hidden.png")) != OK:
-		_fail("failed to save nose readbacks")
-		return
-	if not _has_contrast(hidden):
-		_fail("field view lacks contrast")
-		return
-	if visible.get_data() != hidden.get_data():
-		_fail("aircraft visibility changed the nose image")
+	if not await _clear_frame(model, blur, "startup", out):
 		return
 
 	# Positive control: look at the same Stik from outside. A hidden, absent or unrendered
 	# model would otherwise produce an identical pair at the nose and pass the comparison.
 	camera.global_position = model.to_global(Vector3(0, 0.45, 2.1))
 	camera.look_at(model.global_position, model.global_basis.y)
-	var exterior_hidden := await _grab()
-	model.show()
+	var exterior_hidden := await _without_aircraft(model, blur)
 	var exterior_visible := await _grab()
 	if not _full_size(exterior_hidden) or not _full_size(exterior_visible):
 		_fail("missing full-size exterior control readback")
@@ -82,8 +75,71 @@ func _run() -> void:
 	if changed < 64 or flight.session.sim.tick != 0:
 		_fail("exterior visibility control or frozen tick failed (changed samples: %d)" % changed)
 		return
+
+	var sim: Node = flight.session.sim
+	flight.session.input_enabled = false
+	sim.set_paused(false)
+	var travel: Vector2 = front.look_limits_deg
+	if not flight._rig.can_drag_fpv() or travel.x <= 0.0 or travel.y <= 0.0:
+		_fail("the installed gimbal must have yaw and pitch travel")
+		return
+	# Allow enough accepted ticks to reach the opposite stops from any previous corner.
+	var steps := ceili(2.0 * maxf(travel.x, travel.y) / (Gimbal.RATE_DEG_S * sim.dt())) + 1
+	var midpoint_rpm := (PropellerBlur.BLUR_START_HZ + PropellerBlur.BLUR_FULL_HZ) * 30.0 / float(blur.measured.blades)
+	for yaw: float in [-travel.x, travel.x]:
+		for pitch: float in [-travel.y, travel.y]:
+			var tick: int = sim.tick
+			flight._rig.drag(Vector2(yaw, pitch if flight._rig.orbit.invert_y else -pitch) * 1000.0)
+			flight._rig.seal_fpv_input_after(tick)
+			for i in steps:
+				sim.step()
+			# Exercise the installed sibling observer and its meshes at controlled presentation RPM.
+			for rpm: float in [midpoint_rpm, 6000.0]:
+				var phase := fposmod(TAU * rpm / 60.0 * sim.time(), TAU)
+				flight._render_pose(flight._pose_of(sim.state), flight.session.surfaces(), phase)
+				var at_stop: Transform3D = model.global_transform * front.mount
+				at_stop.basis *= Basis(Vector3.DOWN, deg_to_rad(yaw)) * Basis(Vector3.RIGHT, deg_to_rad(pitch))
+				if sim.tick != tick + steps or not camera.global_transform.is_equal_approx(at_stop):
+					_fail("rendered lens did not reach yaw %s pitch %s" % [yaw, pitch])
+					return
+				blur.update(rpm)
+				var fading := rpm == midpoint_rpm
+				if not blur._disc.is_visible_in_tree() or not is_equal_approx(blur.blur, 0.5 if fading else 1.0) \
+						or not blur.global_transform.is_equal_approx(flight._airplane.propeller.global_transform) \
+						or blur._blade_copies.is_empty() or blur._blade_copies[0].is_visible_in_tree() != fading:
+					_fail("blur disc and blade copies did not reach the expected state at %.0f RPM" % rpm)
+					return
+				if not await _clear_frame(model, blur, "yaw %s pitch %s at %.0f RPM" % [yaw, pitch, rpm]):
+					return
 	print("FPV nose pixels passed at 1920x1080")
 	quit()
+
+
+func _clear_frame(model: Node3D, blur: Node3D, label: String, out := "") -> bool:
+	var visible := await _grab()
+	var hidden := await _without_aircraft(model, blur)
+	if not _full_size(visible) or not _full_size(hidden) or not _has_contrast(hidden):
+		_fail(label + ": missing 1920x1080 field image with contrast")
+		return false
+	if not out.is_empty() and (visible.save_png(out.path_join("visible.png")) != OK \
+			or hidden.save_png(out.path_join("hidden.png")) != OK):
+		_fail("failed to save nose readbacks")
+		return false
+	if visible.get_data() != hidden.get_data():
+		_fail(label + ": aircraft or propeller visibility changed the nose image")
+		return false
+	return true
+
+
+## The rotor observer is a sibling of the aircraft. Hide both roots without changing the
+## disc, hub or fading blades selected for this RPM, then restore the same configuration.
+func _without_aircraft(model: Node3D, blur: Node3D) -> Image:
+	model.hide()
+	blur.hide()
+	var background := await _grab()
+	blur.show()
+	model.show()
+	return background
 
 
 func _grab() -> Image:
