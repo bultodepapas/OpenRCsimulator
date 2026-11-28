@@ -264,6 +264,12 @@ class WeatherGuard {
 			plan_snapshots_.clear();
 			return false;
 		};
+		// Every root container must fit the plan's path budget (nk_guard_plan.hpp kPlanPathBudget).
+		for (const Watch &watch : watches_) {
+			if (watch.source != Parent::Property || watch.container_size < 0) continue;
+			int64_t remaining = guard_plan::kPlanPathBudget;
+			if (!guard_plan::within_budget(watch.expected, remaining, 0, kMaxDepth)) return refuse();
+		}
 		for (std::size_t i = 0; i < watches_.size(); ++i) {
 			const Watch &watch = watches_[i];
 			if (watch.source == Parent::Property) {

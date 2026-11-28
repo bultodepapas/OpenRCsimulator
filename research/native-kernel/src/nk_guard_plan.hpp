@@ -81,6 +81,36 @@ inline Leaf classify_scalar(const godot::Variant &value) {
 	}
 }
 
+// The plan's walks (holds_retained, frozen) and its root snapshot (duplicate(true)) visit a tree once per path, so a
+// container shared at many places costs once per reference. A configuration that aliases containers deeply would
+// make that exponential (24 doubled levels are 16 million paths). The guards' full watch walk shares each container
+// once and stays bounded, so a root whose tree exceeds this many paths keeps it instead of a plan.
+constexpr int64_t kPlanPathBudget = int64_t(1) << 20;
+
+// Whether `value`'s tree, counted per path (keys included), fits in `remaining`; decrements it.
+inline bool within_budget(const godot::Variant &value, int64_t &remaining, int depth, int max_depth) {
+	if (--remaining < 0 || depth > max_depth) return false;
+	if (value.get_type() == godot::Variant::DICTIONARY) {
+		const godot::Dictionary dictionary = value;
+		const godot::Array keys = dictionary.keys();
+		const godot::Array values = dictionary.values();
+		for (int64_t i = 0; i < keys.size(); ++i) {
+			if (!within_budget(keys[i], remaining, depth + 1, max_depth) ||
+					!within_budget(values[i], remaining, depth + 1, max_depth)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	if (value.get_type() == godot::Variant::ARRAY) {
+		const godot::Array array = value;
+		for (int64_t i = 0; i < array.size(); ++i) {
+			if (!within_budget(array[i], remaining, depth + 1, max_depth)) return false;
+		}
+	}
+	return true;
+}
+
 // Whether a value holds a Retained leaf anywhere below it. `refuse` reports a NaN, an unsupported value or excess
 // depth anywhere in it (the whole tree is scanned).
 inline bool holds_retained(const godot::Variant &value, int depth, int max_depth, bool &refuse) {
