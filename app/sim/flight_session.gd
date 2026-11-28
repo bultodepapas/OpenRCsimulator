@@ -4978,6 +4978,14 @@ func flap_state() -> Dictionary:
 		overspeed = actual > 0.001 and speed > spec.max_speed_mps}
 
 
+## F5b: flap_state()'s angle_deg (0.0 where it reports none) for the renderer's per-frame pose, without that
+## status's overspeed advisory: its air-data solve cost about 20 µs per frame.
+func flap_angle_deg() -> float:
+	if not flaps_available() or sim == null or not _flap_aux_valid(sim.aux):
+		return 0.0
+	return sim.aux[flap_aux_index()] * aircraft.model.flaps.max_angle_deg
+
+
 func gear_is_retractable() -> bool:
 	if _fact_gear_retractable != _FACT_UNKNOWN:
 		return _fact_gear_retractable == 1
