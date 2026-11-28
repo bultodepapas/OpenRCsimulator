@@ -1,0 +1,122 @@
+{
+  "source_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "cases": [
+    {
+      "case": "turbine",
+      "label": "r2-turbine-admission-final",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/turbine_admission.gd",
+      "probe_sha256": "bb41f6a54f51b6289721f94726bc6a53277e19129b4b0e33e5aa4888dc347738",
+      "report": "turbine-report.json",
+      "log": "turbine.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "rotor",
+      "label": "r2-rotor-known-domain",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/rotor_null.gd",
+      "probe_sha256": "9bf2543e245eee5fc8497cc118f68a4baf4fa8123d9971c5a24c08c1a6902460",
+      "report": "rotor-report.json",
+      "log": "rotor.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "skyline",
+      "label": "r2-tree-skyline",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/skyline_tree_toggle.gd",
+      "probe_sha256": "60aa23ada789754975040062f410a2fbba2e0f3300b3e93aad6cbc3d4ada779f",
+      "report": "skyline-report.json",
+      "log": "skyline.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "birds",
+      "label": "r2-birds-off",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/birds_off_poll.gd",
+      "probe_sha256": "4ffcd17a406eff981b66f890a23bfe916d60c40874359120b1d7d9654c88c8e8",
+      "report": "birds-report.json",
+      "log": "birds.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "water",
+      "label": "r2-water-tail",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/water_after_expiry.gd",
+      "probe_sha256": "2518ed2d5c93d291ee0081660161a32fe56a98e98e96e4adb59981e61ee013e0",
+      "report": "water-report.json",
+      "log": "water.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "case": "gate",
+      "label": "r2-gate-projection",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/gate_projection.gd",
+      "probe_sha256": "683571fcc0a73d9c09f973280a38fc4c0f9cdc7c976f73cf072341e59eddf75d",
+      "report": "gate-report.json",
+      "log": "gate.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "lake",
+      "label": "r2-lake-crest",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/lake_crest.gd",
+      "probe_sha256": "4dd4bfe7c8939c7c82356fe647a7555dcbf6175f6038bc1b83759d3831ae0ff4",
+      "report": "lake-report.json",
+      "log": "lake.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "race-book",
+      "label": "r2-race-book",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/race_book_two_windows.gd",
+      "probe_sha256": "a40b88438ab38e692d953af93a64e90613f68ed858320f45f75fb8e977c0961b",
+      "report": "race-book-report.json",
+      "log": "race-book.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "case": "controller-draft",
+      "label": "r2-controller-draft",
+      "probe": "research/swarm-systems-audit-2026-11-28/probes/controller_duplicate_draft.gd",
+      "probe_sha256": "6c7d4bdb924504a537b2e1d999719bfbafdaa2093d0ce581615576a96c7e69fc",
+      "report": "controller-draft-report.json",
+      "log": "controller-draft.log",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ]
+}

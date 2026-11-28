@@ -1,0 +1,36 @@
+{
+  "mutant_changed_output_cases": {
+    "quasistatic": 16,
+    "transported": 22
+  },
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++17",
+    "-O2",
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "cases": 480,
+  "words": 4480,
+  "rows_sha256": "8852cd4938c16cfad26111835ad939879ed8496d080ba040dbc47b8a987138cb",
+  "groups": {
+    "control": {
+      "rows": 432,
+      "finite": 312,
+      "current_pow": 5220,
+      "candidate_pow": 5220
+    },
+    "quasistatic": {
+      "rows": 24,
+      "finite": 24,
+      "current_pow": 348,
+      "candidate_pow": 300
+    },
+    "transported": {
+      "rows": 24,
+      "finite": 24,
+      "current_pow": 396,
+      "candidate_pow": 300
+    }
+  }
+}

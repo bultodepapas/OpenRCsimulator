@@ -1,0 +1,14 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+XCell omega=167.0 mu=0.07726482518833 threshold_N=4.622951764527807e-10
+pitch_rad=-1e-12 thrust_N=-1.7061423726001307e-09 main_stage_ok=true
+pitch_rad=-1e-14 thrust_N=-1.7061423726001306e-11 main_stage_ok=false
+pitch_rad=0 thrust_N=0 main_stage_ok=true
+pitch_rad=1e-14 thrust_N=1.7061423726001306e-11 main_stage_ok=false
+pitch_rad=1e-12 thrust_N=1.7061423726001307e-09 main_stage_ok=true
+vertical_mps=-1e-09 evaluation_ok=true step_ok=true fault=
+vertical_mps=-1e-12 evaluation_ok=false step_ok=false fault=aerodynamic_stage_refused
+vertical_mps=0 evaluation_ok=true step_ok=true fault=
+vertical_mps=1e-12 evaluation_ok=false step_ok=false fault=aerodynamic_stage_refused
+vertical_mps=1e-09 evaluation_ok=true step_ok=true fault=
+ROTATIONAL NULL 33 checks, 0 failed

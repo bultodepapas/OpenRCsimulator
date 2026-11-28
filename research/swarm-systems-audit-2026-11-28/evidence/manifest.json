@@ -1,0 +1,284 @@
+{
+  "format": "openrc-swarm-systems-audit v1",
+  "audit_date": "2026-11-28",
+  "production_source_sha": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "production_tree_sha": "ce1f75f51ac1faa84019dae19599ca4259b8c233",
+  "branch": "audit/swarm-systems-fps-2026-11-28-r2",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_backend": "Linux headless; reference physics for session witnesses",
+  "native_component_compiler": "GCC14.2.0; qualification pin GCC13.3",
+  "requested_specialist_model": "gpt-6.2-astra",
+  "requested_specialist_reasoning": "ultra",
+  "roles": [
+    "aircraft physicist",
+    "pure mathematician",
+    "senior application developer",
+    "senior native engineer",
+    "game/performance engineer",
+    "independent verifier"
+  ],
+  "unchanged_test_invocations": 19,
+  "distinct_engine_witnesses": 9,
+  "files": [
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/README.md",
+      "bytes": 17859,
+      "sha256": "700fd292f8c70de75c74d56518d8147e4b1e7e77f95e3039342e6679e035a4fb"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/ci-review.md",
+      "bytes": 5415,
+      "sha256": "9ce6832bb54ec134d4c8894ee686ee7f53ed0876ded8beaabfce5dad67db4334"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/specialists/aircraft-physics.md",
+      "bytes": 6814,
+      "sha256": "3bd2aa6e54a09705baf6d804fa48e924b5ca744491529666fd9b74ac002600da"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/specialists/application.md",
+      "bytes": 5829,
+      "sha256": "e48491cf0774cc8535c99e18d07fc00e344f9348d549b6bd7075b4107f92b95a"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/specialists/game-performance.md",
+      "bytes": 8849,
+      "sha256": "94dc03be02f52681b000bfd75a7d115274a2fbd58576c8963b3e870ba178ef94"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/specialists/mathematics.md",
+      "bytes": 6958,
+      "sha256": "8a99d5d4633e71fa2bbaa9862700d411105d9a6f42d19ff59a8b9428c6fd9be2"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/specialists/native.md",
+      "bytes": 9637,
+      "sha256": "cfd055fe5b0a0775fe296f2f14d9c0ec3cf0bf470e25fe8513d2512edfd5ce7d"
+    },
+    {
+      "path": "docs/research/swarm-systems-audit-2026-11-28/verification.md",
+      "bytes": 16490,
+      "sha256": "91575d5c969ff5101abfa0345e3e569716ace6361ff1854043515b1d163c05fc"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/README.md",
+      "bytes": 4892,
+      "sha256": "78ee11484a4436a5fc196ca85b589fd2103517436027f5b28cd55ad9fafa1ef3"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/baseline-tests.json",
+      "bytes": 32203,
+      "sha256": "86ce98c855ef86379c77e73e97f53a656c99187724f00fbcd605c1fea385b9bb"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/birds-report.json",
+      "bytes": 1209,
+      "sha256": "625a9b8894fbd9893937dded0aea31b722286a015fa960041b8cf2b8fa0b6697"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/birds.log",
+      "bytes": 481,
+      "sha256": "52ca09cde7853600093cc4adec5dadb0e2cdda30c31e97a4aec4077576b106e6"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/ci-capture-index.json",
+      "bytes": 336,
+      "sha256": "d57d79bb450ff2d10ff89dbb295f3ffa5f6bfb75d22be03151f1965a3072d668"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/ci-capture.log",
+      "bytes": 2117,
+      "sha256": "526bc8722a4dabde0d22aa912d2105f9416fd948864e5470d12fc5c0c0e8974c"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/ci-snapshot.json",
+      "bytes": 5132,
+      "sha256": "f3a69564e78fca2c219918498424785bf510c010cdcdfbdbcb7432ebce1b8159"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/ci-unit3-excerpt.log",
+      "bytes": 2539,
+      "sha256": "7ff0ca2e1e91ec21297bbd5d380a0d5ace5f4fdf5e650a928aac460e0e20b85f"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/controller-draft-report.json",
+      "bytes": 1252,
+      "sha256": "1af8502db39e14a238f2b474be5400650bba8d5b2d20b10dec11f649bd3ea854"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/controller-draft.log",
+      "bytes": 543,
+      "sha256": "899a6f8e46aef51c88898916db70f4f047e8e75d9bd8839c836ae653412e29ef"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/gate-report.json",
+      "bytes": 1249,
+      "sha256": "e743d7d27f452741613b542f4ff427b3a6df8d8a8c80c51f197106dc061594c6"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/gate.log",
+      "bytes": 1073,
+      "sha256": "ad8a3104888488d0f409476c83b417245d6640bd029bb752a50d2353229f4212"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/lake-report.json",
+      "bytes": 1225,
+      "sha256": "909e6ce54ca44866baf7b2cd9d22cf534a9159f27265c5eaa0f3b1822a0aa543"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/lake.log",
+      "bytes": 958,
+      "sha256": "bf8bba07ed4404dc40f9ec8ed3a96f0af3c2623ffeb89cb236ef6b98c45c3c09"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/mathematical-oracles.json",
+      "bytes": 1282,
+      "sha256": "6d16bcd23f2bf4cecd9559f7e5fe493e5f7e4e3dd6cd5049184b6feb48f413a4"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/probe-index.json",
+      "bytes": 3691,
+      "sha256": "b003fd388715a1aded4748f36f1c35038bd9310853b13f9bc77ec19f8b533272"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/publication-pins.json",
+      "bytes": 682,
+      "sha256": "5d3e85c62897a005614948821ed8ed658e1c5b855ea6792ae757d57a599aa1a3"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/race-book-report.json",
+      "bytes": 1220,
+      "sha256": "e675845e967f94abe6c8d7eb6c7294dfd7cfc5aa445a39564fe52542bfe70848"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/race-book.log",
+      "bytes": 510,
+      "sha256": "a18379a4d775bbcda7a737998f0781e49325c96442d4f504eca532ebadd3ae66"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/retractable_context.json",
+      "bytes": 1699,
+      "sha256": "fabf7d737adc9e10addbd50bc987b6369c8efa71cc715c63d312dcd45dc20fa9"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/rotor-report.json",
+      "bytes": 1235,
+      "sha256": "cec7263eaa019046b577000516e65c0a1b91f8376df814f27b5fd88a6a447256"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/rotor.log",
+      "bytes": 836,
+      "sha256": "62f69bbcd63e0e2ff60d41f0a546e7f64f991e9fec3a140bded017ae5e909e5b"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/skyline-report.json",
+      "bytes": 1226,
+      "sha256": "56a5b9e4aece0e36ad3f5e7d6cb50c446ca978dc2a55bc321fb92ddf82617607"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/skyline.log",
+      "bytes": 262,
+      "sha256": "7852245976c7be1b59905bc0d985e5a9f75b0d705757240d913dc6ae201a5651"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/spatial_propeller.json",
+      "bytes": 721,
+      "sha256": "0c39cf66ecb6b7029153d59c465232a372c06f9ff44aca101bef7e1d6119e544"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/turbine-report.json",
+      "bytes": 1260,
+      "sha256": "f04e5fb468e65272ad7e606b5cceb496f6f81bff8613bd4446200bd3363bd4a2"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/turbine.log",
+      "bytes": 1262,
+      "sha256": "7eb5957b1fa624f655e428077c4e8830c768492b5ebe9e647a2e0ac22f871c0e"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/water-report.json",
+      "bytes": 1786,
+      "sha256": "ea61e21f24df6bae68d10e690c4e25406a0016b80c4d95de4335b697630aa2d6"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/evidence/water.log",
+      "bytes": 1655,
+      "sha256": "96e048db5cc92d620977b7e5e64773adab2b9861170195a4f9b6688bf05d8553"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/birds_off_poll.gd",
+      "bytes": 4300,
+      "sha256": "4ffcd17a406eff981b66f890a23bfe916d60c40874359120b1d7d9654c88c8e8"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/controller_duplicate_draft.gd",
+      "bytes": 4154,
+      "sha256": "6c7d4bdb924504a537b2e1d999719bfbafdaa2093d0ce581615576a96c7e69fc"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/gate_projection.gd",
+      "bytes": 4098,
+      "sha256": "683571fcc0a73d9c09f973280a38fc4c0f9cdc7c976f73cf072341e59eddf75d"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/lake_crest.gd",
+      "bytes": 4706,
+      "sha256": "4dd4bfe7c8939c7c82356fe647a7555dcbf6175f6038bc1b83759d3831ae0ff4"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/numerical_oracles.py",
+      "bytes": 5387,
+      "sha256": "dc883454a050541252529d1fbce4f2cfb1b7c27ee9797e8e26f9a82870606121"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/race_book_two_windows.gd",
+      "bytes": 3093,
+      "sha256": "a40b88438ab38e692d953af93a64e90613f68ed858320f45f75fb8e977c0961b"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/retractable_context.cpp",
+      "bytes": 6557,
+      "sha256": "c50b8a42cb7001f9776fd57ed091817479b522a8d343c15f11afb148418e5783"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/retractable_context.py",
+      "bytes": 2106,
+      "sha256": "ad3b275291074de7ae236f5a0142300b78eb94b30fd4db3cbf11a9038eb1cfc0"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/rotor_null.gd",
+      "bytes": 3563,
+      "sha256": "9bf2543e245eee5fc8497cc118f68a4baf4fa8123d9971c5a24c08c1a6902460"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/skyline_tree_toggle.gd",
+      "bytes": 2548,
+      "sha256": "60aa23ada789754975040062f410a2fbba2e0f3300b3e93aad6cbc3d4ada779f"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/spatial_propeller.cpp",
+      "bytes": 3917,
+      "sha256": "ccc5900150ebac02cfb855eea329508c8c68c7da7bd6f4c99a98f8a18112a9f7"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/spatial_propeller.py",
+      "bytes": 4054,
+      "sha256": "978c18f245bffea4ad9cd6f762d3498afa53824f11f18e60583bfc9a4213dc72"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/turbine_admission.gd",
+      "bytes": 6450,
+      "sha256": "bb41f6a54f51b6289721f94726bc6a53277e19129b4b0e33e5aa4888dc347738"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/probes/water_after_expiry.gd",
+      "bytes": 3700,
+      "sha256": "2518ed2d5c93d291ee0081660161a32fe56a98e98e96e4adb59981e61ee013e0"
+    },
+    {
+      "path": "research/swarm-systems-audit-2026-11-28/run_probes.py",
+      "bytes": 3311,
+      "sha256": "87303cfdd1108510cac44cfc9bb42ed5d46daed5285f8da942d5255f22277531"
+    }
+  ]
+}

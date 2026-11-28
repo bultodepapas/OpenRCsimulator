@@ -1,0 +1,184 @@
+{
+  "source_sha": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "observed_utc": "2026-11-28T15:35:34.863Z",
+  "runs": [
+    {
+      "id": 46158202470,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46158202470",
+      "name": "Collect publication rebind evidence",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 141019411006,
+          "name": "Publication captures (windows)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141019411305,
+          "name": "Publication captures (linux)",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 46158166434,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46158166434",
+      "name": "CI",
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null,
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 141019296632,
+          "name": "CI selection and release preflight",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141019297724,
+          "name": "Publication source rebind evidence",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 141020383019,
+          "name": "Godot visual captures",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "id": 141020383035,
+          "name": "RC native Linux build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141020383045,
+          "name": "NK-4 native kernel qualification (Windows)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383062,
+          "name": "three.js prototype (archived bake-off build)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141020383064,
+          "name": "RC native Windows build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141020383092,
+          "name": "Website source and download checks",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141020383094,
+          "name": "NK-3 native kernel qualification (Linux)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141020383144,
+          "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383175,
+          "name": "Godot app (units 3)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "id": 141020383191,
+          "name": "Godot app (units 4)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383202,
+          "name": "Godot app (units 0)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383207,
+          "name": "Godot app (units 1)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383209,
+          "name": "Godot app (integration 0)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383225,
+          "name": "Godot app (units 5)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383239,
+          "name": "Godot app (units 2)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383268,
+          "name": "Godot app (units 7)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020383340,
+          "name": "Godot app (units 6)",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 141020384554,
+          "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 141020384639,
+          "name": "Visual group shadow (${{ matrix.group }})",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 141022821187,
+          "name": "RC native production checks (linux)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141022821210,
+          "name": "RC native production checks (windows)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 141023327873,
+          "name": "Visual group shadow comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  ]
+}

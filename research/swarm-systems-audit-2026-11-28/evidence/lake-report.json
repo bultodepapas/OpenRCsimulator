@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a955aa6e-0480-4af0-a926-52691a97f27f",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/0c86cdd3ea34/audit-r2-staging/math/lake_crest.gd"
+  ],
+  "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+  "started_utc": "2026-11-28T15:28:20.983141+00:00",
+  "label": "r2-lake-crest",
+  "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-lake-crest-w75zg5nu/engine.log",
+  "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-lake-crest-w75zg5nu/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "R2_LAKE_CREST checks=12 failed=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.928034,
+  "log_bytes": 958,
+  "log_sha256": "bf8bba07ed4404dc40f9ec8ed3a96f0af3c2623ffeb89cb236ef6b98c45c3c09"
+}

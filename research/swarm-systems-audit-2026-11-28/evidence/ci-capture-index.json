@@ -1,0 +1,15 @@
+{
+  "format": "openrc-capture-diagnostics v1",
+  "qualification": false,
+  "payload_bytes": 2117,
+  "budget_bytes": 67108864,
+  "per_file_bytes": 4194304,
+  "files": [
+    {
+      "path": "capture.log",
+      "bytes": 2117,
+      "sha256": "526bc8722a4dabde0d22aa912d2105f9416fd948864e5470d12fc5c0c0e8974c"
+    }
+  ],
+  "omitted": []
+}

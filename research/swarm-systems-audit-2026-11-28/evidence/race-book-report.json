@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "07701b03-1030-465a-8c1c-5dca412a81b4",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/0c86cdd3ea34/audit-r2-staging/application/race_book_two_windows.gd"
+  ],
+  "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+  "started_utc": "2026-11-28T15:28:55.688125+00:00",
+  "label": "r2-race-book",
+  "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-race-book-yu3i3izy/engine.log",
+  "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-race-book-yu3i3izy/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "R2_RACE_BOOK"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.528736,
+  "log_bytes": 510,
+  "log_sha256": "a18379a4d775bbcda7a737998f0781e49325c96442d4f504eca532ebadd3ae66"
+}

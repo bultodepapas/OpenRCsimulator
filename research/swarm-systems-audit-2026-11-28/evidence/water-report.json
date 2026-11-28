@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a9031a81-2d6f-4004-a1cd-b7d24e0fbdb1",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/0c86cdd3ea34/audit-r2-staging/game/water_after_expiry.gd",
+    "--",
+    "--soundscape=off"
+  ],
+  "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+  "started_utc": "2026-11-28T15:23:54.106279+00:00",
+  "label": "r2-water-tail",
+  "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-water-tail-x2j67d_0/engine.log",
+  "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-water-tail-x2j67d_0/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AUDIT_WATER_TAIL"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md",
+      "context": [
+        "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "     GDScript backtrace (most recent call first):",
+        "         [0] _prepare_flight (res://main.gd:1279)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 14.042556,
+  "log_bytes": 1655,
+  "log_sha256": "96e048db5cc92d620977b7e5e64773adab2b9861170195a4f9b6688bf05d8553"
+}

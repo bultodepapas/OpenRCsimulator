@@ -1,0 +1,3 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+R2_RACE_BOOK {"overlap_different":{"attempts_on_disk":2,"book_ok":true,"courses":1,"oval_best":0.0,"oval_finishes":0},"overlap_same":{"attempts_on_disk":2,"book_ok":true,"courses":1,"oval_best":75.0,"oval_finishes":1},"reproduced":true,"serial_different":{"attempts_on_disk":2,"book_ok":true,"courses":2,"oval_best":60.0,"oval_finishes":1},"serial_same":{"attempts_on_disk":2,"book_ok":true,"courses":1,"oval_best":60.0,"oval_finishes":2}}

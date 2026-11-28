@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "42410569-6f17-4e24-9c5c-ca21aa1942b0",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/0c86cdd3ea34/audit-r2-staging/game/birds_off_poll.gd"
+  ],
+  "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+  "started_utc": "2026-11-28T15:20:28.873971+00:00",
+  "label": "r2-birds-off",
+  "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-birds-off-51ambv1w/engine.log",
+  "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-birds-off-51ambv1w/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AUDIT_BIRDS_OFF"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.166071,
+  "log_bytes": 481,
+  "log_sha256": "52ca09cde7853600093cc4adec5dadb0e2cdda30c31e97a4aec4077576b106e6"
+}

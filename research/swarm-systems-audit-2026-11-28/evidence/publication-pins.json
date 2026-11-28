@@ -1,0 +1,18 @@
+{
+  "fixture_sha256": "4a3f0c36fa759968d990a97a591eaea7b2d1bb6c69fadd859dece76c688e4cb3",
+  "fixture_named_engine": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+  "source_pins": 19,
+  "mismatches": [
+    {
+      "path": "sim/flight_session.gd",
+      "expected": "7046a99ff2258458933ef7e3c2a25b0b5c65557cf903cfd87acb64afb3e5bc35",
+      "actual": "8df9adccef7c46c2b2afb9c73070d84e019354bfc413e261f690b548dba6cedb"
+    },
+    {
+      "path": "sim/simulation.gd",
+      "expected": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+      "actual": "4a3ca39ee4c8ddca57b287641b4dd237e0938ed3a300173fb7ca6351063f4727"
+    }
+  ],
+  "both_internal_overlays_match": true
+}

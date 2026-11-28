@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}
+WARNING: Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md
+     at: push_warning (core/variant/variant_utility.cpp:1034)
+     GDScript backtrace (most recent call first):
+         [0] _prepare_flight (res://main.gd:1279)
+         [1] _ready (res://main.gd:589)
+         [2] _run (/workspace/scratch/0c86cdd3ea34/audit-r2-staging/game/water_after_expiry.gd:47)
+AUDIT_WATER_TAIL {"auto_restart":false,"empty_direct_updates_60":{"droplets_visible":false,"elapsed_s":0.0,"hide_droplet_calls":0,"material_clock_calls":0,"plume_visible":false,"rings_visible":0,"sink_syncs":0,"visual_syncs":0},"held_main_frames_60":{"droplets_visible":false,"elapsed_s":3.2,"hide_droplet_calls":960,"material_clock_calls":180,"plume_visible":false,"rings_visible":0,"sink_syncs":60,"visual_syncs":60},"ordinary_main_frames_60":{"droplets_visible":false,"elapsed_s":3.2,"hide_droplet_calls":960,"material_clock_calls":180,"plume_visible":false,"rings_visible":0,"sink_syncs":60,"visual_syncs":60},"ordinary_water_crash":true,"same_effect_checkpoint":true,"started":{"droplets_visible":true,"elapsed_s":0.12,"hide_droplet_calls":48,"material_clock_calls":6,"plume_visible":true,"rings_visible":1,"sink_syncs":1,"visual_syncs":2}}

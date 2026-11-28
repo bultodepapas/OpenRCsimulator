@@ -1,0 +1,45 @@
+{
+  "gate": {
+    "T_s": 0.004166666666666667,
+    "width_half_m": 1.5,
+    "production_band_m": 0.0005425347222222222,
+    "endpoint_normal_velocities_mps": [
+      1.8958333333333333,
+      2.1041666666666665
+    ],
+    "acceleration_mps2": 50.0,
+    "chord_u_m": 1.49925,
+    "curve_u_m": 1.5003343345810172,
+    "time_shift_s": 5.421672905086004e-05,
+    "u_error_m": 0.0010843345810172007,
+    "synchronous_sag_m": 0.00010850694444444444,
+    "axis_bound_given_full_acceleration_envelope_m": 0.005452406478472705
+  },
+  "lake": {
+    "stock_lake_id": "near_runway",
+    "T_s": 0.004166666666666667,
+    "midpoint_ne_m": [
+      106.64877984412676,
+      128.02108157112164
+    ],
+    "velocity_ne_mps": [
+      -28.8,
+      -49.883063257983665
+    ],
+    "down_m": 0.3951,
+    "path_length_m": 0.24,
+    "signed_distances_at_midpoint_m": {
+      "shoreline_offsets_ne_m": 23.378751738837423,
+      "bank_offsets_ne_m": 27.720384139119275
+    },
+    "angular_phase_velocities_rad_s": [
+      -22.643523901351873,
+      -54.570271933937676
+    ],
+    "endpoint_clearance_m": 9.476288086818219e-05,
+    "midpoint_immersion_m": 9.999999999999593e-05,
+    "analytic_entry_fraction": 0.14180527198769116,
+    "analytic_exit_fraction": 0.8581947280123088,
+    "subdivisions": 1
+  }
+}

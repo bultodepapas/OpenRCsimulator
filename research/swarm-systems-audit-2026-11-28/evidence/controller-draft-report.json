@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "569e8955-8d38-4547-aa56-c85a7c272f54",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/0c86cdd3ea34/audit-r2-staging/application/controller_duplicate_draft.gd"
+  ],
+  "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+  "started_utc": "2026-11-28T15:30:29.195179+00:00",
+  "label": "r2-controller-draft",
+  "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-controller-draft-y0x8h5m_/engine.log",
+  "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/probes/r2-controller-draft-y0x8h5m_/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "R2_CONTROLLER_DRAFT"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.59114,
+  "log_bytes": 543,
+  "log_sha256": "899a6f8e46aef51c88898916db70f4f047e8e75d9bd8839c836ae653412e29ef"
+}

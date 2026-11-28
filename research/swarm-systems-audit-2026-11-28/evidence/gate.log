@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+curved oblique ok=true chord=inside chord_u=1.499250000000 true_u=1.500334334581 score=true unresolved=0 root_offset_us=54.216729051
+same endpoints straight ok=true chord=inside chord_u=1.499250000000 true_u=1.499250000000 score=true unresolved=0 root_offset_us=0.000000000
+zero tangential speed ok=true chord=inside chord_u=1.499250000000 true_u=1.499250000000 score=true unresolved=0 root_offset_us=54.216729051
+farther inside ok=true chord=inside chord_u=1.490000000000 true_u=1.491084334581 score=true unresolved=0 root_offset_us=54.216729051
+outside chord, true inside ok=true chord=outside chord_u=1.500750000000 true_u=1.499665665419 score=false unresolved=0 root_offset_us=54.216729051
+below normal threshold ok=true chord=inside chord_u=1.490000000000 true_u=1.490000000000 score=false unresolved=1 root_offset_us=0.000000000
+near edge ok=true chord=unresolved chord_u=1.499750000000 true_u=1.499750000000 score=false unresolved=1 root_offset_us=0.000000000
+R2_GATE_PROJECTION cases=7 failed=0

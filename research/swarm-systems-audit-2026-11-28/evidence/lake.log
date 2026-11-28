@@ -1,0 +1,20 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+stock lake admitted true
+endpoint_clearance_m=[0.000094762881,0.000094762881] midpoint_immersion_m=0.000100000000
+analytic signs, with margins well above tolerance true
+one interval true
+full_hit=false half_hit=true first_entry_full_tick_fraction=0.141805291176
+whole point sweep misses true
+first half detects real entry true
+clear throughout true
+wet at start true
+point hull whole collision query misses true
+point hull half collision query selects terminal water true
+point hull half selected=hull/ first_entry_full_tick_fraction=0.141803503036
+stock Avanti admitted true
+lowest Avanti point=main_right offset_down_m=0.257147641
+Avanti hull and gear whole collision query misses true
+Avanti hull and gear half collision query selects terminal water true
+Avanti hull and gear half selected=gear/main_right first_entry_full_tick_fraction=0.141803503036
+R2_LAKE_CREST checks=12 failed=0

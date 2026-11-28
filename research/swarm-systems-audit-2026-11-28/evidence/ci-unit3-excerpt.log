@@ -1,0 +1,28 @@
+2026-11-28T15:28:44.9591929Z
+2026-11-28T15:28:44.9592006Z deferred aircraft shadow: 80 checks, 0 failed
+2026-11-28T15:28:44.9666541Z == test_shaft_publication.gd
+2026-11-28T15:28:48.9994287Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-g3ukh6kp/report.json
+2026-11-28T15:28:48.9995051Z Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+2026-11-28T15:28:48.9995330Z
+2026-11-28T15:28:48.9995676Z FAIL source-bound shaft fixture loads
+2026-11-28T15:28:48.9995957Z shaft fixture: fixture manifest or source identity differs
+2026-11-28T15:28:48.9998269Z Flight log REC: /home/runner/work/OpenRCsimulator/OpenRCsimulator/app/../tmp/shaft-publication-2576397/refusal-false.orfl
+2026-11-28T15:28:48.9999017Z Flight log saved: /home/runner/work/OpenRCsimulator/OpenRCsimulator/app/../tmp/shaft-publication-2576397/refusal-false.orfl (0 ticks)
+2026-11-28T15:28:48.9999721Z Flight log REC: /home/runner/work/OpenRCsimulator/OpenRCsimulator/app/../tmp/shaft-publication-2576397/refusal-true.orfl
+2026-11-28T15:28:49.0024576Z Flight log saved: /home/runner/work/OpenRCsimulator/OpenRCsimulator/app/../tmp/shaft-publication-2576397/preparation.orfl (0 ticks)
+2026-11-28T15:28:49.0025532Z Shaft publication: 154 checks, 1 failed; /home/runner/work/OpenRCsimulator/OpenRCsimulator/app/../tmp/shaft-publication-2576397
+2026-11-28T15:28:49.0099423Z ##[error]Process completed with exit code 1.
+2026-11-28T15:28:49.0161387Z ##[group]Run python3 tools/godot/summarize.py tmp/godot-checks --junit tmp/godot-checks/results.xml
+2026-11-28T15:28:49.0161786Z python3 tools/godot/summarize.py tmp/godot-checks --junit tmp/godot-checks/results.xml
+2026-11-28T15:28:49.0229006Z shell: /usr/bin/bash -e {0}
+2026-11-28T15:28:49.0860180Z 120 invocations: 119 passed, 0 skipped, 1 failed or invalid.
+2026-11-28T15:28:49.0860430Z
+2026-11-28T15:28:49.0860569Z res://tests/test_shaft_publication.gd [process_exit]
+2026-11-28T15:28:49.0860897Z Inspect the child exit status and final engine output.
+2026-11-28T15:28:49.0861205Z process_exit=1; complete=True; errors=0; warnings=0
+2026-11-28T15:28:49.0861397Z
+2026-11-28T15:28:49.0861565Z Evidence: godot-g3ukh6kp/report.json and engine.log
+2026-11-28T15:28:49.0905582Z ##[error]Process completed with exit code 1.
+2026-11-28T15:28:49.0952027Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-11-28T15:28:49.0952242Z with:
+2026-11-28T15:28:49.0952364Z   name: godot-diagnostics-units-3

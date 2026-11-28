@@ -1,0 +1,31 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+ERROR: This function should never be used outside the editor, it can severely damage performance.
+   at: global_shader_parameter_get_list (drivers/gles3/storage/material_storage.cpp:1937)
+   GDScript backtrace (most recent call first):
+       [0] ensure_ground_global (res://render/field_detail_preferences.gd:19)
+       [1] ground_material (res://render/atmosphere.gd:926)
+       [2] grass_material (res://render/ground.gd:133)
+       [3] _build_field (res://tests/fixtures/atmosphere_field.gd:11)
+       [4] _build_field_stage (res://render/world/world.gd:459)
+       [5] build (res://render/world/world.gd:296)
+       [6] _build_world (res://main.gd:3532)
+       [7] _prepare_flight (res://main.gd:979)
+       [8] _ready (res://main.gd:589)
+ERROR: Condition "global_shader_uniforms.variables.has(p_name)" is true.
+   at: global_shader_parameter_add (drivers/gles3/storage/material_storage.cpp:1882)
+   GDScript backtrace (most recent call first):
+       [0] ensure_ground_global (res://render/field_detail_preferences.gd:20)
+       [1] ground_material (res://render/atmosphere.gd:926)
+       [2] grass_material (res://render/ground.gd:133)
+       [3] _build_field (res://tests/fixtures/atmosphere_field.gd:11)
+       [4] _build_field_stage (res://render/world/world.gd:459)
+       [5] build (res://render/world/world.gd:296)
+       [6] _build_world (res://main.gd:3532)
+       [7] _prepare_flight (res://main.gd:979)
+       [8] _ready (res://main.gd:589)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+saved /home/runner/work/OpenRCsimulator/OpenRCsimulator/app/captures/capture.png (error 0) draw_calls=153 primitives=48310 sun_px=behind sim_clock=3.0 shadow_px=717.1,625.5 below_px=640.0,629.9

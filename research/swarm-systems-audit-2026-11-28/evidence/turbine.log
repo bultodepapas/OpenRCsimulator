@@ -1,0 +1,14 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+TURBINE_FLOW stock rpm=44000.0 kg_s=0.06571 gross_N=1.84644 side_N=-0.6571
+TURBINE_FLOW custom_idle rpm=44000.0 kg_s=-0.012 gross_N=-1.84644 side_N=0.12
+TURBINE_FLOW custom_knot rpm=100000.0 kg_s=0.1 gross_N=23.999538181818 side_N=-1.0
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+TURBINE_RUNWAY stock rpm=44000.0 flow=0.06571 gross_N=1.84644 tick=1
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+TURBINE_RUNWAY custom_flow rpm=44000.0 flow=-0.012 gross_N=-1.84644 tick=1
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+TURBINE_RUN stock initial_rpm=93100.656302968506 tick=2400 rpm=153999.999997289764 fault=
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+TURBINE_RUN max_plus_half initial_rpm=93100.656302968506 tick=1235 rpm=153999.994916241878 fault=step rejected: RK joint stage evaluation is nonfinite or malformed
+TURBINE ADMISSION 34 checks, 0 failed

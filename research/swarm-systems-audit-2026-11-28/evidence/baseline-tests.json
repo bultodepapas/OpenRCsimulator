@@ -1,0 +1,906 @@
+{
+  "source_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "passed_invocations": 19,
+  "tests": [
+    {
+      "test": "controller_conditioning",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "395e0812-4522-4445-b6a7-ca0d949a881b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_controller_conditioning.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:28.715524+00:00",
+        "label": "r2-baseline-controller_conditioning",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-controller_conditioning-_k88sghv/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-controller_conditioning-_k88sghv/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.011231,
+        "log_bytes": 115,
+        "log_sha256": "e0a3e14dfd18c829422732577f90310b0f30b5365186518ebc64c7ec59d3414a"
+      },
+      "completion_tail": [
+        "Controller conditioning: 57 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "controller_integration",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "cba7a816-4a09-4edf-8bd3-ea670371381d",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_controller_integration.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:29.773559+00:00",
+        "label": "r2-baseline-controller_integration",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-controller_integration-hcjtgls0/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-controller_integration-hcjtgls0/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Controller integration:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.745967,
+        "log_bytes": 651,
+        "log_sha256": "432750cbf7b5008cb67f0953f62723f2e5cb28fb5f8c69e9ec5eb7c66791e845"
+      },
+      "completion_tail": [
+        "Controller integration: 27/27 checks passed"
+      ]
+    },
+    {
+      "test": "controller_profile_hardening",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c8c4c019-eb89-42b4-b113-82e5e73ca80a",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_controller_profile_hardening.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:34.563561+00:00",
+        "label": "r2-baseline-controller_profile_hardening",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-controller_profile_hardening-zkr4edzu/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-controller_profile_hardening-zkr4edzu/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.030636,
+        "log_bytes": 122,
+        "log_sha256": "b0dc1bad4f396a308e0ed3a0c005342e2e1815c4b66a6ca4ba4875d25f3e1be1"
+      },
+      "completion_tail": [
+        "Controller profile hardening: 94 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "rcv_input",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "dbe6c76b-bca8-47ee-b015-77ff172f0f2b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_input.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:35.639860+00:00",
+        "label": "r2-baseline-rcv_input",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-rcv_input-1l4d9l6e/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-rcv_input-1l4d9l6e/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.564811,
+        "log_bytes": 101,
+        "log_sha256": "f076886106600774463be8351d503e6b544c901bbdb46ce53786bc044b8ea94f"
+      },
+      "completion_tail": [
+        "RCV input: 32 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "mr_input",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b545e255-6306-465e-877b-d89b31df70bb",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_mr_input.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:36.248653+00:00",
+        "label": "r2-baseline-mr_input",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-mr_input-gnm2zfj9/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-mr_input-gnm2zfj9/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.80393,
+        "log_bytes": 4106,
+        "log_sha256": "7087b1a34ca76066174d321da33d84b10eb6f448f9a2a81abd91a80a48a84022"
+      },
+      "completion_tail": [
+        "62 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "rc_input",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "9055f55e-a635-4f1f-a74a-e22fc84884ca",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_input.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:39.098915+00:00",
+        "label": "r2-baseline-rc_input",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-rc_input-rmyt5rcb/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-rc_input-rmyt5rcb/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.644891,
+        "log_bytes": 90,
+        "log_sha256": "c27aa53f38d95e2fba03fc999bca7deee4fbc004b80d67b7fbc5935ef6efee2e"
+      },
+      "completion_tail": [
+        "44 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "propulsion_scalar",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c3c1a803-0d02-4774-b4e0-2438f0ed5af3",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_propulsion_scalar.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:39.784652+00:00",
+        "label": "r2-baseline-propulsion_scalar",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-propulsion_scalar-32bafbuh/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-propulsion_scalar-32bafbuh/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.400262,
+        "log_bytes": 1169,
+        "log_sha256": "963f4b0761cf14416e050a66c0d85339a5add88e6759daa99a9d9e40d1bbff27"
+      },
+      "completion_tail": [
+        "H14 propulsion: 31775 byte-exact comparisons (25388 tilted-shaft, 21285 with crossflow, 5005 still air, 1613 stopped); 3226 changed-continuation cases excluded, 0 failed"
+      ]
+    },
+    {
+      "test": "water_checkpoint",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ccf37745-330a-4bb5-bc16-d15d39a212d5",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_water_checkpoint.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:45.229068+00:00",
+        "label": "r2-baseline-water_checkpoint",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-water_checkpoint-aifr1zg1/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-water_checkpoint-aifr1zg1/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 5,
+            "message": "Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md",
+            "context": [
+              "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+              "     GDScript backtrace (most recent call first):",
+              "         [0] _prepare_flight (res://main.gd:1279)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 12.684544,
+        "log_bytes": 882,
+        "log_sha256": "aa11d07a92fbf189e948c62d1836649aa5c9ec1d861a564aca0c734cdf231cfb"
+      },
+      "completion_tail": [
+        "LU-27 water checkpoint: 16 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "spatial_weather_session",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6b4a9b8a-9410-43bd-bedb-97bf26fcf01d",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_weather_session.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:17:57.958161+00:00",
+        "label": "r2-baseline-spatial_weather_session",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-spatial_weather_session-5jia8srl/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-spatial_weather_session-5jia8srl/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 38.685602,
+        "log_bytes": 8311,
+        "log_sha256": "a32677cb7f492eefa8cf5cc9ab66a4b0a84ead51d319510604a92727b7f63d4a"
+      },
+      "completion_tail": [
+        "M5-W05c-R2 spatial weather session: 111 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "spatial_propulsion_flow",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f3255fc2-a599-49a5-834c-a6ae20092bcd",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_propulsion_flow.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:18:36.693762+00:00",
+        "label": "r2-baseline-spatial_propulsion_flow",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-spatial_propulsion_flow-kwk3lt44/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/baseline-tests/r2-baseline-spatial_propulsion_flow-kwk3lt44/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.23274,
+        "log_bytes": 2756,
+        "log_sha256": "ebacae295b5537b8dd5ca95cb5bb0d5b607756661128609b3bc9a8e9c8810bf9"
+      },
+      "completion_tail": [
+        "spatial propulsion flow: 29 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "birds",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "16c47558-83a5-4226-bd66-83f37801bf56",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_birds.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:25:46.209126+00:00",
+        "label": "r2-control-birds",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-birds-33clnzui/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-birds-33clnzui/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "bird checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 324,
+            "message": "birds: res://data/scenery/birds/missing.json not built: missing res://data/scenery/birds/missing.json",
+            "context": [
+              "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+              "     GDScript backtrace (most recent call first):",
+              "         [0] build (res://scenery/birds.gd:40)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.12219,
+        "log_bytes": 23680,
+        "log_sha256": "7c50aaf1cf4e19393b3acc7971b03b674494f4988c95579aa0b36bf7839e6953"
+      },
+      "completion_tail": [
+        "all 322 bird checks passed"
+      ]
+    },
+    {
+      "test": "sun_skyline",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d740fc67-125e-440c-b86b-2b5e131f5e73",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_sun_skyline.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:25:48.394002+00:00",
+        "label": "r2-control-sun_skyline",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-sun_skyline-1eqwszpz/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-sun_skyline-1eqwszpz/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.665115,
+        "log_bytes": 196,
+        "log_sha256": "a5b0479a807f56e0ff1b23ddf8b48465183df3d7bd3906c272711960188828ad"
+      },
+      "completion_tail": [
+        "skipped: this renderer keeps no MultiMesh instance data (headless); tree checks need opengl3",
+        "SUN skyline: 21 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "turbine",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "38895ded-bbe4-4743-aa32-1a99c837f405",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_turbine.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:25:49.105753+00:00",
+        "label": "r2-control-turbine",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-turbine-dcqsr4hr/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-turbine-dcqsr4hr/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.228706,
+        "log_bytes": 1842,
+        "log_sha256": "a716b1c25a3b759a9b17bfc9baf115a35e3a0b7c72a11f976665659ec554f2d6"
+      },
+      "completion_tail": [
+        "27 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "turbine_continuous",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "30cc3332-1d1f-4821-914f-665d75e85bbb",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_turbine_continuous.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:25:50.375944+00:00",
+        "label": "r2-control-turbine_continuous",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-turbine_continuous-ogyw8ofu/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-turbine_continuous-ogyw8ofu/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.399261,
+        "log_bytes": 3450,
+        "log_sha256": "627165e1cf2a043e0d46de1cfea6ca904b988949fc91abd2cb9af27670ef61c5"
+      },
+      "completion_tail": [
+        "ok all planned checks executed ",
+        "46 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "heli_inflow",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "aca5be8a-c917-47bf-ba92-6500414ef23e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_inflow.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:25:55.875879+00:00",
+        "label": "r2-control-heli_inflow",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-heli_inflow-x_f0c7h9/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/controls/r2-control-heli_inflow-x_f0c7h9/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.75871,
+        "log_bytes": 108,
+        "log_sha256": "c4670dfbd12fd3350408f05fcf600d3430cd6fea423ba79683df38f14f0b258c"
+      },
+      "completion_tail": [
+        "HELI-04 inflow: 3949 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "lake_surface",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "86804507-5ac6-463b-bb08-957c865f291c",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_lake_surface.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:31:37.564432+00:00",
+        "label": "r2-extended-lake_surface",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-lake_surface-eqsz55_c/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-lake_surface-eqsz55_c/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all lake surface checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.786503,
+        "log_bytes": 2854,
+        "log_sha256": "8d9058b27f74e7fa37ffbcd15fc937efcfb63e2d8e60f83b5d2d409babc9c690"
+      },
+      "completion_tail": [
+        "all lake surface checks passed"
+      ]
+    },
+    {
+      "test": "lake_collision",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c1f65a0c-5642-4fdd-a427-3ed85f88f5b2",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_lake_collision.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:31:38.399107+00:00",
+        "label": "r2-extended-lake_collision",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-lake_collision-1xwcum4z/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-lake_collision-1xwcum4z/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all lake collision checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.74583,
+        "log_bytes": 4335,
+        "log_sha256": "bed580ba8f889a84e9da566239a34a724a20736ff41e4ba625e7743081fe58b8"
+      },
+      "completion_tail": [
+        "all lake collision checks passed"
+      ]
+    },
+    {
+      "test": "race_records",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "08a68b51-7a5a-49d4-af93-dad70116ab5e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_race_records.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:31:39.185812+00:00",
+        "label": "r2-extended-race_records",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-race_records-r_eardra/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-race_records-r_eardra/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.929119,
+        "log_bytes": 1863,
+        "log_sha256": "a78696090f1e534a2d51d514a59f74d3e4436f342247a99a4e66af5e58177876"
+      },
+      "completion_tail": [
+        "14 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "controller_profile_creation",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ea8d4e6a-cc3a-472a-8890-95b83c88f177",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_controller_profile_creation.gd"
+        ],
+        "cwd": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator",
+        "started_utc": "2026-11-28T15:31:40.156987+00:00",
+        "label": "r2-extended-controller_profile_creation",
+        "log": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-controller_profile_creation-fhf4ttpb/engine.log",
+        "report": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-r2-2026-11-28/extended-controls/r2-extended-controller_profile_creation-fhf4ttpb/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.070288,
+        "log_bytes": 119,
+        "log_sha256": "ef59b5e95ce2bab612b82ab74c6f169970d897945e570d1e75124f554b0d4ac3"
+      },
+      "completion_tail": [
+        "controller profile creation: 58 checks, 0 failed"
+      ]
+    }
+  ]
+}

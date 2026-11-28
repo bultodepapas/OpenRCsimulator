@@ -1,0 +1,78 @@
+{
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "stock_contacts": {
+    "f4u_corsair_250": 3,
+    "p51d_mustang_120": 3,
+    "sebart_avanti_s_a200": 3
+  },
+  "stock_vector_lengths": [
+    24,
+    40,
+    40,
+    3,
+    3
+  ],
+  "flags": [
+    "-std=c++17",
+    "-O2",
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "cases": 1440,
+  "rows": [
+    {
+      "epoch": 0,
+      "retractable": 1,
+      "accepted": 200,
+      "current_contact_bytes": 134400,
+      "candidate_contact_bytes": 67200,
+      "current_terrain_bytes": 38400,
+      "candidate_terrain_bytes": 0
+    },
+    {
+      "epoch": 0,
+      "retractable": 0,
+      "accepted": 240,
+      "current_contact_bytes": 0,
+      "candidate_contact_bytes": 0,
+      "current_terrain_bytes": 0,
+      "candidate_terrain_bytes": 0
+    },
+    {
+      "epoch": 1,
+      "retractable": 1,
+      "accepted": 200,
+      "current_contact_bytes": 134400,
+      "candidate_contact_bytes": 67200,
+      "current_terrain_bytes": 176000,
+      "candidate_terrain_bytes": 0
+    },
+    {
+      "epoch": 1,
+      "retractable": 0,
+      "accepted": 240,
+      "current_contact_bytes": 0,
+      "candidate_contact_bytes": 0,
+      "current_terrain_bytes": 0,
+      "candidate_terrain_bytes": 0
+    },
+    {
+      "epoch": 2,
+      "retractable": 1,
+      "accepted": 200,
+      "current_contact_bytes": 134400,
+      "candidate_contact_bytes": 67200,
+      "current_terrain_bytes": 176000,
+      "candidate_terrain_bytes": 0
+    },
+    {
+      "epoch": 2,
+      "retractable": 0,
+      "accepted": 240,
+      "current_contact_bytes": 0,
+      "candidate_contact_bytes": 0,
+      "current_terrain_bytes": 0,
+      "candidate_terrain_bytes": 0
+    }
+  ]
+}
