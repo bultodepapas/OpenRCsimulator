@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+HUD_ALLOCATION [{"frame_slots":28,"fuel_material":true,"fuel_visible":false,"glass":0,"hidden_optional_nodes":426,"loaded_header_icons":19,"manager_nodes":710,"optional_nodes":426,"optional_widgets":19,"preset":"off","visible_optional":0},{"frame_slots":28,"fuel_material":true,"fuel_visible":false,"glass":0,"hidden_optional_nodes":426,"loaded_header_icons":19,"manager_nodes":710,"optional_nodes":426,"optional_widgets":19,"preset":"pilot","visible_optional":0},{"frame_slots":28,"fuel_material":true,"fuel_visible":false,"glass":5,"hidden_optional_nodes":316,"loaded_header_icons":19,"manager_nodes":720,"optional_nodes":436,"optional_widgets":19,"preset":"cockpit","visible_optional":5}]
+HUD_EAGER_CONTROLS_CONFIRMED

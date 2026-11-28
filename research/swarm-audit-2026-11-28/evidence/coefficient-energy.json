@@ -1,0 +1,80 @@
+{
+  "phoenix_unity_scale": {
+    "applied_cp_scale": 1.2634751644684743,
+    "cp0": 0.0471,
+    "ct0": 0.113,
+    "fm": 0.6434826172768102,
+    "importer_fm": 1.0107801315747795
+  },
+  "stock_tabulated_records": {
+    "f4u_corsair_250": {
+      "advance_ratio": 0.9745671887881285,
+      "margin_cp_minus_jct": 0.004093079554822753,
+      "upper_advance_ratio": 1.35
+    },
+    "jensen_ugly_stik_60": {
+      "advance_ratio": 0.6642252747252749,
+      "margin_cp_minus_jct": 0.010433856404151398,
+      "upper_advance_ratio": 0.788
+    },
+    "moonrunner_x99": {
+      "advance_ratio": 0.5009596802431607,
+      "margin_cp_minus_jct": 0.00609683595002662,
+      "upper_advance_ratio": 0.653931
+    },
+    "p51d_mustang_120": {
+      "advance_ratio": 0.7763141228625713,
+      "margin_cp_minus_jct": 0.004818829639012033,
+      "upper_advance_ratio": 1.05
+    },
+    "stik_electric_6s": {
+      "advance_ratio": 0.7122700000000001,
+      "margin_cp_minus_jct": 0.006017303512411348,
+      "upper_advance_ratio": 0.8175
+    },
+    "synthetic_stik_electric_4s": {
+      "advance_ratio": 0.6642252747252749,
+      "margin_cp_minus_jct": 0.010433856404151398,
+      "upper_advance_ratio": 0.788
+    },
+    "synthetic_stik_electric_4s_battery": {
+      "advance_ratio": 0.6642252747252749,
+      "margin_cp_minus_jct": 0.010433856404151398,
+      "upper_advance_ratio": 0.788
+    },
+    "synthetic_stik_electric_6s": {
+      "advance_ratio": 0.6642252747252749,
+      "margin_cp_minus_jct": 0.010433856404151398,
+      "upper_advance_ratio": 0.788
+    },
+    "synthetic_stik_electric_6s_battery": {
+      "advance_ratio": 0.6642252747252749,
+      "margin_cp_minus_jct": 0.010433856404151398,
+      "upper_advance_ratio": 0.788
+    },
+    "turbo_lumber_evolution": {
+      "advance_ratio": 0.744,
+      "margin_cp_minus_jct": 0.0112856,
+      "upper_advance_ratio": 0.876
+    }
+  },
+  "stock_transport": {
+    "maximum_m": 1.4229946203721102,
+    "minimum_m": 0.6072420273311897,
+    "records": 16
+  },
+  "turbo_lumber_synthetic_knot": {
+    "advance_ratio": 0.501,
+    "air_density_kg_m3": 1.225,
+    "ct": 0.0731,
+    "custom_cp": 0.02,
+    "custom_efficiency": 1.8311549999999999,
+    "custom_shaft_power_w": 41.71556146191536,
+    "diameter_m": 0.2794,
+    "forward_speed_mps": 13.99794,
+    "rps": 100.0,
+    "stock_cp": 0.0536,
+    "stock_shaft_power_w": 111.79770471793316,
+    "thrust_power_w": 76.38765894879361
+  }
+}

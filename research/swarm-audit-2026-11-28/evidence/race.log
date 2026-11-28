@@ -1,0 +1,8 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+Flight log REC: /workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-2026-11-28/final-probes/race-data/full-outbox.orfl
+Flight log saved: /workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-2026-11-28/final-probes/race-data/full-outbox.orfl (1 ticks)
+Flight log REC: /workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-2026-11-28/final-probes/race-data/empty-outbox.orfl
+Flight log saved: /workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-2026-11-28/final-probes/race-data/empty-outbox.orfl (1 ticks)
+RACE_OUTBOX_RECEIPT {"empty":{"complete":true,"error":"","exact":true,"first_mismatch_tick":-1,"format":"openrc-multirotor-flight-log-report v1","identity_match":true,"log":"/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-2026-11-28/final-probes/race-data/empty-outbox.orfl","mode":"exact","ok":true,"recorded_crash":"","replayed_crash":"","rows":1,"solver_changed":false},"full":{"complete":true,"error":"Replay refused a recorded tick: ","exact":false,"first_mismatch_tick":1,"format":"openrc-multirotor-flight-log-report v1","identity_match":true,"log":"/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/tmp/audit-2026-11-28/final-probes/race-data/full-outbox.orfl","mode":"exact","ok":false,"recorded_crash":"","replayed_crash":"","rows":1,"solver_changed":false},"live_accepted":true,"live_saved":8,"pending_at_start":8}
+RACE_OUTBOX_COUNTEREXAMPLE=true

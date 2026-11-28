@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}
+WARNING: Native physics is not running (native stage library not installed); flights use the GDScript reference, about twice the physics CPU. Rebuild or reinstall the native kernel: research/native-kernel/README.md
+     at: push_warning (core/variant/variant_utility.cpp:1034)
+     GDScript backtrace (most recent call first):
+         [0] _prepare_flight (res://main.gd:1279)
+         [1] _ready (res://main.gd:589)
+         [2] _run (/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/research/swarm-audit-2026-11-28/probes/fold_scene_probe.gd:20)
+FOLD_SCENE_OBSERVATION {"accepted_action":true,"backend":{"backend":"gdscript_reference"},"held_immediately":false,"rows":[{"idle_frame":0,"throttle":1.0,"tick":1},{"idle_frame":0,"throttle":1.0,"tick":2},{"idle_frame":0,"throttle":1.0,"tick":3},{"idle_frame":0,"throttle":1.0,"tick":4},{"idle_frame":0,"throttle":1.0,"tick":5},{"idle_frame":0,"throttle":1.0,"tick":6},{"idle_frame":0,"throttle":1.0,"tick":7},{"idle_frame":0,"throttle":1.0,"tick":8},{"idle_frame":0,"throttle":1.0,"tick":9},{"idle_frame":0,"throttle":1.0,"tick":10},{"idle_frame":0,"throttle":1.0,"tick":11},{"idle_frame":1,"throttle":0.0,"tick":12},{"idle_frame":1,"throttle":0.0,"tick":13},{"idle_frame":1,"throttle":0.0,"tick":14},{"idle_frame":1,"throttle":0.0,"tick":15},{"idle_frame":1,"throttle":0.0,"tick":16},{"idle_frame":1,"throttle":0.0,"tick":17},{"idle_frame":1,"throttle":0.0,"tick":18},{"idle_frame":1,"throttle":0.0,"tick":19},{"idle_frame":1,"throttle":0.0,"tick":20},{"idle_frame":1,"throttle":0.0,"tick":21},{"idle_frame":1,"throttle":0.0,"tick":22},{"idle_frame":1,"throttle":0.0,"tick":23}],"switched":true,"tick_before":0}
+CORSAIR_FOLD_SCENE_CONFIRMED

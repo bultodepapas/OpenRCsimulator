@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+RGB_OFF_OBSERVATION {"aircraft":"jensen-das-ugly-stik-60","festival_all_advancing":{"active_write_frames":60,"calls":60,"lamp_and_strip_bindings":11,"max_visible_bindings":11,"writes":660},"festival_off_advancing":{"active_write_frames":60,"calls":60,"lamp_and_strip_bindings":11,"max_visible_bindings":0,"writes":660},"festival_off_paused":{"active_write_frames":0,"calls":60,"lamp_and_strip_bindings":11,"max_visible_bindings":0,"writes":0},"profile_disabled_advancing":{"active_write_frames":0,"calls":60,"lamp_and_strip_bindings":0,"max_visible_bindings":0,"writes":0}}
+HIDDEN_RGB_SHADER_WRITES_CONFIRMED

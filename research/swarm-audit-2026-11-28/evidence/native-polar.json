@@ -1,0 +1,31 @@
+{
+  "header_sha256": "99607811a29dfd2b5ce769bb44ccab9f5cf8ecac68f05ad0b8b4ee920d79555c",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++17",
+    "-O2",
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "scope": "Synthetic six-strip local_loads, GNU ld observing emitted calls to sin and pow. No timing.",
+  "rows": 320,
+  "mismatched_load_words": 0,
+  "errno_mismatch": 0,
+  "fp_flags_mismatch": 0,
+  "groups": {
+    "no_polar": {
+      "rows": 160,
+      "baseline_pow": 3080,
+      "candidate_pow": 3080,
+      "baseline_sin": 3042,
+      "candidate_sin": 3042
+    },
+    "polar": {
+      "rows": 160,
+      "baseline_pow": 3872,
+      "candidate_pow": 1952,
+      "baseline_sin": 3546,
+      "candidate_sin": 1768
+    }
+  }
+}

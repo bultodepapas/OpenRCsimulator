@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+FOLD_OBSERVATION [{"accepted_input":1.0,"accepted_tick":1,"at_tick":0,"fault":"","first_input":1.0,"held_immediately":false,"next_input":0.0,"render_before_first_tick":false,"stopped":true,"target":1.0},{"accepted_input":0.0,"accepted_tick":1,"at_tick":0,"fault":"","first_input":0.0,"held_immediately":false,"next_input":0.0,"render_before_first_tick":true,"stopped":true,"target":1.0}]
+CORSAIR_FOLD_CADENCE_CONFIRMED

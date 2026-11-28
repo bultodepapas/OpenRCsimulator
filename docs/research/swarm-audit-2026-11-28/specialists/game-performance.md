@@ -1,0 +1,50 @@
+# Current rendering and game-loop review
+
+Baseline `71306784a250d634854f0c8bab3a927cc46a61b8`, official Godot `4.8.beta2.official.cafc17a19`, Linux x86_64 headless. The simulations and the view layer are production GDScript. Component probes use the shipped session, render objects, or both as identified below. The audit changed no production file. Frame rate, GPU time, usable graphics quality, and total startup improvement require a separate rendered campaign.
+
+## F4U-17 · The first physics tick after an accepted Corsair fold can still receive full throttle
+
+**Expected.** F4U-17 documents idle throttle from the first accepted O press until the wings finish spreading. **Observed.** At a stopped Club Field runway start, both controls accepted the fold at tick 0 and both had full throttle commanded. Sampling the real session input before advancing the presentation gave tick 1 a throttle of 1.0. Advancing the fold presentation first gave tick 1 a throttle of 0.0. The next sample after the first presentation was 0.0 in both controls. Both ticks were accepted without fault. The component probe uses the real Corsair geometry's fold records, real field/lake/collision inventory and reference flight session; it directly orders the two production callbacks.
+
+**Full-scene reproduction.** The production Corsair quick-flight scene reported a stopped runway session. The probe dispatched an O press via the root window before the next physics callback and observed the unmodified scene's `Simulation.stepped` signals. The scene accepted the press while the hold was still clear. Ticks 1–11 published throttle 1.0 before the first idle callback; ticks 12–23 published 0.0 after it. This is one deliberately chosen event phase under the normal headless scheduler. Eleven describes this run only. No physical keyboard, display timing or pilot latency was measured. The requested native backend fell back to GDScript reference because the native stage was unavailable. The checked scene run recorded that one warning and zero errors.
+
+**Cause.** The O handler updates only the mechanism target. The presentation callback advances the mechanism using frame delta and publishes a named throttle hold. The 240 Hz session reads the hold when building solver inputs. The existing historical F4U-17 test waits one second before checking solver throttle, after the offending interval. The input tape records the effective value, so this finding concerns generating live commands. It establishes neither broken playback of an existing tape nor a collision or visible aircraft displacement. See `app/main.gd:1512–1515,2078–2107,2283–2285`, `app/sim/flight_session.gd:3255,5113–5124`, `app/aircraft/f4u_corsair_geometry.gd:480,515`, and `docs/research/f4u-corsair/F4U-17/README.md`.
+
+The pinned Linux engine dispatches display events before entering its iteration. X11 and Wayland flush buffered input there. Each iteration can then run zero or more physics ticks before ordinary processing. This supports the phase ordering exercised by the probe. [Linux outer loop](https://github.com/godotengine/godot/blob/cafc17a19/platform/linuxbsd/os_linuxbsd.cpp#L1019-L1026) · [X11 flush](https://github.com/godotengine/godot/blob/cafc17a19/platform/linuxbsd/x11/display_server_x11.cpp#L5801) · [Wayland flush](https://github.com/godotengine/godot/blob/cafc17a19/platform/linuxbsd/wayland/display_server_wayland.cpp#L2227) · [Physics and process callbacks](https://github.com/godotengine/godot/blob/cafc17a19/main/main.cpp#L5010-L5102).
+
+**Remedy and acceptance.** Assert the hold with the accepted action, resolve physical press/reverse/completion state on the accepted tick clock, and derive the displayed fraction from that state. Test already-commanded throttle, keyboard and radio throttle, 0/1/multiple ticks before presentation, reverse mid-travel, repeated toggles, stop/airborne refusal, pause, restart and restore mid-spread. Retain the existing recorded throttle boundary and validate exact replay on the matching backend. Release timing currently shares the frame-dependent mechanism. The component run above measures onset.
+
+## HUD-13 / UI-34c · Default Pilot and Off construct 426 nodes belonging to hidden optional instruments
+
+Home passes the player's HUD preset into fixed-wing Fly. During “Preparing instruments” the manager constructs all 28 frames, including 19 optional player instruments, before applying preset visibility. The probe attaches the production manager and enumerates the live hierarchy recursively, including internal descendants and each optional widget root. In both Pilot and Off, all 426 optional-widget nodes are hidden. The 19 header TextureRects hold non-null textures; textures can be shared. The Fuel ShaderMaterial is allocated with Fuel hidden. All 19 crystal underlays remain unallocated in these two controls, confirming the existing HUD-13-R11 fix.
+
+| Fresh preset | All manager nodes | Optional widgets shown | Hidden optional nodes | Optional glass underlays |
+| --- | ---: | ---: | ---: | ---: |
+| Off | 710 | 0 / 19 | 426 | 0 |
+| Pilot (default) | 710 | 0 / 19 | 426 | 0 |
+| Cockpit | 720 | 5 / 19 | 316 | 5 |
+
+**Scope and remedy.** This measures live objects held by the manager at creation; 426 is not an estimate of milliseconds, bytes, draw calls or FPS. Explore creating the 19 widget subtrees on first actual use, retaining their settings, shared summary/peak/fuel/battery/alert state and first-visible correctness. Do not suppress the 10 Hz model or warning logic wholesale. Keep diagnostics or other public frame references available where required. Measure actual Home→Fly and first preset reveal together, cold and warm. Retain size, accessibility, language/locale, normalized layout and save behavior, including reveal while paused. See `app/app_root.gd:1781–1782`, `app/main.gd:3577–3584`, `app/render/overlays/overlay_manager.gd:104–105,142–160,440–456`, `app/render/overlays/fuel_instrument.gd:30–42`, and `app/render/overlays/player_instrument.gd:96–100,220–225`. This refines the existing instruments-loading and lazy-glass work. Earlier initial-allocation and first-draw results are in `docs/research/flight-overlays/HUD-01-10/README.md#lazy-glass-allocation-2026-10-31-hud-13-r11`.
+
+## FW-RGB-13 · A configured RGB rig submits changing material parameters with aircraft lights switched Off
+
+The fixed-wing L action cycles the lights through All, Navigation and Off. This route retains the installed RGB profile. For an active preset, Main calls the rig on every presented frame. The rig suppresses node visibility by mode, but its steady-lamp path still sets the local clock, samples patterns and reactions, and its strip path still resolves the pattern and updates its phase. Its public frame-write counter increments immediately after the script calls `ShaderMaterial.set_shader_parameter`. Selecting a disabled *profile* takes a different early exit. The historical native capture tool's RGB Off control selected that disabled profile.
+
+The factory-built Jensen Das Ugly Stik 60 had 11 bound lamp/strip materials. After priming, 60 calls to the production rig advanced the pose clock from 1.0 to 2.0 seconds in 1/60-second increments, with exposure and telemetry fixed. The same 660 shader setters occurred with all 11 bindings visible and with all 11 hidden. Each advancing Off call wrote material parameters. Holding Off at a constant clock and advancing the profile-disabled control each produced zero setters.
+
+| Lighting selection | Clock | Calls | Calls with writes | Shader setters | Maximum visible bound lamps/strips |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Festival, mode Off | Advancing | 60 | 60 | 660 | 0 |
+| Festival, mode All | Advancing | 60 | 60 | 660 | 11 |
+| Festival, mode Off | Fixed | 60 | 0 | 0 | 0 |
+| Profile disabled | Advancing | 60 | 0 | 0 | 0 |
+
+**Code and scope.** `app/main.gd:1571–1585,2353–2354,2382–2386,2428–2436,3551–3558`; `app/render/lighting/aircraft_lighting_rig_3d.gd:182–219,239–263,651–664,793–808`; `tools/trailer/capture_flight.gd:221–223`. The companion and presentation source receipts pin parts of this code. A script-side setter count establishes CPU/renderer-API submissions; drivers can merge updates or defer them until draw. No GPU transfer, GPU time, or target frame-rate result follows from it.
+
+**Remedy and acceptance.** Skip changing lamp and strip uniforms once their hide transition has completed. Reconcile visibility and the current accepted clock, sequence, exposure, gear gates and telemetry before a lamp first becomes visible. Keep retired VFX aging, cue-edge suppression during Off, scene-budget grants, reset/rewind, and author-defined material ownership. A blanket early return risks stale lights on reveal or replaying expired effect cues. Check Off→Navigation→All while paused, moving, between sequence cues and after a rewind, plus magnifier and Workshop isolation. Regenerate the affected source receipts if implementing the change. Measure the retained behavior on a normal configured flight at target resolution including full frame percentiles and simulation/wall rate. Differentiate stock/default inheritance, profile disabled, and an active profile in Off mode.
+
+## Reproduction
+
+The peer scripts `fold_probe.gd`, `hud_probe.gd` and `lighting_probe.gd` use the repository's pinned headless checked runner. Use an imported, complete baseline checkout, including the editor-mode model authoring proofs and the vendored planar-reflection addon. The repo's checked-runner syntax is in `docs/tools/shared.md`. Under this audit the non-timing compact observations are prefixed with `FOLD_OBSERVATION`, `HUD_ALLOCATION` and `RGB_OFF_OBSERVATION`. Each probe requires its own final completion marker and a clean checked receipt. The confirmed `fold_scene_probe.gd` dispatches the actual O event through the production flight scene and listens to its accepted input publication.
+
+See the [reproduction guide](../../../../research/swarm-audit-2026-11-28/README.md) for the final script paths, checked commands and compact evidence.

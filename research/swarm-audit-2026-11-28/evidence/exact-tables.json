@@ -1,0 +1,63 @@
+{
+  "advance_at_smallest": 0.9745671887881286,
+  "catalog_base_files": 6,
+  "direct_files_screened": 10,
+  "distinct_table_pairs": 7,
+  "max_length_m": 1.4229946203721104,
+  "min_length_m": 0.6072420273311897,
+  "smallest_margin": 0.004093079554822753,
+  "table_rows": {
+    "f4u_corsair_250.json": {
+      "at": "23643/24260",
+      "catalog_base": true,
+      "minimum": "9929811/2426000000"
+    },
+    "jensen_ugly_stik_60.json": {
+      "at": "120889/182000",
+      "catalog_base": true,
+      "minimum": "1709065679/163800000000"
+    },
+    "moonrunner_x99.json": {
+      "at": "412039337/822500000",
+      "catalog_base": true,
+      "minimum": "52317818086301293/8581142500000000000"
+    },
+    "p51d_mustang_120.json": {
+      "at": "6129/7895",
+      "catalog_base": true,
+      "minimum": "1902233/394750000"
+    },
+    "stik_electric_6s.json": {
+      "at": "71227/100000",
+      "catalog_base": true,
+      "minimum": "3393759181/564000000000"
+    },
+    "synthetic_stik_electric_4s.json": {
+      "at": "120889/182000",
+      "catalog_base": false,
+      "minimum": "1709065679/163800000000"
+    },
+    "synthetic_stik_electric_4s_battery.json": {
+      "at": "120889/182000",
+      "catalog_base": false,
+      "minimum": "1709065679/163800000000"
+    },
+    "synthetic_stik_electric_6s.json": {
+      "at": "120889/182000",
+      "catalog_base": false,
+      "minimum": "1709065679/163800000000"
+    },
+    "synthetic_stik_electric_6s_battery.json": {
+      "at": "120889/182000",
+      "catalog_base": false,
+      "minimum": "1709065679/163800000000"
+    },
+    "turbo_lumber_evolution.json": {
+      "at": "93/125",
+      "catalog_base": true,
+      "minimum": "14107/1250000"
+    }
+  },
+  "wake_files": 16,
+  "worst_file": "f4u_corsair_250.json"
+}

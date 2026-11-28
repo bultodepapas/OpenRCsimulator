@@ -1,0 +1,43 @@
+{
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++17",
+    "-O2",
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "header_sha256": "3afc1a6060e1f108852d57735828293b445f7ddc156f89b1cf917173056b91a0",
+  "accepted": 8,
+  "refused": 10,
+  "differing_outputs": 0,
+  "calls_by_shape": {
+    "0-wheel accepted": {
+      "rows": 4,
+      "baseline_allocations": 8,
+      "candidate_allocations": 4,
+      "baseline_bytes": 192,
+      "candidate_bytes": 96
+    },
+    "0-wheel refused": {
+      "rows": 5,
+      "baseline_allocations": 0,
+      "candidate_allocations": 0,
+      "baseline_bytes": 0,
+      "candidate_bytes": 0
+    },
+    "3-wheel accepted": {
+      "rows": 4,
+      "baseline_allocations": 12,
+      "candidate_allocations": 8,
+      "baseline_bytes": 480,
+      "candidate_bytes": 288
+    },
+    "3-wheel refused": {
+      "rows": 5,
+      "baseline_allocations": 0,
+      "candidate_allocations": 0,
+      "baseline_bytes": 0,
+      "candidate_bytes": 0
+    }
+  }
+}

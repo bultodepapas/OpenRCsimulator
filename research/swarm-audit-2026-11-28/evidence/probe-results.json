@@ -1,0 +1,298 @@
+{
+  "audited_source": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "checkout_head": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "results": [
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.910069,
+      "log_sha256": "876f6d59f8ee282544eb0832bff86fa5a486769286b49604cbbd86c0f91f42c0",
+      "case": "box",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/scenery_shell.gd",
+      "probe_sha256": "cf358b7596a4f7cf2901120a76ee52072f27e40f963a8ea89910cdc4c5e20489",
+      "log": "evidence/box.log",
+      "capture_id": "f3c7d7c9-1dfc-409b-9b29-0c569b387f20",
+      "started_utc": "2026-11-28T14:58:12.779354+00:00",
+      "required_text": [
+        "SCENERY_SHELL"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "box"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.587663,
+      "log_sha256": "7c8aa59ffea008ffae64a01272eeb9d7c8de7c981198663c5051d3f3587a8452",
+      "case": "capsule",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/capsule_seam.gd",
+      "probe_sha256": "87b18712ba23f91525d4b8e9b87fd4f22d2e9aaead0a11c2688457af4389ffd2",
+      "log": "evidence/capsule.log",
+      "capture_id": "65cfde16-983b-47ba-847e-32d5e18f8a50",
+      "started_utc": "2026-11-28T14:58:14.758616+00:00",
+      "required_text": [
+        "CAPSULE_SEAM"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "capsule"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.348085,
+      "log_sha256": "9cf16e9e60dbe2686e6ea84805b2f3e341f9fc479ec8dda4b71b45eeb6e2d1fd",
+      "case": "race",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/race_replay_outbox.gd",
+      "probe_sha256": "4c5231779bebdf9506bcd41d3842fa7c5536591197db705ccda22390405086fe",
+      "log": "evidence/race.log",
+      "capture_id": "a79b1bf4-7a88-4649-b344-fa99ac97e0d3",
+      "started_utc": "2026-11-28T14:58:16.388688+00:00",
+      "required_text": [
+        "RACE_OUTBOX_COUNTEREXAMPLE=true"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "race"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.906948,
+      "log_sha256": "06902485ad4fa12c9b91d64a6a33545d58e9202d3f99f2e697bdfd4801bc40fa",
+      "case": "identity",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/unresolved_replay_identity.gd",
+      "probe_sha256": "23e77f27175870303335e9c923820d47a9f8c29f51b5d30e648bffc02782ea60",
+      "log": "evidence/identity.log",
+      "capture_id": "46e42a53-65a1-475a-b5fb-843fde9cbab0",
+      "started_utc": "2026-11-28T14:58:21.783446+00:00",
+      "required_text": [
+        "UNRESOLVED_ADAPTER_COUNTEREXAMPLE=true"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "identity"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.916284,
+      "log_sha256": "160f2ba218fff12beaa25ca51dc4f9ef58f3cbd98140dcaa8c9652c837be63c2",
+      "case": "downwash",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/downwash_transport.gd",
+      "probe_sha256": "8f852f31ef09d6dad66bb0da216e35922f4a84af6ae77224ede31b0dd8f12955",
+      "log": "evidence/downwash.log",
+      "capture_id": "642b97f6-0f32-4693-b8f0-07085280390f",
+      "started_utc": "2026-11-28T14:58:28.732277+00:00",
+      "required_text": [
+        "DOWNWASH_TRANSPORT"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "downwash"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.879576,
+      "log_sha256": "1fa9afcd56cd3c9aa5d061f6dbd33c5d7da828c0d0c9ed2a40a04f5afa1412fe",
+      "case": "fold",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/fold_probe.gd",
+      "probe_sha256": "d65022b6cc74e4d0153928d1ae8568ca612fc3ef0b09beab1aaaf7d8d7c659f2",
+      "log": "evidence/fold.log",
+      "capture_id": "44938bb7-ce00-48bf-833a-ad3155dd5ad4",
+      "started_utc": "2026-11-28T14:58:32.697676+00:00",
+      "required_text": [
+        "CORSAIR_FOLD_CADENCE_CONFIRMED"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "fold"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 16.058788,
+      "log_sha256": "d1ed75fe8acb6e9bcd1d8da79b6ecb00cf1950a30a6bd6d3dae11e7d8b2d5dd2",
+      "case": "fold-scene",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/fold_scene_probe.gd",
+      "probe_sha256": "c6b3b7e3fef946f43a0ab1a22ae3ee7f4833e9143fb0ad300b285fbeb2d02e78",
+      "log": "evidence/fold-scene.log",
+      "capture_id": "e3615211-b544-431f-8471-2b8537c37b28",
+      "started_utc": "2026-11-28T14:58:42.621015+00:00",
+      "required_text": [
+        "CORSAIR_FOLD_SCENE_CONFIRMED"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "fold-scene"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.362924,
+      "log_sha256": "f98d98e32c09a13871c049c11ff8ae4451346cc067a5664f48e5ee3e27f51d2a",
+      "case": "hud",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/hud_probe.gd",
+      "probe_sha256": "9ad8475651cda0686082b3297556de03218737013300f60ce5e68c526bc31aba",
+      "log": "evidence/hud.log",
+      "capture_id": "7fb66cbf-fae2-4e25-8a7a-5e9910c364f8",
+      "started_utc": "2026-11-28T14:58:58.730203+00:00",
+      "required_text": [
+        "HUD_EAGER_CONTROLS_CONFIRMED"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "hud"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.387514,
+      "log_sha256": "3a905b7482bf9667c18a5e3e234997c661da200a03ca394a41faa89ffee9d101",
+      "case": "lighting",
+      "coverage": "counterexample_or_observation_reproduced",
+      "probe": "research/swarm-audit-2026-11-28/probes/lighting_probe.gd",
+      "probe_sha256": "0543ffc6ec3e453635bb0cf96c4fe73bce9b26fed82f640970d46065353f9c7e",
+      "log": "evidence/lighting.log",
+      "capture_id": "32dcec7c-a52f-4f47-80e0-1a6644ea825a",
+      "started_utc": "2026-11-28T14:59:00.133720+00:00",
+      "required_text": [
+        "HIDDEN_RGB_SHADER_WRITES_CONFIRMED"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "lighting"
+      ]
+    },
+    {
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.223932,
+      "log_sha256": "71bd694251c7193163c11f2ef74ff8ce99cd7bf627de8525b75e73dee312979c",
+      "case": "native-refusal",
+      "coverage": "native_unavailable_outer_refusal_unverified",
+      "probe": "research/swarm-audit-2026-11-28/probes/prepare_refusal_probe.gd",
+      "probe_sha256": "fbcf5ee4ca519363810cd9c1f388fd257324f9bf2fd2fd6b7cac119e118c807a",
+      "log": "evidence/native-refusal.log",
+      "capture_id": "671a499e-550d-415c-9862-e1b9e90da674",
+      "started_utc": "2026-11-28T14:59:03.578654+00:00",
+      "required_text": [
+        "REFUSAL_PROBE_COMPLETED"
+      ],
+      "command": [
+        "python3",
+        "research/swarm-audit-2026-11-28/run_probes.py",
+        "--godot",
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--case",
+        "native-refusal"
+      ]
+    }
+  ],
+  "note": "Final delivered probes run serially via the existing checked runner before commit. Passing counterexamples reproduce unfixed defects. Native-refusal completed reference preconditions only."
+}

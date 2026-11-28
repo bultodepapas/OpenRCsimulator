@@ -1,0 +1,128 @@
+{
+  "failures": [
+    {
+      "label": "audit-corsair-fold",
+      "capture_id": "f56714f8-919c-4685-987f-b53c48ddaebd",
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 15,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.727695,
+      "diagnostic_messages": [
+        "Parse Error: Could not resolve script \"res://render/lake/lake_planar_reflection.gd\".",
+        "Parse Error: Cannot infer the type of \"PlanarReflection\" constant because the value doesn't have a set type.",
+        "Parse Error: Cannot infer the type of \"planar\" variable because the value doesn't have a set type.",
+        "Parse Error: Could not resolve script \"res://render/lake/lake_planar_reflection.gd\".",
+        "Parse Error: Could not parse script from \"res://render/lake/lake_planar_reflection.gd\".",
+        "Parse Error: Cannot infer the type of \"planar\" variable because the value doesn't have a set type.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Compile Error: Failed to compile depended scripts.",
+        "Failed to load script \"/workspace/scratch/0c86cdd3ea34/audit-staging/game/fold_probe.gd\" with error \"Compilation failed\"."
+      ],
+      "missing_markers": [
+        "CORSAIR_FOLD_CADENCE_CONFIRMED"
+      ],
+      "log_sha256": "23f4ca3bceedeff0702ce0902219bc184a7d157aac01ec39b4bc8e5e0ceb0b46",
+      "classification": "audit harness or sparse-checkout setup; corrected before final successful evidence; not a new product defect"
+    },
+    {
+      "label": "audit-downwash-transport",
+      "capture_id": "141db700-9a47-4169-8e34-043fcd27d7c3",
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.373771,
+      "diagnostic_messages": [],
+      "missing_markers": [],
+      "log_sha256": "edc3dd78e618c8677edf39f6d286c4b760416523d11770b165be863a53f063f6",
+      "classification": "audit harness or sparse-checkout setup; corrected before final successful evidence; not a new product defect"
+    },
+    {
+      "label": "audit-race-outbox",
+      "capture_id": "08cce510-7c94-4bac-898f-45dc27a07d71",
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.584717,
+      "diagnostic_messages": [
+        "Parse Error: Cannot infer the type of \"observed\" variable because the value doesn't have a set type.",
+        "Failed to load script \"/workspace/scratch/0c86cdd3ea34/audit-staging/senior/race_replay_outbox.gd\" with error \"Parse error\"."
+      ],
+      "missing_markers": [
+        "RACE_OUTBOX_COUNTEREXAMPLE=true"
+      ],
+      "log_sha256": "560f14054859bead4c0ae7b40f2ab2573e8106e54d878c63142f374290cae8ca",
+      "classification": "audit harness or sparse-checkout setup; corrected before final successful evidence; not a new product defect"
+    },
+    {
+      "label": "audit-rgb-off",
+      "capture_id": "88017bc0-7211-4585-a60e-7e04b52a354c",
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.317817,
+      "diagnostic_messages": [
+        "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]"
+      ],
+      "missing_markers": [
+        "HIDDEN_RGB_SHADER_WRITES_CONFIRMED"
+      ],
+      "log_sha256": "835432de139a10883c22811693dcbb3be50ad1a4f7bceaa16e410208de1f35fa",
+      "classification": "audit harness or sparse-checkout setup; corrected before final successful evidence; not a new product defect"
+    },
+    {
+      "label": "audit-rgb-off",
+      "capture_id": "3b023596-d72d-4838-9b6b-906182518005",
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 5,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.463889,
+      "diagnostic_messages": [
+        "Parse Error: The member \"Plane\" cannot have the same name as a builtin type.",
+        "Parse Error: Cannot find member \"build\" in base \"Plane\".",
+        "Parse Error: Function \"build()\" not found in base Plane.",
+        "Parse Error: Cannot infer the type of \"plane\" variable because the value doesn't have a set type.",
+        "Failed to load script \"/workspace/scratch/0c86cdd3ea34/audit-staging/game/lighting_probe.gd\" with error \"Parse error\"."
+      ],
+      "missing_markers": [
+        "HIDDEN_RGB_SHADER_WRITES_CONFIRMED"
+      ],
+      "log_sha256": "50a0169c60780b26a157c22f447684803b9c56a3014a3712f3034745ad32cc6e",
+      "classification": "audit harness or sparse-checkout setup; corrected before final successful evidence; not a new product defect"
+    },
+    {
+      "label": "audit-unresolved-identity",
+      "capture_id": "729514b4-432d-4a09-80a7-bd8a4ffbcfc0",
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.44344,
+      "diagnostic_messages": [
+        "Parse Error: The member \"Container\" shadows a native class.",
+        "Failed to load script \"/workspace/scratch/0c86cdd3ea34/audit-staging/senior/unresolved_replay_identity.gd\" with error \"Parse error\"."
+      ],
+      "missing_markers": [
+        "UNRESOLVED_ADAPTER_COUNTEREXAMPLE=true"
+      ],
+      "log_sha256": "21a4d912bca015407194daafa23f13a7be3de2f5cd8a78512b963b500635a4a9",
+      "classification": "audit harness or sparse-checkout setup; corrected before final successful evidence; not a new product defect"
+    }
+  ]
+}

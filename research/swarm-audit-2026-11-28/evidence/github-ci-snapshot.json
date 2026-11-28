@@ -1,0 +1,207 @@
+{
+  "observed_utc": "2026-11-28T14:58:58.265Z",
+  "source_commit": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "run_id": 46153937220,
+  "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46153937220",
+  "status": "in_progress",
+  "conclusion": null,
+  "notes": [
+    "Existing baseline run observed via GitHub tools; not an audit-branch CI run.",
+    "Snapshot is the latest attempt first page returned by the connector. Later updates are available at the source URL.",
+    "Six existing failed jobs are triaged separately; successful local tests do not replace full CI."
+  ],
+  "jobs": [
+    {
+      "id": 141006328958,
+      "name": "CI selection and release preflight",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141006330270,
+      "name": "Publication source rebind evidence",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347170,
+      "name": "NK-4 native kernel qualification (Windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347173,
+      "name": "RC native Linux build",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347181,
+      "name": "Godot visual captures",
+      "status": "in_progress",
+      "conclusion": null,
+      "failed_steps": []
+    },
+    {
+      "id": 141007347188,
+      "name": "three.js prototype (archived bake-off build)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347190,
+      "name": "NK-3 native kernel qualification (Linux)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Verify validated native admission boundaries"
+      ]
+    },
+    {
+      "id": 141007347192,
+      "name": "RC native Windows build",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347222,
+      "name": "Website source and download checks",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347263,
+      "name": "Godot app (units 1)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347265,
+      "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+      "status": "in_progress",
+      "conclusion": null,
+      "failed_steps": []
+    },
+    {
+      "id": 141007347272,
+      "name": "Godot app (units 6)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 141007347291,
+      "name": "Godot app (units 3)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 141007347296,
+      "name": "Godot app (integration 0)",
+      "status": "in_progress",
+      "conclusion": null,
+      "failed_steps": []
+    },
+    {
+      "id": 141007347298,
+      "name": "Godot app (units 2)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 141007347300,
+      "name": "Godot app (units 7)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347313,
+      "name": "Godot app (units 4)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 141007347317,
+      "name": "Godot app (units 5)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141007347415,
+      "name": "Godot app (units 0)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 141007348577,
+      "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 141007348642,
+      "name": "Visual group shadow (${{ matrix.group }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 141009505414,
+      "name": "RC native production checks (linux)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141009505459,
+      "name": "RC native production checks (windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 141013915366,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    },
+    {
+      "id": 141013915388,
+      "name": "NK-4 Windows package qualification",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    }
+  ]
+}

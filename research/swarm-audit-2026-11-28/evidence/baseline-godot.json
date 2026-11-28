@@ -1,0 +1,399 @@
+{
+  "source_commit": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "note": "Selected existing tests. Wall duration is runner bookkeeping, not an FPS or comparative performance measurement. The broader GitHub CI run has separate failures.",
+  "invocations": [
+    {
+      "label": "baseline-aero_continuity",
+      "capture_id": "d2a76d97-943f-4fcd-9489-161f7319e6bf",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.38937,
+      "log_sha256": "a3e4eeef9f969be1a3f5995b7d7321dea3d5babc953cc9af802932e5c42a9a3f",
+      "script": "res://tests/test_aero_continuity.gd",
+      "completion_lines": [
+        "R02 continuity: 64 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-aero_flow",
+      "capture_id": "b245d8da-40d3-4916-8684-4cdbe7109a81",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.334169,
+      "log_sha256": "d208f807d24d0ba11193e2c8aa4fd0be80e431f48385ef23a61d1f18e2dda22a",
+      "script": "res://tests/test_aero_flow.gd",
+      "completion_lines": [
+        "H4 local flow: 25000 byte-exact comparisons, 0 failed (legacy frozen weight plus independently evaluated R02 rate guard)",
+        "H12 local loads: 25001 comparisons in attached planar forward domain, 25000 samples verified attached, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-airship_flight_log",
+      "capture_id": "d6cba282-9ce5-4f94-82fa-0f63380cb07c",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.801268,
+      "log_sha256": "f477d0ddd1122aa87ac4c4eee9acf399d0b03a2c83ac259d6a2d606fe96d3c0b",
+      "script": "res://tests/test_airship_flight_log.gd",
+      "completion_lines": [
+        "25 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-downwash_lag",
+      "capture_id": "2eb1852a-31b5-4704-9aba-29b3947db30c",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.890933,
+      "log_sha256": "01c1a33ec4596c53aa05290a800cbe961c83fdca2d97fce1378eac5368a7cf6d",
+      "script": "res://tests/test_downwash_lag.gd",
+      "completion_lines": [
+        "24 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-frame_phases",
+      "capture_id": "b088d3a8-c3c7-4cc6-b73e-1c9d059c2c85",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.725409,
+      "log_sha256": "a6b385cba629dba1c82dc04cef05ab3d86e9d7ada8ac56ccde95acadeb91336c",
+      "script": "res://tests/test_frame_phases.gd",
+      "completion_lines": [
+        "33 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-fuel_event_boundaries",
+      "capture_id": "55df8516-0cc9-44e3-8d73-a1cfacdae0c3",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.552667,
+      "log_sha256": "f907162a76a29d479b66e85dde192bf8c9caeae83b0ce32ca029f55ecabdd1d4",
+      "script": "res://tests/test_fuel_event_boundaries.gd",
+      "completion_lines": [
+        "Fuel tiny boundaries: 46 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-hull_crossing",
+      "capture_id": "30e4f0c8-d40f-46ac-b3c3-5772372e15fb",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.523727,
+      "log_sha256": "17b81c05cdbbdcd0d39514576daa91902b805dbf9c95bca955cf130bb32755f5",
+      "script": "res://tests/test_hull_crossing.gd",
+      "completion_lines": [
+        "40 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-math3d",
+      "capture_id": "cc6fff39-8cf1-41a9-ab22-ceb193fac262",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.765498,
+      "log_sha256": "dcd34f4a15443c9fc18790a98dd181d5bbf4f65b0a2e99787faa5197f8bf98bf",
+      "script": "res://tests/test_math3d.gd",
+      "completion_lines": [
+        "20 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-mr_flight_log",
+      "capture_id": "c39dfd0f-4fd8-4b06-83a8-9e694feb6c04",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 12.43692,
+      "log_sha256": "af56bb5a061abb77d2529be0f7845677790b531974c14ca7db3c92f591531b42",
+      "script": "res://tests/test_mr_flight_log.gd",
+      "completion_lines": [
+        "31 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-pipeline_cache_gate",
+      "capture_id": "37d82b50-7d53-4b97-88b2-c9bdef93e840",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.580271,
+      "log_sha256": "482150ea5462f4b69cd99e63434e4a00f0ebaebe2e424e70dbf41ffcfaed5545",
+      "script": "res://tests/test_pipeline_cache_gate.gd",
+      "completion_lines": [
+        "pipeline cache gate: 9 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-presentation_cadence",
+      "capture_id": "8bec20fe-f26f-4c5d-b6a3-8058a490a62c",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 11.899457,
+      "log_sha256": "c5500d9d945473fa7835d2e6476b45e446c8d6451d88e91930ce3fd83fe4222a",
+      "script": "res://tests/test_presentation_cadence.gd",
+      "completion_lines": [
+        "Presentation cadence: 3538 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-race_session_replay",
+      "capture_id": "3e5e5770-2df5-4a83-b4af-af7f5e588d1f",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 32.67004,
+      "log_sha256": "8cabe2e5369b7a948feefd5cbff4ddac6a11d03fe60acc8e2251b82b762ee0b1",
+      "script": "res://tests/test_race_session_replay.gd",
+      "completion_lines": [
+        "8 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-rigid_body",
+      "capture_id": "0d404fbd-89aa-4b7a-8af7-c48b349ab2b4",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.866121,
+      "log_sha256": "29859ebdc681aac8f0f118e2e08e1c8718cf9a4f33e19ec2f3b820aaa867454e",
+      "script": "res://tests/test_rigid_body.gd",
+      "completion_lines": [
+        "15 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-sf_contact_substeps",
+      "capture_id": "1d8ba93b-cb34-42c8-8be4-e12aab50bdee",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.087734,
+      "log_sha256": "49269ff78b865ef293ec5260b432f63eb433cccc5449529a8c7892faa6c41c68",
+      "script": "res://tests/test_sf_contact_substeps.gd",
+      "completion_lines": [
+        "13 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-sf_event_protocol",
+      "capture_id": "0e5c7106-889f-4573-b392-53681f871c36",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.906469,
+      "log_sha256": "817ee3752d1cbffc42281b2e4c783da4c378ffe51aed2152b6c8a1d9f371ea54",
+      "script": "res://tests/test_sf_event_protocol.gd",
+      "completion_lines": [
+        "46 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-sf_event_refinement",
+      "capture_id": "41e704dc-fc0e-4493-8189-aae9535f78b7",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.734856,
+      "log_sha256": "c3ef42a132d5805747dd37491ffc5956436dfe3a56d6c5e22da993537adea0b2",
+      "script": "res://tests/test_sf_event_refinement.gd",
+      "completion_lines": [
+        "60 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-sf_framed_sampled",
+      "capture_id": "763b4d2c-420d-4987-93cf-551bf1734804",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.848169,
+      "log_sha256": "a04d78c712f6007dc1675225491ed1439a64c3de73eed4f625ef4197bf37306a",
+      "script": "res://tests/test_sf_framed_sampled.gd",
+      "completion_lines": [
+        "50 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-sf_generalized_coordinates",
+      "capture_id": "dfd0f754-63a1-4570-aac3-1443e2aa3f45",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.925961,
+      "log_sha256": "f99dc0cd2daa5afb7eaad4c27acb439c59166503bdead608e9b12e0a89b49b9b",
+      "script": "res://tests/test_sf_generalized_coordinates.gd",
+      "completion_lines": [
+        "7 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-sf_law_properties",
+      "capture_id": "1e25c4bd-d9c4-45e2-a291-1426d7e7fbb9",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.337662,
+      "log_sha256": "393bd7af438967f92787d8ab73836da384a9687f6844b2c7159845ccc9608b29",
+      "script": "res://tests/test_sf_law_properties.gd",
+      "completion_lines": [
+        "SF-06 law properties: 269 checks, 0 failed, 0 exempt"
+      ]
+    },
+    {
+      "label": "baseline-sf_vehicle_model",
+      "capture_id": "c6282215-96d8-40b4-9b49-a0676bf633ad",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.631656,
+      "log_sha256": "240e7dcdaf975cddfb675a1535184adfd4ec0ad1660b4fc71dd0adf65fe124e6",
+      "script": "res://tests/test_sf_vehicle_model.gd",
+      "completion_lines": [
+        "40 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-simulation",
+      "capture_id": "6501a9e4-a27c-4c46-b2f9-ed314a988842",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.725879,
+      "log_sha256": "311dd35c9cc028529bb4e06314334f115bf67afb27769c24db2120952d9c2e83",
+      "script": "res://tests/test_simulation.gd",
+      "completion_lines": [
+        "11 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-tail_downwash",
+      "capture_id": "1b9db266-ddc7-4fde-a07d-34516d9feeeb",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.208688,
+      "log_sha256": "28f980d3ddc755cfbd8e0b715e34d6bf31206cf1950111d16283129cb42844be",
+      "script": "res://tests/test_tail_downwash.gd",
+      "completion_lines": [
+        "8 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "baseline-wash_transport",
+      "capture_id": "f1ab5a62-34de-4d48-8fcb-4cd01d801128",
+      "ok": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.851467,
+      "log_sha256": "004df68c4ee496bbfb7db788e160b2ee16c2edab113b7d330d0667494b10a7a7",
+      "script": "res://tests/test_wash_transport.gd",
+      "completion_lines": [
+        "E0b5 transport: 45 checks, 0 failed"
+      ]
+    }
+  ]
+}
