@@ -1256,6 +1256,8 @@ protected:
 			&OpenRCNativeKernel::stage_wheel_rows);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
+		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
+			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
 			"min_index"), &OpenRCNativeKernel::retarded_emission);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_blade_torques", "rpm", "axial_speed", "density"),
@@ -2027,6 +2029,52 @@ public:
 		out.resize(2);
 		out[0] = moving.ok ? moving.torque_nm.v : nk::kNan;
 		out[1] = still.ok ? still.torque_nm.v : nk::kNan;
+		return out;
+	}
+
+	// NK-6s: physics/glow/vibration.gd evaluate's numbers for a validated geometry [crank radius, rod, reciprocating
+	// mass, cosine 1x, cosine 2x, cycle revolutions]: [ok (1/0), phase, source force, 1x cosine, 1x sine, 2x cosine,
+	// 2x sine, 1x peak, 2x peak, opportunity Hz, mean fire rate Hz], in its operation order. 0 wherever evaluate fails
+	// (the caller then runs it for the exact failure). Presentation only (flight audio's glow voice).
+	PackedFloat64Array glow_vibration(const PackedFloat64Array &geometry, double crank_phase, double omega, double alpha,
+			double firing) const {
+		PackedFloat64Array out;
+		out.resize(11);
+		out.fill(0.0);
+		if (geometry.size() != 6) return out;
+		if (!std::isfinite(crank_phase) || !std::isfinite(omega) || !std::isfinite(alpha) || !std::isfinite(firing)) return out;
+		if (omega < 0.0 || firing < 0.0 || firing > 1.0) return out;
+		const nk::R tau = 6.28318530717958647692;
+		const nk::R phase = nk::gv_fposmod(nk::R(crank_phase), tau);
+		if (!nk::is_finite(phase)) return out;
+		const nk::R radius = geometry[0], rod = geometry[1], mass = geometry[2];
+		const nk::R c1 = geometry[3], c2 = geometry[4];
+		const int64_t cycle = static_cast<int64_t>(geometry[5]);
+		const nk::R w = omega, a = alpha;
+		const nk::R sine = nk::sin_(phase);
+		const nk::R cosine = nk::cos_(phase);
+		const nk::R root_argument = rod * rod - radius * radius * sine * sine;
+		if (!nk::is_finite(root_argument) || !(root_argument.v > 0.0)) return out;
+		const nk::R r = nk::sqrt_(root_argument);
+		const nk::R position_derivative = radius * sine + radius * radius * sine * cosine / r;
+		const nk::R position_second_derivative = radius * cosine + radius * radius * ((cosine * cosine - sine * sine) / r +
+			radius * radius * sine * sine * cosine * cosine / (r * r * r));
+		const nk::R piston_acceleration = position_second_derivative * w * w + position_derivative * a;
+		const nk::R source_force = -mass * piston_acceleration;
+		const nk::R c1_cos = mass * c1 * w * w;
+		const nk::R c1_sin = mass * c1 * a;
+		const nk::R c2_cos = mass * nk::R(4.0) * c2 * w * w;
+		const nk::R c2_sin = mass * nk::R(2.0) * c2 * a;
+		const nk::R order_1x = nk::sqrt_(c1_cos * c1_cos + c1_sin * c1_sin);
+		const nk::R order_2x = nk::sqrt_(c2_cos * c2_cos + c2_sin * c2_sin);
+		const nk::R opportunity = w / tau / nk::R(static_cast<double>(cycle));
+		const nk::R mean = opportunity * nk::R(firing);
+		const nk::R values[9] = {source_force, order_1x, order_2x, c1_cos, c1_sin, c2_cos, c2_sin, opportunity, mean};
+		for (const nk::R &value : values) {
+			if (!nk::is_finite(value)) return out;
+		}
+		out[0] = 1.0; out[1] = phase.v; out[2] = source_force.v; out[3] = c1_cos.v; out[4] = c1_sin.v; out[5] = c2_cos.v;
+		out[6] = c2_sin.v; out[7] = order_1x.v; out[8] = order_2x.v; out[9] = opportunity.v; out[10] = mean.v;
 		return out;
 	}
 

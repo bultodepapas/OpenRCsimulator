@@ -625,6 +625,8 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `retarded_emission(times, positions, listener, now, sound_speed, min_index)` (NK-6r) is `SoundscapeModel.retarded_emission`
   in the model's mixed precision, for the soundscape's propagation delay; presentation only
   ([evidence](../../docs/research/native-kernel/NK-6r/README.md)).
+- `glow_vibration(geometry, crank_phase, omega, alpha, firing)` (NK-6s) gives `physics/glow/vibration.gd` `evaluate`'s numbers for
+  a validated geometry, for flight audio's glow voice ([evidence](../../docs/research/native-kernel/NK-6s/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
