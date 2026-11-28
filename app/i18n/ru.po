@@ -598,8 +598,8 @@ msgstr "Перезапустить полёт"
 msgid "Resume after a radio failsafe"
 msgstr "Продолжить после срабатывания failsafe радиопередатчика"
 
-msgid "Ugly Stick FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."
-msgstr "Вид от первого лица на Ugly Stick. Удерживайте правую кнопку мыши и перемещайте мышь, чтобы осмотреться. Нажмите Backspace, чтобы вернуть взгляд вперёд."
+msgid "Nose FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."
+msgstr "Вид с носовой камеры. Удерживайте правую кнопку мыши и перемещайте мышь, чтобы осмотреться. Нажмите Backspace, чтобы вернуть взгляд вперёд."
 
 msgid "FPV (when available)"
 msgstr "FPV (если доступно)"

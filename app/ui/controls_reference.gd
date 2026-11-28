@@ -18,7 +18,7 @@ const FLIGHT := [
 
 ## Shortcuts while flying: [keys, what they do] (main.gd _unhandled_input).
 const SHORTCUTS := [
-	[[KEY_3], "Ugly Stick FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."],
+	[[KEY_3], "Nose FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."],
 	[[KEY_BRACKETLEFT, KEY_BRACKETRIGHT], "Aileron trim: left / right"],
 	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
 	[[KEY_COMMA, KEY_PERIOD], "Rudder trim: left / right"],

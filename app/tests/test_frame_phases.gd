@@ -21,6 +21,17 @@ class Observer extends Node:
 		previous_usec = now
 
 
+## The debug bridge releases its lease while its parent is unwinding the tree.
+class ExitOwner extends Node:
+	var probe: RefCounted
+	var brackets_had_exited := false
+
+	func _exit_tree() -> void:
+		var bracket: Node = probe._low
+		brackets_had_exited = not bracket.is_inside_tree() and bracket.get_parent() == get_parent()
+		FramePhases.release(probe)
+
+
 func _initialize() -> void:
 	await _run_checks()
 	print("%d checks, %d failed" % [_checks, _failures])
@@ -150,6 +161,26 @@ func _run_checks() -> void:
 	await process_frame
 	observer.queue_free()
 	await process_frame
+	# Brackets attach after their consumer and exit before it. Directly freeing them
+	# from the consumer's exit callback would mutate the parent's active child loop.
+	var container := Node.new()
+	root.add_child(container)
+	var owner_on_exit := ExitOwner.new()
+	container.add_child(owner_on_exit)
+	owner_on_exit.probe = FramePhases.acquire(container)
+	await process_frame
+	var first_bracket := container.get_node("FramePhasesFirst")
+	var last_bracket := container.get_node("FramePhasesLast")
+	root.remove_child(container)
+	_check("the last lease releases during parent teardown", owner_on_exit.brackets_had_exited
+		and not owner_on_exit.probe.is_started())
+	_check("a still-parented bracket is queued for deletion", is_instance_valid(last_bracket)
+		and last_bracket.is_queued_for_deletion())
+	await process_frame
+	await process_frame
+	_check("both brackets are retired while the detached parent survives",
+		not is_instance_valid(first_bracket) and not is_instance_valid(last_bracket) and is_instance_valid(container))
+	container.free()
 
 
 func _sum(split: Dictionary) -> int:

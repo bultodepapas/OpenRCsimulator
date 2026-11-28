@@ -624,8 +624,8 @@ msgstr "Reiniciar el vuelo"
 msgid "Resume after a radio failsafe"
 msgstr "Reanudar tras un failsafe de la radio"
 
-msgid "Ugly Stick FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."
-msgstr "Vista FPV del Ugly Stick. Mantén pulsado el botón derecho y arrastra el ratón para mirar alrededor. Pulsa Retroceso para centrar la vista."
+msgid "Nose FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."
+msgstr "Cámara FPV de nariz. Mantén pulsado el botón derecho y arrastra el ratón para mirar alrededor. Pulsa Retroceso para centrar la vista."
 
 msgid "FPV (when available)"
 msgstr "FPV (si está disponible)"
