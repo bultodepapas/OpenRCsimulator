@@ -640,6 +640,14 @@ func endpoint_compressions(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pa
 ## NK-5i: [V, terrain height, slope north, slope east, collapsed (1/0), compressions...] at the accepted endpoint `s`
 ## with its aux and time, from the fixed-wing stage and the tick context of the guarded pre-step; empty means "use
 ## the reference". The session owns the publication checks (FlightSession.published_endpoint_facts).
+## NK-7i: [wind NED, v_air, V] at the published endpoint `s` with its aux and time (stage_endpoint_air); empty means
+## "use the reference". The session owns the publication checks (FlightSession.published_endpoint_air).
+func endpoint_air(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	if not _installed or not _facts_bound or _native == null or not _native.has_method(&"stage_endpoint_air"):
+		return PackedFloat64Array()
+	return _native.stage_endpoint_air(s, aux, time_s)
+
+
 func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 	if not _installed or not _facts_bound or _native == null: return PackedFloat64Array()
 	return _native.stage_endpoint_facts(s, aux, time_s)

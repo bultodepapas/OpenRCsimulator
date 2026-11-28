@@ -3560,6 +3560,24 @@ func published_gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
 ## the native stage measured this publication's endpoint (the guarded tick context of sim.tick, with `s` and sim.aux
 ## carrying the published bits), and there is no RC track, pending weather reset or derived session class (whose
 ## air_data may differ); the caller then evaluates the reference. For `stepped` observers after the session's handler.
+## NK-7i: wind_at(sim.time()) and air_data(sim.state)'s v_air and V for the accepted endpoint now published, from the
+## native stage in one answer: [wind north, east, down, v_air x, y, z, V]. The same conditions as
+## published_endpoint_facts (this publication's guarded context, `sim.state` and `sim.aux` carrying its bits, no RC
+## track, pending weather reset or derived class); empty otherwise, and the caller evaluates the reference. For
+## presentation readers of the accepted state between ticks (flight audio).
+func published_endpoint_air() -> PackedFloat64Array:
+	if not native_endpoint_air_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(sim.state, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	return _native_stage.endpoint_air(sim.state, sim.aux, sim.time())
+
+
+## NK-7i test hook: false always leaves flight audio's wind and air data to the reference.
+var native_endpoint_air_enabled := true
+
+
 func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not native_endpoint_facts_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
 			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \

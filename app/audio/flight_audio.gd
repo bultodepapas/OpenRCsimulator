@@ -278,13 +278,19 @@ func sound_speed_mps() -> float:
 func snapshot() -> Dictionary:
 	var session: Node = flight.session
 	var source_running: bool = propulsion_source_running(session)
-	var wind: Vector3 = Frames.ned_to_render(Array(session.wind_at(session.sim.time())))
+	# NK-7i: the published endpoint's wind and air data from the native stage in one answer; otherwise the reference.
+	var endpoint_air: PackedFloat64Array = session.published_endpoint_air() \
+		if session.has_method(&"published_endpoint_air") else PackedFloat64Array()
+	var native_air: bool = endpoint_air.size() == 7
+	var wind: Vector3 = Frames.ned_to_render([endpoint_air[0], endpoint_air[1], endpoint_air[2]]) if native_air \
+		else Frames.ned_to_render(Array(session.wind_at(session.sim.time())))
 	var prop: Dictionary = session.aircraft.model.propulsion
 	var atmosphere: Dictionary = session.atmosphere_configuration()
 	var blades: int = propeller_blade_count(flight.aircraft_id)
 	var glow_family: String = _glow_family(prop)
 	var glow_profile: Dictionary = prop.get("glow", {}).get("profile", {})
-	var air: Dictionary = session.air_data(session.sim.state)
+	var air: Dictionary = {v_air = PackedFloat64Array([endpoint_air[3], endpoint_air[4], endpoint_air[5]]),
+		V = endpoint_air[6]} if native_air else session.air_data(session.sim.state)
 	var rpm: float = session.sim.aux[0]
 	var load_amount: float = session.sim.inputs[3]
 	if str(prop.get("kind", "glow_prop")) != "turbine" and rpm > 30.0:

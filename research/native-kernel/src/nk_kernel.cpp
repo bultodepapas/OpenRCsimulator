@@ -1383,6 +1383,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("stage_prop_strike_clear", "s"), &OpenRCNativeKernel::stage_prop_strike_clear);
 		godot::ClassDB::bind_method(D_METHOD("stage_guard_collapsed", "s", "aux"),
 			&OpenRCNativeKernel::stage_guard_collapsed);
+		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_air", "s", "aux", "time_s"),
+			&OpenRCNativeKernel::stage_endpoint_air);
 		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_facts", "s", "aux", "time_s"),
 			&OpenRCNativeKernel::stage_endpoint_facts);
 		godot::ClassDB::bind_method(D_METHOD("prepare_pre_step", "config"), &OpenRCNativeKernel::prepare_pre_step);
@@ -2454,6 +2456,31 @@ public:
 	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
 	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
 	// a refused air sample or a contact without a numeric travel limit.
+	// NK-7i: FlightSession.wind_at(time_s) at the state's position and air_data(s, time_s)'s v_air and V for the
+	// published endpoint (flight audio's per-frame reads): [wind north, east, down, v_air x, y, z, V] from the prepared
+	// stage, as pre_step_air evaluates them (NK-5g, NK-5i). Spatial weather and every refusal answer empty (GDScript).
+	PackedFloat64Array stage_endpoint_air(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
+		if (heli_stage_ready_ || !stage_ready_ || !tick_.ready || !read_state(s) || !std::isfinite(time_s) ||
+				stage_.spatial_weather || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
+			return PackedFloat64Array();
+		}
+		facts_aux_.resize(static_cast<size_t>(aux.size()));
+		for (int64_t i = 0; i < aux.size(); ++i) facts_aux_[static_cast<size_t>(i)] = aux[i];
+		nk::R state[kStateSize];
+		load(s, state);
+		const nk::R at = time_s;
+		std::array<nk::R, 3> wind{0.0, 0.0, 0.0};
+		if (stage_.has_weather) {
+			wind = nk::weather_wind(stage_.weather, state, at, facts_aux_, stage_.layout.turbulence, stage_.dt);
+		} else if (!nk::is_finite(state[0]) || !nk::is_finite(state[1]) || !nk::is_finite(state[2]) || at.v < 0.0) {
+			wind = {nk::kNan, nk::kNan, nk::kNan};
+		}
+		nk::Air air;
+		if (!nk::pre_step_air(state, at, facts_aux_, stage_, air)) return PackedFloat64Array();
+		const nk::R out[7] = {wind[0], wind[1], wind[2], air.v[0], air.v[1], air.v[2], air.V};
+		return pack(out, 7);
+	}
+
 	PackedFloat64Array stage_endpoint_facts(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
 		const PackedFloat64Array compressions = stage_compressions(s, aux);
 		if (compressions.is_empty() || !std::isfinite(time_s) || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
