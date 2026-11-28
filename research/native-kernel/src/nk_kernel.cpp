@@ -48,6 +48,7 @@
 #include "nk_ground_audio_core.hpp"
 #include "nk_mechanical_audio_core.hpp"
 #include "nk_audio_rows.hpp"
+#include "nk_glow_voice_render.hpp"
 #include "nk_shadow_parts.hpp"
 #include "nk_substeps.hpp"
 #include "nk_stats_speed.hpp"
@@ -1041,6 +1042,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
 	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
 	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
+	std::unique_ptr<nk::voice::RenderKeys> voice_keys_; // NK-7l: made when a glow voice binds
+	nk::voice::Bound voice_bound_; // NK-7l: that voice's literals
 	std::vector<nk::WheelFrame> audio_frames_; // NK-7k: the contacts' frames of the last band rows or approach speeds
 	std::unique_ptr<nk::render::ShadowParts> shadow_parts_; // NK-8a: one projected shadow's parts
 	// NK-7g: flight audio's glow key names, made on the first call (never function-local statics).
@@ -1381,6 +1384,10 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("glow_finish_answers"), &OpenRCNativeKernel::glow_finish_answers);
 		godot::ClassDB::bind_method(D_METHOD("glow_voice_block", "parameters", "harmonics", "state", "frames"),
 			&OpenRCNativeKernel::glow_voice_block);
+		godot::ClassDB::bind_method(D_METHOD("glow_voice_bind", "constants", "harmonics_2t", "harmonics_4t"),
+			&OpenRCNativeKernel::glow_voice_bind);
+		godot::ClassDB::bind_method(D_METHOD("glow_voice_render", "snapshot", "frames", "state", "last_family"),
+			&OpenRCNativeKernel::glow_voice_render);
 		godot::ClassDB::bind_method(D_METHOD("prepare_hull_guard", "crash_depth"), &OpenRCNativeKernel::prepare_hull_guard);
 		godot::ClassDB::bind_method(D_METHOD("stage_hull_guard", "previous", "s"), &OpenRCNativeKernel::stage_hull_guard);
 		godot::ClassDB::bind_method(D_METHOD("prepare_prop_strike", "hub", "axis", "radius"),
@@ -2049,6 +2056,42 @@ public:
 		next_state[nk::kGvStateCount] = any ? 1.0 : 0.0;
 		out.append(pcm);
 		out.append(next_state);
+		return out;
+	}
+
+	// NK-7l: GlowVoice's literals as GDScript parsed them (nk_glow_voice_render.hpp VoiceConstant order) and its two
+	// harmonic weight tables, bound once per voice before glow_voice_render.
+	bool glow_voice_bind(const PackedFloat64Array &constants, const PackedFloat64Array &harmonics_2t,
+			const PackedFloat64Array &harmonics_4t) {
+		voice_bound_.ready = false;
+		if (constants.size() != nk::voice::kVcConstantCount || harmonics_2t.is_empty() || harmonics_2t.size() > 64 ||
+				harmonics_4t.is_empty() || harmonics_4t.size() > 64) {
+			return false;
+		}
+		voice_bound_.c.assign(constants.ptr(), constants.ptr() + constants.size());
+		voice_bound_.harmonics_2t.assign(harmonics_2t.ptr(), harmonics_2t.ptr() + harmonics_2t.size());
+		voice_bound_.harmonics_4t.assign(harmonics_4t.ptr(), harmonics_4t.ptr() + harmonics_4t.size());
+		if (!voice_keys_) voice_keys_ = std::make_unique<nk::voice::RenderKeys>();
+		voice_bound_.ready = true;
+		return true;
+	}
+
+	// NK-7l: GlowVoice.render_telemetry for `snapshot` and `frames` from the voice's state (VoiceState order) and last
+	// family: [PCM, next state, last family], or [] to render in GDScript. Audio only.
+	Array glow_voice_render(const Dictionary &snapshot, int64_t frames, const PackedFloat64Array &state,
+			const String &last_family) const {
+		Array out;
+		if (!voice_bound_.ready || !voice_keys_ || state.size() != nk::voice::kVsCount) return out;
+		godot::PackedVector2Array pcm;
+		double next[nk::voice::kVsCount];
+		String family = last_family;
+		if (!nk::voice::render(*voice_keys_, voice_bound_, snapshot, frames, state.ptr(), family, pcm, next)) return out;
+		PackedFloat64Array next_state;
+		next_state.resize(nk::voice::kVsCount);
+		for (int i = 0; i < nk::voice::kVsCount; ++i) next_state[i] = next[i];
+		out.append(pcm);
+		out.append(next_state);
+		out.append(family);
 		return out;
 	}
 

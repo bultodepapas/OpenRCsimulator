@@ -39,6 +39,16 @@ var _physical_fire_count := -1
 var _suppress_combustion_until_opportunity := false
 ## NK-6m: false keeps the per-sample loop in GDScript (test hook; the native copy is byte-identical).
 var native_loop_enabled := true
+## NK-7l: false renders each block's preparation in GDScript (test hook; the native render is byte-identical).
+var native_render_enabled := true
+## Diagnostic: blocks the native render answered.
+var native_render_answers := 0
+var _render_bound := false
+## NK-7l: render_telemetry's literals as GDScript parses them, in nk_glow_voice_render.hpp's VoiceConstant order.
+static var _RENDER_CONSTANTS := PackedFloat64Array([RATE, FADE_SECONDS, TAU_VALUE, SOURCE_FORCE_PCM_GAIN,
+	MAX_SOURCE_MECHANICAL_PEAK, _ENVELOPE_FLOOR, _VALVE_SECOND_WEIGHT, _PROPELLER_SECOND_WEIGHT, _PCM_LIMIT, 12000.0, 0.45,
+	0.34, 0.65, 0.35, 1.3, 0.055, 0.55, 0.45, 0.55, 0.45, 0.042, 0.65, 0.35, 0.095, 0.35, 0.65, 0.7, 0.3, 0.20, 1e-12,
+	1e-6, 1e-8, 1e-8])
 ## NK-6m: this voice's own kernel object once the verified native library is loaded (each worker owns its voice).
 var _native: Object = null
 var _native_unavailable := false
@@ -179,6 +189,15 @@ func render(rpm: float, max_rpm: float, frames: int) -> PackedVector2Array:
 ## counters, `phase_revolutions` keeps the older unwrapped-phase adapter behavior. Missing family
 ## is silent; legacy `glow_prop` never selects a cycle family.
 func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
+	# NK-7l: the kernel renders the whole block from this voice's state, byte for byte (nk_glow_voice_render.hpp);
+	# a refusal, or the hooks off, renders it below.
+	var native_render: Object = _native_render()
+	if native_render != null:
+		var answer: Array = native_render.glow_voice_render(snapshot, frames, _voice_state(), last_family)
+		if answer.size() == 3:
+			_apply_voice_state(answer[1], answer[2])
+			native_render_answers += 1
+			return answer[0]
 	var out := PackedVector2Array()
 	var frame_count: int = maxi(frames, 0)
 	out.resize(frame_count)
@@ -383,6 +402,49 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 		last_firing_fraction = opportunity_fraction
 	phase = fposmod(_shaft_phase_cycles, 1.0)
 	return out
+
+
+## NK-7l: this voice's kernel object with render_telemetry's literals bound, or null (no verified library, a library
+## without the render, or either hook off).
+func _native_render() -> Object:
+	if not native_render_enabled:
+		return null
+	var native: Object = _native_loop()
+	if native == null:
+		return null
+	if not _render_bound:
+		if not native.has_method(&"glow_voice_render") or not native.glow_voice_bind(_RENDER_CONSTANTS,
+				PackedFloat64Array(HARMONICS_2T), PackedFloat64Array(HARMONICS_4T)):
+			native_render_enabled = false
+			return null
+		_render_bound = true
+	return native
+
+
+## NK-7l: the voice state the native render reads, in nk_glow_voice_render.hpp's VoiceState order.
+func _voice_state() -> PackedFloat64Array:
+	return PackedFloat64Array([_shaft_phase_cycles, float(_scheduled_opportunity), _fraction_accumulator,
+		1.0 if _opportunity_fires else 0.0, _combustion_envelope, 1.0 if _has_phase_anchor else 0.0,
+		1.0 if _has_physical_anchor else 0.0, float(_physical_opportunity_count), float(_physical_fire_count),
+		1.0 if _suppress_combustion_until_opportunity else 0.0, last_firing_fraction, frequency, amplitude, phase])
+
+
+func _apply_voice_state(next: PackedFloat64Array, family: String) -> void:
+	_shaft_phase_cycles = next[0]
+	_scheduled_opportunity = int(next[1])
+	_fraction_accumulator = next[2]
+	_opportunity_fires = next[3] != 0.0
+	_combustion_envelope = next[4]
+	_has_phase_anchor = next[5] != 0.0
+	_has_physical_anchor = next[6] != 0.0
+	_physical_opportunity_count = int(next[7])
+	_physical_fire_count = int(next[8])
+	_suppress_combustion_until_opportunity = next[9] != 0.0
+	last_firing_fraction = next[10]
+	frequency = next[11]
+	amplitude = next[12]
+	phase = next[13]
+	last_family = family
 
 
 ## NK-6m: this voice's kernel object, created on its own thread once the verified library has loaded the class.

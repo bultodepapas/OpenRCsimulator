@@ -665,6 +665,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `stage_wheel_audio_rows`' band rows and `stage_wheel_approach_speeds` (NK-7k, `nk_audio_rows.hpp` `band_rows` and
   `approach_speeds`) answer the ground audio's rows beyond the terrain's reach and the skipped ticks' approach speeds
   from the stage's wheel frames ([evidence](../../docs/research/native-kernel/NK-7k/README.md)).
+- `glow_voice_bind` and `glow_voice_render` (NK-7l, `nk_glow_voice_render.hpp`) render a glow voice's whole block,
+  its preparation and NK-6m's loop, from the voice's state on its worker thread
+  ([evidence](../../docs/research/native-kernel/NK-7l/README.md)).
 - `shadow_parts_bind` and `shadow_part_poses` (NK-8a, `nk_shadow_parts.hpp`) walk a projected shadow's parts to its
   source, composing transforms with the engine's own operator and reading visibility by method bind
   ([evidence](../../docs/research/native-kernel/NK-8a/README.md)).
