@@ -1,0 +1,966 @@
+{
+  "schema": "openrc-native-physics-refresh-independent-review-v1",
+  "provenance": "Independent verifier for the refresh of published audit d65b7334 on merged current-main input 4bf5b399. The original ledger is immutable. New observations are source/equation checks and manufactured component oracles; no new engine assertion, pilot or physical measurement, package qualification or target-CPU result is reported.",
+  "original_execution_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "publication_parent": "c84c2f8b987617a619f7e77397f025daee28a262",
+  "published_audit": "d65b7334e4b3d091828027394375231bf5ae485b",
+  "current_main_input": "4bf5b399e5cafcb5fd101ddcfadecfcd236337cf",
+  "counts": {
+    "carry-forward_primary": 39,
+    "revise_primary": 0,
+    "reject_primary": 0,
+    "separate_prior": 2,
+    "primary_by_verdict": {
+      "confirmed bug": 18,
+      "deliberate documented simplification": 12,
+      "implementation limitation": 6,
+      "performance opportunity": 3
+    }
+  },
+  "source_trees": {
+    "app/physics": {
+      "historical_publication": "759c740904dbe46d86c082810af9e40104e06781",
+      "current_main": "759c740904dbe46d86c082810af9e40104e06781"
+    },
+    "app/sim": {
+      "historical_publication": "0619a2faca4c06e08c20cf8e54ecf59416456e0b",
+      "current_main": "0619a2faca4c06e08c20cf8e54ecf59416456e0b"
+    },
+    "app/data": {
+      "historical_publication": "bcc401e042c71fd47bfdcc65ad72e980dc720136",
+      "current_main": "94c853e317efe6be20d45fc6055d224d5422ba82"
+    },
+    "research/native-kernel/src": {
+      "historical_publication": "a085e44d1852f9eef288897d5c90c619c4f7e91b",
+      "current_main": "a085e44d1852f9eef288897d5c90c619c4f7e91b"
+    },
+    "research/rc-monster-truck/native/src": {
+      "historical_publication": "926d1a18ac12c90e5c88eef04f580fefebbb335a",
+      "current_main": "926d1a18ac12c90e5c88eef04f580fefebbb335a"
+    },
+    "app/project.godot": {
+      "historical_publication": "211e1772a63c89c87808a9a1b39b0d155fbbbcd6",
+      "current_main": "211e1772a63c89c87808a9a1b39b0d155fbbbcd6"
+    }
+  },
+  "evidence": {
+    "original_compact_receipt_sha256": {
+      "baseline": "d20a1701cc62eed2ca1ef066f75e2d57ce6ef14e2750c61a3ec830df8292c1fa",
+      "components": "00e5eb2af92aff8640c20148c1cefcc5b03d63be65cd3a01e79f272ce25be954",
+      "components-additional": "23eb87d7da6e19a8ca2cd389aed59662575a91be285c236739235b02eb4c2d38",
+      "controls-actual": "f17c727e830b855385a89e96ba2d043a5c1e89321ad6ec9ac55db453559e8a21",
+      "drone-frame-energy": "935cc5be66300c2088a47694a90ce78c1905da89416e9fdd780115e335d105fd",
+      "mathematics-actual": "a9f3c97507828cedeb54ef63b656b2b6da9242036fb4afa0674b7044c9c66a7f",
+      "helicopter-final": "e4473f7dfc32b77e3e36263bb59c3fd6ac2b00f64c8dbfdae87cecc71b604fbe",
+      "source-inventory": "c8c8fbe8327b5bb6772afcf03bb882f0e7240df5dea65532e6ccde67a22f910b",
+      "verification-ledger": "2503e6a96b6ccf85a990b64b5f8012d5a90dc29f7bf8c81a363a6397ef676b78"
+    },
+    "verified_current_cited_blobs_sha256": {
+      "research/native-kernel/src/nk_aero.hpp": "99607811a29dfd2b5ce769bb44ccab9f5cf8ecac68f05ad0b8b4ee920d79555c",
+      "research/native-kernel/src/nk_stage.hpp": "3afc1a6060e1f108852d57735828293b445f7ddc156f89b1cf917173056b91a0",
+      "research/native-kernel/src/nk_wake.hpp": "a9dd3ea1f423284c36d0ba02d3ecbda281b9019aba54ff9b23cf5b4e31ac4b18",
+      "docs/plans/advanced-ground-flight-physics.md": "9f2766e7d8ddf545153b0ad5b606301ea381e036add89d58286df4ae91a66b5f",
+      "research/native-kernel/src/nk_pre_step.hpp": "6fc82b558add88212decb743ffe57b132d2388e8bca26153eff2d2f9beea1008",
+      "research/native-kernel/src/nk_wake_spatial_aero.hpp": "01486b9e7b1a991bbbc02dce72091ff0e6f96f93af1fb90b99ce34dde90339a8",
+      "docs/WIND-ATMOSPHERE-REFERENCE.md": "15391e2c084a95de644eefd5d3f8b6f4ec51d6a514182c2466f4fecf87b5d61d",
+      "assets/aircraft/extra-300s-60/geometry.json": "be54601e12f1e774b7e2d06853d139fa465fee36fcadc7313993ece48ee26954",
+      "research/aero/aileron_effectiveness.py": "84244493b7fd5eca3b1f2c24e0bb0ded349178855b69877ed92001197cea2574",
+      "research/native-kernel/src/nk_helicopter_main_rotor.hpp": "497683c06c4579d7e671d3557ab5f06d8fc2fdfe65c572e4777df75d812c45b7",
+      "research/native-kernel/src/nk_helicopter_aero.hpp": "e97c710bd415b3674fd31eb0ca79a78e96308e585739ed14b86f37b9cd137400",
+      "docs/research/helicopter/HELI-05/README.md": "7175a132c308a916f39b71ef5edc20e2f24594a66f1afc1b2c1bb0ac58cfe90f",
+      "research/native-kernel/src/nk_helicopter_stage.hpp": "6fc489f305ddb5c139fb93aa38aea1e6f24a2bf5ee669f8a2947f36ee30d87ca",
+      "research/native-kernel/src/nk_helicopter_inflow.hpp": "37008b61b2410ced2c53c152f61f7f5f3c443100cc80566b81bc90ed087e3849",
+      "docs/research/helicopter/HELI-04/README.md": "a18bbfd07e7b83ac917144477606a73d1209d43d8a1e48227e5d5876f6e111b4",
+      "app/tests/test_heli_rotor_domain.gd": "36df4459b8c9d7594d99e7f9af204eb6855c726458ca915da6f995747770c516",
+      "docs/HELICOPTER.md": "0c358e3e2cd8f4d2d2c27f7ea2b05b1a4068048fd42316250aa774e39c1ef643",
+      "app/data/aircraft/xcell_60_research.json": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+      "app/physics/multirotor/controlled_plant.gd": "725ecbc9d164ea73a2b0aad574462c564279339bd6df788a131920aa071ffc4c",
+      "research/drone-racing/openrc-fpv5-x1/derive.py": "def55c029615c8d01c72f6d0333b9d2e3848e3bb29790e9a757ae0a397b6f341",
+      "app/data/multirotors/openrc-fpv5-x1.json": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+      "app/sim/scenery_collision.gd": "6eba1c73f1b0709fab41b34546013ef38b0492972b129ee0dc676b2596e2dc39",
+      "app/sim/multirotor/session.gd": "2069176b5ca0004d286312fc4cb4ea362309bea3e51c4341a1010fdbf5421115",
+      "research/native-kernel/src/nk_prop.hpp": "60bc726938a7d9d73915c35f9849d4a5d046712602c230242dff2326f7fd16cf",
+      "app/physics/aircraft_data.gd": "3a8e07bf7c3c4c0d55d75a2e4e0480a91bcc1ce7b28d4c8942893bc0eca88497",
+      "app/physics/propulsion.gd": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f",
+      "research/native-kernel/src/nk_liquid_propulsion.hpp": "1b6b4a65a7503cbf6cd3763e3428383fa66e31a67a6f66ec1104c4706a0bac62",
+      "docs/FUEL-SYSTEM.md": "1c45968e8cc7045ffd6f110f351955828eaef55578dd8751fe7797c8a16a5422",
+      "app/sim/flight_session.gd": "8df9adccef7c46c2b2afb9c73070d84e019354bfc413e261f690b548dba6cedb",
+      "app/vehicles/multirotor/multirotor_hud.gd": "272dc81d908fd5fdfc950d7e618d6f2e767b635b8c88230effded5b4cb33ead5",
+      "app/sim/simulation.gd": "4a3ca39ee4c8ddca57b287641b4dd237e0938ed3a300173fb7ca6351063f4727",
+      "research/native-kernel/src/nk_kernel.cpp": "4a9901b12979f651c62702327fd59f49efb4fe2edb11dd5cd46a1bd13d70619e",
+      "research/native-kernel/README.md": "10d32b98737e240f14467b917ffc787978867b6c8a9c8132e747596c002b6c94",
+      "research/native-kernel/src/nk_tick.hpp": "3574145846530c0495ee074dca3201837528c48faef9c62cfca8990b02715dfb",
+      "research/rc-monster-truck/native/src/ground_vehicle_native.cpp": "d0fb345efde3fed8139db43de90ffae1cdd6e732ba65d5998f1d0cbc462ccc10",
+      "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp": "d353113b2299291cf52cc3defdc9acf9a30059199b825d6719b6ab2bff0ad93c",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46",
+      "app/physics/multirotor/flight_controller.gd": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42",
+      "app/vehicles/multirotor/osd_model.gd": "a343e9735269b436409711508b4d629868a9045b838024bb97632909c7e1ed5c",
+      "app/physics/multirotor/allocator.gd": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+      "app/physics/multirotor/actuator_map.gd": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d",
+      "app/sim/servo_interval_flight.gd": "26e8fcde62da94156f1eff1c4aa1937b51426d3120bb72957171bc4f4a799c42",
+      "research/native-kernel/src/nk_helicopter_controls.hpp": "436627ae5faa05d342d083bf5c18202486c70c8e05fd456eb238ee72370ff2fa",
+      "research/native-kernel/src/nk_helicopter_tail_rotor.hpp": "675699211154dcd94801e51d794319d5302354862a071f632b432bf272f33de3",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "46ece9af4381baaef9dfbdc5a1adc2427f4aaf60d250db99ed386e570bd9b4f2",
+      "app/physics/airship/airship_data.gd": "91bdd61980a45e7da024a890bc2021374c541b1baba2f5f8f6b46110bdb14c24",
+      "app/physics/airship/airship_dynamics.gd": "bd7e41681caa293f3912ad2a5dcf9be17b6a40bfd4763ee768a70c6df02d55ef",
+      "app/sim/airship/session.gd": "ba279d387e8a18bda1f8617b8b86ed1fc2e5189de5e80e38b35db93a632e41db",
+      "app/tests/test_airship_dynamics.gd": "a39d673bcfed564d24bf85ff26980cccce3c473e0565d23f043525e7df858478",
+      "app/sim/lake_collision.gd": "29ef252b8b6fdd5280b4ca8fa0e947f857411c3d4c838be0e2640bf1800b6486",
+      "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+      "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+      "app/physics/atmosphere.gd": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+      "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+      "app/project.godot": "bef03d8f99f5a8e727dfde74d08b833ad2afedae83003bd134df64fef1a58f44",
+      "research/native-kernel/src/nk_weather.hpp": "b3b1aefaf6e7464a019cd0bd9a6889c0709427bcffc3ae33df791ea6cd0b6e55",
+      "research/native-kernel/src/nk_liquid_mass.hpp": "46087995f9bd883fe47860402a6a90ffa485532a986a15c2fa09bf277a82ae08",
+      "research/native-kernel/src/nk_configuration_guard.hpp": "db01cff6e806339268c1cfdd9e98cc8384c6f29b496f2f13a3d12531e85c6f2d",
+      "research/native-kernel/src/nk_weather_guard.hpp": "62cfeceb1c273addcbf6e1999fe45259eb4da8b385b0b0a8f93bf7b0131b67e3",
+      "research/native-kernel/src/nk_guard_plan.hpp": "7dc15cad74bf8752a25a71b11dcf3e21aa6899f5cd36f8448ea5450cfa698b50"
+    },
+    "original_helicopter_repeat_stdout_bytes_identical": true,
+    "archived_components": 9,
+    "historical_checked_suites": 27,
+    "historical_suite_assertions": 6527,
+    "equal_current_suite_script_hashes": 27,
+    "verified_archived_suite_engine_logs": 27,
+    "historical_production_checks": {
+      "frame": 8,
+      "control": 12,
+      "airship": 28
+    },
+    "historical_new_production_assertions": 48,
+    "matched_current_inventory_files": 272,
+    "matched_current_inventory_lines": 106404,
+    "fresh_engine_runs_by_verifier": 0,
+    "materialized_paths": 616,
+    "historical_materialized_sha256": "ab660e4de49291234deef8bd7738f3c3bad3f51970fa1aa610dd29c4d055286b",
+    "merged_materialized_sha256": "647ac3643c53ccb046fe1fcbd4096bf20fc57498a0edcb04fc33d10105b2c517",
+    "separate_prior_receipts": [
+      {
+        "id": "V-MECH-CAP",
+        "audited_source": "71306784a250d634854f0c8bab3a927cc46a61b8",
+        "publication_commit": "c4eca1abe215c3f8e17aa116c3e707e1904f9856",
+        "probe": "research/swarm-audit-2026-11-28/probes/capsule_seam.gd",
+        "probe_sha256": "87b18712ba23f91525d4b8e9b87fd4f22d2e9aaead0a11c2688457af4389ffd2",
+        "log": "research/swarm-audit-2026-11-28/evidence/capsule.log",
+        "log_sha256": "7c8aa59ffea008ffae64a01272eeb9d7c8de7c981198663c5051d3f3587a8452"
+      },
+      {
+        "id": "V-MECH-LAKE",
+        "audited_source": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+        "publication_commit": "cf8b1242cd5aa4cb0cdc47f0c774e4edc55a9172",
+        "probe": "research/swarm-systems-audit-2026-11-28/probes/lake_crest.gd",
+        "probe_sha256": "4dd4bfe7c8939c7c82356fe647a7555dcbf6175f6038bc1b83759d3831ae0ff4",
+        "log": "research/swarm-systems-audit-2026-11-28/evidence/lake.log",
+        "log_sha256": "bf8bba07ed4404dc40f9ec8ed3a96f0af3c2623ffeb89cb236ef6b98c45c3c09"
+      }
+    ]
+  },
+  "original_hosted_ci": {
+    "run": 46164505239,
+    "required": "failure",
+    "synthetic_checkout": "8c29a75947a3a14009fb85517a129b169c0df481",
+    "failed_jobs": {
+      "141039980690": "Integration: sole failing section was deterministic woodland-edge recipe drift.",
+      "141039980719": "Units 7: test_session_reach_bounds timed out at 60 s; 115 of 116 invocations passed."
+    },
+    "passed_scopes": [
+      "Linux and Windows aircraft native source",
+      "experimental macOS ARM64 fixed-wing source",
+      "Linux and Windows ground native build and production checks"
+    ],
+    "skipped_scopes": [
+      "release builds",
+      "Windows native package",
+      "GitHub release"
+    ],
+    "inherited_fix_commits": [
+      "228a9bb9c48f0ec68a28d100fc2967a80407aaf8",
+      "e8a370d31cb78902c54f226015243a8adc461cbc"
+    ],
+    "new_combined_head_ci": "requires its own run"
+  },
+  "primary": [
+    {
+      "id": "AERO-01",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The base horizontal-tail source is scaled by the terrain factor. The propwash adds washed minus free tail with unscaled wake. The Extra fixture's pitch-moment discrepancy is 0.213628 N·m at 0.10 spans. It vanishes with unit factor or disabled interaction.",
+      "source_references": [
+        "research/native-kernel/src/nk_aero.hpp:908–926",
+        "research/native-kernel/src/nk_stage.hpp:341–349",
+        "research/native-kernel/src/nk_wake.hpp:483–509,574–585",
+        "docs/plans/advanced-ground-flight-physics.md:480–486"
+      ]
+    },
+    {
+      "id": "AERO-02",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "The spatial stage computes local wing-load deltas. Pre-step samples datum flow for the stored wing-source lag. Six manufactured strips give a source of hypot(15,1) × 4.5 × atan(1/15) = 4.503325209 m/s while the existing driver stays zero. Body-mediated feedback remains possible.",
+      "source_references": [
+        "research/native-kernel/src/nk_pre_step.hpp:180–198,320–332",
+        "research/native-kernel/src/nk_aero.hpp:403–410",
+        "research/native-kernel/src/nk_wake_spatial_aero.hpp:137–142,192–200",
+        "docs/WIND-ATMOSPHERE-REFERENCE.md:192–194"
+      ]
+    },
+    {
+      "id": "AERO-03",
+      "disposition": "carry-forward",
+      "verdict": "implementation limitation",
+      "independent_check": "The prepared attached coefficient law has no viscosity or Reynolds-number coordinate. On the selected neutral Jensen global branch, coefficients stay fixed while the dimensional loads scale with dynamic pressure. Reynolds-dependent physical error requires matched data.",
+      "source_references": [
+        "research/native-kernel/src/nk_aero.hpp:55–104,222–256,782–819"
+      ]
+    },
+    {
+      "id": "AERO-04",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "Conventional wing-flow code applies the same gain and semispan command to each local strip. The innermost Extra strip ends at 0.220662 m, inside the 0.262 m hinge start. The direct increment is 7.018635°. Coverage of an induced circulation field is a different question.",
+      "source_references": [
+        "research/native-kernel/src/nk_aero.hpp:343–369,519–549",
+        "assets/aircraft/extra-300s-60/geometry.json:16–24,599–602",
+        "research/aero/aileron_effectiveness.py"
+      ]
+    },
+    {
+      "id": "HELI-01",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "The main torque uses shaft-frame inflow. Tilting its force by ±8° changes force work by ±167.8731 W at 15 m/s with 831.6865 W shaft power at either tilt. Both remaining powers are positive. The chosen isolated-disc reference leaves several loads unspecified.",
+      "source_references": [
+        "research/native-kernel/src/nk_helicopter_main_rotor.hpp:131–156,202–221",
+        "research/native-kernel/src/nk_helicopter_aero.hpp:142–161",
+        "docs/research/helicopter/HELI-05/README.md:19–29,44–52,100"
+      ]
+    },
+    {
+      "id": "HELI-02",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The project inflow contract specifies along-wake clearance. The caller computes vertical hub clearance and a sign test. At 3 hover-induced velocities, momentum theory and the NASA planar projection give 10.020749R from vertical 1.1R; the local factor stays 0.88781836. No measured X-Cell power error follows.",
+      "source_references": [
+        "research/native-kernel/src/nk_helicopter_stage.hpp:220–229,260–266",
+        "research/native-kernel/src/nk_helicopter_main_rotor.hpp:210–221",
+        "research/native-kernel/src/nk_helicopter_inflow.hpp:177–215",
+        "docs/research/helicopter/HELI-04/README.md:18–26"
+      ]
+    },
+    {
+      "id": "HELI-03",
+      "disposition": "carry-forward",
+      "verdict": "implementation limitation",
+      "independent_check": "The finite sideflow flap term contains sign(μx), whose sign reverses while its amplitude stays finite. The nominal-speed ±1e−8 m/s pair gives opposite ±0.01077645 rad/s pitch-flap derivatives. The separate low-head μ² cutoff and near-pole behavior are outside this pair.",
+      "source_references": [
+        "research/native-kernel/src/nk_helicopter_main_rotor.hpp:30–33,105–138,166–175",
+        "docs/research/helicopter/HELI-05/README.md:38–45",
+        "app/tests/test_heli_rotor_domain.gd:108–126"
+      ]
+    },
+    {
+      "id": "HELI-04",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "One generalized shaft speed and fixed ratios cannot represent separate engine/freewheel speeds. The model produces negative aerodynamic torque in the high-speed descent component, and no aerodynamic starting torque at zero head speed. Actual power-off behavior remains unmeasured.",
+      "source_references": [
+        "research/native-kernel/src/nk_helicopter_stage.hpp:31–77,268–280",
+        "research/native-kernel/src/nk_helicopter_main_rotor.hpp:50–92,105–120",
+        "docs/HELICOPTER.md"
+      ]
+    },
+    {
+      "id": "HELI-05",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "The X-Cell sets the empirical instability gain to zero. At normalized descent −1.5 the baseline gives 2.0 and the experimental gain-one variant gives 2.75. The small baseline splice still exists with zero gain.",
+      "source_references": [
+        "research/native-kernel/src/nk_helicopter_inflow.hpp:116–174",
+        "app/data/aircraft/xcell_60_research.json:628"
+      ]
+    },
+    {
+      "id": "DRONE-01",
+      "disposition": "carry-forward",
+      "verdict": "implementation limitation",
+      "independent_check": "Manufacturer F50 2150KV/F5146 at 5,436 and 10,238 rpm reports 38 and 152 g. Substitution of the stock kT into T=kTΩ² gives +34.55076% and +19.31568% at those rows. These are static row errors at known RPM.",
+      "source_references": [
+        "app/physics/multirotor/controlled_plant.gd:438–466",
+        "research/drone-racing/openrc-fpv5-x1/derive.py:122–141",
+        "app/data/multirotors/openrc-fpv5-x1.json"
+      ]
+    },
+    {
+      "id": "DRONE-02",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "At Ω=1000 rad/s and V=15 m/s, published stock kT and kQ give TV=23.209488 W and QΩ=16.125875 W. That exceeds the isolated steady powered axial-rotor bound. The full vehicle also has drag and storage terms.",
+      "source_references": [
+        "app/physics/multirotor/controlled_plant.gd:438–466",
+        "app/data/multirotors/openrc-fpv5-x1.json"
+      ]
+    },
+    {
+      "id": "DRONE-03",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The actual bounce changes the body yaw rate while leaving relative shafts untouched. Adding Σ(JΩ²/2−sJΩωz) to locked-body energy reverses the archived sign from −0.0064924 to +0.0107881 J. Setting all shaft speeds to zero restores dissipation. The fixture calls the stock response at a constructed state.",
+      "source_references": [
+        "app/physics/multirotor/controlled_plant.gd:1190–1212,1477–1485,1515–1569",
+        "app/sim/scenery_collision.gd:307–345",
+        "app/sim/multirotor/session.gd:284–298,329–338"
+      ]
+    },
+    {
+      "id": "DRONE-04",
+      "disposition": "carry-forward",
+      "verdict": "implementation limitation",
+      "independent_check": "The swept geometry uses the candidate endpoint's 300 rad/s shaft gate. During a 0.10–0.30 tick overlap, a rising shaft stays below threshold and passes it afterward; the falling witness does the reverse. Disagreement is relative to event-time semantics.",
+      "source_references": [
+        "app/physics/multirotor/controlled_plant.gd:733–776,1136–1156,1225–1261"
+      ]
+    },
+    {
+      "id": "DRONE-05",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "At a fixed own shaft speed, health and hub state, the direct thrust and torque expressions receive neither terrain clearance nor neighbor flow. Rigid-body and shared-bus coupling still operate. The installed thrust-loss percentage is unmeasured.",
+      "source_references": [
+        "app/physics/multirotor/controlled_plant.gd:407–466",
+        "app/data/multirotors/openrc-fpv5-x1.json"
+      ]
+    },
+    {
+      "id": "PROP-01",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Representation of a constant wind should not alter local propeller air. In the gas branch only the spatial provider supplies the hub velocity correction. On the P-51, (0,2,0) × (0.720785,0,−0.070776) gives (−0.141552,0,−1.441570) m/s; zero rotation removes the force discrepancy.",
+      "source_references": [
+        "research/native-kernel/src/nk_stage.hpp:292–319",
+        "research/native-kernel/src/nk_prop.hpp:81–95",
+        "research/native-kernel/src/nk_wake_spatial_aero.hpp"
+      ]
+    },
+    {
+      "id": "PROP-02",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The loader stores the engine's indicated idle intercept. The running shaft returns torque after friction and the fuel law uses delivered power. Their idle-reference difference is ΩQfriction, 102.039 and 122.915 W for the two named installations. Corrected fuel magnitude still needs calibration.",
+      "source_references": [
+        "app/physics/aircraft_data.gd:1851–1860,1934–1954",
+        "app/physics/propulsion.gd:461–475",
+        "research/native-kernel/src/nk_liquid_propulsion.hpp:84–94,111–117",
+        "docs/FUEL-SYSTEM.md:29"
+      ]
+    },
+    {
+      "id": "PROP-03",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "Sub-1-rpm table evaluations return zero; negative axial speed is clamped before advance-ratio lookup. The separate stopped finite-glow blade calculation has signed force and torque. No general propeller stall or restart assertion follows.",
+      "source_references": [
+        "research/native-kernel/src/nk_prop.hpp:105–129,215–232",
+        "research/native-kernel/src/nk_liquid_propulsion.hpp"
+      ]
+    },
+    {
+      "id": "PROP-04",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "The turbine uses RPM to index static fuel and thrust. At 110,000 rpm the opposite commands share 0.002459 kg/s and 32.20092 N, while spool rates have opposite signs. Transient engine fuel/exhaust data are missing.",
+      "source_references": [
+        "research/native-kernel/src/nk_liquid_propulsion.hpp",
+        "docs/FUEL-SYSTEM.md:31"
+      ]
+    },
+    {
+      "id": "ELEC-01a",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Uniform launch preparation projects ground-relative velocity, while spatial preparation uses local air. A 3 m/s headwind at 5° shifts the axial input from 6.5 to 9.488584094 m/s. The finite MoonRunner's archived torque residual disappears in calm air.",
+      "source_references": [
+        "app/sim/flight_session.gd:4782–4799",
+        "app/physics/propulsion.gd:127–130,270–291"
+      ]
+    },
+    {
+      "id": "ELEC-01b",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Equilibrium preparation hardwires 288.15 K; the initial flight pack uses local ambient. Holding the matched state within each comparison yields negative torque residual at 278.15 K and positive at 308.15 K. The reference-temperature control closes.",
+      "source_references": [
+        "app/physics/propulsion.gd:127–130,270–291",
+        "app/sim/flight_session.gd:5645–5652,5694–5708"
+      ]
+    },
+    {
+      "id": "ELEC-02",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Charge-limited bridge voltage and battery terminal represent distinct electrical ports. With zero pack current, 25.2 V OCV implies 4.2 V/cell, but the downstream display divides 68.4517701 V by six. At −0.05 A and 0.03 Ω physical ohmic loss in this model is 0.000075 W. The witness establishes reporting error.",
+      "source_references": [
+        "app/physics/multirotor/controlled_plant.gd:576–615,1677–1684",
+        "app/vehicles/multirotor/multirotor_hud.gd:1124–1135"
+      ]
+    },
+    {
+      "id": "ELEC-03",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The published 50% bench row supplies 23.88 V × 10.97 A = 261.9636 W. The offline diagnostic inserts the DC-source current as motor current; its own duty 0.49334231 would imply only 129.2377 W at the source through an ideal bridge. It is an offline diagnostic.",
+      "source_references": [
+        "research/drone-racing/openrc-fpv5-x1/derive.py:122–141,247–257"
+      ]
+    },
+    {
+      "id": "ELEC-04",
+      "disposition": "carry-forward",
+      "verdict": "implementation limitation",
+      "independent_check": "The admitted engine kinds and current dispatch contain no installed electric ducted-fan family. Existing open-prop and combustion jet paths and future EDF plans provide no installed EDF accuracy evidence.",
+      "source_references": [
+        "app/physics/aircraft_data.gd",
+        "app/physics/propulsion.gd",
+        "research/native-kernel/src/nk_stage.hpp:269–319"
+      ]
+    },
+    {
+      "id": "ENG-01",
+      "disposition": "carry-forward",
+      "verdict": "implementation limitation",
+      "independent_check": "The driver can receive an empty native-tick answer, fall through to reference or use delegated hooks before an accepted commit. Aggregate counters or native stage flags cannot identify every accepted tick's owner. Source-qualification jobs do not fill this attribution gap.",
+      "source_references": [
+        "app/sim/simulation.gd:481–500,737–748",
+        "research/native-kernel/src/nk_kernel.cpp:3473,3517,3808,4018–4043",
+        "research/native-kernel/README.md"
+      ]
+    },
+    {
+      "id": "ENG-02",
+      "disposition": "carry-forward",
+      "verdict": "performance opportunity",
+      "independent_check": "The event and substep paths construct buffers. The archived 32-double helper yields 0 allocation calls for one plain pre-sized piece, 2/512 bytes for eight plain pieces and 25/6,400 bytes for eight declared-clear pieces. Eight RK4 pieces consume 31 RHS calls after supplied k1. No latency inferred.",
+      "source_references": [
+        "research/native-kernel/src/nk_tick.hpp:114–170,203–239,293–341,369–386,1004–1042"
+      ]
+    },
+    {
+      "id": "ENG-03",
+      "disposition": "carry-forward",
+      "verdict": "performance opportunity",
+      "independent_check": "The eligible spatial, non-glow, non-turbine stage repeats the same blade calculation on the same arguments. The separately grouped shaft torque differs bitwise on 1,813/4,096 finite pairs. Any cache must be restricted to the same eligible expression and stage.",
+      "source_references": [
+        "research/native-kernel/src/nk_stage.hpp:332–346,395–402",
+        "research/native-kernel/src/nk_prop.hpp:105–132"
+      ]
+    },
+    {
+      "id": "ENG-04",
+      "disposition": "carry-forward",
+      "verdict": "performance opportunity",
+      "independent_check": "The ground binding decodes 32 required scalars, one optional scalar and five arrays; the binding and kernel each compute corner geometry. The Nitro override is live per stage. End-to-end costs and speedup remain unmeasured.",
+      "source_references": [
+        "research/rc-monster-truck/native/src/ground_vehicle_native.cpp:99–173,678–698",
+        "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp:749,775"
+      ]
+    },
+    {
+      "id": "MECH-01",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "A planar isotropic road and horizontal heading rotation preserve body-relative physics. The identity-attitude shortcut ignores asymmetric suspension. The stock +1 mm FL witness gives 0 and 5.380361 N lateral force for two headings, while symmetric undisturbed rest agrees.",
+      "source_references": [
+        "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp:413–424,805–815,914–938",
+        "app/physics/ground_vehicle/vehicle_dynamics.gd:1186–1195,1308–1328,2149–2161"
+      ]
+    },
+    {
+      "id": "MECH-02",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The wall adapter adds wall force after static tire projection. Applying an identical external load before projection changes the constraint residual from 2.639596 to 0.000000766 m/s²; two 0.5 mm compressions at 6500 N/m supply 6.5 N. Clear-wall and zero-friction controls agree.",
+      "source_references": [
+        "app/physics/ground_vehicle/vehicle_dynamics.gd:721–759,813–926",
+        "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp:644–705,1019–1034"
+      ]
+    },
+    {
+      "id": "MECH-03",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Rolling about a flat face normal leaves the exact normal coordinate unchanged. The constructed Stik spinner crosses at 20 µm/10 mm=0.002. Artificial 77.54 µm padding places the start inside, and the initially-inside branch rejects the crossing. No roll restores it.",
+      "source_references": [
+        "app/sim/scenery_collision.gd:125–166,470–520,696–699",
+        "app/sim/flight_session.gd:4207–4222",
+        "app/physics/aircraft_data.gd:560–568,593–603,2517–2524"
+      ]
+    },
+    {
+      "id": "MECH-04",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "At vertical pitch, forward direction projects to zero on a level road tangent plane. The solver raises the degeneracy error before checking whether an unloaded wheel needs friction. The ±90° fixtures reject at 10 m altitude, while the adjacent attitude passes with zero wheel load.",
+      "source_references": [
+        "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp:853–916",
+        "app/physics/ground_vehicle/vehicle_dynamics.gd:1245–1260,1269–1310"
+      ]
+    },
+    {
+      "id": "CTRL-01",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "At projected nose norm 0.2 the estimator switches from nose to top-derived heading. At 45° bank and acos(0.2)±1e−8 rad the actual commands differ by 190.426611°/s. Zero bank removes the jump, and quaternion sign is immaterial for this regular-seam fixture. This is an outer-loop request.",
+      "source_references": [
+        "app/physics/multirotor/flight_controller.gd:330–355,447–475",
+        "app/vehicles/multirotor/osd_model.gd:175"
+      ]
+    },
+    {
+      "id": "CTRL-02",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Tracking subtracts already-clipped request from allocator output. With an interior allocation both equal ±0.35 N·m while raw request is ±0.922832 N·m. The checked one-step integral moves farther into saturation by ±0.00854474 N·m; the neutral control stays zero, and the integral remains bounded.",
+      "source_references": [
+        "app/physics/multirotor/flight_controller.gd:358–401",
+        "app/physics/multirotor/allocator.gd:70–77,137–158",
+        "app/physics/multirotor/actuator_map.gd:1–9,47–74"
+      ]
+    },
+    {
+      "id": "CTRL-03",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "The legacy pre-step publishes the achieved endpoint before all force stages. The stock Jensen's 20°/0.14 s slew gives 0.595238° at tick end and 0.297619° as the first-tick mean. The optional interval servo path has a narrower admission domain.",
+      "source_references": [
+        "research/native-kernel/src/nk_pre_step.hpp:129–133,252–256",
+        "research/native-kernel/src/nk_stage.hpp:306–314",
+        "app/sim/flight_session.gd:6483–6509,6540–6544,6894–6898",
+        "app/sim/servo_interval_flight.gd:27–59"
+      ]
+    },
+    {
+      "id": "CTRL-04",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "The trainer passes cyclic/tail targets directly into the rotor stage at the same continuous state. At nominal head speed the tail-only yaw moment changes from 0.715048 to 5.005337 N·m; the stopped rotor gives zero for both commands. No whole-body rate jump is implied.",
+      "source_references": [
+        "research/native-kernel/src/nk_helicopter_controls.hpp:130–173",
+        "research/native-kernel/src/nk_helicopter_stage.hpp:238,265–268",
+        "research/native-kernel/src/nk_helicopter_tail_rotor.hpp"
+      ]
+    },
+    {
+      "id": "MATH-01",
+      "disposition": "carry-forward",
+      "verdict": "deliberate documented simplification",
+      "independent_check": "Independently integrating the squared stock Jensen RPM exponential gives 3.04965681419 N·s in 0.25 s. Right endpoints give 3.08935377463 N·s at 240 Hz, +1.301686%. Holding RPM samples fixed while refining the plant preserves this bias.",
+      "source_references": [
+        "research/native-kernel/src/nk_pre_step.hpp:241–254",
+        "research/native-kernel/src/nk_stage.hpp:269–275",
+        "research/native-kernel/src/nk_prop.hpp:105–118",
+        "app/sim/simulation.gd:475–486",
+        "app/data/aircraft/jensen_ugly_stik_60.json:1511–1554"
+      ]
+    },
+    {
+      "id": "MATH-02",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "SOC ≤ 0 zeros only the derivative, while an accepted 3.2 V/cell cutoff leaves finite drive from the 3.3 V empty OCV. The checked model produces 0.465725846 A and 4.60092535 W at zero charge; the stock cutoff disconnects at rest. This is a supported custom-pack case.",
+      "source_references": [
+        "app/physics/airship/airship_data.gd:162–170,555–560",
+        "app/physics/airship/airship_dynamics.gd:187–221,236–245,588–597",
+        "app/sim/airship/session.gd:91–99,161–175"
+      ]
+    },
+    {
+      "id": "MATH-03",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "For b/a=1−10⁻¹⁰ the stable prolate expansion gives k1=0.49999999994 and k2=0.50000000003. Direct subtractive evaluation gives 0.4350353 and 0.5347392 in the admitted production model. The still closer case is refused during final factorization, and default shape agrees with the stable reference.",
+      "source_references": [
+        "app/physics/airship/airship_data.gd:397–411,435–446",
+        "app/tests/test_airship_dynamics.gd:32–46,151–158,183–194"
+      ]
+    },
+    {
+      "id": "MATH-04",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Centered, undamped unilateral spring contact has exact energy ratio 1. With m=1.225π/3 kg and k=10⁶ N/m, exact contact lasts 3.558215 ms; the four unilateral RK stages yield 3.51119453 m/s rebound and 12.32848704× energy. The soft and 3840 Hz controls nearly recover 1. This is an extreme admitted contact.",
+      "source_references": [
+        "app/physics/airship/airship_data.gd:189–203",
+        "app/physics/airship/airship_dynamics.gd:403–416,474–491",
+        "app/sim/airship/session.gd:161–175",
+        "app/sim/simulation.gd:565–581"
+      ]
+    }
+  ],
+  "prior_geometry_crosschecks": [
+    {
+      "id": "V-MECH-CAP",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "Both endpoints of the constructed overlap lie within the true capsule. At the hidden cap-sphere root, the point is still 64 mm inside the cylinder. The cap-sphere candidate generator lacks an exposed-hemisphere test. The old probe and raw log SHA-256 values match their original publication Git blobs.",
+      "source_references": [
+        "app/sim/scenery_collision.gd:151–163,528–564"
+      ]
+    },
+    {
+      "id": "V-MECH-LAKE",
+      "disposition": "carry-forward",
+      "verdict": "confirmed bug",
+      "independent_check": "The 0.24 m chord has −94.763, +100 and −94.763 µm signed depths at start, midpoint and end. The single endpoint sign test therefore misses two crossings. The original split-interval stock Avanti result, first fraction 0.141805272, is separately archived; original probe and log hashes match.",
+      "source_references": [
+        "app/sim/lake_collision.gd:154–190,272–294"
+      ]
+    }
+  ],
+  "refresh_additions": [
+    {
+      "topic": "Fixed-wing wake and coefficient scope",
+      "linked_findings": "AERO-01/02/03",
+      "disposition": "Retain",
+      "independent_check": "Recalculated 15 m/s with ±0.5 m/s on the wing alone. The source magnitude is 2.250416412 m/s and its exact 60-tick lag is 2.235253226 m/s at τ=0.05 s. Inspected the station-to-datum preparation, local polar and transported-wake inputs.",
+      "scope": "Zero-wash requires no axial, swirl, sidewash or transported contribution. The refined gust is within the provisional 3° gate. Wind-tunnel results on other geometry give methodology; independent stock Reynolds-number data remain required.",
+      "source_anchors": "nk_pre_step.hpp:179–198,320–332; nk_aero.hpp:403–410,664–681; nk_wake.hpp:483–509"
+    },
+    {
+      "topic": "Hinged area and dispatch",
+      "linked_findings": "AERO-04",
+      "disposition": "Correct",
+      "independent_check": "Integrated the linear Extra chord exactly and compared independent strip-centroid quadratures. Exact 0.0741784152284 m³, 3/6/12 per side 0.0730282122579/0.0737764344321/0.0741239910468 m³. Rechecked global and local dispatch and the authored hinge boundaries.",
+      "scope": "The 3/6/12 per-side sequence is an offline grid study. Current general decoding admits ≤16 total; spatial sampling requires exactly six. Force local derivative first and verify the installed blend separately. Induced load on uncovered sections remains possible.",
+      "source_anchors": "nk_kernel.cpp:296–299,917; nk_wake_spatial_flow.hpp:55–80; nk_aero.hpp:519–549,977–984; Selig §IV.A, pp. 5–6"
+    },
+    {
+      "topic": "Helicopter disc work and flap regime",
+      "linked_findings": "HELI-01/03",
+      "disposition": "Retain",
+      "independent_check": "Expanded the rigid-hub scalar product F·(UCG+ω×r). The ±167.8731 W model comparison leaves positive residual shaft powers. Traced the independent sign(μx) term and separate low-head pole.",
+      "scope": "Use one velocity convention in uniform air and account for pure couples separately. A projected direction may repair the in-range seam. The pole needs an explicit envelope or independently identified continuation. Neither closure validates the X-Cell.",
+      "source_anchors": "nk_helicopter_main_rotor.hpp:109–175; nk_helicopter_aero.hpp:142–161; app/tests/test_heli_rotor_domain.gd:99–126"
+    },
+    {
+      "topic": "Slope, wake clearance and cutoff",
+      "linked_findings": "HELI-02",
+      "disposition": "Correct",
+      "independent_check": "Directly solved the momentum root, then ray-plane intersection using both normal clearance and direction. At 3vh distances are 10.02074945R flat, 2.92473740R rising 15°, and no forward hit on the opposite plane. Calculated the proposed hard-cut jump, 0.016704163713.",
+      "scope": "The inclined cases establish geometry only. NDARC's empirical construction uses horizontal ground. A continuous taper is a candidate requiring identification. Stages, reference, diagnostics and restored-state paths need the same terrain input.",
+      "source_anchors": "nk_helicopter_stage.hpp:220–229; nk_helicopter_inflow.hpp:177–215; nk_terrain.hpp:334–352; NDARC §12-4.1.2"
+    },
+    {
+      "topic": "Freewheel coordinate and inflow events",
+      "linked_findings": "HELI-04/05",
+      "disposition": "Correct",
+      "independent_check": "Reflected engine inertia by n² on the driven coordinate. Positive-slip fixed-carrier synchronization gives 109.266258659 rad/s and 7.394474410 J lost; zero slip gives zero loss. Traced baseline C=0.75 seam at f=0 and the conditional increment.",
+      "scope": "For free carriers with distinct axes, solve the full coupled impulse and include external reactions as applicable. Held data do not establish installed autorotation. The prior ≤16 RHS calls used known timing. Search, grazing, state-dependent crossings, stop and exhaustion need separate controls.",
+      "source_anchors": "nk_helicopter_stage.hpp:31–145; nk_helicopter_inflow.hpp:116–174,228–242; research/helicopter/xcell/derive.py:47–83"
+    },
+    {
+      "topic": "Rotor bench and interaction transfer",
+      "linked_findings": "DRONE-01/05",
+      "disposition": "Retain",
+      "independent_check": "Reopened the manufacturer's F50/F5146 static table and checked the named RPM rows separately from electrical inputs. Checked the direct T/Q inputs and the stock X1 hub layout.",
+      "scope": "Same-run interpolation and another tandem arrangement cannot identify installed X1 performance. Hold out whole independent runs and isolate rotor, paired, full vehicle, supply, height and spacing. Shared bus and rigid-body coupling already exist.",
+      "source_anchors": "app/physics/multirotor/controlled_plant.gd:374–466; app/data/multirotors/openrc-fpv5-x1.json:811–989; LiGPOWER F50 tables"
+    },
+    {
+      "topic": "Steady isolated-disk minimum power",
+      "linked_findings": "DRONE-02",
+      "disposition": "Retain",
+      "independent_check": "Substituted stock T=1.5472992 N, QΩ=16.1258746232 W and diameter into the actuator-disk momentum/energy identities. At 8 m/s TV/QΩ=0.76761068 passes, but ideal Pmin=18.55978469 W exceeds supply. At zero freestream Pmin=10.71098909 W passes.",
+      "scope": "Applies to steady positive-thrust powered, unshrouded, isolated axial flow; no direct comparison to descent, transients, ground effect or installed wakes. Compare watts at hover and propagate physical observation uncertainty.",
+      "source_anchors": "app/physics/multirotor/controlled_plant.gd:374–385,438–477; MIT Unified Engineering §11.7.2–3"
+    },
+    {
+      "topic": "Nonlinear allocation dependency",
+      "linked_findings": "DRONE-01/02, CTRL-02",
+      "disposition": "Retain",
+      "independent_check": "Computed direct signed Q on the four rotors of Q=0.009T+0.001T². Around 1.5 N/rotor, ±0.1 N gives 0.0048 N·m vs frozen Q/T's 0.0042. Q/T=dQ/dT across an interval implies Q=kT there.",
+      "scope": "Coincidence at one trim is possible. Require finite excursions and local slopes at multiple trims under a declared supply. The current linear stock law is unaffected by this prospective dependency.",
+      "source_anchors": "app/physics/multirotor/allocator.gd:1–8,70–77; app/physics/multirotor/flight_controller.gd:371–394"
+    },
+    {
+      "topic": "Frame impulse with four free shafts",
+      "linked_findings": "DRONE-03",
+      "disposition": "Correct",
+      "independent_check": "Eliminated the four zero-generalized-impulse shaft coordinates analytically, using Ieff=Ilocked−ΣJi ez ezᵀ. The imbalanced full energy changes are +0.010788070268 J frozen and −0.006462519405 J free. Balanced frozen still imparts 8.6402356676e−6 N·m·s per shaft. Through-CG both give −0.010464 J.",
+      "scope": "Complete angular momentum and energy can pass while individual shafts receive spurious impulses. Check each unstruck shaft and apply normal restitution after the normal impulse. In the off-CG witness the subsequent friction changes normal speed from +0.04 m/s to roundoff zero. Direct blade impulses and negative-speed bounds are separate.",
+      "source_anchors": "app/physics/multirotor/controlled_plant.gd:537–550,1476–1569; app/sim/scenery_collision.gd:307–345; nk_rotor_coupling.hpp:21–25,54–65"
+    },
+    {
+      "topic": "Rotor eligibility during geometry overlap",
+      "linked_findings": "DRONE-04",
+      "disposition": "Correct",
+      "independent_check": "Used shaft speed as independent variable and a Radau integration of dt/dΩ, dq/dΩ and dE/dΩ. At contact boundaries 0.1/0.3 tick, speeds are 291.864254/305.406964 rad/s. The 300 rad/s crossing is 0.21971237345 tick, 915.468223 µs; charge/terminal energy there are 0.020421629 C/0.500957917 J.",
+      "scope": "Prescribed straight capsule chord and symmetric restrained electrical trajectory only. For strict >300, use a one-sided boundary with positive-duration eligible overlap; constant equality is ineligible. The 0.090159640 C/2.213461036 J endpoint belongs to uninterrupted continuation. No recorded race outcome follows.",
+      "source_anchors": "app/physics/multirotor/controlled_plant.gd:555–573,731–775,1225–1261; app/sim/multirotor/swept_prop_contact.gd:63–83"
+    },
+    {
+      "topic": "Hub samples and brake-idle reference",
+      "linked_findings": "PROP-01/02",
+      "disposition": "Retain",
+      "independent_check": "Checked body-rate transport at the hub, native uniform/spatial torque and wake routes, and the order of torque cap, friction, output power then fuel threshold. At the P-51 point the hub flow increment is (−0.141552,0,−1.441570) m/s.",
+      "scope": "Use a single rigid correction on an explicitly sampled hub. Qualify wake-source thrust/torque, all-axis wrench and source-off friction. Compute brake idle from the actually admitted capped torque. Fixed-state shaft torque and changed fuel mass are distinct controls.",
+      "source_anchors": "nk_stage.hpp:292–348; nk_liquid_propulsion.hpp:80–117,139–187; nk_liquid_stage.hpp:114–140"
+    },
+    {
+      "topic": "Multiple off-engine shaft equilibria",
+      "linked_findings": "PROP-03",
+      "disposition": "Correct",
+      "independent_check": "On each interval of the stock Cp(J) table, solved analytically for roots of the quadratic in positive RPM. Net-torque slopes change +/− at 988.085403/3243.443661 rpm P-51 and 867.154176/2186.761366 F4U. Stationary-point minima of Cp−JCt are 0.00481883 and 0.00409308 over the authored forward intervals.",
+      "scope": "Restrained 30 m/s, ρ=1.225 kg/m³, running shaft. Same-sign endpoints can miss both roots. Locked static friction and breakaway have their own signed torque check; zero shaft power cannot qualify it. Running start/glide initialization select distinct policies.",
+      "source_anchors": "nk_prop.hpp:33–48,105–129,215–232; nk_liquid_propulsion.hpp:111–163; app/data/aircraft/p51d_mustang_120.json; app/data/aircraft/f4u_corsair_250.json"
+    },
+    {
+      "topic": "Fuel versus governed thrust timing",
+      "linked_findings": "PROP-04",
+      "disposition": "Correct",
+      "independent_check": "Integrated the continuous stock governor and fuel independently with DOP853. Idle→full t10/t90 1.417253625/3.322105882 s, 6 s fuel 20.972182813 g. Full→idle 0.057492612/1.143102531 s, 8.465751122 g. Rate/governor branch changes at 132758.62/57894.74 rpm.",
+      "scope": "Metering alone leaves prescribed-inlet restrained thrust timing unchanged before depletion. Whole-flight mass or inlet changes can affect dynamics. Many et al.'s distinct ECU data were about 5 Hz, thrust 100 Hz, clock drift ~0.5 s/eight minutes. Use trace-specific uncertainty and predeclared physical margins.",
+      "source_anchors": "nk_liquid_propulsion.hpp:193–225,252–291; nk_liquid_stage.hpp:143–158; Many et al. §§3.1–3.2"
+    },
+    {
+      "topic": "Independent temperature and cache discrimination",
+      "linked_findings": "ELEC-01a/b",
+      "disposition": "Correct",
+      "independent_check": "Independently interpolated stock 6S rested ECM resistance versus temperature, then solved the electrical/blade torque equilibrium. With ρ=1.225 and common charge ratio 1, old root 11380.928904 rpm leaves −0.043139064/+0.069376734 N·m at 278.15/308.15 K; matching roots 11293.257307/11504.067192 rpm.",
+      "scope": "Direct hand-launch shaft solve and the separate cached cruise/trim preparation both need the appropriate inputs. The A→B→A/B→A→B installed cache sequences are proposed tests, not executions in this review. A small torque residual alone is insufficient for a stable branch.",
+      "source_anchors": "app/sim/flight_session.gd:1031–1105,4637–4652,4784–4799,5645–5708; app/sim/launch_trim_cache.gd:399–409; nk_pack_ecm.hpp:248–305; nk_electric.hpp:41–85"
+    },
+    {
+      "topic": "Auxiliary work and electronic drive ports",
+      "linked_findings": "ELEC-02/03",
+      "disposition": "Correct",
+      "independent_check": "At 68.45177010 V link, 25.2 V tabs and 0.6 A auxiliary, Paux is 41.07106206 or 15.12 W; the difference is 25.95106206 W. In the signed ideal bridge a given zero source current admits d=0, or d=E/V when feasible.",
+      "scope": "The difference is unassigned only under a silent counterfactual auxiliary relocation; the existing model's power ledger closes under its own topology. The display correction must preserve dynamics, held OCV control and integrated energy. Diagnose/offline inferred duty by motoring branch. A vendor current row does not measure ESC duty or physical heat.",
+      "source_anchors": "app/physics/multirotor/controlled_plant.gd:341–347,478–481,580–615,1677–1684; research/drone-racing/openrc-fpv5-x1/derive.py:122–141; maxon PWM note"
+    },
+    {
+      "topic": "EDF evidence domain",
+      "linked_findings": "ELEC-04",
+      "disposition": "Retain",
+      "independent_check": "Reopened NASA's original Jetfan 130 paper. It removes bracket/adapter tare, reports negative wind-on points and omits high-J>1.24 points from the chosen DOE fit. Table 17's 0.753% validation NRMSE is for the selected thrust coefficient response.",
+      "scope": "Do not extrapolate an identified thrust fit into omitted points or transfer Jetfan coefficients to a proposed installation. A locked rotor can exert drag at nonzero flow. Measure or identify shaft load, installed net force and corresponding flow/electrical powers separately.",
+      "source_anchors": "Weinstein and Simmons §§VI.A–B, VI.F, Figs. 5/7, Tables 16–17; app/physics/aircraft_data.gd"
+    },
+    {
+      "topic": "Ground solver units, wall work and wheel frame",
+      "linked_findings": "MECH-01/02/04",
+      "disposition": "Retain",
+      "independent_check": "Inspected convergence constants and wheel-count/piece gates. The stop quantities are force update N and brake update N·m. Eight boxes × (four wheels + six hull probes)=80 tests per stage; 1/120 s cannot by itself split a 1/240 s step. Orthogonal steered forward/axle gives a valid axle×normal tangent at the forward singularity.",
+      "scope": "Physical patch acceleration, solver deltas and finite-sweep matched loads require different comparisons. Preserve unsigned/signed work and later independent airborne drive, braking and gyro. The work bound covers this stock geometry and reports no measured target time.",
+      "source_anchors": "ground_vehicle_kernel.hpp:304–316,413–424,644–701,805–815,914–982; app/physics/ground_vehicle/vehicle_dynamics.gd:42–50,489–506,721–801"
+    },
+    {
+      "topic": "Synchronized full-tick nlerp envelope",
+      "linked_findings": "MECH-03",
+      "disposition": "Correct",
+      "independent_check": "Built projected face distance as an independent rational polynomial from a linear complex spinor. With one 0.9 m witness, full 11.9° yaw and a compensating CG line, padding 134.531202124 µm is less than midpoint 134.656288612 µm. A face at 134.593745368 µm has roots 0.081552969546/0.085144882281 tick. Its root derivative gives 0.01671687546 m/s at 240 Hz.",
+      "scope": "Nested counterexample to the current broad-phase geometric bound. This approach speed is below the ordinary 0.05 m/s response floor. Final response also uses supplied event velocity. An ordinary-event miss for this new fixture is unproved. Keep the earlier stock spinner event as the separate confirmed witness.",
+      "source_anchors": "app/sim/scenery_collision.gd:125–165,238–250,470–521,648–716; probes/verifier_acceptance_oracles.py"
+    },
+    {
+      "topic": "Crossings, caps and waves",
+      "linked_findings": "MECH-03; V-MECH-CAP/LAKE",
+      "disposition": "Retain",
+      "independent_check": "A second independent nlerp polynomial gives clear ends, face entry/exit 0.250002677321/0.749997322679; moved-face minimum clearance 20.723498 µm. Multiplying each oriented static-box plane distance by the squared norm of the sign-aligned linear quaternion gives degree ≤3.",
+      "scope": "Handle repeated/coplanar roots, other five box halfspaces, true overlap, deterministic ties and bounded work. A capsule cap needs its exposed hemisphere. The wave chord error h²Σ|A|ω²/8 assumes constant fade and appropriate linear rigid-point/phase histories; bound rotating support and shoreline fade separately.",
+      "source_anchors": "app/sim/scenery_collision.gd:470–581,648–716; app/physics/lake_surface.gd:241–265,452–467; app/sim/lake_collision.gd:154–190"
+    },
+    {
+      "topic": "Quaternion sign at exact inversion",
+      "linked_findings": "CTRL-01",
+      "disposition": "Correct",
+      "independent_check": "Constructed literal unit quaternion (0,1,0,0) and its negative with identical rotation and target. Strict scalar sign produces −400/+400°/s roll. A trig-generated π pair has a nonzero scalar and yields −400/−400°/s. The historical 190.4266°/s regular seam is a separate case.",
+      "scope": "Nested source defect under the existing controller finding. Require the same bounded nonzero recovery behind an explicit exact-tie policy; a zero cross product passes equality alone. Deterministic exact opposition does not imply globally smooth unique recovery or any installed flight frequency.",
+      "source_anchors": "app/physics/multirotor/flight_controller.gd:330–355,447–475; PX4 reduced-attitude source; probes/verifier_acceptance_oracles.py"
+    },
+    {
+      "topic": "Directional unwind and actuator motion",
+      "linked_findings": "CTRL-02/03/04",
+      "disposition": "Correct",
+      "independent_check": "At stock roll error −1 rad/s and setpoint acceleration +1000 rad/s², raw=1.10 and limited=0.90 N·m; permissive unwind ΔI=−0.000416666667 N·m. Reusing the raw feedback gain gives −0.0391913 on the earlier yaw gate. At servo arrival f=1/2 the RK exposure is 5/6 vs exact 3/4, 11.1111% high; at f=1/3 they coincide.",
+      "scope": "Do not freeze an integral that relieves saturation. Keep downstream allocation tracking and one controller update per outer tick. New rotor maps alter allocation prediction separately. Jam and steering need later admission. A stuck heli servo passes zero-jump tests, so require bidirectional travel from installed trim and held-out physical response.",
+      "source_anchors": "app/physics/multirotor/flight_controller.gd:337–394; app/physics/slew_trajectory.gd:19–85; app/sim/servo_interval_flight.gd:27–59; nk_helicopter_controls.hpp:130–173"
+    },
+    {
+      "topic": "Endpoint coupling and empty pack",
+      "linked_findings": "MATH-01/02",
+      "disposition": "Correct",
+      "independent_check": "Rechecked that charge derivative is stopped at SOC≤0 and motor current from shaft state precedes multiplication by the cutoff factor. The stock 3.3 V threshold is a zero-output empty-from-rest control; a prescribed positive shaft speed can still draw current. The custom 3.2 V witness retains positive drive.",
+      "scope": "Check Coulomb conservation, exhaustion once, empty-start zero events, physical root timing, post-root rollback and motor coast-down with the pack genuinely disconnected. The separate fixed-wing RPM source exposure and pilot sampling remain at their intended clocks.",
+      "source_anchors": "app/physics/airship/airship_dynamics.gd; app/sim/airship/session.gd; nk_pre_step.hpp; nk_tick.hpp"
+    },
+    {
+      "topic": "Near-sphere tensor accuracy",
+      "linked_findings": "MATH-03",
+      "disposition": "Correct",
+      "independent_check": "Evaluated a high-precision spheroid from the actual binary64 axes and recomputed adjacent-axis eccentricity by exact rational arithmetic. At a=1.5 and b=nextafter(a,0), exact x≈2.9605947323e−16 and divide-first x≈2.2204460493e−16, yielding −43.75% leading krot. At b/a≈1−1e−10, accurate k1−0.5=−6.0000004964e−11, k2−0.5=+3.0000002484e−11, krot/x²≈0.166666666696.",
+      "scope": "Use d=(a−b)/a and x=d(2−d), a separate rotation series, and representable departure/ulp tolerances. Require PSD added mass, including zero axisymmetric roll inertia, and SPD total spatial mass on model admission. Old sign checks alone cannot prove the repaired tensor is admitted.",
+      "source_anchors": "app/physics/airship/airship_data.gd; probes/mathematics_actual.gd:121; NACA-TR-210"
+    },
+    {
+      "topic": "Contact phase alias and policy scope",
+      "linked_findings": "MATH-04",
+      "disposition": "Correct",
+      "independent_check": "Reimplemented unilateral RK4 and counted distinct local phases. Three 32/32/512-case grids span one substep/whole tick/whole tick and cover 32/2/32 local phases at 16 pieces. All give max energy-ratio error 0.00587280190069, while max relative linear-release duration error is 4.61888e−5/2.43556e−5/4.61888e−5.",
+      "scope": "Scalar manufactured controls only. Energy alone misses timing. Test outer index × local phase, duration, peak depth, impulse and general contact-set mobility/damping. Existing fixed-wing hω≤0.1 would need 37 pieces here if applied; current airship lacks this gate and takes one. Sixteen scalar pieces do not qualify installed behavior.",
+      "source_anchors": "app/physics/airship/airship_dynamics.gd; app/physics/normal_contact_admission.gd; probes/mathematics_acceptance_oracles.cpp"
+    },
+    {
+      "topic": "Native counters, work and CI",
+      "linked_findings": "ENG-01/02/03/04",
+      "disposition": "Retain",
+      "independent_check": "Checked the original raw shard and aircraft-native CI evidence, the four retained law paths, the guard fallback, historical allocator counts and separate ground ownership. The current input changes three data-identity records but no scoped physics-law tree; selected input/receipt hashes are independently verified.",
+      "scope": "Count accepted tick ownership separately from stages/declines/delegation. The fast-plan 1,048,576 guard cap applies per eligible root. Source/editor/replay results do not qualify export, target 500 µs, physical fidelity or a rendered frame rate. Preserve original red run versus post-fix pending head.",
+      "source_anchors": "nk_kernel.cpp:3473; nk_tick.hpp; app/sim/simulation.gd:481; ground_vehicle_native.cpp:678; hosted-ci.json"
+    }
+  ],
+  "refresh_verification": {
+    "groups_reviewed": 9,
+    "added_primary_ids": 0,
+    "fresh_engine_assertions": 0,
+    "review_item_counts": {
+      "Retain": 10,
+      "Correct": 15
+    },
+    "classification": "Disposition concerns the refresh claim or prospective acceptance procedure. All original 39 primary IDs and the two prior geometry mechanisms retain the verdict recorded above.",
+    "nested_confirmed_source_subcases": [
+      "MECH-03: synchronized candidate envelope is geometrically unsound. The new low-speed fixture cannot alone establish lost ordinary response.",
+      "CTRL-01: two literal quaternion signs give opposite rate requests at the same exactly inverted attitude."
+    ],
+    "lead_six_group_receipt": {
+      "path": "research/native-physics-audit-2026-11-28/evidence/refresh-oracles-final.json",
+      "sha256": "ea653b6af62127e3e530aa9e5a847cb0a10ef3c6d6254d28d811c6b22fb90a83",
+      "recorded_transitional_head": "d65b7334e4b3d091828027394375231bf5ae485b",
+      "current_main_source": "4bf5b399e5cafcb5fd101ddcfadecfcd236337cf",
+      "runner_and_all_inputs_match_worktree": true,
+      "number_of_input_entries": 85,
+      "unique_case_input_paths": 84,
+      "cases": {
+        "drone": {
+          "exit": 0,
+          "stdout_sha256": "eb87e22d762eb01e4525c212047b8dcaf6715b09787f7178a273235ffb5130b6",
+          "stderr_bytes": 0
+        },
+        "propulsion": {
+          "exit": 0,
+          "stdout_sha256": "a07b5b54d41b968113cbcf3c0f9291dc2e2a1157395dcd8d8942961668153dc5",
+          "stderr_bytes": 0
+        },
+        "electric": {
+          "exit": 0,
+          "stdout_sha256": "a25d8208a157f3ef1ed717a29afff4a46df4ebb67eff62e38dac8ecc5bc5ce70",
+          "stderr_bytes": 0
+        },
+        "mechanics": {
+          "exit": 0,
+          "stdout_sha256": "812aaf7079ab7faf1c544ec01621184189782df8b6db15aec022dfcb5e8a6cba",
+          "stderr_bytes": 0
+        },
+        "mathematics": {
+          "exit": 0,
+          "stdout_sha256": "31994138a529311f1915ec27cb5b349af3960855f1481844f766ebaaf7209403",
+          "stderr_bytes": 0
+        },
+        "verifier": {
+          "exit": 0,
+          "stdout_sha256": "deabd6b7e4e1dd389ff18b66cff4856717eb3a74966d0df77b5edfedba1a3f92",
+          "stderr_bytes": 0
+        }
+      }
+    },
+    "independent_stdlib_observation": {
+      "schema": "openrc-audit-independent-scalar-controls-v1",
+      "scope": "Independent analytic geometry and controller, wing and helicopter acceptance stands. No engine, installed simulator or target hardware execution.",
+      "probe_sha256": "aeb26cc99c0e744a2d31e96469b3f015a3beddb89abe0136d1671639c9738d4f",
+      "interpreter": "3.12.14",
+      "exit_code": 0,
+      "stdout_sha256": "deabd6b7e4e1dd389ff18b66cff4856717eb3a74966d0df77b5edfedba1a3f92",
+      "stderr_bytes": 0,
+      "outputs": {
+        "scope": "independent standard-library scalar and geometry fixtures",
+        "synchronized_box": {
+          "full_tick_pieces": 6,
+          "padding_um": 134.53120212438327,
+          "midpoint_um": 134.6562886120212,
+          "face_um": 134.59374536820224,
+          "entry_tick_fraction": 0.08155296954558011,
+          "exit_tick_fraction": 0.08514488228114026,
+          "geometric_incoming_m_per_s": 0.016716875457013208,
+          "ordinary_response_floor_m_per_s": 0.05
+        },
+        "clear_endpoints_box": {
+          "gaps_um": [
+            57.828681109928226,
+            -19.276502283727126,
+            57.828681109928226
+          ],
+          "crossings": [
+            0.25000267732052783,
+            0.7499973226794723
+          ],
+          "moved_face_minimum_gap_um": 20.723497716272874
+        },
+        "controls": {
+          "angle_literal_deg_s": [
+            -400.0,
+            400.0
+          ],
+          "angle_trig_deg_s": [
+            -400.0,
+            -400.0
+          ],
+          "upstream_full_tracking_yaw_delta_nm": -0.0391912529535,
+          "relieving_roll_integral_delta_nm": -0.0004166666666666667,
+          "half_tick_servo_exposure_error_normalized_s": 5.166997354497357e-06
+        },
+        "fixed_wing": {
+          "exact_hinge_first_moment_m3": 0.07417841522842815,
+          "offline_quadrature_m3": {
+            "3": 0.07302821225792248,
+            "6": 0.07377643443214434,
+            "12": 0.07412399104680929
+          },
+          "positive_wing_only_source_m_per_s": 2.2504164122261088,
+          "positive_lag_at_five_time_constants_m_per_s": 2.2352532257146573
+        },
+        "helicopter": {
+          "flat_rising_falling_distance_over_radius": [
+            10.020749451511088,
+            2.9247373967521977,
+            null
+          ],
+          "hard_cutoff_jump_at_3R": 0.016704163713132214,
+          "fixed_carrier_speed_rad_s": 109.26625865895487,
+          "fixed_carrier_loss_j": 7.39447440984599
+        }
+      }
+    },
+    "original_ledger_sha256": "2503e6a96b6ccf85a990b64b5f8012d5a90dc29f7bf8c81a363a6397ef676b78",
+    "historical_ci": "Original run 46164505239 was red. Source and editor qualifiers apply only to tested merge 8c29a759. Source lookup distinguished the successful Windows queue regression from the separate full main run. A refreshed head requires its own receipt.",
+    "final_candidate_review": {
+      "qualification": "Approved at the documented component/source/hosted-CI evidence levels. Both last requested text corrections are incorporated.",
+      "addressed": [
+        "ELEC-01a/b identifies direct hand-launch versus cached cruise/trim and expressly records that installed warm-cache ordering is a future test.",
+        "MATH-04 identifies the outer-index × local-phase grid as additional possible scalar onset positions.",
+        "MECH-03 records geometric incoming speed below the 0.05 m/s ordinary response threshold.",
+        "MATH-02 distinguishes empty from rest and prescribed spinning states. MATH-03 distinguishes PSD added mass from SPD total mass. MATH-04 identifies the 0.1 policy as fixed-wing and conditional on applying it."
+      ],
+      "candidate_sha256": {
+        "docs/research/native-physics-audit-2026-11-28/refresh.md": "57d855a1e5e695d6e5c32fb18568ad620d037af6695ea190f2ab503399828518",
+        "docs/research/native-physics-audit-2026-11-28/improvement-plan.md": "f1f7fd39429eef4b3d221563952c4c57a8f3731c2446c5f186c290db9659668c",
+        "docs/research/native-physics-audit-2026-11-28/hosted-ci.md": "d0c7ad3883e2e8147e9717896b8ac524ae2d6a3d2c5a99007d136648573a881e",
+        "research/native-physics-audit-2026-11-28/run_refresh_oracles.py": "210f35c296a1cb4fc971ffbaf3f4d5287baab82b0211066c2615cff4b5ede109",
+        "research/native-physics-audit-2026-11-28/evidence/refresh-oracles-final.json": "ea653b6af62127e3e530aa9e5a847cb0a10ef3c6d6254d28d811c6b22fb90a83",
+        "research/native-physics-audit-2026-11-28/evidence/hosted-ci.json": "1cef2c7d65ea31c8d7a983269237fa6c92f3011878481624ac8137d5c8491e53",
+        "research/native-physics-audit-2026-11-28/evidence/verification-ledger.json": "2503e6a96b6ccf85a990b64b5f8012d5a90dc29f7bf8c81a363a6397ef676b78",
+        "research/native-physics-audit-2026-11-28/probes/verifier_acceptance_oracles.py": "aeb26cc99c0e744a2d31e96469b3f015a3beddb89abe0136d1671639c9738d4f"
+      },
+      "hash_scope": "Selected substantive candidate documents, original ledger and new code/receipts. Navigation, source index and verifier outputs are outside this candidate hash set.",
+      "main_ci_check": "GitHub API for full CI 46177980709 had a queued preflight job 141080911979 and skipped publication-rebind job 141080912901 at the final review. The independent Windows queue workflow was separate."
+    }
+  }
+}

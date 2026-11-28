@@ -1,0 +1,568 @@
+{
+  "format": "openrc-native-physics-audit-baseline-v1",
+  "started_utc": "2026-11-28T15:19:49.259653+00:00",
+  "scope": "selected software/reference checks; native skips remain explicit",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "environment": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "python": "3.12.14",
+    "logical_cpus": 9,
+    "gpu_device_present": false
+  },
+  "source_before": {
+    "git_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+    "physics_tree": "759c740904dbe46d86c082810af9e40104e06781",
+    "simulation_tree": "0619a2faca4c06e08c20cf8e54ecf59416456e0b",
+    "native_tree": "a085e44d1852f9eef288897d5c90c619c4f7e91b",
+    "materialized_source_files": 616,
+    "materialized_source_sha256": "ab660e4de49291234deef8bd7738f3c3bad3f51970fa1aa610dd29c4d055286b"
+  },
+  "requested_cases": [
+    "math3d",
+    "rigid_body",
+    "integrator",
+    "sf_law_properties",
+    "sf_event_refinement",
+    "simulation",
+    "atmosphere",
+    "atmosphere_column_session",
+    "air_data",
+    "aero",
+    "ground_effect",
+    "ground_friction",
+    "mass_inventory",
+    "rotor_coupling",
+    "heli_main_rotor",
+    "heli_inflow",
+    "heli_drive",
+    "heli_aerodynamic_stage",
+    "mr_electric_bus",
+    "mr_sample_rate",
+    "electric_motor",
+    "battery_pack_ecm",
+    "turbine_continuous",
+    "glow_flight_physics",
+    "airship_dynamics",
+    "rcv_suspension",
+    "rcv_vehicle_dynamics"
+  ],
+  "cases": [
+    {
+      "case": "math3d",
+      "script": "app/tests/test_math3d.gd",
+      "script_sha256": "c049d34de6ff0198949ff8f6f41f5a3b73b8e8c0b292a1127e203598afc184e0",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "dcd34f4a15443c9fc18790a98dd181d5bbf4f65b0a2e99787faa5197f8bf98bf",
+      "summary": [
+        "20",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "math3d/math3d-ted14sb7/report.json"
+    },
+    {
+      "case": "rigid_body",
+      "script": "app/tests/test_rigid_body.gd",
+      "script_sha256": "34594f84457885a7353bb27bd31e9110bae88a2eca2d7fb78bfc38f39b9c630a",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "29859ebdc681aac8f0f118e2e08e1c8718cf9a4f33e19ec2f3b820aaa867454e",
+      "summary": [
+        "15",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "rigid_body/rigid_body-_sroonza/report.json"
+    },
+    {
+      "case": "integrator",
+      "script": "app/tests/test_integrator.gd",
+      "script_sha256": "300fb87680c159c7cdbd7dd50a1024eaf2daf2f6c0162f61976267e76a87c710",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "7ea5904a643e926208b4ad38a30a2c29e9ecbc2a1f261c145ff8be197933a6c0",
+      "summary": [
+        "9",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "integrator/integrator-qxa1p6zc/report.json"
+    },
+    {
+      "case": "sf_law_properties",
+      "script": "app/tests/test_sf_law_properties.gd",
+      "script_sha256": "6adc6bf66b601fb257cb6d84eea21889c141b525ae9a4adef4d7566d17912add",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "393bd7af438967f92787d8ab73836da384a9687f6844b2c7159845ccc9608b29",
+      "summary": [
+        "269",
+        "0",
+        "0"
+      ],
+      "qualifications": [
+        "SF-06 law properties: 269 checks, 0 failed, 0 exempt"
+      ],
+      "ok": true,
+      "report_relative_to_regenerated_output": "sf_law_properties/sf_law_properties-4f0rg9dy/report.json"
+    },
+    {
+      "case": "sf_event_refinement",
+      "script": "app/tests/test_sf_event_refinement.gd",
+      "script_sha256": "11ec3d81b581063cf394af2ce4d15e60de3771da94b8cb6302c5ff8ed05178e5",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "c3ef42a132d5805747dd37491ffc5956436dfe3a56d6c5e22da993537adea0b2",
+      "summary": [
+        "60",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "sf_event_refinement/sf_event_refinement-jiwtit_q/report.json"
+    },
+    {
+      "case": "simulation",
+      "script": "app/tests/test_simulation.gd",
+      "script_sha256": "32d6225bdc04db2fee71f128b4ad4a30db3058b12f76d5f88336986464473d8c",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "311dd35c9cc028529bb4e06314334f115bf67afb27769c24db2120952d9c2e83",
+      "summary": [
+        "11",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "simulation/simulation-ypu2hawz/report.json"
+    },
+    {
+      "case": "atmosphere",
+      "script": "app/tests/test_atmosphere.gd",
+      "script_sha256": "97e4e2c079f829894c3c0ca9232ad3f6ce09a492ec0a45d5646509eaf2aeafe6",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "a1b159009ad70496c7a2b84270ab031a6ee2ac3be68cbefc8f8c13c8da19bd1b",
+      "summary": [
+        "225",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "atmosphere/atmosphere-v2yp9wl4/report.json"
+    },
+    {
+      "case": "atmosphere_column_session",
+      "script": "app/tests/test_atmosphere_column_session.gd",
+      "script_sha256": "38df0c3a3a8754ef20931cd6e7ff3805a19d5bfd7effcd2c6a74455c42065a20",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "b7a3b7e5da7dd3b02b3c1950eaf1ee0b2ec6598cbe965646580c15c95b974623",
+      "summary": [
+        "114",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "atmosphere_column_session/atmosphere_column_session-izam00fv/report.json"
+    },
+    {
+      "case": "air_data",
+      "script": "app/tests/test_air_data.gd",
+      "script_sha256": "03e6eb632a0da87f35eae9a6a33e8432e4b58afeae570198a9b00cb00615d8b7",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "311dd35c9cc028529bb4e06314334f115bf67afb27769c24db2120952d9c2e83",
+      "summary": [
+        "11",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "air_data/air_data-bppwux00/report.json"
+    },
+    {
+      "case": "aero",
+      "script": "app/tests/test_aero.gd",
+      "script_sha256": "027b7790c28b4afe94a5c1c889d81586e8c0a9c074fcfd9e86cedcf047eafdd8",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "cacec0991c0f3a6bf5692a5dd3f857bd6b7dfe5bcb4676005818eaf5da315ef3",
+      "summary": [
+        "23",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "aero/aero-tk4_m7dj/report.json"
+    },
+    {
+      "case": "ground_effect",
+      "script": "app/tests/test_ground_effect.gd",
+      "script_sha256": "23b25542a6a9f546a729bbdd0eabecc59d0725815b7d6bf71cc25ca4a2ace973",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "a12dc074467d5e82d1932f9384e5d06397b573d05c6b85f14ac705773645c70a",
+      "summary": [
+        "51",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "ground_effect/ground_effect-_dwu1ykq/report.json"
+    },
+    {
+      "case": "ground_friction",
+      "script": "app/tests/test_ground_friction.gd",
+      "script_sha256": "0ba600172afb3956cba9b59dd49a6606dd4ed35e6fe0b44f74c241f14dc8b028",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "e3c208b6d794171568834f1232e5ec50d149d633c2fa982b27d86ea85c6ed31e",
+      "summary": [
+        "26",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "ground_friction/ground_friction-he4kxlds/report.json"
+    },
+    {
+      "case": "mass_inventory",
+      "script": "app/tests/test_mass_inventory.gd",
+      "script_sha256": "2d68abb8d55c96eaff7f5a74d60832ce9c4fa532d20a7a4a8bb960bc971c936b",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "f42ae800441f1bbeff64d54666b770daa4b0ce1f113b897e1c4ea54722aae89f",
+      "summary": [
+        "65",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "mass_inventory/mass_inventory-wir9banj/report.json"
+    },
+    {
+      "case": "rotor_coupling",
+      "script": "app/tests/test_rotor_coupling.gd",
+      "script_sha256": "c67706e7761e40363ef9e738b41db99c78a3fa1bb59df0c35b79a5743337dc39",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "c9ac831948ae2664bed01aa8a6388386216724ee497667a26e84e94ad6c7c847",
+      "summary": [
+        "17",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "rotor_coupling/rotor_coupling-bjsxrgag/report.json"
+    },
+    {
+      "case": "heli_main_rotor",
+      "script": "app/tests/test_heli_main_rotor.gd",
+      "script_sha256": "289a22b27273514bf542553a1e78b8f091958b0f911a58cab70afc357685a8af",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "5ac488d222fa3d3b5fc7ea20e5fdbbb88841b53e13f2ec30749e32affe3be1dc",
+      "summary": [
+        "65",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "heli_main_rotor/heli_main_rotor-tp09q_6l/report.json"
+    },
+    {
+      "case": "heli_inflow",
+      "script": "app/tests/test_heli_inflow.gd",
+      "script_sha256": "704d43284d99194d5e04554e18c363d76945398b73d89f5ffee9c38d3168926a",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "c4670dfbd12fd3350408f05fcf600d3430cd6fea423ba79683df38f14f0b258c",
+      "summary": [
+        "3949",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "heli_inflow/heli_inflow-ckhhv_9l/report.json"
+    },
+    {
+      "case": "heli_drive",
+      "script": "app/tests/test_heli_drive.gd",
+      "script_sha256": "bc4d4cd5e8bda65c9b239ca214341163fb310640a0ec179ee5742da2e032c4d1",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "8ad641802248f753c2e29bc822c621b3463611a16f8f94cda485470366f21fc2",
+      "summary": [
+        "22",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "heli_drive/heli_drive-gqte40c_/report.json"
+    },
+    {
+      "case": "heli_aerodynamic_stage",
+      "script": "app/tests/test_heli_aerodynamic_stage.gd",
+      "script_sha256": "b1f1b015ee7cf9ed89049fb0e29e27a2a2a4505477b6adb58c024b4182ff3355",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "6c915096f546d5cd300e0def8e612cc655c01deaf6576543be1fc91d0fd02e20",
+      "summary": [
+        "49",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "heli_aerodynamic_stage/heli_aerodynamic_stage-1wpx_851/report.json"
+    },
+    {
+      "case": "mr_electric_bus",
+      "script": "app/tests/test_mr_electric_bus.gd",
+      "script_sha256": "bcc586fa39725d04880fcf006e81a244be6a992ffc7e7a6d4a7ca7098f386814",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "28e62582df34a09c46b7cae6e1e0ab9e58d05fa14b4d79d2a1ac54915d3ef589",
+      "summary": [
+        "32",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "mr_electric_bus/mr_electric_bus-p0whnggl/report.json"
+    },
+    {
+      "case": "mr_sample_rate",
+      "script": "app/tests/test_mr_sample_rate.gd",
+      "script_sha256": "b69c8e740bf029c4a855368639cddb752a9acffc1fb29c387a09e4c945528c86",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "511ae433dc254cfac3a701c64e4e1d822c00fae45e600c7fe073f28c8a03f0c3",
+      "summary": [
+        "11",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "mr_sample_rate/mr_sample_rate-5vm9tn5d/report.json"
+    },
+    {
+      "case": "electric_motor",
+      "script": "app/tests/test_electric_motor.gd",
+      "script_sha256": "ac7c1cac400858fd7fdf283ca6a05adf1b22a2618a06606712fa428328911894",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "e172366b5934dc0b82fc88eb9dab955fbf4ab967a65c8762d45f81ddf462f706",
+      "summary": [
+        "1057",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "electric_motor/electric_motor-fnymacsg/report.json"
+    },
+    {
+      "case": "battery_pack_ecm",
+      "script": "app/tests/test_battery_pack_ecm.gd",
+      "script_sha256": "cab8f6b5c934dc134f0136ffcf6c8795a81b7e05b1821a0f30bed86c023179cf",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "8575c4a04e2ac772d143ab1fb6285dad4950f256dd698d9ef0adee360c4d4a2e",
+      "summary": [
+        "84",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "battery_pack_ecm/battery_pack_ecm-7j1y9epm/report.json"
+    },
+    {
+      "case": "turbine_continuous",
+      "script": "app/tests/test_turbine_continuous.gd",
+      "script_sha256": "1e052214f62498354094e444afd289ebc7bc35af2287cdcac23dfca516f56b1b",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "627165e1cf2a043e0d46de1cfea6ca904b988949fc91abd2cb9af27670ef61c5",
+      "summary": [
+        "46",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "turbine_continuous/turbine_continuous-e9iz6yum/report.json"
+    },
+    {
+      "case": "glow_flight_physics",
+      "script": "app/tests/test_glow_flight_physics.gd",
+      "script_sha256": "6ae0ee5204d103b2936b3eabe29d4fd0f2ab95c2d0c426af73c521606992bd8f",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "d59e2b785cbde13c7000ea66c0e43afc4fd999f30e039dee49035c9bbfb1d83c",
+      "summary": [
+        "110",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "glow_flight_physics/glow_flight_physics-cs05j_gw/report.json"
+    },
+    {
+      "case": "airship_dynamics",
+      "script": "app/tests/test_airship_dynamics.gd",
+      "script_sha256": "a39d673bcfed564d24bf85ff26980cccce3c473e0565d23f043525e7df858478",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "0ffbe4b9c4e659ad3355d75f4739a63cf7493038b4bc4dfcdc65c3678960dbb7",
+      "summary": [
+        "50",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "airship_dynamics/airship_dynamics-ymq954ie/report.json"
+    },
+    {
+      "case": "rcv_suspension",
+      "script": "app/tests/test_rcv_suspension.gd",
+      "script_sha256": "fe7a15035f1dc0bb538b9b93eb5bec0dc47fa84668c94175b38fb8c50df04f33",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failed",
+      "completion_seen": true,
+      "log_sha256": "7539fbdd0f54e6ff63ed21bca70311a22230e485f924ed9e58bba9c063df70c0",
+      "summary": [
+        "83",
+        "0",
+        ""
+      ],
+      "qualifications": [],
+      "ok": true,
+      "report_relative_to_regenerated_output": "rcv_suspension/rcv_suspension-pf_l9t0_/report.json"
+    },
+    {
+      "case": "rcv_vehicle_dynamics",
+      "script": "app/tests/test_rcv_vehicle_dynamics.gd",
+      "script_sha256": "1d4eb7776114b6b508dd0998e02fae601ce014755b1a04cc39e7533417e3ff91",
+      "returncode": 0,
+      "checked_ok": true,
+      "completion_marker": "0 failures",
+      "completion_seen": true,
+      "log_sha256": "ebcb53c0acaf0079ba3fd044562e95eea5ffcca9f106aafa2855452644dbb6c5",
+      "summary": [
+        "53",
+        "0",
+        ""
+      ],
+      "qualifications": [
+        "headless baseline: 240 steps 2.706 ms/tick (649.470 ms simulated / real-time)",
+        "SKIP native/reference trajectory comparison: pinned native backend is not staged",
+        "headless driven+telemetry baseline: 60 ticks 5.691 ms/tick (341.477 ms simulated / real-time)",
+        "phase cost: evaluate 1.544 ms, derivative 1.620 ms, telemetry 1.564 ms, step 8.410 ms per call",
+        "actual Session.tick_once driven baseline: 60 ticks 6.217 ms/tick (372.998 ms simulated / real-time)"
+      ],
+      "ok": true,
+      "report_relative_to_regenerated_output": "rcv_vehicle_dynamics/rcv_vehicle_dynamics-vn6vymbd/report.json"
+    }
+  ],
+  "source_after": {
+    "git_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+    "physics_tree": "759c740904dbe46d86c082810af9e40104e06781",
+    "simulation_tree": "0619a2faca4c06e08c20cf8e54ecf59416456e0b",
+    "native_tree": "a085e44d1852f9eef288897d5c90c619c4f7e91b",
+    "materialized_source_files": 616,
+    "materialized_source_sha256": "ab660e4de49291234deef8bd7738f3c3bad3f51970fa1aa610dd29c4d055286b"
+  },
+  "source_unchanged": true,
+  "finished_utc": "2026-11-28T15:21:38.558623+00:00",
+  "complete": true,
+  "ok": true,
+  "total_reported_checks": 6527,
+  "interpretation": "Passing reference/software assertions only. RCV native comparison explicitly skipped. Reference timings are incidental shared-container observations, not target-host/native qualification or a performance guarantee.",
+  "setup": {
+    "first_import": "failed from disposable cache capacity exhaustion; not a pass",
+    "recovery": "isolated disposable cache, matching existing derived imports, fresh checked import then all selected tests",
+    "recovered_import_log_sha256": "ed1adb2aa9af02edbc842e1bc048c878d982c27e2ce6b834f0eb62b66493482e",
+    "recovered_import_checked_ok": true
+  }
+}

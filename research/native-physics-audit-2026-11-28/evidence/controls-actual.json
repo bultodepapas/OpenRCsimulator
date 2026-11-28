@@ -1,0 +1,18 @@
+{
+  "schema": "openrc-physics-audit-production-witness-v1",
+  "base_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "findings": [
+    "CTRL-01",
+    "CTRL-02"
+  ],
+  "scope": "Actual stock prepared production controller functions at prescribed admitted input/mode points, not a complete flight or native stage.",
+  "checked_ok": true,
+  "checks": 12,
+  "failed": 0,
+  "probe": "research/native-physics-audit-2026-11-28/probes/controls_actual.gd",
+  "probe_sha256": "14994c1a3018ddde669f4e2b76366fa583ca2837ca3ed52ab028562fe654aef4",
+  "report_sha256": "9c225203f27d4e79a47468098c1edf35ca3b651bc3893f6da8c07819ae0c3b6d",
+  "log_sha256": "cdcad986e45b821b62ef2ddd05919e98728ae7a6f7f99f8985c2c60ce33cfba7",
+  "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nCTRL-01 actual outer loop: left_roll_deg_s=-225.629734808061 right_roll_deg_s=-35.203124042076 perturbation_rad=0.000000020000\nCTRL-02 actual sample: yaw_stick=-1 raw_nm=-0.922831914878 requested_nm=-0.350000000000 allocated_nm=-0.350000000000 next_integral_nm=-0.008544739953\nCTRL-02 actual sample: yaw_stick=0 raw_nm=0.000000000000 requested_nm=0.000000000000 allocated_nm=0.000000000000 next_integral_nm=0.000000000000\nCTRL-02 actual sample: yaw_stick=1 raw_nm=0.922831914878 requested_nm=0.350000000000 allocated_nm=0.350000000000 next_integral_nm=0.008544739953\nCONTROLS_COUNTEREXAMPLES: 12 checks, 0 failed\n",
+  "earlier_attempt": "Initial harness v1 had an unsupported output format and wrong argument type; corrected only the probe, reran in new directory v2. It was not a physics failure or pass."
+}

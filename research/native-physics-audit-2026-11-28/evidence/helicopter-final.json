@@ -1,0 +1,47 @@
+{
+  "schema": "openrc-physics-audit-components-v1",
+  "audited_base": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "started_utc": "2026-11-28T16:15:27.093948+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "compiler": "c++ (Debian 14.2.0-19) 14.2.0",
+  "scope": "Component evidence only. GCC 14.2 is not the qualified Linux GCC 13.3 package. No installed native backend or target latency claim.",
+  "counterexample_interpretation": "A successful witness can confirm baseline discrepancy; it is not a repaired-behavior pass.",
+  "cases": [
+    {
+      "name": "helicopter",
+      "scope": "actual native header components",
+      "source": "research/native-physics-audit-2026-11-28/probes/helicopter_probe.cpp",
+      "source_sha256": "41ea20ccba72e13f5ef964f7e76bed95366771a729ede771ebfcdb2d61dc2ed6",
+      "steps": [
+        {
+          "command": [
+            "c++",
+            "-std=c++17",
+            "-O2",
+            "-fno-fast-math",
+            "-ffp-contract=off",
+            "-I",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-kernel/src",
+            "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/helicopter_probe.cpp",
+            "-o",
+            "/tmp/openrc-audit-components-xezca0p3/helicopter"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/tmp/openrc-audit-components-xezca0p3/helicopter"
+          ],
+          "returncode": 0,
+          "stdout": "XCell W_N=80.4145300000 vh=4.1706868524 mu15=0.1158972378 vi=1.1562122185 theta=0.0597507351\ntilt_deg=-8.0000000000 T_N=80.4145300000 shaft_W=831.6865481576 Tvi_W=92.9762621314 profile_W=738.7102860262 FdotU_W=167.8730925352 residual_W=-167.8730925352 adot=-0.0000000000 vidot=-0.0000000000\ntilt_deg=0.0000000000 T_N=80.4145300000 shaft_W=831.6865481576 Tvi_W=92.9762621314 profile_W=738.7102860262 FdotU_W=-0.0000000000 residual_W=-0.0000000000 adot=0.0000000000 vidot=-0.0000000000\ntilt_deg=8.0000000000 T_N=80.4145300000 shaft_W=831.6865481576 Tvi_W=92.9762621314 profile_W=738.7102860262 FdotU_W=-167.8730925352 residual_W=167.8730925352 adot=0.0000000000 vidot=-0.0000000000\nlateral_u=-0.0000000100 v=14 w=5 adot=-0.0107764466\nlateral_u=0.0000000000 v=14 w=5 adot=0.0000000000\nlateral_u=0.0000000100 v=14 w=5 adot=0.0107764466\ncrossflow20_head=16.7000000000 ok=1 adot_rad_s=-0.0000000000\ncrossflow20_head=16.7000010000 ok=0\ncrossflow20_head=18.2479351818 ok=1 adot_rad_s=431.2824631131\ncrossflow20_head=167.0000000000 ok=1 adot_rad_s=0.0475143483\nground_VoverVh=0.0000000000 native_IGE_OGE=0.8878183568 wake_cos=1.0000000000 h_ray_over_R=1.1000000000\nground_VoverVh=0.7500000000 native_IGE_OGE=0.8878183568 wake_cos=0.7575481337 h_ray_over_R=1.4520529470\nground_VoverVh=1.5000000000 native_IGE_OGE=0.8878183568 wake_cos=0.3801993223 h_ray_over_R=2.8932192546\nground_VoverVh=3.0000000000 native_IGE_OGE=0.8878183568 wake_cos=0.1097722286 h_ray_over_R=10.0207494515\nground_VoverVh=4.0000000000 native_IGE_OGE=0.8878183568 wake_cos=0.0622577483 h_ray_over_R=17.6684835231\nthrust_axis_down=-1.0000000000 ground_factor=0.8878183568\nthrust_axis_down=-0.0000000100 ground_factor=0.8878183568\nthrust_axis_down=0.0000000000 ground_factor=1.0000000000\nthrust_axis_down=0.0000000100 ground_factor=1.0000000000\nthrust_axis_down=1.0000000000 ground_factor=1.0000000000\nJohnson_f=0.0000000000 z=-1.5000000000 vi_over_vh=2.0000000000\nJohnson_f=0.0000000000 z=-0.4500000000 vi_over_vh=1.2500000000\nJohnson_f=0.0000000000 z=1.0000000000 vi_over_vh=0.6180339887\nJohnson_f=0.0000000000 z=-3.0000000000 vi_over_vh=0.3819660113\nM_seam_f=0.0000000000 z=-1.3 x=0.9499999990 vi_over_vh=1.0053983291\nM_seam_f=0.0000000000 z=-1.3 x=0.9500000010 vi_over_vh=1.0053983264\nJohnson_f=1.0000000000 z=-1.5000000000 vi_over_vh=2.7500000000\nJohnson_f=1.0000000000 z=-0.4500000000 vi_over_vh=1.3000000000\nJohnson_f=1.0000000000 z=1.0000000000 vi_over_vh=0.6180339887\nJohnson_f=1.0000000000 z=-3.0000000000 vi_over_vh=0.3819660113\nM_seam_f=1.0000000000 z=-1.3 x=0.9499999990 vi_over_vh=1.1451453198\nM_seam_f=1.0000000000 z=-1.3 x=0.9500000010 vi_over_vh=1.0053983264\nC_seam_f=0 z=-1.428 x=0.7499999990 vi_over_vh=1.3160354702\nC_seam_f=0 z=-1.428 x=0.7500000010 vi_over_vh=1.3196282389\nwindmill_omega=0.0000000000 vz=-20.0000000000 T_N=0.0000000000 Qmain_Nm=0.0000000000 Qtail_Nm=0.0000000000 held_drive_Nm=-0.0000000000\nwindmill_omega=0.0000000000 vz=0.0000000000 T_N=0.0000000000 Qmain_Nm=0.0000000000 Qtail_Nm=0.0000000000 held_drive_Nm=-0.0000000000\nwindmill_omega=0.0000000000 vz=20.0000000000 T_N=0.0000000000 Qmain_Nm=0.0000000000 Qtail_Nm=0.0000000000 held_drive_Nm=-0.0000000000\nwindmill_omega=5.0000000000 vz=-20.0000000000 T_N=0.0757915236 Qmain_Nm=0.0190030020 Qtail_Nm=0.0000011274 held_drive_Nm=-0.0850000000\nwindmill_omega=5.0000000000 vz=0.0000000000 T_N=0.0757915236 Qmain_Nm=0.0190030020 Qtail_Nm=0.0000483273 held_drive_Nm=-0.0850000000\nwindmill_omega=5.0000000000 vz=20.0000000000 T_N=0.0757915236 Qmain_Nm=0.0190030020 Qtail_Nm=0.0000011274 held_drive_Nm=-0.0850000000\nwindmill_omega=167.0000000000 vz=-20.0000000000 T_N=-212.9552754867 Qmain_Nm=-22.4898165904 Qtail_Nm=0.0571034937 held_drive_Nm=-0.2470000000\nwindmill_omega=167.0000000000 vz=0.0000000000 T_N=64.9517709972 Qmain_Nm=4.6779232672 Qtail_Nm=0.0539120240 held_drive_Nm=-0.2470000000\nwindmill_omega=167.0000000000 vz=20.0000000000 T_N=212.9552754867 Qmain_Nm=-19.9394540097 Qtail_Nm=0.0571034937 held_drive_Nm=-0.2470000000\ngeared_J=0.0798000000 kinetic_W=-91.5310000000 external_work_W=-91.5310000000 residual_W=2.8421709430e-14\n",
+          "stderr": ""
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "finished_utc": "2026-11-28T16:15:28.456682+00:00",
+  "ok": true
+}

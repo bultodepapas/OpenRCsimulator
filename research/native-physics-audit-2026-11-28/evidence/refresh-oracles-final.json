@@ -1,0 +1,477 @@
+{
+  "schema": "openrc-physics-audit-refresh-oracles-v1",
+  "scope": "Independent equations/manufactured geometry plus the electric native-header component; no engine launch, admitted package, hardware measurement or performance claim.",
+  "git_head": "d65b7334e4b3d091828027394375231bf5ae485b",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "packages": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0"
+  },
+  "compiler": {
+    "command": [
+      "g++",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "stderr": ""
+  },
+  "runner": {
+    "path": "research/native-physics-audit-2026-11-28/run_refresh_oracles.py",
+    "sha256": "210f35c296a1cb4fc971ffbaf3f4d5287baab82b0211066c2615cff4b5ede109"
+  },
+  "cases": [
+    {
+      "name": "drone",
+      "inputs": [
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/drone_acceptance_oracles.py",
+          "sha256": "0f2ff4c93feada3a78a5abc5b2d15a64daa9cbe04e0c842587c28c3cefb0bd69"
+        },
+        {
+          "path": "app/data/multirotors/openrc-fpv5-x1.json",
+          "sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62"
+        }
+      ],
+      "run": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/drone_acceptance_oracles.py",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+        ],
+        "returncode": 0,
+        "stdout": "gate       frozen   dK=+0.010788070268 J; angular_residual=2.220e-19 N m s; shaft_residual=8.640e-06 N m s; axial_jump=1.234319381 rad/s; vn_normal=0.040000000 vn_final=-0.000000000 m/s\ngate       coupled  dK=-0.006462519405 J; angular_residual=1.751e-18 N m s; shaft_residual=6.759e-19 N m s; axial_jump=0.000000000 rad/s; vn_normal=0.040000000 vn_final=-0.000000000 m/s\nbalanced   frozen   dK=-0.006492401067 J; angular_residual=2.220e-19 N m s; shaft_residual=8.640e-06 N m s; axial_jump=1.234319381 rad/s; vn_normal=0.040000000 vn_final=-0.000000000 m/s\nbalanced   coupled  dK=-0.006462519405 J; angular_residual=2.395e-19 N m s; shaft_residual=1.203e-19 N m s; axial_jump=0.000000000 rad/s; vn_normal=0.040000000 vn_final=-0.000000000 m/s\nthrough_cg frozen   dK=-0.010464000000 J; angular_residual=0.000e+00 N m s; shaft_residual=0.000e+00 N m s; axial_jump=0.000000000 rad/s; vn_normal=0.040000000 vn_final=0.040000000 m/s\nthrough_cg coupled  dK=-0.010464000000 J; angular_residual=0.000e+00 N m s; shaft_residual=0.000e+00 N m s; axial_jump=0.000000000 rad/s; vn_normal=0.040000000 vn_final=0.040000000 m/s\naxial= 0 m/s Pshaft=16.12587462 W Puse=0.00000000 W Pideal=10.71098909 W eta=0.00000000\naxial= 8 m/s Pshaft=16.12587462 W Puse=12.37839362 W Pideal=18.55978469 W eta=0.76761068\naxial=15 m/s Pshaft=16.12587462 W Puse=23.20948804 W Pideal=27.39700070 W eta=1.43927003\nsynthetic Q(T), b=0: fixed=0.00360000, achieved=0.00360000, differential=0.00360000 Nm\nsynthetic Q(T), b=0.001: fixed=0.00420000, achieved=0.00480000, differential=0.00480000 Nm\noverlap: Ω(entry/exit)=291.864254/305.406964 rad/s; activation=0.219712373 tick, 915.468223 µs; consumed event/end=0.020421629/0.090159640 C; terminal energy event/end=0.500957917/2.213461036 J\n",
+        "stderr": ""
+      },
+      "ok": true
+    },
+    {
+      "name": "propulsion",
+      "inputs": [
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/propulsion_acceptance_oracles.py",
+          "sha256": "fffce0bc745704f95dd76e9f9a8d0ee6191dc62869551ec2e1b3b566034062d6"
+        },
+        {
+          "path": "app/data/aircraft/p51d_mustang_120.json",
+          "sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c"
+        },
+        {
+          "path": "app/data/aircraft/f4u_corsair_250.json",
+          "sha256": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10"
+        },
+        {
+          "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+          "sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9"
+        }
+      ],
+      "run": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/propulsion_acceptance_oracles.py",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+        ],
+        "returncode": 0,
+        "stdout": "p51d_mustang_120 {\"hub_delta_pitch2_m_s\": [-0.141552, 0, -1.44157], \"delta_T_N_Q_Nm\": [1.096521484300619, 0.055407104371576116], \"reference_brake_idle_W\": 123.4063636114035, \"idle_loss_W\": 102.03892938859649, \"min_Cp_minus_JCt_and_J\": [0.004818829639012033, 0.7763141228625714], \"off_shaft_30m_s_roots_rpm_and_net_Nm_at_pm1rpm\": [[988.085403006296, -0.001151404447253257, 0.0011527120855027162], [3243.4436612694444, 0.005501894645802974, -0.005505383404518116]]}\nf4u_corsair_250 {\"hub_delta_pitch2_m_s\": [-0.12495, 0, -1.213052], \"delta_T_N_Q_Nm\": [0.6445730367131712, 0.014868313107915095], \"reference_brake_idle_W\": 58.19498773803895, \"idle_loss_W\": 122.91487226196105, \"min_Cp_minus_JCt_and_J\": [0.004093079554822754, 0.9745671887881285], \"off_shaft_30m_s_roots_rpm_and_net_Nm_at_pm1rpm\": [[867.1541761046028, -0.0026924408676933798, 0.0026958841187045834], [2186.7613657256543, 0.009485089916309697, -0.009494204764384229]]}\nsebart_avanti_s_a200 {\"up\": {\"switch_rpm\": 132758.62068965516, \"t10_t90_s\": [1.4172536253436188, 3.322105882476005], \"six_second_burn_g\": 20.97218281351234}, \"down\": {\"switch_rpm\": 57894.73684210526, \"t10_t90_s\": [0.057492611958577654, 1.143102530596534], \"six_second_burn_g\": 8.465751122665978}}\n",
+        "stderr": ""
+      },
+      "ok": true
+    },
+    {
+      "name": "electric",
+      "inputs": [
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/electric_acceptance_oracles.py",
+          "sha256": "b79542fbdb79a3774984baaf2aa7c8dcd29dc195365c616076c489a4c2363100"
+        },
+        {
+          "path": "app/data/multirotors/openrc-fpv5-x1.json",
+          "sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62"
+        },
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/electric_probe.py",
+          "sha256": "d113a439976cb956504970aef786f1756cc2f7ce6615d32c3597b3c0aca7b824"
+        },
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/electric_probe.cpp",
+          "sha256": "0212cb29ce7da600b02d886ad7f7e0b72c3dc75aa702bd5d8bd1d6ee97e2814f"
+        },
+        {
+          "path": "app/data/aircraft/battery/moonrunner_x99_6s_pack.json",
+          "sha256": "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0"
+        },
+        {
+          "path": "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json",
+          "sha256": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9"
+        },
+        {
+          "path": "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json",
+          "sha256": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633"
+        },
+        {
+          "path": "research/native-kernel/src/nk_aero.hpp",
+          "sha256": "99607811a29dfd2b5ce769bb44ccab9f5cf8ecac68f05ad0b8b4ee920d79555c"
+        },
+        {
+          "path": "research/native-kernel/src/nk_audio_rows.hpp",
+          "sha256": "e67a348ed3d630684b80c92c6468b5c0b9f020764c7e54e39d685e27bc8af758"
+        },
+        {
+          "path": "research/native-kernel/src/nk_battery.hpp",
+          "sha256": "c0931428bd4d359317bb0b3587359bfe1d7ba54ac75890a21e79db8a06ee4b9f"
+        },
+        {
+          "path": "research/native-kernel/src/nk_configuration_guard.hpp",
+          "sha256": "db01cff6e806339268c1cfdd9e98cc8384c6f29b496f2f13a3d12531e85c6f2d"
+        },
+        {
+          "path": "research/native-kernel/src/nk_contact_reach.hpp",
+          "sha256": "837031a998f153966f938bb4e31c135e21bfab7edf640ec2239265111dacc092"
+        },
+        {
+          "path": "research/native-kernel/src/nk_electric.hpp",
+          "sha256": "20628da968676c4d1a608356ca236b0b9c5a0356fc58e4ca16bf90fe08ba8640"
+        },
+        {
+          "path": "research/native-kernel/src/nk_electric_binding.hpp",
+          "sha256": "2c0bd217821798490b3a3a91ce63b0925e4e6ec95625bbddf058eeb7c6334cdf"
+        },
+        {
+          "path": "research/native-kernel/src/nk_electric_coupling.hpp",
+          "sha256": "cee820d09a222d84324068847384bf87431dfb3b07b83b9b006db4cc9084aacd"
+        },
+        {
+          "path": "research/native-kernel/src/nk_electric_stage.hpp",
+          "sha256": "d9b21a302f5e041743f0320a2cfdf76ae0c80c69186099785168d2ee125095ef"
+        },
+        {
+          "path": "research/native-kernel/src/nk_gear_binding.hpp",
+          "sha256": "d5f4492b228a1307d3b9339823ed26201fdb10d087e9adb45e23f5aaa9ea45f6"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_binding.hpp",
+          "sha256": "e31a7567a71fa296d3f762915e99c1b660224e3b3f263859db438b6d5e409977"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_coupling.hpp",
+          "sha256": "e135f2bff2bb33bbd2ff49e168911de845cf3f5e3da2afe96706309f8ecfe184"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_feed.hpp",
+          "sha256": "1b68e2ddf7fcfe6bce2d8cf386c4fb17eaa80355146f0381a4ab8c01e276a835"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_finish.hpp",
+          "sha256": "74cd947996a3281356e662412e7a3d994aa926afe32458d44203c68150240cf9"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_lifecycle.hpp",
+          "sha256": "d1c208de17c4561c567b0221f5ba1a95b93e878902c3e9e684dca11725a53a9b"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_mass.hpp",
+          "sha256": "b02be2100348212fefb7cca79ef120885aba06afebf1aa4eb3a695d6b8e58d66"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_propeller.hpp",
+          "sha256": "097b08727e35745225f03a6627233513caf6147f54386ed04d92a7d1d526be83"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_source.hpp",
+          "sha256": "c6bf14fa042edc1f340ce0863dc76225b4bbfe4be97c346986369bf03d638bf8"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_stage.hpp",
+          "sha256": "e6e8471a504e880767f677ae41140a718a2d5577c4afb62e21c8aeae921a4bba"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_voice.hpp",
+          "sha256": "b0d90e9cdb23db608a31483b27874ab2a9cbf13397a480a1cd09517ed6e550b2"
+        },
+        {
+          "path": "research/native-kernel/src/nk_glow_voice_render.hpp",
+          "sha256": "285b760d981dbb68a9f868cacf375d5ddb9afed41e219ff7caeaca40464f0845"
+        },
+        {
+          "path": "research/native-kernel/src/nk_ground_audio_core.hpp",
+          "sha256": "74ada08bb5bf36ae1a3b95a03738f3f997087bc90d36705f411567cd861e8661"
+        },
+        {
+          "path": "research/native-kernel/src/nk_guard_plan.hpp",
+          "sha256": "7dc15cad74bf8752a25a71b11dcf3e21aa6899f5cd36f8448ea5450cfa698b50"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_aero.hpp",
+          "sha256": "e97c710bd415b3674fd31eb0ca79a78e96308e585739ed14b86f37b9cd137400"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_binding.hpp",
+          "sha256": "e228870690c2ef2708edb6111483c6239490dd3273cce42c7ff268e01565a6a0"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_controls.hpp",
+          "sha256": "436627ae5faa05d342d083bf5c18202486c70c8e05fd456eb238ee72370ff2fa"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_inflow.hpp",
+          "sha256": "37008b61b2410ced2c53c152f61f7f5f3c443100cc80566b81bc90ed087e3849"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_main_rotor.hpp",
+          "sha256": "497683c06c4579d7e671d3557ab5f06d8fc2fdfe65c572e4777df75d812c45b7"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_skids.hpp",
+          "sha256": "2e707fed5a0f95a7d918005feeb7931104f0b88f6ee1c80a8ea4bbb88e68ecd7"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_stage.hpp",
+          "sha256": "6fc489f305ddb5c139fb93aa38aea1e6f24a2bf5ee669f8a2947f36ee30d87ca"
+        },
+        {
+          "path": "research/native-kernel/src/nk_helicopter_tail_rotor.hpp",
+          "sha256": "675699211154dcd94801e51d794319d5302354862a071f632b432bf272f33de3"
+        },
+        {
+          "path": "research/native-kernel/src/nk_hull.hpp",
+          "sha256": "1c763835d96d8f0f3325e0223b7cedfc796c4af7737f3e948cdb89bd1df033ce"
+        },
+        {
+          "path": "research/native-kernel/src/nk_legacy_ground.hpp",
+          "sha256": "10ec2aeed6b758691068e496a4aca09c1b5de7580e230798e3753af0458d5b64"
+        },
+        {
+          "path": "research/native-kernel/src/nk_liquid_binding.hpp",
+          "sha256": "07d2fa2024152660b22e456bf536473c27fe3afbf57b5f03e59c248a462b538a"
+        },
+        {
+          "path": "research/native-kernel/src/nk_liquid_mass.hpp",
+          "sha256": "46087995f9bd883fe47860402a6a90ffa485532a986a15c2fa09bf277a82ae08"
+        },
+        {
+          "path": "research/native-kernel/src/nk_liquid_propulsion.hpp",
+          "sha256": "1b6b4a65a7503cbf6cd3763e3428383fa66e31a67a6f66ec1104c4706a0bac62"
+        },
+        {
+          "path": "research/native-kernel/src/nk_liquid_stage.hpp",
+          "sha256": "f03c55e76751a74033ce92ba3449f27ae4f4ce9adef9643277f6409127227fa5"
+        },
+        {
+          "path": "research/native-kernel/src/nk_macos_domain_guard.hpp",
+          "sha256": "0453dffe420e490eaeb2bf3b5e502d8e16b2fa1584e3871d4aaef57363518df6"
+        },
+        {
+          "path": "research/native-kernel/src/nk_math.hpp",
+          "sha256": "39b5e61910199f2084a908c56ba4e08ab67ade2223f895e43ec4738462bf2aba"
+        },
+        {
+          "path": "research/native-kernel/src/nk_mechanical_audio_core.hpp",
+          "sha256": "ca9d8f0ef968a329f8797ece4ebae2412ec9089b55f02d94fae2772faf97addc"
+        },
+        {
+          "path": "research/native-kernel/src/nk_pack_ecm.hpp",
+          "sha256": "76f2ab91bdb6684d9677be2b208f7f3a5e91919391b19c4da733c29eba712166"
+        },
+        {
+          "path": "research/native-kernel/src/nk_point_sampler.hpp",
+          "sha256": "1d2624522204a991a95e05f5a30e5187563ccd6c73181794e09d3644db8e4458"
+        },
+        {
+          "path": "research/native-kernel/src/nk_pre_step.hpp",
+          "sha256": "6fc82b558add88212decb743ffe57b132d2388e8bca26153eff2d2f9beea1008"
+        },
+        {
+          "path": "research/native-kernel/src/nk_prescribed_binding.hpp",
+          "sha256": "ffabe21a3e510d91450cfc7834eab55a8be90d00ec1c79395d92e2eaef344294"
+        },
+        {
+          "path": "research/native-kernel/src/nk_prescribed_stage.hpp",
+          "sha256": "54f300a882de0fac0d3667a6396d41ca40adeac5b9daf11e91c083b2bf61bfe0"
+        },
+        {
+          "path": "research/native-kernel/src/nk_prop.hpp",
+          "sha256": "60bc726938a7d9d73915c35f9849d4a5d046712602c230242dff2326f7fd16cf"
+        },
+        {
+          "path": "research/native-kernel/src/nk_retractable.hpp",
+          "sha256": "7235bae5c3162151811c8799347fd3da001e6206233c8dd589577fcd36b2282e"
+        },
+        {
+          "path": "research/native-kernel/src/nk_rotor_coupling.hpp",
+          "sha256": "1831f6ab8fb638d6722f06f906347f29210fdffee5dce3f1cbe6973c41d93f9c"
+        },
+        {
+          "path": "research/native-kernel/src/nk_shadow_parts.hpp",
+          "sha256": "6b9081e35ad8354ea64d7e6cda0d0007daaa8d2e2003291b6cb7aefdd7a9510b"
+        },
+        {
+          "path": "research/native-kernel/src/nk_soundscape.hpp",
+          "sha256": "4a88e02833ab6f75cb3e0721225e486653b4b512c12d54dd76929a5df707b3b5"
+        },
+        {
+          "path": "research/native-kernel/src/nk_soundscape_core.hpp",
+          "sha256": "b788d05e0e482fc4c32d835f2b3e485f3745b8e791e2a05921e6eea344b18a3a"
+        },
+        {
+          "path": "research/native-kernel/src/nk_spatial_weather.hpp",
+          "sha256": "d510282ad313b8c7d37d08986747390895d54190c163b9f2a1280c1a0c361746"
+        },
+        {
+          "path": "research/native-kernel/src/nk_stage.hpp",
+          "sha256": "3afc1a6060e1f108852d57735828293b445f7ddc156f89b1cf917173056b91a0"
+        },
+        {
+          "path": "research/native-kernel/src/nk_stage_snapshot.hpp",
+          "sha256": "4555479889f86ae5e0946bbede7580c16db0559ed8ff87bdfd359214401abbe7"
+        },
+        {
+          "path": "research/native-kernel/src/nk_stats_sample.hpp",
+          "sha256": "e9d7a44a668bf3ab6f87d860db76c0048227977c60a3417157ed8cf5f58ea0e0"
+        },
+        {
+          "path": "research/native-kernel/src/nk_stats_speed.hpp",
+          "sha256": "8ef679fc03f54988f12a69e3f7783ae74ef163ed37ab48192c6a67f2ac1ab850"
+        },
+        {
+          "path": "research/native-kernel/src/nk_substeps.hpp",
+          "sha256": "332ebbb66b38055123cdb1c69ca40e546b7b3712085ab3cd3273914ad8abcde0"
+        },
+        {
+          "path": "research/native-kernel/src/nk_terrain.hpp",
+          "sha256": "94f86acde542f2fe80bec3401ff4e446a86d9b9f01a2d732228b85f1ebb2ce37"
+        },
+        {
+          "path": "research/native-kernel/src/nk_tick.hpp",
+          "sha256": "3574145846530c0495ee074dca3201837528c48faef9c62cfca8990b02715dfb"
+        },
+        {
+          "path": "research/native-kernel/src/nk_variant_identity.hpp",
+          "sha256": "223887ced0a9c9cb49016023b027e96cc1630d9641f0d6d6e941c21814407c91"
+        },
+        {
+          "path": "research/native-kernel/src/nk_wake.hpp",
+          "sha256": "a9dd3ea1f423284c36d0ba02d3ecbda281b9019aba54ff9b23cf5b4e31ac4b18"
+        },
+        {
+          "path": "research/native-kernel/src/nk_wake_binding.hpp",
+          "sha256": "fbc2589893884bd8bbecb191754280473a6a1714e161c4284a6a47605d30364a"
+        },
+        {
+          "path": "research/native-kernel/src/nk_wake_spatial_aero.hpp",
+          "sha256": "01486b9e7b1a991bbbc02dce72091ff0e6f96f93af1fb90b99ce34dde90339a8"
+        },
+        {
+          "path": "research/native-kernel/src/nk_wake_spatial_binding.hpp",
+          "sha256": "4e3b4ebb4b17e986879dd118914a1927c9b259d5f76e521915a4eab96dc11aa3"
+        },
+        {
+          "path": "research/native-kernel/src/nk_wake_spatial_flow.hpp",
+          "sha256": "657082a464f9a3ac1976edca138a9f3d44d60773dd136c906a6e3e2d30ba2b01"
+        },
+        {
+          "path": "research/native-kernel/src/nk_weather.hpp",
+          "sha256": "b3b1aefaf6e7464a019cd0bd9a6889c0709427bcffc3ae33df791ea6cd0b6e55"
+        },
+        {
+          "path": "research/native-kernel/src/nk_weather_binding.hpp",
+          "sha256": "6c68360eee532b0a8b8c8f6dbd16cbe4c2c90bf9e432d52c41b1937285dc3242"
+        },
+        {
+          "path": "research/native-kernel/src/nk_weather_guard.hpp",
+          "sha256": "62cfeceb1c273addcbf6e1999fe45259eb4da8b385b0b0a8f93bf7b0131b67e3"
+        },
+        {
+          "path": "research/native-kernel/src/nk_wheels.hpp",
+          "sha256": "bf73d3db00a99789a1c9705eda1f906c650055525c20d1f3ab0fdf783db1088a"
+        }
+      ],
+      "run": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/electric_acceptance_oracles.py",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator"
+        ],
+        "returncode": 0,
+        "stdout": "dry field: 278.15 K, 978.0860084336 hPa, rho=1.2250000000000001, charge ratio=1\ndry field: 308.15 K, 1083.5779381586 hPa, rho=1.2250000000000001, charge ratio=1\nT278.15 axial=6.5 rho=1.225 setup_rpm=11380.928904344 matched_rpm=11293.257307428 setup_net_torque_Nm=-0.04313906401948 electrical_shaft_torque_Nm=0.58308641040458 air_load_torque_Nm=0.62622547442406 isolated_net_accel_rad_s2=-196.086654634 release_pack_A=33.351546377808 matched_pack_A=35.179538214347 root_residual_Nm=-1.2212453270877e-15\nT308.15 axial=6.5 rho=1.225 setup_rpm=11380.928904344 matched_rpm=11504.06719248 setup_net_torque_Nm=0.069376734011731 electrical_shaft_torque_Nm=0.69560220843579 air_load_torque_Nm=0.62622547442406 isolated_net_accel_rad_s2=315.34879096241 release_pack_A=39.478512322607 matched_pack_A=36.439354524423 root_residual_Nm=-4.4408920985006e-16\nfixed-wing 32-point power balance max_abs_W=4.8983039846462e-13\nauxiliary port test: pack-side 15.12000000 W, link-side 41.07106206 W, difference 25.95106206 W\nequal duties 0.2: loaded bus 25.07223306 V; OCV thrust 1.53753352 N/rotor; loaded thrust 1.52297437 N/rotor\nequal duties 1: loaded bus 20.24290155 V; OCV thrust 24.13121067 N/rotor; loaded thrust 17.11466875 N/rotor\n",
+        "stderr": ""
+      },
+      "ok": true
+    },
+    {
+      "name": "mechanics",
+      "inputs": [
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/mechanics_acceptance_oracles.py",
+          "sha256": "bb400411e91798536f7bea9ebc3c308047b8e7fa97801a6c3827232db0c81f63"
+        }
+      ],
+      "run": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/mechanics_acceptance_oracles.py"
+        ],
+        "returncode": 0,
+        "stdout": "clear endpoints [57.828681109928226, -19.276502283727126, 57.828681109928226] um; crossings 0.25000267732065573 0.7499973226793443 true miss um 20.723497716312878\npieces 6 declared pad um 134.53120212438327 mid deviation um 134.6562886120212 n (0.9996622544647525, -0.025988016439279903) face um 134.59374536820224 first bracket root fraction 0.08155296954607925\n",
+        "stderr": ""
+      },
+      "ok": true
+    },
+    {
+      "name": "mathematics",
+      "inputs": [
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/mathematics_acceptance_oracles.cpp",
+          "sha256": "8870355a3797d243d6b128d322241d3683f8174ec49c7d22421082b54612e750"
+        }
+      ],
+      "build": {
+        "command": [
+          "g++",
+          "-std=c++17",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-fast-math",
+          "-ffp-contract=off",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/mathematics_acceptance_oracles.cpp",
+          "-o",
+          "/tmp/openrc-refresh-6v6k1ub9/math-oracle"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "run": {
+        "command": [
+          "/tmp/openrc-refresh-6v6k1ub9/math-oracle"
+        ],
+        "returncode": 0,
+        "stdout": "count=32 span_s=0.00026041666666666666 max_abs_energy_ratio_error=0.0058728019006883958 max_rel_duration_error_linear_release=4.6188768030974714e-05\ncount=32 span_s=0.0041666666666666666 max_abs_energy_ratio_error=0.0058728019006883958 max_rel_duration_error_linear_release=2.4355602826875433e-05\ncount=512 span_s=0.0041666666666666666 max_abs_energy_ratio_error=0.0058728019006883958 max_rel_duration_error_linear_release=4.6188768031418803e-05\nshape_ratio=0.99990000000000001 x=0.00019998999999997798 k1_minus_half=-5.9999742838849229e-05 k2_minus_half=3.0001671512000068e-05 krot=6.6671746239967541e-09 krot_over_x_squared=0.16669603478669415\nshape_ratio=0.99999999989999999 x=2.0000001653807421e-10 k1_minus_half=-6.0000004964165123e-11 k2_minus_half=3.0000002483882565e-11 krot=6.6666677703795982e-21 krot_over_x_squared=0.16666666669603181\nshape_ratio=0.99999999999900002 x=1.9999557565587569e-12 k1_minus_half=-5.9998672696790143e-13 k2_minus_half=2.9999336348413065e-13 krot=6.6663717136659282e-25 krot_over_x_squared=0.16666666666696031\nshape_ratio=0.99999999999999989 x=2.2204460492503131e-16 k1_minus_half=-6.6613381477509402e-17 k2_minus_half=3.3306690738754701e-17 krot=8.21730109605221e-33 krot_over_x_squared=0.16666666666666674\na=1.5 adjacent_b=1.4999999999999998 quotient_first_x=2.2204460492503131e-16 difference_first_x=2.9605947323337501e-16 leading_rotation_relative_error=-0.43749999999999967\n",
+        "stderr": ""
+      },
+      "ok": true
+    },
+    {
+      "name": "verifier",
+      "inputs": [
+        {
+          "path": "research/native-physics-audit-2026-11-28/probes/verifier_acceptance_oracles.py",
+          "sha256": "aeb26cc99c0e744a2d31e96469b3f015a3beddb89abe0136d1671639c9738d4f"
+        }
+      ],
+      "run": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "/workspace/scratch/5cad3adb9b7f/OpenRCsimulator/research/native-physics-audit-2026-11-28/probes/verifier_acceptance_oracles.py"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"scope\": \"independent standard-library scalar and geometry fixtures\",\n  \"synchronized_box\": {\n    \"full_tick_pieces\": 6,\n    \"padding_um\": 134.53120212438327,\n    \"midpoint_um\": 134.6562886120212,\n    \"face_um\": 134.59374536820224,\n    \"entry_tick_fraction\": 0.08155296954558011,\n    \"exit_tick_fraction\": 0.08514488228114026,\n    \"geometric_incoming_m_per_s\": 0.016716875457013208,\n    \"ordinary_response_floor_m_per_s\": 0.05\n  },\n  \"clear_endpoints_box\": {\n    \"gaps_um\": [\n      57.828681109928226,\n      -19.276502283727126,\n      57.828681109928226\n    ],\n    \"crossings\": [\n      0.25000267732052783,\n      0.7499973226794723\n    ],\n    \"moved_face_minimum_gap_um\": 20.723497716272874\n  },\n  \"controls\": {\n    \"angle_literal_deg_s\": [\n      -400.0,\n      400.0\n    ],\n    \"angle_trig_deg_s\": [\n      -400.0,\n      -400.0\n    ],\n    \"upstream_full_tracking_yaw_delta_nm\": -0.0391912529535,\n    \"relieving_roll_integral_delta_nm\": -0.0004166666666666667,\n    \"half_tick_servo_exposure_error_normalized_s\": 5.166997354497357e-06\n  },\n  \"fixed_wing\": {\n    \"exact_hinge_first_moment_m3\": 0.07417841522842815,\n    \"offline_quadrature_m3\": {\n      \"3\": 0.07302821225792248,\n      \"6\": 0.07377643443214434,\n      \"12\": 0.07412399104680929\n    },\n    \"positive_wing_only_source_m_per_s\": 2.2504164122261088,\n    \"positive_lag_at_five_time_constants_m_per_s\": 2.2352532257146573\n  },\n  \"helicopter\": {\n    \"flat_rising_falling_distance_over_radius\": [\n      10.020749451511088,\n      2.9247373967521977,\n      null\n    ],\n    \"hard_cutoff_jump_at_3R\": 0.016704163713132214,\n    \"fixed_carrier_speed_rad_s\": 109.26625865895487,\n    \"fixed_carrier_loss_j\": 7.39447440984599\n  }\n}\n",
+        "stderr": ""
+      },
+      "ok": true
+    }
+  ],
+  "ok": true
+}

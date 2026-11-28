@@ -1,0 +1,154 @@
+{
+  "repository": "bultodepapas/OpenRCsimulator",
+  "observed_run": {
+    "id": 46164505239,
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239",
+    "pr": 28,
+    "head_sha": "d65b7334e4b3d091828027394375231bf5ae485b",
+    "base_sha": "c84c2f8b987617a619f7e77397f025daee28a262",
+    "checked_out_merge": "8c29a75947a3a14009fb85517a129b169c0df481",
+    "conclusion": "failure",
+    "selected_jobs": [
+      {
+        "id": 141039980612,
+        "name": "NK-3 native kernel qualification (Linux)",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980612"
+      },
+      {
+        "id": 141039980629,
+        "name": "RC native Linux build",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980629"
+      },
+      {
+        "id": 141039980633,
+        "name": "RC native Windows build",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980633"
+      },
+      {
+        "id": 141039980645,
+        "name": "NK-4 native kernel qualification (Windows)",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980645"
+      },
+      {
+        "id": 141039980690,
+        "name": "Godot app (integration 0)",
+        "conclusion": "failure",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980690"
+      },
+      {
+        "id": 141039980698,
+        "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980698"
+      },
+      {
+        "id": 141039980719,
+        "name": "Godot app (units 7)",
+        "conclusion": "failure",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141039980719"
+      },
+      {
+        "id": 141045486673,
+        "name": "RC native production checks (windows)",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141045486673"
+      },
+      {
+        "id": 141045486693,
+        "name": "RC native production checks (linux)",
+        "conclusion": "success",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141045486693"
+      },
+      {
+        "id": 141047838043,
+        "name": "Release builds (Windows, Linux, macOS)",
+        "conclusion": "skipped",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141047838043"
+      },
+      {
+        "id": 141047838218,
+        "name": "NK-4 Windows package qualification",
+        "conclusion": "skipped",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141047838218"
+      },
+      {
+        "id": 141079757293,
+        "name": "CI required",
+        "conclusion": "failure",
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46164505239/job/141079757293"
+      }
+    ]
+  },
+  "supported_observations": {
+    "aircraft_linux_windows_each": {
+      "native_replay_checks": 209,
+      "native_replay_failures": 0,
+      "spatial_wake_comparisons": 20454,
+      "spatial_wake_identical": 20454
+    },
+    "macos": {
+      "scope": "experimental ARM64 fixed-wing source correctness",
+      "artifact_id": 15273078682,
+      "evidence": "Successful gate step and artifact listing. Full Mac console unavailable from connector."
+    },
+    "ground_linux_windows_each": {
+      "checked_editor_invocations": 4,
+      "passed": 4
+    },
+    "integration0": {
+      "failed_sections": 1,
+      "failed_section": "deterministic woodland-edge recipe",
+      "checked_godot_invocations": 960,
+      "checked_godot_passed": 960
+    },
+    "units7": {
+      "checked_invocations": 116,
+      "checked_passed": 115,
+      "timeout_script": "res://tests/test_session_reach_bounds.gd",
+      "wrapper_exit": 124,
+      "process_exit": -9,
+      "complete": false,
+      "errors_scanned": 0,
+      "warnings_scanned": 0
+    }
+  },
+  "main": {
+    "sha": "4bf5b399e5cafcb5fd101ddcfadecfcd236337cf",
+    "woodland_fix": "228a9bb9c48f0ec68a28d100fc2967a80407aaf8",
+    "verified_new_woodland_git_blob": "833831608233c8c12130b966bb93ddb9396684c7",
+    "unchanged_woodland_patches": 4,
+    "unchanged_woodland_source_triangles": 472,
+    "timeout_fix": "e8a370d31cb78902c54f226015243a8adc461cbc",
+    "unchanged_reach_test_blob": "843cb59e434ba5e5d9e38d0e27e8b5ce55f38436",
+    "reach_supervisor_seconds_before_after": [
+      60,
+      180
+    ],
+    "full_ci_run": 46177980709,
+    "full_ci_status_when_read": "queued",
+    "other_successful_workflow": {
+      "id": 46177980652,
+      "name": "Windows test queue regressions"
+    }
+  },
+  "base_failure_receipts": {
+    "run": 46161615199,
+    "integration0": 141030973741,
+    "units7": 141030973771
+  },
+  "native_source_trees_on_audited_production_and_refreshed_main": {
+    "app/physics": "759c740904dbe46d86c082810af9e40104e06781",
+    "app/sim": "0619a2faca4c06e08c20cf8e54ecf59416456e0b",
+    "research/native-kernel": "6cd200a28931ca05401c5d46b3f00f2da5be7d63",
+    "research/rc-monster-truck/native": "d373878430c0100f4884a5fdb60eb593d77965ce"
+  },
+  "unverified": [
+    "Post-fix full CI on the refreshed main or candidate",
+    "Release package admission",
+    "Target hardware timing and FPS"
+  ]
+}

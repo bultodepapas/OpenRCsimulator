@@ -1,0 +1,18 @@
+{
+  "schema": "openrc-physics-audit-production-witness-v1",
+  "base_commit": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+  "findings": [
+    "MATH-02",
+    "MATH-03",
+    "MATH-04"
+  ],
+  "scope": "Actual data admission, production airship stage and shared RK4 at prescribed custom configurations, with stock and analytical controls. Not a complete session/native-stage/package claim.",
+  "checked_ok": true,
+  "checks": 28,
+  "failed": 0,
+  "probe": "research/native-physics-audit-2026-11-28/probes/mathematics_actual.gd",
+  "probe_sha256": "7c01229c6ad3eb8d4bbfa8233ae02579d9158abcff0f6cc77da2834d2ba99e5e",
+  "report_sha256": "58d7707d02e18e3cfe95df2734ca2a7f9c350f76c5a9a23f54ba25bda74c78fb",
+  "log_sha256": "b010b6b382f54906fb1f7a00c89b2998bbafd5198ee6734d9c2b18222fe6281f",
+  "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nMATH_ACTUAL_JSON {\"battery\":{\"current_after_crossing_a\":0.4657258570470447,\"custom_rest_acceleration\":2.9963680387408913,\"equilibrium_current_a\":0.4657258457856161,\"equilibrium_power_w\":4.600925347923126,\"equilibrium_thrust_n\":0.9071831259965364,\"one_tick_soc\":-1.1250784894730734e-07,\"stock_rest_acceleration\":0.0,\"stock_rest_current_a\":0.0},\"contact\":{\"120\":{\"energy_ratio\":290.52446144409043,\"rebound_m_s\":17.044778128332748},\"240\":{\"energy_ratio\":12.32848704213087,\"rebound_m_s\":3.511194532083187},\"3840\":{\"energy_ratio\":0.9998434202987304,\"rebound_m_s\":0.9999217070844749},\"480\":{\"energy_ratio\":0.6912127275404482,\"rebound_m_s\":0.8313920420237664},\"exact_speed_m_s\":1.0,\"soft_240_m_s\":1.0000255820067958},\"shape_1e_10\":{\"a\":1.0,\"b\":0.9999999999,\"errors\":[],\"k1\":0.43503530687305453,\"k2\":0.5347391608212492,\"k_rot\":-1.000000167889696e-20,\"model_admitted\":true,\"model_k1\":0.4350353068730545},\"shape_1e_12\":{\"a\":1.0,\"b\":0.999999999999,\"errors\":[\"total mass matrix is not positive definite: nonpositive Cholesky pivot\"],\"k1\":-1.399610955316281,\"k2\":-0.5558025728964742,\"k_rot\":-9.99955757050917e-25,\"model_admitted\":false},\"shape_1e_4\":{\"a\":1.0,\"b\":0.9999,\"errors\":[],\"k1\":0.4999400002485057,\"k2\":0.5000300016767074,\"k_rot\":6.6671763340784145e-09,\"model_admitted\":true,\"model_k1\":0.49994000024850566},\"stock_shape\":{\"a\":2.5,\"b\":0.48879801151653546,\"errors\":[],\"k1\":0.05719486485590412,\"k2\":0.8973521321473494,\"k_rot\":0.708225888880726,\"model_admitted\":true,\"model_k1\":0.05719486485590412}}\nMATH_ACTUAL_CHECKS 28/28\nMATH_ACTUAL_OK\n"
+}

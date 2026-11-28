@@ -1,0 +1,35 @@
+# Independent verification criteria
+
+The baseline is OpenRC Simulator v0.4.0, commit 8d4169f8febfd7d78a028eaa817414217a54f24b. A Git object comparison to 71306784a250d634854f0c8bab3a927cc46a61b8 shows identical app/physics and app/sim contents. The native configuration and weather guards changed in nk_configuration_guard.hpp, nk_guard_plan.hpp and nk_weather_guard.hpp. A new per-root budget allows 1,048,576 path visits before using the existing shared-container walk. Prior admission timings, binary hashes, package identities and CI failures need rechecking against this baseline.
+
+## Decisions
+
+Each finding receives one verdict. Split mixed claims. Record the applicable requirement or law, valid input range, named aircraft/vehicle family, active call path, native/reference ownership, size and units of the observed effect, and what broader evidence remains missing.
+
+| Verdict | Test |
+| --- | --- |
+| Confirmed bug | An admitted input or supported contract has a demonstrable contradiction with independently established behavior. For an unconditional wrong unit, sign or mapping, source proof must include the active path and input. For a run, include a discriminating control. State component, session or flight scope. |
+| Deliberate documented simplification | An explicit source comment, law contract or accepted decision identifies the approximation. Check its intended regime and quantify departures where evidence permits. |
+| Implementation limitation | A demonstrated coverage, physical-fidelity, performance or data limitation has no established violated requirement. Bound the condition and distinguish measured effect from missing validation. |
+| Unverified hypothesis | A plausible condition lacks reachability, governing law, measurement, admitted configuration or evidence of impact. Name a discriminating test. |
+| Rejected | A concrete control, call-path trace, unit conversion, work balance or domain check refutes the original claim. Preserve the reason and narrower observation where useful. |
+
+A stock claim needs a named aircraft, field, configuration, active switches and compatible operating state. An invalid value admitted through a supported loader can establish an admission defect. Direct construction of an unchecked struct can establish a component property. Input acceptance, stock occurrence, physical magnitude and pilot perception are separate claims. Equality against a translated copy establishes software equivalence only.
+
+## Core checks
+
+The coordinate authority is app/physics/rigid_body.gd lines 1–8 and 71–140, app/physics/air_data.gd lines 1–39, and research/native-kernel/src/nk_tick.hpp lines 52–119. State uses right-handed NED position, FRD body velocity/angular rate and a scalar-first body-to-NED quaternion. Body rates are rad/s, forces N, torques N·m, and six inertia entries in kg·m² describe a symmetric matrix. A conventional product of inertia has the opposite sign from a matrix off-diagonal. Rotate NED wind and gravity into body using the transpose. Audit the actual moment reference and local velocity with r × F and v_point = v_CG + ω × r. Translation is F/m + Rᵀg − ω × v. Angular acceleration satisfies J ω̇ = M − ω × (Jω + h), with the family's separate shaft reaction and time-dependent mass assumptions accounted for. Quarter-turn yaw, co-moving air, gravity-only free fall and independent torque-free invariants distinguish frame or sign mistakes. NASA NESC supplies coordinate conventions and rigid-body check cases. Its rotating-Earth trajectories require matching hypotheses or an explicitly adapted local flat-Earth test. [Coordinate conventions](https://nescacademy.nasa.gov/flightsim/2015/datum_coordinate_system) · [Verification cases](https://ntrs.nasa.gov/citations/20150001263).
+
+At 240 Hz a tick spans 4.16667 ms. app/project.godot lines 54–55 sets 240 ticks/s and a maximum of 12 physics steps per rendered frame. nk_tick.hpp lines 125–168 evaluates the four classical RK4 stages and normalizes orientation at the end of each integration piece. Smooth-law convergence needs common physical endpoints and a matching continuous input. Event/contact convergence needs separate event times and post-event states. For energy, identify translational, rotational, spring, rotor and gravitational storage plus work of wind, shaft, drag, friction/contact, actuation, fuel or prescribed motion as relevant. Compute force and moment power about a consistent point. The sign of one coefficient, an isolated force or freestream-only work does not establish a total energy violation.
+
+## Evidence available
+
+| Level | Executable path and conclusion |
+| --- | --- |
+| Source and bounded C++ | Trace the production call into research/native-kernel/src, compare GDScript and independent equations. Compile pure headers with an identified compiler and strict floating-point flags. These are actual header results on the stated fixtures. Report counts and allocations as component evidence. |
+| Reference integration | Lead-owned checked Godot run through tools/godot/run_checked.py with completion text and checked log. Existing test_rigid_body.gd, test_integrator.gd, test_sf_law_properties.gd and test_sf_event_refinement.gd are present. Direct FlightSession construction defaults to gdscript_reference at app/sim/flight_session.gd line 752. |
+| Native gameplay | app/sim/native_stage.gd lines 974–1089 verify platform, descriptor, binary, engine and ABI. Its source and package paths require the matching identities. app/sim/flight_session.gd lines 784–790 checks callback ownership. Require accepted ticks, actual backend identity, and per-tick context/stage coverage appropriate to the model. For native whole-tick work also check app/sim/simulation.gd lines 481–500 and 737–748 and the delta in tick_stats().answers at nk_kernel.cpp lines 4018–4043. An attempted native tick may return an empty answer. |
+| Package and CPU | research/native-kernel/run.py stage/trajectory oracles, family tests and mutation controls qualify a specific build. Packaging has a separate gate. research/performance/session_baseline.py pairs release-session work after warm-up with matching configuration, input tape and accepted ticks. Report p50/p95, repetitions, host and workload. Displayed FPS and GPU conclusions require rendered target hardware. |
+| Physical aircraft | Use calibrated observations with matched propeller, scale, Reynolds range, aircraft setup and uncertainty. Report errors with units. An analytically right response, parity run or operation count does not quantify improvement in real-aircraft handling. |
+
+The guide records four current unqualified MoonRunner rows, helicopter lake fallback, and separate startup/runtime refusals. Different vehicle families have different backend owners. The historical fleet belongs to its recorded build. The previous checkout contained the pinned editor executable but no installed app/native/kernel directory. Release availability for the new worktree needs a separate check. No engine or heavy test was launched for this preliminary review.
