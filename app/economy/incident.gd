@@ -67,6 +67,9 @@ var _quote_history_truncated := false
 var _transaction_hashes: Dictionary = {}
 var _active_cost_receipt: Dictionary = {}
 var _damage_profile: Dictionary = {}
+## DamageAssessment.zone_index of the profile it was built from (by identity); nothing writes the profile in place.
+var _damage_zones: Dictionary = {}
+var _damage_zones_profile: Variant = null
 var _profile_hash := ""
 ## observe(): persistent support samples held for one observation per frame (false: every tick, as before).
 var hold_support_samples := true
@@ -877,7 +880,7 @@ func _observe_event(event: Dictionary, bindings: Dictionary) -> bool:
 					_queue_game_scope(id, event, followup, "propeller_followup")
 		_mark_propeller()
 		return true
-	var resolved := DamageAssessment.resolve(_damage_profile, event) if not _damage_profile.is_empty() else {matched = false}
+	var resolved := _resolve_damage(event) if not _damage_profile.is_empty() else {matched = false}
 	if not resolved.get("matched", false):
 		_unmapped_evidence = true
 	if resolved.get("matched", false) and event.response == "terminal" \
@@ -936,6 +939,13 @@ func _observe_event(event: Dictionary, bindings: Dictionary) -> bool:
 
 ## Maxima are accepted endpoint values, not incoming speed or measured strength.
 ## An episode's peak never decreases when a contact ends or a milder sample arrives.
+func _resolve_damage(event: Dictionary) -> Dictionary:
+	if not is_same(_damage_zones_profile, _damage_profile):
+		_damage_zones = DamageAssessment.zone_index(_damage_profile)
+		_damage_zones_profile = _damage_profile
+	return DamageAssessment.resolve(_damage_profile, event, _damage_zones)
+
+
 func _record_summary(id: String, event: Dictionary, recommendation: String, reason: String,
 		channel: String, value: Variant, service_minor: Variant = null) -> bool:
 	if not _summaries.has(id) and _summaries.size() >= DamageAssessment.MAX_COMPONENTS:

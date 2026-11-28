@@ -125,23 +125,52 @@ static func _valid_response(response: Variant, v2: bool, targets: Dictionary) ->
 	return false
 
 
-static func resolve(profile: Dictionary, event: Dictionary) -> Dictionary:
+## `zones`: zone_index(profile), or {} to search the profile's zones here.
+static func resolve(profile: Dictionary, event: Dictionary, zones: Dictionary = {}) -> Dictionary:
 	var source := str(event.get("probe_source", event.get("source", "")))
 	var probe_id := str(event.get("probe_id", event.get("contact_id", "")))
+	if not zones.is_empty():
+		var indexed: Variant = (zones.get(source, {}) as Dictionary).get(probe_id)
+		if indexed is Dictionary:
+			return _resolve_zone(profile, event, indexed)
+		return {matched = false, components = [], recommendation = "inspect", reason = "qualified contact has no game profile mapping", channel = "", value = null, actions = {}}
 	for zone: Dictionary in profile.get("zones", []):
 		if zone.source != source or zone.probe_id != probe_id:
 			continue
-		var actions := {}
-		for id: String in zone.component_ids:
-			var response: Dictionary = zone.get("component_responses", {}).get(id, zone.response)
-			actions[id] = _resolve_response(profile, event, response, id)
-		var first: Dictionary = actions[zone.component_ids[0]]
-		var out := first.duplicate(true)
-		out["matched"] = true
-		out["components"] = zone.component_ids.duplicate()
-		out["actions"] = actions
-		return out
+		return _resolve_zone(profile, event, zone)
 	return {matched = false, components = [], recommendation = "inspect", reason = "qualified contact has no game profile mapping", channel = "", value = null, actions = {}}
+
+
+## F1: resolve()'s search prepared once per profile: the first zone of each source and probe ID, in profile order.
+## Every zone's source and probe ID must be Strings (validated profiles' are), so a lookup by the event's strings
+## finds exactly the zone resolve()'s comparison finds; otherwise {} keeps the search. A rolling tick resolved each
+## wheel's support sample by scanning 14-30 zones.
+static func zone_index(profile: Dictionary) -> Dictionary:
+	var index := {}
+	for zone_value: Variant in profile.get("zones", []):
+		if not zone_value is Dictionary:
+			return {}
+		var zone: Dictionary = zone_value
+		if typeof(zone.get("source")) != TYPE_STRING or typeof(zone.get("probe_id")) != TYPE_STRING:
+			return {}
+		var by_probe: Dictionary = index.get(zone.source, {})
+		if not by_probe.has(zone.probe_id):
+			by_probe[zone.probe_id] = zone
+		index[zone.source] = by_probe
+	return index
+
+
+static func _resolve_zone(profile: Dictionary, event: Dictionary, zone: Dictionary) -> Dictionary:
+	var actions := {}
+	for id: String in zone.component_ids:
+		var response: Dictionary = zone.get("component_responses", {}).get(id, zone.response)
+		actions[id] = _resolve_response(profile, event, response, id)
+	var first: Dictionary = actions[zone.component_ids[0]]
+	var out := first.duplicate(true)
+	out["matched"] = true
+	out["components"] = zone.component_ids.duplicate()
+	out["actions"] = actions
+	return out
 
 
 static func _resolve_response(profile: Dictionary, event: Dictionary, response: Dictionary, id: String) -> Dictionary:
