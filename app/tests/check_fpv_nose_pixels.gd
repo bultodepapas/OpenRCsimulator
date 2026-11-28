@@ -13,17 +13,20 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	var out := ""
+	var out := ProjectSettings.globalize_path("user://fpv-nose")
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):
 			out = arg.trim_prefix("--out=")
 	if not out.is_absolute_path() or DisplayServer.get_name() == "headless":
-		_fail("requires a renderer and --out=<absolute directory>")
+		_fail("requires a renderer and an absolute output directory")
 		return
 	if DirAccess.make_dir_recursive_absolute(out) != OK:
 		_fail("cannot create output directory")
 		return
-	if Vector2i(root.get_visible_rect().size) != SIZE or not is_equal_approx(root.scaling_3d_scale, 1.0):
+	if root.size != SIZE:
+		root.size = SIZE
+		await process_frame
+	if root.size != SIZE or Vector2i(root.get_visible_rect().size) != SIZE or not is_equal_approx(root.scaling_3d_scale, 1.0):
 		_fail("requires a native 1920x1080 viewport at 1:1 render scale")
 		return
 
