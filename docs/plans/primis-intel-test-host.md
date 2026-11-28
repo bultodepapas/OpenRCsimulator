@@ -8,6 +8,9 @@ Owner: **TQ shared-host test admission**, steps **TQ-06-P0…P5**. Parents:
 [queue guide](../../tools/testqueue/README.md). Node operations, addresses and
 credentials live in the private HomeLab repository, never here.
 
+The [operating guide](../tools/primis-testlab.md#what-to-expect) lists the current
+allocation and watchdog policy. The figures below describe the initial deployment.
+
 **Status, 20 November 2026: P0 and P1.1–P1.3 done; P1.4 parity passed, soak
 pending; P2.1–P2.2 spike passed (manual).** An independent review of the
 deployment found egress spoofing, remote forwarding through the jump account and

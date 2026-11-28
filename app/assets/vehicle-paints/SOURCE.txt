@@ -29,6 +29,42 @@ with --check) from assets already in this repository:
   https://shop.revoc.eu/telechargement (SHA-256 c6e2cce11dc402a8b60a2e4e22172067ceb2c2fb2b0fd4a72df7376699d099eb).
   REVOC retains its trademark rights. See site/BRANDS.md for the simulator acknowledgment.
   Rebuild or verify these four albedo maps with build_vehicle_paints.py --only revoc_custom.
+- avanti-s-a200/jeti_ruby_*: original JETI Ruby tribute. The JETI DS-24 II Carbon Line
+  Ruby lacquer inspired the ruby, graphite and silver palette.
+  https://www.jetimodel.com/katalog/duplex-ds-24-ii-carbon-line-ruby-lacquer.htm
+  The sport-jet photos informed the scale and placement of the original sweep and bands.
+  https://www.sebart.it/jets-L.html
+  https://carf-models.com/en/products/rebel_pro_
+  Both flanks use sponsors/jeti_model_logo.png (SHA-256
+  4f99224439ba7c6829c40c440c3ceae32974bb57bdfcce043efcd0d55e76f007), sized and
+  projected without altering its artwork. That file and its provenance are in sponsors/.
+  JETI model s.r.o. retains its trademark rights. See the sponsor source for redistribution.
+  The procedural carbon inlay and the fuselage roughness map share the original shell UVs.
+  Build or verify the four albedo maps and the roughness map with
+  build_vehicle_paints.py --only jeti_ruby.
+- avanti-s-a200/elan_35_*: original Élan 35 motorsport livery projected through
+  the stock Avanti UVs. Bugatti's racing blue, exposed carbon and two-tone
+  design language informed the palette and alloy sweep.
+  https://newsroom.bugatti.com/en/press-releases/a-historic-meeting-of-bugatti-trailblazers-on-the-track
+  https://newsroom.bugatti.com/en/press-releases/form-function-and-the-future
+  Sport-jet scheme galleries informed graphic scale and top/bottom contrast.
+  https://carf-models.com/en/products/rebel_pro_
+  https://pilot-rc.com/matrix-2-2m-87/
+  https://www.krill-model.com/ares-xl
+  https://www.toprcmodel-usa.com/odyssey.html
+  https://www.sebart.it/jets-XS.html
+  https://www.eliteaerosports.com/collections/sport-jets
+  The generator draws the carbon twill and rasterizes the 35 on the fin with
+  the bundled OFL Noto font. Reference photos are visual research.
+  High and Extreme use native 8192-pixel fuselage and wing colour bakes.
+  The compact bakes serve Low and Medium. The generator also draws the
+  tandem instrument panel, status lights and console graphics. The cockpit
+  and hardware reuse the CC0 carbon, rubber and brushed-metal maps in
+  shared/ (see shared/LICENSES.txt).
+  The stock gear's node finish rules and the mesh-local door liner shader
+  distinguish the landing-gear hardware and the inside faces of the retract doors.
+  Build or verify the colour and material maps with build_vehicle_paints.py
+  --only elan_35.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the
   owner-supplied Monster Car 2 livery and emission map, re-tinted.
 
@@ -36,6 +72,60 @@ shared/ holds CC0 material maps from ambientCG (twill carbon, brushed metal,
 rubber); provenance in shared/LICENSES.txt. The generator does not write them.
 
 Bindings: app/data/vehicle_paints.json. Runtime: app/render/vehicle_paint.gd.
+
+extra-300s-60/jumper_t15_decals.png: Jumper RC T15 tribute. The Cyan Blue,
+Platinum White and Space Gray T15 colours inspire the shader palette:
+https://www.jumper-rc.com/transmitters/t15/
+The official red logo is resized for the decal atlas from the existing
+avanti-s-a200/sponsors/jumper_rc_logo.png (see that folder's SOURCE.txt for
+the original URL and scope of sponsor support). Jumper retains trademark
+rights. Follow the existing written-permission requirement for redistribution.
+The twin-gimbal graphic is original. Lettering uses the bundled Noto
+Sans CJK JP font (SIL OFL 1.1, assets/fonts/OFL-NotoSansCJK.txt).
+Rebuild or verify with tools/skins/build_extra_jumper.py, which pins the
+source hashes. The covering shader uses the Extra's existing UV/UV2 data.
+
+turbo-lumber-evolution/jr_servos_decals.png: original JR Servos tribute to
+the black casing, silver ribs and red model label of the S8911BL 2K BIG BLOCK.
+https://www.jrpropo-jp.com/product-page/s8911bl-2k-big-block
+https://www.deeforce.net/product-page/f8912foc-12v
+https://jreurope.com/product/jr-propo-logo-sticker/
+The JR PROPO logo and product photos serve as references. The decal artwork
+uses original lettering and a drawn output spline. Lettering uses the
+bundled Noto Sans CJK JP font (SIL OFL 1.1, assets/fonts/OFL-NotoSansCJK.txt).
+Rebuild with tools/skins/build_lumber_jr_servos.py and verify with --check.
+The shader projects in the rest pose and reuses the stock foam textures.
+
+turbo-lumber-evolution/aserradero_*: Aserradero uses photographed CC0
+ambientCG veneers in art-directed maple (Wood022), walnut (Wood027),
+cherry (Wood029) and mahogany (Wood026) finishes. Source links, licences
+and SHA-256 hashes are shared with tools/skins/sources/marquetry/sources.json.
+The pressed shop mark uses Noto Sans CJK JP (SIL OFL 1.1). The dowels,
+end grain, joints and inlays are original. Rebuild or verify the three
+maps with tools/skins/build_lumber_aserradero.py.
+
+turbo-lumber-evolution/vitral.gdshader: original stained-glass design.
+The panes, bevels and rolled-glass ripples are generated in the shader
+from the neutral airframe coordinates. No source images are used.
+
+turbo-lumber-evolution/domingo_en_springfield.gdshader: original cartoon
+clouds and doughnut illustrations drawn in the shader. No source images,
+character art or logos are used.
+
+turbo-lumber-evolution/chapa_noble.gdshader: original alloy panels, lap
+joints and flush rivets projected in the neutral airframe pose. The panel
+layout follows the runtime model's hinges and separates the cowl, gear
+hardware and rubber tires by surface. Brushing reuses
+shared/brushed_metal_roughness.jpg (ambientCG Metal009, CC0 1.0). Aircraft
+sheet-metal visual reference: FAA-H-8083-31B, Airframe, Chapter 4.
+Weathering is procedural. Reference photographs only, no reused pixels:
+Dylan Smith, Dirty Airplanes (ARC), for residue at lap joints, fasteners,
+window sills and in the wakes of flap hardware.
+https://www.arcair.com/tnt1/001-100/TnT085-weathering-Smith/00.shtm
+Warbird Photographs, Fw 190 V6 flight-test photographs, for exhaust trails.
+https://www.warbirdphotographs.com/luftwaffephotos/lfw19036.htm
+NASA, Surface Oil Flow Visualization, for tapered surface-flow streaks.
+https://www.grc.nasa.gov/www/k-12/airplane/tunvoil.html
 
 ugly-stik/neon_ronin_*.png: NEON RONIN cyberpunk artwork authored by
 tools/skins/build_stik_cyberpunk.py (verify with --check). Reuses the shared

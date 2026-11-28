@@ -85,7 +85,9 @@ class TransferDeferralTests(unittest.TestCase):
         def plan(job, observations):
             self.planned.append([item['id'] for item in observations])
             return {'selected': self.selected}
-        probe = lambda: [{'id': name, 'online': True, 'busy': False} for name in ('remote', 'second')]
+        def probe(host_id=None):
+            return [{'id': name, 'online': True, 'busy': False} for name in ('remote', 'second')
+                    if host_id is None or name == host_id]
         with patch.object(self.pool, '_preflight', return_value=(self.manifest, {}, {})), \
                 patch.object(self.pool, 'probe', side_effect=probe), \
                 patch.object(pool_module, 'plan', side_effect=plan), \
@@ -186,6 +188,35 @@ class TransferDeferralTests(unittest.TestCase):
         self.assertEqual(receipt['transfer']['attempts'], 1)  # history of the earlier failure is kept
         self.assertNotIn('error', receipt)
         self.assertEqual(receipt['request']['archive']['path'].rsplit('/', 2)[0], '/remote/remote')
+
+    def test_busy_refusal_of_the_first_run_defers_and_retries_the_same_id(self):
+        # 2026-11-25 review: a storage sweep holds the remote host lock; the agent
+        # answers BUSY before writing any job, so nothing was accepted.
+        run, _ = self.transport()
+        answers = [pool_module.RemoteRefusal('host pool is busy', 'BUSY')]
+
+        def answer(host, action, request):
+            if answers:
+                raise answers.pop(0)
+            return self.accepted(host, action, request)
+        with self.fleet(run) as remote:
+            remote.side_effect = answer
+            with self.assertRaises(pool_module.SubmissionDeferred) as caught:
+                self.submit()
+            self.assertEqual(caught.exception.reason_code, 'TRANSFER_DEFERRED')
+            receipt = self.receipt()
+            self.assertEqual((receipt['state'], receipt['transfer']['stage'], receipt['transfer']['code']),
+                             ('TRANSFER_DEFERRED', 'run', 'HOST_BUSY'))
+            self.assertFalse(self.pool._reserve([{'id': 'remote', 'busy': False}])[0]['busy'])
+            self.assertEqual(self.submit()['state'], 'SUBMITTED')
+            self.assertEqual([(call.args[0]['id'], call.args[1]) for call in remote.call_args_list],
+                             [('remote', 'run'), ('remote', 'run')])
+        for code in ('QUARANTINED', 'CONFLICT'):  # any other refusal of run stays uncertain
+            with self.subTest(code=code):
+                run, _ = self.transport()
+                with self.fleet(run) as remote:
+                    remote.side_effect = pool_module.RemoteRefusal('refused', code)
+                    self.assertEqual(self.submit('other' + code.lower())['state'], 'SUBMISSION_UNCONFIRMED')
 
     def test_retry_with_changed_inputs_is_refused_and_transfers_nothing(self):
         run, calls = self.transport({'scp': [subprocess.TimeoutExpired('scp', 1800)]})

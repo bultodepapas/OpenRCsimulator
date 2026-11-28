@@ -17,6 +17,7 @@ const GroundAudioModel = preload("res://audio/ground_audio_model.gd")
 const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
 const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
 const Cadence = preload("res://render/presentation_cadence.gd")
+const GlowAudioState = preload("res://audio/glow_audio_state.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
@@ -32,12 +33,14 @@ var _mechanical_sim: Node
 var _accepted_mechanical_mode := false
 var _accepted_ground_mode := false
 ## VQ-01c-R1: accepted endpoints are observed once per rendered frame (see presentation_cadence.gd).
-## Ground contact stays per tick while a touchdown cue is possible near the ground.
+## Ground contact stays per tick while a wheel that is not grounded is compressed near the ground.
 var _mechanical_cadence := Cadence.new()
 var _ground_cadence := Cadence.new()
 var _windsock: WeakRef
 var last_update_usec: int = 0
 var last_mechanical_update_usec: int = 0
+## Test hook: false forces every near-ground tick while any wheel is not grounded, as before the touchdown gate.
+var touchdown_gate_enabled := true
 
 
 func configure(scene: Node3D) -> void:
@@ -154,8 +157,49 @@ func _on_accepted_mechanical_tick(_tick: int, _time: float, _state: PackedFloat6
 		var near_touchdown: bool = _ground_cadence.every_frames > 0 and _accepted_ground_mode \
 			and is_instance_valid(ground_audio) and ground_audio.touchdown_possible() \
 			and not GroundAudioModel.wheels_clear_of_ground(_mechanical_session)
-		if _ground_cadence.on_tick(_tick, near_touchdown):
+		var skipped: bool = near_touchdown and touchdown_gate_enabled and not _airborne_wheel_may_load()
+		if _ground_cadence.on_tick(_tick, near_touchdown and not skipped):
 			_observe_ground_endpoint()
+		elif skipped:
+			var identities := PackedStringArray()
+			var approaches := GroundAudioModel.approach_speeds(_mechanical_session, identities)
+			ground_audio.note_skipped_tick(_tick, identities, approaches)
+
+
+## Near the ground, a wheel that is not grounded can only cue on a tick where it is compressed. The session's contact
+## observer measured this publication's compressions (NK-5e/5f); otherwise they are evaluated here. A full ground
+## observation costs about 0.5 ms, so a raised tail wheel on the takeoff roll, or a nose-over, made every tick pay it.
+func _airborne_wheel_may_load() -> bool:
+	var session: Node = _mechanical_session
+	if not session.has_method("current_landing_gear") or not session.has_method("published_gear_compressions") \
+			or not session.has_method("gear_compressions") or not session.has_method("wheel_count") \
+			or not session.has_method("wheel_index"):
+		return true
+	# Wheel rows only: their load needs the compression measured here. Other contacts (no wheel speeds) keep the
+	# per-tick answer; their lake and track loads sample the terrain differently.
+	var wheels: int = int(session.wheel_count())
+	var first: int = int(session.wheel_index())
+	if wheels <= 0 or first < 0 or first + wheels > _mechanical_sim.continuous.size():
+		return true
+	var gear: Dictionary = session.current_landing_gear()
+	var contacts: Array = gear.get("contacts", [])
+	if contacts.size() != wheels:
+		return true
+	var state: PackedFloat64Array = _mechanical_sim.state
+	var compressions: PackedFloat64Array = session.published_gear_compressions(state)
+	if compressions.is_empty():
+		compressions = session.gear_compressions(state)
+	if compressions.size() != contacts.size():
+		return true
+	# The rows of GroundAudioModel.snapshot_contacts(): contacts with a position, under the same identities.
+	var identities := PackedStringArray()
+	var measured := PackedFloat64Array()
+	for index: int in contacts.size():
+		var contact: Dictionary = contacts[index]
+		if contact.has("position"):
+			identities.append(str(contact.get("name", "gear_%d" % index)))
+			measured.append(compressions[index])
+	return ground_audio.touchdown_possible_at(identities, measured)
 
 
 ## VQ-01c-R1: once per rendered frame, observe the ticks that waited (the current accepted endpoint).
@@ -234,30 +278,50 @@ func sound_speed_mps() -> float:
 func snapshot() -> Dictionary:
 	var session: Node = flight.session
 	var source_running: bool = propulsion_source_running(session)
-	var wind: Vector3 = Frames.ned_to_render(Array(session.wind_at(session.sim.time())))
+	# NK-7i: the published endpoint's wind and air data from the native stage in one answer; otherwise the reference.
+	var endpoint_air: PackedFloat64Array = session.published_endpoint_air() \
+		if session.has_method(&"published_endpoint_air") else PackedFloat64Array()
+	var native_air: bool = endpoint_air.size() == 7
+	var wind: Vector3 = Frames.ned_to_render([endpoint_air[0], endpoint_air[1], endpoint_air[2]]) if native_air \
+		else Frames.ned_to_render(Array(session.wind_at(session.sim.time())))
 	var prop: Dictionary = session.aircraft.model.propulsion
 	var atmosphere: Dictionary = session.atmosphere_configuration()
 	var blades: int = propeller_blade_count(flight.aircraft_id)
 	var glow_family: String = _glow_family(prop)
 	var glow_profile: Dictionary = prop.get("glow", {}).get("profile", {})
-	var air: Dictionary = session.air_data(session.sim.state)
+	var air: Dictionary = {v_air = PackedFloat64Array([endpoint_air[3], endpoint_air[4], endpoint_air[5]]),
+		V = endpoint_air[6]} if native_air else session.air_data(session.sim.state)
 	var rpm: float = session.sim.aux[0]
 	var load_amount: float = session.sim.inputs[3]
 	if str(prop.get("kind", "glow_prop")) != "turbine" and rpm > 30.0:
 		# Read-only shaft load at accepted RPM/inflow, normalized to static torque at that RPM.
 		# The mapping to timbre is authored; this is not an acoustic calibration.
-		var torque: float = Propulsion.thrust_torque(air.v_air, rpm, prop, session.air_density())[1]
-		var reference: float = Propulsion.prop_torque(rpm, 0.0, prop, session.air_density())
+		# NK-7m: the published endpoint's torques from the native stage, for the native endpoint air above.
+		var torques: PackedFloat64Array = session.published_endpoint_torques(rpm) \
+			if native_air and session.has_method(&"published_endpoint_torques") else PackedFloat64Array()
+		if torques.size() != 2:
+			torques = GlowAudioState.shaft_torques(session, prop, air.v_air, rpm)
+		var torque: float = torques[0]
+		var reference: float = torques[1]
 		load_amount = clampf(maxf(torque, 0.0) / maxf(reference, 0.00001), 0.0, 1.0)
 	var elevation: float = float(flight._lighting.get("solar", {}).get("elevation_deg", flight._lighting.get("sun_elevation_deg", 45.0)))
 	if not Atmosphere.state.is_empty():
 		elevation = float(Atmosphere.state.get("sun_elevation_deg", elevation))
 	var glow_state: Dictionary = {}
-	if session.has_method("glow_state"):
+	var glow_assembled := false
+	# F5b: a glow aircraft's audio keys without GlowFlight.telemetry's full point() evaluation (glow_audio_state.gd).
+	if not glow_family.is_empty() and session.has_method("presented_glow_firing"):
+		# NK-7g: the whole key set below in one native call; {} assembles it here.
+		glow_state = GlowAudioState.native_keys(session, source_running,
+			float(glow_profile.get("operation", {}).get("max_rpm", EngineSound.reference_rpm(prop))), load_amount)
+		glow_assembled = not glow_state.is_empty()
+		if not glow_assembled:
+			glow_state = GlowAudioState.build(session)
+	if glow_state.is_empty() and session.has_method("glow_state"):
 		var accepted_glow: Variant = session.call("glow_state")
 		if accepted_glow is Dictionary:
 			glow_state = accepted_glow.duplicate()
-	if not glow_family.is_empty():
+	if not glow_family.is_empty() and not glow_assembled:
 		var operation: Dictionary = glow_profile.get("operation", {})
 		glow_state["family"] = str(glow_state.get("family", glow_family))
 		glow_state["rpm"] = float(glow_state.get("rpm", rpm))
@@ -270,27 +334,39 @@ func snapshot() -> Dictionary:
 		glow_state["sample_tick"] = int(session.sim.tick)
 	# Doppler source velocity: accepted body velocity rotated to NED, converted at the render boundary.
 	var s: PackedFloat64Array = session.sim.state
-	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
-	var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
 	# Engine/propeller emitter at the installed thrust line, not the imported mesh's origin.
 	var offset: PackedFloat64Array = prop.get("offset", PackedFloat64Array([0.0, 0.0, 0.0]))
-	var source_arm: PackedFloat64Array = M.v3(-offset[0], offset[1], -offset[2])
-	var source_ned: PackedFloat64Array = M.add(s.slice(RB.POS, RB.POS + 3), M.q_rotate(attitude, source_arm))
-	var source_velocity: Vector3 = velocity + Frames.ned_to_render(M.q_rotate(attitude,
-		M.cross(s.slice(RB.RATE, RB.RATE + 3), source_arm)))
+	var turbine: bool = Turbine.is_turbine(prop)
+	var source: Vector3
+	var source_velocity: Vector3
+	var exhaust: Vector3 = Vector3.ZERO
+	# NK-7f: the kernel answers the same kinematics (nk_audio_rows.hpp); otherwise they are evaluated here.
+	var kinematics := _source_kinematics(s, offset, prop.axis if turbine else PackedFloat64Array())
+	if kinematics.size() == 9:
+		source = Vector3(kinematics[0], kinematics[1], kinematics[2])
+		source_velocity = Vector3(kinematics[3], kinematics[4], kinematics[5])
+		exhaust = Vector3(kinematics[6], kinematics[7], kinematics[8])
+	else:
+		var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+		var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
+		var source_arm: PackedFloat64Array = M.v3(-offset[0], offset[1], -offset[2])
+		var source_ned: PackedFloat64Array = M.add(s.slice(RB.POS, RB.POS + 3), M.q_rotate(attitude, source_arm))
+		source = Frames.ned_to_render(source_ned)
+		source_velocity = velocity + Frames.ned_to_render(M.q_rotate(attitude,
+			M.cross(s.slice(RB.RATE, RB.RATE + 3), source_arm)))
+		if turbine:
+			var axis: PackedFloat64Array = prop.axis
+			exhaust = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(-axis[0], -axis[1], -axis[2]))))
 	# AUD-10: jet velocity V_j = gross thrust / mass flow from the accepted state (read-only pure functions), and the
 	# exhaust direction (opposite the thrust axis) for directivity. Static V_j at maximum rpm normalizes it.
 	var jet_velocity: float = 0.0
 	var jet_velocity_max: float = 1.0
-	var exhaust: Vector3 = Vector3.ZERO
-	if Turbine.is_turbine(prop):
+	if turbine:
 		var rho: float = session.air_density()
 		var u: float = M.dot(air.v_air, prop.axis)
 		var flow: float = Turbine.mass_flow(rpm, prop, rho, u)
 		jet_velocity = Turbine.gross_thrust(rpm, prop, rho, u) / flow if flow > 0.0 else 0.0
 		jet_velocity_max = Turbine.gross_thrust(float(prop.max_rpm), prop, rho) / Turbine.mass_flow(float(prop.max_rpm), prop, rho)
-		var axis: PackedFloat64Array = prop.axis
-		exhaust = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(-axis[0], -axis[1], -axis[2]))))
 	# AUD-11b: ISO 9613-1 inputs from the accepted atmosphere. The reference atmosphere is dry ISA air by
 	# construction, so it takes the documented presentation humidity instead of 0 %.
 	var temperature_k: float = float(atmosphere.get("temperature_k", 288.15))
@@ -311,7 +387,7 @@ func snapshot() -> Dictionary:
 		airspeed = air.V,
 		temperature_c = temperature_k - 273.15, pressure_pa = pressure_pa, humidity_molar_pct = humidity,
 		wind_speed = wind.length(), wind_direction = wind,
-		source = Frames.ned_to_render(source_ned), listener = listener_position(), source_velocity = source_velocity,
+		source = source, listener = listener_position(), source_velocity = source_velocity,
 		paused = session.sim.paused, sun_elevation = elevation, time = session.sim.time(),
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
@@ -326,6 +402,26 @@ func snapshot() -> Dictionary:
 		if sock.has_meta("windsock_motion"):
 			result.windsock_inflation = float(sock.get_meta("windsock_motion").inflation)
 	return result
+
+
+## NK-7f: [source, source velocity, exhaust] in render axes from the kernel, or empty (no verified library, the
+## hook off, or a malformed offset/axis), in which case snapshot() evaluates them.
+static var native_kinematics_enabled := true
+static var _kinematics_kernel: Object = null
+
+
+static func _source_kinematics(state: PackedFloat64Array, offset: PackedFloat64Array, axis: PackedFloat64Array) -> PackedFloat64Array:
+	if not native_kinematics_enabled:
+		return PackedFloat64Array()
+	if _kinematics_kernel == null:
+		if not ClassDB.class_exists(&"OpenRCNativeKernel"):
+			return PackedFloat64Array()
+		var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+		if kernel == null or not kernel.has_method(&"audio_source_kinematics"):
+			native_kinematics_enabled = false
+			return PackedFloat64Array()
+		_kinematics_kernel = kernel
+	return _kinematics_kernel.audio_source_kinematics(state, offset, axis)
 
 
 func listener_position() -> Vector3:

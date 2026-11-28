@@ -55,6 +55,7 @@ struct GlowStageResult {
 	std::array<R, 3> rotor{};
 	std::array<R, 13> body_derivative{};
 	R feed_factor = 1.0;
+	R firing_fraction = kNan; // NK-6b: the lifecycle point's firing fraction, as GlowFlight.point publishes it
 };
 
 // The event locator evaluates the connected left limit even at or just past
@@ -322,6 +323,7 @@ inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const Glow
 	for (R rate : coupling.derivative) out.derivative.push_back(rate);
 	for (int i = 0; i < wheel_count; ++i) out.derivative.push_back(wheel_rates[i]);
 	out.feed_factor = feed_factor;
+	out.firing_fraction = life.firing_fraction;
 	out.ok = true;
 	return out;
 }

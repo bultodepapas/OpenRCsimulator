@@ -1,0 +1,90 @@
+# Dynamic resolution in flight
+
+**VQ-07d / PT / UI · implementation plan · 2026-11-22.** Start independent flight trials on Windows, macOS and Linux. Each starts with a fixed-scale comparison. Enable adaptation on a configuration once it shows a pixel-sensitive workload, reliable GPU feedback and a safe change between two readable scales. The feature would adjust the flight viewport's internal 3D pixels. Keep the HUD at output resolution and the simulation on its fixed 240 Hz clock.
+
+## What the branch contributes
+
+The work is on `audit/graphics-performance-technologies-2026-11-15`, reviewed at `0ccfa7d11` against local `main` at `de7832750`. The branch delivered a timing design, a Python controller and 38 offline contract tests. Its milestone M0 covers timing, M1 fixed reconstruction, M2 adaptive flight and M5 package qualification. A GPU poll can repeat old work. A scale request can succeed before the renderer uses it. The specimen tests both failure modes. [Branch design](https://github.com/bultodepapas/OpenRCsimulator/blob/0ccfa7d11cb5f24f8d84cf71738a7cdd4e8a6836/docs/research/graphics-performance-2026-11-15/09-timing-and-drs-design.md) · [Executable reference and tests](https://github.com/bultodepapas/OpenRCsimulator/tree/0ccfa7d11cb5f24f8d84cf71738a7cdd4e8a6836/research/performance/graphics_handoff)
+
+| Finding on main | Consequence for implementation |
+| --- | --- |
+| Diagnostics already share timing leases. On the pinned Godot 4.8 beta 2, a positive viewport GPU poll has unverified freshness. The RTX 3090 Standard run at 1080p was VSync-limited, with a 1.64 ms median GPU poll. | Reuse the lease and reporting path. Keep this Windows run as a control where adaptation should stay idle. [M0 evidence](../research/visual-quality-implementation/VQ-01c/timing-ownership-2026-11-17/README.md) |
+| On PRIMIS, a minimal Ugly Stik flight on Mobile measured 22.3–22.4 FPS at native 1080p and 34.7–35.2 FPS after manually setting bilinear scale to 0.75. Compatibility, the product's iGPU renderer on that baseline, measured 25.2–27.6 FPS at native. | This identifies a candidate for a matched fixed-scale trial. The original measurements establish neither a readable floor nor an adaptive gain. [Linux comparison](../research/god-test/2026-11-22-linux-uhd630-comparison.md) |
+| Home already lowers scale for its own focused screen. Flight reconstruction resolves the saved provider and scale, and Settings owns preview and recovery. | Keep one writer per active viewport. Use the actual fixed choice as the flight ceiling, including any static render-scale preference present on the implementation revision. [Home budget](../../app/render/home_render_budget.gd) · [Reconstruction](../../app/render/reconstruction.gd) · [Automatic graphics](automatic-graphics.md) |
+
+## Native platform trials
+
+Run phases 1–4 independently on each host. Use the same aircraft, recorded input and camera sequence across the three modes **within** each configuration. The performance tour supplies the workload and host setup. Its standard run seeds Native reconstruction, so confirm the effective setting in flight for every fixed-scale or adaptive comparison. [Performance tour](../../tools/godtest/PERFORMANCE_TOUR.md)
+
+| Platform and starting configuration | What to test on the physical GPU |
+| --- | --- |
+| **Windows 11 · GeForce RTX 3090 · Forward+ / Vulkan** | Start at 1920×1080 on the interactive desktop. With headroom or VSync limiting the flight, the option should hold the player's ceiling. Repeat at 3840×2160 on the same display to test whether a demanding pass benefits from fewer pixels. Compare Native bilinear at fixed scales first, then exercise adaptive scale on any eligible row. Record actual output pixels, refresh, driver and cap. During Alt-Tab and fullscreen changes, check that old GPU samples cannot trigger a step after focus returns. [RTX 3090 measurements](../research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md) |
+| **macOS · Apple Silicon M1 · Mobile / Metal** | Run on AC on the built-in 2560×1600 Retina panel at 60 Hz. Confirm native output and drawable pixels independently of logical window points, and record the internal 3D input at each step. Start with Native bilinear. Trial MetalFX Spatial separately on a package that reports actual execution. Temporal also needs the history checks in phase 2.3. Exercise fullscreen Space transitions and minimize/resume. Verify that resumed flight starts from the saved scale with a new sample window. [M1 host guide](../tools/macos-m1.md) · [MetalFX plan](apple-metalfx.md) |
+| **Linux · PRIMIS Intel UHD 630 · Compatibility** | Start at 1920×1080 on the product path. Repeat on Mobile as a separate row to reproduce the earlier 0.75 bilinear observation. Record the display server and distinguish compositor measurements from pilot acceptance on a physical display. [UHD 630 comparison](../research/god-test/2026-11-22-linux-uhd630-comparison.md) |
+
+## Phase 1 · Establish the fixed baseline (M0 / M1)
+
+GOD TEST can now set the fixed bilinear scale with `--render-scale` and check it
+at both boundaries of each requested flight phase. Use this for initial
+screening and record native campaign results separately. [Fixed-scale procedure](../../tools/godtest/PERFORMANCE_TOUR.md#fixed-scale-flight-comparison)
+
+1. **1.1 Freeze one flight.** Use the starting display and renderer in each platform row. Record source, engine/template, OS/driver, actual renderer, reconstruction, native simulation backend, drawable and output. Record the observed 3D input when available. If only the nominal extent is available, label it as estimated for this screen and require observed pixels in phase 2. Repeat the same aircraft, field, camera and input tape across quiet flight and a demanding pass. Match focus, power, refresh, cap and VSync. Measure cold loading separately. [Performance tour](../../tools/godtest/PERFORMANCE_TOUR.md)
+2. **1.2 Change only internal scale.** Compare native with the available fixed bilinear levels, including 0.75 where supported. Screen for CPU, pacing and shader stalls with the existing frame tools. Compare whole-frame p95/p99, missed target frames and simulation/wall across alternating repeats. Inspect the moving aircraft at each scale. [Frame diagnosis](../tools/graphics.md#frame-diagnosis)
+3. **1.3 Decide whether a controller can help.** Name the target FPS and best readable fixed setting before designing the controller. Advance each renderer/device independently if high-load flight repeatedly benefits from fewer pixels **and** a lighter segment can afford a higher readable scale. If a single fixed choice meets both needs, record that choice and close the row as fixed.
+
+## Phase 2 · Prove feedback and scale changes (M0 / M1)
+
+The pinned renderer's viewport timing poll has unverified freshness. On Metal,
+the experimental completion stream exposes frame identity and completion time.
+It still needs a duration and actual 3D extent tied to that frame. Vulkan needs
+to associate completed timestamp slots with viewport generations and actual
+extents. A completed-GPU source on Compatibility/OpenGL would also need a
+nonblocking read of completed queries. Qualify the completed-GPU controller
+against 2.1–2.3. For Compatibility's frame-interval controller, use 2.2–2.3 to
+verify scaling and phase 4 to check the cadence gain.
+[Metal completion stream](../../tools/graphics/metalfx/README.md)
+
+1. **2.1 Identify completed GPU work.** For the admitted renderer, require one coherent observation containing viewport lifetime, completed render ID, configuration generation, actual input extent, GPU duration and a monotonic recording time with bounded age. Describe which passes it covers. Exercise duplicate, delayed and out-of-order completions and viewport reuse. Compare observer-off/on process-loop p95 and record overhead against the M0 screening budget of 0.2 ms. Keep historical diagnostic formats readable. If the backend cannot supply the association asynchronously at acceptable cost, close as fixed. [Timing lease](../../app/render/render_timing_lease.gd) · [Diagnostic producer](../../app/render/frame_diagnostics.gd)
+2. **2.2 Build a legal scale range.** Intersect the provider's size/alignment limits, the measured pilot-readability floor and the player's fixed ceiling. Map each scalar to integer width and height as the pinned engine does, check both axes and remove duplicate extents. Verify observed pixels at odd window sizes as well as 1080p. A fixed 85% ceiling and an 85% floor can leave only one size. Fewer than two legal sizes closes that configuration as fixed.
+3. **2.3 Prove two-way transitions manually.** On one spatial path first, request one step down and back up. Observe the provider and actual extent after each change. Measure transition-frame spikes, buffer allocation and memory recovery. For each temporal provider, additionally prove jitter, motion vectors, camera-cut reset and history readiness on the exact engine/package. Block that provider if a cut, resize or fallback leaves stale imagery. [AMD qualification](amd-fsr-completion.md) · [MetalFX qualification](apple-metalfx.md)
+
+## Phase 3 · Implement the controller and player controls (M2)
+
+An experimental implementation is available with the [completed-frame Godot patch](../../tools/graphics/dynamic_resolution/README.md).
+It uses Native bilinear scaling, a bounded window and an observed apply before
+each additional step. Start the experiment on a compatible renderer and test
+the option through Settings. Keep release qualification open until phases 1, 2
+and 4 have native evidence.
+
+For a fresh profile or Restore graphics defaults, a renderer with completed
+viewport GPU timing enables a 30 FPS default on identified integrated GPUs and
+identified discrete or laptop GPUs below 0.15× RTX 3090 estimated throughput.
+The bundle allows a 75–85% internal 3D range while Automatic reconstruction
+resolves to Native bilinear. Retina configurations with MetalFX Spatial support
+keep fixed scaling and Automatic reconstruction.
+Existing profiles retain their saved target and reconstruction. A fresh lightweight
+hardware profile on Compatibility also starts with a 30 FPS target. Its separate
+controller uses adjacent rendered frame intervals and a nominal 67–75% Native
+bilinear range. It discards isolated stalls, checks that a downstep actually
+improves pacing, and restores the player's ceiling while suspended. These
+observations are frame-cadence evidence. The completed GPU-frame path remains
+independent. Other stock renderer combinations without either source use fixed scale.
+Manual targets remain available on other supported GPUs. Renderer selection
+continues to follow the automatic graphics policy.
+
+1. **3.1 Port the policy with capability checks.** Use bounded, non-overlapping windows of unique completed samples. The branch starts with at least 120 samples spanning two seconds and evaluates the 90th percentile of GPU time in each window. It steps down after two windows above 90% of budget and at least 5 s of dwell. It steps up after 10 s below 75% and at least 10 s of dwell. These are tuning hypotheses. Use the real-frame target, excluding generated frames. Permit a reduction only while fresh samples show sustained GPU pressure and the run remains pixel-sensitive. Hold during pacing or CPU stalls. Allow one rung per decision, honour dwell times and report a target miss at the floor. Test sustained load, alternating load, isolated spikes, recovery, stale data and CPU/cap-limited controls with the branch traces.
+2. **3.2 Serialize scale changes.** Give one flight owner a single outstanding request tied to its viewport and generation. Confirm it only after observing the intended provider, extent and required history state. On timeout, rejection or loss of feedback, retire pending work, restore and verify the fixed selection, then require a fresh observation window. Drive the timeout even if drawing stops. Test late acknowledgements after owner replacement.
+3. **3.3 Integrate Settings and scene lifetime.** Expose Off and the qualified target only for eligible combinations. Persist the player's intent and fixed choice. Keep the live scale transient and show the reason when the target is unavailable. Suspend on pause, focus loss, minimize, resize, loading and settings preview. Exercise Keep, Revert, timeout, renderer restart and Flight → Home → Flight. Confirm that Off restores the saved scale and AA, releases timing and ends controller work. [Display preferences](../../app/app_state/display_preferences.gd) · [Settings tests](../../app/tests/test_settings_ui.gd)
+
+## Phase 4 · Qualify or retain fixed rendering (M2 / M5)
+
+1. **4.1 Compare native, best fixed and adaptive.** Run at least three interleaved repeats per mode on the same flight, with at least 10 s warmup and 60 s measured per repeat. Declare the success metric and repeat-to-repeat tolerance first. Require either fewer missed real frames at comparable readability, or more time at higher readable resolution with equivalent target attainment. Compare tails, worst transition, time per scale and simulation/wall. For the existing 60 Hz gate use process-loop p95 ≤18 ms, p99 ≤25 ms and simulation/wall 0.99–1.01. [Qualification protocol](amd-fsr-completion.md#qualification-matrix-and-acceptance)
+2. **4.2 Check what the pilot sees and controls.** Compare matched moving passes, including a distant bank, thin wings against trees, propeller motion, approach lights and a camera cut. Record the smallest scale at which orientation remains legible, plus shimmer, trails or visible scale oscillation. Check HUD/text at output resolution and exact replay on the matching simulation backend. Keep pilot acceptance pending until flown on a physical display. [Flight logging](../FLIGHT-LOGGING.md)
+3. **4.3 Test the player option on each OS.** In each native desktop build, open Settings, select the adaptive target, keep it and enter flight. On an eligible configuration, fly the demanding segment long enough for a downstep and the lighter segment long enough for recovery. Record requested and observed 3D pixels, the reason and frame time for each transition. Switch Off, verify the restored fixed scale, then relaunch and check the saved choice. For an ineligible configuration, verify the unavailable reason and usable fixed setting. Record a separate result for Windows, macOS and Linux.
+4. **4.4 Qualify the package and fallback.** Repeat focus, fullscreen, display change, provider failure and Home/flight transitions in the exported build over 20 cycles and a 30-minute flight. Check tail times, resource growth and recovery of the fixed setting. For final M1 qualification, extend this screen to the Apple plan’s 50 Home/flight cycles and three independent 30-minute active flights. Qualify each GPU/driver/renderer/provider and output separately. Follow 1080p, higher resolutions, then 720p on standard displays. On Apple Silicon Retina, use native output and record drawable, internal input and reconstructed output separately. [Apple display gates](apple-silicon-performance.md)
+
+Mark each matrix row **qualified opt-in**, **fixed only** or **unmeasured**. For a fixed-only result, name the failed condition and fallback. Attach the matched flight results and the moving-image verdict. A fixed-only result closes that row until the workload, backend capability or provider changes.
+
+The [RTX 3090 Windows screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-rtx3090-2026-11-22.md), [Primis UHD 630 screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-primis-2026-11-22.md) and [Angela M1 Retina screen](../research/visual-quality-implementation/VQ-07/dynamic-resolution-angela-2026-11-22.md) record completed sizes and controlled pixel-load comparisons ahead of flight qualification.
+
+The [flight experiment design](../research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md) binds those screens to the explicitly configured GOD TEST and to the remaining native qualification.

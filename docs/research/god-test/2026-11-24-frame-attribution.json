@@ -1,0 +1,703 @@
+{
+  "analysis_date": "2026-11-24",
+  "collector_date": "2026-11-21",
+  "units": "Engine monotonic microseconds unless specified. Frame index is zero-based.",
+  "case_source": {
+    "Windows": {
+      "launcher_commit": "8a76c4b225e223436620a417709708f8e46b7cff",
+      "snapshot_source_digest": "50fe44ce30f6b75f7e5d8fc53359f545ce6a1697280be6473261c52a1fb8d77e"
+    },
+    "ANGEL": {
+      "launcher_commit": "3dd5a79cec69064faa33300c09668de1e8f11d4b",
+      "snapshot_source_digest": "1d1fa35bc91201003d5ac6e449ea5fc60b33b0b96b502f92ed4ffc46150924b6"
+    }
+  },
+  "cases": [
+    {
+      "host": "Windows",
+      "case": "001-performance-tour-jensen-das-ugly-stik-60",
+      "validated_frames": 24945,
+      "sha256": {
+        "frametimes.json": "b7fbd98776b0e4367798f7d252148139ec0be48697c87fa2789d4c6993df04b3",
+        "frametimes.json.frames.jsonl": "ca95d1bf68f9d7e0c1fed346a3400bd0473d8944f167463f1a481b168eeac15b",
+        "events.jsonl": "089ee5bf4954ae1e101575da7e05ca18d221ecddf36a11b76d2781265888a46d",
+        "bridge/log.jsonl": "44caccfa40ed34647483af0bbef980a1f7b968bd96011ed4ca3ff8a8739aa72d",
+        "runtime.json": "ee7d838cd26d53877b8b6bc3f0a0df202a5f74c53b32a8f79e53449078c74ecd",
+        "frame-watch/watch.json": "24ef1aaebb2006a01493cf562859d5678a88b2ee77f6f4b6f9e80a0329cab6fb"
+      },
+      "selection": {
+        "frame_index": 1541,
+        "start_usec": 22005961,
+        "end_usec": 24804401,
+        "wall_usec": 2798440,
+        "phase_start_usec": 24523464,
+        "phase_end_usec": 24866370,
+        "before_phase_usec": 2517503,
+        "bridge": {
+          "screens": [
+            "home",
+            "weather"
+          ],
+          "diagnostic_query": false,
+          "counter_changes": {
+            "nodes": 600.0,
+            "objects": 1772.0,
+            "resources": 148.0
+          }
+        }
+      },
+      "loading": {
+        "frame_index": 2127,
+        "start_usec": 28454719,
+        "end_usec": 29555359,
+        "wall_usec": 1100640,
+        "fly_requested_usec": 26871551,
+        "draw_observed_usec": 31080403,
+        "above_100_ms": 9,
+        "bridge": {
+          "screens": [
+            "loading"
+          ],
+          "diagnostic_query": false,
+          "tick": 0,
+          "counter_changes": {
+            "objects": 35.0,
+            "pipeline_canvas": 1.0,
+            "pipeline_surface": 92.0,
+            "pipelines": 93.0,
+            "resources": 23.0
+          }
+        }
+      },
+      "menu_settings": {
+        "frame_index": 19642,
+        "start_usec": 127456808,
+        "end_usec": 127754025,
+        "wall_usec": 297217,
+        "request_usec": 127459574,
+        "opened_usec": 127757070,
+        "request_overlap_usec": 294451,
+        "bridge": {
+          "screens": [
+            "pause",
+            "settings"
+          ],
+          "diagnostic_query": false,
+          "tick": 21924,
+          "counter_changes": {
+            "nodes": 800.0,
+            "objects": 2504.0
+          }
+        }
+      },
+      "menu_controls": {
+        "frame_index": 21742,
+        "start_usec": 134829236,
+        "end_usec": 135586123,
+        "wall_usec": 756887,
+        "request_usec": 134831767,
+        "opened_usec": 135590568,
+        "request_overlap_usec": 754356,
+        "bridge": {
+          "screens": [
+            "pause",
+            "controls"
+          ],
+          "diagnostic_query": false,
+          "tick": 22408,
+          "counter_changes": {
+            "nodes": 2112.0,
+            "objects": 5863.0,
+            "resources": 4.0
+          }
+        }
+      },
+      "runway_circuit": {
+        "frame_index": 8021,
+        "start_usec": 61036311,
+        "end_usec": 61065223,
+        "wall_usec": 28912,
+        "above_33_333_ms": 0,
+        "above_50_ms": 0
+      }
+    },
+    {
+      "host": "Windows",
+      "case": "002-performance-tour-sebart-avanti-s-a200-p100rx",
+      "validated_frames": 45495,
+      "sha256": {
+        "frametimes.json": "bb13114ed05f2d1465e4c4893bda2b0f466de77d4b6298dab34acaef0723aab3",
+        "frametimes.json.frames.jsonl": "aea79d4cba7f4e7a99c26979ed580a5a756abb1663d755a08f30620cf4615c65",
+        "events.jsonl": "ee758744364e57469c3eb99631636466515c2a6fded32acc0578fce8304f4e72",
+        "bridge/log.jsonl": "cac0144f7e393b622dc00acc5d92b0de539fbbc8565eaf6c85548b86dbe86da8",
+        "runtime.json": "50590ca27e2b5a7cb631c3c3814a8b2b9e1c91166ce0ea2b8890ffca8f1d566f",
+        "frame-watch/watch.json": "1a8e3770bfbf0766ad301cb34c01cf3761ee6e3566d2256a8f922de562f2b3b7"
+      },
+      "selection": {
+        "frame_index": 1357,
+        "start_usec": 20138462,
+        "end_usec": 20697888,
+        "wall_usec": 559426,
+        "phase_start_usec": 20251194,
+        "phase_end_usec": 20788610,
+        "before_phase_usec": 112732,
+        "bridge": {
+          "screens": [
+            "home",
+            "weather"
+          ],
+          "diagnostic_query": false,
+          "counter_changes": {
+            "nodes": 600.0,
+            "objects": 1714.0,
+            "pipeline_canvas": 2.0,
+            "pipelines": 2.0,
+            "resources": 16.0
+          }
+        }
+      },
+      "loading": {
+        "frame_index": 5524,
+        "start_usec": 26527475,
+        "end_usec": 27604497,
+        "wall_usec": 1077022,
+        "fly_requested_usec": 22791406,
+        "draw_observed_usec": 28913483,
+        "above_100_ms": 8,
+        "bridge": {
+          "screens": [
+            "loading"
+          ],
+          "diagnostic_query": true,
+          "tick": 0,
+          "counter_changes": {
+            "objects": 33.0,
+            "pipeline_canvas": 1.0,
+            "pipeline_surface": 92.0,
+            "pipelines": 93.0,
+            "resources": 23.0
+          }
+        }
+      },
+      "menu_settings": {
+        "frame_index": 39618,
+        "start_usec": 212097779,
+        "end_usec": 212378606,
+        "wall_usec": 280827,
+        "request_usec": 212101061,
+        "opened_usec": 212382663,
+        "request_overlap_usec": 277545,
+        "bridge": {
+          "screens": [
+            "pause",
+            "settings"
+          ],
+          "diagnostic_query": true,
+          "tick": 42762,
+          "counter_changes": {
+            "nodes": 800.0,
+            "objects": 2502.0
+          }
+        }
+      },
+      "menu_controls": {
+        "frame_index": 41816,
+        "start_usec": 219453736,
+        "end_usec": 220096252,
+        "wall_usec": 642516,
+        "request_usec": 219455805,
+        "opened_usec": 220100265,
+        "request_overlap_usec": 640447,
+        "bridge": {
+          "screens": [
+            "pause",
+            "controls"
+          ],
+          "diagnostic_query": false,
+          "tick": 43246,
+          "counter_changes": {
+            "nodes": 2112.0,
+            "objects": 5861.0,
+            "resources": 4.0
+          }
+        }
+      },
+      "runway_circuit": {
+        "frame_index": 33829,
+        "start_usec": 185520949,
+        "end_usec": 185548061,
+        "wall_usec": 27112,
+        "above_33_333_ms": 0,
+        "above_50_ms": 0
+      }
+    },
+    {
+      "host": "Windows",
+      "case": "003-performance-tour-f4u-corsair-250",
+      "validated_frames": 43427,
+      "sha256": {
+        "frametimes.json": "de86243d842d79bc4a5d750b57c109fb0a12e111d58fef969d1d4c00acd6b28f",
+        "frametimes.json.frames.jsonl": "cffc096020d230f320ad4b697a685343af964362e13748664c9e12111d2f3282",
+        "events.jsonl": "b7afec47318cc10e1c4b211c17e9b774aaa3af677a370e73236b8e2051e14a4b",
+        "bridge/log.jsonl": "3f2556335357d8f4f66a6ba6bd53d548f38dc4becca64c7fb04d94b0f3b66a6e",
+        "runtime.json": "e67d30be7d7185ada6873deeec8f59da4853a312e895e56acfdf7cabf1c98ce9",
+        "frame-watch/watch.json": "fc9110575775da7a040b784c19714419ceb079bf2d187a021c1cf30e4490a371"
+      },
+      "selection": {
+        "frame_index": 1360,
+        "start_usec": 19485934,
+        "end_usec": 20021757,
+        "wall_usec": 535823,
+        "phase_start_usec": 19576412,
+        "phase_end_usec": 20096385,
+        "before_phase_usec": 90478,
+        "bridge": {
+          "screens": [
+            "home",
+            "weather"
+          ],
+          "diagnostic_query": false,
+          "counter_changes": {
+            "nodes": 600.0,
+            "objects": 1717.0,
+            "resources": 16.0
+          }
+        }
+      },
+      "loading": {
+        "frame_index": 6722,
+        "start_usec": 26269788,
+        "end_usec": 27305405,
+        "wall_usec": 1035617,
+        "fly_requested_usec": 22100214,
+        "draw_observed_usec": 28853675,
+        "above_100_ms": 10,
+        "bridge": {
+          "screens": [
+            "loading"
+          ],
+          "diagnostic_query": true,
+          "tick": 0,
+          "counter_changes": {
+            "objects": 33.0,
+            "pipeline_canvas": 1.0,
+            "pipeline_surface": 98.0,
+            "pipelines": 99.0,
+            "resources": 23.0
+          }
+        }
+      },
+      "menu_settings": {
+        "frame_index": 37692,
+        "start_usec": 194606782,
+        "end_usec": 194920990,
+        "wall_usec": 314208,
+        "request_usec": 194609301,
+        "opened_usec": 194924316,
+        "request_overlap_usec": 311689,
+        "bridge": {
+          "screens": [
+            "pause",
+            "settings"
+          ],
+          "diagnostic_query": false,
+          "tick": 38579,
+          "counter_changes": {
+            "nodes": 800.0,
+            "objects": 2506.0
+          }
+        }
+      },
+      "menu_controls": {
+        "frame_index": 39863,
+        "start_usec": 202004486,
+        "end_usec": 202674281,
+        "wall_usec": 669795,
+        "request_usec": 202006563,
+        "opened_usec": 202678283,
+        "request_overlap_usec": 667718,
+        "bridge": {
+          "screens": [
+            "pause",
+            "controls"
+          ],
+          "diagnostic_query": false,
+          "tick": 39065,
+          "counter_changes": {
+            "nodes": 2112.0,
+            "objects": 5861.0,
+            "resources": 4.0
+          }
+        }
+      },
+      "runway_circuit": {
+        "frame_index": 24497,
+        "start_usec": 129583421,
+        "end_usec": 129632001,
+        "wall_usec": 48580,
+        "above_33_333_ms": 3,
+        "above_50_ms": 0
+      }
+    },
+    {
+      "host": "ANGEL",
+      "case": "001-performance-tour-jensen-das-ugly-stik-60",
+      "validated_frames": 11692,
+      "sha256": {
+        "frametimes.json": "9cb69de3f53730aef925d2008665869dff585391c991693e7e3e4f15ae7a7a25",
+        "frametimes.json.frames.jsonl": "e89dc0fa3e5e8fbd1a12e301fd54e8bca85f418a23e87d5dbf720716f136dacd",
+        "events.jsonl": "18a3e32afff8864e4f6547cf61b40f33a4ff54cc31b34c43dd80e20823a781ba",
+        "bridge/log.jsonl": "ecdcf2cee06a62e73cdaec2f41f958c1d52ed534e6a246d5f636bc75094f67e1",
+        "runtime.json": "585cdbe20787a92b72f011668723fe3d497288958353735e5162ee574be60f92",
+        "frame-watch/watch.json": "cd485049f330de18be8760e775e32c6dfa19275320f21fc950599e2840948040",
+        "ordered_incident_sha256_list": "c1e1431154ed47157cbe3a69c0b1078a54cc0b1a074e18daa02712fefd9f2b6d"
+      },
+      "selection": {
+        "frame_index": 408,
+        "start_usec": 16707271,
+        "end_usec": 17009114,
+        "wall_usec": 301843,
+        "phase_start_usec": 16800155,
+        "phase_end_usec": 17052178,
+        "before_phase_usec": 92884,
+        "bridge": {
+          "screens": [
+            "home",
+            "weather"
+          ],
+          "diagnostic_query": false,
+          "counter_changes": {
+            "nodes": 600.0,
+            "objects": 1739.0,
+            "pipeline_canvas": 2.0,
+            "pipelines": 155.0,
+            "resources": 16.0
+          }
+        }
+      },
+      "loading": {
+        "frame_index": 561,
+        "start_usec": 20765586,
+        "end_usec": 23433351,
+        "wall_usec": 2667765,
+        "fly_requested_usec": 19061426,
+        "draw_observed_usec": 24843456,
+        "above_100_ms": 7,
+        "bridge": {
+          "screens": [
+            "loading"
+          ],
+          "diagnostic_query": false,
+          "tick": 0,
+          "counter_changes": {
+            "objects": 26.0,
+            "resources": 23.0
+          }
+        }
+      },
+      "menu_settings": {
+        "frame_index": 10230,
+        "start_usec": 121219974,
+        "end_usec": 121537933,
+        "wall_usec": 317959,
+        "request_usec": 121222096,
+        "opened_usec": 121540934,
+        "request_overlap_usec": 315837,
+        "bridge": {
+          "screens": [
+            "pause",
+            "settings"
+          ],
+          "diagnostic_query": false,
+          "tick": 21923,
+          "counter_changes": {
+            "nodes": 800.0,
+            "objects": 2504.0
+          }
+        }
+      },
+      "menu_controls": {
+        "frame_index": 10833,
+        "start_usec": 128604590,
+        "end_usec": 129019695,
+        "wall_usec": 415105,
+        "request_usec": 128606659,
+        "opened_usec": 129023743,
+        "request_overlap_usec": 413036,
+        "bridge": {
+          "screens": [
+            "pause",
+            "controls"
+          ],
+          "diagnostic_query": false,
+          "tick": 22407,
+          "counter_changes": {
+            "nodes": 2112.0,
+            "objects": 5859.0,
+            "resources": 4.0
+          }
+        }
+      },
+      "runway_circuit": {
+        "frame_index": 8687,
+        "start_usec": 103888538,
+        "end_usec": 103943654,
+        "wall_usec": 55116,
+        "above_33_333_ms": 12,
+        "above_50_ms": 1,
+        "cadence": {
+          "period_usec": 500000,
+          "half_width_usec": 50000,
+          "first_half_slow": 6,
+          "fitted_center_usec": 10758,
+          "second_half_slow_in_band": 6,
+          "second_half_slow": 6,
+          "second_half_all_in_band": 539,
+          "second_half_all": 3220,
+          "slow_frames_with_incident_row": 8,
+          "same_row_query_flag": 0
+        }
+      }
+    },
+    {
+      "host": "ANGEL",
+      "case": "002-performance-tour-sebart-avanti-s-a200-p100rx",
+      "validated_frames": 16443,
+      "sha256": {
+        "frametimes.json": "a73fc6b03a10fb01a921a25ae071870872063d0cd71db9fe02f8adbb3e3db007",
+        "frametimes.json.frames.jsonl": "439403d68083f7fa305d7db794fe74394304780051a73dec01db7c071ebb0474",
+        "events.jsonl": "5ccfffcaa199c68fa932e4107c3df2f4695e76ff9499936cff89ad15e82878de",
+        "bridge/log.jsonl": "6439ec905bf1add6bcbd8ddd9928791db1484c1d66d21dc28335c941556ad625",
+        "runtime.json": "873658a994f27688e9a30aa2d115257e189df0dbcdec5e9d4dd7bc41e2c23aa6",
+        "frame-watch/watch.json": "427e11756d945059273089d5d8aaef4257e9564a622eca61895d157723c6c1a1",
+        "ordered_incident_sha256_list": "ee9711c3777933c76e7eaf8406e4ef435248506763356acef66728e751367582"
+      },
+      "selection": {
+        "frame_index": 405,
+        "start_usec": 16079348,
+        "end_usec": 16417837,
+        "wall_usec": 338489,
+        "phase_start_usec": 16152125,
+        "phase_end_usec": 16459399,
+        "before_phase_usec": 72777,
+        "bridge": {
+          "screens": [
+            "home",
+            "weather"
+          ],
+          "diagnostic_query": true,
+          "counter_changes": {
+            "nodes": 600.0,
+            "objects": 1712.0,
+            "pipeline_canvas": 2.0,
+            "pipelines": 155.0,
+            "resources": 16.0
+          }
+        }
+      },
+      "loading": {
+        "frame_index": 574,
+        "start_usec": 19874298,
+        "end_usec": 22525565,
+        "wall_usec": 2651267,
+        "fly_requested_usec": 18464034,
+        "draw_observed_usec": 23867607,
+        "above_100_ms": 6,
+        "bridge": {
+          "screens": [
+            "loading"
+          ],
+          "diagnostic_query": false,
+          "tick": 0,
+          "counter_changes": {
+            "objects": 26.0,
+            "resources": 23.0
+          }
+        }
+      },
+      "menu_settings": {
+        "frame_index": 15271,
+        "start_usec": 207079763,
+        "end_usec": 207375010,
+        "wall_usec": 295247,
+        "request_usec": 207083950,
+        "opened_usec": 207377661,
+        "request_overlap_usec": 291060,
+        "bridge": {
+          "screens": [
+            "pause",
+            "settings"
+          ],
+          "diagnostic_query": false,
+          "tick": 42758,
+          "counter_changes": {
+            "nodes": 800.0,
+            "objects": 2502.0
+          }
+        }
+      },
+      "menu_controls": {
+        "frame_index": 15702,
+        "start_usec": 214468244,
+        "end_usec": 214926530,
+        "wall_usec": 458286,
+        "request_usec": 214470579,
+        "opened_usec": 214930364,
+        "request_overlap_usec": 455951,
+        "bridge": {
+          "screens": [
+            "pause",
+            "controls"
+          ],
+          "diagnostic_query": false,
+          "tick": 43245,
+          "counter_changes": {
+            "nodes": 2112.0,
+            "objects": 5861.0,
+            "resources": 4.0
+          }
+        }
+      },
+      "runway_circuit": {
+        "frame_index": 10073,
+        "start_usec": 142540929,
+        "end_usec": 142608635,
+        "wall_usec": 67706,
+        "above_33_333_ms": 65,
+        "above_50_ms": 8,
+        "cadence": {
+          "period_usec": 500000,
+          "half_width_usec": 50000,
+          "first_half_slow": 36,
+          "fitted_center_usec": 130370,
+          "second_half_slow_in_band": 29,
+          "second_half_slow": 29,
+          "second_half_all_in_band": 1069,
+          "second_half_all": 6269,
+          "slow_frames_with_incident_row": 43,
+          "same_row_query_flag": 0
+        }
+      }
+    },
+    {
+      "host": "ANGEL",
+      "case": "003-performance-tour-f4u-corsair-250",
+      "validated_frames": 14886,
+      "sha256": {
+        "frametimes.json": "7680cff54dfe9fcbd67a1441a07a505ab63885ac49afdb862bce3f9c62288d75",
+        "frametimes.json.frames.jsonl": "db720232793e16f0c44641beb9f74469412790567d7869d95e43ee4259b925c4",
+        "events.jsonl": "ecb1c4bf2bd770b5d448566ee2505f29ae869c5c49c824ae02bf6397c70dca40",
+        "bridge/log.jsonl": "5cebdd64edc0706ccc4d188fc1054f8fd05640f00fa94a962e63c2d9424c9711",
+        "runtime.json": "8ba05b3f139fc4781a07d681a3eed7ab7b95aa42848802bb19361b3e760a9996",
+        "frame-watch/watch.json": "f2e595cda1bd21211047c03e35b66d30b1c0da72a9bd8eb227d84bf88ffba02c",
+        "ordered_incident_sha256_list": "f6520c2ed598bb4ee0df74730eb69534b5726befe5d5554ac4daae10da6ddf3a"
+      },
+      "selection": {
+        "frame_index": 403,
+        "start_usec": 16405045,
+        "end_usec": 16749445,
+        "wall_usec": 344400,
+        "phase_start_usec": 16491546,
+        "phase_end_usec": 16792917,
+        "before_phase_usec": 86501,
+        "bridge": {
+          "screens": [
+            "home",
+            "weather"
+          ],
+          "diagnostic_query": false,
+          "counter_changes": {
+            "nodes": 600.0,
+            "objects": 1714.0,
+            "pipeline_canvas": 2.0,
+            "pipelines": 155.0,
+            "resources": 16.0
+          }
+        }
+      },
+      "loading": {
+        "frame_index": 989,
+        "start_usec": 22382435,
+        "end_usec": 25231461,
+        "wall_usec": 2849026,
+        "fly_requested_usec": 18811183,
+        "draw_observed_usec": 26827174,
+        "above_100_ms": 9,
+        "bridge": {
+          "screens": [
+            "loading"
+          ],
+          "diagnostic_query": true,
+          "tick": 0,
+          "counter_changes": {
+            "objects": 24.0,
+            "resources": 23.0
+          }
+        }
+      },
+      "menu_settings": {
+        "frame_index": 13728,
+        "start_usec": 192599564,
+        "end_usec": 192884125,
+        "wall_usec": 284561,
+        "request_usec": 192601536,
+        "opened_usec": 192889464,
+        "request_overlap_usec": 282589,
+        "bridge": {
+          "screens": [
+            "pause",
+            "settings"
+          ],
+          "diagnostic_query": false,
+          "tick": 38580,
+          "counter_changes": {
+            "nodes": 800.0,
+            "objects": 2504.0
+          }
+        }
+      },
+      "menu_controls": {
+        "frame_index": 14169,
+        "start_usec": 200003797,
+        "end_usec": 200460334,
+        "wall_usec": 456537,
+        "request_usec": 200005982,
+        "opened_usec": 200465385,
+        "request_overlap_usec": 454352,
+        "bridge": {
+          "screens": [
+            "pause",
+            "controls"
+          ],
+          "diagnostic_query": false,
+          "tick": 39067,
+          "counter_changes": {
+            "nodes": 2112.0,
+            "objects": 5861.0,
+            "resources": 4.0
+          }
+        }
+      },
+      "runway_circuit": {
+        "frame_index": 3036,
+        "start_usec": 48878879,
+        "end_usec": 48950101,
+        "wall_usec": 71222,
+        "above_33_333_ms": 92,
+        "above_50_ms": 13,
+        "cadence": {
+          "period_usec": 500000,
+          "half_width_usec": 50000,
+          "first_half_slow": 59,
+          "fitted_center_usec": 327256,
+          "second_half_slow_in_band": 33,
+          "second_half_slow": 33,
+          "second_half_all_in_band": 849,
+          "second_half_all": 5106,
+          "slow_frames_with_incident_row": 54,
+          "same_row_query_flag": 0
+        }
+      }
+    }
+  ]
+}

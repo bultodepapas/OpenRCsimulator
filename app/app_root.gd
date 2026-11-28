@@ -33,6 +33,7 @@ const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
+const WindPresets := preload("res://ui/wind_presets.gd") # UI-40q
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const ActiveAlerts := preload("res://ui/active_alerts.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
@@ -93,6 +94,9 @@ const AircraftLightingPolicy := preload("res://render/lighting/lighting_policy.g
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const FlightCompatibilityResolution := preload("res://render/flight_compatibility_resolution.gd")
+const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const FlagQuality := preload("res://render/flag_quality.gd")
@@ -115,6 +119,9 @@ var _popup_realign_pending := false
 ## Test seam. Production restart is temporary: a normal launch always retains Compatibility.
 var graphics_restart: Callable = Callable(self, "_perform_graphics_restart")
 var display_preferences: DisplayPreferences
+var _flight_dynamic_resolution: RefCounted
+var _show_light_graphics_notice := false
+var _flight_graphics_calibration: Node
 var _display_window_mode := "windowed"
 var _display_resolution := "auto"
 var _automatic_window_size := Vector2i(1280, 720)
@@ -207,6 +214,7 @@ var _loading_retained_home: Control
 var _loading_retained_random: CanvasLayer
 var _loading_started_usec := 0
 var _loading_phase_usec := 0
+var _loading_stage_started_usec := 0
 var _loading_phase := ""
 var _loading_resource_done := false
 var _loading_resource_ok := false
@@ -294,6 +302,12 @@ var _telemetry_prompted := false
 var _telemetry_home_note := ""
 ## The renderer_unavailable session fact was checked (once per session, when collection is first on).
 var _telemetry_renderer_noted := false
+var _telemetry_graphics_values: Dictionary = {}
+var _telemetry_graphics_profile := "unknown"
+var _telemetry_graphics_revision := 0
+var _telemetry_reset_source: WeakRef
+var _telemetry_reset_signal: StringName
+var _telemetry_activity_revision := 0
 ## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
 var window_minimized_probe: Callable = func() -> bool:
 	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
@@ -311,6 +325,11 @@ var _update_later_tag := ""
 var _update_save_error: int = OK
 ## The editor and previous flight stay detached while a trial runs; return restores their exact state.
 var _workshop_screens: Array[Dictionary] = []
+## UI-40j: the Workshop reopens on the page last used in this app run.
+var _last_workshop_page := "setup"
+## UI-40q: the player's own (non-preset) wind, kept for the session when Home's Wind row cycles away from it.
+var _custom_wind: Dictionary = {}
+var _first_flight_hint_save_pending := false
 var _workshop_previous_flight: Node
 var _workshop_previous_keyboard: Callable
 var _workshop_previous_sky_transport: Dictionary = {}
@@ -453,8 +472,13 @@ func _ready() -> void:
 			{screen = DisplayServer.screen_get_size(screen), usable = DisplayServer.screen_get_usable_rect(screen).size,
 			cpu_threads = OS.get_processor_count(), arm64 = OS.has_feature("arm64"),
 			forward_plus = RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD,
-			output_pixels = AutoGraphicsPolicy.startup_output_pixels})
-		if display_preferences.apply_gpu_defaults(fresh_install) != OK:
+			output_pixels = AutoGraphicsPolicy.startup_output_pixels,
+			dynamic_resolution_supported = FlightDynamicResolution.supports(ui_window),
+			compatibility_adaptation_supported = FlightDynamicResolution.supports_compatibility(ui_window),
+			metalfx_spatial_available = OS.get_name() == "macOS" and Reconstruction.runtime_capabilities().metalfx_spatial})
+		var recommends_light_graphics: bool = DisplayPreferences.first_run_defaults.get("ground_detail") == "simple"
+		_show_light_graphics_notice = fresh_install and recommends_light_graphics
+		if (fresh_install or not recommends_light_graphics) and display_preferences.apply_gpu_defaults(fresh_install) != OK:
 			push_warning("Could not store the recommended display settings; they apply to this session only.")
 	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
 	if DisplayServer.get_name() != "headless":
@@ -515,6 +539,7 @@ func _process(_delta: float) -> void:
 	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
 	_tick_telemetry_prompt()
+	_tick_flight_dynamic_resolution()
 	if not _home_scene_preparation_busy():
 		if _home_rebuild_queued:
 			_flush_home_scene_rebuild()
@@ -523,6 +548,31 @@ func _process(_delta: float) -> void:
 	# The shell owns the window viewport for Home and Home-started flights. Direct
 	# flights leave has_home false and are monitored by main.gd instead.
 	Reconstruction.guard_runtime_failure(get_viewport())
+
+
+func _tick_flight_dynamic_resolution() -> void:
+	if display_preferences == null:
+		return
+	var config: Dictionary = display_preferences.config
+	var target := int(config.get("dynamic_resolution_fps", 0))
+	if _flight_dynamic_resolution == null:
+		if target == 0:
+			return
+		if FlightDynamicResolution.supports(get_viewport()):
+			_flight_dynamic_resolution = FlightDynamicResolution.new()
+		elif FlightDynamicResolution.supports_compatibility(get_viewport()):
+			_flight_dynamic_resolution = FlightCompatibilityResolution.new()
+		else:
+			return
+	var has_session := has_home and is_instance_valid(flight) and flight.session != null
+	var active: bool = has_session and not _loading_active and not _quit_audio_pending \
+		and not is_instance_valid(_flight_graphics_calibration) and flight.session.sim != null \
+		and not flight.session.sim.paused and flight.session.holds.is_empty() and screens.top() == null
+	var window := get_window()
+	if active:
+		active = window != null and window.mode != Window.MODE_MINIMIZED \
+			and DisplayServer.window_can_draw(window.get_window_id()) and bool(window_focus_probe.call())
+	_flight_dynamic_resolution.tick(get_viewport(), flight.session.get_instance_id() if has_session else 0, active, config)
 
 
 func _frame_generation_boundary(reason: String) -> void:
@@ -601,9 +651,12 @@ func shutdown_home_flight_preparation() -> void:
 	home_flight_preparation.drained = true
 
 
-## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
+## Flight arguments select the technical route. The graphics experiment opens the normal menu.
 static func wants_direct_flight(args: PackedStringArray) -> bool:
-	return not args.is_empty()
+	for argument: String in args:
+		if argument != FlightDynamicResolution.EXPERIMENT_FLAG:
+			return true
+	return false
 
 
 ## Direct-flight route selector. Plane arguments remain parsed by main.gd; Home supplies its selected catalog ID.
@@ -857,7 +910,8 @@ func _install_home(setup: Dictionary) -> void:
 	home.set_livery_preferences(preferences.get("liveries", {}))
 	home.set_aircraft(aircraft)
 	home.set_start_preferences(preferences.get("start_choice", Preferences.DEFAULTS.start_choice),
-		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice))
+		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice),
+		preferences.get("airship_start_choice", Preferences.DEFAULTS.airship_start_choice))
 	if not str(setup.get("activity", "")).is_empty():
 		home.set_activity(setup.activity)
 	home.set_weather_config(home_weather)
@@ -888,6 +942,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.statistics_requested.connect(open_statistics)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
+	home.wind_preset_requested.connect(set_wind_preset)
 	home.failures_requested.connect(open_failures_settings)
 	home.trim_practice_requested.connect(open_trim_practice_settings)
 	home.companions_requested.connect(open_companions_settings)
@@ -982,21 +1037,44 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 func start_airship(skin_id: String = "") -> void:
 	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active or home_build_pending:
 		return
+	if ground_vehicle != null or flight != null:
+		return
+	var departing_home := home
+	if departing_home != null and not screens.is_top("home"):
+		return
+	var staged := departing_home != null and flight_loading_enabled
+	if staged:
+		_loading_active = true
+		_loading_cancelled = false
+		_loading_quit_requested = false
+		_loading_focus_lost = false
+		_loading_started_usec = Time.get_ticks_usec()
+		last_flight_loading = {status = "loading", phases = [], aircraft = "rc-blimp-5m", landscape = landscape_id}
+		_loading_screen = FlightLoading.new(departing_home.theme)
+		_loading_screen.configure("%s · %s" % [tr(VehicleRoster.short_name("rc-blimp-5m")), departing_home.start_button.text])
+		_loading_screen.show_preparation_notice(false)
+		_loading_screen.cancel_requested.connect(cancel_flight_loading)
+		screens.push("loading", _loading_screen, null, false)
+		if not await _flight_loading_checkpoint("Preparing resources"):
+			if is_inside_tree():
+				_cancel_loading_before_candidate(departing_home)
+			return
 	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
 		_home_preparation_route_pending = true
 		await shutdown_home_flight_preparation()
 		_home_preparation_route_pending = false
 		_home_prefetch_suspended = false
-		if not is_inside_tree() or not screens.is_top("home") or _home_preparation_quit_pending or _loading_active:
+		if not is_inside_tree() or _home_preparation_quit_pending:
 			return
-	if ground_vehicle != null or flight != null:
+		if not staged and not screens.is_top("home"):
+			return
+	if staged and not await _flight_loading_checkpoint("Checking landscape"):
+		if is_inside_tree():
+			_cancel_loading_before_candidate(departing_home)
 		return
 	if skin_id.is_empty():
 		skin_id = home.airship_skin_id if home != null else "tiburon-blanco"
-	var departing_home := home
-	if departing_home != null and not screens.is_top("home"):
-		return
-	if departing_home != null:
+	if departing_home != null and not staged:
 		screens.pop(false, false)
 	if home_scene != null:
 		remove_child(home_scene)
@@ -1008,6 +1086,12 @@ func start_airship(skin_id: String = "") -> void:
 	if candidate != null:
 		candidate.departure_managed = true
 		candidate.skin_id = skin_id
+		if departing_home != null:
+			candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(display_preferences.config)
+			candidate.start_index = 1 if departing_home.start_choice == "runway" else 0
+		if staged:
+			candidate.startup_checkpoint = _flight_loading_checkpoint
+			candidate.process_mode = Node.PROCESS_MODE_DISABLED
 		candidate.field_path = field_path
 		candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 		candidate.night_options = _night_options_from_preferences()
@@ -1017,18 +1101,50 @@ func start_airship(skin_id: String = "") -> void:
 			candidate.controller_profile_for = Callable(controllers, "profile_for_device")
 			candidate.controller_confirmation = Callable(controllers, "_confirmed_gamepad_connection")
 		add_child(candidate)
+		if staged:
+			await candidate.prepare_activity()
+			if not is_inside_tree():
+				return
+			if _loading_cancelled:
+				remove_child(candidate)
+				candidate.queue_free()
+				_cancel_loading_before_candidate(departing_home, "", true)
+				return
+			candidate.process_mode = Node.PROCESS_MODE_INHERIT
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():
+			if staged:
+				_loading_screen.set_committing()
+				_remove_flight_loading_screen()
+				screens.pop(false, false)
+				_finish_flight_loading("ready")
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_airship_skin = skin_id
+			if departing_home != null and preferences.airship_start_choice != departing_home.airship_start_preference:
+				preferences.airship_start_choice = departing_home.airship_start_preference
+				var saved: Error = Preferences.save_to(preferences_path, preferences)
+				if saved != OK:
+					_settings_note = tr("Could not save settings (error %d).") % saved
+					candidate.hud.flash(_settings_note)
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
+			if departing_home != null:
+				ground_vehicle.skin_changed.connect(_save_activity_airship_skin)
+				if (not staged or not _loading_focus_lost) and window_focus_probe.call():
+					ground_vehicle.handle_action("resume")
+				else:
+					ground_vehicle.hud.show_menu(tr("Window focus lost. Resume when ready."), true)
+				if ground_vehicle.hud.menu_visible:
+					ground_vehicle.hud.resume_button.grab_focus()
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
 			home_scene = null
 			return
 		remove_child(candidate)
 		candidate.queue_free()
+	if staged:
+		_cancel_loading_before_candidate(departing_home, error, true)
+		return
 	if home_scene != null:
 		add_child(home_scene)
 		home_scene.camera.make_current()
@@ -1039,6 +1155,14 @@ func start_airship(skin_id: String = "") -> void:
 	else:
 		printerr(error)
 		get_tree().quit(ERR_CANT_CREATE)
+
+
+func _save_activity_airship_skin(skin: String) -> void:
+	selected_airship_skin = skin
+	preferences.airship_skin = skin
+	var error := Preferences.save_to(preferences_path, preferences)
+	if error != OK:
+		ground_vehicle.hud.flash(tr("Could not save settings (error %d).") % error)
 
 
 ## DR-36a: the experimental FPV quad occupies the same exclusive activity slot as the ground vehicles and the blimp,
@@ -1263,12 +1387,15 @@ func open_livery_picker(from: Control = null) -> void:
 	dialog.create_skin_requested.connect(open_skin_tools)
 	dialog.load_skin_requested.connect(open_skin_tools.bind(true))
 	dialog.selected.connect(func(id: String) -> void:
-		close_livery_picker()
+		# UI-40c: try-on — the paint applies at once and the panel stays open beside the model.
 		if home == null or home.selected_id() != vehicle_id:
+			close_livery_picker()
 			return
 		var resolved: String = id if not home.activity_id.is_empty() else AirplaneBuilder.resolve_livery_choice(choices, id)
 		if resolved != home.livery_id:
 			set_livery(id)
+		if is_instance_valid(dialog):
+			dialog.mark_selected(id)
 	)
 	if not screens.push("liveries", dialog, from): dialog.free()
 
@@ -1365,6 +1492,34 @@ func set_time_of_day(preset: String) -> bool:
 	_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	return true
+
+
+## UI-40q: Home's one-step wind preset. The same weather and storage rules as Apply in Conditions with only that preset
+## chosen: the air and, for a selected rotorcraft, the saved airplane turbulence stay as they were. Returns whether
+## the preset is now in effect.
+func set_wind_preset(id: String) -> bool:
+	if _loading_active or home == null or not screens.is_top("home"):
+		return false
+	var selected_aircraft := str(preferences.get("aircraft", Preferences.DEFAULTS.aircraft))
+	var saved: Dictionary = WeatherSettings.validate(preferences.get("weather_config", WeatherSettings.defaults())).config
+	var shown: Dictionary = weather_for_aircraft(home.aircraft_id, saved)
+	if id == WindPresets.CUSTOM_ID:
+		if _custom_wind.is_empty():
+			return false
+		preferences.weather_config = _custom_wind.duplicate(true) # exactly as the player left it
+		home.set_weather_config(weather_for_aircraft(selected_aircraft, _custom_wind))
+		_report_selection_save(Preferences.save_to(preferences_path, preferences))
+		return true
+	var applied: Dictionary = WindPresets.apply(shown, id)
+	if applied.is_empty():
+		return false
+	if WindPresets.current_id(shown, Catalog.is_rotorcraft(home.aircraft_id)).is_empty():
+		_custom_wind = saved.duplicate(true) # one press must not lose an authored wind
+		home.custom_wind_available = true
+	preferences.weather_config = _weather_keeping_saved_turbulence(selected_aircraft, applied).duplicate(true)
+	home.set_weather_config(weather_for_aircraft(selected_aircraft, applied))
+	_report_selection_save(Preferences.save_to(preferences_path, preferences))
 	return true
 
 
@@ -1785,6 +1940,7 @@ func _attach_graphics_calibration() -> void:
 	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels, automatic_level):
 		return
 	var calibration := AutoCalibration.new(flight.session, adapter, SceneDetail.level())
+	_flight_graphics_calibration = calibration
 	calibration.finished.connect(func(result: Dictionary) -> void:
 		SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
 		print("Graphics calibration: ", JSON.stringify(result)))
@@ -1856,15 +2012,26 @@ func _flight_loading_checkpoint(stage: String) -> bool:
 	if _loading_cancelled or not is_inside_tree():
 		return false
 	var now := Time.get_ticks_usec()
-	if not _loading_phase.is_empty():
-		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
+	_record_flight_loading_stage(now)
 	_loading_phase = stage
+	_loading_stage_started_usec = now
 	_loading_screen.set_stage(stage)
 	await _flight_loading_draw()
 	if not last_flight_loading.has("feedback_usec"):
 		last_flight_loading.feedback_usec = Time.get_ticks_usec() - _loading_started_usec
 	_loading_phase_usec = Time.get_ticks_usec()
 	return not _loading_cancelled and is_inside_tree()
+
+
+func _record_flight_loading_stage(ended_usec: int) -> void:
+	if _loading_phase.is_empty():
+		return
+	last_flight_loading.phases.append({
+		stage = _loading_phase,
+		started_usec = _loading_stage_started_usec,
+		checkpoint_wait_usec = _loading_phase_usec - _loading_stage_started_usec,
+		work_usec = ended_usec - _loading_phase_usec,
+	})
 
 
 func _prepare_flight_resource(path: String) -> bool:
@@ -1950,8 +2117,7 @@ func _remove_flight_loading_screen() -> void:
 func _finish_flight_loading(outcome: String) -> void:
 	_loading_scene_resource = null
 	var now := Time.get_ticks_usec()
-	if not _loading_phase.is_empty():
-		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
+	_record_flight_loading_stage(now)
 	last_flight_loading.status = outcome
 	last_flight_loading.total_usec = now - _loading_started_usec
 	_loading_phase = ""
@@ -1962,7 +2128,7 @@ func _finish_flight_loading(outcome: String) -> void:
 		quit_app.call_deferred()
 
 
-func _cancel_loading_before_candidate(departing_home: Control, error := "") -> void:
+func _cancel_loading_before_candidate(departing_home: Control, error := "", restore_world := false) -> void:
 	if is_instance_valid(_home_preview_resources):
 		_home_preview_resources.cancel_for(self, false)
 	if home_scene != null and not home_scene.is_inside_tree():
@@ -1971,6 +2137,9 @@ func _cancel_loading_before_candidate(departing_home: Control, error := "") -> v
 	if home_scene != null:
 		home_scene.retain_resources_on_exit = false
 		home_scene.resume_preview()
+		if restore_world:
+			Conditions.session_preset = departing_home.time_of_day
+			_rebuild_home_scene()
 	_remove_flight_loading_screen()
 	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % tr(error)
 	if not error.is_empty():
@@ -1996,6 +2165,9 @@ func open_settings(from: Control = null) -> void:
 	var window_checkpoint := _capture_display_window_state()
 	_display_preview_checkpoint = window_checkpoint
 	settings.presentation_committed.connect(func() -> void:
+		if _show_light_graphics_notice and DisplayPreferences.graphics_profile(display_preferences.config) == "custom":
+			_show_light_graphics_notice = false
+			_refresh_basic_graphics_notice(display_preferences.config)
 		_automatic_window_size = get_window().size if _display_window_mode == "windowed" else _windowed_size
 		window_checkpoint.clear()
 		window_checkpoint.merge(_capture_display_window_state()))
@@ -2106,13 +2278,15 @@ static func apply_master_volume(level: float) -> void:
 
 func _refresh_basic_graphics_notice(config: Dictionary) -> void:
 	if home != null and home.is_node_ready():
-		home.set_basic_graphics_notice(preferences_path == Preferences.DEFAULT_PATH and
-				AutoGraphicsPolicy.basic_settings_active(DisplayPreferences.first_run_defaults, config))
+		home.set_basic_graphics_notice(_show_light_graphics_notice and
+				DisplayPreferences.graphics_profile(config) == "current_default")
 
 
 func _apply_presentation(config: Dictionary) -> void:
+	_remember_telemetry_graphics(config)
 	_refresh_basic_graphics_notice(config)
 	ShadowSettings.apply(config)
+	FieldDetailPreferences.apply(get_tree(), config)
 	AircraftLightingPolicy.apply(config)
 	if is_instance_valid(menu_audio):
 		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))
@@ -2199,6 +2373,7 @@ func _apply_presentation(config: Dictionary) -> void:
 ## A successful Restore changes Automatic's evidence after its preview was applied. Refresh only the
 ## presentation that follows Scene detail; preserve reconstruction receipts, camera state and window geometry.
 func _apply_calibration_reset(config: Dictionary) -> void:
+	_remember_telemetry_graphics(config, true)
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	_refresh_scene_detail_dependents()
 
@@ -3085,6 +3260,14 @@ func _on_overlay_settings_changed(settings: Dictionary) -> void:
 
 func _on_first_flight_hint_done() -> void:
 	preferences.first_flight_hint_seen = true
+	# The file write (~15 ms) waits for the next Pause, the end of the flight or exit, never a flying frame.
+	_first_flight_hint_save_pending = true
+
+
+func _flush_first_flight_hint() -> void:
+	if not _first_flight_hint_save_pending:
+		return
+	_first_flight_hint_save_pending = false
 	Preferences.save_to(preferences_path, preferences) # a failed save only means the hint shows again next time
 
 
@@ -3124,7 +3307,6 @@ func _start_telemetry() -> void:
 	telemetry.consent_path = telemetry_consent_path
 	telemetry.locale = TranslationServer.get_locale()
 	telemetry.context_provider = _telemetry_context
-	telemetry.graphics_profile_provider = _telemetry_graphics_profile
 	add_child(telemetry)
 	telemetry.state_changed.connect(_on_telemetry_state_changed)
 	if statistics_service != null and statistics_service.has_signal("flight_events_accepted"):
@@ -3196,7 +3378,17 @@ func _push_telemetry_state() -> void:
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
 	_refresh_telemetry_home_note()
-	if not _telemetry_renderer_noted and is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON:
+	var info := screens.get_screen("telemetry_info") as TelemetryScreen if screens != null else null
+	if is_instance_valid(info) and info.mode == "preview":
+		info.set_pending_data(telemetry.preview_text() if _telemetry_is_on() else "")
+	if not _telemetry_is_on():
+		_telemetry_graphics_values.clear()
+		_telemetry_graphics_profile = "unknown"
+		_telemetry_graphics_revision = 0
+		_telemetry_activity_revision = 0
+		_bind_telemetry_reset(null, &"")
+		return
+	if not _telemetry_renderer_noted:
 		_telemetry_renderer_noted = true # a session fact: checked once, counted once, when collection is on
 		if _telemetry_renderer_unavailable():
 			telemetry.note_error("renderer_unavailable")
@@ -3222,9 +3414,40 @@ func _telemetry_renderer_unavailable() -> bool:
 	return failed is Dictionary and str(failed.get("build", "")) == RendererGuard.build_identity()
 
 
-## "current_default", "custom" or "unknown" for the graphics choices Restore graphics defaults resets.
-func _telemetry_graphics_profile() -> String:
-	return DisplayPreferences.graphics_profile(display_preferences.config) if display_preferences != null else "unknown"
+func _telemetry_is_on() -> bool:
+	return is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON
+
+
+## Settings can preview and revert a configuration before it is saved. Capture the applied values here.
+func _remember_telemetry_graphics(config: Dictionary, calibration_changed := false) -> void:
+	if not _telemetry_is_on():
+		return
+	var values := {"lens": LensSettings.validate(config), "camera": DisplayPreferences.CameraSettings.normalized(config)}
+	for key: String in DisplayPreferences.graphics_default_keys():
+		values[key] = config.get(key)
+	var profile := DisplayPreferences.graphics_profile(config)
+	if calibration_changed or values != _telemetry_graphics_values or profile != _telemetry_graphics_profile:
+		_telemetry_graphics_values = values
+		_telemetry_graphics_profile = profile
+		_telemetry_graphics_revision += 1
+
+
+func _bind_telemetry_reset(source: Object, reset_signal: StringName) -> void:
+	var previous: Object = _telemetry_reset_source.get_ref() if _telemetry_reset_source != null else null
+	if previous == source:
+		return
+	if is_instance_valid(previous):
+		previous.disconnect(_telemetry_reset_signal, _note_telemetry_reset)
+	_telemetry_reset_source = null
+	if is_instance_valid(source) and source.has_signal(reset_signal):
+		source.connect(reset_signal, _note_telemetry_reset)
+		_telemetry_reset_source = weakref(source)
+		_telemetry_reset_signal = reset_signal
+
+
+func _note_telemetry_reset() -> void:
+	# The next observation closes the old window outside the vehicle's reset publication.
+	_telemetry_activity_revision += 1
 
 
 ## Home states the effective telemetry choice on its note line only while that line is free or still shows the
@@ -3260,12 +3483,21 @@ func _telemetry_note() -> String:
 ## forces or replay data. Loading, menus over an activity, a paused tree and an unfocused or minimized window are
 ## not eligible (the service closes its open window and re-primes its clock).
 func _telemetry_context() -> Dictionary:
+	if not _telemetry_is_on():
+		return {}
+	if _telemetry_graphics_values.is_empty():
+		# Admission can happen inside Settings while a preview is applied but not yet saved.
+		var settings := screens.get_screen("settings") as SettingsScreen
+		var config := settings.presentation_snapshot() if is_instance_valid(settings) else display_preferences.config
+		_remember_telemetry_graphics(config)
 	var mode := "other"
 	var vehicle := ""
 	var custom := false
 	var simulated := -1.0
+	var simulation_paused := false
 	var fixed_wing := false
 	var physics_backend := "unknown"
+	var activity_id := 0
 	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
 	# A vehicle activity begins once its session runs: not while it loads behind the loading screen, when neither its
 	# simulated clock nor the statistics classifier exists yet (the summary would be incomplete and unclassified).
@@ -3284,12 +3516,22 @@ func _telemetry_context() -> Dictionary:
 			vehicle = "rc-blimp-5m"
 		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
 		if session is Object and is_instance_valid(session):
+			activity_id = session.get_instance_id()
+			if activity.has_signal(&"activity_reset"):
+				_bind_telemetry_reset(activity, &"activity_reset")
+			else:
+				_bind_telemetry_reset(session, &"resetting")
+			var sim: Variant = session.get("sim")
+			# Manually stepped ground, multirotor and airship sessions own their pause flag.
+			# Fixed-wing and helicopter sessions let the kernel own it.
+			var paused: Variant = session.get("paused")
+			if not paused is bool and sim is Object and is_instance_valid(sim):
+				paused = sim.get("paused")
+			simulation_paused = not paused is bool or bool(paused)
 			if session.has_method("time_s"):
 				simulated = float(session.call("time_s"))
-			else:
-				var sim: Variant = session.get("sim")
-				if sim is Object and is_instance_valid(sim) and sim.has_method("time"):
-					simulated = float(sim.call("time"))
+			elif sim is Object and is_instance_valid(sim) and sim.has_method("time"):
+				simulated = float(sim.call("time"))
 			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
 				and statistics_service.observing(session)
 			# Telemetry v2: only the backend kind (native_fallback.gd), never the refusal text.
@@ -3299,11 +3541,14 @@ func _telemetry_context() -> Dictionary:
 		mode = "workshop" # editing in the Workshop: measured, but not a vehicle activity
 	elif home != null or home_build_pending:
 		mode = "home"
+	if activity == null and not _loading_active:
+		_bind_telemetry_reset(null, &"")
 	var window := get_window()
 	var minimized := bool(window_minimized_probe.call())
 	var menu_over_activity := activity != null and screens.top() != null
 	var eligible: bool = not _loading_active and not home_build_pending and not screens.is_top("loading") \
-		and not get_tree().paused and not menu_over_activity and not minimized and bool(window_focus_probe.call())
+		and not get_tree().paused and not simulation_paused and not menu_over_activity \
+		and not minimized and bool(window_focus_probe.call())
 	var input_class := "unknown"
 	if controllers != null and controllers.get("registry") != null:
 		var flight_device: int = controllers.registry.selected_device_id("flight")
@@ -3316,7 +3561,9 @@ func _telemetry_context() -> Dictionary:
 		"simulated_seconds": simulated, "physics_backend": physics_backend,
 		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
 		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
-		"input_class": input_class}
+		"input_class": input_class, "graphics_profile": _telemetry_graphics_profile,
+		"graphics_revision": _telemetry_graphics_revision, "activity_id": activity_id,
+		"activity_revision": _telemetry_activity_revision}
 
 
 ## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).
@@ -3488,6 +3735,7 @@ func open_pause() -> void:
 		return
 	if flight == null or pause_menu != null or _quit_audio_pending:
 		return
+	_flush_first_flight_hint()
 	_release_controller_holds()
 	var session: Node = flight.session
 	session.cancel_calibration()
@@ -3510,13 +3758,14 @@ func open_pause() -> void:
 	pause_menu.set_companion_config(_flight_companion_config())
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
-	pause_menu.time_of_day_button.text = tr("Sky and lighting")
+	pause_menu.time_of_day_button.text = tr("Time & sky") # UI-40q (UI-40 CO-1): the Conditions tabs' words
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.active_alerts_requested.connect(open_active_alerts)
 	pause_menu.statistics_requested.connect(open_statistics)
 	pause_menu.statistics_button.visible = statistics_service != null and not trial_pause \
 		and session.has_signal("statistics_lifecycle")
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
+	pause_menu.set_flight_overlays(flight.get("_overlays")) # UI-40a: time, height and airspeed at the top
 	pause_menu.active_alerts_button.visible = flight.get("_overlays") != null \
 		and flight.get("_overlays").has_method("warning_snapshot")
 	pause_menu.end_requested.connect(end_flight)
@@ -3588,6 +3837,8 @@ func open_workshop(from: Control = null) -> void:
 	editor.set("trial_conditions", tr("Trial field: %s") % field_name + "\n" + tr("Wind: %s") % WeatherSettings.summary(weather)
 		+ "\n" + tr("Light: %s") % TimeOfDay.format_time(int(lighting.get("local_seconds", 43200)))
 		+ "\n" + tr("Full fuel · normal control rates · current controller"))
+	editor.set("initial_page", _last_workshop_page)
+	editor.tree_exiting.connect(func() -> void: _last_workshop_page = str(editor.call("current_page")))
 	editor.closed.connect(close_workshop)
 	editor.trial_requested.connect(_start_workshop_trial)
 	screens.push("workshop", editor, from)
@@ -4009,6 +4260,9 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	_flush_first_flight_hint()
+	if _flight_dynamic_resolution != null:
+		_flight_dynamic_resolution.stop(get_viewport())
 	if is_instance_valid(statistics_service):
 		statistics_service.close()
 	if is_instance_valid(_home_flight_preparation):
@@ -4573,6 +4827,12 @@ func _weather_keeping_saved_turbulence(aircraft_id: String, applied: Dictionary)
 	var merged: Dictionary = weather_for_aircraft(aircraft_id, applied)
 	if saved.has("turbulence_rms_mps") and merged.has("turbulence_rms_mps"):
 		merged.turbulence_rms_mps = saved.turbulence_rms_mps.duplicate()
+	elif WeatherSettings.has_turbulence(saved):
+		# UI-40q: a v1 wind (Calm, Steady breeze…) has no turbulence fields; carry the airplane's over unchanged.
+		merged.format = WeatherSettings.TURBULENCE_FORMAT
+		merged.turbulence_rms_mps = saved.turbulence_rms_mps.duplicate()
+		merged.turbulence_tau_s = saved.turbulence_tau_s
+		merged.turbulence_seed = saved.turbulence_seed
 	var checked := WeatherSettings.validate(merged)
 	return checked.config if checked.ok else weather_for_aircraft(aircraft_id, applied)
 
@@ -4870,6 +5130,7 @@ func _flight_identity(trial: bool) -> String:
 
 ## End a flight or return from a trial only after a trace is saved or explicitly resolved.
 func end_flight() -> void:
+	_flush_first_flight_hint()
 	if _loading_active:
 		cancel_flight_loading()
 		return

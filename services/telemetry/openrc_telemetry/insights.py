@@ -118,12 +118,12 @@ def daily_cells(payloads):
                 entry["sessions"].add(session)
                 m = entry["metrics"]
                 m["windows"] += 1
-                m["interval_sum_us"] += event["interval_sum_us"]
-                m["rendered_frames"] += event["rendered_frames"]
-                m["interval_count"] += event["interval_count"]
-                m["excluded_gap_count"] += event["excluded_gap_count"]
+                m["interval_sum_us"] += int(event["interval_sum_us"])
+                m["rendered_frames"] += int(event["rendered_frames"])
+                m["interval_count"] += int(event["interval_count"])
+                m["excluded_gap_count"] += int(event["excluded_gap_count"])
                 for i, count in enumerate(event["interval_histogram"]):
-                    m[f"hist{i}"] += count
+                    m[f"hist{i}"] += int(count)
         elif name == "activity_summary":
             backend = event.get("physics_backend", "unknown")
             for table, dims in ((USAGE_TABLE, (event["vehicle_id"],)), (BACKEND_TABLE, (event["vehicle_id"], backend))):
@@ -136,16 +136,16 @@ def daily_cells(payloads):
                 m = entry["metrics"]
                 m["summaries"] += 1
                 m["complete_summaries"] += 1 if event["complete_observation"] else 0
-                m["active_seconds"] += event["active_seconds"]
-                m["simulated_seconds"] += event["simulated_seconds"]
+                m["active_seconds"] += int(event["active_seconds"])
+                m["simulated_seconds"] += int(event["simulated_seconds"])
                 if event["classification"] == "accepted_fixed_wing":
                     m["classified_summaries"] += 1
                     for field in ("takeoffs", "landings", "aircraft_crashes"):
-                        m[field] += event[field] or 0
+                        m[field] += int(event[field] or 0)
         elif name == "error_count":
             entry = cell(ERROR_TABLE, (event["category"],))
             entry["sessions"].add(session)
-            entry["metrics"]["count"] += event["count"]
+            entry["metrics"]["count"] += int(event["count"])
     return [(table, dims, len(entry["sessions"]), entry["metrics"])
             for (table, dims), entry in sorted(cells.items()) if entry["sessions"]]
 

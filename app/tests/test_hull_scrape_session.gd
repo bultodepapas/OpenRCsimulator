@@ -34,6 +34,13 @@ func body(f: Node) -> PackedFloat64Array:
 	for i in range(0,f.aircraft.model.crash_hull.size(),3):
 		extent=maxf(extent,M.q_rotate(q,f.aircraft.model.crash_hull.slice(i,i+3))[2])
 	return RB.make_state(M.v3(0,0,.001-extent),M.q_rotate(M.q_conj(q),M.v3(5,0,0)),q,M.v3(0,0,0))
+## The touching pose 2 cm higher, sliding forward at 5 m/s and sinking at 1 m/s: a few ticks clear of the ground.
+func _descent(f: Node) -> PackedFloat64Array:
+	var q := M.q_from_euler(0.0,0.0,deg_to_rad(40.0))
+	var extent := -INF
+	for i in range(0,f.aircraft.model.crash_hull.size(),3):
+		extent=maxf(extent,M.q_rotate(q,f.aircraft.model.crash_hull.slice(i,i+3))[2])
+	return RB.make_state(M.v3(0,0,-.02-extent),M.q_rotate(M.q_conj(q),M.v3(5,0,1)),q,M.v3(0,0,0))
 func director(f: Node, enabled := true) -> Node:
 	var aircraft := Node3D.new()
 	aircraft.name="airplane"
@@ -203,10 +210,91 @@ func _run() -> void:
 	check("pre-setup reconnect/disconnect never dereferences null Simulation",cold.sim==null and count(cold.resetting,cold_director.get_instance_id())==0)
 	cleanup(cold_director);cold.free()
 	check("pre-setup lifecycle frees the same bounded bus/pool",AudioServer.bus_count==before_cold)
+	await _airborne_cadence()
 	await _default_field_control()
 	print("Hull scrape Session: %d checks, %d failed"%[checks,failed])
 	print("Hull scrape Session complete")
 	quit(1 if failed else 0)
+
+
+## F1: contact-free accepted ticks are observed once per rendered frame; touching ticks at once, with continuity.
+func _airborne_cadence() -> void:
+	var f:=session()
+	check("airborne cadence fixture installs the field",f.set_field(Field.load_from().field))
+	var high:=body(f)
+	high[RB.POS+2]-=20.0 # 20 m above the touching wingtip pose: no hull point can reach the ground
+	check("airborne accepted body reset",f.sim.reset(high))
+	f.sim.set_paused(false)
+	var d:=director(f)
+	await process_frame
+	var primed: int=d.audio.hull_scrape_diagnostics().captured
+	var primed_tick: int=d.audio.hull_scrape_diagnostics().tick
+	for _i in 3:f.sim.step()
+	d.update(1./60.)
+	check("contact-free ticks and frames observe nothing",f.soft_contacts.is_empty() and d.audio.hull_scrape_diagnostics().captured==primed and d.audio.hull_scrape_diagnostics().tick==primed_tick,str(d.audio.hull_scrape_diagnostics()))
+	var bound: int=d._hull_cadence.max_interval_ticks
+	while f.sim.tick<primed_tick+bound-1:f.sim.step()
+	check("the bound has not yet observed",d.audio.hull_scrape_diagnostics().captured==primed)
+	f.sim.step()
+	check("the 0.1 s bound observes the accepted tick with continuity",d.audio.hull_scrape_diagnostics().captured==primed+1 and d.audio.hull_scrape_diagnostics().tick==f.sim.tick and d._hull_cadence.since_tick==primed_tick)
+	cleanup(d);f.free()
+	# Touching ticks run at once and queue the same grains as historical per-tick observation.
+	var grains: Array[int]=[]
+	for every_frames: int in [1,0]:
+		var Cadence:GDScript=load("res://render/presentation_cadence.gd")
+		Cadence.override_every_frames=every_frames
+		var g:=session()
+		g.set_field(Field.load_from().field)
+		g.sim.reset(body(g))
+		g.sim.set_paused(false)
+		var gd:=director(g)
+		await process_frame
+		var touching_each_tick:=true
+		for _i in 18:
+			g.sim.step()
+			touching_each_tick=touching_each_tick and (g.soft_contacts.is_empty() or gd.audio.hull_scrape_diagnostics().tick==g.sim.tick)
+		check("touching ticks are observed at once (every_frames=%d)"%every_frames,touching_each_tick)
+		grains.append(gd.audio.hull_scrape_diagnostics().queued)
+		Cadence.override_every_frames=-1
+		cleanup(gd);g.free()
+	check("frame cadence queues the same contact grains as per-tick observation",grains[0]==grains[1] and grains[0]>0,str(grains))
+	# Descent: airborne ticks with frames between them, a pause while observations wait, then touchdown and
+	# sliding. Frame cadence must queue and emit exactly what per-tick observation does.
+	var outcomes: Array[Dictionary]=[]
+	for every_frames: int in [1,0]:
+		var Cadence:GDScript=load("res://render/presentation_cadence.gd")
+		Cadence.override_every_frames=every_frames
+		var g:=session()
+		g.set_field(Field.load_from().field)
+		check("descent fixture starts clear of the ground",g.sim.reset(_descent(g)))
+		g.sim.set_paused(false)
+		var gd:=director(g)
+		await process_frame
+		var airborne_steps:=0
+		var first_touch:=-1
+		var loaded_without_contacts:=0
+		var trace: Array=[]
+		for i in 60:
+			if i==2:
+				g.sim.set_paused(true)
+				g.sim.set_paused(false)
+			g.sim.step()
+			if g.soft_contacts.is_empty():
+				if first_touch<0:airborne_steps+=1
+			elif first_touch<0:
+				first_touch=g.sim.tick
+			var observation: Dictionary=g.hull_scrape_observation()
+			if observation.available and observation.contacts.any(func(row: Dictionary) -> bool: return row.friction_power_w>0.0) and g.soft_contacts.is_empty():
+				loaded_without_contacts+=1
+			if i%3==2:gd.update(1./60.)
+			var diagnostics: Dictionary=gd.audio.hull_scrape_diagnostics()
+			trace.append([diagnostics.queued,diagnostics.emitted,diagnostics.stale,diagnostics.overflow])
+		outcomes.append({airborne=airborne_steps,touch=first_touch,unmatched=loaded_without_contacts,trace=trace})
+		Cadence.override_every_frames=-1
+		cleanup(gd);g.free()
+	check("descent touches down after deferred airborne ticks",outcomes[0].airborne>=2 and outcomes[0].touch>0,str(outcomes[0].airborne))
+	check("every loaded friction row has a soft contact at its tick",outcomes[0].unmatched==0 and outcomes[1].unmatched==0)
+	check("descent grains, drains and drops match per-tick observation frame by frame",outcomes[0].trace==outcomes[1].trace and outcomes[0].trace.back()[1]>0,str(outcomes[0].trace.back()))
 
 
 func _default_field_control() -> void:

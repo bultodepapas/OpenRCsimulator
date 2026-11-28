@@ -8,6 +8,8 @@ const Library = preload("res://landscapes/phoenix_library.gd")
 const Panorama = preload("res://ui/phoenix_panorama.gdshader")
 const PANEL_YAW := [0.0, PI / 2.0, PI, -PI / 2.0, 0.0, 0.0]
 const PANEL_PITCH := [0.0, 0.0, 0.0, 0.0, PI / 2.0, -PI / 2.0]
+## UI-40q (UI-40 I-2): where each photo panel looks (yaw +90° turns right, pitch +90° looks up; see the panorama shader).
+const PANEL_NAMES := ["Ahead", "Right", "Behind", "Left", "Sky", "Ground"]
 
 var library_root := Library.ROOT
 var _files: FileDialog
@@ -90,7 +92,7 @@ func _ready() -> void:
 	preview_column.add_child(panels)
 	var group := ButtonGroup.new()
 	for index in 6:
-		var button := _button(panels, str(index + 1), _show_panel.bind(index))
+		var button := _button(panels, tr(PANEL_NAMES[index]), _show_panel.bind(index))
 		button.toggle_mode = true
 		button.button_group = group
 		button.tooltip_text = tr("Look toward panel %d") % (index + 1)
@@ -102,7 +104,7 @@ func _ready() -> void:
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status.max_lines_visible = 2
 	_status.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	_status.text = tr("Choose a Phoenix scenery file or folder, or reopen an installed preview.")
+	_status.text = tr("Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview.")
 	body.add_child(_status)
 	var install_actions := HBoxContainer.new()
 	body.add_child(install_actions)
@@ -128,8 +130,9 @@ func open_browser() -> void:
 	ok_button_text = tr("Close")
 	_search.placeholder_text = tr("Search scenery")
 	if _selection.is_empty() and _worker == null:
-		_status.text = tr("Choose a Phoenix scenery file or folder, or reopen an installed preview.")
+		_status.text = tr("Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview.")
 	for index in _face_buttons.size():
+		_face_buttons[index].text = tr(PANEL_NAMES[index])
 		_face_buttons[index].tooltip_text = tr("Look toward panel %d") % (index + 1)
 	_installed_sites = Library.entries(library_root)
 	_populate()
@@ -276,7 +279,7 @@ func _process(_delta: float) -> void:
 	elif _job == "scan":
 		_source_sites = result.get("sites", [])
 		_populate()
-		_status.text = tr("No Phoenix scenery was found in this source.") if _source_sites.is_empty() \
+		_status.text = tr("No Phoenix RC scenery was found in this source.") if _source_sites.is_empty() \
 			else tr("Choose a site to preview its panorama panels.")
 	else:
 		_preview = result
@@ -387,7 +390,7 @@ func _on_visibility_changed() -> void:
 	_source_sites.clear()
 	_sites.clear()
 	_clear_preview()
-	_status.text = tr("Choose a Phoenix scenery file or folder, or reopen an installed preview.")
+	_status.text = tr("Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview.")
 	_set_busy(_worker != null)
 
 

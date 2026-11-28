@@ -1,7 +1,11 @@
-# Pause menu (MENU-PLAN §3/§8, steps UI-02/UI-03). Shown over the frozen flight on its own CanvasLayer (above the
-# flight's HUD and panel layers). It never pauses anything itself: app_root holds the session ("menu") while it
-# is open. While open it swallows every key the GUI did not use, so flight shortcuts (R, T, K, P, F5...) never act
-# behind it; Esc goes back to the flight. Texts are English source strings (res://i18n/*.po).
+# Pause menu (MENU-PLAN §3/§8, steps UI-02/UI-03; UI-40a layout). Shown over the frozen flight on its own CanvasLayer
+# (above the flight's HUD and panel layers). It never pauses anything itself: app_root holds the session ("menu") while
+# it is open. While open it swallows every key the GUI did not use, so flight shortcuts (T, K, P, F5...) never act
+# behind it; Esc goes back to the flight and R runs the menu's own Restart. Texts are English source strings
+# (res://i18n/*.po).
+#
+# UI-40a (docs/research/menu-investigations/UI-40): every action is visible at once, in sections that say what they
+# affect (this flight, the next flight, the application), with the exits last and the flight's numbers at the top.
 extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
@@ -9,6 +13,7 @@ const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
+const Units := preload("res://render/overlays/units.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const FailureConfig := preload("res://failures/config.gd")
 
@@ -30,19 +35,19 @@ signal settings_requested(from: Control)
 signal quit_requested
 
 const LAYER := 10 # above the flight's HUD/panel CanvasLayers
-const WIDTH := 384
+const WIDTH := 432 # UI-40a: every action is visible; a little more width keeps the status lines short
 const LARGE_TEXT_SCALE := 1.5
 const MAX_TEXT_SCALE := 2.0
 const MAX_RAIL_VIEWPORT_RATIO := 0.45
+## UI-40a: below this logical height the less frequent rows fold under More options (1080p shows everything).
+const SHORT_HEIGHT := 1000.0
 const GAMEPAD_ATTENTION_DELAY := 1.0 # seconds a connected pad may stay unready before Pause offers its settings
 
 var continue_button: Button
 var restart_button: Button
 ## UI-34a (UI-30 AS-1): ends the flight through the End-flight transaction and opens the aircraft catalog.
 var change_aircraft_button: Button
-var session_options_button: Button
 var settings_button: Button
-var exit_options_button: Button
 var workshop_button: Button
 var time_of_day_button: Button
 var failure_settings_button: Button
@@ -55,11 +60,28 @@ var controls_button: Button
 ## UI-31 (UI-30 PS-2): the same destination, shown at the top only while the controller needs attention.
 var controller_recovery_button: Button
 var quit_button: Button
+## UI-40a: Radio & controls and Change aircraft, always shown.
+var essentials_container: VBoxContainer
+## UI-40a: the rest of "This flight" (sky, overlays, alerts); folded under More options on short windows.
 var session_options_container: VBoxContainer
+## UI-40a: shown only on short windows; opens the folded rows in place.
+var more_button: Button
+var _more_chevron: Control
+var _more_open := false
+var _short_layout := false
+## UI-40a: settings that apply to the next flight or restart (failures, companions); hidden when it has no rows.
+var next_flight_container: VBoxContainer
+var flight_heading: Label
+## UI-40a: Settings · Help, then Workshop · Statistics, side by side to keep Pause within one screen.
+var app_row: HBoxContainer
+var tools_row: HBoxContainer
+## UI-40a: Return to Home and Quit, always shown last.
 var exit_options_container: VBoxContainer
 var status_label: Label
 ## UI-34a: which aircraft and field this pause belongs to.
 var identity_label: Label
+## UI-40a: the last accepted flight numbers (time, height, airspeed) from the flight's overlays.
+var snapshot_label: Label
 var physics_label: Label
 var controller_value_label: Label
 var collective_control := false
@@ -73,8 +95,7 @@ var _failure_notifications_enabled := true
 var _failure_summary_disclosed := false
 var _controller_status_elapsed := 0.0
 var _controller_attention_elapsed := 0.0
-var _open_group := ""
-var _group_arrows := {} # group name -> disclosure chevron (UI-33)
+var _overlays: WeakRef
 var _panel: PanelContainer
 var _sidebar_fade: TextureRect
 var _identity_base := ""
@@ -120,7 +141,7 @@ func _init(can_end := true, trial_mode := false) -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(scroll)
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 8)
+	column.add_theme_constant_override("separation", 6)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -133,10 +154,15 @@ func _init(can_end := true, trial_mode := false) -> void:
 	identity_label.name = "Identity"
 	identity_label.visible = false
 	column.add_child(identity_label)
+	snapshot_label = _wrapped_label()
+	snapshot_label.name = "FlightSnapshot"
+	snapshot_label.visible = false
+	column.add_child(snapshot_label)
+	# UI-40a: the evaluator line stays available (DT-MAC-04n-R1) but sits under the exits, so it never pushes the
+	# recovery actions down; it is created here and moved to the end of the column below.
 	physics_label = _wrapped_label()
 	physics_label.name = "PhysicsBackend"
 	physics_label.visible = false
-	column.add_child(physics_label)
 	status_label = _wrapped_label()
 	column.add_child(status_label)
 	controller_value_label = _wrapped_label()
@@ -154,78 +180,129 @@ func _init(can_end := true, trial_mode := false) -> void:
 	controller_recovery_button.visible = false
 	controller_recovery_button.pressed.connect(func() -> void: controls_requested.emit(controller_recovery_button))
 	column.add_child(controller_recovery_button)
+	# Feedback about the last action (a restart that waits for the controls, a trace that was not saved) sits
+	# with the status, where the pilot is already looking.
+	note_label = _wrapped_label()
+	note_label.name = "Note"
+	note_label.visible = false
+	column.add_child(note_label)
 	continue_button = _button("Resume trial" if trial_mode else "Resume", "PrimaryButton", "Continue")
 	continue_button.custom_minimum_size.y = 56
 	continue_button.pressed.connect(func() -> void: continue_requested.emit())
+	_add_key_hint(continue_button, KEY_ESCAPE)
 	column.add_child(continue_button)
 	restart_button = _button("Restart trial" if trial_mode else "Restart flight", "QuietButton", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
+	restart_button.tooltip_text = "Back to the start with the same setup."
+	_add_key_hint(restart_button, KEY_R)
 	column.add_child(restart_button)
-	session_options_button = _disclosure_button("Session options", "SessionOptions")
-	session_options_button.pressed.connect(func() -> void: _toggle_group("session"))
-	column.add_child(session_options_button)
-	session_options_container = _option_group("SessionOptionsGroup", column)
-	active_alerts_button = _button("Review active alerts", "QuietButton", "ActiveAlerts")
-	active_alerts_button.visible = false # only flights with the alert manager can provide a sample
-	active_alerts_button.pressed.connect(func() -> void: active_alerts_requested.emit(active_alerts_button))
-	column.add_child(active_alerts_button)
-	settings_button = _button("Settings", "QuietButton", "Settings")
-	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
-	column.add_child(settings_button)
-
-	# UI-33 (UI-30 VC-4): this flight first, then the input setup, then what applies to the next flight.
-	time_of_day_button = _button("Time of day", "QuietButton", "TimeOfDay")
-	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
-	session_options_container.add_child(time_of_day_button)
-	overlays_button = _button("Flight overlays", "QuietButton", "Overlays") # HUD-06; hidden when the flight has none
-	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
-	overlays_button.visible = false
-	session_options_container.add_child(overlays_button)
-	statistics_button = _button("Statistics", "QuietButton", "Statistics")
-	statistics_button.pressed.connect(func() -> void: statistics_requested.emit(statistics_button, ""))
-	session_options_container.add_child(statistics_button)
-	controls_button = _button("Controls", "QuietButton", "ControllerSettings")
-	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
-	session_options_container.add_child(controls_button)
-	failure_settings_button = _button("Failure settings · next flight", "QuietButton", "Failures")
-	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
-	failure_settings_button.visible = false # the direct route has no next Home flight
-	session_options_container.add_child(failure_settings_button)
-	companions_button = _button("Flight companions", "QuietButton", "Companions")
-	companions_button.visible = false
-	companions_button.pressed.connect(func() -> void: companions_requested.emit(companions_button))
-	session_options_container.add_child(companions_button)
-	workshop_button = _button("Workshop", "QuietButton", "Workshop")
-	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
-	workshop_button.visible = not trial_mode
-	session_options_container.add_child(workshop_button)
-
-	help_button = _button("Help", "QuietButton", "Help")
-	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
-	column.add_child(help_button)
-	# Top-level beside the exit group: switching aircraft is the common way to leave a flight.
-	change_aircraft_button = _button("Change aircraft", "QuietButton", "ChangeAircraft")
-	change_aircraft_button.visible = false # the shell offers it where Home is the return destination
-	change_aircraft_button.pressed.connect(func() -> void: change_aircraft_requested.emit())
-	column.add_child(change_aircraft_button)
-	exit_options_button = _disclosure_button("Exit options", "ExitOptions")
-	exit_options_button.pressed.connect(func() -> void: _toggle_group("exit"))
-	column.add_child(exit_options_button)
-	exit_options_container = _option_group("ExitOptionsGroup", column)
 	end_button = _button("Return to Workshop" if trial_mode else "Return to Home", "QuietButton", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end
 	if trial_mode:
-		column.add_child(end_button)
-		column.move_child(end_button, restart_button.get_index() + 1)
-	else:
+		column.add_child(end_button) # a trial's way back is its main destination, right under Restart
+
+	# UI-40a: this flight — what changes now, then the way to another aircraft (which ends the flight).
+	flight_heading = _section_heading("THIS FLIGHT", "ThisFlightHeading")
+	column.add_child(flight_heading)
+	# Always shown: the input (the most used setup in an RC sim) and the way to another aircraft.
+	essentials_container = _section("FlightEssentials", column)
+	controls_button = _button("Radio & controls", "QuietButton", "ControllerSettings")
+	controls_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr() and the device name
+	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
+	Widgets.mark_row(controls_button, "open")
+	essentials_container.add_child(controls_button)
+	change_aircraft_button = _button("Change aircraft", "QuietButton", "ChangeAircraft")
+	change_aircraft_button.visible = false # the shell offers it where Home is the return destination
+	change_aircraft_button.tooltip_text = "Ends this flight and opens the aircraft catalog."
+	change_aircraft_button.pressed.connect(func() -> void: change_aircraft_requested.emit())
+	Widgets.mark_row(change_aircraft_button, "open")
+	essentials_container.add_child(change_aircraft_button)
+	# Short windows (below SHORT_HEIGHT logical px) fold the less frequent rows under one "More options" row, so
+	# Pause never scrolls at default text; 1080p and above show everything.
+	more_button = _button("More options", "QuietButton", "MoreOptions")
+	more_button.toggle_mode = true
+	more_button.visible = false
+	more_button.pressed.connect(func() -> void: set_more_options_open(not _more_open))
+	_more_chevron = KeyCap.Arrow.new()
+	_more_chevron.name = "Chevron"
+	_more_chevron.direction = "right"
+	_more_chevron.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	_more_chevron.offset_left = -30.0
+	_more_chevron.offset_right = -12.0
+	_more_chevron.offset_top = -9.0
+	_more_chevron.offset_bottom = 9.0
+	more_button.add_child(_more_chevron)
+	column.add_child(more_button)
+	session_options_container = _section("SessionOptionsGroup", column)
+	time_of_day_button = _button("Time of day", "QuietButton", "TimeOfDay")
+	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
+	Widgets.mark_row(time_of_day_button, "open")
+	session_options_container.add_child(time_of_day_button)
+	overlays_button = _button("Flight overlays", "QuietButton", "Overlays") # HUD-06; hidden when the flight has none
+	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
+	overlays_button.visible = false
+	Widgets.mark_row(overlays_button, "open")
+	session_options_container.add_child(overlays_button)
+	active_alerts_button = _button("Review active alerts", "QuietButton", "ActiveAlerts")
+	active_alerts_button.visible = false # only flights with the alert manager can provide a sample
+	active_alerts_button.pressed.connect(func() -> void: active_alerts_requested.emit(active_alerts_button))
+	Widgets.mark_row(active_alerts_button, "open")
+	session_options_container.add_child(active_alerts_button)
+
+	# UI-40a: what applies to the next flight or restart; the rows name their scope ("· next flight"), so this group
+	# has no heading of its own and keeps Pause within one screen.
+	next_flight_container = _section("NextFlightGroup", column)
+	failure_settings_button = _button("Failure settings · next flight", "QuietButton", "Failures")
+	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
+	failure_settings_button.visible = false # the direct route has no next Home flight
+	Widgets.mark_row(failure_settings_button, "open")
+	next_flight_container.add_child(failure_settings_button)
+	companions_button = _button("Flight companions", "QuietButton", "Companions")
+	companions_button.visible = false
+	companions_button.pressed.connect(func() -> void: companions_requested.emit(companions_button))
+	Widgets.mark_row(companions_button, "open")
+	next_flight_container.add_child(companions_button)
+
+	# UI-40a: the application, two actions per row; Settings · Help always stay visible.
+	tools_row = Widgets.button_row(8)
+	tools_row.name = "ToolsRow"
+	column.add_child(tools_row)
+	workshop_button = _button("Workshop", "QuietButton", "Workshop")
+	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	workshop_button.visible = not trial_mode
+	tools_row.add_child(workshop_button)
+	statistics_button = _button("Statistics", "QuietButton", "Statistics")
+	statistics_button.pressed.connect(func() -> void: statistics_requested.emit(statistics_button, ""))
+	tools_row.add_child(statistics_button)
+	app_row = Widgets.button_row(8)
+	app_row.name = "AppRow"
+	column.add_child(app_row)
+	settings_button = _button("Settings", "QuietButton", "Settings")
+	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
+	app_row.add_child(settings_button)
+	help_button = _button("Help", "QuietButton", "Help")
+	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
+	app_row.add_child(help_button)
+
+	# UI-40a: the exits, always visible and last, under a separator.
+	var separator := HSeparator.new()
+	separator.name = "ExitSeparator"
+	column.add_child(separator)
+	# Stacked, so Down always reaches Return to Home before Quit from either column above.
+	exit_options_container = _section("ExitOptionsGroup", column)
+	if not trial_mode:
 		exit_options_container.add_child(end_button)
 	quit_button = _button("Quit to desktop", "QuietButton", "Quit")
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	exit_options_container.add_child(quit_button)
-	note_label = _wrapped_label()
-	note_label.visible = false
-	column.add_child(note_label)
+	column.add_child(physics_label)
+	# A section follows its buttons: the shell shows or hides them per route after construction.
+	for section: Container in [essentials_container, session_options_container, next_flight_container, app_row,
+			tools_row]:
+		for child in section.get_children():
+			(child as CanvasItem).visibility_changed.connect(_queue_sync_sections)
+	_sync_sections()
 
 
 func _sync_sidebar_fade() -> void:
@@ -270,6 +347,7 @@ func _focus_primary() -> void:
 	var scroll := find_child("PauseScroll", true, false) as ScrollContainer
 	if scroll != null:
 		scroll.ensure_control_visible(primary)
+		_recheck_visible.call_deferred(scroll, primary, scroll.scroll_vertical) # after a pending relayout
 
 
 func _initial_panel_width() -> float:
@@ -290,6 +368,7 @@ func _update_large_text_panel_width() -> void:
 	if viewport_width > 0.0:
 		var viewport_limit := maxf(WIDTH, viewport_width * MAX_RAIL_VIEWPORT_RATIO)
 		panel_width = minf(desired_width, viewport_limit)
+	_update_height_mode()
 	var span := UiScale.span_margin(viewport_width) # UI-35c (UI-30 SP-5): the sidebar joins the centred span
 	_panel.custom_minimum_size.x = panel_width
 	_panel.offset_left = span
@@ -308,6 +387,18 @@ func _defer_scroll_restore() -> void:
 		tree.process_frame.connect(callback, CONNECT_ONE_SHOT)
 
 
+## Re-reveal a control while wrapped labels settle (up to two more frames), unless something else has scrolled.
+## The frame hook is a plain connection, so it disappears with this menu.
+func _recheck_visible(scroll: ScrollContainer, control: Control, settled_scroll: int, frames_left := 2) -> void:
+	if not is_instance_valid(scroll) or not is_instance_valid(control) or scroll.scroll_vertical != settled_scroll:
+		return
+	if control.is_visible_in_tree() and not scroll.get_global_rect().encloses(control.get_global_rect()):
+		scroll.ensure_control_visible(control)
+	var next := _recheck_visible.bind(scroll, control, scroll.scroll_vertical, frames_left - 1)
+	if frames_left > 0 and is_inside_tree() and not get_tree().process_frame.is_connected(next):
+		get_tree().process_frame.connect(next, CONNECT_ONE_SHOT)
+
+
 func _restore_scroll_after_layout() -> void:
 	if not is_inside_tree():
 		return
@@ -321,6 +412,8 @@ func _restore_scroll_after_layout() -> void:
 	if (focused != null and scroll.is_ancestor_of(focused)
 			and not scroll.get_global_rect().encloses(focused.get_global_rect())):
 		scroll.ensure_control_visible(focused)
+		# Wrapped status lines can settle one layout pass later (UI-40a folds rows on short windows).
+		_recheck_visible.call_deferred(scroll, focused, scroll.scroll_vertical)
 
 
 func refresh() -> void:
@@ -328,8 +421,11 @@ func refresh() -> void:
 	status_label.text = status_text(_session)
 	status_label.visible = status_label.text != ""
 	_refresh_physics()
+	_refresh_snapshot()
+	_refresh_controls_label()
 	_refresh_controller_value()
 	_refresh_controller_recovery()
+	_sync_sections()
 	failure_config_label.text = failure_config_text(_failure_config)
 	# UI-33 (UI-30 PS-5): next-flight failures are shown only where this pause can change them.
 	failure_config_label.visible = failure_config_label.text != "" and failure_settings_button.visible
@@ -399,6 +495,25 @@ func _ready() -> void:
 		_update_large_text_panel_width()
 
 
+## UI-40a: R in Pause runs the same Restart action as its button (the key cap next to it says so). It acts only while
+## Pause is the top screen, so Help or Settings opened over it keep every key away from the flight.
+func _input(event: InputEvent) -> void:
+	if not event is InputEventKey or not event.pressed or event.echo:
+		return
+	var key := event as InputEventKey
+	if key.physical_keycode != KEY_R or key.ctrl_pressed or key.alt_pressed or key.shift_pressed or key.meta_pressed:
+		return
+	if not _menu_active():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused is LineEdit or focused is TextEdit:
+		return
+	if not restart_button.is_visible_in_tree() or restart_button.disabled:
+		return
+	get_viewport().set_input_as_handled()
+	restart_requested.emit()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	# Screen handles Escape before GUI input. This covers the menu-pad Back/ui_cancel action.
 	if not get_node("Screen")._active or not event.is_action_pressed("ui_cancel"):
@@ -408,25 +523,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_back_requested() -> void:
-	if not _open_group.is_empty():
-		_toggle_group("")
+	if _short_layout and _more_open:
+		set_more_options_open(false)
+		more_button.grab_focus()
 		return
 	continue_requested.emit()
 
 
-func _toggle_group(group_name: String) -> void:
-	var previous_group := _open_group
-	var next_group := "" if _open_group == group_name else group_name
-	_open_group = next_group
-	session_options_container.visible = _open_group == "session"
-	exit_options_container.visible = _open_group == "exit"
-	session_options_button.button_pressed = _open_group == "session"
-	exit_options_button.button_pressed = _open_group == "exit"
-	for group: String in _group_arrows:
-		_group_arrows[group].direction = "down" if _open_group == group else "right"
-		_group_arrows[group].queue_redraw()
-	if previous_group != "" and _open_group == "":
-		(session_options_button if previous_group == "session" else exit_options_button).grab_focus()
+func _menu_active() -> bool:
+	var screen := get_node_or_null("Screen")
+	return screen != null and screen._active and screen.is_visible_in_tree()
 
 
 func _process(delta: float) -> void:
@@ -563,6 +669,122 @@ func _refresh_physics() -> void:
 	physics_label.visible = not physics_label.text.is_empty()
 
 
+## UI-40a: the flight's overlay manager (or null); Pause reads its last accepted sample for the summary line.
+func set_flight_overlays(overlays: Object) -> void:
+	_overlays = weakref(overlays) if overlays != null else null
+	_refresh_snapshot()
+
+
+## "Time 0:47 · Height 30 m · Airspeed 68 km/h" in the overlay units, or "" without a sample.
+func snapshot_text(telemetry: Dictionary, system: String) -> String:
+	var time_s := float(telemetry.get("time_s", NAN))
+	var height := float(telemetry.get("height_agl", NAN))
+	var airspeed := float(telemetry.get("airspeed", NAN))
+	if not (is_finite(time_s) and is_finite(height) and is_finite(airspeed)):
+		return ""
+	return tr("Time %s · Height %s · Airspeed %s") % [
+		clock_text(time_s), Units.format(Units.length(maxf(height, 0.0), system)), Units.format(Units.speed(airspeed, system)),
+	]
+
+
+## m:ss, or h:mm:ss after an hour (the Flight data overlay's clock).
+static func clock_text(seconds: float) -> String:
+	var s := maxi(0, floori(seconds))
+	if s >= 3600:
+		return "%d:%02d:%02d" % [s / 3600, (s / 60) % 60, s % 60]
+	return "%d:%02d" % [s / 60, s % 60]
+
+
+func _refresh_snapshot() -> void:
+	if snapshot_label == null:
+		return
+	var overlays: Object = _overlays.get_ref() if _overlays != null else null
+	var text := ""
+	if overlays != null and overlays.has_method("pause_snapshot"):
+		var sample: Variant = overlays.call("pause_snapshot")
+		if sample is Dictionary and sample.get("telemetry") is Dictionary:
+			text = snapshot_text(sample.telemetry, str(sample.get("system", "metric")))
+	snapshot_label.text = text
+	snapshot_label.visible = not text.is_empty()
+
+
+## UI-40a: "Radio & controls · <device>", so the pilot sees which input flies without opening anything.
+func _refresh_controls_label() -> void:
+	if controls_button == null:
+		return
+	var device := tr("Keyboard")
+	# Sessions without a controller registry (direct routes, test doubles) lack these properties: get() is null.
+	if is_instance_valid(_session) and _session.get("external_controller_selection") == true:
+		var radio: Variant = _session.get("radio")
+		if _session.get("_controller_lost") == true:
+			device = tr("not connected")
+		elif radio != null and radio.connected and not str(radio.device_name).is_empty():
+			device = str(radio.device_name)
+	controls_button.text = tr("Radio & controls · %s") % device
+	controls_button.tooltip_text = tr("Set up, calibrate and test your radio or gamepad.")
+
+
+func _queue_sync_sections() -> void:
+	if not is_queued_for_deletion():
+		_sync_sections.call_deferred()
+
+
+## A heading or a row is shown only while it has a visible action.
+func _sync_sections() -> void:
+	if session_options_container == null:
+		return
+	var expanded := not _short_layout or _more_open
+	var foldable := _has_visible_child(session_options_container) or _has_visible_child(next_flight_container) \
+		or _has_visible_child(tools_row)
+	essentials_container.visible = _has_visible_child(essentials_container)
+	flight_heading.visible = not _short_layout and (essentials_container.visible
+		or _has_visible_child(session_options_container))
+	more_button.visible = _short_layout and foldable
+	session_options_container.visible = expanded and _has_visible_child(session_options_container)
+	next_flight_container.visible = expanded and _has_visible_child(next_flight_container)
+	tools_row.visible = expanded and _has_visible_child(tools_row)
+	app_row.visible = _has_visible_child(app_row)
+	var viewport := get_viewport()
+	if viewport != null and _menu_active():
+		var focused := viewport.gui_get_focus_owner()
+		if focused != null and is_ancestor_of(focused) and not focused.is_visible_in_tree():
+			(more_button if more_button.visible else continue_button).grab_focus()
+
+
+## Opens or closes the rows folded under More options (short windows only; tall windows always show them).
+func set_more_options_open(open: bool) -> void:
+	_more_open = open
+	if more_button != null:
+		more_button.set_pressed_no_signal(open)
+		_more_chevron.set("direction", "down" if open else "right")
+		_more_chevron.queue_redraw()
+	_sync_sections()
+
+
+func is_short_layout() -> bool:
+	return _short_layout
+
+
+func _update_height_mode() -> void:
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	var short := viewport.get_visible_rect().size.y < SHORT_HEIGHT
+	if short == _short_layout:
+		return
+	_short_layout = short
+	if not short:
+		_more_open = false
+	set_more_options_open(_more_open)
+
+
+static func _has_visible_child(container: Node) -> bool:
+	for child in container.get_children():
+		if child is Control and (child as Control).visible:
+			return true
+	return false
+
+
 ## "Aircraft · field" under the title; "" hides it.
 func set_identity(text: String) -> void:
 	_identity_base = text
@@ -614,6 +836,8 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh_identity()
 		_refresh_physics()
+		_refresh_snapshot()
+		_refresh_controls_label()
 		if not _note_translation_key.is_empty():
 			note_label.text = tr(_note_translation_key)
 
@@ -622,7 +846,7 @@ func _button(text: String, variation: String, node_name: String) -> Button:
 	var button := Widgets.button(text, variation, node_name)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	button.custom_minimum_size.y = 44
+	button.custom_minimum_size.y = 40
 	if node_name == "Continue":
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD
 	if variation == "QuietButton":
@@ -630,36 +854,38 @@ func _button(text: String, variation: String, node_name: String) -> Button:
 	return button
 
 
-func _disclosure_button(text: String, node_name: String) -> Button:
-	var button := _button(text, "QuietButton", node_name)
-	button.toggle_mode = true
-	# UI-33 (UI-30 VC-4): a group reads as a group, closed (right) or open (down).
-	var arrow := KeyCap.Arrow.new()
-	arrow.name = "Chevron"
-	arrow.direction = "right"
-	arrow.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	arrow.offset_left = -30.0
-	arrow.offset_right = -12.0
-	arrow.offset_top = -9.0
-	arrow.offset_bottom = 9.0
-	button.add_child(arrow)
-	_group_arrows["session" if node_name == "SessionOptions" else "exit"] = arrow
-	return button
+## UI-40a: a key cap at the right edge of a row ("Esc", "R"); decorative, so it never takes clicks or focus.
+func _add_key_hint(button: Button, key: Key) -> void:
+	var cap := KeyCap.for_key(key)
+	cap.name = "KeyHint"
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cap.focus_mode = Control.FOCUS_NONE
+	cap.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	cap.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	cap.offset_right = -12.0
+	cap.offset_left = -12.0 - cap.custom_minimum_size.x
+	cap.offset_top = -cap.custom_minimum_size.y * 0.5
+	cap.offset_bottom = cap.custom_minimum_size.y * 0.5
+	button.add_child(cap)
 
 
-func _option_group(node_name: String, parent: VBoxContainer) -> VBoxContainer:
-	# UI-33 (UI-30 VC-4): indented under its disclosure button, so an open group does not read as a flat list.
-	var indent := MarginContainer.new()
-	indent.name = node_name + "Indent"
-	indent.add_theme_constant_override("margin_left", 20)
-	indent.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	parent.add_child(indent)
+## UI-40a: a quiet section title ("THIS FLIGHT"), translated by the Label itself.
+func _section_heading(text: String, node_name: String) -> Label:
+	var heading := Label.new()
+	heading.name = node_name
+	heading.text = text
+	heading.theme_type_variation = "SectionLabel"
+	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return heading
+
+
+func _section(node_name: String, parent: VBoxContainer) -> VBoxContainer:
 	var group := VBoxContainer.new()
 	group.name = node_name
-	group.visible = false
-	group.add_theme_constant_override("separation", 8)
+	group.add_theme_constant_override("separation", 6)
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	indent.add_child(group)
+	parent.add_child(group)
 	return group
 
 

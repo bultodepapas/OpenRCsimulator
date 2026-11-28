@@ -9,12 +9,18 @@ import argparse
 import hashlib
 import json
 import math
+import re
+import shutil
+import tempfile
 from pathlib import Path
 import subprocess
 
 from PIL import Image, ImageDraw, ImageFont
 
 import crystal_titles
+import cinema_titles
+import title_plan
+import shot_plan
 
 HERE = Path(__file__).resolve().parent
 FONT = HERE / "assets/fonts/BarlowCondensed-SemiBold.ttf"
@@ -164,6 +170,119 @@ def sha(path):
     return h.hexdigest()
 
 
+def frame_sequence_identity(pattern, start_frame, frames):
+    """Hash the exact numbered source frames, not the name of a capture report."""
+    value = str(pattern)
+    matches = list(re.finditer(r'%(?:0[1-9][0-9]*)?d', value))
+    if len(matches) != 1 or value.count('%') != 1:
+        raise ValueError('frame source must contain exactly one %d or %0Nd number pattern')
+    if type(start_frame) is not int or start_frame < 0:
+        raise ValueError('frame source start_frame must be a nonnegative integer')
+    digest = hashlib.sha256()
+    for number in range(start_frame, start_frame + frames):
+        path = Path(value % number)
+        digest.update(f'{number}:{sha(path)}\n'.encode('ascii'))
+    return digest.hexdigest()
+
+
+def editor_identity(style, ffmpeg):
+    """Cache inputs include rasterization, licensed assets and encoder identity."""
+    return {'assemble_sha256':sha(__file__), 'crystal_sha256':sha(crystal_titles.__file__),
+            'cinema_sha256':sha(cinema_titles.__file__), 'title_plan_tool_sha256':sha(title_plan.__file__),
+            'style':style, 'title_dependencies':cinema_titles.dependency_identity(),
+            'ffmpeg':run([ffmpeg, '-version']).stdout}
+
+
+def cinema_context(spec, resolve, prepare_only):
+    """Bind editorial timing before opening any sources or creating output files."""
+    if spec.get('style') != 'cinema':
+        return None
+    if not spec.get('title_plan') or not spec.get('shot_plan'):
+        raise ValueError('cinema style requires title_plan and shot_plan paths')
+    plan_path = resolve(spec['shot_plan'])
+    plan, plan_digest = shot_plan.read_snapshot(plan_path)
+    # Use the repository sources and their pinned hashes, never trust a media
+    # manifest to redefine the stock vehicle/skin bindings.
+    shot_plan.validate(plan, HERE.parents[1])
+    if plan.get('revision') not in ('R6', 'R7'):
+        raise ValueError('cinema style requires an R6 or R7 shot plan')
+    actual = [(s['id'], s['frames']) for s in spec['shots']]
+    expected = [(s['id'], s['out_frame']-s['in_frame']) for s in plan['shots']]
+    if actual != expected:
+        raise ValueError('cinema media shot order and lengths must match the selected shot plan')
+    for shot in spec['shots']:
+        if shot.get('graphics') or shot.get('features'):
+            raise ValueError('cinema titles come only from the global title plan')
+        if shot.get('fade_in_frames') or shot.get('fade_out_frames'):
+            raise ValueError('cinema uses hard picture cuts; animate titles in the global title plan')
+        if shot['id'] == 'R4-45' and shot.get('kind') != 'end_card':
+            raise ValueError('R4-45 must use kind=end_card to avoid inherited legacy card text')
+        if shot['id'] != 'R4-45' and shot.get('kind') == 'end_card':
+            raise ValueError('only R4-45 can use kind=end_card')
+    titles_path = resolve(spec['title_plan'])
+    loaded = title_plan.load(titles_path, publication=not prepare_only,
+                             trial_basis=spec.get('trial_basis'), shot_plan=plan)
+    if not prepare_only:
+        for key in ('title', 'metadata_comment', 'video_description', 'output_filename'):
+            if not isinstance(spec.get(key), str) or not spec[key].strip():
+                raise ValueError(f'cinema publication requires explicit {key}; legacy defaults are not used')
+    return {**loaded, 'title_plan_sha256':loaded['source_sha256'], 'shot_plan_sha256':plan_digest}
+
+
+def cinema_end_card_base(path):
+    """Text-free editorial background; all wording comes from the title plan."""
+    ramp = Image.new('RGB', (1, H))
+    pixels = ramp.load()
+    for y in range(H):
+        lift = round(4 * (1 - abs(2*y/(H-1)-1)))
+        pixels[0,y] = (10+lift, 13+lift, 17+lift)
+    ramp.resize((W,H)).save(path)
+
+
+def render_graphics_only(manifest_path, work):
+    """Legacy graphics remain available, but a cinema manifest gets R6 copy."""
+    work.mkdir(parents=True,exist_ok=True)
+    spec = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path else {}
+    if spec.get('style') != 'cinema':
+        end_card(work/'end-card.png',spec.get('end_card_detail',''))
+        return
+    if not spec.get('title_plan'):
+        raise ValueError('cinema graphics require title_plan')
+    path = Path(spec['title_plan'])
+    if not path.is_absolute(): path = (manifest_path.parent/path).resolve()
+    loaded = title_plan.load(path)
+    base = work/'cinema-end-card-base.png'
+    cinema_end_card_base(base)
+    with Image.open(base) as image:
+        frame = image.convert('RGBA')
+    for cue in loaded['cues']:
+        if cue['in_frame'] <= 8700 < cue['out_frame']:
+            frame.alpha_composite(cinema_titles.CinemaCue(cue).frame(8700))
+    frame.convert('RGB').save(work/'cinema-end-card.png')
+
+
+def valid_cached_clip(cache, target, audio_out, fingerprint):
+    """An interrupted or replaced encode cannot inherit an old cache receipt."""
+    try:
+        receipt = json.loads(cache.read_text(encoding='utf-8'))
+        return (receipt.get('fingerprint') == fingerprint
+                and receipt.get('video_sha256') == sha(target)
+                and receipt.get('audio_sha256') == sha(audio_out))
+    except (OSError, ValueError, AttributeError):
+        return False
+
+
+def check_encoded_clip(path, ffprobe, frames):
+    data = json.loads(run([ffprobe,'-v','error','-select_streams','v:0',
+        '-show_entries','stream=width,height,avg_frame_rate,nb_frames','-of','json',path]).stdout)
+    streams = data.get('streams',[])
+    if len(streams) != 1:
+        raise ValueError(f'encoded clip has no unique video stream: {path}')
+    value = streams[0]
+    if (value.get('width'),value.get('height'),value.get('avg_frame_rate'),str(value.get('nb_frames'))) != (W,H,'60/1',str(frames)):
+        raise ValueError(f'encoded clip does not contain the requested 1080p60 frames: {value}')
+
+
 def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     spec = json.loads(manifest_path.read_text(encoding="utf-8"))
     def media_path(value):
@@ -180,36 +299,55 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     assert shots and all(isinstance(s["frames"], int) and s["frames"] > 0 for s in shots)
     total_frames = sum(s["frames"] for s in shots)
     total_duration = total_frames / FPS
+    cinema = cinema_context(spec, media_path, prepare_only)
     out.mkdir(parents=True, exist_ok=True)
     work.mkdir(parents=True, exist_ok=True)
-    end_card(work / "end-card.png", spec.get("end_card_detail", ""))
+    if cinema:
+        cinema_end_card_base(work / 'cinema-end-card-base.png')
+    else:
+        end_card(work / "end-card.png", spec.get("end_card_detail", ""))
     source_rows = []
     video_clips, audio_clips = [], []
     timeline = 0
-    editor_hash = sha(__file__) + sha(crystal_titles.__file__) + str(spec.get("style", ""))
+    editor = editor_identity(spec.get('style',''), ffmpeg)
     for index, shot in enumerate(shots):
         name = shot["id"]
         frames = shot["frames"]
         duration = frames / FPS
         target = work / f"{index:02}-{name}.mp4"
         audio_out = work / f"{index:02}-{name}.wav"
-        source = Path(shot["source"]) if name != "end-card" else work / "end-card.png"
         kind = shot.get("kind", "video")
+        if cinema and kind == 'end_card':
+            source = work / 'cinema-end-card-base.png'
+            kind = 'image'
+        else:
+            source = Path(shot["source"]) if name != "end-card" else work / "end-card.png"
         if prepare_only and kind != "frames" and not source.exists():
             print(f"AWAITING_SOURCE {name}", flush=True)
             timeline += frames
             continue
-        source_hash = sha(source) if kind != "frames" else "individual frame hashes in capture manifest"
-        audio_hash = sha(shot["audio"]) if shot.get("audio") else None
-        fingerprint = hashlib.sha256(json.dumps({"shot":shot,"source":source_hash,"audio":audio_hash,"editor":editor_hash},sort_keys=True).encode()).hexdigest()
+        try:
+            source_hash = sha(source) if kind != "frames" else frame_sequence_identity(source, shot.get('start_frame',0), frames)
+            audio_hash = sha(shot["audio"]) if shot.get("audio") else None
+        except FileNotFoundError:
+            if not prepare_only:
+                raise
+            print(f'AWAITING_SOURCE {name}', flush=True)
+            timeline += frames
+            continue
+        fingerprint = hashlib.sha256(json.dumps({'shot':shot,'source':source_hash,'audio':audio_hash,
+            'editor':editor,'timeline_start_frame':timeline,'cinema':cinema},sort_keys=True).encode()).hexdigest()
         cache = work / f"{index:02}-{name}.cache.json"
-        if cache.exists() and target.exists() and audio_out.exists() and json.loads(cache.read_text())["fingerprint"] == fingerprint:
+        if valid_cached_clip(cache, target, audio_out, fingerprint):
             video_clips.append(target)
             audio_clips.append(audio_out)
             source_rows.append({**shot, "timeline_start_frame":timeline, "encoded_sha256":sha(target), "source_sha256":source_hash})
             timeline += frames
             print(f"EDIT_SHOT_CACHED {name}: {frames} frames", flush=True)
             continue
+        # Invalidate before overwriting either encoded output. A failed attempt
+        # cannot leave the previous fingerprint authorizing mixed/partial files.
+        cache.unlink(missing_ok=True)
         input_args = []
         if kind == "frames":
             input_args = ["-framerate", FPS, "-start_number", shot.get("start_frame", 0), "-i", source]
@@ -239,7 +377,22 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
         filters = [f"[0:v]{vf}[base]"]
         current = "base"
         input_index = 1
+        cinema_sequence_root = None
         crystal = spec.get("style") == "crystal"
+        if cinema and any(c['in_frame'] < timeline + frames and c['out_frame'] > timeline for c in cinema['cues']):
+            # Reserve a fresh sequence even after an interrupted render. Sample
+            # the master clock so a held source label cannot blink at each cut.
+            cinema_sequence_root = Path(tempfile.mkdtemp(prefix=f'{index:02}-cinema-', dir=work))
+            sequence = cinema_sequence_root / 'rgba'
+            try:
+                cinema_titles.render_sequence(sequence, cinema['cues'], timeline, frames)
+            except BaseException:
+                shutil.rmtree(cinema_sequence_root)
+                raise
+            cmd += ['-framerate', FPS, '-start_number', 0, '-i', sequence / '%05d.png']
+            filters += [f'[{current}][{input_index}:v]overlay=0:0:shortest=1:alpha=straight[cinema]']
+            current = 'cinema'
+            input_index += 1
         if overlay:
             graphic = work / f"{index:02}-graphics.png"
             plate(graphic, **overlay, crystal=crystal)
@@ -292,7 +445,12 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
             current = "transition"
         cmd += ["-filter_complex", ";".join(filters), "-map", f"[{current}]"]
         cmd += ["-an", "-frames:v", frames, "-c:v", "libx264", "-threads", "6", "-preset", "medium", "-crf", "16", "-pix_fmt", "yuv420p", "-r", FPS, "-video_track_timescale", 60000, target]
-        run(cmd)
+        try:
+            run(cmd)
+        finally:
+            if cinema_sequence_root is not None:
+                shutil.rmtree(cinema_sequence_root)
+        check_encoded_clip(target,ffprobe,frames)
         video_clips.append(target)
         audio_out = work / f"{index:02}-{name}.wav"
         audio = shot.get("audio")
@@ -305,7 +463,8 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
         audio_clips.append(audio_out)
         source_rows.append({**shot, "timeline_start_frame": timeline, "encoded_sha256": sha(target),
                             "source_sha256": source_hash})
-        cache.write_text(json.dumps({"fingerprint":fingerprint}),encoding="utf-8")
+        cache.write_text(json.dumps({'fingerprint':fingerprint,'video_sha256':sha(target),
+                                     'audio_sha256':sha(audio_out)}),encoding='utf-8')
         timeline += frames
         print(f"EDIT_SHOT_OK {name}: {frames} frames", flush=True)
     if prepare_only:
@@ -349,7 +508,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     decoded_measure = run([ffmpeg, "-hide_banner", "-i", final, "-vn", "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=json", "-f", "null", "-"])
     decoded_loud = json.JSONDecoder().raw_decode(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])[0]
     assert float(decoded_loud["input_tp"]) <= -1.0, decoded_loud
-    (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "mix":{"game_gain":game_gain,"music_gain":music_gain,"music_sha256":sha(spec["music"]),"music_ducks":False}, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
+    (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, 'editor':editor, 'cinema':cinema, "mix":{"game_gain":game_gain,"music_gain":music_gain,"music_sha256":sha(spec["music"]),"music_ducks":False}, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
     (out / "VIDEO-DESCRIPTION.txt").write_text(spec.get("video_description") or (
         "OpenRC Simulator — Every Input Matters\n\n"
         "An open-source RC simulator. Development footage with current aircraft, helicopter and RC cars. "
@@ -374,7 +533,6 @@ if __name__ == "__main__":
     parser.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     if args.graphics_only:
-        args.work.mkdir(parents=True, exist_ok=True)
-        end_card(args.work / "end-card.png")
+        render_graphics_only(args.manifest,args.work)
     else:
         assemble(args.manifest, args.ffmpeg, args.ffprobe, args.out, args.work, args.prepare_only)

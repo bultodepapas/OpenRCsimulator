@@ -57,6 +57,9 @@ var paused := false
 var stop_at_tick := -1
 ## Wall-clock cost of a step (µs, smoothed), for the performance overlay. Measured, never fed back into the state.
 var step_usec := 0.0
+## NK-6a: a legacy joint tick whose stage is the native kernel's is integrated by that kernel (`_native_integrator`).
+## Tests turn it off to step the same tick through the GDScript reference.
+var native_tick_enabled := true
 var _inertia_inv := PackedFloat64Array()
 var _inertia_cache := PackedFloat64Array()
 ## A numerical fault is sticky until an explicit, valid reset succeeds.
@@ -393,16 +396,20 @@ func step() -> void:
 	if _fixed_dt != 1.0 / Engine.physics_ticks_per_second:
 		_fail_safe("step rejected: fixed timestep changed; reset required")
 		return
-	if not state_is_valid(state):
+	var checker: Object = _native_checker()
+	if not (state_is_valid(state) if checker == null else checker.state_valid(state)):
 		_fail_safe("step rejected: current state is nonfinite, malformed, or has a degenerate quaternion")
 		return
 	if not _configuration_is_valid():
 		_fail_safe("step rejected: mass, gravity, or inertia is invalid")
 		return
-	if not _refresh_inertia_inverse():
+	if not _refresh_inertia_inverse(checker):
 		return
-	if model.input_size != _last_valid_inputs.size() or not _array_is_finite(inputs, model.input_size) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
-			or not _array_is_finite(continuous, _last_valid_continuous.size()):
+	if model.input_size != _last_valid_inputs.size() or modes.size() != _last_valid_modes.size() \
+			or not (_array_is_finite(inputs, model.input_size) and _array_is_finite(aux, _last_valid_aux.size()) \
+			and _array_is_finite(continuous, _last_valid_continuous.size()) if checker == null \
+			else checker.arrays_finite(inputs, model.input_size, aux, _last_valid_aux.size(), continuous,
+			_last_valid_continuous.size())):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
 	if ((_interval() or not _joint_interval_protocol.is_empty()) and _joint_interval_protocol != model.callback_protocol) \
@@ -471,6 +478,21 @@ func step() -> void:
 			_fail_safe("step rejected: pre-step produced nonfinite or malformed auxiliary state")
 			return
 		aux = next_aux
+	# NK-6a: from here to the accepted endpoint, the native kernel integrates a qualifying tick with the reference's
+	# callbacks, refusals and commit; an empty answer leaves the tick to the reference below.
+	var integrator: Object = _native_integrator()
+	if integrator != null:
+		var driven: Dictionary = integrator.integrate_tick(model, state, continuous, aux, t, dt(), tick, mass, gravity,
+			inertia, _inertia_inv)
+		if not driven.is_empty():
+			if driven.has("fault"):
+				aux = old_aux
+				_fail_safe(driven.fault)
+				return
+			var driven_events: Array[Dictionary] = []
+			driven_events.assign(driven.events)
+			_commit_step(driven.state, driven.continuous, driven.aux, modes, driven.loads, driven_events, started)
+			return
 	var combined: PackedFloat64Array = _packed_state(state)
 	var integration_at: float = 0.0 if _local_interval() else t
 	var current_joint: Dictionary = {}
@@ -503,8 +525,9 @@ func step() -> void:
 				stage_error.message = "RK rotor momentum is nonfinite or malformed"
 				return _zero_derivative()
 			stage_h = candidate_h
-		# A qualified open-system law may supply its stage body derivative (finite fuel mass/CG).
-		var derivative: PackedFloat64Array = joint.body_derivative if joint.has("body_derivative") else RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, stage_h)
+		# A qualified open-system law may supply its stage body derivative (finite fuel mass/CG). It is copied: packed
+		# arrays are shared, and the append below must not grow the joint's own array, which substeps_joint reads.
+		var derivative: PackedFloat64Array = joint.body_derivative.duplicate() if joint.has("body_derivative") else RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, stage_h)
 		if not _array_is_finite(derivative, RB.SIZE):
 			stage_error.message = "RK stage derivative is nonfinite or malformed"
 			return _zero_derivative()
@@ -688,6 +711,13 @@ func step() -> void:
 			_fail_safe("step rejected: " + str(checked_events.message))
 			return
 		tick_events = checked_events.events
+	_commit_step(accepted_body_state, accepted_continuous, accepted_aux, accepted_modes, current_loads, tick_events, started)
+
+
+## The accepted endpoint becomes the tick's state; then the tick is remembered and published.
+func _commit_step(accepted_body_state: PackedFloat64Array, accepted_continuous: PackedFloat64Array,
+		accepted_aux: PackedFloat64Array, accepted_modes: PackedInt64Array, current_loads: PackedFloat64Array,
+		tick_events: Array[Dictionary], started: int) -> void:
 	previous = state.duplicate()
 	if not continuous.is_empty():
 		continuous = accepted_continuous
@@ -702,6 +732,20 @@ func step() -> void:
 	if not tick_events.is_empty():
 		events_located.emit(tick, tick_events)
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
+
+
+## NK-6a: the native kernel that integrates this tick, or null for the reference. Only a legacy, endpoint-free joint
+## tick whose stage is the kernel's own `stage` qualifies, without a step policy or with a policy the kernel ports:
+## the finite pack (NK-6c, `_electric_step`) or the glow resource step (NK-6d, `GlowFlight.step`); it may still refuse.
+func _native_integrator() -> Object:
+	if not native_tick_enabled or continuous.is_empty() or model.callback_protocol != VehicleModel.PROTOCOL_LEGACY \
+			or not _joint_interval_protocol.is_empty() or _endpoint_enabled() \
+			or (model.step_policy.is_valid() and model.step_policy.get_method() not in [&"_electric_step", &"step"]) \
+			or model.step_policy_interval.is_valid() or model.stage.get_method() != &"stage":
+		return null
+	var owner: Object = model.stage.get_object()
+	# The kernel's own unbound `stage`: a bound or wrapped Callable keeps the reference.
+	return owner if owner != null and owner.has_method(&"integrate_tick") and model.stage == Callable(owner, &"stage") else null
 
 
 func _physics_process(_delta: float) -> void:
@@ -807,8 +851,21 @@ func _mass_properties_are_valid() -> bool:
 		and is_finite(c00) and is_finite(determinant)
 
 
-func _refresh_inertia_inverse() -> bool:
-	if _same_array(inertia, _inertia_cache) and _array_is_finite(_inertia_inv, 6):
+## NK-6q: the native kernel behind a native stage answers step()'s own checks exactly (state, inertia cache and
+## array finiteness); every other stage, and this hook set false, keeps them in GDScript.
+static var native_checks_enabled := true
+
+
+func _native_checker() -> Object:
+	if not native_checks_enabled or not model.stage.is_valid():
+		return null
+	var owner: Object = model.stage.get_object()
+	return owner if owner != null and owner.has_method(&"inertia_cached") else null
+
+
+func _refresh_inertia_inverse(checker: Object = null) -> bool:
+	if _same_array(inertia, _inertia_cache) and _array_is_finite(_inertia_inv, 6) if checker == null \
+			else checker.inertia_cached(inertia, _inertia_cache, _inertia_inv):
 		return true
 	var next_inverse := RB.inertia_inverse(inertia)
 	if not _array_is_finite(next_inverse, 6):

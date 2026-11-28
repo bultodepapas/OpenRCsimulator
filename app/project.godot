@@ -6,7 +6,7 @@ config_version=5
 config/name="OpenRC Simulator"
 ; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
 ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
-config/version="0.3.3"
+config/version="0.4.0"
 ; The lightweight brand entrance hands off to app_root, which owns route selection.
 run/main_scene="res://ui/startup.tscn"
 boot_splash/show_image=false
@@ -20,6 +20,9 @@ config/project_settings_override.template="user://renderer.cfg"
 
 ; Install bundled CJK glyphs before startup without replacing the engine Latin font.
 InterfaceFonts="*res://i18n/fonts.gd"
+
+; F3: no pipeline-cache writes while a flight runs (render/pipeline_cache_gate.gd).
+PipelineCacheGate="*res://render/pipeline_cache_gate.gd"
 
 [display]
 
@@ -87,3 +90,10 @@ locale/translations=PackedStringArray("res://i18n/es.po", "res://i18n/zh_Hans.po
 
 ; UI-04a: writes res://build_info.json into exported packs (addons/build_info; excluded from the packs themselves).
 enabled=PackedStringArray("res://addons/build_info/plugin.cfg", "res://addons/aircraft_contract/plugin.cfg", "res://addons/native_kernel/plugin.cfg")
+
+[shader_globals]
+
+openrc_ground_simple={
+"type": "bool",
+"value": false
+}

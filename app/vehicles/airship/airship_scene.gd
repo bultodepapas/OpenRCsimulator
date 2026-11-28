@@ -17,7 +17,10 @@ const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const SkyAppearance = preload("res://environment/sky_appearance_config.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
-const Spec = preload("res://spec.gd")
+const CameraRig = preload("res://render/camera/camera_rig.gd")
+const CameraSettings = preload("res://render/camera/camera_settings.gd")
+const CameraCollision = preload("res://render/camera/camera_collision.gd")
+const PilotCamera = preload("res://render/pilot_camera.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
 const Scenery = preload("res://scenery/scenery.gd")
@@ -39,9 +42,10 @@ const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
 const MOTOR_AUDIO_REFERENCE_HZ := 232.1
 const FULL_SPEED_RPM := 7800.0
 const BLADES := 3.0
-const CAMERA_NAMES := ["chase", "pilot", "orbit"]
+const VIEW_KEYS := {KEY_1: "pilot", KEY_2: "chase", KEY_4: "flyby", KEY_5: "orbit"}
 
 signal home_requested
+signal skin_changed(id: String)
 
 var startup_error := ""
 var skin_id := "tiburon-blanco"
@@ -59,6 +63,7 @@ var _lens: LensStack
 var _obstacle_world: Dictionary = {}
 var enable_audio := true
 var enable_world := true
+var startup_checkpoint := Callable()
 ## Deterministic test seam: tick -> [roll, pitch, yaw, throttle]; sampled only on physics ticks.
 var scripted_sticks := Callable()
 ## BL-19d: a frozen Workshop build (workshop/trial.gd). Empty = the shipped blimp.
@@ -76,30 +81,26 @@ var flight_log: RefCounted
 var visual: RefCounted
 var hud: CanvasLayer
 var camera: Camera3D
+var camera_preferences := {}
+var _rig: CameraRig
 var input = PilotInput.new()
 var field := {}
 ## CR-AUD-01: the field's enabled lake, resolved once like the field builder resolves it and passed to every session
 ## preparation so the physics terrain matches the rendered basin ({} = no lake or a refused one).
 var _lake := {}
 var presentation := {}
-var camera_mode := 0
 var ballast_index := 2
 var wind_index := 0
 var start_index := 0
 var _lighting := {}
 var _environment: Environment
 var _last_input := {}
-var _orbit_yaw := 0.6
-var _orbit_pitch := 0.25
-var _orbit_distance := 10.0
-var _chase_heading := 0.0
 var _audio_side: AudioStreamPlayer3D
 var _audio_stern: AudioStreamPlayer3D
 ## BL-19f: the shared servo/retract synthesizer, driven by accepted vector and fin angles (Workshop audio profile).
 var _mechanical: Node3D
 var _servo_anchors: Array = []
 var _servo_anchor_visual := 0
-var _pilot_position := Vector3.ZERO
 var _controller_generation := 0
 var _pause_bindings := {}
 var _pause_held := {}
@@ -107,6 +108,12 @@ var _pause_off_seen := {}
 
 
 func _ready() -> void:
+	if not startup_checkpoint.is_valid():
+		prepare_activity()
+
+
+## Home owns the staged coroutine and the lifetime of a cancelled partial activity.
+func prepare_activity() -> void:
 	name = "AirshipActivity"
 	if not _load_field() or not _load_presentation():
 		_disable()
@@ -123,6 +130,8 @@ func _ready() -> void:
 	if not session.prepare(field, _session_options()):
 		startup_error = "Blimp could not be prepared: " + str(session.load_error)
 		_disable()
+		return
+	if startup_checkpoint.is_valid() and not await startup_checkpoint.call("Preparing aircraft"):
 		return
 	visual = Visual.new()
 	var skins := Visual.skins(presentation)
@@ -147,13 +156,20 @@ func _ready() -> void:
 	_configure_lights()
 	if enable_world:
 		Atmosphere.configure_appearance(sky_config)
-		_environment = World.build(self, field, _build_field, {}, _lighting, night_options).environment
-	camera = Camera3D.new()
-	camera.near = 0.05
-	camera.far = Spec.CAMERA.far
-	camera.fov = 60.0
-	add_child(camera)
-	camera.make_current()
+		if startup_checkpoint.is_valid():
+			var world := await World.build_staged(self, field, _build_field_staged, {}, _lighting, night_options, startup_checkpoint)
+			if world.get("cancelled", false):
+				return
+			_environment = world.environment
+		else:
+			_environment = World.build(self, field, _build_field, {}, _lighting, night_options).environment
+	camera = PilotCamera.create(self, field.pilot)
+	_rig = CameraRig.new(camera, float(session.data.envelope.length))
+	_rig.light_direction = Atmosphere.shadow_direction(_lighting)
+	if camera_preferences.is_empty():
+		_rig.set_view("chase")
+	else:
+		CameraSettings.apply_at_start(_rig, camera_preferences)
 	hud = Hud.new()
 	add_child(hud)
 	var names: Array = []
@@ -166,7 +182,9 @@ func _ready() -> void:
 	hud.select_choice("ballast", ballast_index)
 	hud.select_choice("wind", wind_index)
 	hud.select_choice("start", start_index)
-	hud.select_choice("camera", camera_mode)
+	if workshop_trial.is_empty() and creator_visual.is_empty() and field.id != "default":
+		(hud.choices.start as OptionButton).set_item_disabled(1, true)
+	hud.select_choice("camera", CameraRig.VIEWS.find(_rig.view))
 	if not workshop_trial.is_empty():
 		var length := float(session.data.envelope.length)
 		hud.set_workshop_trial("Workshop trial · RC blimp %.1f m — experimental" % length, length)
@@ -188,7 +206,6 @@ func _ready() -> void:
 	_refresh_pause_bindings()
 	if enable_audio:
 		_build_audio()
-	_chase_heading = deg_to_rad(float(session.options.heading_deg))
 	_open_menu(session.pause_reason)
 	_note_weigh_off()
 	_process(0.0)
@@ -253,7 +270,7 @@ func _start_lens() -> void:
 		"settings": resolved,
 		"camera": camera,
 		"session": session,
-		"view_provider": func() -> String: return str(CAMERA_NAMES[camera_mode]),
+		"view_provider": func() -> String: return _rig.view,
 		"sky_provider": func() -> String: return str(sky_config.get("preset", "classic")),
 		"field": field,
 		"hull": PackedFloat64Array([0.0, 0.0, 0.0]),
@@ -306,6 +323,8 @@ func _notification(what: int) -> void:
 
 
 func _exit_tree() -> void:
+	if _rig != null and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		CameraRig.hold_cursor(false)
 	_stop_recording("left the blimp activity")
 	if visual != null and visual.has_method("dispose_lighting"):
 		visual.dispose_lighting()
@@ -334,8 +353,6 @@ func _load_field() -> bool:
 	_lake = lake_resolution.lake if lake_resolution.ok else {}
 	if not lake_resolution.ok:
 		push_warning("Blimp field lake refused: " + "; ".join(lake_resolution.errors))
-	var pilot: Dictionary = field.pilot
-	_pilot_position = Frames.ned_to_render([pilot.north, pilot.east, pilot.down - pilot.eye_height])
 	return true
 
 
@@ -360,6 +377,20 @@ func _load_presentation() -> bool:
 
 func _build_field() -> void:
 	var field_node: Node3D = FieldBuilder.build(field, _lighting, [])
+	_attach_field(field_node)
+
+
+func _build_field_staged() -> Dictionary:
+	var field_node := await FieldBuilder.build_staged(field, _lighting, [], startup_checkpoint)
+	if field_node == null:
+		return {cancelled = true}
+	var attach_started := Time.get_ticks_usec()
+	_attach_field(field_node)
+	return {cancelled = false, field_build_ms = float(field_node.get_meta("field_build_ms", 0.0))
+		+ (Time.get_ticks_usec() - attach_started) / 1000.0}
+
+
+func _attach_field(field_node: Node3D) -> void:
 	var lake_error := str(field_node.get_meta("lake_error", ""))
 	if not lake_error.is_empty():
 		push_warning("Blimp field lake refused: " + lake_error)
@@ -565,11 +596,24 @@ func _unhandled_input(event: InputEvent) -> void:
 				handle_action("restart")
 				get_viewport().set_input_as_handled()
 			KEY_C:
-				camera_mode = (camera_mode + 1) % CAMERA_NAMES.size()
-				hud.select_choice("camera", camera_mode)
+				_rig.cycle(-1 if event.shift_pressed else 1)
+				hud.select_choice("camera", CameraRig.VIEWS.find(_rig.view))
+				get_viewport().set_input_as_handled()
+			KEY_1, KEY_2, KEY_4, KEY_5:
+				_rig.select_view(VIEW_KEYS[event.physical_keycode])
+				hud.select_choice("camera", CameraRig.VIEWS.find(_rig.view))
+				get_viewport().set_input_as_handled()
+			KEY_EQUAL, KEY_MINUS:
+				_rig.zoom(1.0 if event.physical_keycode == KEY_EQUAL else -1.0)
+				get_viewport().set_input_as_handled()
+			KEY_BACKSPACE:
+				_rig.reset_view()
+				get_viewport().set_input_as_handled()
+			KEY_Z:
+				_rig.toggle_auto_zoom()
 				get_viewport().set_input_as_handled()
 			KEY_H:
-				hud.help.visible = not hud.help.visible
+				hud.toggle_help()
 				get_viewport().set_input_as_handled()
 			KEY_F10:
 				toggle_recording()
@@ -579,12 +623,15 @@ func _unhandled_input(event: InputEvent) -> void:
 					flight_log.mark()
 					hud.flash("Flight log marker")
 				get_viewport().set_input_as_handled()
-	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-		_orbit_yaw -= event.relative.x * 0.005
-		_orbit_pitch = clampf(_orbit_pitch + event.relative.y * 0.004, -0.2, 1.3)
-	elif event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP: _orbit_distance = maxf(5.5, _orbit_distance * 0.9)
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN: _orbit_distance = minf(60.0, _orbit_distance * 1.1)
+	elif not hud.menu_visible:
+		if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
+			_rig.drag(event.relative)
+		elif event is InputEventMouseButton:
+			if event.button_index == MOUSE_BUTTON_RIGHT and _rig.view == "orbit":
+				CameraRig.hold_cursor(event.pressed)
+			elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+				var notches: float = event.factor if event.factor > 0.0 else 1.0
+				_rig.zoom(notches if event.button_index == MOUSE_BUTTON_WHEEL_UP else -notches)
 
 
 func _open_menu(reason: String) -> void:
@@ -603,7 +650,8 @@ func handle_action(action: String) -> void:
 				return
 			var sample: Dictionary = input.sample(1.0 / 240.0, false)
 			if not sample.armed:
-				hud.flash("Controls not armed: lower the throttle and check the controller.")
+				var reason := str(sample.get("error", ""))
+				hud.flash(reason if not reason.is_empty() else "Controls not armed: lower the throttle and check the controller.")
 				return
 			if not session.resume(sample.sticks):
 				hud.flash(str(session.pause_reason))
@@ -612,7 +660,7 @@ func handle_action(action: String) -> void:
 		"restart":
 			_restart()
 		"help":
-			hud.help.visible = not hud.help.visible
+			hud.toggle_help()
 		"home":
 			_stop_recording("left the blimp activity")
 			session.pause("Leaving")
@@ -646,7 +694,8 @@ func _option_selected(option: String, index: int) -> void:
 				start_index = previous
 				hud.select_choice("start", previous)
 		"camera":
-			camera_mode = index
+			if index >= 0 and index < CameraRig.VIEWS.size():
+				_rig.set_view(CameraRig.VIEWS[index])
 
 
 ## A configuration change is a new admitted model: prepare and reset, keeping the old session on refusal.
@@ -655,7 +704,7 @@ func _restart() -> bool:
 		hud.flash("Configuration refused: " + str(session.load_error))
 		return false
 	input.reset_throttle()
-	_chase_heading = deg_to_rad(float(session.options.heading_deg))
+	_rig.reset()
 	if visual.has_method("reset_lighting"):
 		visual.reset_lighting()
 	_open_menu(session.pause_reason)
@@ -664,12 +713,16 @@ func _restart() -> bool:
 
 
 func _swap_skin(next_skin: String) -> void:
+	if not workshop_trial.is_empty() or not creator_visual.is_empty():
+		return
 	var candidate := Visual.new()
 	if not candidate.build(presentation, next_skin):
+		hud.select_choice("skin", Catalog.SKIN_IDS.find(skin_id))
 		hud.flash(str(candidate.error))
 		return
 	if visual.has_method("dispose_lighting"):
 		visual.dispose_lighting()
+	remove_child(visual.root)
 	visual.root.queue_free()
 	visual = candidate
 	skin_id = next_skin
@@ -680,6 +733,7 @@ func _swap_skin(next_skin: String) -> void:
 		shadow_cue.set_vehicle(visual.root) # rebinds the new skin's silhouette on its next frame
 	_configure_lights()
 	_process(0.0)
+	skin_changed.emit(skin_id)
 
 
 func _physics_process(_delta: float) -> void:
@@ -706,16 +760,23 @@ func _process(delta: float) -> void:
 	var drawn: PackedFloat64Array = session.interpolated(fraction)
 	visual.pose(drawn, session.sim.continuous, delta if not session.paused else 0.0)
 	_update_lights(drawn, delta)
-	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
-	var body_basis := Frames.quat_to_render(drawn.slice(6, 10))
-	_update_camera(target, body_basis, delta)
+	var pose: Transform3D = visual.root.transform
+	var target := pose.origin
+	var body_basis := pose.basis
+	var velocity := body_basis * Frames.ned_to_render([drawn[3], drawn[4], drawn[5]])
+	# Size the shared rigid inspection offset to the envelope, including a scaled Workshop build.
+	var inspection := Transform3D(body_basis.scaled(Vector3.ONE * float(session.data.envelope.length) * 0.5), target)
+	if hud.menu_visible and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		CameraRig.hold_cursor(false)
+	else:
+		CameraRig.release_cursor_if_up()
+	_rig.update(target, inspection, body_basis, delta, session.paused, _ground_height_render, velocity, _camera_clearance)
 	if _environment != null:
 		World.update(_environment, 37.0 + session.sim.time(), Vector3.ZERO, target, camera)
 	if _lens != null:
 		# A crash pauses the session; the lens keeps presenting its aftermath, and holds only for a real pause.
 		_lens.advance(delta, session.sim.time(), session.paused and session.crash.is_empty())
-	var t: Dictionary = session.telemetry()
-	hud.update(t, _last_input, CAMERA_NAMES[camera_mode])
+	hud.update(session.telemetry, _last_input, _rig.view_name(), session.pause_reason if session.paused else "")
 	_update_audio(target, body_basis)
 
 
@@ -724,29 +785,8 @@ func _ground_height_render(x: float, z: float) -> float:
 	return h[0] if h.size() == 3 and is_finite(h[0]) else 0.0
 
 
-func _update_camera(target: Vector3, body_basis: Basis, delta: float) -> void:
-	var nose := -body_basis.z
-	var heading := atan2(nose.x, -nose.z)
-	_chase_heading = lerp_angle(_chase_heading, heading, clampf(delta * 1.2, 0.0, 1.0))
-	var eye: Vector3
-	match CAMERA_NAMES[camera_mode]:
-		"chase":
-			var back := Vector3(-sin(_chase_heading), 0.0, cos(_chase_heading))
-			eye = target + back * 11.0 * _size + Vector3.UP * 3.2 * _size
-			camera.fov = 60.0
-		"pilot":
-			eye = _pilot_position
-			var distance := maxf(eye.distance_to(target), 1.0)
-			# Keep the 5 m hull near a third of the vertical view, within lens limits.
-			camera.fov = clampf(rad_to_deg(2.0 * atan(6.5 * _size / distance)), 12.0, 70.0)
-		_:
-			var offset := Vector3(sin(_orbit_yaw) * cos(_orbit_pitch), sin(_orbit_pitch), cos(_orbit_yaw) * cos(_orbit_pitch))
-			eye = target + offset * _orbit_distance * _size
-			camera.fov = 60.0
-	eye.y = maxf(eye.y, _ground_height_render(eye.x, eye.z) + 0.4)
-	camera.global_position = eye
-	if eye.distance_to(target) > 0.01:
-		camera.look_at(target, Vector3.UP)
+func _camera_clearance(from: Vector3, to: Vector3) -> float:
+	return CameraCollision.free_fraction(_obstacle_world, from, to)
 
 
 func _build_audio() -> void:

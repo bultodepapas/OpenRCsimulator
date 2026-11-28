@@ -27,6 +27,8 @@ const LENS_ROWS := [
 ]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const FlightCompatibilityResolution := preload("res://render/flight_compatibility_resolution.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
@@ -61,7 +63,8 @@ const Languages := preload("res://i18n/languages.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const InterfaceFont := preload("res://i18n/fonts.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
-const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
+const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d",
+	"reconstruction", "render_scale", "dynamic_resolution_fps", "fsr2_sharpness", "nvidia_reflex"]
 
 var display_preferences: DisplayPreferences
 var window_close_managed := false # AppRoot owns save/recovery decisions before closing this route.
@@ -105,6 +108,9 @@ var _resolution_picker: OptionButton
 var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
+## GFX-IGPU-01: 3D render scale for Native reconstruction; available in every renderer.
+var _render_scale_picker: OptionButton
+var _dynamic_resolution_picker: OptionButton
 var _reconstruction_picker: OptionButton
 var _reflex_picker: OptionButton
 var _reflex_poll_seconds := 0.0
@@ -118,6 +124,8 @@ var _flag_animation_picker: OptionButton
 var _lens_pickers: Dictionary = {}
 var _birds_picker: OptionButton
 var _runway_meadow_picker: OptionButton
+var _tree_detail_picker: OptionButton
+var _ground_detail_picker: OptionButton
 var _rc_track_picker: OptionButton
 var _shadow_group_button: Button
 var _shadow_group: VBoxContainer
@@ -140,6 +148,10 @@ var _camera_aids_picker: OptionButton
 var _camera_magnifier_picker: OptionButton
 var _camera_invert_toggle: CheckButton
 var _graphics_info: Label
+## UI-40f: the one-line graphics summary shown on the page; the full diagnostic text lives under Details.
+var _graphics_summary: Label
+## UI-40e: the focused option's explanation (its tooltip), shown in the status line for keyboard and gamepad users.
+var _focus_description := ""
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
 var _opaque_toggle: CheckButton
@@ -231,6 +243,7 @@ func _notification(what: int) -> void:
 
 func _ready() -> void:
 	_surface.resized.connect(_update_layout)
+	get_viewport().gui_focus_changed.connect(_on_focus_changed) # UI-40e; disconnected when Settings is freed
 	_update_layout()
 	_refresh_shadow_info()
 	# UI-35a (UI-30 AL-4): start on the first category, so a pad or keyboard moves straight into the settings.
@@ -239,7 +252,6 @@ func _ready() -> void:
 
 func _build() -> void:
 	_surface = Screen.mount(self)
-	_surface.theme = ScreenTheme.build()
 	_surface.close_requested.connect(close)
 	_surface.dismiss_option_popup_first = true
 	_surface.dim(0.58)
@@ -319,6 +331,12 @@ func _build() -> void:
 
 	_resolution_picker = _choice_picker("WindowResolution", "window_resolution", DisplayPreferences.WINDOW_RESOLUTIONS)
 	_add_row(display_page, "Window resolution", _resolution_picker)
+	# GFX-IGPU-01: beside the window size it scales; the Graphics page has no height left at 1080p.
+	_render_scale_picker = _choice_picker("RenderScale", "render_scale", DisplayPreferences.RENDER_SCALES)
+	_add_row(display_page, "3D render scale", _render_scale_picker)
+	_dynamic_resolution_picker = _choice_picker("DynamicResolution", "dynamic_resolution_fps",
+		DisplayPreferences.DYNAMIC_RESOLUTION_FPS_VALUES)
+	_add_row(display_page, "Dynamic resolution (experimental)", _dynamic_resolution_picker)
 
 
 	_scale_picker = OptionButton.new()
@@ -408,16 +426,24 @@ func _build() -> void:
 	birds_row.add_child(_runway_meadow_picker)
 	_set_localized_tooltip(_runway_meadow_picker, "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail.")
 	# The collapsed toggle shares the actions row to preserve the 1080p height budget.
-	_shadow_group_button = _button("Shadows", "QuietButton", "ShadowGroupToggle")
+	_shadow_group_button = _button("Details", "QuietButton", "ShadowGroupToggle")
 	_shadow_group_button.toggle_mode = true
 	_shadow_group_button.toggled.connect(func(expanded: bool) -> void:
 		_shadow_group.visible = expanded
-		_refresh_shadow_group_button())
+		_refresh_shadow_group_button()
+		if expanded:
+			_reveal_details.call_deferred())
 	_shadow_group = VBoxContainer.new()
 	_shadow_group.name = "ShadowGroup"
 	_shadow_group.add_theme_constant_override("separation", 10)
 	_shadow_group.hide()
 	_refresh_shadow_group_button()
+	_tree_detail_picker = _camera_picker("TreeDetail", "tree_detail", DisplayPreferences.TREE_DETAILS)
+	_add_row(_shadow_group, "Tree detail", _tree_detail_picker)
+	_set_localized_tooltip(_tree_detail_picker, "Tree rendering only. The field and its physical obstacles stay the same.")
+	_ground_detail_picker = _camera_picker("GroundDetail", "ground_detail", DisplayPreferences.GROUND_DETAILS)
+	_add_row(_shadow_group, "Ground detail", _ground_detail_picker)
+	_set_localized_tooltip(_ground_detail_picker, "Simplifies grass shading while keeping runway markings and terrain cues.")
 	_shadow_quality_picker = _shadow_picker("ShadowQuality", "shadow_quality", ShadowSettings.QUALITY)
 	_add_row(_shadow_group, "Shadow quality", _shadow_quality_picker)
 	_set_localized_tooltip(_shadow_quality_picker, "Higher shadow quality can increase GPU cost.")
@@ -461,7 +487,10 @@ func _build() -> void:
 		_draft.aircraft_lighting_show_vfx = enabled
 		_on_presentation_option_changed())
 	_add_row(lighting_page, "Aircraft show effects", _lighting_vfx_toggle)
-	graphics_page.add_child(_graphics_info)
+	# UI-40f: the page shows a one-line summary; the reconstruction/Reflex diagnostics move under Details.
+	_graphics_summary = _label("", "SecondaryLabel", true)
+	_graphics_summary.name = "GraphicsSummary"
+	graphics_page.add_child(_graphics_summary)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
 	defaults_button.tooltip_text = tr("Returns graphics settings to the recommendation for this GPU and measures it again on the next flight.")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
@@ -476,6 +505,14 @@ func _build() -> void:
 		graphics_restart_requested.emit("standard" if HighGraphics.active() else "high"))
 	graphics_actions.add_child(_graphics_restart_button)
 	graphics_page.add_child(_shadow_group)
+	# UI-40f: quality first; the vendor-specific Reflex option and the diagnostics sit under Details. FSR sharpness
+	# stays on the page because it matters as soon as an FSR mode is chosen.
+	graphics_page.move_child(_scene_detail_picker.get_parent(), 0)
+	var reflex_row := _reflex_picker.get_parent()
+	reflex_row.reparent(_shadow_group, false)
+	_shadow_group.move_child(reflex_row, 0)
+	_graphics_info.name = "GraphicsDiagnostics"
+	_shadow_group.add_child(_graphics_info)
 
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
@@ -847,6 +884,8 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
+		"render_scale": return tr("Native") if int(value) == 100 else "%d %%" % int(value)
+		"dynamic_resolution_fps": return tr("Off") if int(value) == 0 else "%d FPS" % int(value)
 		"reconstruction": return {auto = tr("Auto"), native = tr("Native"),
 			fsr2_native = tr("FSR2 · Native AA"), fsr2_85 = tr("FSR2 · 85%"), fsr2_quality = tr("FSR2 · Quality"),
 			fsr2_balanced = tr("FSR2 · Balanced"), fsr2_performance = tr("FSR2 · Performance"),
@@ -866,6 +905,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"flag_animation": return {"auto": tr("Automatic"), "static": tr("Static"), "basic": tr("Basic"),
 			"detailed": tr("Detailed")}.get(value, str(value))
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"tree_detail", "ground_detail": return {off = tr("Off"), simple = tr("Simple"), full = tr("Full")}.get(value, str(value))
 		"runway_meadow": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"rc_track":
 			if value == RcTrackOption.AUTO:
@@ -1120,9 +1160,22 @@ func _restore_shadow_defaults() -> void:
 	_sync_controls()
 
 
+## UI-40f: opening Details scrolls its first rows into view, so the press visibly does something.
+func _reveal_details(frames_left := 2) -> void:
+	if not is_inside_tree() or _shadow_group == null or not _shadow_group.is_visible_in_tree():
+		return
+	var body := _scroll.get_global_rect()
+	var top := _shadow_group.get_global_rect().position.y
+	if top > body.end.y - 120.0:
+		_scroll.scroll_vertical += ceili(top - body.position.y - 8.0)
+	var next := _reveal_details.bind(frames_left - 1)
+	if frames_left > 0 and not get_tree().process_frame.is_connected(next):
+		get_tree().process_frame.connect(next, CONNECT_ONE_SHOT)
+
+
 func _refresh_shadow_group_button() -> void:
 	if _shadow_group_button != null:
-		_shadow_group_button.text = tr("Shadows") + ("  −" if _shadow_group_button.button_pressed else "  +")
+		_shadow_group_button.text = tr("Details") + ("  −" if _shadow_group_button.button_pressed else "  +")
 
 
 func _refresh_shadow_technique_tooltip() -> void:
@@ -1210,6 +1263,9 @@ func _refresh_graphics_info() -> void:
 		_graphics_info.text += "\n" + _reflex_unavailable_text(str(reflex.reason))
 	elif reflex.pending:
 		_graphics_info.text += "\n" + tr("Reflex mode change is waiting for the next frame.")
+	if _graphics_summary != null:
+		_graphics_summary.text = _graphics_info.text.get_slice("\n", 0)
+		_graphics_summary.tooltip_text = _graphics_info.tooltip_text
 
 
 ## VQ-07h-A7: Automatic's choice for this GPU, how far its estimate is trusted and the first-flight measurement.
@@ -1341,6 +1397,11 @@ func _on_presentation_option_changed() -> void:
 	call_deferred("_refresh_shared_theme")
 
 
+## The current presentation choices, including an applied preview.
+func presentation_snapshot() -> Dictionary:
+	return _draft.duplicate(true)
+
+
 func _emit_presentation(config: Dictionary = {}) -> void:
 	presentation_changed.emit((config if not config.is_empty() else _draft).duplicate(true))
 
@@ -1440,6 +1501,8 @@ func _sync_controls() -> void:
 	_select_metadata(_fps_picker, _draft.max_fps)
 	_select_metadata(_vsync_picker, _draft.vsync_mode)
 	_select_metadata(_msaa_picker, _draft.msaa_3d)
+	_select_metadata(_render_scale_picker, _draft.get("render_scale", 100))
+	_select_metadata(_dynamic_resolution_picker, _draft.get("dynamic_resolution_fps", 0))
 	_select_metadata(_reconstruction_picker, _draft.get("reconstruction", "native"))
 	_sync_reconstruction_controls()
 	_select_metadata(_reflex_picker, _draft.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
@@ -1449,6 +1512,8 @@ func _sync_controls() -> void:
 	for key: String in _lens_pickers:
 		_select_metadata(_lens_pickers[key], _draft.get(key, DisplayPreferences.DEFAULTS[key]))
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_tree_detail_picker, _draft.tree_detail)
+	_select_metadata(_ground_detail_picker, _draft.ground_detail)
 	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
 	_refresh_rc_track_captions()
 	_select_metadata(_rc_track_picker, _draft.get("rc_track", DisplayPreferences.DEFAULTS.rc_track))
@@ -1549,8 +1614,44 @@ func _sync_reconstruction_controls(capabilities_override: Dictionary = {}) -> vo
 	else:
 		_fsr2_sharpness_slider.tooltip_text = tr("Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3.")
 	_msaa_picker.disabled = bool(policy.temporal)
+	# FSR, DLSS and MetalFX choose their own input size; the saved render scale returns with Native.
+	_render_scale_picker.disabled = str(policy.provider) != "native"
+	_render_scale_picker.tooltip_text = tr("FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction.") \
+		if _render_scale_picker.disabled \
+		else tr("Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer.")
 	_msaa_picker.tooltip_text = tr("Temporal reconstruction provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
 		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
+	_sync_dynamic_resolution_controls(viewport, policy)
+
+
+func _sync_dynamic_resolution_controls(viewport: Viewport, policy: Dictionary) -> void:
+	var reason := ""
+	var completed_gpu := FlightDynamicResolution.supports(viewport)
+	var compatibility := not completed_gpu and FlightDynamicResolution.supports_compatibility(viewport)
+	var floor_percent := FlightCompatibilityResolution.MIN_SCALE_PERCENT if compatibility else FlightDynamicResolution.MIN_SCALE_PERCENT
+	if not completed_gpu and not compatibility:
+		reason = tr("Dynamic resolution requires a compatible experimental renderer.")
+	elif str(policy.provider) != "native":
+		reason = tr("Dynamic resolution requires Native reconstruction.")
+	elif int(_draft.render_scale) <= floor_percent:
+		reason = tr("Choose a 3D render scale above %d%% to allow dynamic resolution.") % floor_percent
+	var available := reason.is_empty()
+	_dynamic_resolution_picker.disabled = not available and int(_draft.dynamic_resolution_fps) == 0
+	_dynamic_resolution_picker.tooltip_text = tr("Experimental. Adjusts the 3D render scale during flight to meet a frame rate target.") \
+		if available else reason
+	if available and int(_draft.dynamic_resolution_fps) > 0:
+		var status: Dictionary = viewport.get_meta(FlightDynamicResolution.STATUS_META, {})
+		if status.get("state") in ["fixed", "fixed_requested", "fixed_unverified"] \
+				and status.get("target_fps") == _draft.dynamic_resolution_fps \
+				and status.get("reason") != "flight_suspended":
+			_dynamic_resolution_picker.tooltip_text = tr("The last flight used fixed resolution because the dynamic target could not be verified.")
+	for index: int in _dynamic_resolution_picker.item_count:
+		var target := int(_dynamic_resolution_picker.get_item_metadata(index))
+		var unavailable := target > 0 and not available
+		var caption := _choice_caption("dynamic_resolution_fps", target)
+		_dynamic_resolution_picker.set_item_disabled(index, unavailable)
+		_dynamic_resolution_picker.set_item_text(index, caption + (" — " + tr("Unavailable") if unavailable else ""))
+		_dynamic_resolution_picker.set_item_tooltip(index, reason if unavailable else "")
 
 
 func _sync_reflex_controls() -> void:
@@ -1741,7 +1842,7 @@ func _refresh_translated_text() -> void:
 			_update_channel_picker.set_item_text(index, _update_channel_caption(str(_update_channel_picker.get_item_metadata(index))))
 	_refresh_update_status_text()
 	_refresh_telemetry_status_text()
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_render_scale_picker, "render_scale"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_tree_detail_picker, "tree_detail"], [_ground_detail_picker, "ground_detail"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"], [_shadow_cloud_picker, "shadow_cloud"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
@@ -1896,6 +1997,30 @@ func _button(source: String, variation := "", node_name := "") -> Button:
 	return button
 
 
+## UI-40e: keyboard/gamepad users see the same explanation a mouse user gets as a tooltip.
+func _on_focus_changed(focused: Control) -> void:
+	var description := ""
+	if focused != null and _scroll != null and _scroll.is_ancestor_of(focused):
+		description = focused.tooltip_text
+		if description.is_empty() and focused.get_parent() != null:
+			description = (focused.get_parent() as Control).tooltip_text if focused.get_parent() is Control else ""
+	if description == _focus_description:
+		return
+	_focus_description = description
+	_refresh_status_text()
+	_reveal_after_status_change()
+
+
+## The status line can change height with the description; keep the focused control in view once layout settles.
+func _reveal_after_status_change(frames_left := 2) -> void:
+	if not is_inside_tree():
+		return
+	_reveal_focused_control()
+	var next := _reveal_after_status_change.bind(frames_left - 1)
+	if frames_left > 0 and not get_tree().process_frame.is_connected(next):
+		get_tree().process_frame.connect(next, CONNECT_ONE_SHOT)
+
+
 func _set_status(state: String, value := 0) -> void:
 	_status_state = state
 	_status_value = value
@@ -1918,7 +2043,9 @@ func _refresh_status_text() -> void:
 		"calibration_reset_error": _status.text = tr("Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries.") % _status_value
 		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
 		# UI-36 (UI-30 SC-1): one transaction, stated plainly; Keep changes is the only commit.
+		# UI-40e: with an option focused, its explanation replaces the idle note (same line, no layout shift).
 		_: _status.text = tr("Unsaved preview: Keep changes saves it, Close discards it.") if _has_pending_changes() \
+			else _focus_description if not _focus_description.is_empty() \
 			else tr("Changes preview at once. Keep changes saves them; Close discards them.")
 	if _save_error != OK:
 		_status.text = (tr("Could not save settings (error %d).") % _save_error) + ("\n" + _status.text if not _status.text.is_empty() else "")

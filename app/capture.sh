@@ -277,6 +277,7 @@ fi
 if includes terrain-atmosphere; then
 start_phase terrain-atmosphere
 # L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
+"$VPY" "$HERE/../tools/trees/fpv_profiles.py" --check
 python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l6b"
 record_check terrain-atmosphere:tree-review
 # The guarded landscape tools require fresh outputs. Replace only these generated directories under the capture lock.

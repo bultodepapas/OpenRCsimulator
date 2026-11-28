@@ -10,6 +10,9 @@ const Wheels := preload("res://physics/ground_wheels.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const HullContact := preload("res://physics/hull_contact.gd")
+const FuelSample := preload("res://sim/fuel_sample.gd")
+const GlowFlight := preload("res://physics/glow/flight.gd")
 const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 const ElectricAdapter := preload("res://sim/native/electric_stage_adapter.gd")
@@ -120,6 +123,47 @@ var _reference_loads := Callable()
 var _reference_rotor := Callable()
 var _body_only := false
 var _installed_model: RefCounted = null
+## NK-5a: the loaded library binds stage_wing_wake (checked once per installation, not per tick).
+var _wing_wake_bound := false
+## NK-5d: the collision world (and its proxies array) whose bounds the native contact reach holds.
+var _contact_reach_bound := false
+var _reach_world: Dictionary = {}
+var _reach_proxies: Array = []
+var _reach_size := -1
+## NK-5h: the kernel's callbacks as installed, built once per installation instead of on every owns_stage call.
+var _native_stage_callable := Callable()
+var _native_body_loads := Callable()
+var _native_body_rotor := Callable()
+## NK-5e: the loaded library binds stage_compressions (checked once per installation).
+var _compressions_bound := false
+## NK-5i: and stage_endpoint_facts (the statistics sampler's endpoint evaluations in one answer).
+var _facts_bound := false
+var _glow_firing_bound := false
+var _glow_mass_bound := false
+## NK-6f: and stage_hull_scrape_rows (the hull-scrape observation's endpoint diagnostics).
+var _hull_rows_bound := false
+## NK-6l: the installation prepared the guard's hull checks (prepare_hull_guard) for the session's hull.
+var _hull_guard_bound := false
+var _guard_hull: Dictionary = {}
+## NK-6k: the installation prepared its propeller disc (prepare_prop_strike); the session's disc and lake it read.
+var _prop_strike_bound := false
+var _strike_disc: Dictionary = {}
+var _strike_lake: Dictionary = {}
+## NK-6h: the liquid installation prepared its quiet hull terminal (prepare_liquid_terminal).
+var _liquid_terminal_bound := false
+## NK-6t: the liquid installation answers LiquidFlight.valid (stage_liquid_store_valid).
+var _liquid_store_bound := false
+## NK-6u: the kernel counts the installed session's substeps from FlightSession.native_substep_plan.
+var _substeps_bound := false
+## NK-6v: the kernel proves a clear contact step (FlightSession._clear_contact_step).
+var _clear_contact_bound := false
+## NK-8b: the kernel samples the prepared ground for render callers (FlightSession.render_terrain_sample).
+var _render_terrain_bound := false
+## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
+var _glow_terminal_bound := false
+## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
+var _pre_step_bound := false
+var _pre_step_turbulent := false
 var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
@@ -171,9 +215,9 @@ func is_installed() -> bool:
 func owns_stage(session: Node) -> bool:
 	if not _installed or session.sim.model != _installed_model: return false
 	if _body_only:
-		return not _installed_model.stage.is_valid() and _installed_model.loads == Callable(_native, "body_loads") \
-			and _installed_model.rotor_momentum == Callable(_native, "body_rotor")
-	return _installed_model.stage == Callable(_native, "stage")
+		return not _installed_model.stage.is_valid() and _installed_model.loads == _native_body_loads \
+			and _installed_model.rotor_momentum == _native_body_rotor
+	return _installed_model.stage == _native_stage_callable
 
 
 ## Detach without changing this helper. A transaction can restore its pointer and original model on refusal.
@@ -338,10 +382,6 @@ func prepare(session: Node) -> Dictionary:
 	if not result.get("ok", false): return _refuse("native stage refused: " + str(result.get("error", "invalid prepared source")))
 	_configuration_identity = boundary.identity
 	_weather_identity = boundary.weather_identity
-	var weather_guard: Dictionary = _native.prepare_weather_guard(session, _weather_identity)
-	var configuration_guard: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
-	if not weather_guard.get("ok", false) or not configuration_guard.get("ok", false):
-		return _refuse("native preparation identity changed before installation")
 	if not _macos_domain_context.is_empty():
 		if not _native.has_method("prepare_macos_domain_guard"):
 			return _refuse("Mac stock packed context guard is unavailable")
@@ -349,6 +389,13 @@ func prepare(session: Node) -> Dictionary:
 		if not domain_guard.get("ok", false):
 			return _refuse("Mac stock packed context guard refused")
 		_macos_domain_context["native_guard"] = domain_guard.duplicate(true)
+	# NK-6p: the kernel accepted the stage; freeze before the guard builds its plan (a fixed-wing flight only).
+	if _family != "helicopter" and NativeConfiguration.freeze_guarded_configuration:
+		NativeConfiguration.freeze_guarded(session)
+	var weather_guard: Dictionary = _native.prepare_weather_guard(session, _weather_identity)
+	var configuration_guard: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
+	if not weather_guard.get("ok", false) or not configuration_guard.get("ok", false):
+		return _refuse("native preparation identity changed before installation")
 	_prepared = true
 	reason = ""
 	return {ok = true, reason = ""}
@@ -397,6 +444,42 @@ func install(session: Node) -> Callable:
 		session._collision_world = _macos_domain_context.world
 		session._runway_field = _macos_domain_context.field
 	_installed_model = model
+	_native_stage_callable = Callable(_native, "stage")
+	_native_body_loads = Callable(_native, "body_loads")
+	_native_body_rotor = Callable(_native, "body_rotor")
+	_wing_wake_bound = _native.has_method("stage_wing_wake")
+	_contact_reach_bound = _native.has_method("contact_reach")
+	_compressions_bound = _native.has_method("stage_compressions") and _family != "helicopter"
+	_facts_bound = _compressions_bound and _native.has_method("stage_endpoint_facts")
+	_glow_firing_bound = _family == "glow" and _native.has_method("stage_glow_firing")
+	_glow_mass_bound = _family == "glow" and _native.has_method("prepare_glow_validity") \
+		and bool(_native.prepare_glow_validity(_glow_validity_bounds(session)))
+	_hull_rows_bound = _family != "helicopter" and _native.has_method("stage_hull_scrape_rows")
+	_liquid_store_bound = _family == "liquid" and _native.has_method("stage_liquid_store_valid")
+	_liquid_terminal_bound = _family == "liquid" and _native.has_method("prepare_liquid_terminal") \
+		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
+	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
+	_prop_strike_bound = _family != "helicopter" and _native.has_method("prepare_prop_strike") and _prepare_prop_strike(session)
+	_clear_contact_bound = _family != "helicopter" and _native.has_method("stage_contact_clear")
+	_render_terrain_bound = _family != "helicopter" and _native.has_method("stage_terrain_sample")
+	_substeps_bound = false
+	if _native.has_method("prepare_substeps"): # always, so a plan never outlives its installation
+		_substeps_bound = bool(_native.prepare_substeps(session, session.native_substep_plan() \
+			if _family != "helicopter" and session.has_method("native_substep_plan") else {}))
+	_guard_hull = {}
+	_hull_guard_bound = _family != "helicopter" and _native.has_method("prepare_hull_guard") \
+		and session.get("_hull_contact") is Dictionary and not session._hull_contact.is_empty() \
+		and bool(_native.prepare_hull_guard(HullContact.crash_depth(session._hull_contact)))
+	if _hull_guard_bound:
+		_guard_hull = session._hull_contact
+	_pre_step_bound = false
+	_pre_step_turbulent = false
+	if _family != "helicopter" and _native.has_method("prepare_pre_step"):
+		var pre_config: Dictionary = StageConfig.pre_step_config_for(session)
+		_pre_step_bound = bool(_native.prepare_pre_step(pre_config).get("ok", false))
+		_pre_step_turbulent = _pre_step_bound and bool(pre_config.turbulence)
+	if _contact_reach_bound and _family != "helicopter":
+		_prepare_reach_world(session._collision_world) # at installation, not on the first flying tick
 	_installed = true
 	return _reference_stage
 
@@ -415,6 +498,30 @@ func uninstall(session: Node) -> Callable:
 	_installed = false
 	_prepared = false
 	_installed_model = null
+	_contact_reach_bound = false
+	_compressions_bound = false
+	_facts_bound = false
+	_glow_firing_bound = false
+	_glow_mass_bound = false
+	_hull_rows_bound = false
+	_liquid_terminal_bound = false
+	_liquid_store_bound = false
+	_glow_terminal_bound = false
+	if _substeps_bound and _native != null:
+		_native.prepare_substeps(null, {})
+	_substeps_bound = false
+	_clear_contact_bound = false
+	_render_terrain_bound = false
+	_pre_step_bound = false
+	_prop_strike_bound = false
+	_strike_disc = {}
+	_strike_lake = {}
+	_hull_guard_bound = false
+	_guard_hull = {}
+	_pre_step_turbulent = false
+	_reach_world = {}
+	_reach_proxies = []
+	_reach_size = -1
 	reason = "uninstalled"
 	return previous
 
@@ -437,6 +544,316 @@ func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64A
 				PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), at)
 	if not accepted: reason = "native tick context refused"
 	return accepted
+
+## NK-6q: Simulation.state_is_valid and SceneryCollision._state_is_valid, exact, through the prepared kernel.
+func state_valid(s: PackedFloat64Array) -> bool:
+	return _native.state_valid(s)
+
+
+func scenery_state_valid(s: PackedFloat64Array) -> bool:
+	return _native.scenery_state_valid(s)
+
+
+## F5b: the glow propeller's torque at (rpm, axial speed) and at (rpm, 0) from the prepared glow stage; empty without one.
+func glow_blade_torques(rpm: float, axial_speed: float, density: float) -> PackedFloat64Array:
+	if not _installed or _family != "glow":
+		return PackedFloat64Array()
+	return _native.stage_glow_blade_torques(rpm, axial_speed, density)
+
+
+## NK-5a: Aero.wing_wake_velocity for the session's pre-step downwash lag through the prepared fixed-wing stage.
+## The caller passes its own air_data(s), _deflections(aux) and _ground_up(s); NaN means "use the reference".
+func wing_wake(s: PackedFloat64Array, air: Dictionary, d: Dictionary, ground_up: float) -> float:
+	if not _installed or not _wing_wake_bound or _family == "helicopter" or _native == null: return NAN
+	var v: Variant = air.get("v_air")
+	if not v is PackedFloat64Array or (v as PackedFloat64Array).size() != 3: return NAN
+	return _native.stage_wing_wake(s, PackedFloat64Array([v[0], v[1], v[2], float(air.get("V", NAN)), float(air.get("alpha", NAN)),
+		float(air.get("beta", NAN)), float(air.get("qbar", NAN))]),
+		PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), ground_up)
+
+
+## NK-5d: contact reach proofs for the accepted tick (FlightSession.REACH_* bits); 0 proves nothing. The proxy
+## bounds follow the session's collision world by identity; set_collision_world installs a new private copy.
+func contact_reach(session: Node, previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		hull: PackedFloat64Array, extra_reach: float, lake_threshold: float,
+		lake_bank := PackedFloat64Array()) -> int:
+	if not _installed or not _contact_reach_bound or _native == null: return 0
+	var world: Dictionary = session._collision_world
+	var proxies: Variant = world.get("proxies", [])
+	if not is_same(world, _reach_world) or not is_same(proxies, _reach_proxies) \
+			or not proxies is Array or (proxies as Array).size() != _reach_size:
+		_prepare_reach_world(world)
+	return int(_native.contact_reach(previous, candidate, hull, extra_reach, lake_threshold, lake_bank))
+
+
+## NK-6v: FlightSession._clear_contact_step's proof in one kernel call (stage_contact_clear): 1 or 2 when the tick's
+## contact step touches nothing, 0 to run the reference step. The proxy bounds follow the session's collision world
+## by identity, as contact_reach's do.
+func clear_contact_step(session: Node, previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		hull: PackedFloat64Array, extra_reach: float, lake_threshold: float, lake_bank: PackedFloat64Array,
+		previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array, mode: int, store_index: int,
+		hull_reach: float) -> int:
+	if not _installed or not _clear_contact_bound or _native == null: return 0
+	if mode & 24:
+		if not _contact_reach_bound: return 0
+		var world: Dictionary = session._collision_world
+		var proxies: Variant = world.get("proxies", [])
+		if not is_same(world, _reach_world) or not is_same(proxies, _reach_proxies) \
+				or not proxies is Array or (proxies as Array).size() != _reach_size:
+			_prepare_reach_world(world)
+	return int(_native.stage_contact_clear(previous, candidate, hull, extra_reach, lake_threshold, lake_bank,
+		previous_values, candidate_values, mode, store_index, hull_reach))
+
+
+## NK-5g: the session's _pre_step(aux, inputs, dt) through the prepared stage; empty means "use the reference". With
+## turbulence an answer also leaves the reference's RNG state in sim.modes[1], as _pre_step does.
+func pre_step(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	if not _installed or not _pre_step_bound or _native == null: return PackedFloat64Array()
+	var sim: Node = session.sim
+	var modes: PackedInt64Array = sim.modes
+	if _pre_step_turbulent and modes.size() < 2: return PackedFloat64Array()
+	var deflections := PackedFloat64Array()
+	if session.downwash_index() >= 0:
+		var d: Dictionary = session._deflections(aux)
+		deflections = PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+	var next: PackedFloat64Array = _native.pre_step(aux, inputs, dt, sim.state, sim.continuous, sim.time(),
+		session.engine_running, session._flap_mix_owner == "simulator", deflections, modes[1] if modes.size() > 1 else 0)
+	if not next.is_empty() and _pre_step_turbulent:
+		sim.modes[1] = int(_native.pre_step_rng_state())
+	return next
+
+
+## NK-8b: GroundTerrain.sample(north, east, surfaces) for render callers from the prepared ground when `surfaces` is its
+## table (byte for byte); empty means "sample in GDScript".
+func render_terrain_sample(north: float, east: float, surfaces: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _render_terrain_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_terrain_sample(north, east, surfaces)
+
+
+## NK-5e: the session's gear_compressions(s) at the accepted endpoint `s` with its aux, from the fixed-wing stage
+## and the tick context of the guarded pre-step; empty means "use the reference".
+func endpoint_compressions(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _compressions_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_compressions(s, aux)
+
+
+## NK-5i: [V, terrain height, slope north, slope east, collapsed (1/0), compressions...] at the accepted endpoint `s`
+## with its aux and time, from the fixed-wing stage and the tick context of the guarded pre-step; empty means "use
+## the reference". The session owns the publication checks (FlightSession.published_endpoint_facts).
+## NK-7i: [wind NED, v_air, V] at the published endpoint `s` with its aux and time (stage_endpoint_air); empty means
+## "use the reference". The session owns the publication checks (FlightSession.published_endpoint_air).
+func endpoint_air(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	if not _installed or not _facts_bound or _native == null or not _native.has_method(&"stage_endpoint_air"):
+		return PackedFloat64Array()
+	return _native.stage_endpoint_air(s, aux, time_s)
+
+
+## NK-7m: [shaft torque at (rpm, axial speed), at (rpm, 0)] at the published endpoint `s` (stage_endpoint_torques);
+## empty means "use the reference". The session owns the publication checks (FlightSession.published_endpoint_torques).
+func endpoint_torques(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float, rpm: float) -> PackedFloat64Array:
+	if not _installed or not _facts_bound or _native == null or not _native.has_method(&"stage_endpoint_torques"):
+		return PackedFloat64Array()
+	return _native.stage_endpoint_torques(s, aux, time_s, rpm)
+
+
+func endpoint_facts(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	if not _installed or not _facts_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_endpoint_facts(s, aux, time_s)
+
+
+## NK-6o: Wheels.evaluate's per-wheel diagnostics and frames at the accepted endpoint `s` with its aux, from the
+## fixed-wing stage and the installed tick context: [1, n, rows], [0] beyond the terrain's reach, or empty to use the
+## reference. The session owns the publication checks (FlightSession.published_wheel_rows).
+func wheel_rows(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float) -> PackedFloat64Array:
+	if not _installed or not _compressions_bound or _native == null or not _native.has_method("stage_wheel_rows"):
+		return PackedFloat64Array()
+	return _native.stage_wheel_rows(s, aux, steer, anchors, speeds, brake)
+
+
+## NK-7j: wheel_rows and, from those rows, the ground audio's loaded rows in one call (stage_wheel_audio_rows): empty
+## to use the reference, [rows] to build the audio rows from the wheel rows, [rows, row...] answered. The session owns
+## the publication checks (FlightSession.published_wheel_audio_rows).
+func wheel_audio_rows(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, arms: PackedFloat64Array, ids: PackedStringArray, reference_load: float,
+		time_s: float, surfaces: PackedFloat64Array, support: Dictionary) -> Array:
+	if not _installed or not _compressions_bound or _native == null \
+			or not _native.has_method(&"stage_wheel_audio_rows"):
+		return []
+	return _native.stage_wheel_audio_rows(s, aux, steer, anchors, speeds, brake, arms, ids, reference_load, time_s,
+		surfaces, support)
+
+
+## NK-7k: the ground audio's approach speeds, one per contact, from the stage's wheel frames at the endpoint `s`
+## (stage_wheel_approach_speeds); empty means "use the reference". The session owns the publication checks
+## (FlightSession.published_approach_speeds).
+func approach_speeds(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float,
+		arms: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _compressions_bound or _native == null \
+			or not _native.has_method(&"stage_wheel_approach_speeds"):
+		return PackedFloat64Array()
+	return _native.stage_wheel_approach_speeds(s, aux, steer, arms)
+
+
+## NK-6l: the pre-tick guard's hull checks for this installation's hull, which the session passes by identity: bit 1
+## when HullContact.terminal(previous, s, hull) must return no event, bit 2 when HullContact.contacts(previous, s, hull)
+## must return no contact; 0 to use the reference for both. The session owns the tick checks.
+func hull_guard(previous: PackedFloat64Array, s: PackedFloat64Array, hull: Dictionary) -> int:
+	if not _installed or not _hull_guard_bound or _native == null or not is_same(hull, _guard_hull):
+		return 0
+	return int(_native.stage_hull_guard(previous, s))
+
+
+## NK-6k: 1 when HullContact.prop_disc_depth(s, disc, lake, time).depth <= 0 for this installation's propeller disc
+## and lake, which the session passes by identity; -1 to use the reference. The session owns the tick checks.
+func prop_strike_clear(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary) -> int:
+	if not _installed or not _prop_strike_bound or _native == null or not is_same(disc, _strike_disc) \
+			or not is_same(lake, _strike_lake):
+		return -1
+	return int(_native.stage_prop_strike_clear(s))
+
+
+## NK-6k: hand the session's propeller disc to the native stage; its lake is the one the stage configuration read.
+func _prepare_prop_strike(session: Node) -> bool:
+	_strike_disc = {}
+	_strike_lake = {}
+	var disc: Variant = session.get("_prop_disc")
+	var lake: Variant = session.get("_lake")
+	if not disc is Dictionary or disc.is_empty() or not lake is Dictionary or not disc.get("hub") is PackedFloat64Array \
+			or not disc.get("axis") is PackedFloat64Array or typeof(disc.get("radius")) != TYPE_FLOAT:
+		return false
+	if not bool(_native.prepare_prop_strike(disc.hub, disc.axis, float(disc.radius))):
+		return false
+	_strike_disc = disc
+	_strike_lake = lake
+	return true
+
+
+## NK-6j: FlightSession.gear_collapsed(s) for the pre-tick guard from the installed tick context's endpoint
+## compressions: 1 or 0, or -1 to use the reference. The session owns the tick checks.
+func guard_collapsed(s: PackedFloat64Array, aux: PackedFloat64Array) -> int:
+	if not _installed or not _compressions_bound or _native == null or not _native.has_method("stage_guard_collapsed"):
+		return -1
+	return int(_native.stage_guard_collapsed(s, aux))
+
+
+## NK-6e: the glow installation's bounds that GlowFlight.valid and mass_context read, captured at installation; the
+## configuration guard refuses a tick after any later change to them.
+static func _glow_validity_bounds(session: Node) -> Dictionary:
+	var install: Dictionary = session.aircraft.model.propulsion.glow
+	var line: Dictionary = install.get("feed_line", {})
+	var family: Variant = install.profile.get("family")
+	var cycle: Variant = install.profile.identity.get("cycle_revolutions")
+	if typeof(cycle) not in [TYPE_INT, TYPE_FLOAT]:
+		return {}
+	return {max_rpm = float(install.profile.operation.max_rpm), total_capacity_kg = float(install.total_capacity_kg),
+		capacity_fuel_kg = float(install.capacity_fuel_kg), line_capacity_kg = float(line.get("capacity_kg", 0.0)),
+		unusable_fuel_kg = float(install.unusable_fuel_kg), cycle_revolutions = float(cycle), has_line = not line.is_empty(),
+		family_ok = family in ["glow_2t", "glow_4t"] and cycle == (1 if family == "glow_2t" else 2)}
+
+
+## NK-6h: 1 when HullContact.terminal_at_properties for the liquid contact sample at fraction 0 must answer no event;
+## 0 or -1 to evaluate the reference. The session owns the tick checks.
+## NK-6t: LiquidFlight.valid(session, values) from the prepared liquid stage: 1 or 0 as the reference decides, -1 to use
+## the reference. The session owns the tick checks (FlightSession._native_liquid_store_check).
+func liquid_store_valid(values: PackedFloat64Array, index: int) -> int:
+	if not _installed or not _liquid_store_bound or _native == null: return -1
+	return int(_native.stage_liquid_store_valid(values, index))
+
+
+func liquid_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array, usable_before: float) -> int:
+	if not _installed or not _liquid_terminal_bound or _native == null: return -1
+	return int(_native.stage_liquid_terminal_quiet(previous, s, usable_before))
+
+
+## NK-6i: 1 when HullContact.terminal_at_properties for the glow contact sample at fraction 0 must answer no event;
+## 0 or -1 to evaluate the reference. total and line are the start store's fuel coordinates. The session owns the
+## tick checks and calls only with a valid sampler, whose start store passed GlowFlight.mass_context.
+func glow_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array, total: float, line: float) -> int:
+	if not _installed or not _glow_terminal_bound or _native == null: return -1
+	return int(_native.stage_glow_terminal_quiet(previous, s, total, line))
+
+
+## NK-6i: the glow contact sample's tanks (GlowFlight.mass_context of the installed store) as [capacity, unusable]
+## pairs, and whether FuelSample.build accepts them at both ends of each store's range.
+func _prepare_glow_terminal(session: Node) -> bool:
+	var context: Dictionary = GlowFlight.mass_context(session, session.sim.continuous)
+	if not context.get("ok", false) or not context.get("tanks") is Array:
+		return false
+	var tanks: Array = context.tanks
+	if tanks.is_empty() or tanks.size() > 2:
+		return false
+	var stores := PackedFloat64Array()
+	for tank: Variant in tanks:
+		if not tank is Dictionary or typeof(tank.get("capacity_kg")) not in [TYPE_FLOAT, TYPE_INT] \
+				or typeof(tank.get("unusable_kg")) not in [TYPE_FLOAT, TYPE_INT]:
+			return false
+		stores.append(float(tank.capacity_kg))
+		stores.append(float(tank.unusable_kg))
+	var unit := {ok = true, mass_kg = 1.0, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]), inverse = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])}
+	var static_ok := true
+	for end in 2:
+		var remaining := {}
+		for k in tanks.size():
+			remaining[str(tanks[k].id)] = stores[2 * k + 1] if end == 0 else stores[2 * k]
+		static_ok = static_ok and FuelSample.build(unit, tanks, remaining, 1, 0.0, true).get("ok", false)
+	return bool(_native.prepare_glow_terminal(HullContact.crash_depth(session._hull_contact), stores, static_ok))
+
+
+## NK-6h: FuelSample.build of the liquid contact sample accepts every in-range amount: its tanks pass at the bounds of
+## the range LiquidFlight.contact_sampler clamps to (its other checks read only the mass properties, tick and time).
+static func _liquid_sample_static_ok(session: Node) -> bool:
+	var config: Dictionary = session.aircraft.model.propulsion.get("liquid_fuel", {})
+	var tanks: Variant = session.aircraft.model.get("fuel_system", {}).get("tanks", [])
+	if config.is_empty() or not tanks is Array:
+		return false
+	var unit := {ok = true, mass_kg = 1.0, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]), inverse = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])}
+	for amount: float in [float(config.unusable_kg), float(config.capacity_kg)]:
+		if not FuelSample.build(unit, tanks, {str(config.tank_id): amount}, 1, 0.0, true).get("ok", false):
+			return false
+	return true
+
+
+## NK-6f: HullContact.loads (properties empty) or loads_at_properties (packed properties) endpoint diagnostics:
+## [1, n, n x (index, f_up, f_n, f_e, vn, ve)], or [0] or empty to use the reference. The session owns the tick checks.
+func hull_scrape_rows(s: PackedFloat64Array, properties: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _hull_rows_bound or _native == null: return PackedFloat64Array()
+	return _native.stage_hull_scrape_rows(s, properties)
+
+
+## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(values).ok (true) from the prepared glow
+## stage: 1 or 0 as the reference decides, -1 to use the reference. The session owns the tick checks.
+func glow_mass_check(values: PackedFloat64Array, with_mass: bool) -> int:
+	if not _installed or not _glow_mass_bound or _native == null: return -1
+	return _native.stage_glow_mass_check(values, with_mass)
+
+
+## NK-6b: GlowFlight.point(owner, body, values, time_s).firing_fraction from the prepared glow stage and the tick
+## context of the guarded pre-step; NaN means "use the reference". The session owns the tick checks
+## (FlightSession.native_glow_firing).
+## NK-7g: flight audio's glow key set from the prepared glow stage (stage_glow_audio_keys); {} to assemble it in GDScript.
+func glow_audio_keys(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, geometry: PackedFloat64Array,
+		family: Variant, geometry_family: Variant, frame: PackedFloat64Array) -> Dictionary:
+	if not _installed or not _glow_firing_bound or _native == null or not _native.has_method(&"stage_glow_audio_keys"):
+		return {}
+	return _native.stage_glow_audio_keys(body, values, time_s, geometry, family, geometry_family, frame)
+
+
+func glow_firing(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> float:
+	if not _installed or not _glow_firing_bound or _native == null: return NAN
+	return _native.stage_glow_firing(body, values, time_s)
+
+
+func _prepare_reach_world(world: Dictionary) -> void:
+	_reach_world = world
+	var proxies: Variant = world.get("proxies", [])
+	_reach_proxies = proxies if proxies is Array else []
+	_reach_size = _reach_proxies.size()
+	if _reach_proxies.is_empty() or not bool(_native.prepare_reach_world(_reach_proxies)):
+		_native.clear_reach_world()
+
 
 ## prepare_stage() input: committed model, gear, surface table, lake, prepared hull, layout, density and
 ## ground-effect reach and explicit capability flags; family adapters add their validated source snapshots.

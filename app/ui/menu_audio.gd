@@ -90,6 +90,8 @@ const RANGE_ACTIONS: PackedStringArray = [
 	"ui_home", "ui_end", "ui_page_up", "ui_page_down",
 ]
 const EXCLUDED_GROUPS: PackedStringArray = ["flight_only", "flight_input"]
+## Live state that silences a control's cues (read-only fields, disabled buttons).
+const STATE_PROPERTIES: Array[StringName] = [&"editable", &"disabled"]
 
 var _retiring := false
 var _top_screen_provider: Callable
@@ -188,6 +190,8 @@ func _observe_added_control(control_id: int) -> void:
 	var control := instance_from_id(control_id) as Control
 	if control == null or not control.is_inside_tree() or control.is_queued_for_deletion():
 		return
+	if _observed_controls.has(control_id):
+		return # observe() already wired it: the controls of a newly pushed screen all arrive here once
 	var ancestor: Node = control
 	while ancestor != null:
 		if _observed_screens.has(ancestor.get_instance_id()):
@@ -266,8 +270,14 @@ func retire_playbacks() -> Array[WeakRef]:
 	return playbacks
 
 
+## 2026-11-26: opening Controls (about 1,900 nodes) spent 250–290 ms here. The walk checks each node's own
+## exclusion only, since an excluded node already ends the walk of its subtree. It also reads the two state
+## properties directly instead of listing every property of each control.
 func _observe_subtree(node: Node, screen: Control) -> int:
-	if _is_excluded(node, screen):
+	if node == screen:
+		if _is_excluded(node, screen):
+			return 0
+	elif _excluded_here(node):
 		return 0
 	var connected := 0
 	if node is Control:
@@ -300,9 +310,8 @@ func _connect_control(control: Control, screen: Control) -> bool:
 		return false
 	# Property names are structural; values remain live (e.g. a slider becoming read-only).
 	var checks: Array[StringName] = []
-	for property_info: Dictionary in control.get_property_list():
-		var property_name := StringName(property_info.get("name", ""))
-		if property_name == &"editable" or property_name == &"disabled":
+	for property_name: StringName in STATE_PROPERTIES:
+		if property_name in control:
 			checks.append(property_name)
 	var exiting_callback := Callable(self, "_on_control_tree_exiting").bind(control_id)
 	control.tree_exiting.connect(exiting_callback)
@@ -321,14 +330,20 @@ func _connect_control_signal(control: Control, signal_name: StringName, handler:
 func _is_excluded(node: Node, screen: Control) -> bool:
 	var current: Node = node
 	while current != null:
-		if current.has_meta("menu_audio_exclude") and bool(current.get_meta("menu_audio_exclude")):
+		if _excluded_here(current):
 			return true
-		for group_name: String in EXCLUDED_GROUPS:
-			if current.is_in_group(group_name):
-				return true
 		if current == screen:
 			break
 		current = current.get_parent()
+	return false
+
+
+func _excluded_here(node: Node) -> bool:
+	if node.has_meta("menu_audio_exclude") and bool(node.get_meta("menu_audio_exclude")):
+		return true
+	for group_name: String in EXCLUDED_GROUPS:
+		if node.is_in_group(group_name):
+			return true
 	return false
 
 

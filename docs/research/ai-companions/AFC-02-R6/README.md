@@ -168,3 +168,25 @@ arguments are retained in each checked report. Decompress each ORFL into a new
 ignored directory and follow the existing [flight-log workflow](../../../FLIGHT-LOGGING.md).
 This work does not qualify arbitrary-player avoidance, static containment,
 additional aircraft, runway activities, live fleet restore or higher populations.
+
+### 2026-11-23 release renewal
+
+The v0.3.4 candidate renews the AppRoot and scenery collision source hashes after
+lightweight graphics setup and the Club entrance geometry change. The solver
+and companion controller source match the accepted baseline. On Linux with
+pinned Godot 4.8 beta2, the production probe ran three companions for 28,800
+ticks in calm weather. Both reports give the same minimum ground clearance of
+34.57 m and complete without a crash or fault. The [qualification receipt](2026-11-23-v034-behavior-renewal.json)
+records the two source pins, report hash and focused admission, shell, scenery
+and livery checks. The probe compares the reported scenario outcomes.
+
+### 2026-11-25 FPV tree renewal
+
+Commit `3cd6efa05` (FPV frame obstacle contact and tree profiles) changed the AppRoot and
+scenery collision sources without renewing their pins, so every companion profile refused
+to load. On Linux with pinned Godot 4.8 beta2, the production probe on the last qualified
+tree (`0b4a3998b`) and on `065e21263` with the renewed pins produced byte-identical reports
+(28,800 ticks, three companions, 34.57 m minimum clearance, the same report hash as the
+2026-11-23 renewal). Twelve focused companion, scenery, paint and livery suites passed. The
+[qualification receipt](2026-11-25-fpv-behavior-renewal.json) records the pins, report hash
+and suite results. This is bounded headless software evidence.

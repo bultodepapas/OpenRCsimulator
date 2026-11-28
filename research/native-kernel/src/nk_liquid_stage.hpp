@@ -47,6 +47,9 @@ struct LiquidStageResult {
 	std::array<R, 13> body_derivative{};
 	bool has_pre_reaction = false;
 	std::array<R, 6> pre_reaction{}; // live-CG gas wrench for an optional stage context
+	// NK-5b: the same preview's source-off shaft rate (LiquidFlight.evaluate's source_off_rpm_rate), finite only.
+	bool has_source_off_rate = false;
+	R source_off_rpm_rate = 0.0;
 };
 
 // Equivalent to LiquidFlight.valid(..., true) and properties(..., true).
@@ -127,6 +130,15 @@ inline LiquidStageResult liquid_stage_finish(const LiquidStageModel &model, cons
 		if (capture_pre_reaction) {
 			out.has_pre_reaction = true;
 			for (int i = 0; i < 6; ++i) out.pre_reaction[i] = cg_loads[i];
+			// The reference's _coupled_response(body, base, at, live, false, preview): the same trial,
+			// pre-reaction wrench and air with the source forced off. An unusable response publishes nothing.
+			const LiquidGasStage off = liquid_gas_coupled_stage(body, cg_loads, prop_air, datum_air, explicit_air,
+					trial.rpm, throttle, rho, charge_ratio, false, model.gas_shaft, prop, model.gas_fuel,
+					trial.mass.inertia.data(), trial.mass.inverse.data());
+			if (off.ok && is_finite(off.rpm_rate)) {
+				out.has_source_off_rate = true;
+				out.source_off_rpm_rate = off.rpm_rate;
+			}
 		}
 	} else {
 		if (turbine_point == nullptr || !turbine_point->ok || wash_count != 0) return out;

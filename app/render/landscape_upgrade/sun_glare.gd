@@ -26,8 +26,8 @@ const CLOUD_UNIFORMS: Array[StringName] = [&"layered_appearance", &"cloud_covera
 const OPTICS_META := &"openrc_optics"
 ## The afterimage overlay's canvas layer: above the 3D image, below every interface layer (HUD 1, notices 20+).
 const AFTERIMAGE_LAYER := -10
-## SUN-09: the skyline is built from this many samples per frame (a fixed amount of work, so captures and replays
-## finish it on the same frame), and rebuilt when the eye moves farther than this.
+## SUN-09: the skyline plans this many samples per frame for its worker thread (a fixed amount of work per batch), and
+## is rebuilt when the eye moves farther than this.
 const SKYLINE_SAMPLES_PER_FRAME := 600
 const SKYLINE_REBUILD_M := 2.0
 
@@ -61,6 +61,13 @@ static func attach(parent: Node, env: Environment) -> MeshInstance3D:
 	node.eyewear = Options.pilot_eyewear()
 	parent.add_child(node)
 	return node
+
+
+## The skyline's last batch may still be running on a worker thread when the flight or Home is torn down.
+func _exit_tree() -> void:
+	if _skyline != null:
+		_skyline.join()
+
 
 func _ready() -> void:
 	_material = _pass_material(0)
@@ -220,6 +227,8 @@ func _skyline_prior(camera: Camera3D, dir: Vector3, radius: float, eye: bool) ->
 		var field: Node = parent.get_node_or_null("Field") if parent != null else null
 		if field == null:
 			return constant
+		if _skyline != null:
+			_skyline.join() # its last batch may still be running on a worker thread
 		_skyline = Skyline.new(field, position)
 	if not _skyline.step(SKYLINE_SAMPLES_PER_FRAME):
 		return constant

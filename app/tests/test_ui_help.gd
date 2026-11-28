@@ -59,6 +59,19 @@ func _check_gamepad_scrolling() -> void:
 			root.add_child(help)
 			help.set_process(false)
 			await ui.settle()
+			if scale < 1.5:
+				# UI-40h: at normal text size every Help page fits 1080p, so there is nothing to scroll.
+				var tall := PackedStringArray()
+				for id: String in ["flight", "aircraft", "radio", "about"]:
+					help.show_page(id)
+					await ui.settle()
+					var page_bar := help._help_scroll.get_v_scroll_bar()
+					if page_bar.max_value - page_bar.page > 0.0:
+						tall.append(id)
+				_check("%s 100%% every Help page fits 1080p without scrolling" % locale, tall.is_empty(), str(tall))
+				help.free()
+				await process_frame
+				continue
 			help._help_scroll.grab_focus()
 			await ui.settle()
 			var bar := help._help_scroll.get_v_scroll_bar()
@@ -97,6 +110,11 @@ func _check_gamepad_scrolling() -> void:
 			await ui.joy_axis(JOY_AXIS_LEFT_X, 1.0)
 			_check("selected pad has a direct route from reading to Close", help.close_button.has_focus())
 			await ui.joy_axis(JOY_AXIS_LEFT_X, 0.0)
+			help._help_scroll.grab_focus()
+			await ui.joy_axis(JOY_AXIS_LEFT_Y, -1.0)
+			_check("%s %.0f%% Up at the top of a Help page returns to its tab" % [locale, scale * 100.0],
+				ui.focus_name() == "FlightTab", ui.focus_name())
+			await ui.joy_axis(JOY_AXIS_LEFT_Y, 0.0)
 			help.free()
 			await process_frame
 	UiInput.isolate_joypads()
@@ -154,9 +172,30 @@ func _run() -> void:
 	_check("English Help keeps its body and Close inside the real viewport",
 		scroll.size.y >= 100 and root.get_visible_rect().encloses(scroll.get_global_rect())
 		and root.get_visible_rect().encloses(help.close_button.get_global_rect()))
-	scroll.grab_focus()
+	# UI-40h: one page per task; every key sits on exactly one page (the count above includes hidden pages).
+	_check("Help opens on the Flight page", help.current_page() == "flight" and help._pages[0].is_visible_in_tree()
+		and not help.about_label.is_visible_in_tree())
+	_check("Help sorts keys by task: Flight has Esc, Aircraft the gear, Radio the calibration, About the recording",
+		_caps_text(help._pages[0]).has("Esc") and _caps_text(help._pages[1]).has("G")
+		and _caps_text(help._pages[2]).has("K") and _caps_text(help._pages[3]).has("T")
+		and not _caps_text(help._pages[0]).has("G") and not _caps_text(help._pages[0]).has("T"))
+	await ui.tap(KEY_DOWN)
+	_check("Down from Close reaches the Help tabs", ui.focus_name().ends_with("Tab"), ui.focus_name())
+	for step in 4:
+		if ui.focus_name() == "AboutTab":
+			break
+		await ui.tap(KEY_RIGHT)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("keyboard opens the About page", help.current_page() == "about" and help.about_label.is_visible_in_tree(),
+		help.current_page())
+	await ui.tap(KEY_DOWN)
+	_check("Down from the tabs reaches the page", scroll.has_focus(), ui.focus_name())
 	await ui.tap(KEY_END)
-	_check("English Help keyboard scrolling reaches About", scroll.get_global_rect().grow(1).encloses(help.about_label.get_global_rect()))
+	_check("English Help About is inside the reading area", scroll.get_global_rect().grow(1).encloses(help.about_label.get_global_rect()))
+	await ui.tap(KEY_HOME)
+	await ui.tap(KEY_UP)
+	_check("Up at the top returns to the About tab", ui.focus_name() == "AboutTab", ui.focus_name())
 	await ui.tap(KEY_ESCAPE)
 	_check("Esc closes Help, focus back on Help", app.help == null and ui.focus_name() == "Help", ui.focus_name())
 	_check("Esc in Help did not start or quit anything", app.flight == null and app.home != null)
@@ -177,6 +216,8 @@ func _run() -> void:
 	var es_page: Control = es_scroll.get_child(0)
 	for frame in 4: await process_frame
 	_check("Spanish Help content fits horizontally", es_page.size.x <= es_scroll.size.x + 1)
+	app.help.show_page("about")
+	await ui.settle()
 	es_scroll.grab_focus()
 	await ui.tap(KEY_END)
 	_check("Spanish Help keyboard scrolling reaches About", es_scroll.get_global_rect().grow(1).encloses(app.help.about_label.get_global_rect()))
@@ -200,6 +241,9 @@ func _run() -> void:
 			rotorcraft_key_count += row[0].size()
 	var rotorcraft_copy := "\n".join(rotorcraft_labels)
 	_check("rotorcraft Help receives its explicit vehicle context", rotorcraft_help._vehicle_type == Reference.ROTORCRAFT)
+	_check("rotorcraft Help keeps arm, hold, trainer and flight mode on its Aircraft page",
+		rotorcraft_help._page_ids == PackedStringArray(["flight", "aircraft", "radio", "about"])
+		and Array(_caps_text(rotorcraft_help._pages[1])) == ["I", "G", "H", "B"], str(_caps_text(rotorcraft_help._pages[1])))
 	_check("rotorcraft Help shows every key in its own tables", rotorcraft_caps.size() == rotorcraft_key_count,
 		"%d caps for %d listed keys" % [rotorcraft_caps.size(), rotorcraft_key_count])
 	_check("rotorcraft Help keeps the reference horizontally contained at 720p", rotorcraft_page.size.x <= rotorcraft_scroll.size.x + 1
@@ -276,8 +320,10 @@ func _run() -> void:
 	_check("paused time does not use the hint up", hint.visible)
 	app.continue_flight()
 	await create_timer(0.8).timeout
-	_check("after 0.5 s flown it goes and is remembered", not hint.visible and Preferences.load_from(PREFS).first_flight_hint_seen)
+	_check("after 0.5 s flown it goes and is remembered", not hint.visible and app.preferences.first_flight_hint_seen)
+	_check("the flag is not written during the flight", not Preferences.load_from(PREFS).first_flight_hint_seen)
 	app.open_pause()
+	_check("the next Pause saves the flag", Preferences.load_from(PREFS).first_flight_hint_seen)
 	await ui.settle()
 	app.end_flight()
 	await ui.settle()

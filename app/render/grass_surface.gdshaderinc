@@ -1,5 +1,6 @@
 // L11a: one texture and macro/pilot-pin function for the ground and blade roots. Ours, MIT.
 // Extracted without retuning; grass-off captures must match the pre-L11 ground.
+global uniform bool openrc_ground_simple;
 uniform sampler2D grass : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform float tile_m = 6.0;
 uniform float anti_tiling = 1.0;
@@ -62,6 +63,9 @@ vec2 macro(vec2 p) {
 
 vec3 rough_grass_colour(vec2 p) {
 	vec2 uv = p / tile_m;
+	if (openrc_ground_simple) {
+		return texture(grass, uv).rgb;
+	}
 	vec3 base = anti_tiling > 0.5 ? untiled(uv) : texture(grass, uv).rgb;
 	vec2 mc = macro(p);
 	// Pin: near the station, subtract the macro value at the station itself, so the pilot's area keeps its L9a mean

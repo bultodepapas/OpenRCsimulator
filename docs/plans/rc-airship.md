@@ -2,7 +2,7 @@
 
 **Status: first playable experimental gate reached in software, 2026-11-10 ([§14](#14-implementation-status)); physical, pilot and target-hardware gates remain open.** User requirement: a generic radio-controlled blimp, 5 metres long, built from the 3D model the user provided. Other dimensions, mass and hardware are not yet specified. This is a non-rigid helium airship unless the delivery establishes otherwise; the word “Zeppelin” does not imply a rigid historical airship or a wing-supported airplane.
 
-Owner/prefix: **RC airship, BL-00…18**, registered in the ownership index. This document owns implementation scope and gates. The [initial physics investigation](../research/rc-airship/physics-2026-11-08.md) retains its original scientific sources and limits. The follow-up investigations in §13 examine 24 distinct decisions and amend this plan. Shared contracts remain with SF, AS, M5, EL/BAT, GP/CR, input/UI, FL, CAM/AUD and the asset pipeline.
+Owner/prefix: **RC airship, BL-00…20**, registered in the ownership index. The [stock launch and flight audit](#15-bl-20-stock-blimp-launch-and-flight-audit) covers the current Home route, paint, starts and cameras. The [initial physics investigation](../research/rc-airship/physics-2026-11-08.md) retains its original scientific sources and limits. The follow-up investigations in §13 examine 24 distinct decisions and amend this plan. Shared contracts remain with SF, AS, M5, EL/BAT, GP/CR, input/UI, FL, CAM/AUD and the asset pipeline.
 
 ## 1. Recommended outcome and scope
 
@@ -421,3 +421,54 @@ Accepted-tick cost (reference GDScript, real field with obstacles, Ryzen 9 5900X
 - Resting on the gear: 717–756 / 1064–1097 µs.
 
 Air flight now meets the 500 µs median target on this host. Ground contact does not, and about 200 µs of every step is shared-kernel overhead. Target-host qualification remains BL-17 ([evidence](../research/rc-airship/BL-12/README.md#performance)).
+
+## 15. BL-20 stock blimp launch and flight audit
+
+The reported symptom on Windows was a menu covering the first view of the blimp, followed by an apparently frozen flight. The release baseline is **v0.3.5**, commit `0b4a3998b`, on 23 November 2026. The acceptance route is **Home → Vehicles → RC blimp → Fly → Pause → Home**. A direct launch and a Workshop trial have their own arming and return behavior.
+
+| Priority | Finding in the release | Repair and acceptance |
+| --- | --- | --- |
+| P0 · Launch | Home built the activity and scenery synchronously. The activity then deliberately opened Pause and waited at tick zero. The former activity test explicitly required this pause. | Show an opaque loading screen on the first draw, yield during world and field construction, and accept a single departure. Cancel early and during the field build. Home must regain its camera, selected model and working Fly button. A focused launch with ready controls must show the aircraft and advance ticks. |
+| P0 · Arming and pause | An unsuccessful Resume reported feedback in a separate HUD message. Help and telemetry could occupy the same area as the menu. | Give Pause its own centered, scrollable surface. Display the refusal inside it. Check low throttle, centered yaw, focus loss and explicit Resume. A rejected input or a stationary blimp must be distinguishable from a stalled simulation. |
+| P1 · Starts | Home disabled the start selector. The activity defaulted to a 6 m release. Its wheeled start used north 22 m at Club, beyond the runway's north edge at 21 m. | Default Club to wheels at its runway midpoint (north 15 m, east 0 m), heading east. Offer the 6 m release in Home. Preserve the blimp's preference when switching to an airborne-only field or another vehicle. Check settled gear load, vectored lift-off, deterministic reset and historical recorded offsets. |
+| P1 · Paint | Home exposed all three delivered skins. A successful in-flight swap changed the model locally, so returning Home could restore the earlier skin. A refused swap could leave the selector on the failed choice. | Exercise Tiburón Blanco, Histórico and Cromo Carbono Azul through Home and Pause. Change paint while paused, compare the accepted tick and pose, return Home and relaunch. Refuse a broken binding without losing the previous model. Keep Workshop paint pinned to its build. |
+| P1 · Cameras | The blimp implemented three separate views. The airplane camera rig also provides flyby, close-up, shared zoom and terrain/scenery clearance. | Exercise pilot, chase, flyby, orbit and close-up on wheels and in flight. Check framing, horizon and clipping, keyboard cycling in both directions, orbit drag, zoom and reset. Home launches honor the player's startup camera. |
+
+### Verification and remaining gates
+
+**Release reproduction on this PC.** At 1920×1080 on a GeForce RTX 3090 with the Compatibility renderer, Fly removed Home from the screen stack. The blimp's own pause panel then occupied `(960, 540, 568, 732)`. Its Home button began at y = 1211, entirely below the window. Two samples showed tick 0 at 6.0 m with keyboard armed. Pressing Resume advanced to tick 208 at 5.95 m. The engine accepted input throughout this observation.
+
+**Corrected Windows run.** Godot 4.8-beta2 (`cafc17a19`), OpenGL Compatibility, RTX 3090, keyboard, Club field. Candidate source digest `054154890d437c6f7d413ca3df004c6978aaf28b9a67281a9451fc855adb76c7`.
+
+| Exercise | Observed result |
+| --- | --- |
+| Fly, cancel, Fly again | Cancel during landscape construction returned to the same skin and the current Home camera. On a subsequent warm launch the first loading checkpoint took 10.5 ms and the handoff took 1.34 s. The first flight observation showed tick 36, wheels on the runway and both menus closed. This is one local timing sample. |
+| Runway and air | From wheels, holding back pitch and increasing throttle raised the datum from 0.68 m to 2.26 m AGL. All 1,273 recorded ticks replayed byte-for-byte in a second Windows process with matching solver and session identities. An airborne launch measured 5.997 m at tick 50. Restart and a second Home launch restored the wheeled start. |
+| Camera and paint | Captured all five full-screen views from each start. Orbit drag and wheel zoom moved the camera. All three stock paints rendered in the same daylight close-up. Each pause-menu swap preserved the tick. Home restored the last paint and selecting Tiburón Blanco in the Home gallery carried it into the next flight. |
+| Pause layout | The panel occupied (640, 193) to (1280, 886) at 1080p and (320, 20) to (960, 700) at 720p. Resume and Home were reachable at both sizes. Focus loss held the simulation until an explicit Resume. |
+
+The local evidence directory is `tmp/blimp-audit-v035-20261123/`. Compare `baseline-first-view.jpg` with `play-ready.jpg` for the first view. `candidate-pause.jpg` and `candidate-pause-720.jpg` show the pause layout. `vistas.jpg` pairs the same five views on wheels and in the air. `pinturas.jpg` shows Tiburón Blanco, Histórico and Cromo Carbono Azul from left to right. The route JSON files retain flight state and capture dimensions. `takeoff.orfl` and `takeoff-replay.json` retain the flight and its replay result.
+
+The [activity test](../../app/tests/test_airship_activity.gd) covers the Home handoff, cancellation, accepted ticks, focus and paint persistence. The [session test](../../app/tests/test_airship_session.gd) exercises gear contact and takeoff on Club with its collision world. The [presentation test](../../app/tests/test_airship_presentation.gd) checks the five camera modes and the skin rollback. The [controller audit](../../app/tests/test_controller_audit_vehicle_airship.gd) exercises unsafe inputs with synthetic devices. [Flight-log replay](../../app/tests/test_airship_flight_log.gd) and the [Workshop round trip](../../app/tests/test_airship_workshop_flow.gd) cover the other session consumers.
+
+Ten regression scripts passed on Linux. The eight blimp and Home checks were supplemented by the [Home layout](../../app/tests/test_ui_home_layout.gd) and [screen navigation](../../app/tests/test_ui_screen_stack.gd) suites. The final activity run passed all 20 checks, including cancelling during landscape construction. The presentation check initially failed because the default test bundle omitted the exporter's manifest. Repeating it on the same runtime files with `assets/aircraft/rc-blimp-5m/source-manifest.json` included passed all 74 checks, including the three GLB hashes.
+
+The final pilot check uses a physical transmitter. Start with displaced yaw and high throttle, lower throttle, center yaw, fly from each start, disconnect and reconnect, then return Home. Record the device and profile, launch mode and result. Compare contact and handling with measured blimp data under BL-12. Repeat display and frame-time qualification on each target host under BL-17.
+
+### Instrument readout cost
+
+The HUD used to request detailed forces and contacts on every drawn frame and format nine instrument lines behind the pause menu. It now samples the visible instruments at 12 Hz on a monotonic clock. Resume and a change of view refresh the readout on the next frame. Status messages keep their own real-time deadlines. Cameras and animation still update per frame, and the session still accepts 240 physics steps per simulated second.
+
+On 23 November 2026, a Windows headless comparison ran both HUDs in the same Godot 4.8-beta2 process on a Ryzen 9 5900X. Each condition used four alternating pairs, 30 warm-up frames and 180 measured frames per run, paced at 60 Hz. The timer covered the activity's presentation callback. Physics integration ran outside it, with the same commands and four accepted ticks per active frame. World rendering and audio were disabled.
+
+| Condition | Before (µs/frame) | After (µs/frame) | CPU time saved | Detailed evaluations before → after (720 frames) |
+| --- | ---: | ---: | ---: | ---: |
+| Resting on the Club runway | 747 | 374 | 49.9% | 720 → 145 |
+| Powered flight from a 6 m release | 639 | 362 | 43.4% | 720 → 143 |
+| Pause menu open | 455 | 315 | 30.9% | 0 → 0 |
+
+Times are the medians of four run means. Pause already reused its last detailed physics result. The saving there comes from skipping the remaining telemetry work and hidden text formatting. Each paired run matched the trajectory and continuous-state digest at every accepted tick. The earlier takeoff also replayed byte-for-byte for all 1,273 ticks with the same blimp session identity. Its repository-wide solver fingerprint differed because multirotor and race sources had changed since recording.
+
+The harness reached a scheduled frame at least one period late on 8 baseline frames and 22 candidate frames out of 2,160 per version. Those deadlines include host scheduling and work outside the timed callback. Player-visible FPS and frame pacing require a rendered run. The local measurements and individual runs are in `tmp/blimp-efficiency-20261123/measurement.json`.
+
+All 119 checks passed on Linux with the optimized HUD, including 80 for presentation, 20 for the Home-to-flight route and 19 for the Workshop. The presentation test counts telemetry reads at a simulated 60 frames per second and checks the first frame after Resume, view changes, hidden text and notice expiry. The Home test covers cancellation during loading, launch on wheels, advancing ticks and returning with the selected paint. The checks used the blimp and Club assets and omitted unrelated optional liveries and skin-kit archives.

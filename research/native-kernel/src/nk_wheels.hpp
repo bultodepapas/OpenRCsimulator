@@ -25,6 +25,8 @@ struct WheelContact {
 	R wheel_inertia = 0.00003;
 	R spin_relaxation = 0.03;
 	R brake_torque = 0.0;
+	// NK-5i: Ground.collapsed's travel limit (m); NAN when the contact carries none. No contact law reads it.
+	R max_compression = kNan;
 };
 
 struct PreparedGear {
@@ -163,14 +165,21 @@ inline void wheel_coefficients(const PreparedGear &gear, const WheelContact &c, 
 	index = surfaces.empty() ? -1.0 : static_cast<double>(at);
 }
 
+// NK-6o: one wheel's row of ground_wheels.gd evaluate's diagnostics and frame, for the ground audio:
+// normal_load, longitudinal_force, lateral_force, rim_speed, compression, position (3), normal (3), heading (3),
+// side (3), long_speed.
+constexpr int kWheelRowSize = 18;
+
 // ground_wheels.gd evaluate(..., diagnostics_enabled = false, lake). loads is empty (size 0) when nothing touches.
-// Returns false only for the reference's [NAN]/[NAN] failure shape.
+// Returns false only for the reference's [NAN]/[NAN] failure shape. rows (NK-6o), when given, receives one
+// kWheelRowSize row per contact wherever the reference appends its diagnostics; it changes no arithmetic.
 inline bool wheels_evaluate(const R *s, const GroundContext &ctx, R steer, const double *anchors,
 		int anchor_count, const double *speeds, int speed_count, R brake, std::vector<R> &loads,
-		std::vector<R> &rates) {
+		std::vector<R> &rates, std::vector<R> *rows = nullptr) {
 	const PreparedGear &gear = ctx.gear;
 	rates.assign(static_cast<size_t>(speed_count), 0.0);
 	loads.clear();
+	if (rows != nullptr) rows->clear();
 	if (gear.empty) {
 		return true;
 	}
@@ -229,6 +238,12 @@ inline bool wheels_evaluate(const R *s, const GroundContext &ctx, R steer, const
 			rates[i] = (-tire - brake_torque / radius) / mass;
 		}
 		const R long_force = rr + tire;
+		if (rows != nullptr) {
+			const R row[kWheelRowSize] = {n, long_force, lateral, rim, f.compression, f.position[0], f.position[1],
+				f.position[2], f.normal[0], f.normal[1], f.normal[2], f.heading[0], f.heading[1], f.heading[2], f.side[0],
+				f.side[1], f.side[2], f.long_speed};
+			rows->insert(rows->end(), row, row + kWheelRowSize);
+		}
 		if (n <= 0.0) {
 			continue;
 		}

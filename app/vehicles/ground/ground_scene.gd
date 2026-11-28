@@ -1,6 +1,9 @@
 ## Playable ground-vehicle activity. Physics belongs exclusively to Session.
 extends Node3D
 
+## An accepted reset or state replacement has reached the activity scene.
+signal activity_reset
+
 const Session = preload("res://sim/ground_vehicle/session.gd")
 const Driver = preload("res://input/ground_vehicle_input.gd")
 const Registry = preload("res://input/controller_registry.gd")
@@ -1127,7 +1130,11 @@ func _finish_recording() -> bool:
 	_record_export_pending = false
 	_set_record_button_idle()
 	if is_instance_valid(dashboard):
-		dashboard.message("Saved: " + _last_export.csv_path, "Guardado: " + _last_export.csv_path)
+		var saved := str(_last_export.csv_path)
+		var cleanup_warning := str(_last_export.get("cleanup_warning", ""))
+		if not cleanup_warning.is_empty():
+			saved += "\n" + cleanup_warning
+		dashboard.message("Saved: " + saved, "Guardado: " + saved)
 	return true
 
 
@@ -1182,6 +1189,7 @@ func _after_reset() -> void:
 	camera_rig.reset()
 	_update_camera_status()
 	open_garage()
+	activity_reset.emit()
 
 func _select_mode(index: int) -> void:
 	mode = index

@@ -8,7 +8,7 @@ import unittest
 
 import catalog
 from godtest import parser, plan
-from runner import check_frozen, rendering_options
+from runner import audio_output, check_frozen, rendering_options
 from tools.godtest.isolation import prepare_macos_launch
 
 
@@ -23,6 +23,27 @@ class PlatformTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Compatibility"):
             rendering_options(dict(manifest, rendering_method="gl_compatibility", rendering_driver="vulkan"), "win32")
 
+    def test_linux_without_playback_device_uses_paced_dummy_audio(self):
+        with tempfile.TemporaryDirectory() as raw:
+            sound = Path(raw)
+            self.assertEqual(audio_output("linux", sound / "absent")["driver"], "dummy")
+            (sound / "controlC0").touch()
+            (sound / "pcmC0D0c").touch()  # capture only
+            self.assertEqual(audio_output("linux", sound)["driver"], "dummy")
+            (sound / "pcmC0D0p").touch()
+            self.assertEqual(audio_output("linux", sound)["driver"], "platform_default")
+        for host in ("win32", "darwin"):
+            self.assertEqual(audio_output(host, Path("/nonexistent"))["driver"], "platform_default")
+
+    def test_graphics_profile_option_is_validated_and_kept_for_every_tour_case(self):
+        cases = plan(parser().parse_args(["performance-tour", "--repeats", "1", "--graphics", "automatic", "--dry-run"]))
+        self.assertEqual({case["graphics"] for case in cases}, {"automatic"})
+        self.assertNotIn("graphics", catalog.scenario("runway-menus"))
+        with self.assertRaisesRegex(ValueError, "graphics"):
+            catalog.scenario("runway-menus", {"graphics": "minimal"})
+        with self.assertRaises(SystemExit):
+            parser().parse_args(["performance-tour", "--graphics", "minimal"])
+
     def test_three_aircraft_roster_cannot_be_reduced(self):
         cases = plan(parser().parse_args(["performance-tour", "--repeats", "2", "--dry-run"]))
         self.assertEqual([item["aircraft"] for item in cases], list(catalog.TOUR_AIRCRAFT) * 2)
@@ -32,6 +53,24 @@ class PlatformTests(unittest.TestCase):
         for options in ({"monitor_hardware": False}, {"aircraft": catalog.STIK}, {"start": "runway"}):
             with self.assertRaises(ValueError):
                 catalog.performance_tour(options)
+
+    def test_fixed_render_scale_reaches_every_tour_case_and_rejects_invalid_values(self):
+        args = parser().parse_args(["performance-tour", "--render-scale", "75", "--graphics", "automatic", "--dry-run"])
+        self.assertEqual({case["render_scale"] for case in plan(args)}, {75})
+        self.assertNotIn("render_scale", catalog.scenario("runway-menus"))
+        for value in (True, 75.0, 74, "75"):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "render_scale"):
+                catalog.scenario("runway-menus", {"render_scale": value})
+
+    def test_dynamic_resolution_reaches_every_tour_case_and_needs_rendered_flight(self):
+        cases = plan(parser().parse_args(["performance-tour", "--dynamic-resolution-fps", "60", "--dry-run"]))
+        self.assertEqual({case["dynamic_resolution_fps"] for case in cases}, {60})
+        self.assertTrue(all(case["require_native"] for case in cases))
+        for overrides in ({"headless": True}, {"render_scale": 75}, {"max_fps": 30},
+                          {"rendering_method": "gl_compatibility"}, {"phases": ["startup", "shutdown"]},
+                          {"graphics": "automatic"}, {"dynamic_resolution_fps": True}):
+            with self.subTest(overrides=overrides), self.assertRaisesRegex(ValueError, "dynamic resolution|dynamic_resolution_fps"):
+                catalog.scenario("runway-menus", {"dynamic_resolution_fps": 60, **overrides})
 
     def test_native_panel_requires_borderless_and_product_vsync_values(self):
         with self.assertRaisesRegex(ValueError, "borderless"):

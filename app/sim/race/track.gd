@@ -10,6 +10,7 @@
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
+const FrameContact := preload("res://sim/multirotor/frame_obstacle_contact.gd")
 
 const FORMAT := "openrc-race-track v1"
 const RULESET := "openrc-local-race-v1"
@@ -47,9 +48,9 @@ const FRAME_SECTION_M := 0.18
 const FRAME_THICKNESS_M := 0.04
 ## The top bar is a taller banner carrying the gate number (read at distance); the posts rise to its top.
 const TOP_BANNER_M := 0.40
-## Minimum horizontal clearance of a gate frame footprint or the pad zone from listed field objects.
+## Minimum separation from wood in 3D, or from the horizontal footprint of a listed field object.
 const OBJECT_CLEARANCE_M := 1.0
-## Horizontal radius of a tree card (field_loader.gd TREE_CARD_MAX_HORIZONTAL_RADIUS_M).
+## Field-only fallback for a tree card (field_loader.gd TREE_CARD_MAX_HORIZONTAL_RADIUS_M).
 const TREE_RADIUS_M := 15.0
 
 
@@ -242,7 +243,7 @@ static func heading_normal(heading_deg: float) -> PackedFloat64Array:
 ## centre in world NED metres; the box x axis is the gate normal n (horizontal, compass heading heading_deg), the z axis
 ## is u (right of travel) and `down` is vertical; half_* are the half extents along those axes. The posts run from the
 ## ground at their base to the top of the top bar; bars span both posts; inner faces lie exactly on the aperture edges.
-static func prepare(track: Dictionary, field: Dictionary, ground: Callable) -> Dictionary:
+static func prepare(track: Dictionary, field: Dictionary, ground: Callable, wood_index: Dictionary = {}) -> Dictionary:
 	var e := PackedStringArray()
 	if track.is_empty() or not track.has_all(["id", "field_id", "gates", "pad", "laps", "source_sha256"]):
 		return {ok = false, errors = PackedStringArray(["prepare: the track is not a loaded openrc-race-track v1"]), course = {}}
@@ -314,7 +315,10 @@ static func prepare(track: Dictionary, field: Dictionary, ground: Callable) -> D
 	var pad_east: float = origin_east + float(track.pad.east_m)
 	var pad_ground: PackedFloat64Array = _ground(ground, pad_north, pad_east, "pad", e)
 	var rules: Dictionary = ruleset()
-	var clearance: Dictionary = _field_clearance(field, footprints, pad_north, pad_east, float(rules.pad_radius_m), e)
+	var clearance: Dictionary = _field_clearance(field, footprints, pad_north, pad_east, float(rules.pad_radius_m), e,
+		wood_index.is_empty())
+	if not wood_index.is_empty() and e.is_empty():
+		_check_woods(wood_index, gates, M.v3(pad_north, pad_east, -pad_ground[0]), rules, clearance, e)
 	if not e.is_empty():
 		return {ok = false, errors = e, course = {}}
 	var resolved: Array = []
@@ -349,7 +353,7 @@ static func _ground(ground: Callable, north: float, east: float, path: String, e
 ## flight cues (windsock, pilot station, flightline barrier), rotorcraft-pad keepouts and treeline cards. Every gate
 ## post base and the pad also lie inside at least one field surface. {minimum, nearest}.
 static func _field_clearance(field: Dictionary, footprints: Array, pad_north: float, pad_east: float, pad_radius: float,
-		e: PackedStringArray) -> Dictionary:
+		e: PackedStringArray, use_card_bounds: bool) -> Dictionary:
 	var obstacles: Array = [] # {id, kind: "point"|"rect"|"segment", ...}
 	for cue: Variant in field.get("flight_cues", []):
 		if typeof(cue) != TYPE_DICTIONARY:
@@ -375,11 +379,13 @@ static func _field_clearance(field: Dictionary, footprints: Array, pad_north: fl
 				obstacles.append({id = str(keepout.get("id", "keepout")), kind = "rect",
 					center = PackedFloat64Array([float(keepout.north), float(keepout.east)]),
 					half = PackedFloat64Array([0.5 * float(keepout.width_north_south), 0.5 * float(keepout.length_east_west)])})
-	for item: Variant in field.get("objects", []):
+	var card_objects: Array = field.get("objects", []) if use_card_bounds else []
+	for item: Variant in card_objects:
 		if typeof(item) == TYPE_DICTIONARY and str(item.get("type", "")) == "treeline":
 			for position: Variant in item.get("positions", []):
 				obstacles.append({id = "treeline", kind = "point",
-					p = PackedFloat64Array([float(position[0]), float(position[1])]), radius = TREE_RADIUS_M})
+					p = PackedFloat64Array([float(field.pilot.north) + float(position[0]),
+						float(field.pilot.east) + float(position[1])]), radius = TREE_RADIUS_M})
 	var minimum: float = INF
 	var nearest := ""
 	var shapes: Array = []
@@ -408,6 +414,100 @@ static func _field_clearance(field: Dictionary, footprints: Array, pad_north: fl
 			if not _inside_surface(field, end):
 				e.append("%s: lies outside every field surface" % shape.path)
 	return {minimum = minimum, nearest = nearest}
+
+
+## Use the installed quad wood geometry at the actual height of the gate opening, its four frame
+## panels and the pad's start volume. The other field exclusions still keep their horizontal margin.
+static func _check_woods(index: Dictionary, gates: Array, pad: PackedFloat64Array, rules: Dictionary,
+		clearance: Dictionary, errors: PackedStringArray) -> void:
+	for i in range(gates.size() + 1):
+		var is_pad := i == gates.size()
+		var center: PackedFloat64Array = pad if is_pad else gates[i].c
+		var width: float = rules.pad_radius_m if is_pad else gates[i].w + FRAME_SECTION_M + FRAME_THICKNESS_M
+		var bound: float = width + maxf(clearance.minimum, OBJECT_CLEARANCE_M)
+		var lists: Array = []
+		var cell: float = index.cell_m
+		# When the field has no other object, the initial nearest distance may be infinite.
+		if not is_finite(bound) or (2.0 * bound / cell + 2.0) ** 2 > index.cells.size():
+			for key: Vector2i in index.cells:
+				if (key.x + 1) * cell >= center[0] - bound and key.x * cell <= center[0] + bound \
+						and (key.y + 1) * cell >= center[1] - bound and key.y * cell <= center[1] + bound:
+					lists.append(index.cells[key])
+		else:
+			for n in range(floori((center[0] - bound) / cell), floori((center[0] + bound) / cell) + 1):
+				for e in range(floori((center[1] - bound) / cell), floori((center[1] + bound) / cell) + 1):
+					if index.cells.has(Vector2i(n, e)):
+						lists.append(index.cells[Vector2i(n, e)])
+		lists.append(index.wide)
+		var seen := {}
+		var motions: Array[Dictionary] = []
+		if not is_pad:
+			var gate: Dictionary = gates[i]
+			var volumes: Array = gate.frames.duplicate()
+			volumes.append({north = center[0], east = center[1], down = center[2],
+				half_x = 0.5 * FRAME_THICKNESS_M, half_z = gate.w, half_down = gate.h})
+			var q := M.q_from_euler(deg_to_rad(gate.heading_deg), 0.0, 0.0)
+			for box: Dictionary in volumes:
+				motions.append({a = q, b = q, start = M.v3(box.north, box.east, box.down),
+					centre = M.v3(0, 0, 0), delta = M.v3(0, 0, 0), half = M.v3(box.half_x, box.half_z, box.half_down)})
+		for candidates: Array in lists:
+			for p: Dictionary in candidates:
+				if p.kind != "tree_trunk" or seen.has(p.id):
+					continue
+				seen[p.id] = true
+				var reach: float = width + maxf(clearance.minimum, OBJECT_CLEARANCE_M)
+				if p.bounds_north_min > center[0] + reach or p.bounds_north_max < center[0] - reach \
+						or p.bounds_east_min > center[1] + reach or p.bounds_east_max < center[1] - reach:
+					continue
+				var gap := INF
+				if is_pad:
+					gap = _pad_wood_gap(p, pad, rules.pad_radius_m, rules.pad_rest_height_m)
+				else:
+					for motion: Dictionary in motions:
+						gap = minf(gap, FrameContact._geometry(motion, p, 0.0).gap)
+				var label := "pad" if is_pad else "gates[%d]" % i
+				if gap < clearance.minimum:
+					clearance.minimum = gap
+					clearance.nearest = "%s to %s" % [label, p.id]
+				if gap < OBJECT_CLEARANCE_M:
+					errors.append("%s: %.3f m from wood '%s'; at least %.1f m required" % [label, gap, p.id, OBJECT_CLEARANCE_M])
+					return
+
+
+## Distance from wood to the closed circular start zone up to the rules' maximum rest height.
+static func _pad_wood_gap(p: Dictionary, pad: PackedFloat64Array, radius: float, height: float) -> float:
+	var n: float = p.north - pad[0]
+	var e: float = p.east - pad[1]
+	var d: float = p.down - pad[2] + height * 0.5
+	if p.shape == "box":
+		var x := maxf(0.0, absf(-n * p.sin_heading + e * p.cos_heading) - p.half_x)
+		var z := maxf(0.0, absf(n * p.cos_heading + e * p.sin_heading) - p.half_z)
+		var horizontal := maxf(0.0, sqrt(x*x + z*z) - radius)
+		var vertical := maxf(0.0, absf(d) - p.half_down - height * 0.5)
+		return sqrt(horizontal*horizontal + vertical*vertical)
+	var axis: PackedFloat64Array = p.get("axis_ned", M.v3(0, 0, 1))
+	var low: float = -p.half_length
+	var high: float = p.half_length
+	# Squared distance to the solid cylinder is convex along the shaft. Bisect its derivative.
+	for _iteration in 48:
+		var t := 0.5 * (low + high)
+		var x := n + axis[0] * t
+		var y := e + axis[1] * t
+		var z := d + axis[2] * t
+		var r := sqrt(x*x + y*y)
+		var slope := axis[2] * (z - clampf(z, -height*0.5, height*0.5))
+		if r > radius:
+			slope += (1.0 - radius/r) * (axis[0]*x + axis[1]*y)
+		if slope >= 0.0:
+			high = t
+		else:
+			low = t
+	var t := 0.5 * (low + high)
+	var x := n + axis[0] * t
+	var y := e + axis[1] * t
+	var dz := maxf(0.0, absf(d + axis[2]*t) - height*0.5)
+	var dr := maxf(0.0, sqrt(x*x + y*y) - radius)
+	return sqrt(dr*dr + dz*dz) - float(p.radius)
 
 
 static func _inside_surface(field: Dictionary, p: PackedFloat64Array) -> bool:

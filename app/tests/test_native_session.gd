@@ -8,6 +8,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
+const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
 const Weather := preload("res://physics/wind_config.gd")
 const VisualCheckpoint := preload("res://app_state/visual_checkpoint.gd")
@@ -357,7 +358,15 @@ func reprepare() -> void:
 
 
 func stale_mutation() -> void:
+	# NK-6p: a native flight freezes its guarded configuration, so an in-place model edit fails at the write.
+	var frozen := runway(NativeStage.BACKEND_NATIVE)
+	check("a native flight's aircraft model is read-only", (frozen.aircraft as Dictionary).is_read_only()
+		and (frozen.aircraft.model as Dictionary).is_read_only())
+	frozen.free()
+	# The guard's refusal still covers writable containers: the same edit with the freeze off.
+	NativeConfiguration.freeze_guarded_configuration = false
 	var session := runway(NativeStage.BACKEND_NATIVE)
+	NativeConfiguration.freeze_guarded_configuration = true
 	for index: int in 8: session.sim.step()
 	var helper: RefCounted = session._native_stage
 	var engine: Object = helper.get("_native")

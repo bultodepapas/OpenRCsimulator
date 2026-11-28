@@ -181,6 +181,7 @@ func _remember_out_of_trim_airframe() -> void:
 
 const EventStep: Script = preload("res://physics/event_step.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+const GlowLifecycle := preload("res://physics/glow/lifecycle.gd")
 const FuelSample := preload("res://sim/fuel_sample.gd")
 const CheckpointJson := preload("res://sim/checkpoint_json.gd")
 ## Fixed original wet-CG datum; live contact mobility and linear fuel sampling at swept crossing fractions.
@@ -298,7 +299,10 @@ func shaft_is_coupled() -> bool:
 func glow_is_active() -> bool:
 	if _fact_glow != _FACT_UNKNOWN:
 		return _fact_glow == 1
-	var active: bool = aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+	var kept := _kept_fact(&"glow")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"glow", int(active))
 	if _facts_armed: _fact_glow = int(active)
 	return active
 
@@ -341,7 +345,14 @@ func start_fuel_kg() -> float:
 
 
 func liquid_fuel_is_active() -> bool:
-	return aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+	if _fact_liquid != _FACT_UNKNOWN:
+		return _fact_liquid == 1
+	var kept := _kept_fact(&"liquid")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+	if kept == _FACT_UNKNOWN: _keep_fact(&"liquid", int(active))
+	if _facts_armed: _fact_liquid = int(active)
+	return active
 
 
 func finite_fuel_is_active() -> bool:
@@ -803,12 +814,21 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 	if not prepared.ok:
 		stage_backend_error = str(prepared.reason)
 		return
+	if aircraft.is_read_only() and not is_same(aircraft, _frozen_facts_owner):
+		_frozen_facts_owner = aircraft # NK-6p froze it all the way down; see _frozen_facts_owner
+		_frozen_wheel_brake = _FACT_UNKNOWN
+		_frozen_rotor_index = _FACT_UNKNOWN
+		_frozen_fact_values = {}
+	# Each preparation snapshots the lake's packed arrays again, so the kept validity starts over.
+	_frozen_lake_owner = _lake if _lake.is_read_only() else {}
+	_frozen_lake_valid = false
 	_native_stage = candidate # selects the session-owned tick hook, rather than the research pre_tick wrapper
 	candidate.install(self)
 	if not candidate.is_installed():
 		stage_backend_error = candidate.reason
 		_native_stage = null
 		return
+	_context_engine_running = engine_running
 	if not candidate.tick_context(self, sim.aux, sim.inputs, time_now):
 		stage_backend_error = candidate.reason
 		candidate.uninstall(self)
@@ -1163,7 +1183,7 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_deflection_key", "_deflection_cache", "_has_committed_aircraft", "_pending_controller_start",
 	"_scenery_damage", "soft_contacts", "prop_strike", "crash", "_last_scenery_event", "_last_lake_event",
 	"_contact_tick", "_contact_events", "_active_hull_ids", "_soft_contacts_cache_tick",
-	"_cost_support_previous", "_cost_support_tick",
+	"_cost_support_previous", "_cost_support_tick", "_cost_support_state", "_cost_support_aux", "_native_facts_tick",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
 	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
 	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error", "_stage_backend_requested", "_stage_backend_explicit"]
@@ -1421,6 +1441,9 @@ var _active_hull_ids := PackedStringArray()
 var cost_observations_enabled := false
 var _cost_support_previous := PackedFloat64Array()
 var _cost_support_tick := -1
+## NK-5f: the endpoint state and aux those compressions were measured at (published_gear_compressions).
+var _cost_support_state := PackedFloat64Array()
+var _cost_support_aux := PackedFloat64Array()
 var _resolving_contact: bool = false
 var _committing_contacts: bool = false
 var _pending_contact_tick: int = -1
@@ -2580,11 +2603,16 @@ func _on_sim_faulted(reason: String) -> void:
 func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	_accepted_flap_mix_owner = _flap_mix_owner
+	var native_endpoint := _native_endpoint_tick == tick and tick > 0
 	_drop_tick_facts()
 	# This connection precedes external observers: a rejected RK/contact candidate never announces an incident.
 	var failure_activated: bool = _failures != null and tick > 0 and _failures.commit(tick)
 	_committing_contacts = true
+	_native_endpoint_admitted = native_endpoint
 	_observe_contact_tick(tick)
+	_native_endpoint_admitted = false
+	# NK-5i: this publication's later `stepped` observers may ask the native stage about the same endpoint.
+	_native_facts_tick = tick if native_endpoint else -1
 	var crash_pause_pending := false
 	if _pending_contact_tick == tick:
 		_last_scenery_event = _pending_scenery_event
@@ -2645,8 +2673,11 @@ func hull_scrape_observation() -> Dictionary:
 		if key == _hull_scrape_cache_key:
 			return _hull_scrape_cache.duplicate(true)
 	var diagnostics := {}
-	if finite_fuel_is_active():
-		var properties := mass_properties()
+	var finite := finite_fuel_is_active()
+	var properties: Dictionary = mass_properties() if finite else {}
+	if _native_hull_scrape_diagnostics(finite, properties, diagnostics):
+		pass
+	elif finite:
 		var sampled := HullContact.loads_at_properties(sim.state, _hull_contact, properties, diagnostics)
 		if not sampled.ok:
 			result.reason = "live_mass_contact_unavailable"
@@ -2677,6 +2708,68 @@ func hull_scrape_observation() -> Dictionary:
 	_hull_scrape_cache_key = key
 	_hull_scrape_cache = result.duplicate(true) if not key.is_empty() else {}
 	return result
+
+
+## NK-6f: the diagnostics HullContact.loads (prepared hull) or loads_at_properties (finite fuel, `properties`) collect
+## for the accepted endpoint now being published, from the native stage with the same rows; it costs about 0.5 ms per
+## touching point in GDScript (26 effective-mass inversions). False: evaluate the reference, which also answers a
+## refused live sample. Only under published_endpoint_facts' conditions (this publication's natively measured endpoint,
+## no RC track, pending weather reset or derived session class).
+func _native_hull_scrape_diagnostics(finite: bool, properties: Dictionary, diagnostics: Dictionary) -> bool:
+	if not native_hull_rows_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick or _native_stage == null \
+			or not cost_observations_enabled or _cost_support_tick != sim.tick or not _rc_track.is_empty() \
+			or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(sim.state, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return false
+	var packed := _packed_mass_properties(properties) if finite else PackedFloat64Array()
+	if finite and packed.is_empty():
+		return false
+	var answer: PackedFloat64Array = _native_stage.hull_scrape_rows(sim.state, packed)
+	if answer.size() < 2 or answer[0] != 1.0:
+		return false
+	var count := int(answer[1])
+	var points: Variant = _hull_contact.get("points")
+	if answer.size() != 2 + 6 * count or not points is PackedFloat64Array:
+		return false
+	var rows: Array = []
+	for row_index in count:
+		var at := 2 + 6 * row_index
+		var point := int(answer[at])
+		if point < 0 or 3 * point + 3 > (points as PackedFloat64Array).size():
+			return false
+		var f_up: float = answer[at + 1]
+		var f_n: float = answer[at + 2]
+		var f_e: float = answer[at + 3]
+		var vn: float = answer[at + 4]
+		var ve: float = answer[at + 5]
+		rows.append({index = point, point_ned = HullContact._point_ned(sim.state, points.slice(3 * point, 3 * point + 3)),
+			normal_force_n = f_up, tangent_force_ned_n = PackedFloat64Array([f_n, f_e, 0.0]),
+			relative_tangent_velocity_ned_mps = PackedFloat64Array([vn, ve, 0.0]),
+			friction_power_w = -(f_n * vn + f_e * ve)})
+	diagnostics.clear()
+	diagnostics.merge({available = true, reason = "", rows = rows})
+	native_hull_row_answers += 1
+	return true
+
+
+## EffectiveMass.validate_properties' fields as [ok, mass, cg x3, inertia x6, inverse x6]; empty where its type checks
+## refuse (the reference then answers). The values themselves are checked natively, as validate_properties does.
+static func _packed_mass_properties(properties: Dictionary) -> PackedFloat64Array:
+	if not (properties.has("mass_kg") and properties.has("cg_body_m") and properties.has("inertia") \
+			and properties.has("inverse")) or (properties.has("ok") and typeof(properties.ok) != TYPE_BOOL):
+		return PackedFloat64Array()
+	var cg: Variant = properties.cg_body_m
+	var inertia: Variant = properties.inertia
+	var inverse: Variant = properties.inverse
+	if typeof(properties.mass_kg) not in [TYPE_FLOAT, TYPE_INT] or typeof(cg) != TYPE_PACKED_FLOAT64_ARRAY \
+			or typeof(inertia) != TYPE_PACKED_FLOAT64_ARRAY or typeof(inverse) != TYPE_PACKED_FLOAT64_ARRAY \
+			or cg.size() != 3 or inertia.size() != 6 or inverse.size() != 6:
+		return PackedFloat64Array()
+	var out := PackedFloat64Array([1.0 if not properties.has("ok") or bool(properties.ok) else 0.0, float(properties.mass_kg)])
+	out.append_array(cg)
+	out.append_array(inertia)
+	out.append_array(inverse)
+	return out
 
 
 func contact_events() -> Dictionary:
@@ -2743,7 +2836,7 @@ func hull_support_observation() -> Dictionary:
 
 ## The observer owns the accepted-tick presentation sample; the next input guard can reuse it.
 func _refresh_soft_contacts() -> void:
-	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	soft_contacts = [] if _native_hull_guard() & 2 else HullContact.contacts(sim.previous, sim.state, _hull_contact)
 	_soft_contacts_cache_previous = sim.previous.duplicate()
 	_soft_contacts_cache_state = sim.state.duplicate()
 	_soft_contacts_cache_tick = sim.tick
@@ -2757,16 +2850,27 @@ func _observe_contact_tick(tick: int) -> void:
 		prop_strike = {}
 	if tick > 0 and cost_observations_enabled and aircraft.get("ok", false):
 		# Observe the committed endpoint only. Never sample an RK candidate or add loads.
-		var current := gear_compressions(sim.state)
-		var gear := current_landing_gear()
+		var current := _endpoint_compressions()
+		var continued := _cost_support_tick == tick - 1
+		# A support event needs compression now or on the previous tick; otherwise support_event returns {}.
+		var supported := false
 		for index in current.size():
-			var event := ContactEvents.support_event(index, current[index],
-				_cost_support_previous[index] if _cost_support_tick == tick - 1 and index < _cost_support_previous.size() else 0.0,
-				float(gear.contacts[index].max_compression), tick, _contact_bindings)
-			if not event.is_empty():
-				_contact_events.append(event)
+			if not (current[index] <= 0.0 and (not continued or index >= _cost_support_previous.size() \
+					or _cost_support_previous[index] <= 0.0)):
+				supported = true
+				break
+		if supported:
+			var gear := current_landing_gear()
+			for index in current.size():
+				var event := ContactEvents.support_event(index, current[index],
+					_cost_support_previous[index] if continued and index < _cost_support_previous.size() else 0.0,
+					float(gear.contacts[index].max_compression), tick, _contact_bindings)
+				if not event.is_empty():
+					_contact_events.append(event)
 		_cost_support_previous = current
 		_cost_support_tick = tick
+		_cost_support_state = sim.state.duplicate() # packed arrays are shared by reference
+		_cost_support_aux = sim.aux.duplicate()
 	if not soft_hull_contacts or not aircraft.get("ok", false):
 		_soft_contacts_cache_tick = -1
 		_active_hull_ids.clear()
@@ -2820,6 +2924,9 @@ func _clear_pending_contacts() -> void:
 func _reset_contact_history() -> void:
 	_cost_support_previous = PackedFloat64Array()
 	_cost_support_tick = -1
+	_native_facts_tick = -1
+	_cost_support_state = PackedFloat64Array()
+	_cost_support_aux = PackedFloat64Array()
 	_hull_scrape_cache_key = PackedByteArray()
 	_hull_scrape_cache = {}
 	_hull_scrape_cache_tick = -1
@@ -2833,6 +2940,10 @@ func _reset_contact_history() -> void:
 func _restore_contact_history(record: Dictionary) -> void:
 	_cost_support_previous = PackedFloat64Array()
 	_cost_support_tick = int(record.tick)
+	_native_facts_tick = -1
+	# Rebuilt from events, not measured: nothing is published until the observer measures an endpoint again.
+	_cost_support_state = PackedFloat64Array()
+	_cost_support_aux = PackedFloat64Array()
 	_cost_support_previous.resize(_contact_bindings.get("support_points", []).size())
 	for event: Dictionary in record.events:
 		if event.get("format") == ContactEvents.SUPPORT_FORMAT:
@@ -3157,27 +3268,28 @@ func _session_after_input() -> bool:
 		if crash.ticks_left <= 0:
 			reset()
 		return false
-	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
+	if physics_enabled and not sim.paused and _flight_ready() and _state_valid(sim.state):
 		if soft_hull_contacts:
 			if _soft_contacts_cache_tick != sim.tick or _soft_contacts_cache_previous != sim.previous \
 					or _soft_contacts_cache_state != sim.state:
 				_refresh_soft_contacts()
 			# Glow terminal hull decisions already ran with the previous fuel snapshot inside the accepted tick.
-			var hit: Dictionary = {index = -1} if finite_fuel_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
+			var hit: Dictionary = {index = -1} if finite_fuel_is_active() or _native_hull_guard() & 1 \
+				else HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
 					sim.previous, str(hit.rule)))
-			elif gear_collapsed(sim.state):
+			elif _guard_gear_collapsed():
 				_crash(_gear_limit_impact(sim.state))
 			else:
 				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
 				_check_prop_strike()
 		elif touches_ground(sim.state):
 			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
-		elif gear_collapsed(sim.state):
+		elif _guard_gear_collapsed():
 			_crash(_gear_limit_impact(sim.state))
 	return physics_enabled and not sim.paused and sim.fault_reason.is_empty() \
-		and crash.is_empty() and _flight_ready() and Sim.state_is_valid(sim.state)
+		and crash.is_empty() and _flight_ready() and _state_valid(sim.state)
 
 
 ## Stage one controllerless pilot sample. A rejected packet leaves the last staged packet intact.
@@ -3331,6 +3443,10 @@ func _external_number_is_in_range(value: Variant, minimum: float, maximum: float
 func _check_prop_strike() -> void:
 	if not prop_strike.is_empty() or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
 		return
+	if _prop_disc_clear(sim.state):
+		return # NK-6e: the disc cannot reach the datum or the lake here
+	if _native_prop_strike_clear():
+		return # NK-6k: the native stage proves the disc clear of the datum and the lake
 	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
 	if float(disc.depth) <= 0.0:
 		return
@@ -3342,12 +3458,335 @@ func _check_prop_strike() -> void:
 	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
 
 
+## NK-6l: the native stage's answer for the guard's hull checks of this endpoint (bit 1: HullContact.terminal has no
+## event, bit 2: HullContact.contacts has no contact; 0: evaluate both), while the endpoint is the one being natively
+## published (_native_endpoint_admitted) or the last one natively published (_native_facts_tick), with its
+## installation's hull, without an RC track, for this class.
+func _native_hull_guard() -> int:
+	if not native_hull_guard_enabled or _native_stage == null or sim.tick <= 0 \
+			or not (_native_endpoint_admitted or _native_facts_tick == sim.tick) \
+			or not _rc_track.is_empty() or get_script().resource_path != SELF_PATH:
+		return 0
+	var bits: int = _native_stage.hull_guard(sim.previous, sim.state, _hull_contact)
+	if bits != 0:
+		native_hull_guard_answers += 1
+	return bits
+
+
+## NK-6l test hook: false leaves the guard's hull checks to GDScript.
+var native_hull_guard_enabled := true
+## Diagnostic: guard hull checks the native stage answered.
+var native_hull_guard_answers := 0
+
+
+## NK-6k: the native stage proves HullContact.prop_disc_depth's depth <= 0 for the endpoint it published
+## (_native_facts_tick, as NK-6j), with its installation's disc and lake, without an RC track, for this class. The
+## reference answers every refusal, every strike among them.
+func _native_prop_strike_clear() -> bool:
+	if not native_prop_strike_enabled or _native_stage == null or sim.tick <= 0 or _native_facts_tick != sim.tick \
+			or not _rc_track.is_empty() or get_script().resource_path != SELF_PATH:
+		return false
+	if _native_stage.prop_strike_clear(sim.state, _prop_disc, _lake) != 1:
+		return false
+	native_prop_strike_answers += 1
+	return true
+
+
+## NK-6k test hook: false leaves the propeller strike check to GDScript.
+var native_prop_strike_enabled := true
+## Diagnostic: propeller strike checks the native stage answered.
+var native_prop_strike_answers := 0
+
+
+## NK-6g: the pre-tick guard's gear_collapsed(sim.state). The endpoint it guards is the one the contact observer just
+## measured (NK-5e), so published_gear_collapsed reads those compressions while the state and aux bits are unchanged
+## and evaluates them itself otherwise; both follow Ground.collapsed's checks in its order.
+## NK-6j: the native stage answers from the endpoint compressions of the tick context it installed for this endpoint
+## (_native_facts_tick: the last publication's natively measured endpoint, dropped by resets and restores), without an
+## RC track, for this class; the reference answers every refusal.
+func _guard_gear_collapsed() -> bool:
+	if native_guard_collapse_enabled and _native_stage != null and sim.tick > 0 and _native_facts_tick == sim.tick \
+			and _rc_track.is_empty() and get_script().resource_path == SELF_PATH:
+		var answer: int = _native_stage.guard_collapsed(sim.state, sim.aux)
+		if answer >= 0:
+			native_guard_collapse_answers += 1
+			return answer == 1
+	return published_gear_collapsed(sim.state) if guard_published_collapse_enabled else gear_collapsed(sim.state)
+
+
+## NK-6g test hook: false evaluates gear_collapsed in the pre-tick guard.
+var guard_published_collapse_enabled := true
+## NK-6j test hook: false leaves the guard's gear collapse to GDScript.
+var native_guard_collapse_enabled := true
+## Diagnostic: pre-tick gear collapse checks the native stage answered.
+var native_guard_collapse_answers := 0
+
+
 ## True when any landing-gear contact at state `s` is compressed past its travel (E1). Always false without gear.
 func gear_collapsed(s: PackedFloat64Array) -> bool:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return false
 	return Ground.collapsed(s, current_landing_gear(),
 		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake, _rc_track)
+
+
+## NK-5e: gear_compressions(sim.state) for the accepted endpoint under observation. The native stage answers only
+## for the tick whose guarded pre-step installed its context and when no RC track overlay is composed; the reference
+## evaluates every refusal.
+func _endpoint_compressions() -> PackedFloat64Array:
+	if _native_endpoint_admitted and native_endpoint_compressions_enabled and _native_stage != null \
+			and _rc_track.is_empty():
+		var native: PackedFloat64Array = _native_stage.endpoint_compressions(sim.state, sim.aux)
+		if not native.is_empty():
+			native_endpoint_answers += 1
+			return native
+	return gear_compressions(sim.state)
+
+
+## NK-5f: gear_compressions(s) as the contact observer measured it for the accepted endpoint now being published, for
+## `stepped` observers that run after the session's own handler in that same publication. Empty unless the observer
+## ran for sim.tick and `s` and sim.aux carry that endpoint's exact bits; the caller then evaluates
+## gear_compressions(s). Not for use between ticks, where data can change without a tick.
+func published_gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
+	if not cost_observations_enabled or _cost_support_tick <= 0 or _cost_support_tick != sim.tick \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	return _cost_support_previous.duplicate()
+
+
+## NK-5i: the statistics sample's evaluations of the accepted endpoint now being published, from the native stage in
+## one answer: [air_data(s, sim.time()).V, environment.ground(s[0], s[1]) as height, slope north, slope east,
+## published_gear_collapsed(s) as 1.0 or 0.0, then gear_compressions(s)]. The values equal those calls'. Empty unless
+## the native stage measured this publication's endpoint (the guarded tick context of sim.tick, with `s` and sim.aux
+## carrying the published bits), and there is no RC track, pending weather reset or derived session class (whose
+## air_data may differ); the caller then evaluates the reference. For `stepped` observers after the session's handler.
+## NK-7i: wind_at(sim.time()) and air_data(sim.state)'s v_air and V for the accepted endpoint now published, from the
+## native stage in one answer: [wind north, east, down, v_air x, y, z, V]. The same conditions as
+## published_endpoint_facts (this publication's guarded context, `sim.state` and `sim.aux` carrying its bits, no RC
+## track, pending weather reset or derived class); empty otherwise, and the caller evaluates the reference. For
+## presentation readers of the accepted state between ticks (flight audio).
+func published_endpoint_air() -> PackedFloat64Array:
+	if not native_endpoint_air_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(sim.state, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	return _native_stage.endpoint_air(sim.state, sim.aux, sim.time())
+
+
+## NK-7i test hook: false always leaves flight audio's wind and air data to the reference.
+var native_endpoint_air_enabled := true
+
+
+## NK-7m: GlowAudioState.shaft_torques(self, propulsion, air_data(sim.state).v_air, rpm) for the accepted endpoint now
+## published, from the native stage: [torque at (rpm, axial speed), torque at (rpm, 0)]. published_endpoint_air's
+## conditions; empty otherwise, and the caller evaluates the reference.
+func published_endpoint_torques(rpm: float) -> PackedFloat64Array:
+	if not native_endpoint_torques_enabled or not native_endpoint_air_enabled or _native_facts_tick <= 0 \
+			or _native_facts_tick != sim.tick or _native_stage == null or not cost_observations_enabled \
+			or _cost_support_tick != sim.tick or not _rc_track.is_empty() or _weather_pending_reset \
+			or get_script().resource_path != SELF_PATH or not _same_bits(sim.state, _cost_support_state) \
+			or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	return _native_stage.endpoint_torques(sim.state, sim.aux, sim.time(), rpm)
+
+
+## NK-7m test hook: false always leaves flight audio's shaft torques to the reference.
+var native_endpoint_torques_enabled := true
+
+
+func published_endpoint_facts(s: PackedFloat64Array) -> PackedFloat64Array:
+	if not native_endpoint_facts_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	var facts: PackedFloat64Array = _native_stage.endpoint_facts(s, sim.aux, sim.time())
+	if not facts.is_empty():
+		native_endpoint_fact_answers += 1
+	return facts
+
+
+## NK-6o: Wheels.evaluate(s, current_landing_gear(sim.aux), steer, ground_surfaces, anchors, speeds, brake, true,
+## _lake)'s per-wheel diagnostics and frames for the ground audio's observation of the published endpoint:
+## [1, n, n rows of normal_load, longitudinal_force, lateral_force, rim_speed, compression, position (3), normal (3),
+## heading (3), side (3), long_speed], or [0] where the reference has no diagnostics (every wheel beyond the terrain's
+## reach). Empty unless published_endpoint_facts' conditions hold; the caller then evaluates the reference.
+func published_wheel_rows(s: PackedFloat64Array, steer: float, anchors: PackedFloat64Array, speeds: PackedFloat64Array,
+		brake: float) -> PackedFloat64Array:
+	if not native_wheel_rows_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
+			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
+			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
+			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+		return PackedFloat64Array()
+	var rows: PackedFloat64Array = _native_stage.wheel_rows(s, sim.aux, steer, anchors, speeds, brake)
+	if not rows.is_empty():
+		native_wheel_row_answers += 1
+	return rows
+
+
+## NK-7j: published_wheel_rows and, from those rows, GroundAudioModel.snapshot_contacts' loaded rows for the same
+## endpoint in one native answer: [rows, row dictionaries...] where the stage answers both, [rows] where it answers only
+## the wheel rows (the caller builds the audio rows from them), empty for the reference. The wheel rows' own conditions,
+## no ground-vehicle road (Environment.sample_support's other refusal), and `arms`/`ids` covering every contact.
+func published_wheel_audio_rows(s: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, arms: PackedFloat64Array, ids: PackedStringArray,
+		reference_load: float) -> Array:
+	if not native_audio_rows_enabled or environment.road.is_valid():
+		var rows := published_wheel_rows(s, steer, anchors, speeds, brake)
+		return [] if rows.is_empty() else [rows]
+	if not native_wheel_rows_enabled or not _published_wheel_endpoint(s):
+		return []
+	var answer: Array = _native_stage.wheel_audio_rows(s, sim.aux, steer, anchors, speeds, brake, arms, ids,
+		reference_load, sim.time(), environment.surfaces, environment._ground_support)
+	if not answer.is_empty():
+		native_wheel_row_answers += 1
+		if answer.size() > 1:
+			native_audio_row_answers += 1
+	return answer
+
+
+## NK-7k: GroundAudioModel.approach_speeds' values for the published endpoint `s` from the native stage's wheel frames,
+## one per contact; empty for the reference. published_wheel_rows' conditions; `arms`: every contact's position.
+func published_approach_speeds(s: PackedFloat64Array, steer: float, arms: PackedFloat64Array) -> PackedFloat64Array:
+	if not native_approach_speeds_enabled or not _published_wheel_endpoint(s):
+		return PackedFloat64Array()
+	var speeds: PackedFloat64Array = _native_stage.approach_speeds(s, sim.aux, steer, arms)
+	if speeds.is_empty() or speeds.size() * 3 != arms.size():
+		return PackedFloat64Array()
+	native_approach_answers += 1
+	return speeds
+
+
+## published_wheel_rows' publication conditions for the endpoint `s`: this tick's guarded native context and cost
+## observation, `s` and `sim.aux` carrying their bits, no RC track, no pending weather reset, no derived class.
+func _published_wheel_endpoint(s: PackedFloat64Array) -> bool:
+	return _native_facts_tick > 0 and _native_facts_tick == sim.tick and _native_stage != null \
+		and cost_observations_enabled and _cost_support_tick == sim.tick and _rc_track.is_empty() \
+		and not _weather_pending_reset and get_script().resource_path == SELF_PATH \
+		and _same_bits(s, _cost_support_state) and _same_bits(sim.aux, _cost_support_aux)
+
+
+## NK-7k test hook: false always evaluates the ground audio's approach speeds in GDScript.
+var native_approach_speeds_enabled := true
+## Diagnostic: approach-speed queries the native stage answered.
+var native_approach_answers := 0
+## NK-7j test hook: false builds the ground audio's loaded rows in GDScript from the native wheel rows.
+var native_audio_rows_enabled := true
+## Diagnostic: ground audio observations whose loaded rows the native stage built.
+var native_audio_row_answers := 0
+## NK-6o test hook: false always evaluates the ground audio's wheel diagnostics in GDScript.
+var native_wheel_rows_enabled := true
+## Diagnostic: ground audio observations whose wheel rows the native stage answered.
+var native_wheel_row_answers := 0
+
+
+## NK-6e: GlowFlight.valid(values) (`with_mass` false) or GlowFlight.mass_context(self, values).ok (true) from the native
+## glow stage, inside the tick whose guarded pre-step installed its context, for this class only (a derived session may
+## read other data): 1 or 0 as the reference decides, -1 to evaluate the reference.
+## NK-6t: 1 when LiquidFlight.valid holds for both stores, 0 when it fails for either, -1 to use the reference. Only inside
+## the tick whose guarded pre-step installed the native context, for this class.
+func _native_liquid_store_check(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> int:
+	if not native_liquid_store_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH:
+		return -1
+	var index: int = _liquid_index()
+	var previous_ok: int = _native_stage.liquid_store_valid(previous_values, index)
+	if previous_ok != 1:
+		return previous_ok
+	return _native_stage.liquid_store_valid(candidate_values, index)
+
+
+## NK-6t test hook: false always builds the liquid contact sampler through LiquidFlight.contact_sampler.
+var native_liquid_store_enabled := true
+
+
+func _native_glow_mass_check(values: PackedFloat64Array, with_mass: bool) -> int:
+	if not native_glow_mass_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH:
+		return -1
+	return _native_stage.glow_mass_check(values, with_mass)
+
+
+## NK-6b: GlowFlight.point(self, body, values, time_s).firing_fraction for the step policy's accepted endpoint and
+## counted segments, from the native glow stage that evaluates this tick's RK stages. Only inside the tick whose guarded
+## pre-step installed the native context, without injected failures, an RC track, a pending weather reset or a derived
+## session class (whose point inputs may differ). NaN means "evaluate point()".
+func native_glow_firing(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> float:
+	if not native_glow_firing_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 			or _failures != null or not _rc_track.is_empty() or _weather_pending_reset 			or get_script().resource_path != SELF_PATH:
+		return NAN
+	var fraction: float = _native_stage.glow_firing(body, values, time_s)
+	if is_finite(fraction):
+		native_glow_firing_answers += 1
+	return fraction
+
+
+## F5b: GlowFlight.point(...).firing_fraction at the accepted endpoint for presentation (flight audio), from the native
+## glow stage outside the tick. The stage keeps the context of the last guarded pre-step, which produced this endpoint:
+## the inputs are unchanged until the next session tick, and every other reading point() makes must match it too, so
+## this answers only without failures, an RC track or a pending weather reset, unpaused and with no hold, and with the
+## engine running now and at that pre-step. NaN: evaluate GlowFlight.telemetry.
+func presented_glow_firing() -> float:
+	if not _presented_glow_allowed():
+		return NAN
+	return _native_stage.glow_firing(sim.state, sim.continuous, sim.time())
+
+
+func _presented_glow_allowed() -> bool:
+	return native_glow_audio_enabled and _native_stage != null and _failures == null and _rc_track.is_empty() \
+		and not _weather_pending_reset and not sim.paused and holds.is_empty() and engine_running \
+		and _context_engine_running and get_script().resource_path == SELF_PATH and glow_is_active() and _flight_ready()
+
+
+## NK-7g: flight audio's glow key set (GlowAudioState.native_keys) from the native glow stage, under presented_glow_firing's
+## own conditions; {} otherwise.
+func presented_glow_audio_keys(geometry: PackedFloat64Array, family: Variant, geometry_family: Variant,
+		frame: PackedFloat64Array) -> Dictionary:
+	if not _presented_glow_allowed():
+		return {}
+	return _native_stage.glow_audio_keys(sim.state, sim.continuous, sim.time(), geometry, family, geometry_family, frame)
+
+
+## F5b: [GlowProp torque at (rpm, axial speed), at (rpm, 0)] for flight audio's shaft load from the native glow stage's
+## blade model; empty without one or with the hook off. Pure in its arguments: no tick context is involved.
+func presented_glow_blade_torques(rpm: float, axial_speed: float, density: float) -> PackedFloat64Array:
+	if not native_glow_audio_enabled or _native_stage == null or get_script().resource_path != SELF_PATH:
+		return PackedFloat64Array()
+	return _native_stage.glow_blade_torques(rpm, axial_speed, density)
+
+
+## F5b test hook: false makes flight audio evaluate GlowFlight.telemetry every frame.
+var native_glow_audio_enabled := true
+## engine_running when the native stage's tick context was last set.
+var _context_engine_running := false
+
+
+## NK-5f: gear_collapsed(s) with Ground.collapsed's checks in its order; where it computes the compressions, those
+## published for this endpoint (published_gear_compressions) stand in when available. Same caller scope.
+func published_gear_collapsed(s: PackedFloat64Array) -> bool:
+	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
+		return false
+	var gear := current_landing_gear()
+	var surfaces: PackedFloat64Array = ground_surfaces if wheel_count() > 0 else PackedFloat64Array()
+	var lake: Dictionary = _lake
+	var overlay: Dictionary = _rc_track
+	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
+		return true
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Ground.Wheels.Terrain.max_height(surfaces) \
+			+ Ground.Wheels.Track.max_height_m(overlay):
+		return false
+	var c := published_gear_compressions(s)
+	if c.is_empty():
+		c = Ground.compressions(s, gear, surfaces, lake, overlay)
+	for i in c.size():
+		if c[i] > gear.contacts[i].max_compression:
+			return true
+	return false
+
+
+## Same length and bytes (float bits, so ±0 and NaN payloads differ).
+static func _same_bits(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
+	return a.size() == b.size() and a.to_byte_array() == b.to_byte_array()
 
 
 ## Compression of each landing-gear contact at state `s` (m, ≤ 0 in the air), in data order; empty without gear.
@@ -3414,20 +3853,78 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 ## The sampler is pure; rejected candidates publish no contact, damage or continuous-state change.
 func _resolve_mass_contact_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int, previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> PackedFloat64Array:
+	if _clear_contact_step(previous, candidate, next_tick, previous_values, candidate_values, true):
+		return candidate
 	var sampler: Callable = _contact_mass_sampler(previous_values, candidate_values)
 	if not sampler.is_valid():
 		return PackedFloat64Array()
-	return _resolve_collision_step(previous, candidate, next_tick, sampler)
+	_terminal_before_values = previous_values
+	var resolved := _resolve_collision_step(previous, candidate, next_tick, sampler)
+	_terminal_before_values = PackedFloat64Array()
+	return resolved
+
+
+## NK-6h: the start store of the contact sample being resolved (empty outside _resolve_mass_contact_step).
+var _terminal_before_values := PackedFloat64Array()
+## NK-6h test hook: false always evaluates the hull terminal at the contact sample's properties.
+var native_terminal_quiet_enabled := true
+## Diagnostic: hull terminal checks the native stage answered as quiet.
+var native_terminal_quiet_answers := 0
+
+
+## NK-6h/6i: true when HullContact.terminal_at_properties(previous, s, _hull_contact, the liquid or glow contact sample at
+## fraction 0) must answer {ok, no event}: the native stage computes that sample's properties as the stage's live mass and
+## checks them as validate_properties does, and no hull point newly penetrates, lies past the crash depth or meets the
+## lake. On a rolling tick that skips the sample (about 36 µs) and the terminal (about 22 µs). Only inside the tick
+## whose guarded pre-step installed the native context, for this class.
+func _native_terminal_quiet(previous: PackedFloat64Array, s: PackedFloat64Array) -> bool:
+	if not native_terminal_quiet_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH:
+		return false
+	var answer := -1
+	if liquid_fuel_is_active():
+		var index: int = _liquid_index()
+		if _terminal_before_values.size() == index + 2:
+			answer = _native_stage.liquid_terminal_quiet(previous, s, _terminal_before_values[index])
+	elif glow_is_active():
+		# NK-6i: the glow sample at fraction 0 reads the start store's total and line fuel.
+		if _terminal_before_values.size() == GlowFlight.SIZE + wheel_count():
+			answer = _native_stage.glow_terminal_quiet(previous, s, _terminal_before_values[1],
+				_terminal_before_values[GlowFlight.LINE_FUEL_INDEX])
+	if answer != 1:
+		return false
+	native_terminal_quiet_answers += 1
+	return true
 
 
 func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> Callable:
 	if liquid_fuel_is_active():
+		# NK-6t: inside the guarded tick the native liquid stage answers both stores' validity; the sampler itself is
+		# then built only when a contact asks for it. It reads only this tick's clock and the frozen installation, and
+		# every caller (scenery, lake, hull terminal) calls it within this collision step.
+		var checked: int = _native_liquid_store_check(previous_values, candidate_values)
+		if checked == 0:
+			return Callable()
+		if checked == 1:
+			var built: Array[Callable] = []
+			return func(fraction: float) -> Dictionary:
+				if built.is_empty():
+					built.append(LiquidFlight.contact_sampler(self, previous_values, candidate_values))
+				return built[0].call(fraction)
 		return LiquidFlight.contact_sampler(self, previous_values, candidate_values)
 	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
 			or candidate_values.size() != previous_values.size():
 		return Callable()
-	var before_context: Dictionary = GlowFlight.mass_context(self, previous_values)
-	if not before_context.get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
+	# NK-6e: inside the guarded tick the native glow stage answers both stores' validity; the contact sample then
+	# builds the start store's context only if a contact asks for it (it is pure, so the values are the same).
+	var context: Dictionary = {}
+	var previous_ok: int = _native_glow_mass_check(previous_values, true)
+	var candidate_ok: int = _native_glow_mass_check(candidate_values, true) if previous_ok == 1 else previous_ok
+	if previous_ok < 0 or candidate_ok < 0:
+		context = GlowFlight.mass_context(self, previous_values)
+		if not context.get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
+			return Callable()
+	elif previous_ok == 0 or candidate_ok == 0:
 		return Callable()
 	var before: float = previous_values[1]
 	var after: float = candidate_values[1]
@@ -3446,6 +3943,9 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 		var properties: Dictionary = GlowFlight.properties(self, total, line)
 		if not properties.get("ok", false):
 			return {ok = false}
+		if context.is_empty():
+			context.merge(GlowFlight.mass_context(self, previous_values))
+		var before_context: Dictionary = context
 		var remaining: Dictionary = {str(before_context.tanks[0].id): total-line}
 		if before_context.tanks.size()>1: remaining[str(before_context.tanks[1].id)]=line
 		var result: Dictionary = FuelSample.build(properties, before_context.tanks, remaining,
@@ -3459,6 +3959,9 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int, mass_at_fraction: Callable = Callable()) -> PackedFloat64Array:
+	if not mass_at_fraction.is_valid() and _clear_contact_step(previous, candidate, next_tick, PackedFloat64Array(),
+			PackedFloat64Array(), false):
+		return candidate
 	_clear_pending_contacts()
 	_pending_contact_tick = next_tick
 	var accepted_scenery: SceneryCollision.Event = _last_scenery_event
@@ -3466,7 +3969,8 @@ func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloa
 	_resolving_contact = true
 	var filtered: PackedFloat64Array = _resolve_collision_candidate(previous, candidate, next_tick, mass_at_fraction)
 	if mass_at_fraction.is_valid() and soft_hull_contacts and _pending_crash == null and Sim.state_is_valid(filtered) \
-			and not _hull_contact.is_empty() and -filtered[RB.POS + 2] <= float(_hull_contact.reach):
+			and not _hull_contact.is_empty() and -filtered[RB.POS + 2] <= float(_hull_contact.reach) \
+			and not _native_terminal_quiet(previous, filtered):
 		var properties_previous: Dictionary = mass_at_fraction.call(0.0)
 		var terminal_result: Dictionary = HullContact.terminal_at_properties(previous, filtered, _hull_contact, properties_previous)
 		var hit: Dictionary = terminal_result.get("event", {})
@@ -3494,7 +3998,8 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 		return candidate
 	var scenery_hit: SceneryCollision.Event = null
 	if has_world:
-		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction,
+			_native_contact_reach(previous, candidate))
 		if not sampled.ok:
 			return PackedFloat64Array()
 		scenery_hit = sampled.event
@@ -3563,20 +4068,26 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 		_last_scenery_event = null
 		_last_lake_event = null
 		return candidate
+	var reach: int = _native_contact_reach(previous, candidate)
 	var scenery_hit: SceneryCollision.Event = null
 	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
-		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction, reach)
 		if not sampled.ok:
 			return PackedFloat64Array()
 		scenery_hit = sampled.event
 	var lake_hit: LakeCollision.WaterEvent
 	if mass_at_fraction.is_valid():
-		var sampled_lake: Dictionary = LakeCollision.first_hit_sampled(_lake, previous, candidate,
-			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), mass_at_fraction,
-			soft_hull_contacts, _prop_disc, _hull_contact)
-		if not sampled_lake.ok:
-			return PackedFloat64Array()
-		lake_hit = sampled_lake.event
+		if reach & REACH_LAKE_CLEAR and _lake_sweep_inputs_valid(previous, candidate, next_tick):
+			lake_hit = null # NK-5d: no hull, gear or propeller probe reaches the highest possible water this tick
+		else:
+			var sampled_lake: Dictionary = LakeCollision.first_hit_sampled(_lake, previous, candidate,
+				aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), mass_at_fraction,
+				soft_hull_contacts, _prop_disc, _hull_contact)
+			if not sampled_lake.ok:
+				return PackedFloat64Array()
+			lake_hit = sampled_lake.event
+	elif reach & REACH_LAKE_CLEAR:
+		lake_hit = null # NK-5d: the unsampled sweep returns null for this proof and for invalid inputs alike
 	else:
 		lake_hit = LakeCollision.first_hit(_lake, previous, candidate,
 			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), sim.mass,
@@ -3689,12 +4200,245 @@ func _soft_ground_owns_terminal(previous: PackedFloat64Array, contact_state: Pac
 
 
 func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
-		next_tick: int, mass_at_fraction: Callable) -> Dictionary:
+		next_tick: int, mass_at_fraction: Callable, reach: int = 0) -> Dictionary:
+	if reach & REACH_SCENERY_CLEAR:
+		# NK-5d: no collision proxy meets a box that contains every box this sweep tests, so it finds no hit.
+		# The unsampled sweep also returns no event for invalid inputs; the sampled one refuses them below.
+		# A proof already implies a nonempty, finite hull of whole points (the native reach refuses others).
+		if not mass_at_fraction.is_valid():
+			return {ok = true, event = null}
+		if _scenery_state_valid(previous) and _scenery_state_valid(candidate) \
+				and SceneryCollision._world_is_valid(_collision_world):
+			return {ok = true, event = null, reason = ""}
 	if mass_at_fraction.is_valid():
 		return SceneryCollision.first_hit_sampled(previous, candidate, aircraft.model.crash_hull,
 			_collision_world, next_tick, mass_at_fraction, _scenery_damage)
 	return {ok = true, event = SceneryCollision.first_hit(previous, candidate, aircraft.model.crash_hull,
 		_collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)}
+
+
+## NK-5d: contact reach proofs from the native stage for one accepted tick. REACH_SCENERY_CLEAR: no collision
+## proxy lies within reach of any swept probe; REACH_LAKE_CLEAR: no probe reaches the highest possible water. A proof
+## only skips a sweep whose "no hit" result it implies; 0 (no native stage, or no proof) runs every sweep.
+const REACH_SCENERY_CLEAR := 1
+const REACH_LAKE_CLEAR := 2
+## Test hook: false runs every sweep, for equivalence checks.
+var native_contact_reach_enabled := true
+
+
+func _native_contact_reach(previous: PackedFloat64Array, candidate: PackedFloat64Array) -> int:
+	if not native_contact_reach_enabled or _native_stage == null or not aircraft.get("ok", false):
+		return 0
+	return _native_stage.contact_reach(self, previous, candidate, aircraft.model.crash_hull, _contact_probe_reach(),
+		_contact_lake_threshold(), _lake_bank_bounds if lake_bank_proof_enabled else PackedFloat64Array())
+
+
+## NK-8b test hook: false always samples render terrain in GDScript.
+var native_render_terrain_enabled := true
+
+
+## NK-8b: GroundTerrain.sample(north, east, ground_surfaces) for render callers (main.gd `_ground_height`, the aircraft
+## shadow's receiving ground): the installed native stage's sample of its prepared ground when that table holds the
+## same bytes, otherwise the GDScript sample. The values are the same.
+func render_terrain_sample(north: float, east: float) -> PackedFloat64Array:
+	var surfaces: PackedFloat64Array = ground_surfaces
+	if native_render_terrain_enabled and _native_stage != null and not surfaces.is_empty():
+		var native: PackedFloat64Array = _native_stage.render_terrain_sample(north, east, surfaces)
+		if native.size() == 3:
+			return native
+	return GroundTerrain.sample(north, east, surfaces)
+
+
+## LakeCollision's own reject threshold for the reach proofs: the highest possible water "down" less its contact
+## epsilon; NaN without a lake or with malformed wave bounds.
+func _contact_lake_threshold() -> float:
+	var lake_threshold: float = NAN
+	if not _lake.is_empty():
+		var level: Variant = _lake.get("water_level_down_m")
+		var waves: Variant = _lake.get("wave_bounds")
+		if typeof(level) in [TYPE_FLOAT, TYPE_INT] and waves is Dictionary \
+				and typeof(waves.get("max_amplitude_m")) in [TYPE_FLOAT, TYPE_INT]:
+			lake_threshold = minf(0.0, float(level) - float(waves.max_amplitude_m)) - LakeSurface.CONTACT_EPSILON_M
+	return lake_threshold
+
+
+## NK-6v test hook: false always runs the reference contact step.
+var native_clear_contact_enabled := true
+## Diagnostic: contact steps the native stage proved clear.
+var native_clear_contact_answers := 0
+
+
+## NK-6v: the contact step (_resolve_mass_contact_step with its mass sampler, _resolve_collision_step without) of a
+## tick that touches nothing, proved in one native call (NativeStage.clear_contact_step) from the checks its clear
+## path makes: the stores the sampler validates, the scenery and lake reach proofs with the sampled sweeps' own input
+## checks, and the soft hull terminal. On a proof it leaves exactly that path's bookkeeping and the caller returns the
+## candidate; otherwise the reference step runs. Only inside the guarded tick, for this class, with soft hull contacts,
+## no RC track and every native check it composes enabled.
+func _clear_contact_step(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int,
+		previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array, sampled: bool) -> bool:
+	if not native_clear_contact_enabled or _native_stage == null or _native_endpoint_tick != sim.tick + 1 \
+			or get_script().resource_path != SELF_PATH or not soft_hull_contacts or not _rc_track.is_empty() \
+			or not aircraft.get("ok", false) or not native_contact_reach_enabled or not native_state_checks_enabled \
+			or not native_terminal_quiet_enabled:
+		return false
+	var mode := 1 if sampled else 0
+	var store_index := 0
+	if sampled:
+		if liquid_fuel_is_active():
+			if not native_liquid_store_enabled:
+				return false
+			mode |= 2
+			store_index = _liquid_index()
+		elif glow_is_active():
+			if not native_glow_mass_enabled:
+				return false
+			mode |= 4
+			store_index = GlowFlight.SIZE + wheel_count()
+		else:
+			return false
+	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
+		mode |= 8
+		if sampled and SceneryCollision._world_is_valid(_collision_world):
+			mode |= 32
+	if not _lake.is_empty():
+		mode |= 16
+		var dt: float = sim.dt()
+		if sampled and _lake_definition_valid() and is_finite(dt) and dt > 0.0 and next_tick >= 1:
+			mode |= 64
+	var hull_reach: float = NAN
+	if sampled and not _hull_contact.is_empty():
+		mode |= 128
+		hull_reach = float(_hull_contact.reach)
+	var answer: int = _native_stage.clear_contact_step(self, previous, candidate, aircraft.model.crash_hull,
+		_contact_probe_reach(), _contact_lake_threshold(), _lake_bank_bounds if lake_bank_proof_enabled \
+		else PackedFloat64Array(), previous_values, candidate_values, mode, store_index, hull_reach)
+	if answer <= 0:
+		return false
+	if answer == 2:
+		native_terminal_quiet_answers += 1
+	native_clear_contact_answers += 1
+	# The reference's clear path: pending contacts and damage cleared for this tick, the accepted scenery and lake
+	# events kept, and the pending ones it publishes left null (without a lake the lake event passes through).
+	_clear_pending_contacts()
+	_pending_contact_tick = next_tick
+	_clear_pending_scenery_damage()
+	_resolving_contact = false
+	_terminal_before_values = PackedFloat64Array()
+	if _lake.is_empty():
+		_pending_lake_event = _last_lake_event
+	return true
+
+
+## NK-6g test hook: false keeps the lake reach proof vertical only (NK-5d). With it, the proof also passes the bank's
+## bounds, which set_lake_context keeps with every lake; for a valid (finite) bank they equal LakeCollision's own.
+var lake_bank_proof_enabled := true
+
+
+## The farthest gear or propeller probe that the lake sweep adds to the hull, measured as it measures them.
+func _contact_probe_reach() -> float:
+	var gear: Dictionary = current_landing_gear()
+	# NK-6e: the same posed gear and propeller disc (by identity) measure the same reach. current_landing_gear() keeps
+	# its dictionary until the gear moves, and the native flights this serves refuse in-place configuration edits.
+	if probe_reach_cache_enabled and _probe_reach_gear != null and is_same(gear, _probe_reach_gear) \
+			and is_same(_prop_disc, _probe_reach_disc):
+		return _probe_reach
+	var reach := 0.0
+	var contacts: Variant = gear.get("contacts", [])
+	if contacts is Array:
+		for contact: Variant in contacts:
+			var point: PackedFloat64Array = LakeCollision._gear_probe_point(contact)
+			if not point.is_empty():
+				reach = maxf(reach, M.norm(point))
+	if LakeCollision._prop_disc_is_valid(_prop_disc):
+		reach = maxf(reach, M.norm(_prop_disc.hub) + float(_prop_disc.radius))
+	_probe_reach_gear = gear
+	_probe_reach_disc = _prop_disc
+	_probe_reach = reach
+	return reach
+
+
+## NK-6e: the gear and disc _contact_probe_reach last measured, and its answer.
+var _probe_reach_gear: Variant = null
+var _probe_reach_disc: Variant = null
+var _probe_reach := 0.0
+## Test hook: false always measures the probe reach.
+var probe_reach_cache_enabled := true
+## Test hook: false always evaluates HullContact.prop_disc_depth.
+var prop_clear_bound_enabled := true
+## Test hook: false keeps _prop_disc_clear's lake test horizontal (the NK-6e bound).
+var prop_lake_height_bound_enabled := true
+## NK-6e: the lake whose bank bounds _prop_disc_clear last computed, and those bounds.
+var _prop_bounds_lake: Variant = null
+var _prop_bounds := PackedFloat64Array()
+
+
+## NK-6e: true only where HullContact.prop_disc_depth must answer a depth <= 0, so _check_prop_strike may stop.
+## Every disc point lies within |hub| + radius of the origin, scaled by the attitude quaternion's norm bound as
+## _disc_near_lake scales it; above that height the flat datum is out of reach. The lake's water or bank decides only
+## within its bank bounds, so the disc's horizontal reach must miss them, or lie wholly above the lake's highest
+## possible support: bank terrain lies between the datum and the mean water level, and waves rise by at most their
+## validated amplitude (_disc_near_lake's and LakeSurface.sweep_probe's bound). Flying over the lake, that vertical
+## test spares the covered-terrain sample each tick. An invalid lake or a nonfinite state keeps the full evaluation,
+## which reports its own NaN.
+func _prop_disc_clear(s: PackedFloat64Array) -> bool:
+	if not prop_clear_bound_enabled or s.size() != RB.SIZE:
+		return false
+	var hub: PackedFloat64Array = _prop_disc.get("hub", PackedFloat64Array())
+	if hub.size() != 3:
+		return false
+	var qq: float = s[RB.ATT] * s[RB.ATT] + s[RB.ATT + 1] * s[RB.ATT + 1] + s[RB.ATT + 2] * s[RB.ATT + 2] \
+		+ s[RB.ATT + 3] * s[RB.ATT + 3]
+	var reach: float = (sqrt(hub[0] * hub[0] + hub[1] * hub[1] + hub[2] * hub[2]) + float(_prop_disc.get("radius", NAN))) \
+		* (1.0 + 4.0 * qq) + 0.01
+	if not is_finite(reach) or not is_finite(s[RB.POS]) or not is_finite(s[RB.POS + 1]) or not is_finite(s[RB.POS + 2]) \
+			or -s[RB.POS + 2] <= reach:
+		return false
+	if _lake.is_empty():
+		return true
+	if not LakeSurface.is_valid_definition(_lake):
+		return false
+	if prop_lake_height_bound_enabled and s[RB.POS + 2] + reach \
+			< minf(0.0, float(_lake.water_level_down_m) - float(_lake.wave_bounds.max_amplitude_m)):
+		return true
+	if not is_same(_lake, _prop_bounds_lake):
+		_prop_bounds = HullContact._polygon_bounds(_lake.bank_ne_m)
+		_prop_bounds_lake = _lake
+	return s[RB.POS] + reach < _prop_bounds[0] or s[RB.POS] - reach > _prop_bounds[1] \
+		or s[RB.POS + 1] + reach < _prop_bounds[2] or s[RB.POS + 1] - reach > _prop_bounds[3]
+
+
+## The sampled lake sweep's own input checks (its sampler is valid here); it refuses the tick when one fails.
+## A lake proof already implies a nonempty, finite hull of whole points.
+func _lake_sweep_inputs_valid(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> bool:
+	var dt: float = sim.dt()
+	return _lake_definition_valid() and _scenery_state_valid(previous) \
+		and _scenery_state_valid(candidate) and is_finite(dt) and dt > 0.0 and next_tick >= 1
+
+
+## NK-6q: Simulation.state_is_valid and SceneryCollision._state_is_valid through the native stage, exact; the reference
+## (no native stage, or this hook false) keeps them in GDScript. About 2.4 µs each, four to six times per tick.
+var native_state_checks_enabled := true
+
+
+func _state_valid(s: PackedFloat64Array) -> bool:
+	return _native_stage.state_valid(s) if _native_stage != null and native_state_checks_enabled \
+		else Sim.state_is_valid(s)
+
+
+func _scenery_state_valid(s: PackedFloat64Array) -> bool:
+	return _native_stage.scenery_state_valid(s) if _native_stage != null and native_state_checks_enabled \
+		else SceneryCollision._state_is_valid(s)
+
+
+## LakeSurface.is_valid_definition(_lake), kept for a frozen lake inside guarded native ticks (_frozen_lake_owner).
+func _lake_definition_valid() -> bool:
+	var guarded: bool = _native_stage != null and _native_endpoint_tick == sim.tick + 1 \
+		and is_same(_lake, _frozen_lake_owner)
+	if guarded and _frozen_lake_valid:
+		return true
+	var valid: bool = LakeSurface.is_valid_definition(_lake)
+	if guarded: _frozen_lake_valid = valid
+	return valid
 
 
 func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) -> Dictionary:
@@ -4419,13 +5163,20 @@ func flap_mix_diagnostics() -> PackedFloat64Array:
 func flaps_available() -> bool:
 	if _fact_flaps != _FACT_UNKNOWN:
 		return _fact_flaps == 1
-	var available: bool = aircraft.get("ok", false) and Flaps.enabled(aircraft.model)
+	var kept := _kept_fact(&"flaps")
+	var available: bool = kept == 1 if kept != _FACT_UNKNOWN else aircraft.get("ok", false) and Flaps.enabled(aircraft.model)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"flaps", int(available))
 	if _facts_armed: _fact_flaps = int(available)
 	return available
 
 
 func _input_count() -> int:
-	return 4 + (1 if gear_is_retractable() else 0) + (1 if wheel_brake_input_index() >= 0 else 0) + (1 if flaps_available() else 0)
+	# Kept for a frozen aircraft: gear retraction, wheel-brake hardware and flaps are aircraft facts kept for it too.
+	var count: int = _kept_fact(&"input_count")
+	if count == _FACT_UNKNOWN:
+		count = 4 + (1 if gear_is_retractable() else 0) + (1 if wheel_brake_input_index() >= 0 else 0) + (1 if flaps_available() else 0)
+		_keep_fact(&"input_count", count)
+	return count
 
 
 func flap_input_index() -> int:
@@ -4433,8 +5184,16 @@ func flap_input_index() -> int:
 
 
 func flap_aux_index() -> int:
-	return (AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
-		+ (GEAR_AUX_SIZE if gear_is_retractable() else 0)) if flaps_available() else -1
+	if _fact_flap_aux_index != _FACT_UNKNOWN:
+		return _fact_flap_aux_index
+	# Kept for a frozen aircraft: every fact it reads is kept for it too.
+	var index: int = _kept_fact(&"flap_aux_index")
+	if index == _FACT_UNKNOWN:
+		index = (AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+			+ (GEAR_AUX_SIZE if gear_is_retractable() else 0)) if flaps_available() else -1
+		_keep_fact(&"flap_aux_index", index)
+	if _facts_armed: _fact_flap_aux_index = index
+	return index
 
 
 func _flap_aux_valid(values: PackedFloat64Array) -> bool:
@@ -4464,16 +5223,37 @@ func flap_state() -> Dictionary:
 		overspeed = actual > 0.001 and speed > spec.max_speed_mps}
 
 
+## F5b: flap_state()'s angle_deg (0.0 where it reports none) for the renderer's per-frame pose, without that
+## status's overspeed advisory: its air-data solve cost about 20 µs per frame.
+func flap_angle_deg() -> float:
+	if not flaps_available() or sim == null or not _flap_aux_valid(sim.aux):
+		return 0.0
+	return sim.aux[flap_aux_index()] * aircraft.model.flaps.max_angle_deg
+
+
 func gear_is_retractable() -> bool:
 	if _fact_gear_retractable != _FACT_UNKNOWN:
 		return _fact_gear_retractable == 1
-	var retractable: bool = aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+	var kept := _kept_fact(&"gear_retractable")
+	var retractable: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+	if kept == _FACT_UNKNOWN: _keep_fact(&"gear_retractable", int(retractable))
 	if _facts_armed: _fact_gear_retractable = int(retractable)
 	return retractable
 
 
 func gear_aux_index() -> int:
-	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0) if gear_is_retractable() else -1
+	if _fact_gear_aux_index != _FACT_UNKNOWN:
+		return _fact_gear_aux_index
+	# Kept for a frozen aircraft: every fact it reads is kept for it too.
+	var index: int = _kept_fact(&"gear_aux_index")
+	if index == _FACT_UNKNOWN:
+		index = -1
+		if gear_is_retractable():
+			index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+		_keep_fact(&"gear_aux_index", index)
+	if _facts_armed: _fact_gear_aux_index = index
+	return index
 
 
 func _gear_aux_valid(values: PackedFloat64Array) -> bool:
@@ -4516,7 +5296,10 @@ func toggle_gear() -> bool:
 func wheel_brake_available() -> bool:
 	if _fact_wheel_brake != _FACT_UNKNOWN:
 		return _fact_wheel_brake == 1
-	var available: bool = _wheel_brake_hardware()
+	var frozen := is_same(aircraft, _frozen_facts_owner)
+	var available: bool = _frozen_wheel_brake == 1 if frozen and _frozen_wheel_brake != _FACT_UNKNOWN \
+		else _wheel_brake_hardware()
+	if frozen: _frozen_wheel_brake = int(available)
 	if _facts_armed: _fact_wheel_brake = int(available)
 	return available
 
@@ -4879,7 +5662,10 @@ func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pack
 func battery_is_dynamic() -> bool:
 	if _fact_battery_dynamic != _FACT_UNKNOWN:
 		return _fact_battery_dynamic == 1
-	var active: bool = aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
+	var kept := _kept_fact(&"battery_dynamic")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"battery_dynamic", int(active))
 	if _facts_armed: _fact_battery_dynamic = int(active)
 	return active
 
@@ -4887,7 +5673,10 @@ func battery_is_dynamic() -> bool:
 func battery_is_pack() -> bool:
 	if _fact_battery_pack != _FACT_UNKNOWN:
 		return _fact_battery_pack == 1
-	var active: bool = aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+	var kept := _kept_fact(&"battery_pack")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"battery_pack", int(active))
 	if _facts_armed: _fact_battery_pack = int(active)
 	return active
 
@@ -4928,8 +5717,14 @@ func electric_law() -> String:
 func _rotor_index() -> int:
 	if _fact_rotor_index != _FACT_UNKNOWN:
 		return _fact_rotor_index
+	var frozen := is_same(aircraft, _frozen_facts_owner)
+	if frozen and _frozen_rotor_index != _FACT_UNKNOWN:
+		if _facts_armed: _fact_rotor_index = _frozen_rotor_index
+		return _frozen_rotor_index
 	var prop: Dictionary = aircraft.model.propulsion
 	var index: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
+	# A packed array's size can change in place; only an Array's (or no transport) is frozen.
+	if frozen and (not WashTransport.enabled(prop) or prop.slipstream.pieces is Array): _frozen_rotor_index = index
 	if _facts_armed: _fact_rotor_index = index
 	return index
 
@@ -4995,8 +5790,10 @@ func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
 
 ## The optional RPM boundary mirror is telemetry, never a second evolving shaft state.
 func _coupled_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
-	if glow_is_active() and not GlowFlight.valid(values,aircraft.model.propulsion.glow):
-		return PackedFloat64Array([NAN])
+	if glow_is_active():
+		var native_valid: int = _native_glow_mass_check(values, false) # NK-6e
+		if native_valid == 0 or (native_valid < 0 and not GlowFlight.valid(values,aircraft.model.propulsion.glow)):
+			return PackedFloat64Array([NAN])
 	var out: PackedFloat64Array = sampled.duplicate()
 	if out.is_empty() or (battery_is_dynamic() and not _battery_values_valid(values)):
 		return PackedFloat64Array([NAN])
@@ -5180,12 +5977,16 @@ func _should_capture_substep_context(body: PackedFloat64Array, values: PackedFlo
 
 
 func _substep_preview_supported() -> bool:
-	if not aircraft.get("ok", false) or not shaft_is_coupled():
-		return false
-	var prop: Dictionary = aircraft.model.propulsion
-	return not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
-		and not Turbine.is_turbine(prop) and Propulsion.has_rotor_dynamics(prop) \
-		and (liquid_fuel_is_active() or not propulsion_power_enabled())
+	if _fact_substep_preview_base == _FACT_UNKNOWN:
+		var base: bool = false
+		if aircraft.get("ok", false) and shaft_is_coupled():
+			var prop: Dictionary = aircraft.model.propulsion
+			base = not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
+				and not Turbine.is_turbine(prop) and Propulsion.has_rotor_dynamics(prop)
+		if not _facts_armed:
+			return base and (liquid_fuel_is_active() or not propulsion_power_enabled())
+		_fact_substep_preview_base = int(base)
+	return _fact_substep_preview_base == 1 and (liquid_fuel_is_active() or not propulsion_power_enabled())
 
 
 func _substep_stage_context(response: Dictionary) -> Dictionary:
@@ -5243,6 +6044,67 @@ func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivati
 	if not result.get("ok", false):
 		return PackedFloat64Array([NAN])
 	return {state = result.state, events = result.events}
+
+
+## NK-6c: _electric_step's plan for the native kernel's integration of this tick, computed as _electric_step computes
+## it: [battery dynamic (1/0), contact pieces, combined rotor index, pack supervision (1/0)]. The kernel calls back
+## _project_electric_stop and _supervise_pack where the policy calls them. Empty keeps the reference policy: the hook
+## off or a derived session class (whose policy pieces may differ).
+func native_electric_step_plan(combined: PackedFloat64Array, dt: float) -> PackedInt64Array:
+	if not native_electric_step_enabled or get_script().resource_path != SELF_PATH:
+		return PackedInt64Array()
+	var dynamic: bool = battery_is_dynamic()
+	var count: int = 1
+	if dynamic and aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
+		count = Ground.substeps(combined.slice(0, RB.SIZE), current_landing_gear(), dt, ground_surfaces, _rc_track)
+	return PackedInt64Array([1 if dynamic else 0, count, RB.SIZE + _rotor_index(), 1 if dynamic and battery_is_pack() else 0])
+
+
+## NK-6d: GlowFlight.step's plan for the native kernel's integration of this tick: the recording resource events
+## step() builds (GlowFlight._recording_events), their shared transition ledger and the unusable tank reserve. The
+## kernel evaluates the stock surfaces itself, calls the events' transitions and then GlowFlight.finish. Empty keeps
+## the reference policy: the hook off or a derived session class (whose policy inputs may differ).
+func native_glow_step_plan() -> Dictionary:
+	if not native_glow_step_enabled or get_script().resource_path != SELF_PATH or not glow_is_active():
+		return {}
+	var transitions: Array[Dictionary] = []
+	var events: Array = GlowFlight._recording_events(self, transitions)
+	var plan := {events = events, transitions = transitions,
+		unusable_fuel_kg = float(aircraft.model.propulsion.glow.unusable_fuel_kg)}
+	var steady: PackedFloat64Array = _native_glow_finish_terms()
+	if not steady.is_empty():
+		plan.steady = steady
+	return plan
+
+
+## NK-6n: GlowFlight.finish's terms for the kernel's steady-tick answer, where finish would cut nothing, take its
+## prepared-evaluator branch and read the endpoint firing fraction from the native stage (NK-6b's conditions):
+## [identity cycle, family cycle, max rpm, stall rpm, overheat temperature, then _accepted_validated's literals and
+## the lifecycle tolerances, as GDScript parses them]. Empty: finish runs. The kernel answers only ticks without
+## resource events or transitions, and refuses every failure and lifecycle stop (nk_glow_finish.hpp).
+func _native_glow_finish_terms() -> PackedFloat64Array:
+	if not native_glow_finish_enabled or not native_glow_firing_enabled or not engine_running or _failures != null \
+			or not _rc_track.is_empty() or _weather_pending_reset or _native_endpoint_tick != sim.tick + 1:
+		return PackedFloat64Array()
+	var install: Dictionary = aircraft.model.propulsion.glow
+	var evaluator: Variant = get_meta(GlowFlight.EVALUATOR_META, null)
+	if not evaluator is GlowLifecycle.PreparedEvaluator \
+			or get_meta(GlowFlight.EVALUATOR_IDENTITY_META, {}) != install.identity:
+		return PackedFloat64Array()
+	var model: Dictionary = evaluator._model
+	var settings: Dictionary = evaluator._settings
+	var family: String = str(install.profile.family)
+	# _state_error compares the identity's cycle as stored, so only a number may stand for it here.
+	if family not in GlowLifecycle.FAMILIES or str(model.get("family", "")) != family \
+			or typeof(install.profile.identity.get("cycle_revolutions")) not in [TYPE_INT, TYPE_FLOAT]:
+		return PackedFloat64Array()
+	return PackedFloat64Array([float(install.profile.identity.cycle_revolutions), 1.0 if family == "glow_2t" else 2.0,
+		float(model.operation.max_rpm), float(settings.stall_rpm), float(settings.temperature_firing_hot_zero_k),
+		1.0e-14, 1.0e-12, GlowLifecycle.PHASE_TOLERANCE, GlowLifecycle.FIRE_TOLERANCE])
+
+
+## NK-6n test hook: false always calls GlowFlight.finish from the kernel.
+var native_glow_finish_enabled := true
 
 
 ## BAT-11: the ESC samples its filtered pack voltage at the accepted endpoint and holds the new output limit
@@ -5406,12 +6268,19 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 			and source_may_stop_this_tick and continuous.size() > _rotor_index():
 		var rpm: float = continuous[_rotor_index()]
 		if is_finite(rpm) and rpm > Propulsion.STOPPED_RPM:
-			var shaft_values: PackedFloat64Array = continuous.slice(0, _liquid_index()) if liquid_fuel_is_active() \
-				else continuous.duplicate()
-			var properties: Dictionary = LiquidFlight.properties(self, continuous, true) if liquid_fuel_is_active() else {}
-			# Finite-fuel exhaust can turn off the source partway through this same tick. Estimate the
-			# off-source domain rate even while its current latch is on so the event locator's remainder is safe.
-			var response: Dictionary = _coupled_response(body, shaft_values, at, properties, false, preview)
+			var response: Dictionary
+			if liquid_fuel_is_active() and preview.get("source_off_rpm_rate") is float \
+					and is_finite(float(preview.source_off_rpm_rate)):
+				# NK-5b: this tick's liquid stage (native or reference) evaluated the same source-off response
+				# from the same preview, trial properties and shaft values; it publishes only a finite rate.
+				response = {ok = true, rpm_rate = preview.source_off_rpm_rate}
+			else:
+				var shaft_values: PackedFloat64Array = continuous.slice(0, _liquid_index()) if liquid_fuel_is_active() \
+					else continuous.duplicate()
+				var properties: Dictionary = LiquidFlight.properties(self, continuous, true) if liquid_fuel_is_active() else {}
+				# Finite-fuel exhaust can turn off the source partway through this same tick. Estimate the
+				# off-source domain rate even while its current latch is on so the event locator's remainder is safe.
+				response = _coupled_response(body, shaft_values, at, properties, false, preview)
 			if not response.get("ok", false):
 				# A bad preview cannot justify an unrefined step. Return an over-cap request so the
 				# kernel rejects the tick without committing a potentially malformed RK stage.
@@ -5432,10 +6301,47 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 	return count
 
 
+## NK-6u test hook, read at native installation (set it before setup): false leaves every tick's substep count to
+## _substeps_joint and _substeps, for equivalence checks.
+var native_substeps_enabled := true
+
+
+## NK-6u: the inputs of _substeps_with_context that only the guarded configuration decides, for the native tick
+## integrator's own count (NativeStage.install; nk_substeps.hpp). The configuration guard refuses a tick after any change
+## to them. The kernel reads the RC-track overlay and the tick's aux itself, and leaves to the callbacks above every tick
+## whose count needs the power latch or the coupled response. {} keeps the callbacks for every tick.
+func native_substep_plan() -> Dictionary:
+	if not native_substeps_enabled or get_script().resource_path != SELF_PATH or sim == null \
+			or not aircraft.get("ok", false):
+		return {}
+	var plan := {battery_dynamic = battery_is_dynamic(), gear_mode = 0, gear_count = 1, reach = 0.0,
+		terrain = 0.0 if ground_surfaces.is_empty() else GroundTerrain.max_height_validated(ground_surfaces),
+		gear_aux_index = gear_aux_index(), gear_aux_size = GEAR_AUX_SIZE, shaft_base = false,
+		liquid = liquid_fuel_is_active(), rotor_index = _rotor_index(), stopped_rpm = Propulsion.STOPPED_RPM,
+		max_substeps = Sim.MAX_SUBSTEPS, margin = Ground.SUBSTEP_REACH_MARGIN_M}
+	if aircraft.model.get("landing_gear") is Dictionary:
+		var gear: Dictionary = aircraft.model.landing_gear
+		plan.gear_mode = 2 if gear_is_retractable() else 1
+		if not gear.is_empty():
+			var declared: Variant = gear.get("substeps", 1)
+			if typeof(declared) not in [TYPE_INT, TYPE_FLOAT]:
+				return {}
+			plan.gear_count = int(declared)
+			if plan.gear_count > 1:
+				if typeof(gear.get("reach")) not in [TYPE_INT, TYPE_FLOAT]:
+					return {}
+				plan.reach = float(gear.reach)
+	var prop: Dictionary = aircraft.model.propulsion
+	plan.shaft_base = shaft_is_coupled() and not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
+		and Propulsion.has_rotor_dynamics(prop)
+	return plan
+
+
 ## NK-2a: capability and layout answers that depend only on the committed aircraft data, memoized for one
 ## kernel tick. The kernel's pre_tick arms the memo; the accepted (stepped) or rejected (faulted) tick drops
 ## it, so data replaced or edited between ticks (load, Workshop, tests) is always read afresh. Direct
-## `_pre_step` calls and solves outside the kernel step never arm it.
+## `_pre_step` calls and solves outside the kernel step never arm it. The wheel index and the substep preview's base also
+## read the shaft integrator, which changes only in a start transaction between ticks.
 const _FACT_UNKNOWN := -2
 var _facts_armed := false
 var _fact_glow := _FACT_UNKNOWN
@@ -5449,6 +6355,11 @@ var _fact_rotor_index := _FACT_UNKNOWN
 var _fact_battery_dynamic := _FACT_UNKNOWN
 var _fact_battery_pack := _FACT_UNKNOWN
 var _fact_battery_block_size := _FACT_UNKNOWN
+var _fact_gear_aux_index := _FACT_UNKNOWN
+var _fact_liquid := _FACT_UNKNOWN
+var _fact_wheel_index := _FACT_UNKNOWN
+var _fact_flap_aux_index := _FACT_UNKNOWN
+var _fact_substep_preview_base := _FACT_UNKNOWN
 
 
 func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -5459,15 +6370,97 @@ func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: f
 	if _native_stage != null and not _native_stage.configuration_matches(self):
 		stage_backend_error = "native prepared configuration changed outside an accepted boundary; reset required"
 		return PackedFloat64Array() # kernel rejects before any native stage can use stale coefficients
-	var next := _pre_step(aux, inputs, dt)
+	# NK-5a: only this guarded call may evaluate the pre-step's wing wake through the prepared native stage.
+	_native_wake_admitted = _native_stage != null
+	var next := PackedFloat64Array()
+	# NK-5g: the guarded tick's whole pre-step through the prepared native stage. The reference evaluates every
+	# refusal and every branch the native pre-step does not cover (failures, pending resets, an RC-track overlay).
+	if _native_wake_admitted and native_pre_step_enabled and _failures == null and not _weather_pending_reset \
+			and not _shaft_pending_reset and _rc_track.is_empty():
+		next = _native_stage.pre_step(self, aux, inputs, dt)
+		if not next.is_empty():
+			native_pre_step_answers += 1
+	if next.is_empty():
+		next = _pre_step(aux, inputs, dt)
+	_native_wake_admitted = false
 	if _native_stage != null and next.size() == aux.size():
 		if not _native_stage.tick_context(self, next, inputs):
 			stage_backend_error = _native_stage.reason
 			return PackedFloat64Array()
+		_native_endpoint_tick = sim.tick + 1 # NK-5e: the endpoint this guarded context belongs to
+		_context_engine_running = engine_running
 	return next
 
 
+## NK-5a: true only inside _kernel_pre_step after the native configuration guard accepted this tick.
+var _native_wake_admitted := false
+## NK-5e: the accepted tick whose native tick context the guarded pre-step installed (-1: none). Every tick-fact
+## drop (pre-step, fault, pause, aircraft change) clears it; _on_sim_stepped reads it first.
+var _native_endpoint_tick := -1
+## NK-5e: true only while _on_sim_stepped observes the endpoint of that tick.
+var _native_endpoint_admitted := false
+## Test hook: false always evaluates the reference endpoint compressions, for equivalence checks.
+var native_endpoint_compressions_enabled := true
+## Diagnostic: accepted endpoints whose compressions the native stage answered.
+var native_endpoint_answers := 0
+## NK-5i: the tick whose `stepped` publication carries a natively measured endpoint (-1: none); set by _on_sim_stepped.
+var _native_facts_tick := -1
+## Test hook: false always leaves the statistics sample to the reference evaluations, for equivalence checks.
+var native_endpoint_facts_enabled := true
+## Diagnostic: published endpoints whose statistics facts the native stage answered.
+var native_endpoint_fact_answers := 0
+## NK-5i: this class's script, for published_endpoint_facts' derived-class refusal (as observer_air_and_wind's).
+const SELF_PATH := "res://sim/flight_session.gd"
+## NK-6e test hook: false always evaluates GlowFlight.valid and mass_context for the contact sampler and projection.
+var native_glow_mass_enabled := true
+## NK-6f test hook: false always evaluates the hull-scrape observation's contact diagnostics in GDScript.
+var native_hull_rows_enabled := true
+## Diagnostic: hull-scrape observations whose contact diagnostics the native stage answered.
+var native_hull_row_answers := 0
+## NK-6d test hook: false keeps the glow step policy (GlowFlight.step) in the reference transaction.
+var native_glow_step_enabled := true
+## NK-6c test hook: false keeps the finite-pack step policy (_electric_step) in the reference transaction.
+var native_electric_step_enabled := true
+## NK-6b test hook: false always evaluates the glow step policy's endpoint point(), for equivalence checks.
+var native_glow_firing_enabled := true
+## Diagnostic: glow endpoint samples the native stage answered.
+var native_glow_firing_answers := 0
+## NK-5g test hook: false always evaluates the reference _pre_step, for equivalence checks.
+var native_pre_step_enabled := true
+## Diagnostic: guarded pre-steps the native stage answered.
+var native_pre_step_answers := 0
+
+
+## F1: capability answers for an aircraft that a native preparation froze read-only all the way down (NK-6p). Its
+## containers and scalars cannot change, so an answer that reads only them holds for that instance. Packed arrays stay
+## writable in place, so no answer kept here reads one. Unlike the per-tick facts, these also serve the session's input
+## and guards outside the kernel tick: the wheel-brake hardware check alone cost 13-15 µs per tick there.
+var _frozen_facts_owner: Dictionary = {}
+var _frozen_wheel_brake := _FACT_UNKNOWN
+var _frozen_rotor_index := _FACT_UNKNOWN
+## The same for flaps_available, gear_is_retractable, anchor_count, downwash_index and wheel_count, which read only
+## dictionary keys, strings and Array sizes. Recomputed outside the armed tick, they made the renderer's flap angle
+## and the session's status accessors cost 10-20 µs per frame.
+var _frozen_fact_values: Dictionary = {}
+
+
+func _kept_fact(key: StringName) -> int:
+	return int(_frozen_fact_values.get(key, _FACT_UNKNOWN)) if is_same(aircraft, _frozen_facts_owner) else _FACT_UNKNOWN
+
+
+func _keep_fact(key: StringName, value: int) -> void:
+	if is_same(aircraft, _frozen_facts_owner):
+		_frozen_fact_values[key] = value
+## The same for the lake, which NK-6p also freezes. Its packed arrays stay writable in place, but inside a guarded native
+## tick the configuration guard has just checked them bit for bit against the prepared lake, so the frozen lake equals
+## the value whose validity was kept. LakeSurface.is_valid_definition compared the whole lake with its cache every
+## tick (8-9 µs for finite-fuel aircraft).
+var _frozen_lake_owner: Dictionary = {}
+var _frozen_lake_valid := false
+
+
 func _drop_tick_facts() -> void:
+	_native_endpoint_tick = -1
 	_facts_armed = false
 	_fact_glow = _FACT_UNKNOWN
 	_fact_gear_retractable = _FACT_UNKNOWN
@@ -5480,6 +6473,11 @@ func _drop_tick_facts() -> void:
 	_fact_battery_dynamic = _FACT_UNKNOWN
 	_fact_battery_pack = _FACT_UNKNOWN
 	_fact_battery_block_size = _FACT_UNKNOWN
+	_fact_gear_aux_index = _FACT_UNKNOWN
+	_fact_liquid = _FACT_UNKNOWN
+	_fact_wheel_index = _FACT_UNKNOWN
+	_fact_flap_aux_index = _FACT_UNKNOWN
+	_fact_substep_preview_base = _FACT_UNKNOWN
 
 
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -5561,7 +6559,13 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 			# NK-2a / A6 O4: pure queries at the same state/time yield the same air. Reuse only here,
 			# after the anchor update; never reuse a shaft sample, an RK stage or a previous tick.
 			var air: Dictionary = air_data(s)
-			cl_now = Aero.wing_wake_velocity(s, air, _deflections(aux), aircraft.model, _ground_up(s))
+			var deflections: Dictionary = _deflections(aux)
+			var ground_up: float = _ground_up(s)
+			# NK-5a: the native stage's bit-identical copy when this tick's configuration guard admitted it; NaN
+			# (unusable input or a NaN result) evaluates the reference, which yields the same value.
+			cl_now = _native_stage.wing_wake(s, air, deflections, ground_up) if _native_wake_admitted else NAN
+			if is_nan(cl_now):
+				cl_now = Aero.wing_wake_velocity(s, air, deflections, aircraft.model, ground_up)
 			speed = air.V
 		else:
 			# Derived sessions may override either helper, including the second air query.
@@ -5596,11 +6600,14 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 func downwash_index() -> int:
 	if _fact_downwash_index != _FACT_UNKNOWN:
 		return _fact_downwash_index
-	# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
-	var index: int = -1
-	if aircraft.get("ok", false) and not aircraft.model.get("envelope", {}).is_empty() \
-			and aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
-		index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+	var index: int = _kept_fact(&"downwash_index")
+	if index == _FACT_UNKNOWN:
+		# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
+		index = -1
+		if aircraft.get("ok", false) and not aircraft.model.get("envelope", {}).is_empty() \
+				and aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
+			index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+		_keep_fact(&"downwash_index", index)
 	if _facts_armed: _fact_downwash_index = index
 	return index
 
@@ -5666,8 +6673,11 @@ func reset_on_runway(north: float, east: float, heading: float) -> bool:
 func anchor_count() -> int:
 	if _fact_anchor_count != _FACT_UNKNOWN:
 		return _fact_anchor_count
-	var gear: Dictionary = aircraft.get("model", {}).get("landing_gear", {}) if aircraft.get("ok", false) else {}
-	var count: int = gear.contacts.size() if gear.has("breakaway_factor") else 0
+	var count: int = _kept_fact(&"anchor_count")
+	if count == _FACT_UNKNOWN:
+		var gear: Dictionary = aircraft.get("model", {}).get("landing_gear", {}) if aircraft.get("ok", false) else {}
+		count = gear.contacts.size() if gear.has("breakaway_factor") else 0
+		_keep_fact(&"anchor_count", count)
 	if _facts_armed: _fact_anchor_count = count
 	return count
 
@@ -5676,21 +6686,30 @@ func anchor_count() -> int:
 func wheel_count() -> int:
 	if _fact_wheel_count != _FACT_UNKNOWN:
 		return _fact_wheel_count
-	var count: int = _model_wheel_count(aircraft.get("model", {})) if aircraft.get("ok", false) else 0
+	var count: int = _kept_fact(&"wheel_count")
+	if count == _FACT_UNKNOWN:
+		count = _model_wheel_count(aircraft.get("model", {})) if aircraft.get("ok", false) else 0
+		_keep_fact(&"wheel_count", count)
 	if _facts_armed: _fact_wheel_count = count
 	return count
 
 
 ## First continuous-state index holding wheel rim speeds, in landing_gear.contacts order.
 func wheel_index() -> int:
+	if _fact_wheel_index != _FACT_UNKNOWN:
+		return _fact_wheel_index
+	var index: int = 0
 	if not aircraft.get("ok", false):
-		return 0
-	if glow_is_active(): return GlowFlight.SIZE
-	var index: int = _rotor_index()
-	if shaft_is_coupled():
-		index += 1 + _battery_block_size()
-	elif turbine_is_continuous():
-		index += 1
+		index = 0
+	elif glow_is_active():
+		index = GlowFlight.SIZE
+	else:
+		index = _rotor_index()
+		if shaft_is_coupled():
+			index += 1 + _battery_block_size()
+		elif turbine_is_continuous():
+			index += 1
+	if _facts_armed: _fact_wheel_index = index
 	return index
 
 

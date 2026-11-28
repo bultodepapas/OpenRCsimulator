@@ -100,9 +100,10 @@ func _run() -> void:
 			check("keyboard can navigate after recovery", pause.continue_button.has_focus())
 			await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
 			await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
-			await ui.joy_button(JOY_BUTTON_A)
-			check("selected pad Accept remains usable without resuming", pause._open_group == "session" and session.sim.paused)
-			pause._toggle_group("")
+			var focused: Control = pause.get_viewport().gui_get_focus_owner()
+			check("selected pad navigation continues into This flight without resuming",
+				(pause.essentials_container.is_ancestor_of(focused) or pause.session_options_container.is_ancestor_of(focused))
+				and session.sim.paused)
 			pause.restart_button.grab_focus()
 			pause._refresh_controller_recovery()
 			check("subsequent recovery refresh preserves newer focus", pause.restart_button.has_focus())

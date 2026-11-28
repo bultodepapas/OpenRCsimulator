@@ -26,6 +26,7 @@ func _run() -> void:
 	_test_storage()
 	_test_incomplete_attempts()
 	_test_reset_invalidates_attempts()
+	_test_store_off_main_thread()
 	_test_scene_detail()
 	_test_renderer()
 	_test_workload_identity()
@@ -251,6 +252,94 @@ func _test_incomplete_attempts() -> void:
 		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "high", workload))
 	AutoCalibration.calibration_path = PRIVATE_PATH
 	AutoCalibration.clear()
+
+
+## 2026-11-26: the finished attempt is written on a worker thread, so no flight frame waits for the file (the GOD
+## TEST measured 133-147 ms there). The file, the `stored` flag, the served verdict and Restore stay as before.
+func _test_store_off_main_thread() -> void:
+	var gpu := "NVIDIA GeForce RTX 3090"
+	var result := {"adapter": gpu, "method": "forward_plus", "level": "medium", "complete": true, "samples": 3658,
+		"scene_offset": 0, "reject_high": false, "gpu_p95_ms": 1.717, "cpu_p95_ms": 1.845, "interval_p95_ms": 9.919,
+		"cpu_bound": false, "subviewports": true, "refresh_hz": 120.0, "pixels": 2073600, "render_pixels": 2073600,
+		"msaa_3d": 2}
+	var workload := {"render_pixels": 2073600, "msaa_3d": 2}
+	AutoCalibration.clear()
+	_check("the synchronous writer still stores a verdict", AutoCalibration.save_result(result.duplicate()))
+	var sync_bytes := FileAccess.get_file_as_bytes(PRIVATE_PATH)
+	AutoCalibration.clear()
+
+	var session := Node.new()
+	var collector := AutoCalibration.new(session, gpu, "medium")
+	var finished: Array[Dictionary] = []
+	collector.finished.connect(func(value: Dictionary) -> void: finished.append(value))
+	collector._begin_store(result.duplicate())
+	_check("a complete attempt starts a store task and does not finish in the same frame",
+		collector._store_task >= 0 and finished.is_empty() and not collector.is_queued_for_deletion())
+	_await_store(collector, finished)
+	_check("the verdict follows on a later frame with its stored flag", finished.size() == 1
+		and bool(finished[0].get("stored", false)) and str(finished[0].get("level", "")) == "medium"
+		and collector.is_queued_for_deletion() and AutoCalibration._store_tasks.is_empty())
+	_check("the worker writes the same file as the synchronous writer",
+		FileAccess.get_file_as_bytes(PRIVATE_PATH) == sync_bytes)
+	var served := AutoCalibration.load_result(gpu, "forward_plus")
+	AutoCalibration._written.clear()
+	var from_file := AutoCalibration.load_result(gpu, "forward_plus")
+	_check("the verdict served from memory equals the file", served == from_file and bool(served.get("complete", false))
+		and int(served.get("pixels", 0)) == 2073600, [served, from_file])
+	_check("a stored verdict needs no new measurement", not AutoCalibration.needed(gpu, "forward_plus", 2073600, "medium", workload))
+	collector.free()
+
+	var racing := AutoCalibration.new(session, gpu, "medium")
+	var racing_finished: Array[Dictionary] = []
+	racing.finished.connect(func(value: Dictionary) -> void: racing_finished.append(value))
+	racing._begin_store(result.duplicate())
+	_check("Restore waits for a write in flight before deleting the file", AutoCalibration.clear() == OK
+		and AutoCalibration._store_tasks.is_empty() and not FileAccess.file_exists(PRIVATE_PATH))
+	racing._process(0.0)
+	_check("a store overtaken by Restore retires without a verdict", racing.is_queued_for_deletion()
+		and racing_finished.is_empty() and AutoCalibration.load_result(gpu, "forward_plus").is_empty()
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "medium", workload))
+	racing.free()
+
+	var freed := AutoCalibration.new(session, gpu, "medium")
+	freed._begin_store(result.duplicate())
+	freed.free()
+	_check("a collector freed mid-write still awaits its task", AutoCalibration._store_tasks.is_empty()
+		and FileAccess.get_file_as_bytes(PRIVATE_PATH) == sync_bytes)
+	AutoCalibration.clear()
+
+	AutoCalibration.calibration_path = "user://test_calibration_missing_parent/result.cfg"
+	var failing := AutoCalibration.new(session, gpu, "medium")
+	var failing_finished: Array[Dictionary] = []
+	failing.finished.connect(func(value: Dictionary) -> void: failing_finished.append(value))
+	failing._begin_store(result.duplicate())
+	_await_store(failing, failing_finished)
+	_check("a failed background write reports stored=false and stays retryable", failing_finished.size() == 1
+		and not bool(failing_finished[0].get("stored", true)) and AutoCalibration._written.is_empty()
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600, "medium", workload))
+	failing.free()
+	AutoCalibration.calibration_path = PRIVATE_PATH
+
+	var partial := AutoCalibration.new(session, gpu, "medium")
+	var partial_finished: Array[Dictionary] = []
+	partial.finished.connect(func(value: Dictionary) -> void: partial_finished.append(value))
+	var short := result.duplicate()
+	short.complete = false
+	partial._begin_store(short)
+	_check("an incomplete attempt writes nothing and finishes at once", partial_finished.size() == 1
+		and not bool(partial_finished[0].get("stored", true)) and partial._store_task < 0
+		and not FileAccess.file_exists(PRIVATE_PATH))
+	partial.free()
+	session.free()
+	AutoCalibration.clear()
+
+
+func _await_store(collector: Node, finished: Array[Dictionary]) -> void:
+	for attempt in 5000:
+		collector._process(0.0)
+		if not finished.is_empty():
+			return
+		OS.delay_msec(1)
 
 
 ## A paused partial collection cannot undo a successful Restore. The invalidation runs before lease/focus

@@ -268,8 +268,8 @@ func _ready() -> void:
 	session.crashed.connect(_on_crashed)
 	session.depleted.connect(_on_depleted)
 	session.race_event.connect(_on_race_event)
-	# Audit: saving writes, verifies and renames files; deferred so the finishing tick does not stall on disk I/O.
-	session.race_result.connect(_on_race_result, CONNECT_DEFERRED)
+	# Capture the originating course before a restart can switch it. Disk I/O runs outside the finishing tick.
+	session.race_result.connect(func(record: Dictionary) -> void: _on_race_result.call_deferred(record, session.course))
 	session.resetting.connect(_invalidate_telemetry)
 	session.impact.connect(_on_impact)
 	_build_gates()
@@ -377,7 +377,7 @@ func cycle_course() -> void:
 
 
 func _build_field() -> void:
-	var field_node: Node3D = FieldBuilder.build(field, _lighting, _pad_grass_exclusions(), _rc_track)
+	var field_node: Node3D = FieldBuilder.build(field, _lighting, _pad_grass_exclusions(), _rc_track, true)
 	var lake_error := str(field_node.get_meta("lake_error", ""))
 	if not lake_error.is_empty():
 		push_warning("FPV quad field lake refused: " + lake_error)
@@ -1482,26 +1482,24 @@ func race_refusal_text(reason: String) -> String:
 ## write keeps them in the session outbox and says so. DR-40: the attempt also enters the record book (best total,
 ## best lap, medal), and the results card shows it against the pilot's best. A pad reset during a race is no attempt
 ## for the book (the pilot chose to leave it).
-func _on_race_result(result: Dictionary) -> void:
+func _on_race_result(result: Dictionary, raced_course: Dictionary) -> void:
 	var report: Dictionary = session.save_results(results_directory)
 	if int(report.failed) > 0:
 		hud.flash(tr(OUTBOX_TEXT) % session.results.size(), 5.0)
-	if session.race == null:
-		return
 	_load_records()
 	# The pilot leaving an attempt (G cancel, a pad reset) is no attempt for the book; a lap already flown still counts.
 	var left: bool = str(result.get("reason", "")) in ["pad_reset", "cancelled"]
-	var summary: Dictionary = RaceRecords.apply(_records, session.course, result, not left)
+	var summary: Dictionary = RaceRecords.apply(_records, raced_course, result, not left)
 	_records = summary.records
 	if not _records_writable or RaceRecords.save_file(_records, records_path()) != OK:
 		hud.flash(tr("Race record not saved"))
-	if str(result.get("reason", "")) == "pad_reset":
+	if str(result.get("reason", "")) == "pad_reset" or result.records_identity != session.records_identity():
 		_push_race_info()
 		return
 	var card: Dictionary = result.duplicate(true)
 	card.merge(summary, true)
 	card.erase("records")
-	card.next_medal = RaceRecords.next_medal(str((summary.entry as Dictionary).get("medal", "")), RaceRecords.targets(session.course))
+	card.next_medal = RaceRecords.next_medal(str((summary.entry as Dictionary).get("medal", "")), RaceRecords.targets(raced_course))
 	hud.show_race_result(card)
 	_push_race_info()
 
@@ -1603,7 +1601,7 @@ func _push_race_info() -> void:
 		hud.set_race_info({})
 		return
 	_load_records()
-	var entry: Dictionary = _records.get(str(session.course.get("identity", "")), {})
+	var entry: Dictionary = _records.get(session.records_identity(), {})
 	hud.set_race_info({best_total_s = float(entry.get("best_total_s", 0.0)), best_lap_s = float(entry.get("best_lap_s", 0.0)),
 		medal = str(entry.get("medal", "")), targets = RaceRecords.targets(session.course)})
 

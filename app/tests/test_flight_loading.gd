@@ -755,6 +755,16 @@ func _run() -> void:
 		_contains_phase(phases, "Preparing resources") and _contains_phase(phases, "Checking landscape")
 		and _contains_phase(phases, "Checking flight") and _contains_phase(phases, "Preparing effects")
 		and feedback_usec >= 0 and total_usec >= feedback_usec)
+	var stage_end_usec: int = int(app.last_flight_loading.accepted_usec)
+	var stages_ordered := not phases.is_empty()
+	for stage: Dictionary in phases:
+		var stage_start_usec: int = int(stage.get("started_usec", -1))
+		var wait_usec: int = int(stage.get("checkpoint_wait_usec", -1))
+		var work_usec: int = int(stage.get("work_usec", -1))
+		stages_ordered = stages_ordered and stage_start_usec >= stage_end_usec and wait_usec >= 0 and work_usec >= 0
+		stage_end_usec = stage_start_usec + wait_usec + work_usec
+	_check("stage timing separates checkpoint waits from work and ends at readiness",
+		stages_ordered and stage_end_usec == int(app.last_flight_loading.accepted_usec) + total_usec)
 
 	_check("successful scene preparation shares the broker's two-resource bound",
 		app._loading_scene_job == null and app._loading_scene_resource == null

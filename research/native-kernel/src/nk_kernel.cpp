@@ -8,6 +8,8 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/variant/array.hpp>
+#include <godot_cpp/variant/packed_vector3_array.hpp>
+#include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/packed_float64_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
@@ -15,8 +17,11 @@
 #include <godot_cpp/variant/string_name.hpp>
 
 #include <chrono>
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
+#include <memory>
 #include <initializer_list>
 #include <limits>
 #include <string>
@@ -38,9 +43,27 @@
 #include "nk_weather_guard.hpp"
 #include "nk_point_sampler.hpp"
 #include "nk_configuration_guard.hpp"
+#include "nk_soundscape.hpp"
+#include "nk_soundscape_core.hpp"
+#include "nk_ground_audio_core.hpp"
+#include "nk_mechanical_audio_core.hpp"
+#include "nk_audio_rows.hpp"
+#include "nk_glow_voice_render.hpp"
+#include "nk_shadow_parts.hpp"
+#include "nk_substeps.hpp"
+#include "nk_stats_speed.hpp"
+#include "nk_stats_sample.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
+#include "nk_contact_reach.hpp"
+#include "nk_pre_step.hpp"
+#include "nk_tick.hpp"
+#include "nk_glow_voice.hpp"
+#include "nk_glow_finish.hpp"
+#include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/variant/callable.hpp>
+#include <godot_cpp/variant/packed_int64_array.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/ref.hpp>
 
 namespace {
@@ -490,6 +513,16 @@ bool decode_gear(Decoder &dec, const Dictionary &gear, nk::PreparedGear &out) {
 		for (int k = 0; k < 3; ++k) {
 			w.position[k] = position[k];
 		}
+		// NK-5i: Ground.collapsed's travel limit, read without new refusals: a missing or non-numeric value stays NAN
+		// and only the endpoint facts that would compare it refuse.
+		if (c.has("max_compression")) {
+			const Variant limit = c["max_compression"];
+			if (limit.get_type() == Variant::FLOAT) {
+				w.max_compression = static_cast<double>(limit);
+			} else if (limit.get_type() == Variant::INT) {
+				w.max_compression = static_cast<double>(static_cast<int64_t>(limit));
+			}
+		}
 		out.contacts.push_back(w);
 	}
 	return true;
@@ -899,6 +932,91 @@ bool read_deflections(const PackedFloat64Array &d, nk::Deflections &out) {
 	return true;
 }
 
+// NK-5g: GDScript exp/log/sin/cos are these engine utility functions; calling them keeps the pre-step's results
+// the engine's own, bit for bit, whatever libm this library links.
+double engine_exp(double x) { return godot::UtilityFunctions::exp(x); }
+double engine_log(double x) { return godot::UtilityFunctions::log(x); }
+double engine_sin(double x) { return godot::UtilityFunctions::sin(x); }
+double engine_cos(double x) { return godot::UtilityFunctions::cos(x); }
+
+bool config_bool(Decoder &dec, const Dictionary &d, const char *key, bool &out) {
+	if (!d.has(key) || d[key].get_type() != Variant::BOOL) return dec.fail(std::string(key) + " must be a bool");
+	out = static_cast<bool>(d[key]);
+	return true;
+}
+
+bool config_int(Decoder &dec, const Dictionary &d, const char *key, int64_t &out) {
+	if (!d.has(key) || d[key].get_type() != Variant::INT) return dec.fail(std::string(key) + " must be an int");
+	out = static_cast<int64_t>(d[key]);
+	return true;
+}
+
+// NK-5g: StageConfig.pre_step_config_for(session), checked against the prepared stage it extends.
+bool decode_pre_step(Decoder &dec, const Dictionary &config, const nk::StageModel &m, nk::PreStepModel &p) {
+	p = nk::PreStepModel();
+	int64_t flap_aux = -1, flap_input = -1, input_count = 0, turbulence_index = -1, turbulence_seed = 0;
+	if (!dec.only(config, "pre_step", {"servo_rate", "rpm_passthrough", "rpm_turbine", "rpm_shaft", "idle_rpm",
+				"max_rpm", "rpm_lag", "flaps", "flap_extension_time", "flap_retraction_time", "flap_elevator_mix",
+				"flap_aux", "flap_input", "retractable", "input_count", "lake_present", "downwash_length",
+				"turbulence", "turbulence_index", "turbulence_sigma", "turbulence_tau", "turbulence_seed",
+				"weight_on_wheels_threshold", "turbulence_uniform_denominator", "turbulence_max_uniform"}) ||
+			!dec.number(config, "servo_rate", p.servo_rate, true) ||
+			!config_bool(dec, config, "rpm_passthrough", p.rpm_passthrough) ||
+			!config_bool(dec, config, "rpm_turbine", p.rpm_turbine) || !config_bool(dec, config, "rpm_shaft", p.rpm_shaft) ||
+			!config_bool(dec, config, "flaps", p.flaps) || !config_bool(dec, config, "retractable", p.retractable) ||
+			!config_bool(dec, config, "lake_present", p.lake_present) || !config_bool(dec, config, "turbulence", p.turbulence) ||
+			!config_int(dec, config, "flap_aux", flap_aux) || !config_int(dec, config, "flap_input", flap_input) ||
+			!config_int(dec, config, "input_count", input_count) ||
+			!config_int(dec, config, "turbulence_index", turbulence_index) ||
+			!config_int(dec, config, "turbulence_seed", turbulence_seed) ||
+			!dec.number(config, "downwash_length", p.downwash_length, true) ||
+			!dec.number(config, "weight_on_wheels_threshold", p.weight_on_wheels_threshold, true)) {
+		return false;
+	}
+	// Propulsion.rpm_step reads prop.idle_rpm, max_rpm and lag; only that branch needs them.
+	p.rpm_lag_ready = config.has("idle_rpm") && config.has("max_rpm") && config.has("rpm_lag");
+	if (p.rpm_lag_ready && (!dec.number(config, "idle_rpm", p.idle_rpm, true) ||
+			!dec.number(config, "max_rpm", p.max_rpm, true) || !dec.number(config, "rpm_lag", p.rpm_lag, true))) {
+		return false;
+	}
+	if (p.flaps && (!dec.number(config, "flap_extension_time", p.flap_extension_time, true) ||
+			!dec.number(config, "flap_retraction_time", p.flap_retraction_time, true) ||
+			!dec.number(config, "flap_elevator_mix", p.flap_elevator_mix, true))) {
+		return false;
+	}
+	const nk::StageLayout &L = m.layout;
+	if (input_count != L.input_count || p.retractable != m.retraction.enabled || (p.retractable && L.gear_aux < 0) ||
+			p.flaps != m.aero.flaps.enabled || flap_aux < -1 || flap_aux >= L.aux_size || flap_input < -1 ||
+			flap_input >= input_count || (p.flaps && (flap_aux < 0 || flap_input < 0))) {
+		return dec.fail("pre-step layout differs from the prepared stage");
+	}
+	p.flap_aux = static_cast<int>(flap_aux);
+	p.flap_input = static_cast<int>(flap_input);
+	p.input_count = static_cast<int>(input_count);
+	if (p.turbulence) {
+		std::vector<nk::R> sigma;
+		if (turbulence_index != L.turbulence || turbulence_index < 0 || turbulence_index + 7 != L.aux_size ||
+				!dec.vec(config, "turbulence_sigma", sigma, true, 3) || !dec.number(config, "turbulence_tau", p.turbulence_tau, true) ||
+				!dec.number(config, "turbulence_uniform_denominator", p.turbulence_uniform_denominator, true) ||
+				!dec.number(config, "turbulence_max_uniform", p.turbulence_max_uniform, true)) {
+			return dec.fail("pre-step turbulence differs from the prepared weather layout");
+		}
+		for (int i = 0; i < 3; ++i) {
+			if (!nk::is_finite(sigma[i]) || sigma[i].v < 0.0) return dec.fail("turbulence sigma must be finite and nonnegative");
+			p.turbulence_sigma[i] = sigma[i];
+		}
+		// WindTurbulence.step's own refusals: a positive finite tau and a seed in [0, 4294967295].
+		if (!nk::is_finite(p.turbulence_tau) || p.turbulence_tau.v <= 0.0 || turbulence_seed < 0 ||
+				turbulence_seed > 4294967295LL) {
+			return dec.fail("turbulence tau or seed is out of range");
+		}
+		p.turbulence_index = static_cast<int>(turbulence_index);
+		p.turbulence_seed = turbulence_seed;
+	}
+	p.ready = true;
+	return true;
+}
+
 } // namespace
 
 class OpenRCNativeKernel : public godot::RefCounted {
@@ -920,10 +1038,55 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::LiveHullBinding live_hull_;
 	nk::WeatherGuard weather_guard_;
 	nk::ConfigurationGuard configuration_guard_;
+	std::unique_ptr<nk::sound::Core> sound_core_; // NK-7b: this instance's soundscape core, made on first bind
+	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
+	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
+	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
+	std::unique_ptr<nk::voice::RenderKeys> voice_keys_; // NK-7l: made when a glow voice binds
+	nk::voice::Bound voice_bound_; // NK-7l: that voice's literals
+	std::vector<nk::WheelFrame> audio_frames_; // NK-7k: the contacts' frames of the last band rows or approach speeds
+	std::unique_ptr<nk::render::ShadowParts> shadow_parts_; // NK-8a: one projected shadow's parts
+	// NK-7g: flight audio's glow key names, made on the first call (never function-local statics).
+	struct GlowAudioKeys {
+		godot::StringName ok{"ok"}, family{"family"}, rpm{"rpm"}, running{"running"}, firing_fraction{"firing_fraction"},
+			blade_count{"blade_count"}, phase_revolutions{"phase_revolutions"}, opportunity_count{"opportunity_count"},
+			fire_count{"fire_count"}, firing_accumulator{"firing_accumulator"}, fuel_kg{"fuel_kg"},
+			source_vibration{"source_vibration"}, errors{"errors"}, cycle_revolutions{"cycle_revolutions"},
+			firing_order{"firing_order"}, phase_rad{"phase_rad"}, omega_rad_s{"omega_rad_s"}, alpha_rad_s2{"alpha_rad_s2"},
+			constant_speed_assumption{"constant_speed_assumption"}, source_force_n{"source_force_n"},
+			order_1x_force_cosine_n{"order_1x_force_cosine_n"}, order_1x_force_sine_n{"order_1x_force_sine_n"},
+			order_2x_force_cosine_n{"order_2x_force_cosine_n"}, order_2x_force_sine_n{"order_2x_force_sine_n"},
+			order_1x_force_peak_n{"order_1x_force_peak_n"}, order_2x_force_peak_n{"order_2x_force_peak_n"},
+			opportunity_frequency_hz{"opportunity_frequency_hz"},
+			mean_successful_fire_rate_hz{"mean_successful_fire_rate_hz"};
+		godot::String max_rpm_text{"max_rpm"}, load_text{"load"}, throttle_text{"throttle"}, sample_tick_text{"sample_tick"};
+	};
+	std::unique_ptr<GlowAudioKeys> glow_audio_keys_;
+	std::unique_ptr<nk::stats::SpeedWindow> stats_speed_; // NK-9a: one statistics detector's speed window
+	std::unique_ptr<nk::stats::FixedWingSample> stats_sample_; // NK-9b: one statistics adapter's sample
+	// NK-6u: the installed session's substep plan (nk_substeps.hpp) and the names its tick checks read.
+	struct SubstepNames {
+		godot::StringName joint{"_substeps_joint"}, plain{"_substeps"}, rc_track{"_rc_track"}, electric{"_electric_step"},
+			step_policy{"step_policy"}, substeps_joint{"substeps_joint"}, substeps{"substeps"};
+	};
+	nk::SubstepPlan substep_plan_;
+	uint64_t substep_session_id_ = 0;
+	std::unique_ptr<SubstepNames> substep_names_;
+	int64_t substep_answers_ = 0, substep_refined_ = 0;
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
+	std::vector<nk::R> wing_wake_ge_; // NK-5a scratch: no allocation per tick
+	nk::ContactReach contact_reach_; // NK-5d: proxy bounds of the session's collision world
+	std::vector<nk::R> compressions_scratch_; // NK-5e: endpoint compressions without a per-tick allocation
+	std::vector<nk::R> facts_aux_;            // NK-5i: the endpoint aux for its air sample
+	std::vector<nk::R> facts_scratch_;        // NK-5i: the endpoint facts answer
+	nk::PreStepModel pre_model_; // NK-5g: the prepared stage's pre-step (FlightSession._pre_step)
+	nk::PreStepScratch pre_scratch_;
+	std::vector<double> pre_out_;
+	int64_t pre_rng_state_ = 0;
+	int64_t pre_step_calls_ = 0, pre_step_answers_ = 0;
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
 	// The binding converts Godot arrays once per call, into storage sized at
@@ -933,6 +1096,46 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool stage_timing_ = false;
 	double stage_ns_ = 0.0;
 	int64_t context_calls_ = 0;
+	// NK-6a: the tick integrator's counters and scratch (one non-reentrant tick owner).
+	int64_t tick_calls_ = 0, tick_answers_ = 0, tick_faults_ = 0;
+	int64_t glow_firing_calls_ = 0, glow_firing_answers_ = 0; // NK-6b
+	// NK-6e: the glow installation's bounds for GlowFlight.valid and mass_context.
+	struct GlowValidity {
+		bool ready = false;
+		nk::R max_rpm = 0.0, total_capacity = 0.0, capacity = 0.0, line_capacity = 0.0, unusable = 0.0, cycle = 0.0;
+		bool has_line = false, family_ok = false;
+	};
+	GlowValidity glow_validity_;
+	int64_t glow_mass_calls_ = 0;
+	std::vector<nk::R> terminal_amounts_;
+	std::vector<nk::R> wheel_rows_;
+	std::vector<nk::R> wheel_rows_loads_;
+	std::vector<nk::R> wheel_rows_rates_;
+	int64_t wheel_rows_answers_ = 0;
+	bool hull_guard_ready_ = false;
+	double hull_guard_crash_depth_ = 0.0;
+	std::vector<nk::R> glow_finish_out_;
+	int64_t glow_finish_answers_ = 0;
+	bool prop_strike_ready_ = false;
+	nk::R prop_hub_[3] = {0.0, 0.0, 0.0};
+	nk::R prop_axis_[3] = {0.0, 0.0, 0.0};
+	double prop_radius_ = 0.0;
+	bool liquid_terminal_ready_ = false;
+	bool glow_terminal_ready_ = false;
+	double glow_terminal_crash_depth_ = 0.0;
+	std::vector<double> glow_terminal_stores_;
+	double liquid_terminal_crash_depth_ = 0.0;
+	int64_t terminal_calls_ = 0;
+	int64_t terminal_quiet_ = 0;
+	int64_t hull_rows_calls_ = 0;
+	int64_t hull_rows_answers_ = 0;
+	nk::HullDiagnostics hull_diagnostics_;
+	std::vector<nk::R> hull_rows_scratch_;
+	nk::R tick_mass_ = 0.0, tick_gravity_ = 0.0;
+	nk::R tick_inertia_[6] = {}, tick_inertia_inv_[6] = {};
+	nk::StageResult tick_stage_result_;
+	nk::TickRk4Scratch tick_rk4_;
+	std::vector<nk::R> tick_combined_, tick_first_, tick_next_, tick_event_times_;
 	bool rejection_diagnostics_enabled_ = false;
 	bool rejection_valid_ = false;
 	bool diagnostic_context_ready_ = false;
@@ -1015,6 +1218,9 @@ protected:
 		using godot::D_METHOD;
 		godot::ClassDB::bind_method(D_METHOD("prepare_configuration_guard", "session", "identity"), &OpenRCNativeKernel::prepare_configuration_guard);
 		godot::ClassDB::bind_method(D_METHOD("configuration_guard_matches", "session"), &OpenRCNativeKernel::configuration_guard_matches);
+		godot::ClassDB::bind_method(D_METHOD("configuration_guard_profile", "session", "iterations"), &OpenRCNativeKernel::configuration_guard_profile);
+		godot::ClassDB::bind_method(D_METHOD("configuration_guard_plan_ready"), &OpenRCNativeKernel::configuration_guard_plan_ready);
+		godot::ClassDB::bind_method(D_METHOD("weather_guard_plan_ready"), &OpenRCNativeKernel::weather_guard_plan_ready);
 		godot::ClassDB::bind_method(D_METHOD("prepare_macos_domain_guard", "world", "field"), &OpenRCNativeKernel::prepare_macos_domain_guard);
 		godot::ClassDB::bind_method(D_METHOD("macos_domain_guard_matches", "world", "field"), &OpenRCNativeKernel::macos_domain_guard_matches);
 		godot::ClassDB::bind_method(D_METHOD("prepare_heli_stage", "snapshot", "weather"), &OpenRCNativeKernel::prepare_heli_stage);
@@ -1041,6 +1247,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_ground", "gear", "surfaces", "lake", "lake_valid"),
 			&OpenRCNativeKernel::prepare_ground);
 		godot::ClassDB::bind_method(D_METHOD("terrain_sample", "north", "east", "with_lake"), &OpenRCNativeKernel::terrain_sample);
+		godot::ClassDB::bind_method(D_METHOD("stage_terrain_sample", "north", "east", "surfaces"),
+			&OpenRCNativeKernel::stage_terrain_sample);
 		godot::ClassDB::bind_method(D_METHOD("surface_table_is_valid", "surfaces"), &OpenRCNativeKernel::surface_table_is_valid);
 		godot::ClassDB::bind_method(D_METHOD("wheels_evaluate", "s", "steer", "anchors", "speeds", "brake"),
 			&OpenRCNativeKernel::wheels_evaluate);
@@ -1084,6 +1292,123 @@ protected:
 			&OpenRCNativeKernel::aero_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_loads", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
 			&OpenRCNativeKernel::aero_loads);
+		godot::ClassDB::bind_method(D_METHOD("stage_wing_wake", "s", "air", "d", "ground_up"),
+			&OpenRCNativeKernel::stage_wing_wake);
+		godot::ClassDB::bind_method(D_METHOD("prepare_reach_world", "proxies"), &OpenRCNativeKernel::prepare_reach_world);
+		godot::ClassDB::bind_method(D_METHOD("clear_reach_world"), &OpenRCNativeKernel::clear_reach_world);
+		godot::ClassDB::bind_method(D_METHOD("stage_compressions", "s", "aux"), &OpenRCNativeKernel::stage_compressions);
+		godot::ClassDB::bind_method(D_METHOD("stage_wheel_rows", "s", "aux", "steer", "anchors", "speeds", "brake"),
+			&OpenRCNativeKernel::stage_wheel_rows);
+		godot::ClassDB::bind_method(D_METHOD("stage_wheel_audio_rows", "s", "aux", "steer", "anchors", "speeds", "brake",
+			"arms", "ids", "reference_load", "time_s", "surfaces", "support"), &OpenRCNativeKernel::stage_wheel_audio_rows);
+		godot::ClassDB::bind_method(D_METHOD("stage_wheel_approach_speeds", "s", "aux", "steer", "arms"),
+			&OpenRCNativeKernel::stage_wheel_approach_speeds);
+		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
+		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
+		godot::ClassDB::bind_method(D_METHOD("sound_doppler", "source", "listener", "source_velocity", "listener_velocity",
+			"sound_speed"), &OpenRCNativeKernel::sound_doppler);
+		godot::ClassDB::bind_method(D_METHOD("sound_targets", "values", "exhaust", "listener", "source"),
+			&OpenRCNativeKernel::sound_targets);
+		godot::ClassDB::bind_method(D_METHOD("sound_humidity", "relative_humidity_pct", "temperature_k", "pressure_pa"),
+			&OpenRCNativeKernel::sound_humidity);
+		godot::ClassDB::bind_method(D_METHOD("sound_absorption_cutoff", "path_m", "temperature_k", "pressure_pa", "humidity_pct"),
+			&OpenRCNativeKernel::sound_absorption_cutoff);
+		godot::ClassDB::bind_method(D_METHOD("sound_screening", "source", "listener", "boxes"), &OpenRCNativeKernel::sound_screening);
+		godot::ClassDB::bind_method(D_METHOD("sound_activity", "sun_elevation", "wind_speed", "temperature_c"),
+			&OpenRCNativeKernel::sound_activity);
+		godot::ClassDB::bind_method(D_METHOD("sound_distance_gain", "distance_m"), &OpenRCNativeKernel::sound_distance_gain);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_bind", "voices", "glow_player", "absorption_filter", "screen_filter",
+			"trees", "canopies", "kind", "state"), &OpenRCNativeKernel::sound_core_bind);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_bind_bank", "players", "layers", "family", "profile_max_rpm", "trim_db",
+			"state"), &OpenRCNativeKernel::sound_core_bind_bank);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_frame", "snapshot", "delta", "flags"),
+			&OpenRCNativeKernel::sound_core_frame);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_events", "species_levels"), &OpenRCNativeKernel::sound_core_events);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_heard", "snapshot"), &OpenRCNativeKernel::sound_core_heard);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_reset", "absorption"), &OpenRCNativeKernel::sound_core_reset);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_state"), &OpenRCNativeKernel::sound_core_state);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_history_size"), &OpenRCNativeKernel::sound_core_history_size);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_open"), &OpenRCNativeKernel::ground_core_open);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_bind_slot", "id", "roll", "impact", "roll_offset", "stream_lengths"),
+			&OpenRCNativeKernel::ground_core_bind_slot);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_observe", "snapshot"), &OpenRCNativeKernel::ground_core_observe);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_touchdown_possible"), &OpenRCNativeKernel::ground_core_touchdown_possible);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_touchdown_possible_at", "identities", "compressions"),
+			&OpenRCNativeKernel::ground_core_touchdown_possible_at);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_note_skipped_tick", "tick", "identities", "approaches"),
+			&OpenRCNativeKernel::ground_core_note_skipped_tick);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_pending_slots", "tick", "paused"),
+			&OpenRCNativeKernel::ground_core_pending_slots);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_frame", "tick", "paused", "engine_power", "delta", "listener",
+			"tick_rate_hz", "seed"), &OpenRCNativeKernel::ground_core_frame);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_stop"), &OpenRCNativeKernel::ground_core_stop);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_reset"), &OpenRCNativeKernel::ground_core_reset);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_release_buses"), &OpenRCNativeKernel::ground_core_release_buses);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_accepted_tick"), &OpenRCNativeKernel::ground_core_accepted_tick);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_diagnostics"), &OpenRCNativeKernel::ground_core_diagnostics);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_state"), &OpenRCNativeKernel::ground_core_state);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_bind", "event_players", "servo_loop", "servo_loop_length",
+			"gear_loop", "gear_loop_length", "takes", "servo_level", "profile_pitch", "counters"),
+			&OpenRCNativeKernel::mechanical_core_bind);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_bind_motion_player", "key", "player"),
+			&OpenRCNativeKernel::mechanical_core_bind_motion_player);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_observe", "snapshot"), &OpenRCNativeKernel::mechanical_core_observe);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_prepare", "snapshot", "delta"),
+			&OpenRCNativeKernel::mechanical_core_prepare);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_failed"), &OpenRCNativeKernel::mechanical_core_failed);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_finish"), &OpenRCNativeKernel::mechanical_core_finish);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_reset"), &OpenRCNativeKernel::mechanical_core_reset);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_diagnostics"), &OpenRCNativeKernel::mechanical_core_diagnostics);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_state"), &OpenRCNativeKernel::mechanical_core_state);
+		godot::ClassDB::bind_method(D_METHOD("mechanical_core_accepted_events"),
+			&OpenRCNativeKernel::mechanical_core_accepted_events);
+		godot::ClassDB::bind_method(D_METHOD("audio_unloaded_rows", "state", "arms", "ids", "reference_load"),
+			&OpenRCNativeKernel::audio_unloaded_rows);
+		godot::ClassDB::bind_method(D_METHOD("audio_source_kinematics", "state", "offset", "axis"),
+			&OpenRCNativeKernel::audio_source_kinematics);
+		godot::ClassDB::bind_method(D_METHOD("shadow_parts_bind", "ids", "rests", "bound"), &OpenRCNativeKernel::shadow_parts_bind);
+		godot::ClassDB::bind_method(D_METHOD("shadow_part_poses", "source_id"), &OpenRCNativeKernel::shadow_part_poses);
+		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
+			&OpenRCNativeKernel::glow_vibration);
+		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
+			"min_index"), &OpenRCNativeKernel::retarded_emission);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_blade_torques", "rpm", "axial_speed", "density"),
+			&OpenRCNativeKernel::stage_glow_blade_torques);
+		godot::ClassDB::bind_method(D_METHOD("scenery_state_valid", "s"), &OpenRCNativeKernel::scenery_state_valid);
+		godot::ClassDB::bind_method(D_METHOD("arrays_finite", "inputs", "input_size", "aux", "aux_size", "continuous",
+			"continuous_size"), &OpenRCNativeKernel::arrays_finite);
+		godot::ClassDB::bind_method(D_METHOD("inertia_cached", "inertia", "cache", "inverse"),
+			&OpenRCNativeKernel::inertia_cached);
+		godot::ClassDB::bind_method(D_METHOD("glow_steady_finish_component", "start", "end", "dt", "terms", "firing"),
+			&OpenRCNativeKernel::glow_steady_finish_component);
+		godot::ClassDB::bind_method(D_METHOD("glow_finish_answers"), &OpenRCNativeKernel::glow_finish_answers);
+		godot::ClassDB::bind_method(D_METHOD("glow_voice_block", "parameters", "harmonics", "state", "frames"),
+			&OpenRCNativeKernel::glow_voice_block);
+		godot::ClassDB::bind_method(D_METHOD("glow_voice_bind", "constants", "harmonics_2t", "harmonics_4t"),
+			&OpenRCNativeKernel::glow_voice_bind);
+		godot::ClassDB::bind_method(D_METHOD("glow_voice_render", "snapshot", "frames", "state", "last_family"),
+			&OpenRCNativeKernel::glow_voice_render);
+		godot::ClassDB::bind_method(D_METHOD("prepare_hull_guard", "crash_depth"), &OpenRCNativeKernel::prepare_hull_guard);
+		godot::ClassDB::bind_method(D_METHOD("stage_hull_guard", "previous", "s"), &OpenRCNativeKernel::stage_hull_guard);
+		godot::ClassDB::bind_method(D_METHOD("prepare_prop_strike", "hub", "axis", "radius"),
+			&OpenRCNativeKernel::prepare_prop_strike);
+		godot::ClassDB::bind_method(D_METHOD("stage_prop_strike_clear", "s"), &OpenRCNativeKernel::stage_prop_strike_clear);
+		godot::ClassDB::bind_method(D_METHOD("stage_guard_collapsed", "s", "aux"),
+			&OpenRCNativeKernel::stage_guard_collapsed);
+		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_torques", "s", "aux", "time_s", "rpm"),
+			&OpenRCNativeKernel::stage_endpoint_torques);
+		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_air", "s", "aux", "time_s"),
+			&OpenRCNativeKernel::stage_endpoint_air);
+		godot::ClassDB::bind_method(D_METHOD("stage_endpoint_facts", "s", "aux", "time_s"),
+			&OpenRCNativeKernel::stage_endpoint_facts);
+		godot::ClassDB::bind_method(D_METHOD("prepare_pre_step", "config"), &OpenRCNativeKernel::prepare_pre_step);
+		godot::ClassDB::bind_method(D_METHOD("pre_step", "aux", "inputs", "dt", "state", "continuous", "time_now",
+			"engine_running", "flap_mix_simulator", "deflections", "rng_state"), &OpenRCNativeKernel::pre_step);
+		godot::ClassDB::bind_method(D_METHOD("pre_step_rng_state"), &OpenRCNativeKernel::pre_step_rng_state);
+		godot::ClassDB::bind_method(D_METHOD("pre_step_stats"), &OpenRCNativeKernel::pre_step_stats);
+		godot::ClassDB::bind_method(D_METHOD("pre_step_rng_probe", "state", "count"), &OpenRCNativeKernel::pre_step_rng_probe);
+		godot::ClassDB::bind_method(D_METHOD("contact_reach", "previous", "candidate", "hull", "extra_reach", "lake_threshold", "lake_bank"),
+			&OpenRCNativeKernel::contact_reach);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
 		godot::ClassDB::bind_method(D_METHOD("float64_transport", "scalar", "values"), &OpenRCNativeKernel::float64_transport);
 		godot::ClassDB::bind_method(D_METHOD("math_control_state"), &OpenRCNativeKernel::math_control_state);
@@ -1095,6 +1420,45 @@ protected:
 			&OpenRCNativeKernel::set_tick_context);
 		godot::ClassDB::bind_method(D_METHOD("set_power_context", "throttle", "enabled"), &OpenRCNativeKernel::set_power_context);
 		godot::ClassDB::bind_method(D_METHOD("stage", "body", "continuous", "t"), &OpenRCNativeKernel::stage);
+		godot::ClassDB::bind_method(D_METHOD("integrate_tick", "model", "state", "continuous", "aux", "t", "dt", "tick",
+			"mass", "gravity", "inertia", "inertia_inv"), &OpenRCNativeKernel::integrate_tick);
+		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
+		godot::ClassDB::bind_method(D_METHOD("prepare_substeps", "session", "plan"), &OpenRCNativeKernel::prepare_substeps);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_bind", "thresholds"), &OpenRCNativeKernel::stats_speed_bind);
+		godot::ClassDB::bind_method(D_METHOD("stats_sample_bind", "plan"), &OpenRCNativeKernel::stats_sample_bind);
+		godot::ClassDB::bind_method(D_METHOD("stats_sample_build", "state", "facts", "deployed", "tick", "dt", "fault_empty",
+			"crashed", "contacts", "observation"), &OpenRCNativeKernel::stats_sample_build);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_clear"), &OpenRCNativeKernel::stats_speed_clear);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_clear_counts"), &OpenRCNativeKernel::stats_speed_clear_counts);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_collect", "sample", "dt", "tick", "clock_s", "incident",
+			"ground_contact", "flight"), &OpenRCNativeKernel::stats_speed_collect);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_snapshot"), &OpenRCNativeKernel::stats_speed_snapshot);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_restore", "window", "window_s", "pending", "previous", "counts"),
+			&OpenRCNativeKernel::stats_speed_restore);
+		godot::ClassDB::bind_method(D_METHOD("stage_contact_clear", "previous", "candidate", "hull", "extra_reach",
+			"lake_threshold", "lake_bank", "previous_values", "candidate_values", "mode", "store_index", "hull_reach"),
+			&OpenRCNativeKernel::stage_contact_clear);
+		godot::ClassDB::bind_method(D_METHOD("stage_substep_probe", "model", "state", "continuous", "aux", "t", "dt"),
+			&OpenRCNativeKernel::stage_substep_probe);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_audio_keys", "body", "values", "time_s", "geometry", "family",
+			"geometry_family", "frame"), &OpenRCNativeKernel::stage_glow_audio_keys);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_firing", "body", "values", "time_s"),
+			&OpenRCNativeKernel::stage_glow_firing);
+		godot::ClassDB::bind_method(D_METHOD("prepare_glow_validity", "bounds"), &OpenRCNativeKernel::prepare_glow_validity);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_mass_check", "values", "with_mass"),
+			&OpenRCNativeKernel::stage_glow_mass_check);
+		godot::ClassDB::bind_method(D_METHOD("stage_hull_scrape_rows", "s", "properties"),
+			&OpenRCNativeKernel::stage_hull_scrape_rows);
+		godot::ClassDB::bind_method(D_METHOD("prepare_liquid_terminal", "crash_depth", "sample_static_ok"),
+			&OpenRCNativeKernel::prepare_liquid_terminal);
+		godot::ClassDB::bind_method(D_METHOD("stage_liquid_store_valid", "values", "index"),
+			&OpenRCNativeKernel::stage_liquid_store_valid);
+		godot::ClassDB::bind_method(D_METHOD("stage_liquid_terminal_quiet", "previous", "s", "usable_before"),
+			&OpenRCNativeKernel::stage_liquid_terminal_quiet);
+		godot::ClassDB::bind_method(D_METHOD("prepare_glow_terminal", "crash_depth", "stores", "sample_static_ok"),
+			&OpenRCNativeKernel::prepare_glow_terminal);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_terminal_quiet", "previous", "s", "total", "line"),
+			&OpenRCNativeKernel::stage_glow_terminal_quiet);
 		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
 		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
@@ -1184,6 +1548,20 @@ public:
 		std::vector<double> values;
 		if (!surfaces.is_empty()) values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		return nk::surface_table_is_valid(values);
+	}
+
+	// NK-8b: GroundTerrain.sample(north, east, surfaces) without a lake, for render callers, from the installed
+	// fixed-wing stage's prepared ground when `surfaces` holds that table's exact bytes; empty otherwise (the caller
+	// samples in GDScript). An empty table is GDScript's flat fixture and stays there.
+	PackedFloat64Array stage_terrain_sample(double north, double east, const PackedFloat64Array &surfaces) const {
+		if (!stage_ready_ || heli_stage_ready_) return PackedFloat64Array();
+		const nk::SurfaceTable &table = stage_.ground.surfaces;
+		if (!table.valid || surfaces.is_empty() || static_cast<size_t>(surfaces.size()) != table.values.size() ||
+				std::memcmp(surfaces.ptr(), table.values.data(), sizeof(double) * table.values.size()) != 0) {
+			return PackedFloat64Array();
+		}
+		const nk::Vec3 out = nk::terrain_sample_validated(north, east, table, no_lake_);
+		return pack(out.data(), 3);
 	}
 
 	PackedFloat64Array terrain_sample(double north, double east, bool with_lake) const {
@@ -1333,6 +1711,8 @@ public:
 
 	Dictionary prepare_configuration_guard(godot::Object *session, godot::Object *identity) { return configuration_guard_.prepare_configuration_guard(session, identity); }
 	bool configuration_guard_matches(godot::Object *session) const { return configuration_guard_.configuration_guard_matches(session); }
+	Dictionary configuration_guard_profile(godot::Object *session, int64_t iterations) const { return configuration_guard_.profile(session, iterations); }
+	bool configuration_guard_plan_ready() const { return configuration_guard_.plan_ready(); }
 	Dictionary prepare_macos_domain_guard(const Dictionary &world, const Dictionary &field) { return macos_domain_guard_.prepare(world, field); }
 	bool macos_domain_guard_matches(const Dictionary &world, const Dictionary &field) const { return macos_domain_guard_.matches(world, field); }
 	Dictionary prepare_heli_stage(const Dictionary &snapshot, const Dictionary &weather) {
@@ -1358,6 +1738,7 @@ public:
 	String heli_last_failure() const { return helicopter_.heli_last_failure(); }
 	Dictionary prepare_weather_guard(godot::Object *session, godot::Object *identity) { return weather_guard_.prepare_weather_guard(session, identity); }
 	bool weather_guard_matches(godot::Object *session) const { return weather_guard_.weather_guard_matches(session); }
+	bool weather_guard_plan_ready() const { return weather_guard_.plan_ready(); }
 	Dictionary prepare_liquid(const Dictionary &snapshot) { return liquid_.prepare_liquid(snapshot); }
 	Dictionary liquid_mass_component(double usable) const { return liquid_.liquid_mass_component(usable); }
 	Dictionary liquid_gas_laws_component(double rpm, double throttle, double axial, double rho, double charge, double shaft_power, bool running) const {
@@ -1495,6 +1876,844 @@ public:
 		return aero_component(0, s, wind, rho, d, downwash_cl, ground_up);
 	}
 
+	// NK-5a: aero.gd wing_wake_velocity for flight_session.gd _pre_step's downwash lag, with the prepared stage's
+	// AeroModel (decode_aero, as the component oracle's), the caller's own air_data(s) values [v_air x, y, z, V, alpha,
+	// beta, qbar] (datum or spatial; the reference reads only v_air) and _deflections(aux). Same arithmetic as
+	// aero_component case 6. NaN when the stage or an input is unusable: the caller then evaluates the reference.
+	// NK-5d: copy the bounds of the session's collision-world proxies (six numbers each) for contact_reach.
+	// Anything other than numeric bounds refuses and clears, so contact_reach then proves nothing for scenery.
+	bool prepare_reach_world(const godot::Array &proxies) {
+		static const godot::StringName keys[6] = {"bounds_north_min", "bounds_north_max", "bounds_east_min",
+			"bounds_east_max", "bounds_down_min", "bounds_down_max"};
+		contact_reach_.clear();
+		const int64_t count = proxies.size();
+		if (count <= 0 || count > nk::ContactReach::kMaxProxies) return false;
+		std::vector<double> bounds;
+		bounds.reserve(static_cast<size_t>(count) * 6);
+		for (int64_t i = 0; i < count; ++i) {
+			const godot::Variant item = proxies[i];
+			if (item.get_type() != godot::Variant::DICTIONARY) return false;
+			const godot::Dictionary proxy = item;
+			for (const godot::StringName &key : keys) {
+				const godot::Variant value = proxy.get(key, godot::Variant());
+				if (value.get_type() != godot::Variant::FLOAT && value.get_type() != godot::Variant::INT) return false;
+				bounds.push_back(static_cast<double>(value));
+			}
+		}
+		return contact_reach_.prepare(bounds);
+	}
+
+	void clear_reach_world() { contact_reach_.clear(); }
+
+	// NK-5d: bit 1 = no collision proxy can be reached this tick, bit 2 = the lake cannot be reached. 0 = no proof.
+	int64_t contact_reach(const PackedFloat64Array &previous, const PackedFloat64Array &candidate,
+			const PackedFloat64Array &hull, double extra_reach, double lake_threshold, const PackedFloat64Array &lake_bank) const {
+		if (previous.size() != kStateSize || candidate.size() != kStateSize || hull.is_empty()) return 0;
+		if (!lake_bank.is_empty() && lake_bank.size() != 4) return 0;
+		return contact_reach_.reach_clear(previous.ptr(), candidate.ptr(), hull.ptr(), hull.size(), extra_reach, lake_threshold,
+			lake_bank.is_empty() ? nullptr : lake_bank.ptr());
+	}
+
+	// NK-5g: prepare FlightSession._pre_step over the prepared stage (StageConfig.pre_step_config_for). A refusal
+	// leaves the pre-step unprepared and the session evaluates the reference.
+	Dictionary prepare_pre_step(const Dictionary &config) {
+		Decoder dec;
+		nk::PreStepModel candidate;
+		const bool ok = stage_ready_ && decode_pre_step(dec, config, stage_, candidate);
+		pre_model_ = ok ? candidate : nk::PreStepModel();
+		if (ok) {
+			pre_scratch_.aux.reserve(static_cast<size_t>(stage_.layout.aux_size));
+			pre_scratch_.anchors.reserve(static_cast<size_t>(stage_.layout.anchor_count) * 3);
+			pre_scratch_.compressions.reserve(stage_.ground.gear.contacts.size());
+			pre_out_.reserve(static_cast<size_t>(stage_.layout.aux_size));
+		}
+		Dictionary out;
+		out["ok"] = ok;
+		out["error"] = stage_ready_ ? String(dec.error.c_str()) : String("no prepared stage");
+		return out;
+	}
+
+	// NK-5g: FlightSession._pre_step(aux, inputs, dt) from the committed sim.state, sim.continuous and sim.time(),
+	// engine_running, the manual flap mix owner, _deflections(aux) (empty without a downwash lag) and sim.modes[1].
+	// Empty refuses: the session evaluates the reference. After an answer, pre_step_rng_state() is sim.modes[1].
+	PackedFloat64Array pre_step(const PackedFloat64Array &aux, const PackedFloat64Array &inputs, double dt,
+			const PackedFloat64Array &state, const PackedFloat64Array &continuous, double time_now, bool engine_running,
+			bool flap_mix_simulator, const PackedFloat64Array &deflections, int64_t rng_state) {
+		++pre_step_calls_;
+		if (!stage_ready_ || !pre_model_.ready || !read_state(state)) return PackedFloat64Array();
+		nk::PreStepInput in;
+		in.aux = aux.ptr();
+		in.aux_size = static_cast<int>(aux.size());
+		in.inputs = inputs.ptr();
+		in.input_size = static_cast<int>(inputs.size());
+		in.dt = dt;
+		in.state = state.ptr();
+		in.state_size = static_cast<int>(state.size());
+		in.continuous = continuous.ptr();
+		in.continuous_size = static_cast<int>(continuous.size());
+		in.time_now = time_now;
+		in.engine_running = engine_running;
+		in.flap_mix_simulator = flap_mix_simulator;
+		in.rng_state = rng_state;
+		if (!deflections.is_empty()) {
+			if (!read_deflections(deflections, in.deflections)) return PackedFloat64Array();
+			in.has_deflections = true;
+		}
+		static const nk::PreStepEngine engine{engine_exp, engine_log, engine_sin, engine_cos};
+		int64_t next_state = rng_state;
+		if (!nk::pre_step(stage_, pre_model_, in, engine, pre_scratch_, pre_out_, next_state)) return PackedFloat64Array();
+		pre_rng_state_ = next_state;
+		++pre_step_answers_;
+		PackedFloat64Array out;
+		out.resize(static_cast<int64_t>(pre_out_.size()));
+		double *dst = out.ptrw();
+		for (size_t i = 0; i < pre_out_.size(); ++i) dst[i] = pre_out_[i];
+		return out;
+	}
+
+	int64_t pre_step_rng_state() const { return pre_rng_state_; }
+
+	Dictionary pre_step_stats() const {
+		Dictionary out;
+		out["ready"] = pre_model_.ready;
+		out["calls"] = pre_step_calls_;
+		out["answers"] = pre_step_answers_;
+		return out;
+	}
+
+	// NK-5g test probe: `count` WindTurbulence randi() draws from a RandomNumberGenerator restored to the raw `state`
+	// (any seed: the seed only fixes the default stream), then the raw state read back.
+	godot::PackedInt64Array pre_step_rng_probe(int64_t state, int64_t count) const {
+		godot::PackedInt64Array out;
+		if (count < 0 || count > 1000000) return out;
+		nk::PreStepPcg32 rng(state);
+		for (int64_t i = 0; i < count; ++i) out.push_back(rng.randi());
+		out.push_back(rng.raw_state());
+		return out;
+	}
+
+	// NK-5e: flight_session.gd gear_compressions(s) at the accepted endpoint, for its contact observer: the stage's
+	// ground (posed by this tick's context when retractable) through nk::wheels_compressions, as the component
+	// oracle's. Empty when the stage, tick context, state (Simulation.state_is_valid), endpoint gear aux or ground
+	// (empty or invalid table, invalid lake) cannot reproduce the reference's terrain branch: the caller then
+	// evaluates the reference.
+	// The ground context of the accepted endpoint s with its aux (NK-5e): a finite state with a usable quaternion, the
+	// tick context's retraction pose when both gear values carry its bits, and a non-empty valid table and lake.
+	// nullptr refuses.
+	const nk::GroundContext *endpoint_ground(const PackedFloat64Array &s, const PackedFloat64Array &aux) const {
+		if (!stage_ready_ || !tick_.ready || !read_state(s) || stage_.layout.wheel_count <= 0) return nullptr;
+		const double *body = s.ptr();
+		for (int i = 0; i < kStateSize; ++i) {
+			if (!std::isfinite(body[i])) return nullptr;
+		}
+		const double norm_sq = body[6] * body[6] + body[7] * body[7] + body[8] * body[8] + body[9] * body[9];
+		if (!std::isfinite(norm_sq) || !(norm_sq > nk::kGd1eMinus24)) return nullptr; // GDScript 1e-24
+		const nk::GroundContext *ground = &stage_.ground;
+		if (stage_.retraction.enabled) {
+			// The endpoint pose is the tick context's only when both gear values carry the same bits it validated.
+			const int64_t index = stage_.layout.gear_aux;
+			if (aux.size() != static_cast<int64_t>(tick_.aux.size()) || index < 0 || index + 1 >= aux.size()) {
+				return nullptr;
+			}
+			for (int64_t i = index; i <= index + 1; ++i) {
+				const double expected = tick_.aux[static_cast<size_t>(i)].v;
+				if (std::memcmp(&aux.ptr()[i], &expected, sizeof(double)) != 0) return nullptr;
+			}
+			ground = &tick_.posed_ground;
+		}
+		// An empty table (valid here) may send the reference to its flat-ground formula, whose -0.0 can differ.
+		if (ground->gear.empty || ground->surfaces.values.empty() || !ground->surfaces.valid || !ground->lake_valid) {
+			return nullptr;
+		}
+		return ground;
+	}
+
+	PackedFloat64Array stage_compressions(const PackedFloat64Array &s, const PackedFloat64Array &aux) {
+		const nk::GroundContext *ground = endpoint_ground(s, aux);
+		if (ground == nullptr) return PackedFloat64Array();
+		nk::R state[kStateSize];
+		load(s, state);
+		if (!nk::wheels_compressions(state, *ground, compressions_scratch_)) return PackedFloat64Array();
+		return pack(compressions_scratch_);
+	}
+
+	// NK-6m: the glow voice's per-sample loop (nk_glow_voice.hpp), audio only. parameters in GlowVoiceParameter order,
+	// harmonics as the angles then the weights, state in GlowVoiceState order. Returns [PCM, state + scheduled_any (1/0)],
+	// or [] for malformed input.
+	Array glow_voice_block(const PackedFloat64Array &parameters, const PackedFloat64Array &harmonics,
+			const PackedFloat64Array &state, int64_t frames) const {
+		Array out;
+		if (parameters.size() != nk::kGvParameterCount || harmonics.size() % 2 != 0 || harmonics.size() > 64 ||
+				state.size() != nk::kGvStateCount || frames < 0 || frames > (int64_t(1) << 20)) return out;
+		godot::PackedVector2Array pcm;
+		pcm.resize(frames);
+		double next[nk::kGvStateCount];
+		for (int i = 0; i < nk::kGvStateCount; ++i) next[i] = state[i];
+		const int64_t count = harmonics.size() / 2;
+		const bool any = nk::glow_voice_block(parameters.ptr(), harmonics.ptr(), harmonics.ptr() + count, count, next, frames,
+			frames > 0 ? reinterpret_cast<float *>(pcm.ptrw()) : nullptr);
+		PackedFloat64Array next_state;
+		next_state.resize(nk::kGvStateCount + 1);
+		for (int i = 0; i < nk::kGvStateCount; ++i) next_state[i] = next[i];
+		next_state[nk::kGvStateCount] = any ? 1.0 : 0.0;
+		out.append(pcm);
+		out.append(next_state);
+		return out;
+	}
+
+	// NK-7l: GlowVoice's literals as GDScript parsed them (nk_glow_voice_render.hpp VoiceConstant order) and its two
+	// harmonic weight tables, bound once per voice before glow_voice_render.
+	bool glow_voice_bind(const PackedFloat64Array &constants, const PackedFloat64Array &harmonics_2t,
+			const PackedFloat64Array &harmonics_4t) {
+		voice_bound_.ready = false;
+		if (constants.size() != nk::voice::kVcConstantCount || harmonics_2t.is_empty() || harmonics_2t.size() > 64 ||
+				harmonics_4t.is_empty() || harmonics_4t.size() > 64) {
+			return false;
+		}
+		voice_bound_.c.assign(constants.ptr(), constants.ptr() + constants.size());
+		voice_bound_.harmonics_2t.assign(harmonics_2t.ptr(), harmonics_2t.ptr() + harmonics_2t.size());
+		voice_bound_.harmonics_4t.assign(harmonics_4t.ptr(), harmonics_4t.ptr() + harmonics_4t.size());
+		if (!voice_keys_) voice_keys_ = std::make_unique<nk::voice::RenderKeys>();
+		voice_bound_.ready = true;
+		return true;
+	}
+
+	// NK-7l: GlowVoice.render_telemetry for `snapshot` and `frames` from the voice's state (VoiceState order) and last
+	// family: [PCM, next state, last family], or [] to render in GDScript. Audio only.
+	Array glow_voice_render(const Dictionary &snapshot, int64_t frames, const PackedFloat64Array &state,
+			const String &last_family) const {
+		Array out;
+		if (!voice_bound_.ready || !voice_keys_ || state.size() != nk::voice::kVsCount) return out;
+		godot::PackedVector2Array pcm;
+		double next[nk::voice::kVsCount];
+		String family = last_family;
+		if (!nk::voice::render(*voice_keys_, voice_bound_, snapshot, frames, state.ptr(), family, pcm, next)) return out;
+		PackedFloat64Array next_state;
+		next_state.resize(nk::voice::kVsCount);
+		for (int i = 0; i < nk::voice::kVsCount; ++i) next_state[i] = next[i];
+		out.append(pcm);
+		out.append(next_state);
+		out.append(family);
+		return out;
+	}
+
+	// NK-6k: FlightSession._prop_disc (HullContact.prop_disc of the model's propulsion): hub and unit axis in body FRD
+	// and radius. Each installation prepares its own.
+	bool prepare_prop_strike(const PackedFloat64Array &hub, const PackedFloat64Array &axis, double radius) {
+		prop_strike_ready_ = stage_ready_ && !heli_stage_ready_ && hub.size() == 3 && axis.size() == 3 &&
+			std::isfinite(radius) && radius > 0.0;
+		for (int i = 0; prop_strike_ready_ && i < 3; ++i) {
+			if (!std::isfinite(hub[i]) || !std::isfinite(axis[i])) prop_strike_ready_ = false;
+			prop_hub_[i] = hub[i];
+			prop_axis_[i] = axis[i];
+		}
+		prop_radius_ = radius;
+		return prop_strike_ready_;
+	}
+
+	// NK-6k: 1 when HullContact.prop_disc_depth(s, disc, the stage's lake, any finite time).depth <= 0, so
+	// FlightSession._check_prop_strike finds no strike: the lake is absent, or valid with the disc's lowest point outside
+	// the bank bounds expanded by sample_covered_terrain_validated's margin and the disc, padded as _disc_near_lake pads
+	// it, horizontally clear of them. The reference then keeps its flat-datum depth, computed here in its order.
+	// -1 for the reference otherwise, strikes included.
+	int64_t stage_prop_strike_clear(const PackedFloat64Array &s) {
+		if (!prop_strike_ready_ || heli_stage_ready_ || !stage_ready_ || !read_state(s) || !stage_.ground.lake_valid) return -1;
+		const double *v = s.ptr();
+		for (int i = 0; i < 10; ++i) {
+			if (!std::isfinite(v[i])) return -1;
+		}
+		const nk::R q[4] = {v[6], v[7], v[8], v[9]};
+		const nk::R w = q[0], x = q[1], y = q[2], z = q[3];
+		// hull_contact.gd _down_row, then prop_disc_depth's lowest rim point.
+		const nk::R down[3] = {2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)};
+		const nk::R *a = prop_axis_;
+		const nk::R along = down[0] * a[0] + down[1] * a[1] + down[2] * a[2];
+		const nk::R p[3] = {down[0] - along * a[0], down[1] - along * a[1], down[2] - along * a[2]};
+		const nk::R p_len = nk::sqrt_(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]);
+		nk::R lowest[3] = {prop_hub_[0], prop_hub_[1], prop_hub_[2]};
+		if (p_len.v > 1.0e-9) {
+			const nk::R k = nk::R(prop_radius_) / p_len;
+			for (int i = 0; i < 3; ++i) lowest[i] = lowest[i] + p[i] * k;
+		}
+		const nk::R depth = nk::R(v[2]) + down[0] * lowest[0] + down[1] * lowest[1] + down[2] * lowest[2];
+		if (!(depth.v <= 0.0)) return -1;
+		const nk::LakeTerrain &lake = stage_.ground.lake;
+		if (!lake.present) return 1;
+		const double *b = lake.bank_aabb;
+		const double margin = 0.025; // LakeSurface.SAMPLE_EPSILON_M
+		const std::array<nk::R, 3> point = nk::q_rotate3(q, lowest);
+		const nk::R north = nk::R(v[0]) + point[0];
+		const nk::R east = nk::R(v[1]) + point[1];
+		if (!(north.v < b[0] - margin || north.v > b[1] + margin || east.v < b[2] - margin || east.v > b[3] + margin)) {
+			return -1;
+		}
+		const std::array<nk::R, 3> hub = nk::q_rotate3(q, prop_hub_);
+		const nk::R hub_north = nk::R(v[0]) + hub[0];
+		const nk::R hub_east = nk::R(v[1]) + hub[1];
+		const nk::R qq = w * w + x * x + y * y + z * z;
+		const nk::R pad = nk::R(prop_radius_) * (1.0 + 4.0 * qq) + 0.001;
+		const bool clear = (hub_north + pad).v < b[0] || (hub_north - pad).v > b[1] || (hub_east + pad).v < b[2] ||
+			(hub_east - pad).v > b[3];
+		return clear ? 1 : -1;
+	}
+
+	// NK-6j: FlightSession.gear_collapsed(s) for the pre-tick guard, from the endpoint compressions of the tick context
+	// the guarded pre-step installed (stage_compressions refuses whatever it cannot answer exactly): 1 collapsed, 0 not,
+	// -1 for the reference.
+	int64_t stage_guard_collapsed(const PackedFloat64Array &s, const PackedFloat64Array &aux) {
+		const PackedFloat64Array compressions = stage_compressions(s, aux);
+		if (compressions.is_empty()) return -1;
+		const nk::GroundContext &ground = stage_.retraction.enabled ? tick_.posed_ground : stage_.ground;
+		if (static_cast<int64_t>(ground.gear.contacts.size()) != compressions.size()) return -1;
+		for (int64_t i = 0; i < compressions.size(); ++i) {
+			const double limit = ground.gear.contacts[static_cast<size_t>(i)].max_compression.v;
+			if (std::isnan(limit)) return -1;
+			if (compressions[i] > limit) return 1;
+		}
+		return 0;
+	}
+
+	// NK-6o: Wheels.evaluate(s, posed gear, steer, surfaces, anchors, speeds, brake, diagnostics, lake)'s diagnostics and
+	// frames for GroundAudioModel.snapshot_contacts, at the endpoint whose ground endpoint_ground accepts: [1, n, n rows
+	// of nk::kWheelRowSize], [0] where every wheel is beyond the terrain's height bound (no diagnostics), or [] for the
+	// reference (another wheel count, a nonfinite input, the reference's failure shape).
+	PackedFloat64Array stage_wheel_rows(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
+			const PackedFloat64Array &anchors, const PackedFloat64Array &speeds, double brake) {
+		const nk::GroundContext *ground = endpoint_ground(s, aux);
+		if (ground == nullptr || speeds.size() != static_cast<int64_t>(ground->gear.contacts.size()) ||
+				!std::isfinite(steer) || !std::isfinite(brake)) return PackedFloat64Array();
+		for (int64_t i = 0; i < anchors.size(); ++i) {
+			if (!std::isfinite(anchors[i])) return PackedFloat64Array();
+		}
+		for (int64_t i = 0; i < speeds.size(); ++i) {
+			if (!std::isfinite(speeds[i])) return PackedFloat64Array();
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		if (!nk::wheels_evaluate(state, *ground, steer, anchors.ptr(), static_cast<int>(anchors.size()), speeds.ptr(),
+				static_cast<int>(speeds.size()), brake, wheel_rows_loads_, wheel_rows_rates_, &wheel_rows_)) {
+			return PackedFloat64Array();
+		}
+		++wheel_rows_answers_;
+		if (wheel_rows_.empty()) return PackedFloat64Array({0.0});
+		const int64_t count = static_cast<int64_t>(wheel_rows_.size()) / nk::kWheelRowSize;
+		if (count != speeds.size()) return PackedFloat64Array();
+		PackedFloat64Array out;
+		out.resize(2 + static_cast<int64_t>(wheel_rows_.size()));
+		double *o = out.ptrw();
+		o[0] = 1.0;
+		o[1] = static_cast<double>(count);
+		for (size_t i = 0; i < wheel_rows_.size(); ++i) o[2 + i] = wheel_rows_[i].v;
+		return out;
+	}
+
+	// NK-7j: stage_wheel_rows for the published endpoint and, from those rows, GroundAudioModel.snapshot_contacts' rows
+	// in one call. Empty: evaluate everything; [wheel rows]: the audio rows are refused, so the caller builds them from
+	// the wheel rows; [wheel rows, row dictionaries...]: answered. The loaded rows come from the wheel rows
+	// (nk_audio_rows.hpp loaded_rows); NK-7k: where the rows are [0] (beyond the terrain's reach), from each contact's
+	// frame (band_rows). surfaces: the environment's table; support: its prepared ground support
+	// (Environment._ground_support), which Environment.sample_support uses while its surfaces equal that table. Both must
+	// carry the stage's bits, and the support must be a successful legacy-law preparation; arms and ids: every contact's.
+	godot::Array stage_wheel_audio_rows(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
+			const PackedFloat64Array &anchors, const PackedFloat64Array &speeds, double brake, const PackedFloat64Array &arms,
+			const PackedStringArray &ids, double reference_load, double time_s, const PackedFloat64Array &surfaces,
+			const Dictionary &support) {
+		godot::Array out;
+		const PackedFloat64Array rows = stage_wheel_rows(s, aux, steer, anchors, speeds, brake);
+		if (rows.is_empty()) return out;
+		out.push_back(rows);
+		const bool beyond = rows.size() == 1 && rows[0] == 0.0;
+		const nk::GroundContext *ground = rows.size() > 2 || beyond ? endpoint_ground(s, aux) : nullptr;
+		if (ground == nullptr) return out;
+		const nk::SurfaceTable &table = ground->surfaces;
+		const auto same_table = [&table](const PackedFloat64Array &values) {
+			return static_cast<size_t>(values.size()) == table.values.size() &&
+				std::memcmp(values.ptr(), table.values.data(), sizeof(double) * table.values.size()) == 0;
+		};
+		const Variant ok = support.get("ok", Variant());
+		const Variant format = support.get("format", Variant());
+		const Variant law = support.get("geometry_law", Variant());
+		const Variant prepared = support.get("surfaces", Variant());
+		const Variant regions = support.get("regions", Variant());
+		if (!same_table(surfaces) || ok.get_type() != Variant::BOOL || !static_cast<bool>(ok) ||
+				format.get_type() != Variant::STRING || godot::String(format) != godot::String("openrc-ground-support v1") ||
+				law.get_type() != Variant::STRING || godot::String(law) != godot::String("legacy-field-relief-v1") ||
+				prepared.get_type() != Variant::PACKED_FLOAT64_ARRAY || !same_table(prepared) ||
+				regions.get_type() != Variant::ARRAY) {
+			return out;
+		}
+		if (!row_keys_) row_keys_ = std::make_unique<nk::sound::RowKeys>();
+		godot::Array audio;
+		int64_t count = 0;
+		if (beyond) {
+			// The reference's Ground.loads per contact answers no loads beyond the same bound that answered [0]: the
+			// lake route checks reach + the table's height bound, the plain route reach alone.
+			const nk::R down = s[2];
+			const nk::R reach = ground->gear.reach;
+			if (!(-down > reach + nk::max_height_validated(table)) || !(-down > reach)) return out;
+			if (!endpoint_frames(s, steer, arms, *ground, audio_frames_)) return out;
+			count = static_cast<int64_t>(audio_frames_.size());
+			audio = nk::sound::band_rows(*row_keys_, s, audio_frames_, arms, ids, reference_load, time_s, table,
+				ground->lake, regions);
+		} else {
+			count = static_cast<int64_t>(rows[1]);
+			if (rows.size() != 2 + count * nk::kWheelRowSize) return out;
+			audio = nk::sound::loaded_rows(*row_keys_, s, rows.ptr() + 2, count, arms, ids, reference_load, time_s, table,
+				ground->lake, regions);
+		}
+		if (audio.size() != count) return out;
+		out.append_array(audio);
+		return out;
+	}
+
+	// NK-7k: Wheels.frame for every contact of the endpoint's ground at `s` (the stage's wheel_frame, as
+	// GroundAudioModel._contact_kinematics evaluates it), when `arms` carries every contact position's bits in order.
+	bool endpoint_frames(const PackedFloat64Array &s, double steer, const PackedFloat64Array &arms,
+			const nk::GroundContext &ground, std::vector<nk::WheelFrame> &frames) const {
+		frames.clear();
+		const std::vector<nk::WheelContact> &contacts = ground.gear.contacts;
+		if (!std::isfinite(steer) || contacts.empty() || arms.size() != static_cast<int64_t>(contacts.size()) * 3) {
+			return false;
+		}
+		for (size_t i = 0; i < contacts.size(); ++i) {
+			for (int j = 0; j < 3; ++j) {
+				const double expected = contacts[i].position[j].v;
+				if (std::memcmp(&arms.ptr()[i * 3 + static_cast<size_t>(j)], &expected, sizeof(double)) != 0) return false;
+			}
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		const nk::Rotation a = nk::wheel_rotation(state);
+		for (const nk::WheelContact &c : contacts) frames.push_back(nk::wheel_frame(state, c, steer, ground, a));
+		return true;
+	}
+
+	// NK-7k: GroundAudioModel.approach_speeds' values for the published endpoint (nk_audio_rows.hpp approach_speeds),
+	// one per contact in order; empty to evaluate them in GDScript. arms: every contact's position.
+	PackedFloat64Array stage_wheel_approach_speeds(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
+			const PackedFloat64Array &arms) {
+		const nk::GroundContext *ground = endpoint_ground(s, aux);
+		if (ground == nullptr || !endpoint_frames(s, steer, arms, *ground, audio_frames_)) return PackedFloat64Array();
+		return nk::sound::approach_speeds(s, audio_frames_, arms);
+	}
+
+	int64_t wheel_rows_answers() const { return wheel_rows_answers_; }
+
+	// F5b: glow/propeller.gd's torque at (rpm, axial speed) and at (rpm, 0) from the prepared glow stage's blade model,
+	// for flight audio's shaft load (Propulsion.thrust_torque()[1] and prop_torque()); NaN where the evaluator refuses
+	// the query, empty without a glow stage. A pure function of the prepared installation and its arguments.
+	PackedFloat64Array stage_glow_blade_torques(double rpm, double axial_speed, double density) const {
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready) return PackedFloat64Array();
+		const nk::GlowBladePoint moving = nk::glow_blade_evaluate(stage_.glow.blade, rpm, axial_speed, density);
+		const nk::GlowBladePoint still = nk::glow_blade_evaluate(stage_.glow.blade, rpm, 0.0, density);
+		PackedFloat64Array out;
+		out.resize(2);
+		out[0] = moving.ok ? moving.torque_nm.v : nk::kNan;
+		out[1] = still.ok ? still.torque_nm.v : nk::kNan;
+		return out;
+	}
+
+	// NK-7a: the soundscape model's pure functions (nk_soundscape.hpp), for flight audio and their parity tests.
+	double sound_doppler(const godot::Vector3 &source, const godot::Vector3 &listener, const godot::Vector3 &source_velocity,
+			const godot::Vector3 &listener_velocity, double sound_speed) const {
+		return nk::sound::doppler(source, listener, source_velocity, listener_velocity, sound_speed).v;
+	}
+
+	// values: [rpm, max_rpm, load, throttle, airspeed, wind_speed, running (1/0), blades, sun_elevation, kind
+	// (TargetKind), jet_velocity, jet_velocity_max] -> [motor_gain, prop_gain, motor_pitch, prop_pitch, air_gain, wind_low,
+	// wind_high, foliage, bird_activity, exhaust_angle_deg]; empty for a malformed request.
+	PackedFloat64Array sound_targets(const PackedFloat64Array &values, const godot::Vector3 &exhaust,
+			const godot::Vector3 &listener, const godot::Vector3 &source) const {
+		PackedFloat64Array out;
+		if (values.size() != 12) return out;
+		const double *v = values.ptr();
+		const nk::sound::Targets t = nk::sound::targets(v[0], v[1], v[2], v[3], v[4], v[5], v[6] != 0.0, v[7], v[8],
+			static_cast<int>(v[9]), v[1], v[10], v[11], exhaust, listener, source);
+		out.resize(10);
+		out[0] = t.motor_gain.v; out[1] = t.prop_gain.v; out[2] = t.motor_pitch.v; out[3] = t.prop_pitch.v;
+		out[4] = t.air_gain.v; out[5] = t.wind_low.v; out[6] = t.wind_high.v; out[7] = t.foliage.v;
+		out[8] = t.bird_activity.v; out[9] = t.exhaust_angle_deg.v;
+		return out;
+	}
+
+	double sound_humidity(double relative_humidity_pct, double temperature_k, double pressure_pa) const {
+		return nk::sound::humidity_molar_pct(relative_humidity_pct, temperature_k, pressure_pa).v;
+	}
+
+	double sound_absorption_cutoff(double path_m, double temperature_k, double pressure_pa, double humidity_pct) const {
+		return nk::sound::absorption_cutoff_hz(path_m, temperature_k, pressure_pa, humidity_pct).v;
+	}
+
+	double sound_screening(const godot::Vector3 &source, const godot::Vector3 &listener, const godot::PackedFloat32Array &boxes) const {
+		return nk::sound::screening(source, listener, boxes.ptr(), boxes.size() / 6).v;
+	}
+
+	PackedFloat64Array sound_activity(double sun_elevation, double wind_speed, double temperature_c) const {
+		nk::R values[5];
+		nk::sound::wildlife_activity(sun_elevation, wind_speed, temperature_c, values);
+		PackedFloat64Array out;
+		out.resize(5);
+		for (int i = 0; i < 5; ++i) out[i] = values[i].v;
+		return out;
+	}
+
+	double sound_distance_gain(double distance_m) const { return nk::sound::distance_gain(distance_m).v; }
+
+	// NK-7b: audio/soundscape.gd update_sound (nk_soundscape_core.hpp). bind takes the soundscape's fourteen voices, its
+	// glow player (or null), both bus filters, trees, canopy boxes [px, py, pz, sx, sy, sz], the targets kind and the
+	// mix state (sound_core_state's layout); false leaves the core unbound. frame and events return empty when they
+	// refuse; nothing changes then.
+	bool sound_core_bind(const godot::Array &voices, const godot::Variant &glow_player, const godot::Variant &absorption_filter,
+			const godot::Variant &screen_filter, const godot::PackedVector3Array &trees, const godot::PackedFloat32Array &canopies,
+			int64_t kind, const PackedFloat64Array &state) {
+		if (!sound_core_) sound_core_ = std::make_unique<nk::sound::Core>();
+		return sound_core_->bind(voices, glow_player, absorption_filter, screen_filter, trees, canopies, kind, state);
+	}
+
+	// NK-7c: the recorded powertrain bank (nk_soundscape_core.hpp Core::bind_bank), after sound_core_bind.
+	bool sound_core_bind_bank(const godot::Array &players, const PackedFloat64Array &layers, int64_t family,
+			double profile_max_rpm, double trim_db, const PackedFloat64Array &state) {
+		return sound_core_ && sound_core_->bind_bank(players, layers, family, profile_max_rpm, trim_db, state);
+	}
+
+	PackedFloat64Array sound_core_frame(const godot::Dictionary &snapshot, double delta, int64_t flags) {
+		return sound_core_ ? sound_core_->frame(snapshot, delta, flags) : PackedFloat64Array();
+	}
+
+	PackedFloat64Array sound_core_events(const PackedFloat64Array &species_levels) {
+		return sound_core_ ? sound_core_->events(species_levels) : PackedFloat64Array();
+	}
+
+	godot::Dictionary sound_core_heard(const godot::Dictionary &snapshot) const {
+		return sound_core_ ? sound_core_->heard(snapshot) : snapshot;
+	}
+
+	void sound_core_reset(bool absorption) {
+		if (sound_core_) sound_core_->reset(absorption);
+	}
+
+	PackedFloat64Array sound_core_state() const {
+		return sound_core_ ? sound_core_->state() : PackedFloat64Array();
+	}
+
+	int64_t sound_core_history_size() const { return sound_core_ ? sound_core_->history_size() : 0; }
+
+	// NK-7d: audio/ground_audio.gd in accepted-tick mode (nk_ground_audio_core.hpp). open makes a fresh core and
+	// answers whether the engine binds it needs exist; slots then bind in _slot_for's order.
+	bool ground_core_open() {
+		ground_core_ = std::make_unique<nk::sound::GroundCore>();
+		return nk::sound::engine_binds().ok;
+	}
+	bool ground_core_bind_slot(const godot::String &id, const godot::Array &roll, const godot::Variant &impact, double roll_offset,
+			const PackedFloat64Array &stream_lengths) {
+		return ground_core_ && ground_core_->bind_slot(id, roll, impact, roll_offset, stream_lengths);
+	}
+	bool ground_core_observe(const godot::Dictionary &snapshot) { return ground_core_ && ground_core_->observe(snapshot); }
+	bool ground_core_touchdown_possible() const { return !ground_core_ || ground_core_->touchdown_possible(); }
+	bool ground_core_touchdown_possible_at(const PackedStringArray &identities, const PackedFloat64Array &compressions) const {
+		return !ground_core_ || ground_core_->touchdown_possible_at(identities, compressions);
+	}
+	void ground_core_note_skipped_tick(int64_t tick, const PackedStringArray &identities, const PackedFloat64Array &approaches) {
+		if (ground_core_) ground_core_->note_skipped_tick(tick, identities, approaches);
+	}
+	godot::Array ground_core_pending_slots(int64_t tick, bool paused) const {
+		return ground_core_ ? ground_core_->pending_slots(tick, paused) : godot::Array();
+	}
+	PackedFloat64Array ground_core_frame(int64_t tick, bool paused, double engine_power, double delta,
+			const godot::Vector3 &listener, double tick_rate_hz, bool seed) {
+		return ground_core_ ? ground_core_->frame(tick, paused, engine_power, delta, listener, tick_rate_hz, seed)
+			: PackedFloat64Array();
+	}
+	void ground_core_stop() { if (ground_core_) ground_core_->stop(); }
+	void ground_core_reset() { if (ground_core_) ground_core_->reset(); }
+	void ground_core_release_buses() { if (ground_core_) ground_core_->release_buses(); }
+	int64_t ground_core_accepted_tick() const { return ground_core_ ? ground_core_->accepted_tick() : -1; }
+	godot::Dictionary ground_core_diagnostics() const { return ground_core_ ? ground_core_->diagnostics() : godot::Dictionary(); }
+	godot::Array ground_core_state() const { return ground_core_ ? ground_core_->state() : godot::Array(); }
+
+	// NK-7e: audio/mechanical_audio.gd in accepted-tick mode (nk_mechanical_audio_core.hpp). bind makes a fresh core.
+	bool mechanical_core_bind(const godot::Array &event_players, const godot::Variant &servo_loop, double servo_loop_length,
+			const godot::Variant &gear_loop, double gear_loop_length, const godot::Array &takes, double servo_level,
+			double profile_pitch, const godot::PackedInt64Array &counters) {
+		mechanical_core_ = std::make_unique<nk::sound::MechanicalCore>();
+		return mechanical_core_->bind(event_players, servo_loop, servo_loop_length, gear_loop, gear_loop_length, takes,
+			servo_level, profile_pitch, counters);
+	}
+	bool mechanical_core_bind_motion_player(const godot::String &key, const godot::Variant &player) {
+		return mechanical_core_ && mechanical_core_->bind_motion_player(key, player);
+	}
+	bool mechanical_core_observe(const godot::Dictionary &snapshot) {
+		return mechanical_core_ && mechanical_core_->observe(snapshot);
+	}
+	godot::Array mechanical_core_prepare(const godot::Dictionary &snapshot, double delta) {
+		return mechanical_core_ ? mechanical_core_->prepare(snapshot, delta) : godot::Array();
+	}
+	bool mechanical_core_failed() const { return !mechanical_core_ || mechanical_core_->failed(); }
+	bool mechanical_core_finish() { return mechanical_core_ && mechanical_core_->finish(); }
+	void mechanical_core_reset() { if (mechanical_core_) mechanical_core_->reset(); }
+	godot::Dictionary mechanical_core_diagnostics() const {
+		return mechanical_core_ ? mechanical_core_->diagnostics() : godot::Dictionary();
+	}
+	godot::Array mechanical_core_state() const { return mechanical_core_ ? mechanical_core_->state() : godot::Array(); }
+	// NK-7f: ground_audio_model.gd _unloaded_rows and flight_audio.gd snapshot's source kinematics (nk_audio_rows.hpp).
+	godot::Array audio_unloaded_rows(const PackedFloat64Array &state, const PackedFloat64Array &arms, const PackedStringArray &ids,
+			double reference_load) {
+		if (!row_keys_) row_keys_ = std::make_unique<nk::sound::RowKeys>();
+		return nk::sound::unloaded_rows(*row_keys_, state, arms, ids, reference_load);
+	}
+	PackedFloat64Array audio_source_kinematics(const PackedFloat64Array &state, const PackedFloat64Array &offset,
+			const PackedFloat64Array &axis) const {
+		return nk::sound::source_kinematics(state, offset, axis);
+	}
+
+	// NK-8a: render/projected_shadow.gd's per-part pose and visibility walks (nk_shadow_parts.hpp).
+	bool shadow_parts_bind(const godot::PackedInt64Array &ids, const godot::Array &rests, const godot::PackedByteArray &bound) {
+		if (!shadow_parts_) shadow_parts_ = std::make_unique<nk::render::ShadowParts>();
+		return shadow_parts_->bind(ids, rests, bound);
+	}
+	godot::Array shadow_part_poses(int64_t source_id) const {
+		return shadow_parts_ ? shadow_parts_->poses(source_id) : godot::Array();
+	}
+
+	godot::Array mechanical_core_accepted_events() const {
+		return mechanical_core_ ? mechanical_core_->accepted_events() : godot::Array();
+	}
+
+	// NK-6s: physics/glow/vibration.gd evaluate's numbers for a validated geometry [crank radius, rod, reciprocating
+	// mass, cosine 1x, cosine 2x, cycle revolutions]: [ok (1/0), phase, source force, 1x cosine, 1x sine, 2x cosine,
+	// 2x sine, 1x peak, 2x peak, opportunity Hz, mean fire rate Hz], in its operation order. 0 wherever evaluate fails
+	// (the caller then runs it for the exact failure). Presentation only (flight audio's glow voice).
+	PackedFloat64Array glow_vibration(const PackedFloat64Array &geometry, double crank_phase, double omega, double alpha,
+			double firing) const {
+		PackedFloat64Array out;
+		out.resize(11);
+		out.fill(0.0);
+		if (geometry.size() != 6) return out;
+		if (!std::isfinite(crank_phase) || !std::isfinite(omega) || !std::isfinite(alpha) || !std::isfinite(firing)) return out;
+		if (omega < 0.0 || firing < 0.0 || firing > 1.0) return out;
+		const nk::R tau = 6.28318530717958647692;
+		const nk::R phase = nk::gv_fposmod(nk::R(crank_phase), tau);
+		if (!nk::is_finite(phase)) return out;
+		const nk::R radius = geometry[0], rod = geometry[1], mass = geometry[2];
+		const nk::R c1 = geometry[3], c2 = geometry[4];
+		const int64_t cycle = static_cast<int64_t>(geometry[5]);
+		const nk::R w = omega, a = alpha;
+		const nk::R sine = nk::sin_(phase);
+		const nk::R cosine = nk::cos_(phase);
+		const nk::R root_argument = rod * rod - radius * radius * sine * sine;
+		if (!nk::is_finite(root_argument) || !(root_argument.v > 0.0)) return out;
+		const nk::R r = nk::sqrt_(root_argument);
+		const nk::R position_derivative = radius * sine + radius * radius * sine * cosine / r;
+		const nk::R position_second_derivative = radius * cosine + radius * radius * ((cosine * cosine - sine * sine) / r +
+			radius * radius * sine * sine * cosine * cosine / (r * r * r));
+		const nk::R piston_acceleration = position_second_derivative * w * w + position_derivative * a;
+		const nk::R source_force = -mass * piston_acceleration;
+		const nk::R c1_cos = mass * c1 * w * w;
+		const nk::R c1_sin = mass * c1 * a;
+		const nk::R c2_cos = mass * nk::R(4.0) * c2 * w * w;
+		const nk::R c2_sin = mass * nk::R(2.0) * c2 * a;
+		const nk::R order_1x = nk::sqrt_(c1_cos * c1_cos + c1_sin * c1_sin);
+		const nk::R order_2x = nk::sqrt_(c2_cos * c2_cos + c2_sin * c2_sin);
+		const nk::R opportunity = w / tau / nk::R(static_cast<double>(cycle));
+		const nk::R mean = opportunity * nk::R(firing);
+		const nk::R values[9] = {source_force, order_1x, order_2x, c1_cos, c1_sin, c2_cos, c2_sin, opportunity, mean};
+		for (const nk::R &value : values) {
+			if (!nk::is_finite(value)) return out;
+		}
+		out[0] = 1.0; out[1] = phase.v; out[2] = source_force.v; out[3] = c1_cos.v; out[4] = c1_sin.v; out[5] = c2_cos.v;
+		out[6] = c2_sin.v; out[7] = order_1x.v; out[8] = order_2x.v; out[9] = opportunity.v; out[10] = mean.v;
+		return out;
+	}
+
+	// NK-6r: audio/soundscape_model.gd retarded_emission, exact (nk_soundscape.hpp): [index, alpha, delay, truncated
+	// (1/0)]. Presentation only.
+	PackedFloat64Array retarded_emission(const PackedFloat64Array &times, const godot::PackedVector3Array &positions,
+			const godot::Vector3 &listener, double now, double sound_speed, int64_t min_index) const {
+		const int64_t count = std::min(times.size(), positions.size());
+		const nk::sound::Emission e = nk::sound::retarded_emission(times.ptr(), positions.ptr(), count, listener, now,
+			sound_speed, min_index);
+		PackedFloat64Array out;
+		out.resize(4);
+		out[0] = double(e.index); out[1] = e.alpha; out[2] = e.delay; out[3] = e.truncated ? 1.0 : 0.0;
+		return out;
+	}
+
+	// NK-6q: Simulation.step's own checks and the session's state checks, exact; the reference runs them in GDScript.
+	// Pure functions of their arguments: no prepared stage is needed.
+	// simulation.gd state_is_valid: 13 finite values and a quaternion norm above MIN_QUATERNION_NORM_SQ.
+	bool state_valid(const PackedFloat64Array &s) const {
+		if (s.size() != nk::kTickBody) return false;
+		const double *v = s.ptr();
+		nk::R body[nk::kTickBody];
+		for (int i = 0; i < nk::kTickBody; ++i) body[i] = v[i];
+		return nk::tick_body_valid(body);
+	}
+
+	// scenery_collision.gd _state_is_valid: 13 finite values and |_dot4(q, q) - 1| <= 1.0e-9.
+	bool scenery_state_valid(const PackedFloat64Array &s) const {
+		if (s.size() != nk::kTickBody) return false;
+		const double *v = s.ptr();
+		for (int i = 0; i < nk::kTickBody; ++i) {
+			if (!std::isfinite(v[i])) return false;
+		}
+		const int a = nk::kTickAtt;
+		nk::R q_norm = 0.0; // _dot4: out := 0.0, then out += a[axis] * b[axis]
+		for (int axis = 0; axis < 4; ++axis) q_norm = q_norm + nk::R(v[a + axis]) * nk::R(v[a + axis]);
+		return nk::is_finite(q_norm) && std::fabs((q_norm - nk::R(1.0)).v) <= 1.0e-9;
+	}
+
+	// simulation.gd _array_is_finite(candidate, expected_size) for inputs, aux and continuous.
+	static bool finite_sized(const PackedFloat64Array &values, int64_t expected_size) {
+		if (expected_size >= 0 && values.size() != expected_size) return false;
+		const double *v = values.ptr();
+		for (int64_t i = 0; i < values.size(); ++i) {
+			if (!std::isfinite(v[i])) return false;
+		}
+		return true;
+	}
+
+	bool arrays_finite(const PackedFloat64Array &inputs, int64_t input_size, const PackedFloat64Array &aux, int64_t aux_size,
+			const PackedFloat64Array &continuous, int64_t continuous_size) const {
+		return finite_sized(inputs, input_size) && finite_sized(aux, aux_size) && finite_sized(continuous, continuous_size);
+	}
+
+	// simulation.gd _refresh_inertia_inverse's cache test: _same_array(inertia, cache) (`!=` per entry, so a NaN never
+	// matches) and _array_is_finite(inverse, 6).
+	bool inertia_cached(const PackedFloat64Array &inertia, const PackedFloat64Array &cache, const PackedFloat64Array &inverse) const {
+		if (inertia.size() != cache.size()) return false;
+		const double *a = inertia.ptr();
+		const double *b = cache.ptr();
+		for (int64_t i = 0; i < inertia.size(); ++i) {
+			if (a[i] != b[i]) return false;
+		}
+		return finite_sized(inverse, 6);
+	}
+
+	// NK-5i: the statistics sampler's evaluations of the accepted endpoint (statistics/fixed_wing_adapter.gd sample)
+	// in one answer: [V, terrain height, slope north, slope east, collapsed (1/0), c_0 .. c_{n-1}], as
+	// FlightSession.air_data(s, t).V (pre_step_air with the endpoint aux), Environment.ground(north, east) without an
+	// RC track (the stage's surface table and lake), gear_compressions(s) (stage_compressions) and Ground.collapsed's
+	// comparison of each compression with its posed contact's max_compression give them. Empty refuses, the caller
+	// then evaluates the reference: every stage_compressions refusal, an aux of another layout or a nonfinite time,
+	// a refused air sample or a contact without a numeric travel limit.
+	// NK-7i: FlightSession.wind_at(time_s) at the state's position and air_data(s, time_s)'s v_air and V for the
+	// published endpoint (flight audio's per-frame reads): [wind north, east, down, v_air x, y, z, V] from the prepared
+	// stage, as pre_step_air evaluates them (NK-5g, NK-5i). Spatial weather and every refusal answer empty (GDScript).
+	// NK-7m: GlowAudioState.shaft_torques for the published endpoint (flight audio's shaft load): [torque at (rpm, axial
+	// speed), torque at (rpm, 0)] with the endpoint's v_air and density as pre_step_air evaluates them. A glow stage
+	// answers from its blade model at Propulsion.axis' axial speed; otherwise the Ct/Cp propeller answers
+	// Propulsion.thrust_torque()[1] and prop_torque(rpm, 0). Empty: spatial weather, no propeller tables, any refusal.
+	PackedFloat64Array stage_endpoint_torques(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s,
+			double rpm) {
+		if (heli_stage_ready_ || !stage_ready_ || !tick_.ready || !read_state(s) || !std::isfinite(time_s) ||
+				stage_.spatial_weather || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
+			return PackedFloat64Array();
+		}
+		const bool glow = stage_.glow.ready;
+		if (!glow && (stage_.prop.ct.empty() || stage_.prop.cp.empty())) return PackedFloat64Array();
+		facts_aux_.resize(static_cast<size_t>(aux.size()));
+		for (int64_t i = 0; i < aux.size(); ++i) facts_aux_[static_cast<size_t>(i)] = aux[i];
+		nk::R state[kStateSize];
+		load(s, state);
+		nk::Air air;
+		if (!nk::pre_step_air(state, nk::R(time_s), facts_aux_, stage_, air)) return PackedFloat64Array();
+		const nk::WeatherAir atmosphere = nk::weather_air(stage_.weather, state[2]);
+		const nk::R rho = stage_.has_weather ? atmosphere.density : stage_.density;
+		const nk::R speed = rpm;
+		PackedFloat64Array out;
+		out.resize(2);
+		if (glow) {
+			const nk::R *axis = stage_.prop.axis;
+			const nk::R axial = air.v[0] * axis[0] + air.v[1] * axis[1] + air.v[2] * axis[2];
+			const nk::GlowBladePoint moving = nk::glow_blade_evaluate(stage_.glow.blade, speed, axial, rho);
+			const nk::GlowBladePoint still = nk::glow_blade_evaluate(stage_.glow.blade, speed, 0.0, rho);
+			out[0] = moving.ok ? moving.torque_nm.v : nk::kNan;
+			out[1] = still.ok ? still.torque_nm.v : nk::kNan;
+		} else {
+			out[0] = nk::prop_thrust_torque(air.v, speed, stage_.prop, rho)[1].v;
+			out[1] = nk::prop_torque(speed, 0.0, stage_.prop, rho).v;
+		}
+		return out;
+	}
+
+	PackedFloat64Array stage_endpoint_air(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
+		if (heli_stage_ready_ || !stage_ready_ || !tick_.ready || !read_state(s) || !std::isfinite(time_s) ||
+				stage_.spatial_weather || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
+			return PackedFloat64Array();
+		}
+		facts_aux_.resize(static_cast<size_t>(aux.size()));
+		for (int64_t i = 0; i < aux.size(); ++i) facts_aux_[static_cast<size_t>(i)] = aux[i];
+		nk::R state[kStateSize];
+		load(s, state);
+		const nk::R at = time_s;
+		std::array<nk::R, 3> wind{0.0, 0.0, 0.0};
+		if (stage_.has_weather) {
+			wind = nk::weather_wind(stage_.weather, state, at, facts_aux_, stage_.layout.turbulence, stage_.dt);
+		} else if (!nk::is_finite(state[0]) || !nk::is_finite(state[1]) || !nk::is_finite(state[2]) || at.v < 0.0) {
+			wind = {nk::kNan, nk::kNan, nk::kNan};
+		}
+		nk::Air air;
+		if (!nk::pre_step_air(state, at, facts_aux_, stage_, air)) return PackedFloat64Array();
+		const nk::R out[7] = {wind[0], wind[1], wind[2], air.v[0], air.v[1], air.v[2], air.V};
+		return pack(out, 7);
+	}
+
+	PackedFloat64Array stage_endpoint_facts(const PackedFloat64Array &s, const PackedFloat64Array &aux, double time_s) {
+		const PackedFloat64Array compressions = stage_compressions(s, aux);
+		if (compressions.is_empty() || !std::isfinite(time_s) || aux.size() != static_cast<int64_t>(stage_.layout.aux_size)) {
+			return PackedFloat64Array();
+		}
+		const nk::GroundContext &ground = stage_.retraction.enabled ? tick_.posed_ground : stage_.ground;
+		if (static_cast<int64_t>(ground.gear.contacts.size()) != compressions.size()) return PackedFloat64Array();
+		facts_aux_.resize(static_cast<size_t>(aux.size()));
+		for (int64_t i = 0; i < aux.size(); ++i) {
+			facts_aux_[static_cast<size_t>(i)] = aux[i];
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		nk::Air air;
+		if (!nk::pre_step_air(state, nk::R(time_s), facts_aux_, stage_, air)) return PackedFloat64Array();
+		const nk::Vec3 terrain = nk::terrain_sample_validated(state[0], state[1], ground.surfaces, ground.lake);
+		bool collapsed = false;
+		for (int64_t i = 0; i < compressions.size(); ++i) {
+			const double limit = ground.gear.contacts[static_cast<size_t>(i)].max_compression.v;
+			if (std::isnan(limit)) return PackedFloat64Array();
+			if (compressions[i] > limit) collapsed = true;
+		}
+		facts_scratch_.resize(5 + static_cast<size_t>(compressions.size()));
+		facts_scratch_[0] = air.V;
+		facts_scratch_[1] = terrain[0];
+		facts_scratch_[2] = terrain[1];
+		facts_scratch_[3] = terrain[2];
+		facts_scratch_[4] = collapsed ? 1.0 : 0.0;
+		for (int64_t i = 0; i < compressions.size(); ++i) {
+			facts_scratch_[5 + static_cast<size_t>(i)] = compressions[i];
+		}
+		return pack(facts_scratch_);
+	}
+
+	double stage_wing_wake(const PackedFloat64Array &s, const PackedFloat64Array &air, const PackedFloat64Array &d,
+			double ground_up) {
+		nk::Deflections deflections;
+		if (!stage_ready_ || !read_state(s) || air.size() != 7 || !read_deflections(d, deflections)) {
+			return std::numeric_limits<double>::quiet_NaN();
+		}
+		nk::R state[kStateSize];
+		nk::R values[7];
+		load(s, state);
+		load(air, values);
+		nk::Air a;
+		a.v[0] = values[0];
+		a.v[1] = values[1];
+		a.v[2] = values[2];
+		a.V = values[3];
+		a.alpha = values[4];
+		a.beta = values[5];
+		a.qbar = values[6];
+		nk::ge_factors(state, stage_.aero, ground_up, wing_wake_ge_);
+		return nk::wing_lift_coefficient_with(state, a, deflections, stage_.aero, wing_wake_ge_, true).v;
+	}
+
 	// Diagnostic boundary witnesses only: no arithmetic, global FP changes, or retained caller storage.
 	Dictionary float64_transport(double scalar, const PackedFloat64Array &values) const {
 		Dictionary out;
@@ -1601,6 +2820,46 @@ public:
 			{"8.0", 8.0}, {"80.0", 80.0}, {"86400.0", 86400.0}, {"90.0", 90.0},
 			{"100000.0", 100000.0},
 			{"1e-30", nk::kGd1eMinus30}, {"1.0e-30", 1.0e-30},
+			// NK-6q: scenery_collision.gd _state_is_valid.
+			{"1.0e-9", 1.0e-9},
+			// NK-7a: audio/soundscape_model.gd, wildlife.gd and powertrain_audio.gd (nk_soundscape.hpp).
+			{"300.0", 300.0}, {"380.0", 380.0}, {"0.65", 0.65}, {"293.15", 293.15}, {"273.16", 273.16},
+			{"101325.0", 101325.0}, {"16000.0", 16000.0}, {"6.8346", 6.8346}, {"1.261", 1.261}, {"4.6151", 4.6151},
+			{"100.0", 100.0}, {"180.0", 180.0}, {"330.0", 330.0}, {"120000.0", 120000.0}, {"24.0", 24.0},
+			{"4.04e4", 4.04e4}, {"0.02", 0.02}, {"0.391", 0.391}, {"9.0", 9.0}, {"280.0", 280.0}, {"4.170", 4.170},
+			{"8.686", 8.686}, {"1.84e-11", 1.84e-11}, {"2.5", 2.5}, {"0.01275", 0.01275}, {"2239.1", 2239.1},
+			{"0.1068", 0.1068}, {"3352.0", 3352.0}, {"1e-300", 1e-300}, {"1e-12", 1e-12}, {"0.16", 0.16},
+			{"0.38", 0.38}, {"0.35", 0.35}, {"0.07", 0.07}, {"0.32", 0.32}, {"0.55", 0.55}, {"0.45", 0.45},
+			{"6000.0", 6000.0}, {"0.12", 0.12}, {"3.5", 3.5}, {"0.18", 0.18}, {"55.0", 55.0}, {"0.20", 0.20},
+			{"18.0", 18.0}, {"1.1", 1.1}, {"0.10", 0.10}, {"1.7", 1.7}, {"0.008", 0.008}, {"0.23", 0.23},
+			{"14.0", 14.0}, {"45.0", 45.0}, {"1200.0", 1200.0}, {"35.0", 35.0}, {"12000.0", 12000.0}, {"1.4", 1.4},
+			{"0.4", 0.4}, {"82320.0", 82320.0}, {"1.40", 1.40}, {"0.98", 0.98}, {"2.28", 2.28}, {"1.2", 1.2},
+			{"0.46", 0.46}, {"1e-6", 1e-6}, {"4.0", 4.0}, {"60.0", 60.0}, {"120.0", 120.0}, {"10.0", 10.0},
+			{"2.0", 2.0}, {"0.6", 0.6}, {"22.0", 22.0}, {"25.0", 25.0}, {"1500.0", 1500.0}, {"0.0", 0.0},
+			// NK-7b: audio/soundscape.gd update_sound (nk_soundscape_core.hpp); -12.0 there is 0.5 * SCREEN_SHELF_DB.
+			{"-24.0", -24.0}, {"-7.0", -7.0}, {"0.0001", 0.0001}, {"0.04", 0.04}, {"0.09", 0.09}, {"0.11", 0.11},
+			{"0.21", 0.21}, {"0.22", 0.22}, {"0.26", 0.26}, {"0.30", 0.30}, {"0.31", 0.31}, {"0.78", 0.78},
+			{"150.0", 150.0}, {"2.2", 2.2}, {"273.15", 273.15}, {"343.0", 343.0}, {"5.5", 5.5}, {"6500.0", 6500.0},
+			// NK-7c: audio/powertrain_audio.gd update_sound and band_weights.
+			{"0.055", 0.055}, {"1.3", 1.3}, {"450.0", 450.0}, {"18000.0", 18000.0}, {"0.24", 0.24}, {"0.76", 0.76},
+			{"0.28", 0.28}, {"0.42", 0.42}, {"1.25", 1.25}, {"0.40", 0.40}, {"0.015", 0.015}, {"0.985", 0.985},
+			{"2.6", 2.6}, {"0.7", 0.7}, {"0.035", 0.035}, {"0.00001", 0.00001}, {"0.173", 0.173}, {"2.5", 2.5},
+			// NK-7d: audio/ground_audio.gd and ground_audio_motion.gd.
+			{"0.035", 0.035}, {"0.018", 0.018}, {"0.14", 0.14}, {"0.65", 0.65}, {"0.42", 0.42}, {"0.9", 0.9},
+			{"0.94", 0.94}, {"1.12", 1.12}, {"1.18", 1.18}, {"0.85", 0.85}, {"0.025", 0.025}, {"1.35", 1.35},
+			{"0.86", 0.86}, {"0.34", 0.34}, {"0.18", 0.18}, {"0.0001", 0.0001}, {"1e-6", 1e-6},
+			{"10000.0", 10000.0},
+			// NK-7e: audio/mechanical_audio.gd and mechanical_motion.gd.
+			{"60.0", 60.0}, {"39.0", 39.0}, {"0.085", 0.085}, {"0.16", 0.16}, {"0.48", 0.48}, {"0.78", 0.78},
+			{"0.82", 0.82}, {"0.36", 0.36}, {"0.75", 0.75}, {"0.25", 0.25}, {"0.98", 0.98}, {"0.04", 0.04},
+			{"997.0", 997.0}, {"1000.0", 1000.0}, {"0.999", 0.999}, {"0.000001", 0.000001}, {"240.0", 240.0},
+			{"0.0002", 0.0002}, {"0.08", 0.08}, {"0.55", 0.55}, {"1.5", 1.5}, {"0.7", 0.7},
+			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
+			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
+			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.
+			{"2.220446049250313e-16", nk::kFloat64Epsilon},
+			// NK-6e: glow/flight.gd valid()'s mixture bound.
+			{"2.8", 2.8},
 			{"9223372036854775808.0", 9223372036854775808.0},
 		};
 		for (const auto &entry : table) {
@@ -1636,6 +2895,11 @@ public:
 			clear_diagnostic_context();
 		}
 		heli_stage_ready_ = false;
+		liquid_terminal_ready_ = false; // NK-6h: each installation prepares its own terminal bounds
+		prop_strike_ready_ = false; // NK-6k: and its own propeller disc
+		hull_guard_ready_ = false; // NK-6l: and its own guard crash depth
+		glow_terminal_ready_ = false;
+		pre_model_ = nk::PreStepModel(); // a new stage needs its own pre-step preparation
 		Decoder dec;
 		nk::StageModel candidate;
 		const bool ok = decode_stage(dec, config, candidate);
@@ -1765,41 +3029,7 @@ public:
 			const nk::StageResult result = nk::stage_evaluate(state, continuous_scratch_.data(), static_cast<int>(continuous.size()), t,
 				stage_, tick_, rejection_diagnostics_enabled_ ? &rejection_ : nullptr);
 			if (result.shaped) {
-				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
-				static const godot::StringName kLoads("loads"), kDerivative("derivative"), kRotor("rotor_momentum");
-				out[kLoads] = pack(result.loads.data(), 6);
-				out[kDerivative] = pack(result.derivative);
-				out[kRotor] = pack(result.rotor.data(), 3);
-				if (result.has_body_derivative) out[godot::StringName("body_derivative")] = pack(result.body_derivative.data(), 13);
-				if (result.has_preview) {
-					Dictionary air;
-					const nk::Air &a = result.preview_air;
-					air[godot::StringName("v_air")] = pack(a.v, 3);
-					air[godot::StringName("V")] = a.V.v;
-					air[godot::StringName("alpha")] = a.alpha.v;
-					air[godot::StringName("beta")] = a.beta.v;
-					air[godot::StringName("qbar")] = a.qbar.v;
-					if (result.preview_spatial) {
-						godot::Ref<OpenRCNativePointSampler> sampler;
-						sampler.instantiate();
-						sampler->prepare(stage_.spatial_identity, result.preview_point);
-						air[godot::StringName("spatial_air_law")] = "m5-w05c-r2-point-air-v1";
-						air[godot::StringName("spatial_aero_law")] = "matched-unwashed-full-angle-section-delta-v1";
-						air[godot::StringName("spatial_state")] = body;
-						air[godot::StringName("spatial_time_s")] = result.preview_time.v;
-						air[godot::StringName("spatial_rho")] = result.preview_rho.v;
-						air[godot::StringName("aero_station_delta_body")] = pack(result.preview_flow.aero_deltas.data(), 24);
-						air[godot::StringName("spatial_sampler")] = sampler;
-						air[godot::StringName("ambient_delta_body_at")] = godot::Callable(sampler.ptr(), "delta_at");
-						air[godot::StringName("propulsion_air_body")] = pack(result.preview_flow.propulsion_air.data(), 3);
-						air[godot::StringName("wake_source_delta_body")] = pack(result.preview_flow.wake_source_delta.data(), 3);
-					}
-					Dictionary context;
-					context[godot::StringName("air")] = air;
-					context[godot::StringName("pre_reaction_loads")] = pack(result.pre_reaction.data(), 6);
-					context[godot::StringName("wheel_derivative")] = pack(result.preview_wheel_rates);
-					out[godot::StringName("stage_context")] = context;
-				}
+				out = stage_dictionary(result, body);
 			} else if (rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive &&
 					rejection_trial_is_valid(body, continuous, t)) {
 				capture_stage_rejection(body, continuous, t);
@@ -1808,6 +3038,997 @@ public:
 		if (stage_timing_) {
 			stage_ns_ += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
 		}
+		return out;
+	}
+
+	// The joint-stage dictionary of a shaped result, as `stage` returns it (NK-6a builds it only where a callback reads it).
+	Dictionary stage_dictionary(const nk::StageResult &result, const PackedFloat64Array &body) const {
+		Dictionary out;
+		{
+			{
+				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
+				static const godot::StringName kLoads("loads"), kDerivative("derivative"), kRotor("rotor_momentum");
+				// NK-5c: build every result key once, not on each RK stage.
+				static const godot::StringName k_body_derivative("body_derivative");
+				static const godot::StringName k_v_air("v_air");
+				static const godot::StringName k_V("V");
+				static const godot::StringName k_alpha("alpha");
+				static const godot::StringName k_beta("beta");
+				static const godot::StringName k_qbar("qbar");
+				static const godot::StringName k_spatial_air_law("spatial_air_law");
+				static const godot::StringName k_spatial_aero_law("spatial_aero_law");
+				static const godot::StringName k_spatial_state("spatial_state");
+				static const godot::StringName k_spatial_time_s("spatial_time_s");
+				static const godot::StringName k_spatial_rho("spatial_rho");
+				static const godot::StringName k_aero_station_delta_body("aero_station_delta_body");
+				static const godot::StringName k_spatial_sampler("spatial_sampler");
+				static const godot::StringName k_ambient_delta_body_at("ambient_delta_body_at");
+				static const godot::StringName k_propulsion_air_body("propulsion_air_body");
+				static const godot::StringName k_wake_source_delta_body("wake_source_delta_body");
+				static const godot::StringName k_air("air");
+				static const godot::StringName k_pre_reaction_loads("pre_reaction_loads");
+				static const godot::StringName k_wheel_derivative("wheel_derivative");
+				static const godot::StringName k_source_off_rpm_rate("source_off_rpm_rate");
+				static const godot::StringName k_stage_context("stage_context");
+				out[kLoads] = pack(result.loads.data(), 6);
+				out[kDerivative] = pack(result.derivative);
+				out[kRotor] = pack(result.rotor.data(), 3);
+				if (result.has_body_derivative) out[k_body_derivative] = pack(result.body_derivative.data(), 13);
+				if (result.has_preview) {
+					Dictionary air;
+					const nk::Air &a = result.preview_air;
+					air[k_v_air] = pack(a.v, 3);
+					air[k_V] = a.V.v;
+					air[k_alpha] = a.alpha.v;
+					air[k_beta] = a.beta.v;
+					air[k_qbar] = a.qbar.v;
+					if (result.preview_spatial) {
+						godot::Ref<OpenRCNativePointSampler> sampler;
+						sampler.instantiate();
+						sampler->prepare(stage_.spatial_identity, result.preview_point);
+						air[k_spatial_air_law] = "m5-w05c-r2-point-air-v1";
+						air[k_spatial_aero_law] = "matched-unwashed-full-angle-section-delta-v1";
+						air[k_spatial_state] = body;
+						air[k_spatial_time_s] = result.preview_time.v;
+						air[k_spatial_rho] = result.preview_rho.v;
+						air[k_aero_station_delta_body] = pack(result.preview_flow.aero_deltas.data(), 24);
+						air[k_spatial_sampler] = sampler;
+						air[k_ambient_delta_body_at] = godot::Callable(sampler.ptr(), "delta_at");
+						air[k_propulsion_air_body] = pack(result.preview_flow.propulsion_air.data(), 3);
+						air[k_wake_source_delta_body] = pack(result.preview_flow.wake_source_delta.data(), 3);
+					}
+					Dictionary context;
+					context[k_air] = air;
+					context[k_pre_reaction_loads] = pack(result.pre_reaction.data(), 6);
+					context[k_wheel_derivative] = pack(result.preview_wheel_rates);
+					// NK-5b: same key, order and value as LiquidFlight.evaluate; only a finite rate is published.
+					if (result.has_preview_source_off) {
+						context[k_source_off_rpm_rate] = result.preview_source_off_rpm_rate.v;
+					}
+					out[k_stage_context] = context;
+				}
+			}
+		}
+		return out;
+	}
+
+	// NK-6a: one counted fixed-wing stage evaluation from left-first scalars, with `stage`'s counters, timing and
+	// rejection diagnostics. The caller has checked that the stage is prepared for this continuous size.
+	void tick_stage(const nk::R *s, int size, double t, nk::StageResult &result) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
+		++stage_calls_;
+		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
+		result = nk::stage_evaluate(s, s + kStateSize, size - kStateSize, t, stage_, tick_,
+			rejection_diagnostics_enabled_ ? &rejection_ : nullptr);
+		if (!result.shaped && rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive) {
+			const PackedFloat64Array body = pack(s, kStateSize);
+			const PackedFloat64Array values = pack(s + kStateSize, size - kStateSize);
+			if (rejection_trial_is_valid(body, values, t)) capture_stage_rejection(body, values, t);
+		}
+		if (stage_timing_) {
+			stage_ns_ += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
+		}
+	}
+
+	// Simulation `_joint_stage_is_valid` for the dictionary `stage` would build from this result.
+	static bool tick_joint_valid(const nk::StageResult &r, int extra) {
+		if (!r.shaped) return false;
+		if (r.has_body_derivative && !nk::tick_finite(r.body_derivative.data(), kStateSize)) return false;
+		return nk::tick_finite(r.loads.data(), 6) && static_cast<int>(r.derivative.size()) == extra &&
+			nk::tick_finite(r.derivative.data(), extra) && nk::tick_finite(r.rotor.data(), 3);
+	}
+
+	// Simulation `derive` for a valid joint stage: its body derivative or rigid_body.gd's with the stage's rotor
+	// momentum, then its continuous derivative.
+	bool tick_derive(const nk::R *s, const nk::StageResult &joint, nk::R *out, const char *&error) const {
+		if (joint.has_body_derivative) {
+			for (int i = 0; i < kStateSize; ++i) out[i] = joint.body_derivative[static_cast<size_t>(i)];
+		} else {
+			nk::tick_rb_derivative(s, tick_mass_, tick_inertia_, tick_inertia_inv_, joint.loads.data(), tick_gravity_,
+				joint.rotor.data(), out);
+		}
+		if (!nk::tick_finite(out, kStateSize)) {
+			error = "RK stage derivative is nonfinite or malformed";
+			return false;
+		}
+		for (size_t i = 0; i < joint.derivative.size(); ++i) out[kStateSize + i] = joint.derivative[i];
+		return true;
+	}
+
+	static PackedFloat64Array tick_slice(const std::vector<nk::R> &values, int from, int to) {
+		return pack(values.data() + from, to - from);
+	}
+
+	static bool tick_packed_finite(const Variant &value, int64_t expected) {
+		if (value.get_type() != Variant::PACKED_FLOAT64_ARRAY) return false;
+		const PackedFloat64Array values = value;
+		if (expected >= 0 && values.size() != expected) return false;
+		const double *data = values.ptr();
+		for (int64_t i = 0; i < values.size(); ++i) {
+			if (!std::isfinite(data[i])) return false;
+		}
+		return true;
+	}
+
+	static bool tick_state_valid(const Variant &value) {
+		if (!tick_packed_finite(value, kStateSize)) return false;
+		const PackedFloat64Array values = value;
+		nk::R s[kStateSize];
+		load(values, s);
+		return nk::tick_body_valid(s);
+	}
+
+	// NK-6d: the glow plan's recording events, checked as ResourceStep.advance checks its definitions; only the stock
+	// surfaces (rotor stop, main tank unusable, feed line empty) are admitted, so a pickup event keeps the reference.
+	static bool decode_glow_plan(const Dictionary &plan, std::vector<nk::ResourceEvent> &events,
+			std::vector<godot::Callable> &transitions, nk::ResourceGlowLayout &layout) {
+		static const godot::StringName k_events("events"), k_transitions("transitions"), k_unusable("unusable_fuel_kg"),
+			k_id("id"), k_type("type"), k_surface("surface"), k_transition("transition"), k_sense("sense"),
+			k_unit("surface_unit"), k_enabled("enabled"), k_priority("priority"), k_tolerance("surface_tolerance");
+		const Variant events_value = plan.get(k_events, Variant());
+		const Variant unusable = plan.get(k_unusable, Variant());
+		if (events_value.get_type() != Variant::ARRAY || plan.get(k_transitions, Variant()).get_type() != Variant::ARRAY ||
+				unusable.get_type() != Variant::FLOAT || !std::isfinite(double(unusable))) return false;
+		layout.unusable_fuel_kg = double(unusable);
+		const Array list = events_value;
+		if (list.is_empty()) return false;
+		for (int64_t i = 0; i < list.size(); ++i) {
+			if (list[i].get_type() != Variant::DICTIONARY) return false;
+			const Dictionary event = list[i];
+			const Variant id = event.get(k_id, Variant());
+			const Variant type = event.get(k_type, Variant());
+			const Variant unit = event.get(k_unit, Variant());
+			const Variant sense = event.get(k_sense, Variant());
+			const Variant surface = event.get(k_surface, Variant());
+			const Variant transition = event.get(k_transition, Variant());
+			if (id.get_type() != Variant::STRING || String(id).strip_edges().is_empty() || type.get_type() != Variant::STRING ||
+					String(type).strip_edges().is_empty() || unit.get_type() != Variant::STRING ||
+					String(unit).strip_edges().is_empty() || surface.get_type() != Variant::CALLABLE ||
+					transition.get_type() != Variant::CALLABLE || !godot::Callable(surface).is_valid() ||
+					!godot::Callable(transition).is_valid()) return false;
+			nk::ResourceEvent decoded;
+			const String sense_name = sense.get_type() == Variant::STRING ? String(sense) : String();
+			if (sense_name == String("falling")) decoded.sense = nk::ResourceSense::Falling;
+			else if (sense_name == String("rising")) decoded.sense = nk::ResourceSense::Rising;
+			else if (sense_name == String("either")) decoded.sense = nk::ResourceSense::Either;
+			else return false;
+			decoded.has_enabled = event.has(k_enabled);
+			if (decoded.has_enabled && (event.get(k_enabled, Variant()).get_type() != Variant::CALLABLE ||
+					!godot::Callable(event.get(k_enabled, Variant())).is_valid())) return false;
+			const Variant priority = event.get(k_priority, int64_t(100));
+			if (priority.get_type() != Variant::INT) return false;
+			decoded.priority = static_cast<int>(int64_t(priority));
+			if (event.has(k_tolerance)) {
+				const Variant tolerance = event.get(k_tolerance, Variant());
+				if ((tolerance.get_type() != Variant::FLOAT && tolerance.get_type() != Variant::INT) ||
+						!std::isfinite(double(tolerance)) || double(tolerance) <= 0.0) return false;
+				decoded.tolerance = double(tolerance);
+			}
+			const godot::CharString id_utf8 = String(id).utf8();
+			decoded.id = std::string(id_utf8.get_data());
+			for (const nk::ResourceEvent &other : events) if (other.id == decoded.id) return false;
+			if (decoded.id == "rotor_stop" && !decoded.has_enabled) decoded.surface = nk::ResourceSurface::RotorStop;
+			else if (decoded.id == "main_tank_unusable" && decoded.has_enabled) decoded.surface = nk::ResourceSurface::MainTankUnusable;
+			else if (decoded.id == "feed_line_empty" && decoded.has_enabled) decoded.surface = nk::ResourceSurface::FeedLineEmpty;
+			else return false; // a pickup or other event: its surface stays with the reference
+			decoded.type = std::string(String(type).utf8().get_data());
+			decoded.unit = std::string(String(unit).utf8().get_data());
+			decoded.index = static_cast<int>(i);
+			events.push_back(decoded);
+			transitions.push_back(godot::Callable(transition));
+		}
+		return true;
+	}
+
+	// Simulation._unpack_policy_result for a policy's Dictionary: {} with `events` and `next` filled, or {fault}.
+	Dictionary unpack_policy_result(const Dictionary &result, double t, double dt, Array &events, std::vector<nk::R> &next) {
+		static const godot::StringName k_failure("failure"), k_state("state"), k_receipt("integration_receipt"),
+			k_events("events"), k_type("type"), k_time("time_s");
+		if (result.has(k_failure)) {
+			const Variant failure = result.get(k_failure, Variant());
+			if (result.size() == 1 && failure.get_type() == Variant::STRING && !String(failure).is_empty() &&
+					String(failure).length() <= 256) return tick_fault(String("step rejected: ") + String(failure));
+			return tick_fault("step rejected: malformed step-policy failure receipt");
+		}
+		if (result.get(k_state, Variant()).get_type() != Variant::PACKED_FLOAT64_ARRAY) {
+			return tick_fault("step rejected: step policy returned no state");
+		}
+		if (result.has(k_receipt)) {
+			return tick_fault("step rejected: integration receipt requires an opt-in endpoint owner and bounded finite payload");
+		}
+		const Variant raw = result.get(k_events, Array());
+		if (raw.get_type() != Variant::ARRAY) return tick_fault("step rejected: step policy returned malformed events");
+		const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
+		const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
+		const Array items = raw;
+		for (int64_t i = 0; i < items.size(); ++i) {
+			const Variant item = items[i];
+			if (item.get_type() != Variant::DICTIONARY) return tick_fault("step rejected: step policy returned malformed events");
+			const Dictionary event = item;
+			const Variant type = event.get(k_type, Variant());
+			const Variant time = event.get(k_time, Variant());
+			if (type.get_type() != Variant::STRING || String(type).is_empty() ||
+					(time.get_type() != Variant::FLOAT && time.get_type() != Variant::INT) || !std::isfinite(double(time)) ||
+					double(time) < earliest.v || double(time) > latest.v) {
+				return tick_fault("step rejected: step policy returned malformed events");
+			}
+			events.append(event.duplicate(true));
+		}
+		const PackedFloat64Array state = result.get(k_state, Variant());
+		next.resize(static_cast<size_t>(state.size()));
+		for (int64_t i = 0; i < state.size(); ++i) next[static_cast<size_t>(i)] = state[i];
+		return Dictionary();
+	}
+
+	// NK-6v: FlightSession._clear_contact_step's proof that a tick's contact step touches nothing, composed from the
+	// checks the reference makes on its clear path: 1, or 2 when the hull terminal was answered quiet (as
+	// _native_terminal_quiet answers it), when every one holds; 0 runs the reference step. mode bits: 1 a mass sampler
+	// (post_tick_joint), 2 liquid stores at store_index, 4 glow stores (store_index = their expected size), 8 a scenery
+	// world, 16 a lake, 32 the sampled scenery sweep's world is valid, 64 the sampled lake sweep's own inputs are valid,
+	// 128 the hull terminal check applies at hull_reach.
+	int64_t stage_contact_clear(const PackedFloat64Array &previous, const PackedFloat64Array &candidate,
+			const PackedFloat64Array &hull, double extra_reach, double lake_threshold, const PackedFloat64Array &lake_bank,
+			const PackedFloat64Array &previous_values, const PackedFloat64Array &candidate_values, int64_t mode,
+			int64_t store_index, double hull_reach) {
+		const bool sampled = (mode & 1) != 0, liquid = (mode & 2) != 0, glow = (mode & 4) != 0;
+		const bool world = (mode & 8) != 0, lake = (mode & 16) != 0;
+		if (sampled) {
+			// _contact_mass_sampler: both stores valid (NK-6t, NK-6e), or the reference builds or refuses the sampler.
+			if (liquid) {
+				if (stage_liquid_store_valid(previous_values, store_index) != 1 ||
+						stage_liquid_store_valid(candidate_values, store_index) != 1) return 0;
+			} else if (glow) {
+				if (previous_values.size() != store_index || candidate_values.size() != previous_values.size() ||
+						stage_glow_mass_check(previous_values, true) != 1 || stage_glow_mass_check(candidate_values, true) != 1) {
+					return 0;
+				}
+			} else {
+				return 0;
+			}
+		}
+		if (world || lake) {
+			// NK-5d proofs; a sampled sweep also refuses its own invalid inputs before trusting them.
+			const int64_t reach = contact_reach(previous, candidate, hull, extra_reach, lake_threshold, lake_bank);
+			if ((world && (reach & 1) == 0) || (lake && (reach & 2) == 0)) return 0;
+			if (sampled && ((world && (mode & 32) == 0) || (lake && (mode & 64) == 0) || !scenery_state_valid(previous) ||
+					!scenery_state_valid(candidate))) {
+				return 0;
+			}
+		}
+		if (sampled && (mode & 128) != 0 && state_valid(candidate) && -candidate[2] <= hull_reach) {
+			// The soft hull terminal at the contact sample's fraction 0 (NK-6h, NK-6i).
+			int64_t quiet = 0;
+			if (liquid && store_index >= 0 && store_index < previous_values.size()) {
+				quiet = stage_liquid_terminal_quiet(previous, candidate, previous_values[store_index]);
+			} else if (glow && previous_values.size() > 17) {
+				quiet = stage_glow_terminal_quiet(previous, candidate, previous_values[1], previous_values[17]);
+			}
+			return quiet == 1 ? 2 : 0;
+		}
+		return 1;
+	}
+
+	// NK-9b: app/statistics/fixed_wing_adapter.gd sample(true) (nk_stats_sample.hpp); one adapter per kernel instance.
+	bool stats_sample_bind(const Dictionary &plan) {
+		if (!stats_sample_) stats_sample_ = std::make_unique<nk::stats::FixedWingSample>();
+		return stats_sample_->bind(plan);
+	}
+	Dictionary stats_sample_build(const PackedFloat64Array &state, const PackedFloat64Array &facts, bool deployed, int64_t tick,
+			double dt, bool fault_empty, bool crashed, const Dictionary &contacts, const Dictionary &observation) {
+		return stats_sample_ ? stats_sample_->build(state, facts, deployed, tick, dt, fault_empty, crashed, contacts, observation)
+			: Dictionary();
+	}
+
+	// NK-9a: app/statistics/detector.gd's speed window (nk_stats_speed.hpp); one detector per kernel instance.
+	bool stats_speed_bind(const PackedFloat64Array &thresholds) {
+		if (!stats_speed_) stats_speed_ = std::make_unique<nk::stats::SpeedWindow>();
+		return stats_speed_->bind(thresholds);
+	}
+	void stats_speed_clear() {
+		if (stats_speed_) stats_speed_->clear();
+	}
+	void stats_speed_clear_counts() {
+		if (stats_speed_) stats_speed_->clear_counts();
+	}
+	void stats_speed_collect(const Dictionary &sample, double dt, int64_t tick, double clock_s, bool incident,
+			bool ground_contact, const Dictionary &flight) {
+		if (stats_speed_ && stats_speed_->ready()) stats_speed_->collect(sample, dt, tick, clock_s, incident, ground_contact, flight);
+	}
+	Array stats_speed_snapshot() const { return stats_speed_ ? stats_speed_->snapshot() : Array(); }
+	bool stats_speed_restore(const Array &window, double window_s, const Array &pending, const Dictionary &previous,
+			const Dictionary &counts) {
+		return stats_speed_ && stats_speed_->ready() && stats_speed_->restore(window, window_s, pending, previous, counts);
+	}
+
+	// NK-6u: FlightSession.native_substep_plan for `session`; an empty plan (or any malformed field) clears it.
+	bool prepare_substeps(godot::Object *session, const Dictionary &plan) {
+		substep_plan_ = nk::SubstepPlan();
+		substep_session_id_ = 0;
+		if (session == nullptr || plan.is_empty()) return false;
+		nk::SubstepPlan p;
+		auto boolean = [&](const char *key, bool &out) {
+			const Variant v = plan.get(key, Variant());
+			if (v.get_type() != Variant::BOOL) return false;
+			out = bool(v);
+			return true;
+		};
+		auto integer = [&](const char *key, int64_t &out) {
+			const Variant v = plan.get(key, Variant());
+			if (v.get_type() != Variant::INT) return false;
+			out = int64_t(v);
+			return true;
+		};
+		auto number = [&](const char *key, double &out) {
+			const Variant v = plan.get(key, Variant());
+			if (v.get_type() != Variant::FLOAT || !std::isfinite(double(v))) return false;
+			out = double(v);
+			return true;
+		};
+		int64_t gear_mode = 0;
+		if (plan.size() != 13 || !boolean("battery_dynamic", p.battery_dynamic) || !integer("gear_mode", gear_mode) ||
+				gear_mode < 0 || gear_mode > 2 || !integer("gear_count", p.gear_count) || !number("reach", p.reach) ||
+				!number("terrain", p.terrain) || !integer("gear_aux_index", p.gear_aux_index) ||
+				!integer("gear_aux_size", p.gear_aux_size) || p.gear_aux_size < 2 || !boolean("shaft_base", p.shaft_base) ||
+				!boolean("liquid", p.liquid) || !integer("rotor_index", p.rotor_index) || p.rotor_index < 0 ||
+				!number("stopped_rpm", p.stopped_rpm) || !integer("max_substeps", p.max_substeps) ||
+				p.max_substeps < 1 || p.max_substeps > nk::kTickMaxSubsteps || !number("margin", p.margin)) {
+			return false;
+		}
+		p.gear_mode = static_cast<int>(gear_mode);
+		p.ready = true;
+		if (!substep_names_) substep_names_ = std::make_unique<SubstepNames>();
+		substep_plan_ = p;
+		substep_session_id_ = session->get_instance_id();
+		return true;
+	}
+
+	// NK-6u: the session's own substep count for this tick from its plan, or -1 when its callback must decide: another
+	// owner's callback, an RC-track overlay, or a tick the plan does not cover (nk_substeps.hpp).
+	int64_t tick_substeps(const godot::Callable &policy, const godot::Callable &joint, const godot::Callable &plain,
+			const nk::StageResult &current, const nk::R *combined, int size, const PackedFloat64Array &aux, double dt) const {
+		if (!substep_plan_.ready || !substep_names_) return -1;
+		godot::Object *session = godot::ObjectDB::get_instance(substep_session_id_);
+		if (session == nullptr) return -1;
+		const SubstepNames &n = *substep_names_;
+		const bool use_joint = joint.is_valid();
+		if (use_joint ? joint != godot::Callable(session, n.joint) : plain != godot::Callable(session, n.plain)) return -1;
+		const Variant track = session->get(n.rc_track);
+		if (track.get_type() != Variant::DICTIONARY || !Dictionary(track).is_empty()) return -1;
+		const bool electric = policy.is_valid() && policy == godot::Callable(session, n.electric);
+		nk::SubstepPreview preview;
+		if (use_joint && current.has_preview) {
+			bool valid = true;
+			for (int i = 0; i < 3; ++i) valid = valid && nk::is_finite(current.preview_air.v[i]);
+			for (const nk::R &value : current.pre_reaction) valid = valid && nk::is_finite(value);
+			for (const nk::R &value : current.preview_wheel_rates) valid = valid && nk::is_finite(value);
+			preview.valid = valid;
+			preview.has_rate = valid && current.has_preview_source_off && nk::is_finite(current.preview_source_off_rpm_rate);
+			preview.rate = current.preview_source_off_rpm_rate;
+		}
+		return nk::substep_count(substep_plan_, combined, size, aux.ptr(), aux.size(), nk::R(dt), electric, preview);
+	}
+
+	// NK-6u test probe: [the kernel's count (-1: the callback decides), the stage dictionary the joint callback would
+	// receive] for one stage evaluation of (state, continuous) at t under the installed tick context; [] when unready.
+	Array stage_substep_probe(godot::Object *model, const PackedFloat64Array &state, const PackedFloat64Array &continuous,
+			const PackedFloat64Array &aux, double t, double dt) {
+		Array out;
+		if (model == nullptr || !substep_names_ || heli_stage_ready_ || !stage_ready_ || !tick_.ready ||
+				state.size() != kStateSize || continuous.is_empty() ||
+				continuous.size() != static_cast<int64_t>(continuous_scratch_.size())) {
+			return out;
+		}
+		const int size = kStateSize + static_cast<int>(continuous.size());
+		std::vector<nk::R> combined(static_cast<size_t>(size));
+		for (int i = 0; i < kStateSize; ++i) combined[static_cast<size_t>(i)] = state[i];
+		for (int64_t i = 0; i < continuous.size(); ++i) combined[static_cast<size_t>(kStateSize + i)] = continuous[i];
+		nk::StageResult current;
+		tick_stage(combined.data(), size, t, current);
+		const SubstepNames &n = *substep_names_;
+		out.push_back(tick_substeps(model->get(n.step_policy), model->get(n.substeps_joint), model->get(n.substeps), current,
+			combined.data(), size, aux, dt));
+		out.push_back(stage_dictionary(current, state));
+		return out;
+	}
+
+	Dictionary tick_fault(const String &reason) {
+		++tick_faults_;
+		Dictionary out;
+		out["fault"] = reason;
+		return out;
+	}
+
+	// NK-6a: Simulation.step's legacy joint tick from the tick's first stage to its accepted endpoint, after the
+	// reference pre_tick installed `aux` (simulation.gd). The model's callbacks (rotor momentum, substeps, event
+	// transition, post-step filter, auxiliary projection) are called where and with what the reference calls them.
+	// {} refuses before any evaluation, leaving the tick to the reference; {fault} carries the reference's refusal;
+	// otherwise {state, continuous, aux, loads, events} is the endpoint the reference would commit.
+	Dictionary integrate_tick(godot::Object *model, const PackedFloat64Array &state, const PackedFloat64Array &continuous,
+			const PackedFloat64Array &aux, double t, double dt, int64_t tick, double mass, double gravity,
+			const PackedFloat64Array &inertia, const PackedFloat64Array &inertia_inv) {
+		static const godot::StringName k_rotor_momentum("rotor_momentum"), k_substeps_joint("substeps_joint"),
+			k_substeps("substeps"), k_events("events"), k_post_tick("post_tick"), k_post_tick_joint("post_tick_joint"),
+			k_block_aux("block_aux"), k_transition("transition"), k_index("index"), k_type("type"), k_fault("fault"),
+			k_state("state"), k_continuous("continuous"), k_aux("aux"), k_loads("loads"), k_events_out("events");
+		if (model == nullptr || heli_stage_ready_ || !stage_ready_ || !tick_.ready || state.size() != kStateSize ||
+				continuous.is_empty() || continuous.size() != static_cast<int64_t>(continuous_scratch_.size()) ||
+				inertia.size() != 6 || inertia_inv.size() != 6) {
+			return Dictionary();
+		}
+		// NK-6c: a model stepped by the session's finite-pack policy (_electric_step) first gives the policy's plan:
+		// [dynamic, contact pieces, combined rotor index, pack supervision], computed as the policy computes it (pure).
+		static const godot::StringName k_step_policy("step_policy"), k_electric_step("_electric_step"),
+			k_electric_plan("native_electric_step_plan"), k_supervise_pack("_supervise_pack"),
+			k_project_stop("_project_electric_stop");
+		const godot::Callable policy = model->get(k_step_policy);
+		godot::Object *policy_owner = nullptr;
+		godot::PackedInt64Array plan;
+		// NK-6d: GlowFlight.step (a static policy bound to its session) gives its recording resource events.
+		static const godot::StringName k_glow_step("step"), k_glow_plan("native_glow_step_plan"), k_glow_finish("finish");
+		godot::Object *glow_owner = nullptr;
+		godot::Object *glow_script = nullptr;
+		Dictionary glow_plan;
+		std::vector<nk::ResourceEvent> glow_events;
+		std::vector<godot::Callable> glow_transitions;
+		nk::ResourceGlowLayout glow_layout;
+		if (policy.is_valid() && policy.get_method() == k_glow_step) {
+			const Array bound = policy.get_bound_arguments();
+			if (bound.size() != 1 || bound[0].get_type() != Variant::OBJECT) return Dictionary();
+			glow_owner = bound[0];
+			glow_script = policy.get_object();
+			if (glow_owner == nullptr || glow_script == nullptr || !glow_owner->has_method(k_glow_plan)) return Dictionary();
+			glow_plan = glow_owner->call(k_glow_plan);
+			if (glow_plan.is_empty() || !decode_glow_plan(glow_plan, glow_events, glow_transitions, glow_layout)) {
+				return Dictionary();
+			}
+		} else if (policy.is_valid()) {
+			policy_owner = policy.get_object();
+			if (policy_owner == nullptr || policy.get_method() != k_electric_step || !policy_owner->has_method(k_electric_plan)) {
+				return Dictionary();
+			}
+			PackedFloat64Array planned_state = state.duplicate();
+			planned_state.append_array(continuous);
+			const Variant planned = policy_owner->call(k_electric_plan, planned_state, dt);
+			if (planned.get_type() != Variant::PACKED_INT64_ARRAY) return Dictionary();
+			plan = planned;
+			if (plan.size() != 4 || plan[2] < kStateSize || plan[2] + 1 >= kStateSize + continuous.size()) return Dictionary();
+		}
+		const bool step_policy = policy_owner != nullptr || glow_script != nullptr;
+		++tick_calls_;
+		const int extra = static_cast<int>(continuous.size());
+		const int size = kStateSize + extra;
+		tick_combined_.resize(static_cast<size_t>(size));
+		for (int i = 0; i < kStateSize; ++i) tick_combined_[static_cast<size_t>(i)] = state[i];
+		for (int i = 0; i < extra; ++i) tick_combined_[static_cast<size_t>(kStateSize + i)] = continuous[i];
+		tick_mass_ = mass;
+		tick_gravity_ = gravity;
+		for (int i = 0; i < 6; ++i) {
+			tick_inertia_[i] = inertia[i];
+			tick_inertia_inv_[i] = inertia_inv[i];
+		}
+		tick_rk4_.size(size);
+		const nk::R *combined = tick_combined_.data();
+
+		// The tick's own joint stage (H2: stage 1 reuses it).
+		nk::StageResult current;
+		tick_stage(combined, size, t, current);
+		if (!tick_joint_valid(current, extra)) return tick_fault("step rejected: joint stage evaluation is nonfinite or malformed");
+		const Variant rotor = godot::Callable(model->get(k_rotor_momentum)).call(aux);
+		if (!tick_packed_finite(rotor, -1) || (PackedFloat64Array(rotor).size() != 0 && PackedFloat64Array(rotor).size() != 3)) {
+			return tick_fault("step rejected: rotor momentum is nonfinite or malformed");
+		}
+		const char *stage_error = nullptr;
+		tick_first_.resize(static_cast<size_t>(size));
+		tick_derive(combined, current, tick_first_.data(), stage_error);
+
+		// Substeps: the joint callback reads the tick's stage dictionary.
+		Variant declared = int64_t(1);
+		const godot::Callable substeps_joint = model->get(k_substeps_joint);
+		const godot::Callable substeps = model->get(k_substeps);
+		// NK-6u: the session's own count from its plan, exactly; -1 leaves it to the callback below.
+		const int64_t planned_pieces = substeps_joint.is_valid() || substeps.is_valid()
+			? tick_substeps(policy, substeps_joint, substeps, current, combined, size, aux, dt) : -1;
+		if (planned_pieces >= 0) {
+			declared = planned_pieces;
+			++substep_answers_;
+			if (planned_pieces > 1) ++substep_refined_;
+		} else if (substeps_joint.is_valid()) {
+			const PackedFloat64Array body = tick_slice(tick_combined_, 0, kStateSize);
+			declared = substeps_joint.call(body, tick_slice(tick_combined_, kStateSize, size), t, stage_dictionary(current, body));
+		} else if (substeps.is_valid()) {
+			declared = substeps.call(tick_slice(tick_combined_, 0, kStateSize), tick_slice(tick_combined_, kStateSize, size), t);
+		}
+		if (declared.get_type() != Variant::INT || int64_t(declared) < 1 || int64_t(declared) > nk::kTickMaxSubsteps) {
+			return tick_fault("step rejected: substep count is not an integer within 1..16");
+		}
+		const int pieces = static_cast<int>(int64_t(declared));
+		if (step_policy && pieces > 1) {
+			return tick_fault(String("step rejected: the step policy owns the tick and cannot honour ") +
+				String::num_int64(pieces) + String(" contact substeps"));
+		}
+		if (stage_error != nullptr) return tick_fault(String("step rejected: ") + stage_error);
+
+		// The RK stage derivative `f`.
+		auto f = [&](const nk::R *s, nk::R stage_t, nk::R *out) -> bool {
+			if (!nk::tick_finite(s, size) || !nk::tick_body_valid(s)) {
+				stage_error = "RK stage state is nonfinite, malformed, or has a degenerate quaternion";
+				return false;
+			}
+			tick_stage(s, size, stage_t.v, tick_stage_result_);
+			if (!tick_joint_valid(tick_stage_result_, extra)) {
+				stage_error = "RK joint stage evaluation is nonfinite or malformed";
+				return false;
+			}
+			return tick_derive(s, tick_stage_result_, out, stage_error);
+		};
+		tick_next_.resize(static_cast<size_t>(size));
+		tick_event_times_.clear();
+		nk::TickStatus status = nk::TickStatus::Ok;
+		bool located = true;
+		String event_type;
+		const Array events = model->get(k_events);
+		bool policy_ok = true;
+		std::vector<nk::TickPolicyEvent> policy_events;
+		Variant glow_result;
+		if (glow_script != nullptr) {
+			// GlowFlight.step: ResourceStep.advance over the recording events, then GlowFlight.finish.
+			std::vector<Variant> glow_details;
+			auto transition = [&](const nk::ResourceEvent &event, const std::vector<nk::R> &in, nk::R at,
+					std::vector<nk::R> &out, int &details) -> bool {
+				const Variant transitioned = glow_transitions[static_cast<size_t>(event.index)].call(pack(in), at.v);
+				if (transitioned.get_type() != Variant::DICTIONARY) return false;
+				const Dictionary result = transitioned;
+				static const godot::StringName k_ok("ok"), k_state_key("state"), k_event_key("event");
+				if (!bool(result.get(k_ok, false)) || result.get(k_state_key, Variant()).get_type() != Variant::PACKED_FLOAT64_ARRAY) {
+					return false;
+				}
+				const PackedFloat64Array values = result.get(k_state_key, Variant());
+				out.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) out[static_cast<size_t>(i)] = values[i];
+				details = static_cast<int>(glow_details.size());
+				glow_details.push_back(result.get(k_event_key, Dictionary()));
+				return true;
+			};
+			std::vector<nk::ResourceReport> reports;
+			bool glow_ok = false;
+			status = nk::resource_advance(combined, size, t, dt, f, tick_first_.data(), glow_events, glow_layout, transition,
+				glow_ok, tick_next_, reports, tick_rk4_);
+			policy_ok = false;
+			static const godot::StringName k_steady_key("steady"), k_plan_transitions_key("transitions");
+			const Variant steady = glow_plan.get(k_steady_key, Variant());
+			if (status == nk::TickStatus::Ok && glow_ok && stage_error == nullptr && reports.empty() &&
+					steady.get_type() == Variant::PACKED_FLOAT64_ARRAY && PackedFloat64Array(steady).size() == nk::kGfTermCount &&
+					glow_plan.get(k_plan_transitions_key, Variant()).get_type() == Variant::ARRAY &&
+					Array(glow_plan.get(k_plan_transitions_key, Variant())).is_empty()) {
+				// NK-6n: a steady tick's finish without its GDScript call; any refusal leaves it to finish below.
+				const PackedFloat64Array terms = steady;
+				const double firing = glow_firing_at(tick_next_.data(), tick_next_.data() + kStateSize,
+					static_cast<int64_t>(tick_next_.size()) - kStateSize, (nk::R(t) + nk::R(dt)).v);
+				if (std::isfinite(firing) &&
+						nk::glow_steady_finish(tick_combined_, tick_next_, kStateSize, dt, terms.ptr(), firing, glow_finish_out_)) {
+					static const godot::StringName k_steady_state("state"), k_steady_events("events");
+					Dictionary finished;
+					finished[k_steady_state] = pack(glow_finish_out_.data(), static_cast<int>(glow_finish_out_.size()));
+					finished[k_steady_events] = Array();
+					glow_result = finished;
+					policy_ok = true;
+					++glow_finish_answers_;
+				}
+			}
+			if (!policy_ok && status == nk::TickStatus::Ok && glow_ok && stage_error == nullptr) {
+				static const godot::StringName k_ok("ok"), k_state_key("state"), k_events_key("events"),
+					k_type_key("type"), k_time_key("time_s"), k_id_key("id"), k_residual_key("surface_residual"),
+					k_unit_key("surface_unit"), k_error_key("time_error_bound_s"), k_transitions_key("transitions");
+				Array reported;
+				for (const nk::ResourceReport &report : reports) {
+					Dictionary entry;
+					entry[k_type_key] = String::utf8(report.event->type.c_str());
+					entry[k_time_key] = report.time_s.v;
+					entry[k_id_key] = String::utf8(report.event->id.c_str());
+					entry[k_residual_key] = report.residual.v;
+					entry[k_unit_key] = String::utf8(report.event->unit.c_str());
+					entry[k_error_key] = report.time_error.v;
+					const Variant details = report.details >= 0 ? glow_details[static_cast<size_t>(report.details)] : Variant();
+					if (details.get_type() == Variant::DICTIONARY) entry.merge(Dictionary(details), true);
+					reported.append(entry);
+				}
+				Dictionary bounded;
+				bounded[k_ok] = true;
+				bounded[k_state_key] = pack(tick_next_);
+				bounded[k_events_key] = reported;
+				glow_result = glow_script->call(k_glow_finish, pack(tick_combined_), t, dt, glow_owner, bounded,
+					glow_plan.get(k_transitions_key, Variant()));
+				policy_ok = true;
+			}
+		} else if (policy_owner != nullptr) {
+			// FlightSession._electric_step: battery step (one piece) or contact pieces, then pack supervision; a fixed
+			// source keeps the rotor-stop event step. Any failure makes the policy return [NAN].
+			const bool dynamic = plan[0] != 0;
+			const int64_t count = plan[1];
+			const int rotor = static_cast<int>(plan[2]);
+			const bool supervised = plan[3] != 0;
+			const godot::Callable project_stop(policy_owner, k_project_stop);
+			auto project = [&](const nk::R *in, int count_in, int at, std::vector<nk::R> &out) -> bool {
+				const Variant projected = project_stop.call(pack(in, count_in), at);
+				if (projected.get_type() != Variant::PACKED_FLOAT64_ARRAY) return false;
+				const PackedFloat64Array values = projected;
+				out.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) out[static_cast<size_t>(i)] = values[i];
+				return true;
+			};
+			policy_ok = false;
+			if (dynamic) {
+				if (count >= 1 && count <= nk::kTickMaxSubsteps) {
+					status = count == 1 ?
+						nk::tick_battery_advance(combined, size, t, dt, f, tick_first_.data(), rotor, rotor + 1, project,
+							policy_ok, tick_next_, policy_events, tick_rk4_) :
+						nk::tick_contact_advance(combined, size, t, dt, f, tick_first_.data(), rotor, rotor + 1, project,
+							static_cast<int>(count), policy_ok, tick_next_, policy_events, tick_rk4_);
+					if (status == nk::TickStatus::Ok && policy_ok && supervised) {
+						const PackedFloat64Array supervised_state = policy_owner->call(k_supervise_pack, pack(tick_next_), dt);
+						tick_next_.resize(static_cast<size_t>(supervised_state.size()));
+						for (int64_t i = 0; i < supervised_state.size(); ++i) tick_next_[static_cast<size_t>(i)] = supervised_state[i];
+					}
+				}
+			} else {
+				status = nk::tick_event_advance(combined, size, t, dt, f, tick_first_.data(), rotor, project,
+					project_stop.is_valid(), policy_ok, tick_next_, tick_event_times_, tick_rk4_);
+				for (const nk::R at : tick_event_times_) {
+					nk::TickPolicyEvent rotor_event;
+					rotor_event.time_s = at;
+					policy_events.push_back(rotor_event);
+				}
+			}
+		} else if (!events.is_empty()) {
+			const Dictionary event = events[0];
+			const godot::Callable transition = event.get(k_transition, Variant());
+			const int index = static_cast<int>(int64_t(event.get(k_index, Variant())));
+			event_type = String(event.get(k_type, Variant()));
+			auto project = [&](const nk::R *in, int count, int at, std::vector<nk::R> &out) -> bool {
+				const Variant projected = transition.call(pack(in, count), at);
+				if (projected.get_type() != Variant::PACKED_FLOAT64_ARRAY) return false;
+				const PackedFloat64Array values = projected;
+				out.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) out[static_cast<size_t>(i)] = values[i];
+				return true;
+			};
+			status = nk::tick_locate_substeps(combined, size, t, dt, f, tick_first_.data(), index, project,
+				transition.is_valid(), pieces, located, tick_next_, tick_event_times_, tick_rk4_);
+		} else if (pieces == 1) {
+			status = nk::tick_rk4_step_at(combined, size, t, dt, f, tick_first_.data(), tick_next_.data(), tick_rk4_);
+		} else {
+			status = nk::tick_rk4_substeps(combined, size, t, dt, f, tick_first_.data(), pieces, tick_next_, tick_rk4_);
+		}
+		if (status == nk::TickStatus::Abort || stage_error != nullptr) {
+			return tick_fault(String("step rejected: ") + (stage_error != nullptr ? stage_error : ""));
+		}
+		if (!located) return tick_fault("step rejected: the event locator could not bound the tick");
+		Array tick_events;
+		if (glow_script != nullptr) {
+			if (!policy_ok) {
+				tick_next_.assign(1, nk::R(nk::kNan)); // ResourceStep failed: the policy returned [NAN]
+			} else if (glow_result.get_type() == Variant::DICTIONARY) {
+				const Dictionary unpacked_fault = unpack_policy_result(glow_result, t, dt, tick_events, tick_next_);
+				if (!unpacked_fault.is_empty()) return unpacked_fault;
+			} else if (glow_result.get_type() == Variant::PACKED_FLOAT64_ARRAY) {
+				const PackedFloat64Array values = glow_result;
+				tick_next_.resize(static_cast<size_t>(values.size()));
+				for (int64_t i = 0; i < values.size(); ++i) tick_next_[static_cast<size_t>(i)] = values[i];
+			} else {
+				return tick_fault(glow_result.get_type() == Variant::NIL ?
+					"step rejected: the event locator could not bound the tick" :
+					"step rejected: step policy returned a malformed result");
+			}
+		} else if (policy_owner != nullptr && !policy_ok) {
+			// The policy returned [NAN]: Simulation finds no events and refuses the integrated state.
+			tick_next_.assign(1, nk::R(nk::kNan));
+		} else if (policy_owner != nullptr) {
+			const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
+			const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
+			for (const nk::TickPolicyEvent &policy_event : policy_events) {
+				if (!nk::is_finite(policy_event.time_s) || policy_event.time_s.v < earliest.v || policy_event.time_s.v > latest.v) {
+					return tick_fault("step rejected: step policy returned malformed events");
+				}
+				Dictionary event;
+				event[String("type")] = String(policy_event.battery ? "battery_exhausted" : "rotor_stop");
+				event[String("time_s")] = policy_event.time_s.v;
+				if (policy_event.battery) {
+					event[String("charge_residual_c")] = policy_event.residual_c.v;
+					event[String("time_error_bound_s")] = policy_event.time_error_s.v;
+				}
+				tick_events.append(event);
+			}
+		} else if (!events.is_empty()) {
+			const nk::R earliest = nk::R(t) - nk::R(nk::kTickEventTimeSlack);
+			const nk::R latest = nk::R(t) + nk::R(dt) + nk::R(nk::kTickEventTimeSlack);
+			for (const nk::R time_s : tick_event_times_) {
+				if (event_type.is_empty() || !nk::is_finite(time_s) || time_s.v < earliest.v || time_s.v > latest.v) {
+					return tick_fault("step rejected: step policy returned malformed events");
+				}
+				Dictionary event;
+				event[String("type")] = event_type;
+				event[String("time_s")] = time_s.v;
+				tick_events.append(event);
+			}
+		}
+		if (static_cast<int>(tick_next_.size()) != size || !nk::tick_finite(tick_next_.data(), size) ||
+				!nk::tick_body_valid(tick_next_.data())) {
+			return tick_fault("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion");
+		}
+
+		// The post-step body filter owns only the rigid body.
+		PackedFloat64Array accepted_body = tick_slice(tick_next_, 0, kStateSize);
+		const godot::Callable post_tick = model->get(k_post_tick);
+		const godot::Callable post_tick_joint = model->get(k_post_tick_joint);
+		if (post_tick.is_valid() || post_tick_joint.is_valid()) {
+			Array arguments;
+			arguments.append(state.duplicate());
+			arguments.append(accepted_body.duplicate());
+			arguments.append(tick + 1);
+			if (post_tick_joint.is_valid()) {
+				arguments.append(continuous.duplicate());
+				arguments.append(tick_slice(tick_next_, kStateSize, size));
+			}
+			const Variant filtered = (post_tick_joint.is_valid() ? post_tick_joint : post_tick).callv(arguments);
+			if (!tick_state_valid(filtered)) {
+				return tick_fault("step rejected: post-step contact filter returned a malformed body state");
+			}
+			accepted_body = PackedFloat64Array(filtered).duplicate();
+		}
+		const PackedFloat64Array accepted_continuous = tick_slice(tick_next_, kStateSize, size);
+		PackedFloat64Array accepted_aux = aux;
+		const godot::Callable block_aux = model->get(k_block_aux);
+		if (block_aux.is_valid()) {
+			const Variant projected = block_aux.call(accepted_continuous, accepted_aux.duplicate());
+			if (!tick_packed_finite(projected, aux.size())) {
+				return tick_fault("step rejected: continuous auxiliary projection is nonfinite or malformed");
+			}
+			accepted_aux = projected;
+		}
+		++tick_answers_;
+		Dictionary out;
+		out[k_state] = accepted_body;
+		out[k_continuous] = accepted_continuous;
+		out[k_aux] = accepted_aux;
+		out[k_loads] = pack(current.loads.data(), 6);
+		out[k_events_out] = tick_events;
+		return out;
+	}
+
+	// NK-6b: GlowFlight.point(owner, body, values, time_s).firing_fraction from the prepared glow stage and the tick
+	// context of the guarded pre-step: the same point evaluation the stage composes. NaN refuses (no glow stage or
+	// context, another layout, a refused stage); the caller then evaluates point(). Not counted as an RK stage.
+	double stage_glow_firing(const PackedFloat64Array &body, const PackedFloat64Array &values, double time_s) {
+		if (!read_state(body)) {
+			++glow_firing_calls_;
+			return nk::kNan;
+		}
+		nk::R state[kStateSize];
+		load(body, state);
+		std::vector<nk::R> values_in(static_cast<size_t>(values.size()));
+		for (int64_t i = 0; i < values.size(); ++i) values_in[static_cast<size_t>(i)] = values[i];
+		return glow_firing_at(state, values_in.data(), values.size(), time_s);
+	}
+
+	// NK-7g: FlightAudio.snapshot's whole glow key set (GlowAudioState.build, then the snapshot's own keys), in the
+	// GDScript's key order and value types: GlowFlight.unpack's checks, the native firing fraction (NK-6b), the vibration
+	// numbers (NK-6s) and their read-only dictionary. geometry: glow_vibration's six inputs; frame: [unusable fuel,
+	// blade count, max rpm, load, throttle, tick, source running (1/0)]. Empty wherever the GDScript would refuse or
+	// fall back, so the caller assembles the keys itself.
+	Dictionary stage_glow_audio_keys(const PackedFloat64Array &body, const PackedFloat64Array &values, double time_s,
+			const PackedFloat64Array &geometry, const Variant &family, const Variant &geometry_family,
+			const PackedFloat64Array &frame) {
+		Dictionary out;
+		if (frame.size() != 7 || geometry.size() != 6) return out;
+		const double firing = stage_glow_firing(body, values, time_s);
+		if (!std::isfinite(firing)) return out;
+		// GlowFlight.unpack: SIZE values, all finite, a 0/1 latch and a stop reason index.
+		const int64_t n = values.size();
+		if (n < 19) return out;
+		const double *v = values.ptr();
+		for (int64_t i = 0; i < n; ++i) {
+			if (!std::isfinite(v[i])) return out;
+		}
+		if (!(v[7] == 0.0 || v[7] == 1.0) || v[8] != std::floor(v[8]) || v[8] < 0.0 || v[8] >= 7.0) return out;
+		if (!(v[1] > 0.0)) return out;
+		const double counter_limit = static_cast<double>(std::numeric_limits<int32_t>::max());
+		if (std::fabs(v[9]) >= counter_limit || std::fabs(v[10]) >= counter_limit || std::fabs(frame[1]) >= counter_limit ||
+				std::fabs(frame[5]) >= counter_limit) {
+			return out;
+		}
+		const bool running = v[7] == 1.0 && v[1] > frame[0];
+		const nk::R tau = 6.2831853071795864769252867666;
+		const double crank_phase = (nk::R(v[6]) * tau).v;
+		const double omega = ((nk::R(v[0]) * tau) / nk::R(60.0)).v;
+		const PackedFloat64Array r = glow_vibration(geometry, crank_phase, omega, 0.0, running ? firing : 0.0);
+		if (r.size() != 11 || r[0] != 1.0) return out;
+		if (!glow_audio_keys_) glow_audio_keys_ = std::make_unique<GlowAudioKeys>();
+		const GlowAudioKeys &k = *glow_audio_keys_;
+		const int64_t cycle = static_cast<int64_t>(geometry[5]);
+		Dictionary vibration;
+		vibration[k.ok] = true;
+		vibration[k.errors] = godot::PackedStringArray();
+		vibration[k.family] = geometry_family;
+		vibration[k.cycle_revolutions] = cycle;
+		vibration[k.firing_order] = 1.0 / static_cast<double>(cycle);
+		vibration[k.phase_rad] = r[1];
+		vibration[k.omega_rad_s] = omega;
+		vibration[k.alpha_rad_s2] = 0.0;
+		vibration[k.constant_speed_assumption] = true;
+		vibration[k.source_force_n] = r[2];
+		vibration[k.order_1x_force_cosine_n] = r[3];
+		vibration[k.order_1x_force_sine_n] = r[4];
+		vibration[k.order_2x_force_cosine_n] = r[5];
+		vibration[k.order_2x_force_sine_n] = r[6];
+		vibration[k.order_1x_force_peak_n] = r[7];
+		vibration[k.order_2x_force_peak_n] = r[8];
+		vibration[k.opportunity_frequency_hz] = r[9];
+		vibration[k.mean_successful_fire_rate_hz] = r[10];
+		vibration.make_read_only();
+		out[k.ok] = true;
+		out[k.family] = godot::String(family);
+		out[k.rpm] = v[0];
+		out[k.running] = frame[6] != 0.0 && running;
+		out[k.firing_fraction] = firing;
+		out[k.blade_count] = static_cast<int64_t>(frame[1]);
+		out[k.phase_revolutions] = v[6];
+		out[k.opportunity_count] = static_cast<int64_t>(v[9]);
+		out[k.fire_count] = static_cast<int64_t>(v[10]);
+		out[k.firing_accumulator] = v[11];
+		out[k.fuel_kg] = v[1];
+		out[k.source_vibration] = vibration;
+		// The snapshot adds these with `glow_state["key"] = ...`: String keys, unlike build()'s literal StringName keys.
+		out[k.max_rpm_text] = frame[2];
+		out[k.load_text] = frame[3];
+		out[k.throttle_text] = frame[4];
+		out[k.sample_tick_text] = static_cast<int64_t>(frame[5]);
+		return out;
+	}
+
+	// stage_glow_firing on raw arrays (NK-6n reads the bounded end state in place).
+	double glow_firing_at(const nk::R *body, const nk::R *values, int64_t count, double time_s) {
+		++glow_firing_calls_;
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !tick_.ready ||
+				count != static_cast<int64_t>(continuous_scratch_.size()) || !std::isfinite(time_s)) {
+			return nk::kNan;
+		}
+		nk::R state[kStateSize];
+		for (int i = 0; i < kStateSize; ++i) state[i] = body[i];
+		std::vector<nk::R> &scratch = continuous_scratch_;
+		for (int64_t i = 0; i < count; ++i) scratch[static_cast<size_t>(i)] = values[i];
+		const nk::StageResult result = nk::stage_evaluate(state, scratch.data(), static_cast<int>(count), time_s,
+			stage_, tick_, nullptr);
+		if (!result.shaped || !nk::is_finite(result.glow_firing_fraction)) return nk::kNan;
+		++glow_firing_answers_;
+		return result.glow_firing_fraction.v;
+	}
+
+	// NK-6n: GlowFlight.finish's steady-tick answer (nk_glow_finish.hpp) for given states, terms and endpoint firing
+	// fraction; empty where finish must run. For equivalence tests; the tick calls the same function.
+	PackedFloat64Array glow_steady_finish_component(const PackedFloat64Array &start, const PackedFloat64Array &end,
+			double dt, const PackedFloat64Array &terms, double firing) const {
+		if (terms.size() != nk::kGfTermCount || start.size() != end.size()) return PackedFloat64Array();
+		std::vector<nk::R> a(static_cast<size_t>(start.size())), b(static_cast<size_t>(end.size())), out;
+		for (int64_t i = 0; i < start.size(); ++i) a[static_cast<size_t>(i)] = start[i];
+		for (int64_t i = 0; i < end.size(); ++i) b[static_cast<size_t>(i)] = end[i];
+		if (!nk::glow_steady_finish(a, b, kStateSize, dt, terms.ptr(), firing, out)) return PackedFloat64Array();
+		return pack(out.data(), static_cast<int>(out.size()));
+	}
+
+	int64_t glow_finish_answers() const { return glow_finish_answers_; }
+
+	// NK-6e: GlowFlight.valid(values, install) and GlowFlight.mass_context(owner, values).ok for the prepared glow stage.
+	// The installation's own bounds arrive once from the session (prepare_glow_validity); the configuration guard keeps
+	// them. -1 refuses (not prepared); otherwise 1 valid or 0 invalid, as the reference decides.
+	bool prepare_glow_validity(const Dictionary &bounds) {
+		glow_validity_ = GlowValidity();
+		const char *names[] = {"max_rpm", "total_capacity_kg", "capacity_fuel_kg", "line_capacity_kg", "unusable_fuel_kg",
+				"cycle_revolutions"};
+		double read[6];
+		for (int i = 0; i < 6; ++i) {
+			const Variant value = bounds.get(String(names[i]), Variant());
+			if ((value.get_type() != Variant::FLOAT && value.get_type() != Variant::INT) || !std::isfinite(double(value))) return false;
+			read[i] = double(value);
+		}
+		const Variant has_line = bounds.get("has_line", Variant());
+		const Variant family_ok = bounds.get("family_ok", Variant());
+		if (has_line.get_type() != Variant::BOOL || family_ok.get_type() != Variant::BOOL) return false;
+		glow_validity_.max_rpm = read[0];
+		glow_validity_.total_capacity = read[1];
+		glow_validity_.capacity = read[2];
+		glow_validity_.line_capacity = read[3];
+		glow_validity_.unusable = read[4];
+		glow_validity_.cycle = read[5];
+		glow_validity_.has_line = bool(has_line);
+		glow_validity_.family_ok = bool(family_ok);
+		glow_validity_.ready = true;
+		return true;
+	}
+
+	// GlowFlight.valid: unpack's checks, Life._state_error(state, true), then valid's own bounds, in their order.
+	static bool glow_values_valid(const double *v, int64_t n, const GlowValidity &g) {
+		if (n < 19) return false;
+		for (int64_t i = 0; i < n; ++i) {
+			if (!std::isfinite(v[i])) return false;
+		}
+		if (!(v[7] == 0.0 || v[7] == 1.0) || v[8] != std::floor(v[8]) || v[8] < 0.0 || v[8] >= 7.0) return false;
+		if (!g.family_ok) return false;
+		const int64_t opportunities = static_cast<int64_t>(v[9]);
+		const int64_t fires = static_cast<int64_t>(v[10]);
+		if (opportunities < 0 || fires < 0 || fires > opportunities) return false;
+		if (v[11] < 0.0 || v[11] >= 1.0) return false;
+		if (v[2] <= 0.0 || v[6] < 0.0) return false;
+		if (v[1] < 0.0 || v[5] < 0.0 || v[3] < 0.0 || v[3] > 1.0 || v[4] < 0.0 || v[4] > 1.0) return false;
+		if (v[0] < 0.0 || v[0] > g.max_rpm.v || v[1] > g.total_capacity.v || v[12] < 0.0 || v[12] > 2.8) return false;
+		const nk::R line = v[17];
+		const nk::R main = nk::R(v[1]) - line;
+		const nk::R line_capacity = g.has_line ? g.line_capacity : nk::R(0.0);
+		if (!nk::is_finite(line) || line.v < 0.0 || line.v > line_capacity.v || main.v < 0.0 || main.v > g.capacity.v ||
+				v[18] != std::floor(v[18]) || v[18] < 0.0 || v[18] > 2.0) return false;
+		const nk::R residue = g.has_line ?
+			nk::R(4.0) * nk::R(nk::kFloat64Epsilon) * nk::maxf(nk::absf(nk::R(v[1])), nk::absf(line)) : nk::R(0.0);
+		if (main.v < g.unusable.v && (g.unusable - main).v > residue.v) return false;
+		if (!g.has_line && (line.v != 0.0 || v[18] == 2.0)) return false;
+		if (v[18] == 2.0 && line.v <= 0.0) return false;
+		const int64_t mode = static_cast<int64_t>(v[18]);
+		if (mode == 1 && main.v <= g.unusable.v) return false;
+		if (mode == 0 && v[7] == 1.0) return false;
+		if (v[6] < 0.0 || v[6] >= g.cycle.v || v[9] != std::floor(v[9]) || v[10] != std::floor(v[10])) return false;
+		return true;
+	}
+
+	int64_t stage_glow_mass_check(const PackedFloat64Array &values, bool with_mass) {
+		++glow_mass_calls_;
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !glow_validity_.ready) return -1;
+		const double *v = values.ptr();
+		const int64_t n = values.size();
+		if (n < 19) return 0;
+		if (!with_mass) return glow_values_valid(v, n, glow_validity_) ? 1 : 0;
+		// GlowFlight.mass_context: valid, the store bounds, then properties(total, line).ok.
+		const nk::R total = v[1];
+		const nk::R line = v[17];
+		const nk::R main = total - line;
+		const nk::R line_capacity = glow_validity_.has_line ? glow_validity_.line_capacity : nk::R(0.0);
+		if (!glow_values_valid(v, n, glow_validity_) || !nk::is_finite(total) || !nk::is_finite(line) || total.v < 0.0 ||
+				line.v < 0.0 || line.v > line_capacity.v || main.v < 0.0 || main.v > glow_validity_.capacity.v ||
+				total.v > glow_validity_.total_capacity.v || (!glow_validity_.has_line && line.v != 0.0)) return 0;
+		return nk::glow_raw_mass(stage_.glow, total, line).ok ? 1 : 0;
+	}
+
+	Dictionary tick_stats() const {
+		Dictionary out;
+		out["calls"] = tick_calls_;
+		out["glow_mass_calls"] = glow_mass_calls_;
+		out["terminal_calls"] = terminal_calls_;
+		out["terminal_quiet"] = terminal_quiet_;
+		out["hull_rows_calls"] = hull_rows_calls_;
+		out["hull_rows_answers"] = hull_rows_answers_;
+		out["answers"] = tick_answers_;
+		out["faults"] = tick_faults_;
+		out["glow_firing_calls"] = glow_firing_calls_;
+		out["glow_firing_answers"] = glow_firing_answers_;
+		out["substep_answers"] = substep_answers_;
+		out["substep_refined"] = substep_refined_;
 		return out;
 	}
 
@@ -1857,6 +4078,223 @@ public:
 			return PackedFloat64Array();
 		}
 		return pack(loads.data(), 6);
+	}
+
+	// NK-6h/6i: the geometry half of a quiet HullContact.terminal_at_properties: both states pass its input and
+	// attitude checks, and every hull point is out of reach, above ground or already touching before the tick, with
+	// none lake-covered or past the crash depth. The caller has checked the properties.
+	int64_t terminal_geometry_quiet(const PackedFloat64Array &previous, const PackedFloat64Array &s, double crash_depth) {
+		// terminal_at_properties' input checks.
+		nk::R before[kStateSize];
+		nk::R now[kStateSize];
+		load(previous, before);
+		load(s, now);
+		for (int i = 0; i < kStateSize; ++i) if (!nk::is_finite(before[i]) || !nk::is_finite(now[i])) return 0;
+		const nk::R q_norm = before[6] * before[6] + before[7] * before[7] + before[8] * before[8] + before[9] * before[9];
+		if (!nk::is_finite(q_norm) || nk::absf(q_norm - 1.0).v > 1.0e-9) return 0;
+		const nk::HullPrepared &hull = stage_.hull;
+		if ((-now[2]).v > hull.reach.v) {
+			++terminal_quiet_;
+			return 1;
+		}
+		const nk::R dn[3] = {2.0 * (now[7] * now[9] - now[6] * now[8]), 2.0 * (now[8] * now[9] + now[6] * now[7]),
+			1.0 - 2.0 * (now[7] * now[7] + now[8] * now[8])};
+		const nk::R db[3] = {2.0 * (before[7] * before[9] - before[6] * before[8]), 2.0 * (before[8] * before[9] + before[6] * before[7]),
+			1.0 - 2.0 * (before[7] * before[7] + before[8] * before[8])};
+		const bool lake_sampled = hull.lake.present && !nk::hull_clear_of_lake(now, hull);
+		const int count = static_cast<int>(hull.points.size() / 3);
+		for (int i = 0; i < count; ++i) {
+			const nk::R *r = &hull.points[static_cast<size_t>(i) * 3];
+			if (lake_sampled) {
+				const std::array<nk::R, 3> rotated = nk::q_rotate3(now + 6, r);
+				const std::array<nk::R, 3> point = {now[0] + rotated[0], now[1] + rotated[1], now[2] + rotated[2]};
+				if (nk::hull_lake_sample(hull, point).covered) return 0; // the lake's own terminal candidate
+			}
+			const nk::R depth = now[2] + dn[0] * r[0] + dn[1] * r[1] + dn[2] * r[2];
+			if (depth.v <= 0.0) continue;
+			if (depth.v > crash_depth) return 0;
+			const nk::R depth_before = before[2] + db[0] * r[0] + db[1] * r[1] + db[2] * r[2];
+			if (depth_before.v > 0.0) continue;
+			return 0; // a new penetration: the reference grades its impact energy
+		}
+		++terminal_quiet_;
+		return 1;
+	}
+
+	// NK-6l: the crash depth of the session's hull (HullContact.crash_depth of FlightSession._hull_contact) for the
+	// pre-tick guard's hull checks. Each installation prepares its own.
+	bool prepare_hull_guard(double crash_depth) {
+		hull_guard_ready_ = stage_ready_ && !heli_stage_ready_ && stage_.hull.present && std::isfinite(crash_depth);
+		hull_guard_crash_depth_ = crash_depth;
+		return hull_guard_ready_;
+	}
+
+	// NK-6l: the pre-tick guard's hull checks on the stage's hull. Bit 1: HullContact.terminal(previous, s, hull) must
+	// return no event (terminal_geometry_quiet: no point newly penetrates, lies deeper than the crash depth or meets
+	// the lake). Bit 2: HullContact.contacts(previous, s, hull) must return no contact (above the reach, or the lake
+	// out of reach and every point at or above the datum). 0: the reference answers both.
+	int64_t stage_hull_guard(const PackedFloat64Array &previous, const PackedFloat64Array &s) {
+		if (!hull_guard_ready_ || heli_stage_ready_ || !stage_ready_ || !stage_.hull.present || !read_state(previous) ||
+				!read_state(s)) return 0;
+		int64_t bits = terminal_geometry_quiet(previous, s, hull_guard_crash_depth_) == 1 ? 1 : 0;
+		nk::R now[kStateSize];
+		load(s, now);
+		for (int i = 0; i < 10; ++i) {
+			if (!nk::is_finite(now[i])) return bits;
+		}
+		const nk::HullPrepared &hull = stage_.hull;
+		if ((-now[2]).v > hull.reach.v) return bits | 2;
+		if (hull.lake.present && !nk::hull_clear_of_lake(now, hull)) return bits;
+		const nk::R dn[3] = {2.0 * (now[7] * now[9] - now[6] * now[8]), 2.0 * (now[8] * now[9] + now[6] * now[7]),
+			1.0 - 2.0 * (now[7] * now[7] + now[8] * now[8])};
+		const int count = static_cast<int>(hull.points.size() / 3);
+		for (int i = 0; i < count; ++i) {
+			const nk::R *r = &hull.points[static_cast<size_t>(i) * 3];
+			const nk::R depth = now[2] + dn[0] * r[0] + dn[1] * r[1] + dn[2] * r[2];
+			if (!(depth.v <= 0.0)) return bits;
+		}
+		return bits | 2;
+	}
+
+	// NK-6h: the session's hull crash depth (HullContact.crash_depth of its live geometry) and whether its fuel
+	// sample (FuelSample.build) accepts every in-range liquid amount, from the installation. The configuration guard
+	// refuses a tick after a later change.
+	bool prepare_liquid_terminal(double crash_depth, bool sample_static_ok) {
+		liquid_terminal_ready_ = stage_ready_ && !heli_stage_ready_ && stage_.liquid.ready && stage_.hull.present &&
+			stage_.hull.stiffness.empty() && std::isfinite(crash_depth) && sample_static_ok;
+		liquid_terminal_crash_depth_ = crash_depth;
+		return liquid_terminal_ready_;
+	}
+
+	// NK-6t: LiquidFlight.valid(owner, values) (not a trial) from the prepared liquid stage: 1 or 0 as the reference
+	// decides, -1 to use the reference. index is the session's liquid store index (_liquid_index()).
+	int64_t stage_liquid_store_valid(const PackedFloat64Array &values, int64_t index) const {
+		if (heli_stage_ready_ || !stage_ready_ || !stage_.liquid.ready) return -1;
+		if (index < 0 || values.size() != index + 2) return 0;
+		const double *v = values.ptr();
+		for (int64_t i = 0; i < values.size(); ++i) {
+			if (!std::isfinite(v[i])) return 0;
+		}
+		const double usable = v[index];
+		const double latch = v[index + 1];
+		const nk::R limit = stage_.liquid.capacity_kg - stage_.liquid.unusable_kg;
+		return ((latch == 0.0 || latch == 1.0) && usable >= 0.0 && usable <= limit.v && (usable != 0.0 || latch == 0.0)) ? 1 : 0;
+	}
+
+	// NK-6h: 1 when HullContact.terminal_at_properties(previous, s, live hull, the liquid contact sample at fraction 0)
+	// must answer {ok, no event}: the sample's properties are valid (the stage's own live mass for that store), the
+	// inputs pass its checks, and no hull point newly penetrates, lies deeper than the crash depth or meets the lake.
+	// 0 where the reference must evaluate. usable_before is the start store's usable fuel coordinate.
+	int64_t stage_liquid_terminal_quiet(const PackedFloat64Array &previous, const PackedFloat64Array &s, double usable_before) {
+		++terminal_calls_;
+		if (!liquid_terminal_ready_ || heli_stage_ready_ || !stage_ready_ || !stage_.liquid.ready || !stage_.hull.present ||
+				!stage_.hull.stiffness.empty() || !read_state(previous) || !read_state(s)) return 0;
+		const nk::LiquidStageModel &liquid = stage_.liquid;
+		const nk::R usable = usable_before;
+		if (!nk::is_finite(usable) || usable.v < 0.0 || usable.v > (liquid.capacity_kg - liquid.unusable_kg).v) return 0;
+		// LiquidFlight.contact_sampler at fraction 0: Liquid.properties of the clamped onboard store, as the stage does.
+		const nk::R onboard = nk::liquid_trial_onboard_mass(usable, liquid.unusable_kg, liquid.capacity_kg);
+		const nk::R inventory_usable = nk::liquid_inventory_usable_mass(onboard, liquid.unusable_kg, liquid.capacity_kg);
+		const size_t resource_count = liquid.mass.resources.size();
+		if (resource_count == 0 || static_cast<size_t>(liquid.bound_index) >= resource_count) return 0;
+		terminal_amounts_.resize(resource_count);
+		for (size_t i = 0; i < resource_count; ++i) terminal_amounts_[i] = liquid.mass.resources[i].reference_kg;
+		terminal_amounts_[static_cast<size_t>(liquid.bound_index)] = inventory_usable;
+		const nk::LiquidMassProperties p = nk::liquid_mass_evaluate(liquid.mass, terminal_amounts_.data(), static_cast<int>(resource_count));
+		if (!p.ok || nk::live_hull_properties_error(p)[0] != '\0') return 0;
+		return terminal_geometry_quiet(previous, s, liquid_terminal_crash_depth_);
+	}
+
+	// NK-6i: the glow counterpart of prepare_liquid_terminal. stores: [capacity_kg, unusable_kg] of the contact sample's
+	// tanks in its order (the main tank, then the feed line when installed); sample_static_ok: FuelSample.build accepts
+	// those tanks at both ends of each store's range.
+	bool prepare_glow_terminal(double crash_depth, const PackedFloat64Array &stores, bool sample_static_ok) {
+		glow_terminal_ready_ = stage_ready_ && !heli_stage_ready_ && stage_.glow.ready && stage_.hull.present &&
+			stage_.hull.stiffness.empty() && std::isfinite(crash_depth) && sample_static_ok &&
+			(stores.size() == 2 || stores.size() == 4);
+		glow_terminal_crash_depth_ = crash_depth;
+		glow_terminal_stores_.clear();
+		for (int64_t i = 0; glow_terminal_ready_ && i < stores.size(); ++i) {
+			if (!std::isfinite(stores[i])) glow_terminal_ready_ = false;
+			glow_terminal_stores_.push_back(stores[i]);
+		}
+		return glow_terminal_ready_;
+	}
+
+	// NK-6i: 1 when HullContact.terminal_at_properties for the glow contact sample at fraction 0 must answer
+	// {ok, no event}: GlowFlight.properties(total, line) from the prepared glow mass is valid, FuelSample.build accepts
+	// the main (total - line) and line amounts, and the geometry is quiet. 0 where the reference must evaluate.
+	int64_t stage_glow_terminal_quiet(const PackedFloat64Array &previous, const PackedFloat64Array &s, double total,
+			double line) {
+		++terminal_calls_;
+		if (!glow_terminal_ready_ || heli_stage_ready_ || !stage_ready_ || !stage_.glow.ready || !stage_.hull.present ||
+				!stage_.hull.stiffness.empty() || !read_state(previous) || !read_state(s)) return 0;
+		const nk::R total_r = total;
+		const nk::R line_r = line;
+		if (!nk::is_finite(total_r) || !nk::is_finite(line_r)) return 0;
+		// FuelSample.build's amount checks for {main: total - line, line: line}.
+		const nk::R amounts[2] = {total_r - line_r, line_r};
+		const int stores = static_cast<int>(glow_terminal_stores_.size() / 2);
+		if (stores == 1 && line_r.v != 0.0) return 0; // no feed line store: the sample records the main tank only
+		for (int k = 0; k < stores; ++k) {
+			const double capacity = glow_terminal_stores_[static_cast<size_t>(2 * k)];
+			const double unusable = glow_terminal_stores_[static_cast<size_t>(2 * k + 1)];
+			const double amount = amounts[k].v;
+			const double tolerance = capacity * 1.0e-9;
+			if (!std::isfinite(amount) || amount < 0.0 || capacity - amount < -tolerance || amount - unusable < -tolerance) {
+				return 0;
+			}
+		}
+		const nk::LiquidMassProperties p = nk::glow_raw_mass(stage_.glow, total_r, line_r);
+		if (!p.ok || nk::live_hull_properties_error(p)[0] != '\0') return 0;
+		return terminal_geometry_quiet(previous, s, glow_terminal_crash_depth_);
+	}
+
+	// NK-6f: the GP-19 endpoint diagnostics of HullContact.loads (properties empty: the prepared hull) or
+	// loads_at_properties (properties = [ok, mass, cg x3, inertia x6, inverse x6]: the geometry-only live hull) for the
+	// session's hull-scrape observation. Returns [1, n, then n x (index, f_up, f_n, f_e, vn, ve)], the reference's own
+	// values, or [0] where the reference must answer: a lake-covered sample (its structured diagnostics are
+	// unavailable), a refused live sample, or a hull of the other kind.
+	PackedFloat64Array stage_hull_scrape_rows(const PackedFloat64Array &s, const PackedFloat64Array &properties) {
+		++hull_rows_calls_;
+		PackedFloat64Array refuse;
+		refuse.push_back(0.0);
+		if (heli_stage_ready_ || !stage_ready_ || !read_state(s) || !stage_.hull.present) return refuse;
+		const bool live = !properties.is_empty();
+		if (live != stage_.hull.stiffness.empty() || (live && properties.size() != 17)) return refuse;
+		nk::R state[kStateSize];
+		load(s, state);
+		hull_diagnostics_.rows.clear();
+		hull_diagnostics_.covered = false;
+		if (live) {
+			const double *v = properties.ptr();
+			nk::LiquidMassProperties p;
+			p.ok = v[0] != 0.0;
+			p.mass_kg = v[1];
+			for (int i = 0; i < 3; ++i) p.cg[static_cast<size_t>(i)] = v[2 + i];
+			for (int i = 0; i < 6; ++i) {
+				p.inertia[static_cast<size_t>(i)] = v[5 + i];
+				p.inverse[static_cast<size_t>(i)] = v[11 + i];
+			}
+			if (!nk::hull_loads_at_properties(state, stage_.hull, p, &hull_diagnostics_).ok) return refuse;
+		} else {
+			std::array<nk::R, 6> loads;
+			nk::hull_loads(state, stage_.hull, loads, &hull_diagnostics_);
+		}
+		if (hull_diagnostics_.covered) return refuse;
+		hull_rows_scratch_.clear();
+		hull_rows_scratch_.push_back(1.0);
+		hull_rows_scratch_.push_back(static_cast<double>(hull_diagnostics_.rows.size()));
+		for (const nk::HullRow &row : hull_diagnostics_.rows) {
+			hull_rows_scratch_.push_back(static_cast<double>(row.index));
+			hull_rows_scratch_.push_back(row.f_up);
+			hull_rows_scratch_.push_back(row.f_n);
+			hull_rows_scratch_.push_back(row.f_e);
+			hull_rows_scratch_.push_back(row.vn);
+			hull_rows_scratch_.push_back(row.ve);
+		}
+		++hull_rows_answers_;
+		return pack(hull_rows_scratch_);
 	}
 
 	// FlightSession._ground_evaluation with the current tick context's aux.

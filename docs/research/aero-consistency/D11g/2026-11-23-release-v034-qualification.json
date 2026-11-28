@@ -1,0 +1,74 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-23",
+  "baseline_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "candidate_commit": "d8bcc0e85a9335ab370d6524a192d43a76ddc07c",
+  "candidate_overlay": "Project version 0.3.4 and two D11g guard renewals",
+  "actions_run_id": 45214051542,
+  "platform": "Linux x86_64 on GitHub Actions Ubuntu 24.04, with sequential checked imports and isolated profiles",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "imports": {
+    "baseline": "8e2a73a301803b68a0cf02b360128f3f4428ccfd4f08a64cb77a4ecb0812709e",
+    "candidate": "6f141875fc578c5f9c5f857c8d463c524bed0af081f2183976e60fca2a72258b"
+  },
+  "inventory": {
+    "source_counts": [
+      152,
+      152
+    ],
+    "unchanged": 151,
+    "qualified_sha256_before": "3dc6f62398e28b809aa8cfe39398c74d3d408d7d84070cfbb3b7ca2d8be3685f",
+    "qualified_sha256_after": "087df168cefe80a55126fb571281f586f8c7189baedaf22dcd3fdfd5c6114430",
+    "added": {},
+    "removed": {},
+    "changed": {
+      "app/project.godot": {
+        "lf_sha256_before": "7b103d2a435ccf59c0d4e97e8a219bbe167f73652a144d76c10a574fbdb6b2d2",
+        "lf_sha256_after": "443007203274760f74bc0af83cc69886c2d6372f8d9e9e42700738c4c1bca639"
+      }
+    }
+  },
+  "numerical_and_provenance_result": "Six reports agree outside the source inventory and expected data-check result.",
+  "checks": {
+    "baseline": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "b9824cc43c0f40c6d00033d9b4d247b71a5aa134f530534f2330ddab45c6a834",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "cee0438118d8b8e17930e833c1ae47553fb43d1416a471f8e93d2605ded12019",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "renewed": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "388d206fce8f0da55521f3ebdbf25f32684da66d05a26d57843933c8715b57ed",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "physics-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "159b394917c8c85cc4da6a4263efe2a66065d306ada015dc5e646be2552adbcb",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "version-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "74967759bd337409bbdbde06a73588bf59ba45902c8bf11174f16edb039c8d86",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "restored": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "388d206fce8f0da55521f3ebdbf25f32684da66d05a26d57843933c8715b57ed",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    }
+  },
+  "limits": "This records Linux provenance checks. The run concluded with a separate stale companion behavior-manifest failure after all six D11g checks and UID generation."
+}

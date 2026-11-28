@@ -4,7 +4,8 @@ assert expr="app.statistics_service.reset_counters('session')" message="start an
 fly aircraft=jensen-das-ugly-stik-60 start=airborne
 wait until="flight.session.sim.tick >= 300" timeout_s=120
 open screen=pause
-press text="Session options"
+# UI-40a: short windows fold the session tools under More options; open it so Statistics is found at any size.
+eval expr="app.pause_menu.set_more_options_open(true)"
 press text="Statistics"
 assert expr="screens.is_top('statistics') and app.statistics_service.query().started == 1" message="Pause opens the counted flight"
 key name=R

@@ -14,7 +14,7 @@ const SCHEMA := 1
 const RECONSTRUCTION_AUTO_KEY := "reconstruction_auto"
 const GPU_DEFAULTS_KEY := "gpu_defaults"
 const GPU_MANAGED_KEYS: Array[String] = ["msaa_3d", "shadow_quality", "shadow_technique", "shadow_distance",
-	"shadow_cloud", "birds", "runway_meadow", "aircraft_lighting_quality", "max_fps"]
+	"shadow_cloud", "birds", "runway_meadow", "aircraft_lighting_quality", "max_fps", "render_scale"]
 const WINDOW_MODES: Array[String] = ["windowed", "borderless"]
 const WINDOW_RESOLUTIONS: Array[String] = [
 	"auto", "1280x720", "1280x800", "1600x900", "1920x1080", "1920x1200",
@@ -23,6 +23,11 @@ const WINDOW_RESOLUTIONS: Array[String] = [
 const MAX_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120, 144, 165, 240]
 const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
+## GFX-IGPU-01: 3D render scale in percent for Native reconstruction (bilinear). FSR, DLSS and MetalFX keep their
+## own mode scales. On a UHD 630, 75 % took a minimal flight from 25 to 39 FPS (docs/research/god-test/
+## 2026-11-22-linux-uhd630-comparison.md).
+const RENDER_SCALES: Array[int] = [100, 85, 75, 67, 50]
+const DYNAMIC_RESOLUTION_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120]
 const NVIDIA_REFLEX_MODES: Array[String] = ["off", "on", "boost"]
 const RECONSTRUCTION_MODES: Array[String] = [
 	"auto", "native",
@@ -38,6 +43,8 @@ const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"
 const FLAG_ANIMATIONS: Array[String] = ["auto", "static", "basic", "detailed"]
 # SC-BIRD (birds-sky-life plan D2): mirrors scenery/birds/bird_director.gd PREFERENCES (test_birds.gd keeps them equal).
 const BIRD_LEVELS: Array[String] = ["off", "few", "normal", "many"]
+const TREE_DETAILS: Array[String] = ["off", "simple", "full"]
+const GROUND_DETAILS: Array[String] = ["simple", "full"]
 const LIGHTING_QUALITY_LEVELS: Array[String] = ["low", "standard", "high"]
 # L11a-R3: runway meadow plant colonies; mirrors scenery/runway_meadow.gd PREFERENCES.
 const RUNWAY_MEADOW_LEVELS: Array[String] = ["off", "on"]
@@ -50,9 +57,13 @@ const DEFAULTS := {
 	"vsync_mode": "enabled",
 	"msaa_3d": 2,
 	"reconstruction": "auto", # DT-MAC-07b: MetalFX Spatial on large Metal outputs, else Native
+	"render_scale": 100,
+	"dynamic_resolution_fps": 0,
 	"nvidia_reflex": "on",
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
+	"tree_detail": "full",
+	"ground_detail": "full",
 	"flag_animation": "auto",
 	"birds": "normal",
 	"runway_meadow": "on",
@@ -93,9 +104,9 @@ const DEFAULTS := {
 	"lens_clear_centre": LensSettings.DEFAULTS.lens_clear_centre,
 }
 const OPTIONAL_KEYS: Array[String] = [
-	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction",
+	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "tree_detail", "ground_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "render_scale",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
-	"fsr2_sharpness", "nvidia_reflex",
+	"fsr2_sharpness", "nvidia_reflex", "dynamic_resolution_fps",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
 	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness", "shadow_cloud",
@@ -191,7 +202,11 @@ func apply_gpu_defaults(fresh_install: bool) -> Error:
 	if fresh_install:
 		owned = _matching_gpu_defaults(recommended, recommended)
 	else:
+		var adaptive_ceiling := int(recommended.dynamic_resolution_fps) > 0 or int(config.dynamic_resolution_fps) > 0
 		for key: String in owned:
+			# Preserve the adaptive ceiling with its saved target, across renderer changes.
+			if key == "render_scale" and adaptive_ceiling:
+				continue
 			updated[key] = recommended[key]
 			owned[key] = recommended[key]
 	if not fresh_install and updated == config:
@@ -237,10 +252,11 @@ static func recommended_defaults() -> Dictionary:
 ## still equal recommended_defaults() (graphics_profile), so both use this one list. The physical RC circuit
 ## belongs to the flight scenario; restoring graphics must preserve its terrain and collision choice.
 static func graphics_default_keys() -> Array[String]:
-	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
-		"runway_meadow", "reconstruction", "fsr2_sharpness", "nvidia_reflex", "aircraft_lighting_quality"]
+	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "tree_detail", "ground_detail", "flag_animation", "birds",
+		"runway_meadow", "reconstruction", "render_scale", "dynamic_resolution_fps", "fsr2_sharpness", "nvidia_reflex", "aircraft_lighting_quality"]
 	for key: String in SHADOW_FILE_KEYS:
 		keys.append(key)
+	keys.append_array(["lens_effects", "lens_rain", "lens_grime", "impact_effects", "aircraft_lighting_show_vfx"])
 	return keys
 
 
@@ -266,10 +282,22 @@ static func graphics_profile(candidate: Variant) -> String:
 static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
 	for key: String in first_run_defaults:
 		var value: Variant = first_run_defaults[key]
-		if key in ["msaa_3d", "max_fps"] and typeof(value) == TYPE_INT \
-				and int(value) in (MSAA_3D_VALUES if key == "msaa_3d" else MAX_FPS_VALUES):
+		if key in ["msaa_3d", "max_fps", "render_scale"] and typeof(value) == TYPE_INT \
+				and int(value) in {"msaa_3d": MSAA_3D_VALUES, "max_fps": MAX_FPS_VALUES, "render_scale": RENDER_SCALES}[key]:
 			result[key] = int(value)
 		elif key in SHADOW_FILE_KEYS and value in ShadowSettings.CHOICES[key]:
+			result[key] = value
+		elif key == "scene_detail" and value in SCENE_DETAILS:
+			result[key] = value
+		elif key == "tree_detail" and value in TREE_DETAILS:
+			result[key] = value
+		elif key == "ground_detail" and value in GROUND_DETAILS:
+			result[key] = value
+		elif key == "flag_animation" and value in FLAG_ANIMATIONS:
+			result[key] = value
+		elif key in LENS_FILE_KEYS and _valid_lens_value(key, value):
+			result[key] = value
+		elif key == "aircraft_lighting_show_vfx" and value is bool:
 			result[key] = value
 		elif key == "birds" and value in BIRD_LEVELS:
 			result[key] = value
@@ -280,6 +308,8 @@ static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
 		elif key == "window_resolution" and value in WINDOW_RESOLUTIONS:
 			result[key] = value
 		elif key == "window_mode" and value in WINDOW_MODES:
+			result[key] = value
+		elif key == "dynamic_resolution_fps" and typeof(value) == TYPE_INT and value in DYNAMIC_RESOLUTION_FPS_VALUES:
 			result[key] = value
 	return result
 
@@ -307,9 +337,13 @@ static func _load_existing(file_path: String, result: Dictionary, owned_gpu_defa
 	raw.reconstruction = cfg.get_value("graphics", "reconstruction", DEFAULTS.reconstruction)
 	if raw.reconstruction == "native" and cfg.get_value("meta", RECONSTRUCTION_AUTO_KEY, false) != true:
 		raw.reconstruction = "auto"
+	raw.render_scale = cfg.get_value("graphics", "render_scale", DEFAULTS.render_scale)
+	raw.dynamic_resolution_fps = cfg.get_value("graphics", "dynamic_resolution_fps", DEFAULTS.dynamic_resolution_fps)
 	raw.nvidia_reflex = cfg.get_value("graphics", "nvidia_reflex", DEFAULTS.nvidia_reflex)
 	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
+	raw.tree_detail = cfg.get_value("graphics", "tree_detail", DEFAULTS.tree_detail)
+	raw.ground_detail = cfg.get_value("graphics", "ground_detail", DEFAULTS.ground_detail)
 	raw.flag_animation = cfg.get_value("graphics", "flag_animation", DEFAULTS.flag_animation)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
 	raw.runway_meadow = cfg.get_value("graphics", "runway_meadow", DEFAULTS.runway_meadow)
@@ -358,7 +392,14 @@ static func _load_existing(file_path: String, result: Dictionary, owned_gpu_defa
 	if checked.ok:
 		result.merge(checked.config, true)
 		if result.writable:
-			owned_gpu_defaults.merge(_matching_gpu_defaults(checked.config, cfg.get_value("meta", GPU_DEFAULTS_KEY, {})))
+			var stored_owned: Variant = cfg.get_value("meta", GPU_DEFAULTS_KEY, {})
+			# GFX-IGPU-01: a file that already follows recommendations but predates render_scale never chose it,
+			# so the recommendation may adopt it. Files without ownership metadata keep their values.
+			if stored_owned is Dictionary and not (stored_owned as Dictionary).is_empty() \
+					and not cfg.has_section_key("graphics", "render_scale"):
+				stored_owned = (stored_owned as Dictionary).duplicate()
+				stored_owned["render_scale"] = DEFAULTS.render_scale
+			owned_gpu_defaults.merge(_matching_gpu_defaults(checked.config, stored_owned))
 	else:
 		result.note = _append_note(result.note, "invalid display values were replaced with defaults")
 	return result
@@ -391,9 +432,13 @@ static func save_to(file_path: String, candidate: Dictionary, owned_gpu_defaults
 	cfg.set_value("graphics", "vsync_mode", checked.config.vsync_mode)
 	cfg.set_value("graphics", "msaa_3d", checked.config.msaa_3d)
 	cfg.set_value("graphics", "reconstruction", checked.config.reconstruction)
+	cfg.set_value("graphics", "render_scale", checked.config.render_scale)
+	cfg.set_value("graphics", "dynamic_resolution_fps", checked.config.dynamic_resolution_fps)
 	cfg.set_value("graphics", "nvidia_reflex", checked.config.nvidia_reflex)
 	cfg.set_value("graphics", "fsr2_sharpness", checked.config.fsr2_sharpness)
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
+	cfg.set_value("graphics", "tree_detail", checked.config.tree_detail)
+	cfg.set_value("graphics", "ground_detail", checked.config.ground_detail)
 	cfg.set_value("graphics", "flag_animation", checked.config.flag_animation)
 	cfg.set_value("graphics", "birds", checked.config.birds)
 	cfg.set_value("graphics", "runway_meadow", checked.config.runway_meadow)
@@ -439,6 +484,12 @@ static func validate(raw: Variant) -> Dictionary:
 	var reconstruction: Variant = raw.get("reconstruction", DEFAULTS.reconstruction)
 	if typeof(reconstruction) != TYPE_STRING or reconstruction not in RECONSTRUCTION_MODES:
 		errors.append("reconstruction must be a supported reconstruction mode")
+	var render_scale: Variant = raw.get("render_scale", DEFAULTS.render_scale)
+	if typeof(render_scale) != TYPE_INT or render_scale not in RENDER_SCALES:
+		errors.append("render_scale must be 100, 85, 75, 67 or 50")
+	var dynamic_resolution_fps: Variant = raw.get("dynamic_resolution_fps", DEFAULTS.dynamic_resolution_fps)
+	if typeof(dynamic_resolution_fps) != TYPE_INT or dynamic_resolution_fps not in DYNAMIC_RESOLUTION_FPS_VALUES:
+		errors.append("dynamic_resolution_fps must be Off or a supported frame target")
 	var reflex: Variant = raw.get("nvidia_reflex", DEFAULTS.nvidia_reflex)
 	if typeof(reflex) != TYPE_STRING or reflex not in NVIDIA_REFLEX_MODES:
 		errors.append("nvidia_reflex must be off, on or boost")
@@ -448,6 +499,12 @@ static func validate(raw: Variant) -> Dictionary:
 		errors.append("fsr2_sharpness must be finite and between 0 and 1")
 	if typeof(scene_detail) != TYPE_STRING or scene_detail not in SCENE_DETAILS:
 		errors.append("scene_detail must be auto, low, medium, high or extreme")
+	var tree_detail: Variant = raw.get("tree_detail", DEFAULTS.tree_detail)
+	if typeof(tree_detail) != TYPE_STRING or tree_detail not in TREE_DETAILS:
+		errors.append("tree_detail must be off, simple or full")
+	var ground_detail: Variant = raw.get("ground_detail", DEFAULTS.ground_detail)
+	if typeof(ground_detail) != TYPE_STRING or ground_detail not in GROUND_DETAILS:
+		errors.append("ground_detail must be simple or full")
 	var flag_animation: Variant = raw.get("flag_animation", DEFAULTS.flag_animation)
 	if typeof(flag_animation) != TYPE_STRING or flag_animation not in FLAG_ANIMATIONS:
 		errors.append("flag_animation must be auto, static, basic or detailed")
@@ -492,9 +549,13 @@ static func validate(raw: Variant) -> Dictionary:
 		"vsync_mode": vsync_mode,
 		"msaa_3d": msaa_3d,
 		"reconstruction": reconstruction,
+		"render_scale": render_scale,
+		"dynamic_resolution_fps": dynamic_resolution_fps,
 		"nvidia_reflex": reflex,
 		"fsr2_sharpness": float(sharpness),
 		"scene_detail": scene_detail,
+		"tree_detail": tree_detail,
+		"ground_detail": ground_detail,
 		"flag_animation": flag_animation,
 		"birds": birds,
 		"runway_meadow": runway_meadow,

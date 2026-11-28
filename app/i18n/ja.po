@@ -13656,8 +13656,8 @@ msgstr "操作をキャンセルする"
 msgid "Cancelled."
 msgstr "キャンセルしました。"
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "Phoenixの風景ファイルやフォルダーを選択するか、保存済みのプレビューを開きます。"
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "Phoenix RC シミュレーターの風景ファイルやフォルダーを選択するか、保存済みのプレビューを開きます。"
 
 msgid "Choose a scenery file"
 msgstr "風景ファイルを選択"
@@ -13695,8 +13695,8 @@ msgstr "パネル %d の方を見る"
 msgid "No Phoenix scenery descriptors were found."
 msgstr "Phoenixの風景記述子が見つかりませんでした。"
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "このソースにPhoenixの風景は見つかりませんでした。"
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "このソースに Phoenix RC の風景は見つかりませんでした。"
 
 msgid "Opening preview…"
 msgstr "プレビューを開いています…"
@@ -13842,5 +13842,203 @@ msgstr "滑走路から離陸できる飛行機を選んでください。"
 msgid "Preparing panorama"
 msgstr "パノラマを準備中"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "基本のグラフィック設定を使用しています。「設定」>「グラフィック」で画質を上げられます。"
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "基本のグラフィック設定を使用しています。「設定」>「グラフィック」で画質を、「設定」>「画面」で3D描画スケールを上げられます。"
+
+msgid "3D render scale"
+msgstr "3D描画スケール"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "3D ビューを低い解像度で描画して拡大します。値を下げると内蔵グラフィックスでフレームレートが上がりますが、画像はやわらかくなります。"
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR、DLSS、MetalFX は独自の描画スケールを使います。ネイティブ再構成に戻すと、選んだ値が再び使われます。"
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "このコンピューター用にグラフィックを準備しています。時間がかかるのは初回起動時だけです。"
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "このコンピューターでの初回フライト用にグラフィックを準備しています。次回以降のフライトはより速く読み込まれます。"
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "シミュレーターが滑らかに動作するよう、お使いの GPU に合わせて負荷の軽いグラフィック設定を選びました。描画の詳細度は最低レベルから始まります。「設定 ＞ グラフィック」で項目を一つずつ上げ、動作の滑らかさを確認してください。"
+
+msgid "Tree detail"
+msgstr "樹木の詳細度"
+
+msgid "Ground detail"
+msgstr "地面の詳細度"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "樹木の描画だけを変更します。飛行場と物理的な障害物はそのままです。"
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "草の陰影を簡略化しながら、滑走路の標示と地形の目印を残します。"
+
+msgid "Simple"
+msgstr "簡易"
+
+msgid "THIS FLIGHT"
+msgstr "このフライト"
+
+msgid "Radio & controls"
+msgstr "送信機と操作"
+
+msgid "Radio & controls · %s"
+msgstr "送信機と操作 · %s"
+
+msgid "not connected"
+msgstr "未接続"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "送信機またはゲームパッドの設定、キャリブレーション、テスト。"
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "時間 %s · 高度 %s · 対気速度 %s"
+
+msgid "Back to the start with the same setup."
+msgstr "同じ設定でスタート地点に戻ります。"
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "このフライトを終了し、機体カタログを開きます。"
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "ポーズ：機体の変更、ホームに戻る、またはこのフライトの調整。"
+
+msgid "Reference flight model."
+msgstr "基準となる飛行モデルです。"
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "実験的：推定した物理特性で、まだ実機と比較されていません。"
+
+msgid "Model only; it cannot fly yet."
+msgstr "モデルのみで、まだ飛行できません。"
+
+msgid "About"
+msgstr "このソフトについて"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "クラブフィールドでは、Ugly Stikの僚機が1～3機、実験的に周回飛行します。初期設定ではオフです。まずは1機から始めてください。ホーム → フライト詳細 → 僚機、または一時停止メニューから開けます。"
+
+msgid "FLIGHT COMPANIONS"
+msgstr "僚機"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "送信機またはゲームパッドを接続"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. USB または Bluetooth で接続します。EdgeTX 送信機では USB Joystick (Classic) を選び、RF をオフにします。"
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. 「フライトコントローラー」で選びます。"
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. 「このデバイスを設定…」を押して、スティックモード、校正、ライブテスト、主なスイッチを設定します。"
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "以前のバージョンのプロファイルを復元するか、不具合報告用に診断情報を書き出します。"
+
+msgid "HANGAR"
+msgstr "格納庫"
+
+msgid "Airplanes"
+msgstr "飛行機"
+
+msgid "Helicopters"
+msgstr "ヘリコプター"
+
+msgid "Drones"
+msgstr "ドローン"
+
+msgid "Airships"
+msgstr "飛行船"
+
+msgid "Cars & trucks"
+msgstr "カー・トラック"
+
+msgid "Search by name"
+msgstr "名前で検索"
+
+msgid "%d of %d"
+msgstr "%d / %d"
+
+msgid "%d vehicles"
+msgstr "%d 機種"
+
+msgid "No vehicle matches this search."
+msgstr "検索に一致する機体はありません。"
+
+msgid "Hangar"
+msgstr "格納庫"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "押すと次の風プリセットに切り替わります。正確な値、乱気流、空気は「条件」で設定します。"
+
+msgid "Applies to the next flight"
+msgstr "次の飛行に適用"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "平均風速。小型トレーナー機は約 6 m/s を超えると苦戦します。"
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "風が吹いてくる方向：090° は東からです。"
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "平均風速に上乗せされる各突風の速度。"
+
+msgid "Rising or sinking air inside each gust."
+msgstr "各突風に含まれる上昇気流または下降気流。"
+
+msgid "How long each gust lasts."
+msgstr "各突風の継続時間。"
+
+msgid "Time from the start of one gust to the next."
+msgstr "ある突風の開始から次の突風までの時間。"
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "プリセットを選ぶか値を変更します。「適用」で次の飛行に使い、「キャンセル」で破棄します。"
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "風速と風向を入力すると滑走路上に表示されます。"
+
+msgid "Calm: no steady wind on the runway."
+msgstr "無風：滑走路に一定の風はありません。"
+
+msgid "headwind %s m/s"
+msgstr "向かい風 %s m/s"
+
+msgid "tailwind %s m/s"
+msgstr "追い風 %s m/s"
+
+msgid "crosswind %s m/s from the right"
+msgstr "右からの横風 %s m/s"
+
+msgid "crosswind %s m/s from the left"
+msgstr "左からの横風 %s m/s"
+
+msgid "no crosswind"
+msgstr "横風なし"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "%03.0f° から %s m/s。"
+
+msgid "Runway start: %s, %s."
+msgstr "滑走路スタート：%s、%s。"
+
+msgid "Time & sky"
+msgstr "時刻と空"
+
+msgid "Ahead"
+msgstr "前"
+
+msgid "Behind"
+msgstr "後ろ"
+
+msgid "Left"
+msgstr "左"
+
+msgid "Sky"
+msgstr "空"
+
+msgid "Ground"
+msgstr "地面"

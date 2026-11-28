@@ -36,11 +36,19 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var gear_contacts: Array = gear.get("contacts", [])
 	if gear_contacts.is_empty():
 		return contacts_out
-	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")	
-	var lake_value: Variant = session.get("_lake")
-	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
+	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")
 	var track_value: Variant = session.get("_rc_track")
 	var track: Dictionary = track_value if track_value is Dictionary else {}
+	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
+	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
+	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
+	# NK-7h: tested before the loaded rows' inputs below, which the unloaded rows never read.
+	if _clear_of_ground(state, gear, ground_surfaces, track):
+		return _unloaded_rows(gear_contacts, state,
+			M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]),
+			M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]), state.slice(RB.RATE, RB.RATE + 3), reference_load)
+	var lake_value: Variant = session.get("_lake")
+	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
 	var steer: float = auxiliary[3]
 	var wheel_count: int = int(session.call("wheel_count")) if session.has_method("wheel_count") else 0
 	var wheel_index: int = int(session.call("wheel_index")) if session.has_method("wheel_index") else 0
@@ -55,14 +63,22 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var attitude := M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
 	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
 	var body_rate := state.slice(RB.RATE, RB.RATE + 3)
-	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
-	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
-	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
-	if _clear_of_ground(state, gear, ground_surfaces, track):
-		return _unloaded_rows(gear_contacts, state, attitude, base_velocity, body_rate, reference_load)
 	var wheel_evaluation: Dictionary = {}
+	# NK-6o: the session's native stage may answer Ground.evaluate's diagnostics and each wheel's frame for the endpoint
+	# it published, with the same values; otherwise they are evaluated here.
+	var rows := PackedFloat64Array()
 	if wheel_count > 0:
-		wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake, track)
+		# NK-7j: the native stage may also build this observation's rows from its wheel rows, with the same values;
+		# NK-7k: beyond the terrain's reach ([0] wheel rows), from each contact's wheel frame.
+		var answer: Array = _native_answer(session, state, steer, anchors, speeds, brake, gear_contacts, reference_load)
+		if answer.size() == 1 + gear_contacts.size():
+			contacts_out.assign(answer.slice(1))
+			return contacts_out
+		rows = _checked_rows(answer[0], gear_contacts.size()) if answer.size() == 1 \
+			else _native_rows(session, state, steer, anchors, speeds, brake, gear_contacts.size())
+		if rows.is_empty():
+			wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake, track)
+	var native_rows: bool = rows.size() > 1
 	var wheel_diagnostics: Array = wheel_evaluation.get("wheels", [])
 	var environment := session.get("environment") as RefCounted
 	var time_s: float = sim.time()
@@ -70,13 +86,14 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 		var contact: Dictionary = gear_contacts[index]
 		if not contact.has("position"):
 			continue
-		var frame: Dictionary = Wheels.frame(state, contact, steer, ground_surfaces, PackedFloat64Array(), true, lake, track)
-		var arm: PackedFloat64Array = contact.position
-		var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
-		var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
-		var normal: PackedFloat64Array = frame.get("normal", PackedFloat64Array([0.0, 0.0, -1.0]))
-		var approach_speed: float = maxf(0.0, -M.dot(point_velocity, normal))
-		var wheel_diag: Dictionary = wheel_diagnostics[index] if index < wheel_diagnostics.size() else {}
+		var kinematics := _row_kinematics(rows, index, contact, attitude, base_velocity, body_rate) if native_rows \
+			else _contact_kinematics(state, contact, steer, ground_surfaces, lake, track, attitude, base_velocity, body_rate)
+		var frame: Dictionary = kinematics.frame
+		var point_velocity: PackedFloat64Array = kinematics.point_velocity
+		var normal: PackedFloat64Array = kinematics.normal
+		var approach_speed: float = kinematics.approach_speed
+		var wheel_diag: Dictionary = _row_diagnostics(rows, index) if native_rows \
+			else (wheel_diagnostics[index] if index < wheel_diagnostics.size() else {})
 		var force_ned := PackedFloat64Array([0.0, 0.0, 0.0])
 		var rim_speed: float = 0.0
 		if wheel_count > 0 and not wheel_diag.is_empty():
@@ -125,6 +142,137 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	return contacts_out
 
 
+## NK-6o: the session's native wheel rows for this observation: [1, n, rows] (n == contacts), [0] where the reference
+## has no diagnostics, or empty to evaluate Ground.evaluate here.
+static func _native_rows(session: Node, state: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, contacts: int) -> PackedFloat64Array:
+	if not session.has_method("published_wheel_rows"):
+		return PackedFloat64Array()
+	return _checked_rows(session.call("published_wheel_rows", state, steer, anchors, speeds, brake), contacts)
+
+
+## A native wheel-row answer in its accepted shapes ([0], or [1, n, rows] with n == contacts); empty otherwise.
+static func _checked_rows(rows: PackedFloat64Array, contacts: int) -> PackedFloat64Array:
+	if rows.size() == 1 and rows[0] == 0.0:
+		return rows
+	if rows.size() == 2 + contacts * WHEEL_ROW_SIZE and rows[0] == 1.0 and int(rows[1]) == contacts:
+		return rows
+	return PackedFloat64Array()
+
+
+## NK-7j: the session's combined answer for this observation (FlightSession.published_wheel_audio_rows): [wheel rows,
+## loaded rows...], [wheel rows] or empty. Every contact must carry a three-value position (one wheel row per contact);
+## otherwise empty, and the wheel rows come from _native_rows.
+static func _native_answer(session: Node, state: PackedFloat64Array, steer: float, anchors: PackedFloat64Array,
+		speeds: PackedFloat64Array, brake: float, gear_contacts: Array, reference_load: float) -> Array:
+	if not session.has_method("published_wheel_audio_rows"):
+		return []
+	var arms := PackedFloat64Array()
+	var ids := PackedStringArray()
+	for index: int in gear_contacts.size():
+		var contact: Dictionary = gear_contacts[index]
+		var arm: Variant = contact.get("position")
+		if not arm is PackedFloat64Array or (arm as PackedFloat64Array).size() != 3:
+			return []
+		arms.append_array(arm)
+		ids.append(str(contact.get("name", "gear_%d" % index)))
+	var answer: Array = session.call("published_wheel_audio_rows", state, steer, anchors, speeds, brake, arms, ids,
+		reference_load)
+	return answer if not answer.is_empty() and answer[0] is PackedFloat64Array else []
+
+
+## Values per native wheel row (nk::kWheelRowSize).
+const WHEEL_ROW_SIZE := 18
+
+
+## Ground.evaluate's diagnostics fields this observation reads, from a native row.
+static func _row_diagnostics(rows: PackedFloat64Array, index: int) -> Dictionary:
+	var at: int = 2 + index * WHEEL_ROW_SIZE
+	return {normal_load = rows[at], longitudinal_force = rows[at + 1], lateral_force = rows[at + 2], rim_speed = rows[at + 3]}
+
+
+## _contact_kinematics from a native row: the same frame values (Wheels.frame), point velocity and approach speed.
+static func _row_kinematics(rows: PackedFloat64Array, index: int, contact: Dictionary, attitude: PackedFloat64Array,
+		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array) -> Dictionary:
+	var at: int = 2 + index * WHEEL_ROW_SIZE
+	var normal := PackedFloat64Array([rows[at + 8], rows[at + 9], rows[at + 10]])
+	var frame := {compression = rows[at + 4], position = PackedFloat64Array([rows[at + 5], rows[at + 6], rows[at + 7]]),
+		normal = normal, heading = PackedFloat64Array([rows[at + 11], rows[at + 12], rows[at + 13]]),
+		side = PackedFloat64Array([rows[at + 14], rows[at + 15], rows[at + 16]]), long_speed = rows[at + 17]}
+	var arm: PackedFloat64Array = contact.position
+	var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
+	var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
+	return {frame = frame, point_velocity = point_velocity, normal = normal,
+		approach_speed = maxf(0.0, -M.dot(point_velocity, normal))}
+
+
+## One row's wheel frame, point velocity (NED), surface normal and approach speed.
+static func _contact_kinematics(state: PackedFloat64Array, contact: Dictionary, steer: float,
+		ground_surfaces: PackedFloat64Array, lake: Dictionary, track: Dictionary, attitude: PackedFloat64Array,
+		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array) -> Dictionary:
+	var frame: Dictionary = Wheels.frame(state, contact, steer, ground_surfaces, PackedFloat64Array(), true, lake, track)
+	var arm: PackedFloat64Array = contact.position
+	var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
+	var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
+	var normal: PackedFloat64Array = frame.get("normal", PackedFloat64Array([0.0, 0.0, -1.0]))
+	return {frame = frame, point_velocity = point_velocity, normal = normal,
+		approach_speed = maxf(0.0, -M.dot(point_velocity, normal))}
+
+
+## The approach_speed_mps of snapshot_contacts()'s near-ground rows, by the same arithmetic, without loads or
+## material queries; `identities` receives the rows' ids in order. Empty where snapshot_contacts() has no near-ground
+## rows (no gear or state, or clear of the ground). For FlightAudio's ticks between ground observations.
+static func approach_speeds(session: Node, identities: PackedStringArray) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	identities.clear()
+	if session == null or not session.has_method("current_landing_gear"):
+		return out
+	var sim: Variant = session.get("sim")
+	if sim == null:
+		return out
+	var state: PackedFloat64Array = sim.state
+	var auxiliary: PackedFloat64Array = sim.aux
+	if state.size() < RB.SIZE or auxiliary.size() < 4:
+		return out
+	var gear: Dictionary = session.call("current_landing_gear", auxiliary)
+	var gear_contacts: Array = gear.get("contacts", [])
+	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")
+	var lake_value: Variant = session.get("_lake")
+	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
+	var track_value: Variant = session.get("_rc_track")
+	var track: Dictionary = track_value if track_value is Dictionary else {}
+	if gear_contacts.is_empty() or _clear_of_ground(state, gear, ground_surfaces, track):
+		return out
+	var steer: float = auxiliary[3]
+	# NK-7k: the native stage answers the same speeds from its wheel frames when every contact has a position.
+	if session.has_method("published_approach_speeds"):
+		var arms := PackedFloat64Array()
+		var ids := PackedStringArray()
+		for index: int in range(gear_contacts.size()):
+			var arm: Variant = (gear_contacts[index] as Dictionary).get("position")
+			if not arm is PackedFloat64Array or (arm as PackedFloat64Array).size() != 3:
+				arms.clear()
+				break
+			arms.append_array(arm)
+			ids.append(str((gear_contacts[index] as Dictionary).get("name", "gear_%d" % index)))
+		if not arms.is_empty():
+			var native: PackedFloat64Array = session.call("published_approach_speeds", state, steer, arms)
+			if native.size() == ids.size():
+				identities.append_array(ids)
+				return native
+	var attitude := M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
+	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
+	var body_rate := state.slice(RB.RATE, RB.RATE + 3)
+	for index: int in range(gear_contacts.size()):
+		var contact: Dictionary = gear_contacts[index]
+		if not contact.has("position"):
+			continue
+		identities.append(str(contact.get("name", "gear_%d" % index)))
+		out.append(float(_contact_kinematics(state, contact, steer, ground_surfaces, lake, track, attitude, base_velocity,
+			body_rate).approach_speed))
+	return out
+
+
 ## VQ-01c-R1: true when snapshot_contacts() would return unloaded far rows for the accepted state, so no
 ## wheel can load within FAR_HORIZON_S. Cheap enough to ask on every accepted tick.
 static func wheels_clear_of_ground(session: Node) -> bool:
@@ -141,6 +289,25 @@ static func wheels_clear_of_ground(session: Node) -> bool:
 	return _clear_of_ground(sim.state, gear, session.get("ground_surfaces"), track)
 
 
+## NK-7f hook: false builds the airborne rows in GDScript.
+static var native_rows_enabled := true
+static var _rows_native: Object = null
+
+
+static func _rows_kernel() -> Object:
+	if not native_rows_enabled:
+		return null
+	if _rows_native == null:
+		if not ClassDB.class_exists(&"OpenRCNativeKernel"):
+			return null
+		var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+		if kernel == null or not kernel.has_method(&"audio_unloaded_rows"):
+			native_rows_enabled = false
+			return null
+		_rows_native = kernel
+	return _rows_native
+
+
 static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground_surfaces: PackedFloat64Array,
 		track: Dictionary = {}) -> bool:
 	return Terrain.is_valid_surface_table(ground_surfaces) and -state[RB.POS + 2] > float(gear.get("reach", INF)) \
@@ -153,6 +320,25 @@ static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground
 static func _unloaded_rows(gear_contacts: Array, state: PackedFloat64Array, attitude: PackedFloat64Array,
 		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array, reference_load: float) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
+	# NK-7f: the kernel builds the same rows (nk_audio_rows.hpp) from the state; otherwise they are built here.
+	var kernel := _rows_kernel()
+	if kernel != null:
+		var arms := PackedFloat64Array()
+		var ids := PackedStringArray()
+		var well_formed := true
+		for index: int in range(gear_contacts.size()):
+			var contact: Dictionary = gear_contacts[index]
+			if not contact.has("position"):
+				continue
+			var arm: PackedFloat64Array = contact.position
+			well_formed = well_formed and arm.size() == 3
+			arms.append_array(arm)
+			ids.append(str(contact.get("name", "gear_%d" % index)))
+		if well_formed:
+			rows.assign(kernel.audio_unloaded_rows(state, arms, ids, reference_load))
+			if rows.size() == ids.size():
+				return rows
+			rows.clear()
 	var origin := M.v3(state[RB.POS], state[RB.POS + 1], state[RB.POS + 2])
 	for index: int in range(gear_contacts.size()):
 		var contact: Dictionary = gear_contacts[index]

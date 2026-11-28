@@ -105,7 +105,7 @@ static func detail_asset(north: float, east: float, front_azimuth: float,
 
 
 static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: float = NAN,
-		half_angle_deg: float = DETAIL_HALF_ANGLE_DEG) -> Node3D:
+		half_angle_deg: float = DETAIL_HALF_ANGLE_DEG, card_slots: Array = []) -> Node3D:
 	ShaderClock.register() # standalone fields/exported packs must not depend on main.gd initialization
 	var result: Node3D = Node3D.new()
 	result.name = object_data.id
@@ -131,15 +131,16 @@ static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: flo
 	for _index: int in SECTORS:
 		near_groups.append([])
 		far_groups.append([])
-	for point: Array in object_data.positions:
+	for tree_index in object_data.positions.size():
+		var point: Array = object_data.positions[tree_index]
 		if not detail_asset(point[0], point[1], front_azimuth, half_angle_deg).is_empty():
 			continue
 		var group_index: int = sector(point[0], point[1])
 		var radius: float = sqrt(float(point[0]) * float(point[0]) + float(point[1]) * float(point[1]))
 		if radius <= FAR_RING_START_M:
-			near_groups[group_index].append(point)
+			near_groups[group_index].append(tree_index)
 		else:
-			far_groups[group_index].append(point)
+			far_groups[group_index].append(tree_index)
 	for index: int in SECTORS:
 		var near_points: Array = near_groups[index]
 		var far_points: Array = far_groups[index]
@@ -154,11 +155,15 @@ static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: flo
 		multimesh.instance_count = points.size()
 		var bounds: AABB = AABB()
 		for instance: int in points.size():
-			var p: Array = points[instance]
+			var tree_index: int = points[instance]
+			var p: Array = object_data.positions[tree_index]
 			var origin: Vector3 = Frames.ned_to_render(p)
 			multimesh.set_instance_transform(instance, Transform3D(Basis.IDENTITY, origin))
 			multimesh.set_instance_custom_data(instance, packed_position(p[0], p[1]))
 			var shape: Dictionary = identity(p[0], p[1])
+			if not card_slots.is_empty():
+				card_slots[tree_index] = {batch = multimesh, slot = instance, origin = origin, height = shape.height,
+					asset = DETAIL_ASSETS[shape.species], placement = Transform3D(Basis(Vector3.UP, -float(shape.yaw)), origin)}
 			var frame: float = sizes[int(shape.species)]
 			var height: float = shape.height
 			# Enclose every rotated card vertex, including transparent below-ground padding.

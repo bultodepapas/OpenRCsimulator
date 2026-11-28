@@ -847,9 +847,9 @@ func _pause_preview() -> void:
 	_check("Home flights do not create a camera marker by default", patch == null and not Preferences.load_from(PREFS).latency_marker)
 	await ui.tap(KEY_ESCAPE)
 	_check("pause hides the overlays", overlays != null and not overlays.visible)
-	app.pause_menu.session_options_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	_check("Session options reveals the Flight overlays action",
+	app.pause_menu.set_more_options_open(true) # UI-40a: short windows fold Flight overlays under More options
+	await ui.settle()
+	_check("Pause shows the Flight overlays action",
 		app.pause_menu.session_options_container.visible and app.pause_menu.overlays_button.is_visible_in_tree())
 	app.pause_menu.overlays_button.grab_focus()
 	await ui.tap(KEY_ENTER)
@@ -866,9 +866,7 @@ func _pause_preview() -> void:
 	_check("closing the dialog hides them again under the pause menu", app.pause_menu != null and not overlays.visible
 		and overlays.layer == Manager.FLIGHT_LAYER and app.pause_menu.visible)
 	_check("focus returns to the pause menu's Flight overlays button", ui.focus_name() == "Overlays", ui.focus_name())
-	await ui.tap(KEY_ESCAPE) # Back first closes Session options.
-	_check("Back closes Session options before returning to the flight",
-		app.pause_menu != null and not app.pause_menu.session_options_container.visible)
+	app.pause_menu.set_more_options_open(false)
 	await ui.tap(KEY_ESCAPE) # Continue
 	await ui.settle()
 	_check("continue shows them at the flight layer", overlays.visible and overlays.layer == Manager.FLIGHT_LAYER)

@@ -12,6 +12,8 @@ var _failures := 0
 func _initialize() -> void:
 	_run()
 	_test_gpu_defaults()
+	_test_independent_field_details()
+	_test_dynamic_resolution_gpu_defaults()
 	_reset()
 	print("display preferences checks=%d failures=%d" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -87,6 +89,43 @@ func _run() -> void:
 		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 		candidate.msaa_3d = msaa_3d
 		_check("MSAA mode %d is accepted" % msaa_3d, DisplayPreferences.validate(candidate).ok)
+	# GFX-IGPU-01: render scale defaults to full resolution, round-trips, and rejects other values.
+	_check("render scale defaults to full resolution", DisplayPreferences.DEFAULTS.render_scale == 100
+		and migrated.render_scale == 100)
+	_check("a legacy profile keeps dynamic resolution off", migrated.dynamic_resolution_fps == 0)
+	var adaptive := DisplayPreferences.DEFAULTS.duplicate()
+	adaptive.dynamic_resolution_fps = 60
+	_check("an explicit dynamic resolution target survives a reload",
+		DisplayPreferences.save_to(PREFS, adaptive) == OK and DisplayPreferences.load_from(PREFS).dynamic_resolution_fps == 60)
+	adaptive.dynamic_resolution_fps = 47
+	_check("an unsupported dynamic resolution target is refused", not DisplayPreferences.validate(adaptive).ok)
+	for percent: int in DisplayPreferences.RENDER_SCALES:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.render_scale = percent
+		_check("render scale %d round trips" % percent, DisplayPreferences.save_to(PREFS, candidate) == OK
+			and DisplayPreferences.load_from(PREFS).render_scale == percent)
+	for invalid_scale: Variant in [60, 0, 120, 0.75, "75", null]:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.render_scale = invalid_scale
+		_check("render scale %s is rejected" % str(invalid_scale), not DisplayPreferences.validate(candidate).ok)
+	var bad_scale_file := ConfigFile.new()
+	bad_scale_file.set_value("meta", "schema", 1)
+	bad_scale_file.set_value("graphics", "render_scale", 33)
+	bad_scale_file.set_value("graphics", "msaa_3d", 0)
+	_check("bad render scale fixture saves", bad_scale_file.save(PREFS) == OK)
+	var bad_scale_load := DisplayPreferences.load_from(PREFS)
+	_check("an invalid saved render scale falls back alone", bad_scale_load.render_scale == 100 and bad_scale_load.msaa_3d == 0)
+	_check("render scale belongs to the graphics defaults", "render_scale" in DisplayPreferences.graphics_default_keys()
+		and "render_scale" in DisplayPreferences.GPU_MANAGED_KEYS)
+	var saved_first_run: Dictionary = DisplayPreferences.first_run_defaults.duplicate(true)
+	DisplayPreferences.first_run_defaults = {"render_scale": 75, "msaa_3d": 0}
+	var recommended_scale := DisplayPreferences.recommended_defaults()
+	DisplayPreferences.first_run_defaults = {"render_scale": 60}
+	var rejected_recommendation := DisplayPreferences.recommended_defaults()
+	DisplayPreferences.first_run_defaults = saved_first_run
+	_check("a first-run render scale becomes the recommended default", recommended_scale.render_scale == 75
+		and recommended_scale.msaa_3d == 0)
+	_check("an unsupported first-run render scale is ignored", rejected_recommendation.render_scale == 100)
 
 	var invalid_window_mode: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 	_check("legacy reconstruction defaults to auto", migrated.reconstruction == "auto")
@@ -450,6 +489,106 @@ func _test_gpu_defaults() -> void:
 	DisplayPreferences.first_run_defaults = flagship
 	_check("a legacy profile keeps all saved fields and bytes until it opts in",
 		legacy.apply_gpu_defaults(false) == OK and legacy.config == store.config and FileAccess.get_file_as_string(PREFS) == original)
+
+	# GFX-IGPU-01: a recommendation-following file from before render_scale adopts the new recommendation;
+	# a saved render scale and files without ownership metadata stay as they are.
+	DisplayPreferences.first_run_defaults = integrated
+	for case: Array in [["predates", false, 75], ["manual", true, 100]]:
+		_reset()
+		var older := ConfigFile.new()
+		older.set_value("meta", "schema", 1)
+		older.set_value("meta", DisplayPreferences.GPU_DEFAULTS_KEY, {"msaa_3d": Viewport.MSAA_DISABLED})
+		older.set_value("graphics", "msaa_3d", Viewport.MSAA_DISABLED)
+		if case[1]:
+			older.set_value("graphics", "render_scale", 100)
+		older.save(PREFS)
+		var upgraded := DisplayPreferences.new(PREFS)
+		_check("an owned profile that %s render scale ends at %d %%" % [case[0], case[2]],
+			upgraded.apply_gpu_defaults(false) == OK and upgraded.config.render_scale == case[2]
+			and DisplayPreferences.new(PREFS).config.render_scale == case[2])
+	_reset()
+	var unowned := ConfigFile.new()
+	unowned.set_value("meta", "schema", 1)
+	unowned.set_value("graphics", "msaa_3d", Viewport.MSAA_DISABLED)
+	unowned.save(PREFS)
+	var kept := DisplayPreferences.new(PREFS)
+	_check("a profile without ownership metadata keeps full render scale",
+		kept.apply_gpu_defaults(false) == OK and kept.config.render_scale == 100)
+	DisplayPreferences.first_run_defaults = previous
+
+
+func _test_dynamic_resolution_gpu_defaults() -> void:
+	_reset()
+	var previous := DisplayPreferences.first_run_defaults
+	var supported := {dynamic_resolution_supported = true}
+	var uhd := "Intel(R) UHD Graphics 630"
+	for adapter: String in [uhd, "NVIDIA GeForce GT 1030", "Apple M1"]:
+		var settings := AutoGraphicsPolicy.first_run(adapter, "", 1.0, 60.0, supported)
+		_check("%s gets the adaptive target and a usable ceiling" % adapter,
+			settings.get("dynamic_resolution_fps") == 30 and settings.get("render_scale") == 85)
+	for adapter: String in ["NVIDIA GeForce RTX 3090", "llvmpipe", "Unknown adapter"]:
+		var settings := AutoGraphicsPolicy.first_run(adapter, "", 1.0, 60.0, supported)
+		_check("%s keeps a fixed scale by default" % adapter, not settings.has("dynamic_resolution_fps"))
+	var fixed := AutoGraphicsPolicy.first_run(uhd, "Linux")
+	_check("UHD 630 with unavailable GPU timing keeps the fixed 75% recommendation",
+		fixed.get("render_scale") == 75 and not fixed.has("dynamic_resolution_fps"))
+	var metalfx := {dynamic_resolution_supported = true, metalfx_spatial_available = true}
+	_check("Retina with MetalFX available keeps the automatic upscaler",
+		not AutoGraphicsPolicy.first_run("Apple M1", "macOS", 2.0, 60.0, metalfx).has("dynamic_resolution_fps"))
+	_check("Apple M1 on a standard screen remains eligible for the adaptive default",
+		AutoGraphicsPolicy.first_run("Apple M1", "macOS", 1.0, 60.0, metalfx).get("dynamic_resolution_fps") == 30)
+	DisplayPreferences.first_run_defaults = fixed
+	var store := DisplayPreferences.new(PREFS)
+	_check("a first run without native timing persists the fixed profile",
+		store.apply_gpu_defaults(true) == OK and store.config.dynamic_resolution_fps == 0)
+	var adaptive := AutoGraphicsPolicy.first_run(uhd, "Linux", 1.0, 60.0, supported)
+	DisplayPreferences.first_run_defaults = adaptive
+	_check("gaining native timing leaves the existing Off and 75% ceiling intact",
+		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 0
+		and store.config.render_scale == 75)
+	_check("Restore opts the existing profile into the new adaptive recommendation",
+		store.save_gpu_defaults(DisplayPreferences.recommended_defaults()) == OK
+		and store.config.dynamic_resolution_fps == 30 and store.config.render_scale == 85)
+	_reset()
+	store = DisplayPreferences.new(PREFS)
+	_check("fresh supported profiles persist the full adaptive bundle",
+		store.apply_gpu_defaults(true) == OK and DisplayPreferences.new(PREFS).config == store.config
+		and store.config.dynamic_resolution_fps == 30 and store.config.render_scale == 85
+		and store.config.reconstruction == "auto")
+	DisplayPreferences.first_run_defaults = fixed
+	_check("loss of native timing preserves the saved target and its ceiling",
+		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 30
+		and store.config.render_scale == 85)
+	DisplayPreferences.first_run_defaults = adaptive
+	store = DisplayPreferences.new(PREFS)
+	_check("restored timing retains a working range after reload",
+		store.apply_gpu_defaults(false) == OK and store.config.dynamic_resolution_fps == 30
+		and store.config.render_scale == 85)
+	var manual := store.config.duplicate()
+	manual.dynamic_resolution_fps = 0
+	manual.render_scale = 100
+	manual.reconstruction = "native"
+	_check("saved Off, ceiling and upscaler survive supported launch and reload",
+		store.save(manual) == OK and store.apply_gpu_defaults(false) == OK
+		and DisplayPreferences.new(PREFS).config == manual)
+	DisplayPreferences.first_run_defaults = previous
+
+
+func _test_independent_field_details() -> void:
+	_reset()
+	var previous := DisplayPreferences.first_run_defaults
+	DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run("Intel(R) UHD Graphics 630", "Linux")
+	var store := DisplayPreferences.new(PREFS)
+	_check("a legacy field defaults to full detail", store.config.tree_detail == "full" and store.config.ground_detail == "full")
+	_check("fresh profile persists independent simple choices",
+		store.apply_gpu_defaults(true) == OK and store.config.tree_detail == "simple" and store.config.ground_detail == "simple")
+	var manual := store.config.duplicate()
+	manual.tree_detail = "off"
+	_check("tree visibility persists independently of ground detail",
+		store.save(manual) == OK and DisplayPreferences.new(PREFS).config == manual)
+	manual.ground_detail = "invalid"
+	_check("invalid ground detail is rejected without losing tree choice",
+		store.save(manual) == ERR_INVALID_DATA and DisplayPreferences.new(PREFS).config.tree_detail == "off")
 	DisplayPreferences.first_run_defaults = previous
 
 

@@ -38,6 +38,27 @@ const BASIC_SETTINGS := {
 	"shadow_cloud": "off", "runway_meadow": "off", "birds": "few",
 }
 
+# Use the lowest detail that retains physical obstacle silhouettes and essential flight cues.
+const LIGHTWEIGHT_SETTINGS := {
+	"scene_detail": "low", "tree_detail": "simple", "ground_detail": "simple",
+	"flag_animation": "static", "birds": "off", "shadow_distance": "near", "shadow_softness": "hard",
+	"aircraft_lighting_quality": "low", "aircraft_lighting_show_vfx": false,
+	"lens_effects": "off", "lens_rain": "off", "lens_grime": "off", "impact_effects": "off",
+}
+
+static func is_lightweight(gpu: Dictionary) -> bool:
+	if needs_fallback(gpu):
+		return false
+	var kind := str(gpu.get("class", ""))
+	var rel := float(gpu.get("rel", INF))
+	return kind == "software" or rel < SCENE_LOW_BELOW \
+		or (kind == "integrated" and not str(gpu.get("id", "")).begins_with("apple_") and rel < MSAA_OFF_BELOW)
+
+
+static func compatibility_adaptation(gpu: Dictionary) -> bool:
+	return is_lightweight(gpu) and str(gpu.get("class", "")) != "software"
+
+
 static func basic_settings_active(recommended: Dictionary, current: Dictionary) -> bool:
 	if str(current.get("scene_detail", "auto")) not in ["auto", "low"]:
 		return false
@@ -57,6 +78,12 @@ static func needs_fallback(gpu: Dictionary) -> bool:
 # --- First-launch display values ---------------------------------------------------------------------------------
 ## Shared-memory integrated GPUs below this start without MSAA.
 const MSAA_OFF_BELOW := 0.10
+## GFX-IGPU-01: recognized integrated or software GPUs below SCENE_LOW_BELOW start at this 3D render scale (percent,
+## Native reconstruction). On a UHD 630 (0.03x) the basic settings gave 25 flight FPS at 100 % and 39 at 75 %, above
+## the 20 FPS real-time floor of the 240 Hz simulation (docs/research/god-test/2026-11-22-linux-uhd630-comparison.md).
+const LOW_GPU_RENDER_SCALE := 75
+const LOW_GPU_DYNAMIC_TARGET := 30
+const LOW_GPU_DYNAMIC_CEILING := 85
 ## Apple GPUs from about M4 Pro class keep 120 Hz on ProMotion panels; slower chips start capped at 60 fps.
 const MAC_120HZ_MIN_REL := 0.18
 
@@ -189,8 +216,28 @@ static func first_run(adapter: String, os_name: String = "", screen_scale: float
 	var target_pixels := int(facts.get("output_pixels", output_pixels(screen, settings, screen)))
 	if retina and refresh_hz > 61.0 and float(gpu.rel) < MAC_120HZ_MIN_REL:
 		settings["max_fps"] = 60
-	if needs_fallback(gpu) or str(gpu["class"]) == "software" or float(gpu.rel) < SCENE_LOW_BELOW:
+	var gpu_class := str(gpu["class"])
+	var low_end_discrete := gpu_class in ["discrete", "laptop"] and not needs_fallback(gpu) \
+		and float(gpu.rel) < SCENE_MEDIUM_BELOW
+	var uses_retina_metalfx := retina and bool(facts.get("metalfx_spatial_available", false))
+	if is_lightweight(gpu) and not retina:
+		settings.merge(BASIC_SETTINGS, true)
+		settings.merge(LIGHTWEIGHT_SETTINGS, true)
+		settings["render_scale"] = LOW_GPU_RENDER_SCALE
+		if bool(facts.get("dynamic_resolution_supported", false)) and compatibility_adaptation(gpu):
+			settings["dynamic_resolution_fps"] = LOW_GPU_DYNAMIC_TARGET
+			settings["render_scale"] = LOW_GPU_DYNAMIC_CEILING
+		elif bool(facts.get("compatibility_adaptation_supported", false)) and compatibility_adaptation(gpu):
+			settings["dynamic_resolution_fps"] = LOW_GPU_DYNAMIC_TARGET
+		return settings
+	if bool(facts.get("dynamic_resolution_supported", false)) and not uses_retina_metalfx \
+			and (gpu_class == "integrated" or low_end_discrete):
+		settings.merge({"dynamic_resolution_fps": LOW_GPU_DYNAMIC_TARGET, "render_scale": LOW_GPU_DYNAMIC_CEILING})
+	if needs_fallback(gpu) or gpu_class == "software" or float(gpu.rel) < SCENE_LOW_BELOW:
 		settings.merge(BASIC_SETTINGS)
+		# A recognized shared-memory GPU this slow is pixel-bound; an unknown GPU keeps full resolution.
+		if not settings.has("render_scale") and not needs_fallback(gpu) and gpu_class in ["integrated", "software"]:
+			settings["render_scale"] = LOW_GPU_RENDER_SCALE
 		return settings
 	if apple or str(gpu.id).begins_with("adreno_"):
 		return settings
@@ -208,8 +255,9 @@ static func first_run(adapter: String, os_name: String = "", screen_scale: float
 
 
 ## The complete automatic bundle for given hardware inputs: {adapter, os, arm64, screen: Vector2i, scale, refresh,
-## cpu_threads, forward_plus}. Returns {renderer, scene_detail, first_run, reasons}. Measured calibration is applied
-## by its consumers. Without cpu_threads, Extreme is never chosen; `forward_plus` false (High not running, e.g. a
+## cpu_threads, forward_plus, dynamic_resolution_supported, metalfx_spatial_available}. Returns {renderer,
+## scene_detail, first_run, reasons}. Measured calibration is applied by its consumers.
+## Without cpu_threads, Extreme is never chosen; `forward_plus` false (High not running, e.g. a
 ## saved Standard mode) keeps it at High.
 static func decide(inputs: Dictionary) -> Dictionary:
 	var adapter := str(inputs.get("adapter", ""))
@@ -229,5 +277,8 @@ static func decide(inputs: Dictionary) -> Dictionary:
 	return {"renderer": str(chosen_renderer.profile), "scene_detail": str(scene.level),
 		"first_run": first_run(adapter, os_name, scale, float(inputs.get("refresh", 60.0)),
 			{screen = screen, usable = inputs.get("usable", Vector2i.ZERO), cpu_threads = facts.cpu_threads,
-			forward_plus = facts.forward_plus, output_pixels = pixels, arm64 = arm64}),
+			forward_plus = facts.forward_plus, output_pixels = pixels, arm64 = arm64,
+			dynamic_resolution_supported = bool(inputs.get("dynamic_resolution_supported", false)),
+			compatibility_adaptation_supported = bool(inputs.get("compatibility_adaptation_supported", false)),
+			metalfx_spatial_available = bool(inputs.get("metalfx_spatial_available", false))}),
 		"reasons": {"renderer": str(chosen_renderer.reason), "scene_detail": str(scene.get("detail", scene.reason))}}

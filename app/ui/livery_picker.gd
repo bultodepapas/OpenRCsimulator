@@ -1,4 +1,6 @@
 ## F4U-20-R3: a static gallery. Browsing and keyboard focus never request a 3D model.
+## UI-40c: a try-on panel at the bottom-left, beside the model: choosing a paint applies it while the panel stays
+## open, so the pilot compares paints on the aircraft itself; Done or Escape closes it.
 extends CanvasLayer
 const Screen = preload("res://ui/screen.gd")
 const Widgets = preload("res://ui/widgets.gd")
@@ -23,6 +25,9 @@ var _labels: Array[Label] = []
 var _font_size := -1
 var _focus_columns := 0
 var _skin_actions: Array[Button] = []
+var _current := ""
+var _choice_labels: Dictionary[int, String] = {}
+var _scroll_body: VBoxContainer
 
 func _init(choices: Array = [], current := "", aircraft_name := "", previews: Dictionary = {}, shared_theme: Theme = null, custom_skins := false) -> void:
 	name = "LiveryPicker"
@@ -32,11 +37,16 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 	_font_size = _screen.theme.get_font_size("font_size", "Button")
 	_screen.escape_before_gui = true
 	_screen.close_requested.connect(func() -> void: close_requested.emit())
-	_screen.dim(0.70)
-	var center: CenterContainer = _screen.center(24)
+	_screen.dim(0.18) # keep the model readable: this is a try-on panel, not a page over the scene
 	panel = PanelContainer.new()
+	panel.name = "PaintPanel"
 	panel.theme_type_variation = "Card"
-	center.add_child(panel)
+	panel.anchor_left = 0.0
+	panel.anchor_right = 0.0
+	panel.anchor_top = 1.0
+	panel.anchor_bottom = 1.0
+	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_screen.add_child(panel)
 	var shell := VBoxContainer.new()
 	shell.add_theme_constant_override("separation", 12)
 	panel.add_child(shell)
@@ -53,11 +63,21 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)
-	scroll.add_child(grid)
+	# A few pixels under the last row: fractional scroll positions must still reveal the whole last card.
+	_scroll_body = VBoxContainer.new()
+	var scroll_body := _scroll_body
+	scroll_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_body.add_theme_constant_override("separation", 0)
+	scroll.add_child(scroll_body)
+	scroll_body.add_child(grid)
+	scroll_body.add_child(Widgets.gap(4))
 	for index in choices.size():
 		var choice: Dictionary = choices[index]
 		var active: bool = choice.id == current or current.is_empty() and index == 0
-		if active: _selected_index = index
+		if active:
+			_selected_index = index
+			_current = str(choice.id)
+		_choice_labels[index] = str(choice.label)
 		var button := Widgets.button(str(choice.label), "PrimaryButton" if active else "", "Skin_" + str(choice.id))
 		button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		button.text = str(choice.label) + ("\n" + tr("Selected") if active else "")
@@ -88,7 +108,7 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 		import_skin.pressed.connect(func() -> void: load_skin_requested.emit())
 		actions.add_child(import_skin)
 		_skin_actions.assign([create, import_skin])
-	cancel_button = Widgets.button("Back")
+	cancel_button = Widgets.button("Done", "PrimaryButton", "Done")
 	cancel_button.pressed.connect(func() -> void: close_requested.emit())
 	shell.add_child(cancel_button)
 	_screen.resized.connect(_resize)
@@ -108,7 +128,15 @@ func _reveal_focused_choice() -> void:
 	if not is_inside_tree() or is_queued_for_deletion(): return
 	var focused := get_viewport().gui_get_focus_owner()
 	if focused != null and focused.get_parent() == grid:
-		scroll.ensure_control_visible(focused)
+		_reveal(focused)
+
+
+## ensure_control_visible works in whole pixels; fractional layouts can leave a card a pixel short.
+func _reveal(control: Control) -> void:
+	scroll.ensure_control_visible(control)
+	var overflow := control.get_global_rect().end.y - scroll.get_global_rect().end.y
+	if overflow > 0.0:
+		scroll.scroll_vertical += ceili(overflow)
 
 func _add_thumbnail(index: int, button: Button, caption: String) -> void:
 	# The native button keeps its accessible name. The visible caption wraps below the image.
@@ -134,7 +162,8 @@ func _add_thumbnail(index: int, button: Button, caption: String) -> void:
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(label)
 	_labels.append(label)
-	content.minimum_size_changed.connect(func() -> void: button.custom_minimum_size.y = content.get_combined_minimum_size().y + 16)
+	# Whole pixels: the grid truncates fractional row minima, which would cut the last card by a pixel.
+	content.minimum_size_changed.connect(func() -> void: button.custom_minimum_size.y = ceilf(content.get_combined_minimum_size().y + 16))
 
 func _ready() -> void:
 	_resize()
@@ -164,20 +193,30 @@ func _focus_selected() -> void:
 	if buttons.is_empty(): cancel_button.grab_focus()
 	else:
 		buttons[_selected_index].grab_focus()
-		scroll.ensure_control_visible(buttons[_selected_index])
+		_reveal(buttons[_selected_index])
+		# Wrapped captions settle a layout pass later in the narrower try-on panel.
+		await get_tree().process_frame
+		if is_inside_tree() and not is_queued_for_deletion() and buttons[_selected_index].has_focus():
+			_reveal(buttons[_selected_index])
 
 func _resize() -> void:
 	if not is_inside_tree(): return
 	var available := _screen.size - Vector2(48, 48)
+	# UI-40c: about half the width at most, anchored bottom-left so the model stays visible to the right.
+	var max_width := maxf(available.x * 0.5, minf(available.x, 560.0 * UiTheme.text_scale))
 	if _images.is_empty():
 		grid.columns = 1
-		panel.custom_minimum_size = Vector2(minf(720 * UiTheme.text_scale, available.x),
-			minf(available.y, ceilf(panel.get_minimum_size().y + grid.get_combined_minimum_size().y)))
+		panel.custom_minimum_size = Vector2(minf(minf(560 * UiTheme.text_scale, max_width), available.x),
+			minf(available.y, ceilf(panel.get_minimum_size().y + _scroll_body.get_combined_minimum_size().y)))
 	else:
-		panel.custom_minimum_size = Vector2(minf(1320, available.x), minf(930, available.y))
-		grid.columns = (5 if panel.custom_minimum_size.x >= 1180 else 4) if UiTheme.text_scale < 1.5 else 2
+		panel.custom_minimum_size = Vector2(minf(880, max_width), available.y)
+		grid.columns = (4 if panel.custom_minimum_size.x >= 760 else 3) if UiTheme.text_scale < 1.5 else 2
 		for picture: TextureRect in _images.values():
-			picture.custom_minimum_size.y = 128 if UiTheme.text_scale < 1.5 else 56
+			picture.custom_minimum_size.y = 84 if UiTheme.text_scale < 1.5 else 56
+	panel.offset_left = 24.0
+	panel.offset_right = 24.0 + panel.custom_minimum_size.x
+	panel.offset_bottom = -24.0
+	panel.offset_top = -24.0 - panel.custom_minimum_size.y
 	# Theme replacement also happens on a live viewport/compact-layout change.
 	# Explicit card font overrides must follow it, not retain the opening size.
 	var font_size := _screen.theme.get_font_size("font_size", "Button")
@@ -210,6 +249,23 @@ func _sync_focus() -> void:
 		cancel_button.focus_next = cancel_button.get_path_to(buttons[0])
 
 func _choose(id: String) -> void:
-	if _chosen: return
-	_chosen = true
+	# UI-40c: every new paint is tried on at once; choosing the current one changes nothing.
+	if id == _current: return
 	selected.emit(id)
+
+
+## Marks `id` as the paint on the aircraft (after the owner applied it) and keeps the focus where the pilot is.
+func mark_selected(id: String) -> void:
+	_current = id
+	for index in buttons.size():
+		var button := buttons[index]
+		var active := str(button.get_meta("livery_id", "")) == id
+		if active:
+			_selected_index = index
+		button.theme_type_variation = "PrimaryButton" if active else ""
+		var label: String = _choice_labels.get(index, "")
+		button.text = label + ("\n" + tr("Selected") if active else "")
+		if _images.has(index):
+			var caption_index := _images.keys().find(index)
+			if caption_index >= 0 and caption_index < _labels.size():
+				_labels[caption_index].text = ("✓ " if active else "") + label

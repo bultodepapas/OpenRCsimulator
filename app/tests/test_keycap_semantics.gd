@@ -137,8 +137,10 @@ func _run() -> void:
 			_check_help_row(help, "Cyclic pitch" if vehicle == Reference.ROTORCRAFT else "Pitch", vertical)
 		help._help_scroll.grab_focus()
 		await ui.tap(KEY_END)
-		_check(help._help_scroll.has_focus() and help._help_scroll.get_v_scroll_bar().value > 0.0,
-			"%s keyboard can scroll Help" % vehicle)
+		# UI-40h: a page that fits has nothing to scroll; End must still reach the page's end.
+		var help_bar: VScrollBar = help._help_scroll.get_v_scroll_bar()
+		_check(help._help_scroll.has_focus() and help_bar.value == maxf(0.0, help_bar.max_value - help_bar.page),
+			"%s keyboard End reaches the end of Help" % vehicle)
 		await ui.tap(KEY_HOME)
 		_check(help._help_scroll.has_focus() and help._help_scroll.get_v_scroll_bar().value == 0.0,
 			"%s keyboard returns to start" % vehicle)

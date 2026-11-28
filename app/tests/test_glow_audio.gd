@@ -160,6 +160,7 @@ func _initialize() -> void:
 	_check("legacy native-generator render signature returns stereo PCM", native_adapter_voice.render(6000.0, 12000.0, 512).size() == 512)
 	_test_physical_telemetry_sync()
 	_test_source_vibration_audio()
+	_test_native_loop_parity()
 
 	if _artifacts:
 		_write_wav("glow_2t_full_fire.wav", two_t)
@@ -174,6 +175,74 @@ func _initialize() -> void:
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## NK-6m: with the verified native library loaded, a voice using the kernel's copy of the per-sample loop produces the
+## same PCM bytes and loop state as the GDScript loop, block after block. Skips (passes) without the library.
+func _test_native_loop_parity() -> void:
+	var status: Dictionary = load("res://sim/native_stage.gd").library_status()
+	var probe := GlowVoice.new()
+	if not status.get("ok", false) or probe._native_loop() == null:
+		print("NK6M_SKIP native library unavailable: %s" % str(status.get("reason", "no glow_voice_block")))
+		return
+	var two_source: Dictionary = _source_snapshot("glow_2t", true)
+	var four_source: Dictionary = _source_snapshot("glow_4t", true)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 6113
+	var blocks := 0
+	var native_blocks := 0
+	var mismatches := 0
+	var first := ""
+	for scenario in 24:
+		var family: String = "glow_2t" if scenario % 2 == 0 else "glow_4t"
+		var native := GlowVoice.new()
+		var reference := GlowVoice.new()
+		reference.native_loop_enabled = false
+		native.reset()
+		reference.reset()
+		var opportunities := 0
+		var fires := 0
+		var accumulator := 0.0
+		var phase := 0.0
+		for block in 40:
+			var snapshot: Dictionary = (two_source if family == "glow_2t" else four_source).duplicate() \
+				if scenario % 3 == 0 else _telemetry(family)
+			snapshot["rpm"] = [0.0, 900.0, 6000.0, 11000.0, 26000.0, rng.randf_range(0.0, 15000.0)][rng.randi_range(0, 5)]
+			snapshot["running"] = block % 13 != 7
+			snapshot["firing_fraction"] = [1.0, 0.5, 1.0 / 3.0, 0.0, rng.randf()][rng.randi_range(0, 4)]
+			snapshot["blade_count"] = rng.randi_range(1, 4)
+			snapshot["load"] = rng.randf()
+			if block % 11 == 5:
+				snapshot["fuel_kg"] = 0.0
+			if scenario % 4 == 1:
+				# The accepted engine's cycle state anchors each block, as the pump forwards it.
+				var cycle: int = GlowVoice.cycle_revolutions(family)
+				opportunities += rng.randi_range(0, 3)
+				fires = mini(opportunities, fires + rng.randi_range(0, 2))
+				accumulator = rng.randf_range(0.0, 0.999)
+				phase = rng.randf_range(0.0, float(cycle) - 1.0e-6)
+				snapshot["phase_revolutions"] = phase
+				snapshot["opportunity_count"] = opportunities
+				snapshot["fire_count"] = fires
+				snapshot["firing_accumulator"] = accumulator
+				snapshot["audio_queue_frames"] = float(rng.randi_range(0, 2048))
+			var frames: int = [1, 64, 512, 777, rng.randi_range(2, 900)][rng.randi_range(0, 4)]
+			var a: PackedVector2Array = native.render_telemetry(snapshot, frames)
+			var b: PackedVector2Array = reference.render_telemetry(snapshot, frames)
+			blocks += 1
+			if native._native != null:
+				native_blocks += 1
+			var state_a := [native._shaft_phase_cycles, native._combustion_envelope, native._scheduled_opportunity,
+				native._fraction_accumulator, native._opportunity_fires, native.last_firing_fraction, native.phase]
+			var state_b := [reference._shaft_phase_cycles, reference._combustion_envelope, reference._scheduled_opportunity,
+				reference._fraction_accumulator, reference._opportunity_fires, reference.last_firing_fraction, reference.phase]
+			if var_to_bytes(a) != var_to_bytes(b) or var_to_bytes(state_a) != var_to_bytes(state_b):
+				mismatches += 1
+				if first.is_empty():
+					first = "scenario %d block %d %s frames %d" % [scenario, block, family, frames]
+	_check("native glow voice loop equals the GDScript loop byte for byte (%d blocks, %d native)" % [blocks, native_blocks],
+		mismatches == 0 and native_blocks == blocks, first)
+	print("NK6M_PARITY blocks=%d native=%d mismatches=%d" % [blocks, native_blocks, mismatches])
 
 
 func _bounded(samples: PackedVector2Array) -> bool:

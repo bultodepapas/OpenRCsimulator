@@ -7,7 +7,7 @@ Build OpenRC Simulator incrementally: robust physics, realistic behavior and evi
 - Check `git status` and the current branch before editing. Preserve unrelated work and stage only your changes. Commits, pushes and merges are permitted within the user's requested scope; honor the requested branch and existing gates.
 - Before editing a path, read the applicable nested `AGENTS.md` files between the repository root and that path. A session started at the root may not have loaded them. Pass relevant scoped rules to helpers.
 - Current code, configuration and accepted data establish implemented behavior. Plans describe remaining work; dated research records evidence. Read the documents needed for the task:
-Use the disk U: as cache or disposable store. clean afeter use it, fallback D:
+Use the disk F: and U: as cache or disposable store. clean afeter use it, fallback D:
 
 | Task | Read |
 | --- | --- |
@@ -58,7 +58,7 @@ Use codebase-memory-mcp when available: `search_graph`, `trace_path`, `get_code_
 
 - Prefer native solutions whenever feasible and appropriate for correctness, maintainability and supported platforms. Reuse Godot's built-in capabilities and favor the project's C++/GDExtension native kernel for simulation work. Consider native from the start; keep GDScript where it best serves the reference model, shared transaction, orchestration or UI. Explain material exceptions to this preference.
 - Use the qualified native backend for supported production flights, performance work and flight-feel investigations. Confirm the actual backend; a native request or reference fallback is not native coverage. Preserve the selectable GDScript reference for specification, verification, unsupported cases and recorded-backend replay. The [native guide](research/native-kernel/README.md#normal-flight-backend-selection) owns admission and platform coverage.
-- Keep native evaluation within the existing model callbacks; `Simulation` retains its tick transaction. Preserve float64 and the qualified floating-point behavior, backend/checkpoint identity and required reference-parity, fault/rollback and package gates. Follow the [backend policy](docs/STACK.md#native-backend-policy); the physics budget remains an acceptance target, not a prerequisite for choosing native.
+- The native kernel may evaluate model callbacks and, for a model whose stage it owns, integrate the whole tick byte-identically to the reference; `Simulation` retains the commit, publication, checkpoint and rollback contracts and the reference path. Preserve float64 and the qualified floating-point behavior, backend/checkpoint identity and required reference-parity, fault/rollback and package gates. Follow the [backend policy](docs/STACK.md#native-backend-policy); the physics budget remains an acceptance target, not a prerequisite for choosing native.
 - Develop, build and debug on the target's native OS/architecture with the pinned engine and toolchain whenever practical. Validate platform and performance claims there using the production path; label cross-build, emulation and headless evidence with their actual scope.
 
 ## Display resolution priorities

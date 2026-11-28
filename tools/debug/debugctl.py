@@ -1236,7 +1236,7 @@ def rss_mib(pid) -> float | None:
     return None
 
 
-# Leaving the app or the machine is out of bounds; "Exit options" and "Return to Home" are fair game.
+# Leaving the app or the machine is out of bounds; "End flight" and "Return to Home" are fair game.
 MONKEY_AVOID = re.compile(r"\bquit\b|\bsalir\b|desktop|escritorio|download|descargar|website|github|browser|navegador|"
                           r"open folder|report a bug|delete|borrar|uninstall", re.IGNORECASE)
 

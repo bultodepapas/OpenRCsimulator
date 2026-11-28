@@ -6,6 +6,8 @@ not diagnose or fix them. Each result is one rendered pass per aircraft, with
 native physics and sound muted. It is not a hardware qualification, a repeated
 campaign or a regression baseline.
 
+The [24 November reanalysis](2026-11-24-frame-attribution.md) separates time before the selection marker from time inside that phase, locates the menu freezes within the open request, and measures the half-second pattern in the M1 circuits.
+
 | Host | GPU and output | Source | Suite result |
 | --- | --- | --- | --- |
 | Windows workstation | RTX 3090, 1920×1080 window, Forward+/Vulkan | `1f24cb067` + `8a76c4b22` | valid, complete (Corsair retried after a desktop focus loss) |
@@ -120,10 +122,11 @@ These are detection results only. Use the diagnostics in the tour guide's
 and compare a matched before/after run on the same machine:
 
 1. Flight loading freezes (1–2.8 s) on both platforms.
-2. The first Home → selection freeze on a fresh Windows launch (2.8 s).
+2. The 2.8 s interval across the first Windows selection boundary. The later reanalysis located 2.52 s before the phase began.
 3. One freeze per menu transition: Settings, Controls, lighting Apply and Home return.
 4. M1 Home/menu frame rate and in-flight sub-60 FPS dips at full GPU load.
 5. Linux UHD 630: slow-motion simulation below ~15 FPS, 36–45 s loading freezes and
-   a forced kill at shutdown.
+   a forced kill at shutdown. Explained and fixed for the tour on 2026-11-22; see the
+   [Linux UHD 630 comparison](2026-11-22-linux-uhd630-comparison.md).
 
 Repeat with `--repeats 3` and an idle, unlocked desktop before claiming any change.

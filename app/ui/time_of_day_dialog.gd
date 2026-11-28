@@ -91,6 +91,7 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 		controls.call("set_time_editing_visible", false)
 	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls.focus_order_changed.connect(_set_focus_order)
+	controls.focus_order_changed.connect(_schedule_panel_size_sync) # UI-40q: revealed fields re-measure the panel
 	_use_native_option_popups_when_supported()
 	var pages := VBoxContainer.new()
 	pages.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -108,6 +109,8 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 		visual_tabs.tab_changed.connect(func(index: int) -> void:
 			controls.visible = index == 0
 			sky_controls.visible = index == 1
+			description_label.visible = index == 0 # UI-40q: the sky page has its own sentence
+			_schedule_panel_size_sync()
 			body_scroll.scroll_vertical = 0
 			_set_focus_order())
 
@@ -151,7 +154,7 @@ func _update_texts() -> void:
 		return
 	title_label.text = tr("Field lighting") if night_only else tr("Time of day")
 	if sky_controls != null:
-		title_label.text = tr("Sky and lighting")
+		title_label.text = tr("Time & sky")
 		visual_tabs.set_tab_title(0, tr("Time of day"))
 		visual_tabs.set_tab_title(1, tr("Sky & clouds"))
 	description_label.text = tr("Choose the field lights and campfire for this paused flight. These visual options do not change flight behavior.") \
@@ -169,6 +172,7 @@ func _focus_initial_control() -> void:
 		controls.mode_picker.grab_focus()
 	else:
 		cancel_button.grab_focus()
+	body_scroll.scroll_vertical = 0 # UI-40q (CO-5): open at the start of the page, not mid-content
 
 
 func _use_native_option_popups_when_supported() -> void:
@@ -193,14 +197,18 @@ func _sync_panel_size() -> void:
 	var available_width: float = maxf(0.0, viewport_size.x - PANEL_VIEWPORT_GUTTER * 2.0)
 	var available_height: float = maxf(0.0, viewport_size.y - PANEL_VIEWPORT_GUTTER * 2.0)
 	var minimum_height: float = 320.0 if night_only else 480.0
-	var target_height: float = minf(640.0, available_height)
-	if available_height >= minimum_height:
-		target_height = maxf(target_height, minimum_height)
-	var target_width: float = minf(720.0, available_width)
 	if available_height < 620.0:
 		panel_column.add_theme_constant_override("separation", 6)
 	else:
 		panel_column.add_theme_constant_override("separation", 10)
+	# UI-40q (UI-40 CO-5, as UI-35a for Conditions): the panel takes the height its content needs, up to 88% of the
+	# canvas, instead of a fixed 640 px that scrolled at 1080p. Both tabs are measured so switching never resizes it.
+	var style: StyleBox = dialog_panel.get_theme_stylebox("panel")
+	var chrome_height: float = panel_column.get_combined_minimum_size().y - body_scroll.custom_minimum_size.y \
+		+ (style.get_minimum_size().y if style != null else 0.0)
+	var cap: float = minf(available_height, viewport_size.y * 0.88)
+	var target_height: float = clampf(chrome_height + _page_height(), minf(minimum_height, cap), cap)
+	var target_width: float = minf(720.0, available_width)
 	if dialog_panel.custom_minimum_size != Vector2(target_width, target_height):
 		dialog_panel.custom_minimum_size = Vector2(target_width, target_height)
 	var fixed_chrome_height: float = dialog_panel.get_combined_minimum_size().y - body_scroll.custom_minimum_size.y
@@ -209,6 +217,19 @@ func _sync_panel_size() -> void:
 	var target_body_height: float = minf(maximum_body_height, body_capacity)
 	if absf(body_scroll.custom_minimum_size.y - target_body_height) >= 0.5:
 		body_scroll.custom_minimum_size.y = target_body_height
+
+
+## The scroll body's content at its tallest tab.
+func _page_height() -> float:
+	var stack := body_scroll.get_child(0) as Control if body_scroll.get_child_count() > 0 else null
+	if stack == null:
+		return 0.0
+	var height: float = stack.get_combined_minimum_size().y
+	if sky_controls != null and controls != null:
+		var shown: Control = controls if controls.visible else sky_controls
+		var hidden: Control = sky_controls if controls.visible else controls
+		height += maxf(0.0, hidden.get_combined_minimum_size().y - shown.get_combined_minimum_size().y)
+	return height
 
 
 func _schedule_panel_size_sync() -> void:

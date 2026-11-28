@@ -94,7 +94,7 @@ Complete assertion inventory and performance qualification remain pending, as do
 | Audio generation and packs | — | [tools/audio](../../tools/audio/README.md) |
 | Gallery and README media | `tools/readme/` | [media workflow](../media/README.md) |
 | Propeller blur | `res://tests/capture_propeller_blur.gd` | [VQ-05 contract](../research/visual-quality-implementation/VQ-05/README.md) |
-| Trailer, night lighting, transmitter overlays | `tools/trailer/`, `tools/night-lighting/build.py --check`, `tools/ui/build_*_overlay.py` | [trailer plan](../plans/cinematic-trailer.md); others have no guide |
+| Trailer, night lighting, transmitter overlays | `tools/trailer/`, `tools/night-lighting/build.py --check`, `tools/ui/build_*_overlay.py` | [trailer plan](../../tools/trailer/history/cinematic-trailer.md); others have no guide |
 
 Layout data generators (`tools/{grass,trees,scenery,terrain,world}/…py --check`) run inside `app/test.sh`; regenerate through them, never by hand.
 

@@ -19,7 +19,15 @@ On a fresh install the game starts at 1920 × 1080 when a window of that size fi
 | Desktop RTX 5090 | Forward+, Extreme scene detail, 8× MSAA, Ultra shadows at Far distance, High aircraft lighting and Many birds |
 | Desktop RTX 3090 | Forward+, Extreme detail, 4× MSAA and the High renderer's standard shadow configuration |
 | Desktop RTX 3060 | Forward+, High detail, 2× MSAA and Medium shadows |
-| Intel UHD 630, software renderer or unidentified model | Standard, Low detail, MSAA off, projected aircraft shadow, cloud shadows and runway meadow off, Few birds. Home explains how to raise quality. |
+| Identified lightweight hardware, including Intel UHD 630 | Standard on integrated graphics, Low scene detail, Simple trees and ground, MSAA off, projected aircraft cue, and minimal optional effects. The first launch explains how to raise settings individually. Compatibility can adapt from 75% toward 67% at a 30 FPS target. |
+| Recognized software renderer | Low visual detail, fixed 75% Native scale and first-launch guidance. |
+| Unidentified model | The same basic graphics at full 3D render scale, because the GPU may be fast |
+
+GFX-IGPU-01 added fixed bilinear scale for Native reconstruction. Players can
+choose 100–50% under Settings → Display. The stock UHD 630 Compatibility profile
+starts at 75%. On eligible low-end devices with completed GPU timing, a fresh
+profile can instead select a 30 FPS target with a 75–85% range. FSR, DLSS and
+MetalFX manage their own scales. [Dynamic resolution policy](dynamic-resolution.md)
 
 Recommendations use the shipped table offline. Public raster tests put a desktop RTX 3060 12 GB at about 0.50 and an RTX 5090 at 1.66 relative to the 3090 at 1080p Ultra. At 4K their ratios differ. OpenRC uses the estimates to order initial graphics choices. Its 3090 and M1 workload measurements, resolution, renderer availability and CPU floor constrain those choices. The 0.75 desktop floor for Extreme and 1.50 floor for maximum effects are provisional policy margins. [Raster measurements and methodology](https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html)
 
@@ -131,6 +139,8 @@ Research-to-work mapping: R01/R05/R11 inform A1's recovery and transaction; R02�
 ### A2. Renderer strategy (Efficient = Mobile), behind measurement
 
 **A2-R1 — conditional renderer experiment (medium or unknown ROI, platform-specific).** Do not adopt Efficient = Mobile by general rule. First retain Compatibility as the current weak-GPU path and use the Megatron result as a bounded counterexample. If a specific target presents a real performance or stability problem, compare Compatibility and Mobile on that target with its effective `use_hdr_2d` cost isolated, matching applied settings, frame pacing and visual review. The original Intel-and-AMD integrated-GPU and Windows visual gates remain open; the three hosts in §6 do not supply every one of them. Do not infer Windows or AMD results from a Linux container.
+
+For the existing UHD 630, start with the fixed Compatibility profile and the Green/Club comparison. Its outcome determines whether to test ground, another active pass or first-use loading. Section 5 continues to order the shared policy work. [Intel performance plan](low-end-gpu-performance.md)
 
 **Dependencies/acceptance:** A1-R1 recovery, A3 device confidence and A5 workload validity first. Preserve profile/look versus renderer terminology and the existing `.template` and guard behavior. Extend `test_renderer_preference.gd`, `test_renderer_guard.gd` and the affected settings tests for refusal, failed and repeated transitions. Promote only for the measured device/driver/workload scope with owner look acceptance; otherwise retain the current renderer and record the experiment as inconclusive or deferred.
 

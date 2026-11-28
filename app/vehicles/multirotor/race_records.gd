@@ -1,5 +1,5 @@
-## DR-40: the pilot's local race record book, one entry per prepared course (its identity: a moved gate or another
-## field is another course): best three-lap total and its lap times, best single lap, best medal, finishes and attempts.
+## DR-40: the pilot's local race record book. Each prepared course, physical world and crash law has its own
+## best three-lap total and lap times, best single lap, best medal, finishes and attempts.
 ## Medal targets are game targets derived from the course geometry (the gate-to-gate path flown three times from the
 ## pad at a mean speed per medal), not measured pilot data. Presentation state only: nothing here feeds a session, and
 ## the per-attempt result files (DR-26) stay the authoritative record of every attempt.
@@ -180,7 +180,8 @@ static func next_medal(medal: String, goals: Dictionary) -> Dictionary:
 ## best_lap_index (this attempt's fastest completed lap)}.
 static func apply(records: Dictionary, course: Dictionary, result: Dictionary, count_attempt := true) -> Dictionary:
 	var book: Dictionary = records.duplicate(true)
-	var identity := str(course.get("identity", result.get("course_identity", "")))
+	# Old results used the course geometry alone. Keep them in their original category.
+	var identity := str(result.get("records_identity", result.get("course_identity", course.get("identity", ""))))
 	# Defaults first, the stored entry over them: an in-memory entry missing a field cannot reach a missing key (A16).
 	var entry: Dictionary = {track_id = str(course.get("track_id", "")), track_name = str(course.get("track_name", "")),
 		best_total_s = 0.0, best_laps = [], best_lap_s = 0.0, medal = "", finishes = 0, attempts = 0, best_utc = ""}

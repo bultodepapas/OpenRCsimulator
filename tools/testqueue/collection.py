@@ -259,7 +259,27 @@ def _selected_report(status, local):
     if report is not None:
         return "check", report
     imported = verdict.get("import_verdict" if local else "import")
-    return ("import", imported) if imported is not None else ("execution", None)
+    if imported is not None:
+        return "import", imported
+    if _admission_nonlaunch(status):
+        return "admission", None
+    return "execution", None
+
+
+def _admission_nonlaunch(status):
+    return (status.get("stage") == "admission" and status.get("reason_code") == "EXTERNAL_SIMULATOR"
+            and status.get("launch") == "NOT_CREATED" and status.get("nonlaunch") == "CONFIRMED"
+            and status.get("cleanup") == "CONFIRMED" and status.get("evidence") == "INCOMPLETE"
+            and status.get("outcome") in {"INFRA_FAILED", "CANCELED"})
+
+
+def _binding(protocol, identity, status):
+    fields = {"identity": identity, "status": status}
+    if _admission_nonlaunch(status):
+        # An older coordinator observing an upgraded worker may already have
+        # published an immutable "execution" diagnostic for this exact status.
+        fields["admission_diagnostic_version"] = 1
+    return protocol.request_digest(fields)
 
 
 def _checked_evidence(status, local, inventory, stage, receipt):
@@ -388,7 +408,7 @@ def _result(status, identifier, host_id, kind, report, diagnostic, destination, 
     return name, result
 
 
-def _reuse(destination, binding, status, identifier, local, receipt):
+def _reuse(destination, binding, status, identifier, local, receipt, *, legacy_admission=False):
     _directory(destination)
     manifest = _json(destination / "collection-manifest.json")
     if (not isinstance(manifest, dict) or manifest.get("format") != FORMAT
@@ -412,6 +432,8 @@ def _reuse(destination, binding, status, identifier, local, receipt):
         if inventory[name]["sha256"] != expected_digest or not local and inventory[name]["size"] != expected["size"]:
             raise ValueError("existing collection artifact differs from its observed inventory")
     kind, report, diagnostic = _checked_evidence(status, local, inventory, destination, receipt)
+    if legacy_admission and kind == "admission":
+        kind = "execution"
     result = _json(destination / manifest["result"])
     name, expected = _result(status, identifier, receipt["host"], kind, report, diagnostic, destination, local)
     expected_files = {"pool-status.json", name, *("artifacts/" + item for item in declared)}
@@ -494,10 +516,15 @@ def verify_collection(pool, identifier, result):
             pool._verify_local_status(receipt, status)
         else:
             pool._verify_remote_status(receipt, status)
-        binding = protocol.request_digest({"identity": identity, "status": status})
+        binding = _binding(protocol, identity, status)
+        legacy_admission = False
+        if destination.name != "collection-" + binding and _admission_nonlaunch(status):
+            binding = protocol.request_digest({"identity": identity, "status": status})
+            legacy_admission = True
         if destination.name != "collection-" + binding:
             raise ValueError("saved collection differs from its bound receipt and status")
-        verified = _reuse(destination, binding, status, identifier, host.get("local", False), receipt)
+        verified = _reuse(destination, binding, status, identifier, host.get("local", False), receipt,
+                          legacy_admission=legacy_admission)
         if not _same_json(verified, result):
             raise ValueError("saved batch collection differs from its verified generation")
         return verified
@@ -537,7 +564,7 @@ def collect(pool, identifier, out_dir=None):
         if lock_path.exists() or lock_path.is_symlink():
             _regular(lock_path)
         destination_guard = protocol.acquire_lock(lock_path)
-        binding = protocol.request_digest({"identity": identity, "status": status})
+        binding = _binding(protocol, identity, status)
         destination = parent / ("collection-" + binding)
         if destination.exists() or destination.is_symlink():
             return _reuse(destination, binding, status, identifier, host.get("local", False), receipt)

@@ -64,7 +64,12 @@ func _run() -> void:
 				await driver.settle()
 				await driver.tap(KEY_ENTER)
 				picker.buttons[6].pressed.emit()
-				check(context + " direct activation emits exactly one choice", selected == ["midnight"])
+				# UI-40c: a try-on panel applies each new paint at once; the owner then marks it as current.
+				check(context + " each new paint is tried on once", selected == [str(choices[0].id), str(choices[6].id)])
+				picker.mark_selected(str(choices[6].id))
+				picker.buttons[6].pressed.emit()
+				check(context + " choosing the current paint again changes nothing", selected.size() == 2
+					and picker.buttons[6].text.contains(tr("Selected")) and not picker.buttons[12].text.contains(tr("Selected")))
 				picker.free()
 				await process_frame
 	for record: Dictionary in manifest.liveries:

@@ -1,0 +1,114 @@
+[
+  {
+    "probe": "isolated-import",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 8.482857,
+    "log_sha256": "2fa4e105c7dd3f3e8f67e4f9cc567e635c2105020582111ff8bb8e0764de9c61",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (17 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n",
+    "capture_id": "7b10d50f-244d-4645-ae90-fc5a9b60cedd"
+  },
+  {
+    "probe": "context_boundary_probe",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.449466,
+    "log_sha256": "e911a3fd81ff0127fbe835a9b9bd76db5d053d5eb92eee4b558fb63f34e87982",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nCONTEXT_BOUNDARY_PROBE {\"event_batch_resolution_class\":\"2160p\",\"old_context_interval_count\":15,\"old_context_us\":15000000,\"steady_events\":[{\"draw_counter_status\":\"observed\",\"excluded_gap_count\":0,\"gpu_ms\":null,\"gpu_status\":\"not_measured\",\"interval_count\":30,\"interval_histogram\":[0,0,0,0,0,0,30,0],\"interval_sum_us\":30000000,\"mode\":\"home\",\"name\":\"performance_window\",\"phase\":\"steady\",\"rendered_frames\":30,\"seq\":2,\"vehicle_id\":\"none\",\"window_complete\":true}],\"window_interval_count_after_first_new_context_sample\":16,\"window_us_after_first_new_context_sample\":16000000}\nREPRODUCED: a complete 30 s window mixed 15 s at 1080p with 15 s at 2160p and was labeled 2160p\n",
+    "capture_id": "11a2b6cc-b6cb-4455-80a0-c5d016b6aa43"
+  },
+  {
+    "probe": "epoch_boundary_probe",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.327304,
+    "log_sha256": "800f0d629879096cbf1b3795bd12f9c955be2b58d3c2d3a74289cc7ad501a185",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nEPOCH_BOUNDARY_PROBE {\"old_token_remains_on_first_post_boundary_frame\":true,\"rotated_at_later_event\":true,\"summaries\":[{\"active_seconds\":48,\"aircraft_crashes\":0,\"classification\":\"accepted_fixed_wing\",\"complete_observation\":true,\"landings\":0,\"name\":\"activity_summary\",\"outcome\":\"returned_home\",\"physics_backend\":\"unknown\",\"seq\":2,\"simulated_seconds\":48,\"takeoffs\":1,\"vehicle_id\":\"f4u-corsair-250\"}],\"summary_in_new_session\":true}\nREPRODUCED: pre-boundary takeoff and activity time migrated into a post-boundary session\n",
+    "capture_id": "7d1c8ba4-7f1a-4c16-9135-b4e1f74bd4ca"
+  },
+  {
+    "probe": "crash_revision_probe",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.367876,
+    "log_sha256": "766a0eab593a9ff089e8d8e870f6709164822be3eb440b7b1f723a5798240753",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nCRASH_REVISION_PROBE {\"detector_outputs_valid_same_accident\":true,\"one_summary_count\":2,\"revisions\":[0,1],\"slice_counts\":[1,1]}\nREPRODUCED: one accident and its terminal revision produce two telemetry crash counts\n",
+    "capture_id": "c16d69aa-e881-4e1d-9978-ba2e29ac868f"
+  },
+  {
+    "probe": "pending_age_probe",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.678352,
+    "log_sha256": "23431346adf35621ad41fd2e490471847724781b21ce13ae79ca507dee7edf75",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPENDING_AGE_PROBE {\"advertised_limit_seconds\":600,\"first_result\":\"retry\",\"original_event_still_sent\":true,\"retry_at_seconds\":659,\"seal_at_seconds\":60}\nREPRODUCED: an observation from t=0 is eligible to send at t=659\n",
+    "capture_id": "f79f4a7e-e196-47a6-b3c3-b0f8938ae3d2"
+  },
+  {
+    "probe": "inflight_ttl_probe",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.2835,
+    "log_sha256": "8ced9ef5706983ea0e8f994f199ea2f02b7d059294c7b9f4459877de1167a4be",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nINFLIGHT_TTL_PROBE {\"accepted_202_at_601\":true,\"cancel_count_at_600\":0,\"queue_retained_at_600\":true,\"retry_started_at_599\":true,\"sender_busy_at_600\":true}\nREPRODUCED: an in-flight request survives the original queue deadline and a late 202 is accepted\n",
+    "capture_id": "0a475938-4a45-4054-81de-3911a80ec75d"
+  },
+  {
+    "probe": "consent_failure_probe",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "missing_required_text": [],
+    "elapsed_seconds": 0.262703,
+    "log_sha256": "5f7ef0de6bb91a38c9ce7000f4ea1c1617322113058684aafd19c9593f2430f5",
+    "output": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nCONSENT_FAILURE_PROBE {\"after_disable\":\"off\",\"before\":\"on\",\"next_instance\":\"on\",\"persisted_choice\":\"enabled\",\"save_error\":12}\nREPRODUCED: failed revocation leaves an enabled grant that restarts telemetry\n",
+    "capture_id": "da8fdc0f-f2ed-4e1e-aa18-c638fcf04de8"
+  }
+]

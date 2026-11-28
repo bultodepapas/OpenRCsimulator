@@ -276,6 +276,25 @@ func _interaction_checks() -> void:
 	choice.release_focus()
 	choice_effect._sync_state()
 	_check("flat idle buttons keep their empty native background", not choice_effect._glass.visible)
+	# 2026-11-26: surfaces on hidden pages (other tabs) are built when they first show, not when the screen opens.
+	var page := VBoxContainer.new()
+	page.visible = false
+	screen.add_child(page)
+	var later := Widgets.button("Later tab", "PrimaryButton")
+	page.add_child(later)
+	var later_minimum := later.get_combined_minimum_size()
+	await process_frame
+	var later_effect: Node = later.get_node_or_null("CrystalSurface")
+	_check("a surface under a hidden page waits to be built", later_effect != null and later_effect._material == null
+		and later_effect._glass == null)
+	page.visible = true
+	await process_frame
+	_check("showing the page builds the surface with its glass and skins", later_effect._material != null
+		and later_effect._glass != null and later_effect._material.get_shader_parameter("primary") == 1.0
+		and later.get_combined_minimum_size() == later_minimum)
+	page.visible = false
+	later_effect._settle()
+	_check("a built surface settles while hidden", not later_effect._engaged)
 	screen.queue_free()
 	await driver.settle()
 	UiInput.isolate_joypads()

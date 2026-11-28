@@ -159,6 +159,10 @@ func _check_case(id: String, scenario: Dictionary) -> void:
 				[label, session.sim.state, preview_values, session.sim.time()])
 			forced_preview = preview_reference.has("stage_context")
 			if not forced_preview: _failures.append("forced liquid gas preview was not produced: " + label)
+			# NK-5b: the running forced preview also publishes the substep refinement's source-off shaft rate.
+			elif not preview_reference.stage_context.has("source_off_rpm_rate") \
+					or not preview_native.get("stage_context", {}).has("source_off_rpm_rate"):
+				_failures.append("forced liquid gas preview did not publish its source-off rate: " + label)
 			# Air sampling accepts NaN as the current time, but the preview
 			# predicate compares the unspecialized incoming time first.
 			var no_time_reference: Dictionary = session.sim.model.stage.call(session.sim.state, preview_values, NAN)

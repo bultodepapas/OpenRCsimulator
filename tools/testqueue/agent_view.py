@@ -7,6 +7,7 @@ safe to call from any MCP client at any time.
 from __future__ import annotations
 
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -166,7 +167,7 @@ def _wait_reason(row: dict, platform: str | None) -> dict | None:
     matching = [c for c in candidates if not any(str(r).startswith(_PLATFORM_REASON) for r in c.get("reasons", []))]
     others_free = [c["host"] for c in candidates if c not in matching
                    and all(str(r).startswith(_PLATFORM_REASON) for r in c.get("reasons", []))]
-    reasons = {c["host"]: [str(r)[:120] for r in c.get("reasons", [])] for c in matching}
+    reasons = {c["host"]: [str(r)[:120] for r in c.get("reasons", [])] for c in matching or candidates}
     if not matching:
         code = "NO_HOST_FOR_PLATFORM"
     elif all(any(r == "OFFLINE" for r in c.get("reasons", [])) for c in matching):
@@ -174,9 +175,22 @@ def _wait_reason(row: dict, platform: str | None) -> dict | None:
     else:
         flat = " ".join(r for c in matching for r in c.get("reasons", []))
         code = next((name for token, name in (("CIRCUIT_OPEN", "CIRCUIT_OPEN"), ("QUARANTIN", "QUARANTINED"),
+                                              ("EXTERNAL_SIMULATOR", "EXTERNAL_SIMULATOR"),
                                               ("INSUFFICIENT_DISK", "DISK"), ("DISK_UNKNOWN", "DISK"),
                                               ("BUSY", "HOST_BUSY")) if token in flat), "NO_ELIGIBLE_HOST")
     reason = {"code": code, "hosts": reasons}
+    observation = row.get("admission_wait") or {}
+    for key in ("first_observed_at", "last_observed_at"):
+        if key in observation:
+            reason[key] = observation[key]
+    if "retry_after" in row:
+        reason["next_probe_at"] = row["retry_after"]
+    reason["next_action"] = {
+        "DISK": "check available space against the required bytes on the listed hosts",
+        "NO_ONLINE_HOST_FOR_PLATFORM": "check connectivity to the requested hosts",
+        "HOST_BUSY": "check sim_fleet for the current capacity owner",
+        "EXTERNAL_SIMULATOR": "wait for the external simulator owner to finish",
+    }.get(code, "inspect the listed host refusals in sim_fleet")
     if others_free and platform != "any":
         reason["alternative"] = ("only platform blocks " + ", ".join(others_free)
                                  + "; a reviewed portable check may use platform any")
@@ -231,14 +245,85 @@ def compact_row(row: dict) -> dict:
         reason = _wait_reason(row, item["platform"])
         if reason and reason["code"] != "QUEUED_IN_BATCH":  # not yet tried: nothing to explain
             item["waiting"] = reason
-    error = row.get("collection_error") or status.get("error") or row.get("first_error")
+    elif item["phase"] == "TRACKING" and (status.get("reason_code") == "EXTERNAL_SIMULATOR"
+            or str(status.get("reason") or "").startswith("EXTERNAL_SIMULATOR:")):
+        item.update(stage="admission", cause="EXTERNAL_SIMULATOR")
+        item["waiting"] = {"code": "EXTERNAL_SIMULATOR", "detail": status.get("reason"),
+                           "next_action": "observe the original job while its host waits for the external simulator"}
+        if status.get("admission_wait_started_at") is not None:
+            item["waiting"]["first_observed_at"] = status["admission_wait_started_at"]
+    if item["phase"] == "SUBMITTING" and status.get("state") == "SUBMITTING":
+        item["stage"] = "placement"
+        started = row.get("placement_started_at")
+        if type(started) in (int, float) and math.isfinite(started):
+            item["placement_elapsed_seconds"] = round(max(0.0, time.time() - started), 1)
+        if (row.get("input") or {}).get("host"):
+            item["host"] = row["input"]["host"]
+    error = row.get("collection_error") or status.get("error")
+    if not error and (item["phase"] in {"BLOCKED", "REJECTED", "COLLECTION_BLOCKED", "RETRY_WAIT"}
+                      or item["phase"] == "DONE" and item.get("outcome") != "PASSED"):
+        error = row.get("first_error")
     if error:
         item["error"] = str(error)[:300]
-    if item.get("outcome") and item["outcome"] != "PASSED" or item["phase"] in {"BLOCKED", "COLLECTION_BLOCKED"}:
-        checked = status.get("checked") or {}
-        imported = status.get("import") if isinstance(status.get("import"), dict) else {}
+    runner = status.get("runner_verdict") if isinstance(status.get("runner_verdict"), dict) else {}
+    checked = status.get("checked") or runner.get("checked") or {}
+    imported = status.get("import") or runner.get("import_verdict") or {}
+    stage_seconds = {}
+    measured = row.get("coordinator_seconds") or {}
+    for stage in ("placement", "collection"):
+        seconds = measured.get(stage) if isinstance(measured, dict) else None
+        if type(seconds) in (float, int) and math.isfinite(seconds) and seconds >= 0:
+            stage_seconds[stage] = round(seconds, 3)  # accumulated float sums printed as 105.32800000000861
+    transfer = status.get("transfer_seconds")
+    if type(transfer) in (int, float) and math.isfinite(transfer) and transfer >= 0:
+        stage_seconds["transfer"] = round(transfer, 3)
+    start, finish = status.get("admission_wait_started_at"), status.get("admission_wait_finished_at")
+    if all(type(t) in (int, float) and math.isfinite(t) for t in (start, finish)) and finish >= start:
+        stage_seconds["admission"] = round(finish - start, 3)
+    for stage, report in (("import", imported), ("check", checked)):
+        seconds = report.get("elapsed_seconds") if isinstance(report, dict) else None
+        if type(seconds) in (float, int) and math.isfinite(seconds) and seconds >= 0:
+            stage_seconds[stage] = round(seconds, 3)
+    if stage_seconds:
+        item["stage_seconds"] = stage_seconds
+    if item.get("outcome") and item["outcome"] != "PASSED" or item["phase"] in {"BLOCKED", "COLLECTION_BLOCKED", "REJECTED"}:
+        stage = collection.get("diagnostic_stage") or status.get("stage")
+        cause = status.get("reason_code")
+        if not cause and item["phase"] == "BLOCKED" and item["job"]:
+            # Persisted batches predating the typed reply can be inspected
+            # while the authority is offline. Match only this row's job receipt.
+            missing = str(status.get("error") or row.get("first_error") or "")
+            if missing.startswith("[Errno 2] No such file or directory: ") and re.search(
+                    r"/jobs/+" + re.escape(item["job"]) + r"""\.json['"]$""", missing.replace("\\", "/")):
+                cause = "MISSING_RECEIPT"
+        # Older authorities recorded these two pre-launch refusals as generic execution failures.
+        if cause == "EXTERNAL_SIMULATOR" or status.get("error") in {
+                "Refused: external Godot process detected; it was not touched",
+                "EXTERNAL_SIMULATOR appeared during preparation; no process started"}:
+            stage, cause = "admission", "EXTERNAL_SIMULATOR"
+        elif cause == "MISSING_RECEIPT":
+            stage = "dispatch"
+            item["hint"] = "restore the original receipt from verified evidence and reconcile this job ID"
+        elif cause == "LOCAL_SUBMIT_REFUSED":
+            stage = "dispatch"
+            item["hint"] = ("the local authority refused this request and its durable tombstone proves it never ran; "
+                            "fix the reported cause and launch a new request")
+        elif item["phase"] == "REJECTED":
+            stage = "dispatch" if status.get("outcome") == "NOT_DISPATCHED" else "preflight"
+        elif item["phase"] == "COLLECTION_BLOCKED":
+            stage = "collection"
+        elif isinstance(checked, dict) and checked:
+            stage = "check"
+        elif isinstance(imported, dict) and imported and imported.get("ok") is False:
+            stage = "import"
+        checked = checked if isinstance(checked, dict) else {}
+        imported = imported if isinstance(imported, dict) else {}
+        if stage:
+            item["stage"] = stage
+        if cause or stage in {"check", "import"}:
+            item["cause"] = cause or (checked if stage == "check" else imported).get("reason") or item.get("outcome")
         why = collection.get("reason") or checked.get("reason")
-        if not why and imported.get("reason"):
+        if not why and imported.get("reason") and imported.get("ok") is not True:
             why = f"import {imported['reason']}"  # the test itself never started
         if why:
             item["why"] = why

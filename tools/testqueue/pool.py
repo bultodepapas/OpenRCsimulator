@@ -5,6 +5,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import shlex
@@ -186,10 +187,10 @@ class Pool:
         if len(ids) != len(set(ids)):
             raise ValueError('duplicate host ids')
 
-    def remote(self, host, action, payload):
+    def remote(self, host, action, payload, timeout=45):
         command = shlex.join([host['python'], host['agent'], action, '--root', host['root']])
         result = subprocess.run(ssh_command(host, command),
-                                input=json.dumps(payload), capture_output=True, text=True, timeout=45, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
+                                input=json.dumps(payload), capture_output=True, text=True, timeout=timeout, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         try:
             response = json.loads(result.stdout)
         except ValueError as error:
@@ -258,7 +259,7 @@ class Pool:
                          'cores': os.cpu_count(), 'load': psutil.cpu_percent(interval=0.1) * (os.cpu_count() or 1) / 100,
                          'capabilities': ['headless'], 'engine': current['engine']}
                 if external:
-                    value['busy_reason'] = 'an unmanaged simulator is running on this desktop'
+                    value['busy_reason'] = 'an unmanaged simulator is running on this desktop (EXTERNAL_SIMULATOR)'
                 # Typed cause for agents (TQ-05-F1.1); first match wins.
                 value['busy_code'] = next((code for code, active in (
                     ('CONDITION_' + str(current['condition']), current['condition'] != 'READY'),
@@ -270,6 +271,9 @@ class Pool:
                 remote = self.remote(host, 'probe', {'engine_path': host['engine']})
                 capacity, admission = remote['capacity'], remote['admission']
                 load = capacity.get('load_average')
+                busy_code = 'RUNNING_POOL_JOB'
+                if admission.get('busy_code') in {'EXTERNAL_SIMULATOR', 'OCCUPANCY_UNKNOWN'}:
+                    busy_code = admission['busy_code']
                 value = {'platform': remote['host']['system'].lower(),
                          'online': remote['engine']['available'],
                          'busy': admission['busy'] or admission['quarantined'] or admission['enrolled'],
@@ -278,8 +282,10 @@ class Pool:
                          'cores': capacity['cpu_count'], 'load': load[0] if isinstance(load, list) else (load or 0),
                          'capabilities': remote['capabilities'], 'engine': remote['engine'],
                          'busy_code': ('QUARANTINED' if admission['quarantined'] else
-                                       'RUNNING_POOL_JOB' if admission['busy'] else
+                                       busy_code if admission['busy'] else
                                        'ENROLLED_HOST' if admission['enrolled'] else None)}
+                if value['busy_code'] in {'EXTERNAL_SIMULATOR', 'OCCUPANCY_UNKNOWN'}:
+                    value['busy_reason'] = f"{busy_code}: " + str(admission.get('busy_reason') or busy_code)[:200]
             if not host.get('local') and value['engine'].get('sha256') != host.get('engine_sha256'):
                 raise ValueError('Remote engine differs from the configured verified pin')
             value.update(id=host['id'], local=host.get('local', False))
@@ -307,7 +313,10 @@ class Pool:
         """Fleet-best median duration of one script, or None when never measured."""
         return pool_history.expected_seconds(self.history(), script)
 
-    def probe(self):
+    def probe(self, host_id=None):
+        if host_id is not None:
+            host = next(host for host in self.hosts if host['id'] == host_id)
+            return self._reserve([self.probe_host(host)])
         with ThreadPoolExecutor(max_workers=len(self.hosts) or 1) as executor:
             observations = list(executor.map(self.probe_host, self.hosts))
         return self._reserve(observations)
@@ -315,13 +324,36 @@ class Pool:
     CIRCUIT_FAILURES = 2
     CIRCUIT_RETRY_SECONDS = 600
     # Refusals caused by the host's state, not by the frozen source.
-    _HOST_TRANSIENT = ('external godot', 'external simulator', 'insufficient disk', 'insufficient_disk',
+    _HOST_TRANSIENT = ('external godot', 'external simulator', 'external_simulator', 'insufficient disk', 'insufficient_disk',
                        'no space left', 'disk_unknown', 'quarantin', 'busy', 'gui_locked', 'desktop')
 
     @classmethod
     def _host_transient(cls, status):
+        if status.get('reason_code') == 'EXTERNAL_SIMULATOR':
+            return True
         text = ' '.join(str(status.get(key) or '') for key in ('error', 'reason', 'detail')).lower()
         return any(token in text for token in cls._HOST_TRANSIENT)
+
+    @staticmethod
+    def _terminal_time(receipt, path):
+        """Coordinator observation time, with a stable fallback for old receipts."""
+        observed = (receipt.get('terminal_observation') or {}).get('at')
+        if type(observed) in (int, float) and math.isfinite(observed) and observed > 0:
+            return observed
+        modified = path.stat().st_mtime
+        status = receipt['last_status']
+        for key in ('finished_at', 'finished'):  # remote / local authority clocks
+            stamp = status.get(key)
+            if type(stamp) in (int, float) and math.isfinite(stamp) and stamp > 0:
+                return min(stamp, modified)
+        return modified
+
+    def _remember_terminal(self, receipt, status, at):
+        previous = receipt.get('terminal_observation') or {}
+        if previous.get('outcome') == status.get('outcome') and previous.get('at'):
+            at = previous['at']
+        receipt['terminal_observation'] = {'at': at, 'outcome': status.get('outcome'),
+                                           'cleanup': status.get('cleanup'), 'host_transient': self._host_transient(status)}
 
     def _circuit(self, observations, source_digest):
         """Open a per-host, per-source circuit after consecutive INFRA_FAILED results.
@@ -335,27 +367,43 @@ class Pool:
         is retried or moved by the circuit itself.
         """
         finished = {}
+        trials = {}
         for path in (self.root / 'jobs').glob('*.json'):
             try:
                 receipt = json.loads(path.read_text(encoding='utf-8'))
                 last = receipt.get('last_status') or {}
-                if receipt.get('source_digest') != source_digest or last.get('state') != 'FINISHED':
+                if receipt.get('source_digest') != source_digest:
                     continue
-                if last.get('outcome') == 'INFRA_FAILED' and self._host_transient(last):
+                terminal = receipt.get('terminal_observation') or {}
+                if last.get('state') == 'FINISHED':
+                    outcome, transient = last.get('outcome'), self._host_transient(last)
+                elif terminal.get('cleanup') == 'CONFIRMED':
+                    outcome, transient = terminal.get('outcome'), terminal.get('host_transient')
+                else:
+                    if receipt.get('circuit_trial') and receipt.get('state') != 'TRANSFER_DEFERRED':
+                        trials[receipt['host']] = path.stem
+                    continue
+                if outcome == 'NOT_DISPATCHED':
+                    continue
+                if outcome == 'INFRA_FAILED' and transient:
                     continue  # the host refused for its own reasons; says nothing about this source (TQ-05-F0.4)
-                finished.setdefault(receipt['host'], []).append((float(receipt.get('created', 0)), last.get('outcome'), path.stem))
+                finished.setdefault(receipt['host'], []).append((self._terminal_time(receipt, path), path.stem, outcome))
             except (OSError, ValueError, KeyError, TypeError, AttributeError):
                 continue
         now = time.time()
         for observation in observations:
             recent = sorted(finished.get(observation['id'], []), reverse=True)[:self.CIRCUIT_FAILURES]
-            if recent and now - recent[0][0] >= self.CIRCUIT_RETRY_SECONDS:
-                continue  # half-open: one new attempt may run; another failure closes it again
-            if len(recent) == self.CIRCUIT_FAILURES and all(outcome == 'INFRA_FAILED' for _, outcome, _ in recent):
-                observation['busy'] = True
-                observation['busy_code'] = 'CIRCUIT_OPEN'
-                observation['busy_reason'] = (f'CIRCUIT_OPEN: last {self.CIRCUIT_FAILURES} attempts of this source ended '
-                                              f'INFRA_FAILED ({", ".join(stem[:8] for _, _, stem in recent)}); inspect them')
+            trial = trials.get(observation['id'])
+            if trial:
+                reason = f'awaiting the terminal outcome of trial {trial}'
+            elif len(recent) < self.CIRCUIT_FAILURES or any(outcome != 'INFRA_FAILED' for _, _, outcome in recent):
+                continue
+            elif now - recent[0][0] >= self.CIRCUIT_RETRY_SECONDS:
+                observation['circuit_half_open'] = True
+                continue
+            else:
+                reason = 'consecutive infrastructure failures: ' + ', '.join(stem for _, stem, _ in recent)
+            observation.update(busy=True, busy_code='CIRCUIT_OPEN', busy_reason='CIRCUIT_OPEN: ' + reason)
         return observations
 
     def _reserve(self, observations, since=None):
@@ -476,14 +524,97 @@ class Pool:
         if shutil.disk_usage(directory).free < source_bytes + DISK_RESERVE_BYTES:
             raise OSError('INSUFFICIENT_SPACE for pool archive and reserve')
 
+    # A local submit that is still unconfirmed this long after dispatch is not
+    # in flight: the authority answers or times out within its 30 s RPC step.
+    LOCAL_FENCE_GRACE_SECONDS = 600
+
+    def _fence_local_refusal(self, receipt, path, local):
+        """Turn an unconfirmed local submission into proved nonexecution, or do nothing.
+
+        A refusal reply alone cannot prove nonacceptance: a replay can fail
+        validation after the original request was accepted. Only the local
+        authority decides, through its durable tombstone: ``recover`` first,
+        then ``cancel_submission``, which also fences a delayed original submit.
+        Any doubt keeps ``SUBMISSION_UNCONFIRMED`` exactly as before. The caller
+        holds the job lock. Releasing the host this way needs no operator: it is
+        the same proof as ``reconcile`` for local receipts (2026-11-25 audit).
+        """
+        request = receipt.get('request')
+        secret = request.get('request_secret') if isinstance(request, dict) else None
+        if receipt.get('state') != 'SUBMISSION_UNCONFIRMED' or not isinstance(secret, str) or not secret:
+            return None
+        try:
+            if rpc('recover', **local, request_id=receipt['request_id'], request_secret=secret) is not None:
+                return None  # accepted: status observes the original job
+            fenced = rpc('cancel_submission', **local, request_id=receipt['request_id'], request_secret=secret)
+        except (OSError, ValueError, RuntimeError):
+            return None
+        if not isinstance(fenced, dict) or fenced.get('canceled') is not True or fenced.get('job'):
+            return None  # accepted meanwhile and canceled through the normal path; status observes it
+        refusal = receipt.get('error') or 'local submission unconfirmed after the grace period'
+        receipt.update(state='CANCELED_BEFORE_DISPATCH',
+                       reconciliation={'reconciled_at': time.time(), 'previous_state': 'SUBMISSION_UNCONFIRMED',
+                                       'proof': 'local submission tombstone', 'automatic': True},
+                       last_status={'state': 'FINISHED', 'outcome': 'NOT_DISPATCHED', 'cleanup': 'CONFIRMED',
+                                    'evidence': 'INCOMPLETE', 'proof': 'durable local submission tombstone',
+                                    'reason_code': 'LOCAL_SUBMIT_REFUSED', 'error': refusal})
+        write_json(path, receipt)
+        return receipt['last_status']
+
+    def _local_fence_due(self, receipt):
+        since = receipt.get('submitted_at', receipt.get('created'))
+        return (type(since) in (int, float) and math.isfinite(since)
+                and time.time() - since >= self.LOCAL_FENCE_GRACE_SECONDS)
+
+    STALE_SWEEP_SECONDS = 60
+    _stale_swept_at = None
+
+    def _fence_stale_local_receipts(self):
+        """Observe overdue unconfirmed local receipts so they cannot reserve the host forever.
+
+        A blocked batch row is not observed again until its batch restarts, and
+        ``_reserve`` keeps its host busy meanwhile: four refused local submits
+        held the Windows host 23-61 h each between 14 and 25 November. Placement
+        calls this before probing. Observation goes through the normal status
+        path, so the tombstone rules above decide; a busy job lock is skipped.
+        """
+        now = time.monotonic()
+        if self._stale_swept_at is not None and now - self._stale_swept_at < self.STALE_SWEEP_SECONDS:
+            return
+        self._stale_swept_at = now
+        for path in (self.root / 'jobs').glob('*.json'):
+            try:
+                receipt = json.loads(path.read_text(encoding='utf-8'))
+                due = (isinstance(receipt, dict) and receipt.get('state') == 'SUBMISSION_UNCONFIRMED'
+                       and receipt.get('local_authority_root') and self._local_fence_due(receipt))
+            except (OSError, ValueError):
+                continue
+            if not due or not path.stem.isalnum():
+                continue
+            try:
+                guard = acquire_lock(self.root / (path.stem + '.lock'), timeout=1)
+            except PoolLockTimeout:
+                continue
+            try:
+                self._status_locked(path.stem)
+            except Exception:  # advisory: the receipt keeps its conservative state
+                pass
+            finally:
+                guard.close()
+
     @staticmethod
     def _unproved_nonexecution(receipt):
         # Older coordinators treated any local submit ValueError as proof that
         # nothing ran, even on a replay after an accepted reply was lost.
         return receipt.get('state') == 'NOT_DISPATCHED'
 
-    def _read_receipt_locked(self, path):
-        receipt = json.loads(path.read_text())
+    def _read_receipt_locked(self, path, *, allow_missing=False):
+        try:
+            receipt = json.loads(path.read_text())
+        except FileNotFoundError:
+            if allow_missing:
+                return None
+            raise
         if not isinstance(receipt, dict):
             raise ValueError('invalid pool receipt; preserve original evidence')
         if self._unproved_nonexecution(receipt):
@@ -494,6 +625,24 @@ class Pool:
                 'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED',
                 'error': 'Legacy nonexecution result requires original-authority observation'})
             write_json(path, receipt)
+        # Promote only an identity-checked legacy terminal status. This record
+        # is placement history; collection still uses fresh, verified evidence.
+        previous = receipt.get('last_status') or {}
+        if (receipt.get('state') == 'SUBMITTED' and isinstance(receipt.get('request'), dict)
+                and previous.get('state') == 'FINISHED' and previous.get('cleanup') == 'CONFIRMED'
+                and previous.get('request_id') == receipt['request'].get('request_id') == path.stem
+                and 'cleanup' not in (receipt.get('terminal_observation') or {})):
+            try:
+                host, _ = self._destination(receipt)
+                if host.get('local'):
+                    self._verify_local_status(receipt, previous)
+                else:
+                    self._verify_remote_status(receipt, previous)
+            except (KeyError, OSError, ValueError):
+                pass
+            else:
+                self._remember_terminal(receipt, previous, self._terminal_time(receipt, path))
+                write_json(path, receipt)
         return receipt
 
     def needs_reobservation(self, identifier, status):
@@ -514,9 +663,18 @@ class Pool:
     @staticmethod
     def _public_status(receipt, identifier, status):
         result = {**status, 'job': identifier, 'pool_host': receipt['host']}
+        if 'transfer_seconds' in receipt:
+            result['transfer_seconds'] = receipt['transfer_seconds']
         if receipt.get('invalidated_nonexecution'):
             result['pool_recovery_version'] = 1
         return result
+
+    @staticmethod
+    def _missing_receipt(identifier):
+        return {'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED', 'job': identifier,
+                'reason_code': 'MISSING_RECEIPT',
+                'error': f'Missing pool receipt jobs/{identifier}.json. Preserve the original batch and ID. '
+                         'Restore the original receipt from verified evidence before recovery; dispatch is uncertain.'}
 
     @staticmethod
     def _deferred_status(receipt):
@@ -592,7 +750,8 @@ class Pool:
         return host, ({'root': root} if root is not None else {})
 
     def submit(self, snapshot, script, *, platform='any', require=(), timeout=90, host_id=None,
-               request_id=None, settings=None, expected_manifest_sha256=None, rendering_driver=None):
+               request_id=None, settings=None, expected_manifest_sha256=None, rendering_driver=None,
+               before_dispatch=None):
         identifier = request_id or uuid.uuid4().hex
         if not identifier.isalnum() or len(identifier) > 64:
             raise ValueError('invalid request id')
@@ -604,7 +763,7 @@ class Pool:
             return self._submit(snapshot, script, platform=platform, require=require, timeout=timeout,
                                 host_id=host_id, request_id=identifier, settings=settings,
                                 expected_manifest_sha256=expected_manifest_sha256,
-                                rendering_driver=rendering_driver)
+                                rendering_driver=rendering_driver, before_dispatch=before_dispatch)
         finally:
             guard.close()
 
@@ -658,7 +817,7 @@ class Pool:
         return manifest, options, job
 
     def _submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id, settings,
-                expected_manifest_sha256=None, rendering_driver=None):
+                expected_manifest_sha256=None, rendering_driver=None, before_dispatch=None):
         snapshot = Path(snapshot).resolve()
         identifier = request_id or uuid.uuid4().hex
         if not identifier.isalnum() or len(identifier) > 64:
@@ -698,13 +857,14 @@ class Pool:
         archive = None
         archive_digest = None
         bound_host = resume['host'] if resume is not None else host_id
+        self._fence_stale_local_receipts()
         try:
             while True:
                 # SSH probes and remote engine hashing run before the global
                 # dispatch lock; only local receipt reservation and planning
                 # happen under it (plan section 7.6).
                 probed_at = time.time()
-                observations = self.probe()
+                observations = self.probe(bound_host) if bound_host else self.probe()
                 try:
                     guard = acquire_lock(self.root / 'dispatch.lock')
                 except PoolLockTimeout as error:
@@ -721,13 +881,16 @@ class Pool:
                 observations = self._reserve(observations, since=probed_at)
                 if bound_host:
                     observations = [item for item in observations if item['id'] == bound_host]
-                else:
+                if host_id is None:
                     # Unpinned work avoids a host where this exact source keeps
                     # failing infrastructure; pinned work keeps its explicit host.
                     observations = self._circuit(observations, manifest['source_digest'])
                 decision = plan(job, observations)
                 if decision['selected'] is None:
-                    return {'state': 'WAITING', 'decision': decision}
+                    waiting = {'state': 'WAITING', 'decision': decision, 'placement_job': job}
+                    if bound_host is not None:
+                        waiting['placement_host'] = bound_host
+                    return waiting
                 host = next(item for item in self.hosts if item['id'] == decision['selected'])
                 if not host.get('local') and archive is None:
                     # Building inputs does not reserve an execution host. Other
@@ -761,6 +924,12 @@ class Pool:
                            'config_sha256': self.config_digest}
                 if host.get('local'):
                     receipt['local_authority_root'] = str(state_root().resolve())
+            if any(item['id'] == host['id'] and item.get('circuit_half_open') for item in observations):
+                receipt['circuit_trial'] = True
+            else:
+                receipt.pop('circuit_trial', None)
+            if before_dispatch is not None:
+                before_dispatch()
             write_json(receipt_path, receipt)
             guard.close()
             guard = None
@@ -775,24 +944,42 @@ class Pool:
                 submission_receipt(self.root, request)
                 receipt['request'] = request
             else:
+                transfer_started = time.monotonic()
                 try:
                     remote_archive = self._transfer_archive(host, archive, archive_digest, identifier)
                 except TransferFailure as error:
                     self._defer_transfer(receipt, receipt_path, error)  # always raises TransferDeferred
+                receipt['transfer_seconds'] = round(time.monotonic() - transfer_started, 3)
                 receipt['request'] = {'request_id': identifier, 'preset': 'checked',
                                       'archive': {'path': remote_archive, 'sha256': archive_digest},
                                       'expected_engine_sha256': host['engine_sha256'],
                                       'engine_path': host['engine'], 'options': options}
             # Persist the exact destination and request before any possible execution.
             receipt['state'] = 'SUBMISSION_UNCONFIRMED'
+            receipt['submitted_at'] = time.time()
             write_json(receipt_path, receipt)
+            refused, busy, local = False, None, {}
             try:
                 host, local = self._destination(receipt, replay=True)
-                accepted = rpc('submit', **local, **receipt['request']) if host.get('local') else self.remote(host, 'run', receipt['request'])
-                if not host.get('local'):
-                    self._verify_remote_status(receipt, accepted)
-                else:
+                if host.get('local'):
+                    try:
+                        accepted = rpc('submit', **local, **receipt['request'])
+                    except ValueError:
+                        # An error reply from the authority (or a malformed reply),
+                        # not a transport failure; recover-first decides acceptance.
+                        refused = True
+                        raise
                     self._verify_local_acceptance(accepted)
+                else:
+                    try:
+                        accepted = self.remote(host, 'run', receipt['request'])
+                    except RemoteRefusal as error:
+                        # The agent answers an ID it already knows with its status and
+                        # raises BUSY only from the host lock, before writing a job.
+                        # This is the only run call for this ID, so nothing was accepted.
+                        busy = error if error.code == 'BUSY' else None
+                        raise
+                    self._verify_remote_status(receipt, accepted)
                 receipt['accepted'] = accepted
                 receipt['state'] = 'SUBMITTED'
             except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
@@ -801,6 +988,16 @@ class Pool:
                 # In particular a replay may fail validation after the original
                 # request was accepted. Keep its identity and original host.
             write_json(receipt_path, receipt)
+            if busy is not None:
+                # For example a storage sweep holding the host lock (2026-11-25 review).
+                # Proved nondispatched: retry the same ID on the same host.
+                self._defer_transfer(receipt, receipt_path, TransferFailure('run', 'HOST_BUSY', str(busy)))
+            if refused:
+                fenced = self._fence_local_refusal(receipt, receipt_path, local)
+                if fenced is not None:
+                    raise SubmissionRejected(f"local authority refused the request: {receipt['error']}",
+                                             {'state': 'REJECTED', 'job': identifier, 'pool_host': receipt['host'],
+                                              **{key: fenced[key] for key in ('reason_code', 'error', 'proof')}})
             return {'job': identifier, 'receipt': str(receipt_path), 'state': receipt['state'], 'decision': decision}
         finally:
             if guard is not None:
@@ -812,7 +1009,13 @@ class Pool:
         path = self.root / 'jobs' / (identifier + '.json')
         guard = acquire_lock(self.root / (identifier + '.lock'))
         try:
-            receipt = self._read_receipt_locked(path)
+            receipt = self._read_receipt_locked(path, allow_missing=True)
+            if receipt is None:
+                return self._missing_receipt(identifier)
+            if (receipt.get('terminal_observation') or {}).get('cleanup') == 'CONFIRMED':
+                # Once completion and teardown are witnessed, recovery can
+                # observe the authority but a lost receipt there cannot replay.
+                return self._status_locked(identifier)
             if receipt.get('state') == 'TRANSFER_DEFERRED':
                 # Nondispatched; only a repeated submit (it needs the snapshot) can resume the transfer.
                 return self._public_status(receipt, identifier, self._deferred_status(receipt))
@@ -821,6 +1024,7 @@ class Pool:
                                'cleanup': 'UNCONFIRMED', 'error': 'Dispatch metadata is unavailable; preserve the original receipt and authority'})
                 write_json(path, receipt)
                 return self._public_status(receipt, identifier, receipt['last_status'])
+            refused, local = False, {}
             try:
                 host, local = self._destination(receipt)
                 if host.get('local'):
@@ -830,7 +1034,11 @@ class Pool:
                         # None is an observation, not a fence: the original
                         # submit may still be delayed. Only replay the SAME ID.
                         self._destination(receipt, replay=True)
-                        result = rpc('submit', **local, **request)
+                        try:
+                            result = rpc('submit', **local, **request)
+                        except ValueError:
+                            refused = True
+                            raise
                     self._verify_local_acceptance(result)
                 else:
                     try:
@@ -845,7 +1053,11 @@ class Pool:
                 receipt.update(state='SUBMISSION_UNCONFIRMED', error=str(error),
                                last_status={'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED', 'error': str(error)})
                 write_json(path, receipt)
-                return self._public_status(receipt, identifier, receipt['last_status'])
+                # Soon after submission a late original can still be accepted after
+                # this refused replay; only an overdue one is settled by the tombstone.
+                fenced = (self._fence_local_refusal(receipt, path, local)
+                          if refused and self._local_fence_due(receipt) else None)
+                return self._public_status(receipt, identifier, fenced or receipt['last_status'])
             receipt.update(state='SUBMITTED', accepted=result)
             write_json(path, receipt)
             # Recovery already owns this job's non-reentrant lock.
@@ -924,13 +1136,103 @@ class Pool:
         return self.remote(self._remote_host(host_id), 'reconcile',
                            {'request_id': request_id, 'operator_confirm': True})
 
-    def gc(self, host_id, *, execute=False):
-        """Reclaim a remote host's copies of PASSED jobs whose evidence is collected here.
+    RECLAIMABLE_FAILURES = frozenset({'TEST_FAILED', 'TIMED_OUT', 'INFRA_FAILED'})
+    GC_REMOTE_TIMEOUT = 300
+
+    @classmethod
+    def _gc_candidate(cls, receipt, host_id):
+        last = receipt.get('last_status') if isinstance(receipt, dict) else None
+        if (not isinstance(last, dict) or receipt.get('host') != host_id or not isinstance(receipt.get('request'), dict)
+                or (receipt.get('storage_gc') or {}).get('state') == 'RECLAIMED'
+                or (last.get('storage_gc') or {}).get('state') == 'RECLAIMED'
+                or last.get('state') != 'FINISHED' or last.get('cleanup') != 'CONFIRMED'):
+            return False
+        return (last.get('outcome') == 'PASSED' and last.get('evidence') == 'COMPLETE'
+                or last.get('outcome') in cls.RECLAIMABLE_FAILURES)
+
+    def _remember_storage_gc(self, identifier, result):
+        guard = acquire_lock(self.root / (identifier + '.lock'))
+        try:
+            path = self.root / 'jobs' / (identifier + '.json')
+            receipt = self._read_receipt_locked(path)
+            receipt['storage_gc'] = {'state': 'RECLAIMED', 'at': time.time(),
+                                     'logical_bytes_removed': result.get('logical_bytes_removed'),
+                                     'retained_residue_files': (result.get('retained_residue') or {}).get('files')}
+            write_json(path, receipt)
+        finally:
+            guard.close()
+
+    AUTO_GC_INTERVAL_SECONDS = 1200
+    AUTO_GC_BUDGET_SECONDS = 120
+
+    def reclaim_for_space(self, decision, budget_seconds=AUTO_GC_BUDGET_SECONDS):
+        """Run ``gc`` on remote hosts that just refused placement for disk space.
+
+        Called by the batch runner outside every pool lock, at most once per host
+        per ``AUTO_GC_INTERVAL_SECONDS`` and by one process at a time. Each sweep
+        starts no new job after ``budget_seconds``, so a placement lane is not held
+        for long; a backlog continues on later sweeps. Before this, retention was
+        manual: on 25 November finished failures held 24 GB of the linux host's
+        25 GB queue store while 14 rows waited on disk. Returns the per-host
+        reports of sweeps that ran.
+        """
+        if type(budget_seconds) not in (int, float) or not math.isfinite(budget_seconds) or budget_seconds < 1:
+            return {}
+        candidates = (decision or {}).get('candidates') if isinstance(decision, dict) else None
+        hosts = sorted({item['host'] for item in candidates or [] if isinstance(item, dict)
+                        and isinstance(item.get('host'), str)
+                        and any(isinstance(reason, str) and reason.startswith('INSUFFICIENT_DISK')
+                                for reason in item.get('reasons') or [])})
+        directory = self.root / 'retention'
+        reports = {}
+        for host_id in hosts:
+            if not host_id.replace('-', '').replace('_', '').isalnum():
+                continue
+            host = next((item for item in self.hosts if item['id'] == host_id), None)
+            if host is None or host.get('local'):
+                continue
+            directory.mkdir(exist_ok=True)
+            try:
+                guard = acquire_lock(directory / f'auto-gc-{host_id}.lock', timeout=0)
+            except PoolLockTimeout:
+                continue  # another process is sweeping this host
+            try:
+                journal = directory / f'auto-gc-{host_id}.json'  # written only under this host's lock
+                try:
+                    last = json.loads(journal.read_text(encoding='utf-8'))
+                except (OSError, ValueError):
+                    last = {}
+                last = last if isinstance(last, dict) else {}
+                if type(last.get('at')) in (int, float) and time.time() - last['at'] < self.AUTO_GC_INTERVAL_SECONDS:
+                    continue
+                write_json(journal, {'host': host_id, 'at': time.time(), 'state': 'RUNNING'})
+                try:
+                    report = self.gc(host_id, execute=True, deadline=time.monotonic() + budget_seconds)
+                    entry = {'state': 'DONE', **{key: report.get(key) for key in (
+                        'candidates', 'reclaimed', 'deferred', 'logical_bytes_removed')},
+                             'skipped': len(report.get('skipped') or []),
+                             'skipped_sample': (report.get('skipped') or [])[:3]}
+                except Exception as error:
+                    entry = {'state': 'FAILED', 'error': str(error)[:300]}
+                    report = entry
+                write_json(journal, {'host': host_id, 'at': time.time(), **entry})
+                reports[host_id] = report
+            finally:
+                guard.close()
+        return reports
+
+    def gc(self, host_id, *, execute=False, deadline=None):
+        """Reclaim a remote host's reproducible copies of jobs whose evidence is collected here.
+
+        ``deadline`` (monotonic) stops starting new jobs; the rest stay candidates
+        for the next sweep. Failures, which hold the most bytes, go first.
 
         Without ``execute`` this only lists candidates. With it, each job is first
         collected (or its existing collection re-verified) on this coordinator;
-        only then does the remote agent remove that job's extracted source and
-        archive copies. Failed, incomplete and UNKNOWN jobs are never candidates.
+        only then does the remote agent remove that job's reproducible inputs:
+        the whole source and archive copies of a complete pass, or for a finished
+        failure with confirmed cleanup only what it proves it can regenerate,
+        keeping the run's residue. UNKNOWN and unconfirmed jobs are never candidates.
         """
         host = self._remote_host(host_id)
         candidates = []
@@ -939,27 +1241,32 @@ class Pool:
                 receipt = json.loads(path.read_text(encoding='utf-8'))
             except (OSError, ValueError):
                 continue
-            last = receipt.get('last_status') if isinstance(receipt, dict) else None
-            if (not isinstance(last, dict) or receipt.get('host') != host_id or not isinstance(receipt.get('request'), dict)
-                    or (last.get('state'), last.get('outcome'), last.get('evidence'), last.get('cleanup'))
-                    != ('FINISHED', 'PASSED', 'COMPLETE', 'CONFIRMED')
-                    or (last.get('storage_gc') or {}).get('state') == 'RECLAIMED'):
-                continue
-            candidates.append((path.stem, receipt))
+            if self._gc_candidate(receipt, host_id):
+                candidates.append((path.stem, receipt))
+        candidates.sort(key=lambda item: item[1]['last_status'].get('outcome') == 'PASSED')
         report = {'host': host_id, 'candidates': len(candidates), 'execute': execute}
         if not execute:
             report['request_ids'] = [identifier for identifier, _ in candidates]
             return report
         reclaimed, skipped, total = [], [], 0
-        for identifier, receipt in candidates:
+        for index, (identifier, receipt) in enumerate(candidates):
+            if deadline is not None and time.monotonic() >= deadline:
+                report['deferred'] = len(candidates) - index
+                break
             try:
                 collected = self.collect(identifier)
-                if collected.get('pool_outcome') != 'PASSED' or collected.get('diagnostic_only') is not False:
-                    raise ValueError('collected evidence is not a complete pass')
+                outcome = collected.get('pool_outcome')
+                if outcome == 'PASSED':
+                    if collected.get('diagnostic_only') is not False:
+                        raise ValueError('collected evidence is not a complete pass')
+                elif outcome not in self.RECLAIMABLE_FAILURES or outcome != receipt['last_status'].get('outcome'):
+                    raise ValueError('collected evidence does not match the finished outcome')
                 result = self.remote(host, 'gc', {'request_id': identifier, 'operator_confirm': True,
-                                                  'payload_sha256': request_digest(receipt['request'])})
-                total += result.get('logical_bytes_removed', 0)
+                                                  'payload_sha256': request_digest(receipt['request'])},
+                                     timeout=self.GC_REMOTE_TIMEOUT)
+                total += result.get('logical_bytes_removed', 0) or 0
                 reclaimed.append(identifier)
+                self._remember_storage_gc(identifier, result)
             except Exception as error:  # one job's refusal never stops the sweep
                 skipped.append({'request_id': identifier, 'error': str(error)[:300]})
         try:
@@ -981,7 +1288,9 @@ class Pool:
     def _status_locked(self, identifier):
         """Observe and update a receipt while holding its per-job lock."""
         path = self.root / 'jobs' / (identifier + '.json')
-        receipt = self._read_receipt_locked(path)
+        receipt = self._read_receipt_locked(path, allow_missing=True)
+        if receipt is None:
+            return self._missing_receipt(identifier)
         if receipt.get('state') in self._RECONCILED:
             return self._public_status(receipt, identifier, receipt['last_status'])
         if receipt.get('state') == 'TRANSFER_DEFERRED':
@@ -996,17 +1305,31 @@ class Pool:
                 recovered = rpc('recover', **local, request_id=identifier, request_secret=request['request_secret'])
                 if recovered is not None:
                     self._verify_local_acceptance(recovered)
+                elif self._local_fence_due(receipt):
+                    fenced = self._fence_local_refusal(receipt, path, local)
+                    if fenced is not None:
+                        return self._public_status(receipt, identifier, fenced)
                 result = (self._verify_local_status(receipt, rpc('status', **local, job=recovered['job']))
                           if recovered else {'state': 'SUBMISSION_UNCONFIRMED'})
             else:
                 result = self._verify_remote_status(receipt, self.remote(host, 'status', {'request_id': identifier}))
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
             result = {'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED', 'error': str(error)}
+        if result.get('state') == 'FINISHED':
+            previous = receipt.get('last_status') or {}
+            outcome = result.get('outcome')
+            stamp = receipt.get('terminal_observation')
+            legacy = not stamp and previous.get('state') == 'FINISHED' and previous.get('outcome') == outcome
+            observed = self._terminal_time(receipt, path) if legacy else time.time()
+            self._remember_terminal(receipt, result, observed)
+        elif result.get('state') in {'RUNNING', 'STARTING', 'ACCEPTED', 'QUEUED', 'DISPATCHING', 'CLEANING'}:
+            receipt.pop('terminal_observation', None)
         receipt['last_status'] = result
         if result.get('state') in {'RUNNING', 'STARTING', 'FINISHED', 'ACCEPTED', 'QUEUED', 'DISPATCHING', 'CLEANING'}:
             receipt['state'] = 'SUBMITTED'
         elif result.get('state') in {'UNKNOWN', 'SUBMISSION_UNCONFIRMED', 'NOT_FOUND'}:
-            receipt['state'] = 'SUBMISSION_UNCONFIRMED'
+            if (receipt.get('terminal_observation') or {}).get('cleanup') != 'CONFIRMED':
+                receipt['state'] = 'SUBMISSION_UNCONFIRMED'
         write_json(path, receipt)
         return self._public_status(receipt, identifier, result)
 
@@ -1040,7 +1363,8 @@ def main(argv=None):
     submit.add_argument('--host')
     submit.add_argument('--require', action='append', default=[])
     submit.add_argument('--timeout', type=float, default=90)
-    gc = sub.add_parser('gc', help='reclaim remote copies of collected PASSED jobs (dry run unless --execute)')
+    gc = sub.add_parser('gc', help='reclaim reproducible remote copies of collected finished jobs '
+                                   '(dry run unless --execute)')
     gc.add_argument('--host', required=True)
     gc.add_argument('--execute', action='store_true')
     remote_reconcile = sub.add_parser('remote-reconcile', help='operator release of a remote UNKNOWN job with proof')

@@ -1,9 +1,12 @@
 # SUN-09 (docs/plans/sun.md): the field's skyline as the pilot's eye sees it: for each azimuth bin, the highest elevation
 # any static scenery reaches (trees, buildings, the treeline, ridges, terrain). The sun hidden below it neither bleaches
 # the eye nor veils it while it is off screen (on screen the depth buffer decides). Built once per eye position from the
-# built field's own geometry, incrementally under a fixed per-frame work budget (samples, not wall time, so captures and
-# replays complete it on the same frame on any machine) and a flight never hitches; until it is done the callers keep
-# SunOptics' constant skyline prior.
+# built field's own geometry, incrementally under a fixed per-step work budget (samples, not wall time) so a flight never
+# hitches; until it is done the callers keep SunOptics' constant skyline prior. Each step plans its budget on the main
+# thread (the scene reads in _start) and runs that batch's arithmetic on a worker thread. A step whose previous batch is
+# still running plans nothing and returns false: the main thread never waits for the worker, which the OS can delay by
+# several milliseconds. The bins do not depend on that timing; captures call finish(). This moved the ~0.4 s of angle
+# work for a flight's eye at the Club field off the main thread (2026-11-26).
 # - MultiMesh instances taller than MIN_HEIGHT_M (trees, shrubs, people, cars): the top of each instance's box, over
 #   CROWN_SHARE of its horizontal size (a crown is narrower than its rotated box). Gaps between crowns stay open.
 # - Meshes (merged scenery cells, ridges, terrain): their triangles' edges, each raising the bins it spans to the lower
@@ -25,12 +28,23 @@ const TERRAIN_RELIEF_SHARE := 0.02
 const MAX_EDGE_SPAN := PI / 6.0
 ## No scenery in a bin: the elevation reported (stored as float32: compare with is_empty_elevation()).
 const EMPTY := -PI / 2.0
+## A mesh's [vertices, indices] (mesh space, triangle surfaces) read while its field was built behind the loading screen
+## (capture_source): reading a mesh back from the renderer in flight cost 1–10 ms per mesh on Forward+, 13–20 ms frames
+## for the large scenery cells. A finished skyline removes the copies it used.
+const SOURCE_META := &"openrc_skyline_source"
+## capture_source keeps meshes whose top reaches this height: every eye that builds a skyline stands above it.
+const CAPTURE_MIN_TOP_M := 0.5
 
 var eye := Vector3.ZERO
 var bins := PackedFloat32Array()
 var done := false
 var _stack: Array[Node] = []
 var _job: Dictionary = {} # the node in progress: {kind, node, index, count, stride, ...}
+## The worker task running the previous step's batch, or -1.
+var _task := -1
+var _planned_out := false
+## Meshes whose captured source this skyline read; released when it is done.
+var _captured: Array[Mesh] = []
 
 
 func _init(field: Node, eye_position: Vector3) -> void:
@@ -42,28 +56,106 @@ func _init(field: Node, eye_position: Vector3) -> void:
 	done = _stack.is_empty()
 
 
-## Processes at most `samples` instances, vertices or triangles; returns true once the skyline is complete.
+## Plans at most `samples` instances, vertices or triangles and starts their arithmetic on a worker thread; returns
+## true once the skyline is complete (a step after the last batch has finished).
 func step(samples: int) -> bool:
+	if _task >= 0:
+		if not WorkerThreadPool.is_task_completed(_task):
+			return false # the previous batch still runs: this frame plans nothing rather than waiting for it
+		join()
+	if done:
+		return true
 	var left := maxi(samples, 1)
-	while not done and left > 0:
+	var batch: Array = []
+	while left > 0:
 		if _job.is_empty():
 			if _stack.is_empty():
-				done = true
+				_planned_out = true
 				break
 			_start(_stack.pop_back())
 		else:
-			left -= _advance(mini(left, 256))
+			left -= _plan(mini(left, 256), batch)
+	if not batch.is_empty():
+		# The bound argument keeps this object alive while the task runs; owners join() before dropping it.
+		_task = WorkerThreadPool.add_task(_run_batch.bind(self, batch), true, "Sun skyline")
+	elif _planned_out:
+		done = true
+		for mesh: Mesh in _captured:
+			if is_instance_valid(mesh):
+				mesh.remove_meta(SOURCE_META) # another eye position reads the renderer again
+		_captured.clear()
 	return done
+
+
+## A mesh's triangle surfaces as one [vertices, indices] pair in mesh space: the captured copy when there is one,
+## else read from the renderer (main thread; a GPU read-back on Forward+).
+static func mesh_source(mesh: Mesh) -> Array:
+	if mesh.has_meta(SOURCE_META):
+		var captured: Variant = mesh.get_meta(SOURCE_META)
+		if captured is Array and (captured as Array).size() == 2:
+			return captured
+	var vertices := PackedVector3Array()
+	var indices := PackedInt32Array()
+	for surface in mesh.get_surface_count():
+		if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
+			continue
+		var arrays: Array = mesh.surface_get_arrays(surface)
+		var surface_vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var surface_indices: Variant = arrays[Mesh.ARRAY_INDEX]
+		var base := vertices.size()
+		if surface_indices is PackedInt32Array and not (surface_indices as PackedInt32Array).is_empty():
+			if base == 0:
+				indices.append_array(surface_indices) # the usual single surface: no per-index script loop
+			else:
+				for index: int in surface_indices:
+					indices.append(base + index)
+		else:
+			for index in surface_vertices.size():
+				indices.append(base + index)
+		vertices.append_array(surface_vertices)
+	return [vertices, indices]
+
+
+## Field construction (render/field.gd, behind the loading screen): stores mesh_source() on a mesh the skyline of any
+## eye could read. `world` is the instance's transform relative to the field root, which sits at the world origin.
+## Returns whether it read the mesh.
+static func capture_source(instance: MeshInstance3D, world: Transform3D) -> bool:
+	var mesh := instance.mesh
+	if mesh == null or mesh.has_meta(SOURCE_META):
+		return false
+	var world_box: AABB = world * mesh.get_aabb()
+	if world_box.end.y <= CAPTURE_MIN_TOP_M or is_terrain_sheet(world_box):
+		return false
+	mesh.set_meta(SOURCE_META, mesh_source(mesh))
+	return true
+
+
+## Terrain sheets kilometres wide with relief under TERRAIN_RELIEF_SHARE of their size are skipped: reading the
+## field's 40 km ground costs a 24 ms frame. Measured on the default field, the skyline drops by at most 1° (at
+## 45–60° and 300° azimuth, where gentle relief near the field rose above the trees): a little more glare there,
+## never less. Distant hills are their own ridge meshes.
+static func is_terrain_sheet(world_box: AABB) -> bool:
+	return minf(world_box.size.x, world_box.size.z) > TERRAIN_MIN_SIZE_M \
+		and world_box.size.y < TERRAIN_RELIEF_SHARE * minf(world_box.size.x, world_box.size.z)
+
+
+## Waits for the batch the last step started (it normally finished during that frame). Owners call it before they
+## drop a skyline that is still building.
+func join() -> void:
+	if _task >= 0:
+		WorkerThreadPool.wait_for_task_completion(_task)
+		_task = -1
 
 
 ## Builds to completion (tests, captures).
 func finish() -> void:
 	while not step(1 << 20):
-		pass
+		join()
 
 
 ## The skyline's elevation (rad) toward `dir`'s azimuth.
 func elevation(dir: Vector3) -> float:
+	join()
 	return bins[azimuth_bin(dir)]
 
 
@@ -119,31 +211,13 @@ func _start(node: Node) -> void:
 		# Nothing at or below the eye can rise above the horizon (the callers keep the geometric horizon): the flat
 		# ground and lake are skipped without reading their vertices.
 		var world_box: AABB = transform * mesh.get_aabb()
-		if world_box.end.y <= eye.y:
+		if world_box.end.y <= eye.y or is_terrain_sheet(world_box):
 			return
-		# Terrain sheets kilometres wide with relief under TERRAIN_RELIEF_SHARE of their size are skipped: reading the
-		# field's 40 km ground costs a 24 ms frame. Measured on the default field, the skyline drops by at most 1° (at
-		# 45–60° and 300° azimuth, where gentle relief near the field rose above the trees): a little more glare there,
-		# never less. Distant hills are their own ridge meshes.
-		if minf(world_box.size.x, world_box.size.z) > TERRAIN_MIN_SIZE_M \
-				and world_box.size.y < TERRAIN_RELIEF_SHARE * minf(world_box.size.x, world_box.size.z):
-			return
-		var vertices := PackedVector3Array()
-		var indices := PackedInt32Array()
-		for surface in mesh.get_surface_count():
-			if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
-				continue
-			var arrays: Array = mesh.surface_get_arrays(surface)
-			var surface_vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-			var surface_indices: Variant = arrays[Mesh.ARRAY_INDEX]
-			var base := vertices.size()
-			if surface_indices is PackedInt32Array and not (surface_indices as PackedInt32Array).is_empty():
-				for index: int in surface_indices:
-					indices.append(base + index)
-			else:
-				for index in surface_vertices.size():
-					indices.append(base + index)
-			vertices.append_array(surface_vertices)
+		var source := mesh_source(mesh)
+		if mesh.has_meta(SOURCE_META):
+			_captured.append(mesh)
+		var vertices: PackedVector3Array = source[0]
+		var indices: PackedInt32Array = source[1]
 		var triangles := indices.size() / 3
 		if triangles == 0:
 			return
@@ -151,17 +225,39 @@ func _start(node: Node) -> void:
 		var elevations := PackedFloat32Array()
 		azimuths.resize(vertices.size())
 		elevations.resize(vertices.size())
-		_job = {kind = "vertices", node = node, index = 0, count = vertices.size(), stride = 1, vertices = vertices,
-			indices = indices, triangles = triangles, azimuths = azimuths, elevations = elevations, transform = transform,
-			triangle_stride = maxi(1, ceili(float(triangles) / MAX_SAMPLES_PER_MESH))}
+		# World positions in one engine call; the vertex pass then does only the eye-relative angles.
+		_job = {kind = "vertices", node = node, index = 0, count = vertices.size(), stride = 1,
+			vertices = transform * vertices, indices = indices, triangles = triangles, azimuths = azimuths,
+			elevations = elevations, triangle_stride = maxi(1, ceili(float(triangles) / MAX_SAMPLES_PER_MESH))}
 
 
-## Advances the job by up to `items` samples (instances or triangles); returns how many it used.
-func _advance(items: int) -> int:
+## Plans the job's next `items` samples (instances, vertices or triangles) into `batch`; returns how many it used.
+## Main thread: the same accounting as the former synchronous advance, so the build ends on the same step.
+func _plan(items: int, batch: Array) -> int:
 	var job := _job
 	var stride := int(job.stride)
 	var start := int(job.index)
 	var end := mini(start + items * stride, int(job.count))
+	batch.append([job, start, end])
+	job.index = end
+	if end >= int(job.count):
+		if job.kind == "vertices":
+			# The triangle pass reads the vertex job's angles when it runs, after that job's own batch entries.
+			_job = {kind = "triangles", node = job.node, index = 0, count = job.triangles, stride = job.triangle_stride,
+				indices = job.indices, source = job}
+		else:
+			_job = {}
+	return maxi(ceili(float(end - start) / stride), 1)
+
+
+## Worker thread: runs one step's planned samples in order. Touches only this object's bins and the planned jobs.
+static func _run_batch(sky: RefCounted, batch: Array) -> void:
+	for entry: Array in batch:
+		sky._run(entry[0], entry[1], entry[2])
+
+
+func _run(job: Dictionary, start: int, end: int) -> void:
+	var stride := int(job.stride)
 	if job.kind == "instances":
 		var buffer: PackedFloat32Array = job.buffer
 		var width := int(job.width)
@@ -180,9 +276,12 @@ func _advance(items: int) -> int:
 		var vertices: PackedVector3Array = job.vertices
 		var azimuths: PackedFloat32Array = job.azimuths
 		var elevations: PackedFloat32Array = job.elevations
-		var base: Transform3D = job.transform
+		# Packed arrays are copy-on-write: while the job also holds them, the first write below copied both whole
+		# arrays on every call (about 200 MB of copies for one 82k-vertex scenery cell). Detach, write, put back.
+		job.azimuths = PackedFloat32Array()
+		job.elevations = PackedFloat32Array()
 		for i in range(start, end):
-			var offset: Vector3 = base * vertices[i] - eye
+			var offset: Vector3 = vertices[i] - eye
 			var distance := Vector2(offset.x, offset.z).length()
 			if distance < EXCLUDE_RADIUS_M or not offset.is_finite():
 				elevations[i] = NAN
@@ -191,14 +290,17 @@ func _advance(items: int) -> int:
 			var el := atan2(offset.y, distance)
 			azimuths[i] = az
 			elevations[i] = el
-			_raise(az, az, el)
+			var bin := posmod(int(floor(az / TAU * BINS)), BINS) # _raise(az, az, el): one bin
+			if el > bins[bin]:
+				bins[bin] = el
 		job.azimuths = azimuths
 		job.elevations = elevations
 	else:
 		# Pass 2: each triangle's edges raise the bins they span to the lower end.
 		var indices: PackedInt32Array = job.indices
-		var azimuths: PackedFloat32Array = job.azimuths
-		var elevations: PackedFloat32Array = job.elevations
+		var source: Dictionary = job.source
+		var azimuths: PackedFloat32Array = source.azimuths
+		var elevations: PackedFloat32Array = source.elevations
 		for t in range(start, end, stride):
 			var a := indices[3 * t]
 			var b := indices[3 * t + 1]
@@ -206,14 +308,6 @@ func _advance(items: int) -> int:
 			_edge(azimuths, elevations, a, b)
 			_edge(azimuths, elevations, b, c)
 			_edge(azimuths, elevations, c, a)
-	job.index = end
-	if end >= int(job.count):
-		if job.kind == "vertices":
-			_job = {kind = "triangles", node = job.node, index = 0, count = job.triangles, stride = job.triangle_stride,
-				indices = job.indices, azimuths = job.azimuths, elevations = job.elevations}
-		else:
-			_job = {}
-	return maxi(ceili(float(end - start) / stride), 1)
 
 
 ## Raises the bins a point (with a horizontal half-width in metres) covers to its elevation.

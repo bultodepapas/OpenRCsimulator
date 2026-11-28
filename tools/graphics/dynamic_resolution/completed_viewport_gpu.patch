@@ -1,0 +1,562 @@
+diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
+index 7d7a48f..1248fab 100644
+--- a/drivers/metal/metal3_objects.cpp
++++ b/drivers/metal/metal3_objects.cpp
+@@ -321,6 +321,11 @@ QueryPool *QueryPool::create(MTL::Device *p_device, uint32_t p_count) {
+ 	pool->dummy_buffer = NS::TransferPtr(p_device->newBuffer(1, MTL::ResourceStorageModePrivate | MTL::ResourceHazardTrackingModeUntracked));
+ 	pool->device = p_device;
+ 	p_device->sampleTimestamps(&pool->cpu_base, &pool->gpu_base);
++	if (!pool->sample_buffer.get() || !pool->dummy_buffer.get() ||
++			pool->timestamp_commands.resize(p_count) != OK) {
++		memdelete(pool);
++		return nullptr;
++	}
+ 	pool->count = p_count;
+ 	return pool;
+ }
+@@ -340,22 +345,26 @@ double QueryPool::_resolve_timestamp_to_nano() {
+ 	return timestamp_to_nano;
+ }
+ 
+-void QueryPool::get_results(uint32_t p_count, uint64_t *r_results) {
+-	double to_nano = _resolve_timestamp_to_nano();
+-	if (to_nano == 0.0) {
+-		memset(r_results, 0, p_count * sizeof(uint64_t));
+-		return;
+-	}
++void QueryPool::record_timestamp(uint32_t p_index, MTL::CommandBuffer *p_buffer) {
++	ERR_FAIL_UNSIGNED_INDEX(p_index, count);
++	timestamp_commands.write[p_index] = NS::RetainPtr(p_buffer);
++}
+ 
+-	NS::Data *data = sample_buffer->resolveCounterRange(NS::Range::Make(0, p_count));
+-	ERR_FAIL_NULL(data);
+-	const MTL::CounterResultTimestamp *src = (const MTL::CounterResultTimestamp *)data->bytes();
+-	uint64_t last = 0;
++void QueryPool::get_results(uint32_t p_count, uint64_t *r_results) {
++	const double to_nano = _resolve_timestamp_to_nano();
++	const NS::Data *data = to_nano > 0.0 ? sample_buffer->resolveCounterRange(NS::Range::Make(0, p_count)) : nullptr;
++	const MTL::CounterResultTimestamp *src = data && data->length() >= p_count * sizeof(MTL::CounterResultTimestamp)
++			? static_cast<const MTL::CounterResultTimestamp *>(data->bytes())
++			: nullptr;
+ 	for (uint32_t i = 0; i < p_count; i++) {
+-		// A slot the GPU never wrote resolves to the error value; hold the previous
+-		// reading so the profiler reports a zero length span rather than garbage.
+-		last = src[i].timestamp == COUNTER_ERROR_VALUE ? last : uint64_t((double)src[i].timestamp * to_nano);
+-		r_results[i] = last;
++		const auto &command = timestamp_commands[i];
++		// A failed submission or an elided encoder can leave a prior query value
++		// in this slot. Require successful completion of this slot's command buffer.
++		r_results[i] = src && command.get() && command->status() == MTL::CommandBufferStatusCompleted &&
++						src[i].timestamp != COUNTER_ERROR_VALUE
++				? uint64_t((double)src[i].timestamp * to_nano)
++				: 0;
++		timestamp_commands.write[i] = {};
+ 	}
+ }
+ 
+@@ -370,7 +379,10 @@ void MDCommandBuffer::timestamp_write(QueryPool *p_pool, uint32_t p_index) {
+ 
+ 	// A self contained encoder: the state machine stays in the None state, so this
+ 	// must not go through _ensure_blit_encoder(), which cannot take a descriptor.
+-	MTL::BlitCommandEncoder *enc = command_buffer()->blitCommandEncoder(desc.get());
++	MTL::CommandBuffer *command = command_buffer();
++	MTL::BlitCommandEncoder *enc = command->blitCommandEncoder(desc.get());
++	ERR_FAIL_NULL(enc);
++	p_pool->record_timestamp(p_index, command);
+ #ifdef DEV_ENABLED
+ 	enc->setLabel(NS::String::string(vformat("Timestamp %03d", p_index).utf8().get_data(), NS::UTF8StringEncoding));
+ #endif
+diff --git a/drivers/metal/metal3_objects.h b/drivers/metal/metal3_objects.h
+index cf978ba..d1d0134 100644
+--- a/drivers/metal/metal3_objects.h
++++ b/drivers/metal/metal3_objects.h
+@@ -292,6 +292,7 @@ class API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0)) QueryPool {
+ 	MTL::Timestamp gpu_base = 0;
+ 	double timestamp_to_nano = 0.0;
+ 	uint32_t count = 0;
++	Vector<NS::SharedPtr<MTL::CommandBuffer>> timestamp_commands;
+ 
+ 	QueryPool() = default;
+ 
+@@ -307,6 +308,7 @@ public:
+ 	MTL::Buffer *get_dummy_buffer() const { return dummy_buffer.get(); }
+ 	uint32_t get_count() const { return count; }
+ 
++	void record_timestamp(uint32_t p_index, MTL::CommandBuffer *p_buffer);
+ 	void get_results(uint32_t p_count, uint64_t *r_results);
+ };
+ 
+diff --git a/drivers/metal/rendering_device_driver_metal3.h b/drivers/metal/rendering_device_driver_metal3.h
+index 659b5be..e4f8792 100644
+--- a/drivers/metal/rendering_device_driver_metal3.h
++++ b/drivers/metal/rendering_device_driver_metal3.h
+@@ -97,6 +97,9 @@ public:
+ 
+ #pragma mark - Timestamp
+ 
++	bool supports_completed_timestamp_queries(CommandQueueFamilyID p_family) const override {
++		return timestamp_queries_supported;
++	}
+ 	QueryPoolID timestamp_query_pool_create(uint32_t p_query_count) override;
+ 	void timestamp_query_pool_free(QueryPoolID p_pool_id) override;
+ 	void timestamp_query_pool_get_results(QueryPoolID p_pool_id, uint32_t p_query_count, uint64_t *r_results) override;
+diff --git a/drivers/vulkan/rendering_device_driver_vulkan.cpp b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+index 6987a5e..790d2d4 100644
+--- a/drivers/vulkan/rendering_device_driver_vulkan.cpp
++++ b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+@@ -6849,8 +6849,20 @@ void RenderingDeviceDriverVulkan::timestamp_query_pool_free(QueryPoolID p_pool_i
+ 	vkDestroyQueryPool(vk_device, (VkQueryPool)p_pool_id.id, VKC::get_allocation_callbacks(VK_OBJECT_TYPE_QUERY_POOL));
+ }
+ 
++bool RenderingDeviceDriverVulkan::supports_completed_timestamp_queries(CommandQueueFamilyID p_family) const {
++	return p_family.id != 0 && p_family.id <= queue_family_properties.size() &&
++			queue_family_properties[p_family.id - 1].timestampValidBits != 0;
++}
++
+ void RenderingDeviceDriverVulkan::timestamp_query_pool_get_results(QueryPoolID p_pool_id, uint32_t p_query_count, uint64_t *r_results) {
+-	vkGetQueryPoolResults(vk_device, (VkQueryPool)p_pool_id.id, 0, p_query_count, sizeof(uint64_t) * p_query_count, r_results, sizeof(uint64_t), VK_QUERY_RESULT_64_BIT);
++	const VkResult result = vkGetQueryPoolResults(vk_device, (VkQueryPool)p_pool_id.id, 0, p_query_count,
++			sizeof(uint64_t) * p_query_count, r_results, sizeof(uint64_t), VK_QUERY_RESULT_64_BIT);
++	if (result != VK_SUCCESS) {
++		// Never associate old values from this ring slot with new labels.
++		for (uint32_t i = 0; i < p_query_count; i++) {
++			r_results[i] = 0;
++		}
++	}
+ }
+ 
+ uint64_t RenderingDeviceDriverVulkan::timestamp_query_result_to_time(uint64_t p_result) {
+diff --git a/drivers/vulkan/rendering_device_driver_vulkan.h b/drivers/vulkan/rendering_device_driver_vulkan.h
+index e7c129c..00ad84a 100644
+--- a/drivers/vulkan/rendering_device_driver_vulkan.h
++++ b/drivers/vulkan/rendering_device_driver_vulkan.h
+@@ -755,6 +755,7 @@ public:
+ 	// ----- TIMESTAMP -----
+ 
+ 	// Basic.
++	bool supports_completed_timestamp_queries(CommandQueueFamilyID p_family) const override final;
+ 	virtual QueryPoolID timestamp_query_pool_create(uint32_t p_query_count) override final;
+ 	virtual void timestamp_query_pool_free(QueryPoolID p_pool_id) override final;
+ 	virtual void timestamp_query_pool_get_results(QueryPoolID p_pool_id, uint32_t p_query_count, uint64_t *r_results) override final;
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+index 5c2eedf..9779df3 100644
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -40,6 +40,10 @@
+ #include "servers/rendering/renderer_canvas_cull.h"
+ #include "servers/rendering/renderer_compositor.h"
+ #include "servers/rendering/renderer_scene_occlusion_cull.h"
++#ifdef RD_ENABLED
++#include "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
++#include "servers/rendering/renderer_rd/storage_rd/texture_storage.h"
++#endif
+ #include "servers/rendering/rendering_device.h"
+ #include "servers/rendering/rendering_method.h"
+ #include "servers/rendering/rendering_server_globals.h"
+@@ -133,7 +137,17 @@ Vector<RendererViewport::Viewport *> RendererViewport::_sort_active_viewports()
+ 	return result;
+ }
+ 
++void RendererViewport::_invalidate_gpu_frame(Viewport *p_viewport) {
++	if (!p_viewport->completed_gpu_sampling) {
++		return;
++	}
++	++p_viewport->gpu_configuration;
++	MutexLock lock(gpu_frame_mutex);
++	completed_gpu_frames.erase(p_viewport->self);
++}
++
+ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
++	_invalidate_gpu_frame(p_viewport);
+ 	if (p_viewport->render_buffers.is_valid()) {
+ 		if (p_viewport->size.width == 0 || p_viewport->size.height == 0) {
+ 			p_viewport->render_buffers.unref();
+@@ -339,10 +353,22 @@ void RendererViewport::_draw_3d(Viewport *p_viewport) {
+ }
+ 
+ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
++	GpuTimestampPair *gpu_pair = nullptr;
+ 	if (p_viewport->measure_render_time) {
+-		String rt_id = "vp_begin_" + itos(p_viewport->self.get_id());
+-		RSG::utilities->capture_timestamp(rt_id);
+-		timestamp_vp_map[rt_id] = p_viewport->self;
++		if (p_viewport->completed_gpu_sampling) {
++			const uint64_t tag = ++next_gpu_timestamp_tag;
++			gpu_pair = &gpu_timestamp_history[tag % GPU_TIMESTAMP_HISTORY];
++			*gpu_pair = GpuTimestampPair();
++			gpu_pair->viewport = p_viewport->self;
++			gpu_pair->tag = tag;
++			gpu_pair->frame.frame_id = ++p_viewport->measured_draw_id;
++			gpu_pair->frame.generation = p_viewport->gpu_configuration;
++			RSG::utilities->capture_timestamp("vp_drs_begin_" + itos(tag));
++		} else {
++			String rt_id = "vp_begin_" + itos(p_viewport->self.get_id());
++			RSG::utilities->capture_timestamp(rt_id);
++			timestamp_vp_map[rt_id] = p_viewport->self;
++		}
+ 	}
+ 
+ 	if (OS::get_singleton()->get_current_rendering_method() == "gl_compatibility") {
+@@ -770,7 +796,28 @@ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
+ 		RSG::texture_storage->render_target_do_msaa_resolve(p_viewport->render_target);
+ 	}
+ 
+-	if (p_viewport->measure_render_time) {
++	if (gpu_pair) {
++#ifdef RD_ENABLED
++		Ref<RenderSceneBuffersRD> buffers = p_viewport->render_buffers;
++		if (can_draw_3d && buffers.is_valid() && buffers->has_internal_texture() &&
++				gpu_pair->frame.generation == p_viewport->gpu_configuration) {
++			const RID color = buffers->get_internal_texture();
++			const RID target = RendererRD::TextureStorage::get_singleton()->render_target_get_rd_texture(buffers->get_render_target());
++			RD *device = RD::get_singleton();
++			if (device->texture_is_valid(color) && device->texture_is_valid(target)) {
++				const RD::TextureFormat input_format = device->texture_get_format(color);
++				const RD::TextureFormat output_format = device->texture_get_format(target);
++				const Size2i input(input_format.width, input_format.height);
++				const Size2i output(output_format.width, output_format.height);
++				if (input == buffers->get_internal_size() && output == buffers->get_target_size()) {
++					gpu_pair->frame.input_size = input;
++					gpu_pair->frame.output_size = output;
++				}
++			}
++		}
++#endif
++		RSG::utilities->capture_timestamp("vp_drs_end_" + itos(gpu_pair->tag));
++	} else if (p_viewport->measure_render_time) {
+ 		String rt_id = "vp_end_" + itos(p_viewport->self.get_id());
+ 		RSG::utilities->capture_timestamp(rt_id);
+ 		timestamp_vp_map[rt_id] = p_viewport->self;
+@@ -1146,6 +1193,7 @@ void RendererViewport::viewport_set_active(RID p_viewport, bool p_active) {
+ 		viewport->occlusion_buffer_dirty = true;
+ 		active_viewports.push_back(viewport);
+ 	} else {
++		_invalidate_gpu_frame(viewport);
+ 		active_viewports.erase(viewport);
+ 	}
+ 
+@@ -1298,14 +1346,20 @@ void RendererViewport::viewport_set_disable_3d(RID p_viewport, bool p_disable) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
+-	viewport->disable_3d = p_disable;
++	if (viewport->disable_3d != p_disable) {
++		_invalidate_gpu_frame(viewport);
++		viewport->disable_3d = p_disable;
++	}
+ }
+ 
+ void RendererViewport::viewport_attach_camera(RID p_viewport, RID p_camera) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
+-	viewport->camera = p_camera;
++	if (viewport->camera != p_camera) {
++		_invalidate_gpu_frame(viewport);
++		viewport->camera = p_camera;
++	}
+ }
+ 
+ void RendererViewport::viewport_set_scenario(RID p_viewport, RID p_scenario) {
+@@ -1316,6 +1370,9 @@ void RendererViewport::viewport_set_scenario(RID p_viewport, RID p_scenario) {
+ 		RSG::scene->scenario_remove_viewport_visibility_mask(viewport->scenario, p_viewport);
+ 	}
+ 
++	if (viewport->scenario != p_scenario) {
++		_invalidate_gpu_frame(viewport);
++	}
+ 	viewport->scenario = p_scenario;
+ 	if (viewport->use_occlusion_culling) {
+ 		RendererSceneOcclusionCull::get_singleton()->buffer_set_scenario(p_viewport, p_scenario);
+@@ -1585,7 +1642,57 @@ void RendererViewport::viewport_set_measure_render_time(RID p_viewport, bool p_e
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
+-	viewport->measure_render_time = p_enable;
++	if (viewport->measure_render_time != p_enable) {
++		_invalidate_gpu_frame(viewport);
++		viewport->measure_render_time = p_enable;
++	}
++}
++
++void RendererViewport::viewport_set_completed_gpu_sampling(RID p_viewport, bool p_enable) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL(viewport);
++	if (p_enable && !viewport_supports_completed_gpu_frame(p_viewport)) {
++		return;
++	}
++	if (viewport->completed_gpu_sampling == p_enable) {
++		return;
++	}
++	if (p_enable) {
++		viewport->completed_gpu_sampling = true;
++		_invalidate_gpu_frame(viewport);
++	} else {
++		_invalidate_gpu_frame(viewport);
++		viewport->completed_gpu_sampling = false;
++	}
++}
++
++bool RendererViewport::viewport_supports_completed_gpu_frame(RID p_viewport) const {
++#if defined(RD_ENABLED) && !defined(_3D_DISABLED)
++	return p_viewport.is_valid() && RD::get_singleton() &&
++			RD::get_singleton()->supports_completed_timestamp_queries();
++#else
++	return false;
++#endif
++}
++
++Dictionary RendererViewport::viewport_get_completed_gpu_frame(RID p_viewport) const {
++	GpuFrame frame;
++	{
++		MutexLock lock(gpu_frame_mutex);
++		const GpuFrame *completed = completed_gpu_frames.getptr(p_viewport);
++		if (!completed) {
++			return Dictionary();
++		}
++		frame = *completed;
++	}
++	Dictionary result;
++	result["frame_id"] = int64_t(frame.frame_id);
++	result["generation"] = int64_t(frame.generation);
++	result["recorded_usec"] = int64_t(frame.recorded_usec);
++	result["gpu_usec"] = frame.gpu_usec;
++	result["input_size"] = frame.input_size;
++	result["output_size"] = frame.output_size;
++	return result;
+ }
+ 
+ float RendererViewport::viewport_get_measured_render_time_cpu(RID p_viewport) const {
+@@ -1699,6 +1806,7 @@ bool RendererViewport::free(RID p_rid) {
+ 			num_viewports_with_motion_vectors--;
+ 		}
+ 
++		_invalidate_gpu_frame(viewport);
+ 		viewport_owner.free(p_rid);
+ 
+ 		return true;
+@@ -1707,7 +1815,52 @@ bool RendererViewport::free(RID p_rid) {
+ 	return false;
+ }
+ 
++void RendererViewport::_handle_gpu_timestamp(const String &p_timestamp, uint64_t p_cpu_time, uint64_t p_gpu_time) {
++	const bool is_begin = p_timestamp.begins_with("vp_drs_begin_");
++	const uint64_t tag = p_timestamp.get_slicec('_', 3).to_int();
++	GpuTimestampPair &pair = gpu_timestamp_history[tag % GPU_TIMESTAMP_HISTORY];
++	if (tag == 0 || pair.tag != tag) {
++		return;
++	}
++	if (is_begin) {
++		pair.batch = timestamp_batch;
++		pair.begin_gpu = p_gpu_time;
++		pair.begin_cpu = p_cpu_time;
++		return;
++	}
++	if (pair.batch != timestamp_batch || pair.begin_gpu == 0 || p_gpu_time <= pair.begin_gpu || p_cpu_time < pair.begin_cpu) {
++		return;
++	}
++	Viewport *viewport = viewport_owner.get_or_null(pair.viewport);
++	if (!viewport || !viewport->measure_render_time || !viewport->completed_gpu_sampling ||
++			viewport->gpu_configuration != pair.frame.generation) {
++		return;
++	}
++
++	// Keep the existing GPU/CPU time readers on the same completed interval.
++	viewport->time_cpu_begin = pair.begin_cpu;
++	viewport->time_cpu_end = p_cpu_time;
++	viewport->time_gpu_begin = pair.begin_gpu;
++	viewport->time_gpu_end = p_gpu_time;
++	if (pair.frame.input_size.x <= 0 || pair.frame.input_size.y <= 0 ||
++			pair.frame.output_size.x <= 0 || pair.frame.output_size.y <= 0) {
++		return;
++	}
++
++	MutexLock lock(gpu_frame_mutex);
++	const GpuFrame *previous = completed_gpu_frames.getptr(pair.viewport);
++	if (!previous || previous->frame_id < pair.frame.frame_id) {
++		pair.frame.recorded_usec = pair.begin_cpu;
++		pair.frame.gpu_usec = double(p_gpu_time - pair.begin_gpu) / 1000.0;
++		completed_gpu_frames.insert(pair.viewport, pair.frame);
++	}
++}
++
+ void RendererViewport::handle_timestamp(String p_timestamp, uint64_t p_cpu_time, uint64_t p_gpu_time) {
++	if (p_timestamp.begins_with("vp_drs_")) {
++		_handle_gpu_timestamp(p_timestamp, p_cpu_time, p_gpu_time);
++		return;
++	}
+ 	RID *vp = timestamp_vp_map.getptr(p_timestamp);
+ 	if (!vp) {
+ 		return;
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+index 2c70de5..00761b5 100644
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -30,7 +30,9 @@
+ 
+ #pragma once
+ 
++#include "core/os/mutex.h"
+ #include "core/templates/rid_owner.h"
++#include "core/variant/dictionary.h"
+ #include "servers/display/display_server_enums.h"
+ #include "servers/rendering/renderer_scene_render.h"
+ #include "servers/rendering/rendering_server_enums.h"
+@@ -88,6 +90,9 @@ public:
+ 		RSE::ViewportEnvironmentMode disable_environment = RSE::VIEWPORT_ENVIRONMENT_INHERIT;
+ 		bool disable_3d = false;
+ 		bool measure_render_time = false;
++		bool completed_gpu_sampling = false;
++		uint64_t gpu_configuration = 1;
++		uint64_t measured_draw_id = 0;
+ 
+ 		bool snap_2d_transforms_to_pixel = false;
+ 		bool snap_2d_vertices_to_pixel = false;
+@@ -203,6 +208,33 @@ public:
+ 	int num_viewports_with_motion_vectors = 0;
+ 
+ private:
++	struct GpuFrame {
++		uint64_t frame_id = 0;
++		uint64_t generation = 0;
++		uint64_t recorded_usec = 0;
++		double gpu_usec = 0.0;
++		Size2i input_size;
++		Size2i output_size;
++	};
++	struct GpuTimestampPair {
++		RID viewport;
++		uint64_t tag = 0;
++		uint64_t batch = 0;
++		uint64_t begin_gpu = 0;
++		uint64_t begin_cpu = 0;
++		GpuFrame frame;
++	};
++
++	// Bounded across viewports. A heavily delayed or evicted result is dropped.
++	static constexpr uint32_t GPU_TIMESTAMP_HISTORY = 128;
++	GpuTimestampPair gpu_timestamp_history[GPU_TIMESTAMP_HISTORY];
++	uint64_t next_gpu_timestamp_tag = 0;
++	uint64_t timestamp_batch = 0;
++	mutable Mutex gpu_frame_mutex;
++	HashMap<RID, GpuFrame> completed_gpu_frames;
++	void _invalidate_gpu_frame(Viewport *p_viewport);
++	void _handle_gpu_timestamp(const String &p_timestamp, uint64_t p_cpu_time, uint64_t p_gpu_time);
++
+ 	Vector<Viewport *> _sort_active_viewports();
+ 	void _viewport_set_size(Viewport *p_viewport, int p_width, int p_height, uint32_t p_view_count);
+ 	bool _viewport_requires_motion_vectors(Viewport *p_viewport);
+@@ -289,6 +321,9 @@ public:
+ 	virtual int viewport_get_render_info(RID p_viewport, RSE::ViewportRenderInfoType p_type, RSE::ViewportRenderInfo p_info);
+ 	virtual void viewport_set_debug_draw(RID p_viewport, RSE::ViewportDebugDraw p_draw);
+ 
++	void viewport_set_completed_gpu_sampling(RID p_viewport, bool p_enable);
++	bool viewport_supports_completed_gpu_frame(RID p_viewport) const;
++	Dictionary viewport_get_completed_gpu_frame(RID p_viewport) const;
+ 	void viewport_set_measure_render_time(RID p_viewport, bool p_enable);
+ 	float viewport_get_measured_render_time_cpu(RID p_viewport) const;
+ 	float viewport_get_measured_render_time_gpu(RID p_viewport) const;
+@@ -307,6 +342,7 @@ public:
+ 	void viewport_set_vrs_update_mode(RID p_viewport, RSE::ViewportVRSUpdateMode p_mode);
+ 	void viewport_set_vrs_texture(RID p_viewport, RID p_texture);
+ 
++	void begin_timestamp_batch() { ++timestamp_batch; }
+ 	void handle_timestamp(String p_timestamp, uint64_t p_cpu_time, uint64_t p_gpu_time);
+ 
+ 	void draw_viewports(bool p_swap_buffers);
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+index f2b1085..330f42d 100644
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -1927,6 +1927,9 @@ public:
+ 	/****************/
+ 
+ 	void capture_timestamp(const String &p_name);
++	bool supports_completed_timestamp_queries() const {
++		return driver && driver->supports_completed_timestamp_queries(main_queue_family);
++	}
+ 	uint32_t get_captured_timestamps_count() const;
+ 	uint64_t get_captured_timestamps_frame() const;
+ 	uint64_t get_captured_timestamp_gpu_time(uint32_t p_index) const;
+diff --git a/servers/rendering/rendering_device_driver.h b/servers/rendering/rendering_device_driver.h
+index c9d566f..8e1d9b2 100644
+--- a/servers/rendering/rendering_device_driver.h
++++ b/servers/rendering/rendering_device_driver.h
+@@ -827,6 +827,7 @@ public:
+ 	// ----- TIMESTAMP -----
+ 
+ 	// Basic.
++	virtual bool supports_completed_timestamp_queries(CommandQueueFamilyID p_family) const { return false; }
+ 	virtual QueryPoolID timestamp_query_pool_create(uint32_t p_query_count) = 0;
+ 	virtual void timestamp_query_pool_free(QueryPoolID p_pool_id) = 0;
+ 	virtual void timestamp_query_pool_get_results(QueryPoolID p_pool_id, uint32_t p_query_count, uint64_t *r_results) = 0;
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+index 319e83c..26609ae 100644
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2919,6 +2919,9 @@ void RenderingServer::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("viewport_get_render_info", "viewport", "type", "info"), &RenderingServer::viewport_get_render_info);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_debug_draw", "viewport", "draw"), &RenderingServer::viewport_set_debug_draw);
+ 
++	ClassDB::bind_method(D_METHOD("viewport_set_completed_gpu_sampling", "viewport", "enable"), &RenderingServer::viewport_set_completed_gpu_sampling);
++	ClassDB::bind_method(D_METHOD("viewport_supports_completed_gpu_frame", "viewport"), &RenderingServer::viewport_supports_completed_gpu_frame);
++	ClassDB::bind_method(D_METHOD("viewport_get_completed_gpu_frame", "viewport"), &RenderingServer::viewport_get_completed_gpu_frame);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_measure_render_time", "viewport", "enable"), &RenderingServer::viewport_set_measure_render_time);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_measured_render_time_cpu", "viewport"), &RenderingServer::viewport_get_measured_render_time_cpu);
+ 
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+index 0779113..f011feb 100644
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -624,6 +624,9 @@ public:
+ 
+ 	virtual void viewport_set_debug_draw(RID p_viewport, RSE::ViewportDebugDraw p_draw) = 0;
+ 
++	virtual void viewport_set_completed_gpu_sampling(RID p_viewport, bool p_enable) = 0;
++	virtual bool viewport_supports_completed_gpu_frame(RID p_viewport) const = 0;
++	virtual Dictionary viewport_get_completed_gpu_frame(RID p_viewport) const = 0;
+ 	virtual void viewport_set_measure_render_time(RID p_viewport, bool p_enable) = 0;
+ 	virtual double viewport_get_measured_render_time_cpu(RID p_viewport) const = 0;
+ 	virtual double viewport_get_measured_render_time_gpu(RID p_viewport) const = 0;
+diff --git a/servers/rendering/rendering_server_default.cpp b/servers/rendering/rendering_server_default.cpp
+index 82eebf5..ca920ea 100644
+--- a/servers/rendering/rendering_server_default.cpp
++++ b/servers/rendering/rendering_server_default.cpp
+@@ -140,6 +140,7 @@ void RenderingServerDefault::_draw(bool p_swap_buffers, double frame_step) {
+ 			new_profile.resize(RSG::utilities->get_captured_timestamps_count());
+ 		}
+ 
++		RSG::viewport->begin_timestamp_batch();
+ 		uint64_t base_cpu = RSG::utilities->get_captured_timestamp_cpu_time(0);
+ 		uint64_t base_gpu = RSG::utilities->get_captured_timestamp_gpu_time(0);
+ 		for (uint32_t i = 0; i < RSG::utilities->get_captured_timestamps_count(); i++) {
+@@ -153,7 +154,9 @@ void RenderingServerDefault::_draw(bool p_swap_buffers, double frame_step) {
+ 			}
+ 
+ 			if (RSG::utilities->capturing_timestamps) {
+-				new_profile.write[i].gpu_msec = double((time_gpu - base_gpu) / 1000) / 1000.0;
++				new_profile.write[i].gpu_msec = base_gpu > 0 && time_gpu > base_gpu
++						? double(time_gpu - base_gpu) / 1000000.0
++						: 0.0;
+ 				new_profile.write[i].cpu_msec = double(time_cpu - base_cpu) / 1000.0;
+ 				new_profile.write[i].name = RSG::utilities->get_captured_timestamp_name(i);
+ 			}
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+index 811858e..bf0f10d 100644
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -810,6 +810,13 @@ public:
+ 	FUNC3R(int, viewport_get_render_info, RID, RSE::ViewportRenderInfoType, RSE::ViewportRenderInfo)
+ 	FUNC2(viewport_set_debug_draw, RID, RSE::ViewportDebugDraw)
+ 
++	FUNC2(viewport_set_completed_gpu_sampling, RID, bool)
++	bool viewport_supports_completed_gpu_frame(RID p_viewport) const override {
++		return RSG::viewport->viewport_supports_completed_gpu_frame(p_viewport);
++	}
++	Dictionary viewport_get_completed_gpu_frame(RID p_viewport) const override {
++		return RSG::viewport->viewport_get_completed_gpu_frame(p_viewport);
++	}
+ 	FUNC2(viewport_set_measure_render_time, RID, bool)
+ 	FUNC1RC(double, viewport_get_measured_render_time_cpu, RID)
+ 	FUNC1RC(double, viewport_get_measured_render_time_gpu, RID)

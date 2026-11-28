@@ -4,8 +4,10 @@ extends RefCounted
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const FieldLightData = preload("res://render/world/field_lights.gd")
+const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
 const Treeline = preload("res://render/treeline.gd")
 const FieldTreeDetail = preload("res://render/field_tree_detail.gd")
+const FpvFieldTrees = preload("res://render/fpv_field_trees.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
 const Ground = preload("res://render/ground.gd")
 const WornGroundMaterial = preload("res://render/worn_ground_material.gd")
@@ -26,6 +28,7 @@ const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
 const RcTrackField = preload("res://render/rc_track_field.gd")
+const Skyline = preload("res://render/sun/skyline.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
@@ -82,10 +85,18 @@ class _BuildContext:
 	var build_ridges: bool = false
 	var build_countryside: bool = false
 	var rc_track: Dictionary
+	var camera_local_trees := false
+	## SUN-09: meshes whose geometry the eye's skyline reads, captured behind the loading screen.
+	var skyline_nodes: Array[MeshInstance3D] = []
+	var skyline_transforms: Array[Transform3D] = []
+	var skyline_collected := false
+	var skyline_index := 0
 
 	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array,
 			rc_track_input: Dictionary = {}) -> void:
 		var started := Time.get_ticks_usec()
+		# The ground, scenery gravel and lake bank materials below read the ground global.
+		FieldDetailPreferences.ensure_ground_global()
 		field = field_input.duplicate(true)
 		lighting = lighting_input.duplicate(true)
 		extra_grass_exclusions = extra_input.duplicate(true)
@@ -99,8 +110,9 @@ class _BuildContext:
 ## Synchronous builder: drain the exact same ordered steps as build_staged without yielding or workers.
 ## `rc_track`: the airplane flight's RC-TRACK circuit (scenery/rc_track_option.gd), or {} for none.
 static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = [],
-		rc_track: Dictionary = {}) -> Node3D:
+		rc_track: Dictionary = {}, camera_local_trees := false) -> Node3D:
 	var context := _BuildContext.new(field, lighting, extra_grass_exclusions, rc_track)
+	context.camera_local_trees = camera_local_trees
 	while context.phase != _BuildPhase.DONE:
 		var started_usec: int = Time.get_ticks_usec()
 		var stage: String = _next_build_stage(context)
@@ -210,16 +222,23 @@ static func _advance_build(context: _BuildContext) -> void:
 		_BuildPhase.TREES:
 			if not context.trees_initialized:
 				context.front_azimuth = Treeline.front_azimuth_deg(context.field)
-				context.tree_half_angle = float(SceneDetail.profile().field_tree_half_angle_deg)
+				context.tree_half_angle = FieldDetailPreferences.tree_half_angle(float(SceneDetail.profile().field_tree_half_angle_deg))
 				context.trees_initialized = true
 			if context.object_index < context.field.objects.size():
 				var object_data: Dictionary = context.field.objects[context.object_index]
 				context.object_index += 1
-				context.result.add_child(Treeline.build(object_data, context.field.pilot,
-					context.front_azimuth, context.tree_half_angle))
+				if context.camera_local_trees:
+					var forest := FpvFieldTrees.new()
+					forest.build(object_data, context.field.pilot, SceneDetail.level())
+					context.result.add_child(forest)
+					return
+				var cards := Treeline.build(object_data, context.field.pilot, context.front_azimuth, context.tree_half_angle)
+				FieldDetailPreferences.register_tree(cards)
+				context.result.add_child(cards)
 				var detail := FieldTreeDetail.build(object_data, context.field.pilot,
 					context.front_azimuth, context.tree_half_angle)
 				if detail.get_child_count() > 0:
+					FieldDetailPreferences.register_tree(detail)
 					context.result.add_child(detail)
 				else:
 					detail.free()
@@ -357,7 +376,38 @@ static func _advance_build(context: _BuildContext) -> void:
 			context.result.set_meta("lighting_snapshot", context.lighting.duplicate(true))
 			context.phase = _BuildPhase.FIELD_READY
 		_BuildPhase.FIELD_READY:
-			context.phase = _BuildPhase.DONE
+			# SUN-09: read each mesh the eye's skyline needs now, behind the loading screen, in chunks under the
+			# scenery work budget. In flight those renderer read-backs cost 13–20 ms frames on Forward+ (2026-11-26).
+			if not context.skyline_collected:
+				_collect_skyline_meshes(context.result, Transform3D.IDENTITY, context)
+				context.skyline_collected = true
+			else:
+				var started := Time.get_ticks_usec()
+				while context.skyline_index < context.skyline_nodes.size():
+					Skyline.capture_source(context.skyline_nodes[context.skyline_index],
+						context.skyline_transforms[context.skyline_index])
+					context.skyline_index += 1
+					if Time.get_ticks_usec() - started >= SCENERY_BUILD_BUDGET_USEC:
+						break
+			if context.skyline_index >= context.skyline_nodes.size():
+				context.phase = _BuildPhase.DONE
+
+
+## The visible mesh instances under `node`, with their transforms relative to the (detached) field root. SubViewports
+## render their own worlds and are skipped, as the skyline skips them.
+static func _collect_skyline_meshes(node: Node, parent: Transform3D, context: _BuildContext) -> void:
+	if node is Viewport:
+		return
+	var relative := parent
+	if node is Node3D:
+		if not (node as Node3D).visible:
+			return
+		relative = parent * (node as Node3D).transform
+		if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+			context.skyline_nodes.append(node as MeshInstance3D)
+			context.skyline_transforms.append(relative)
+	for child in node.get_children():
+		_collect_skyline_meshes(child, relative, context)
 
 
 static func _countryside_layout_is_present(context: _BuildContext) -> bool:

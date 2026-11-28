@@ -68,7 +68,14 @@ var _reset_count: int = 0
 ## _motion_state is its render/playback view, never a second tick history.
 var _accepted_tick_observation := false
 var _accepted_motion_state: Dictionary = {}
-var _accepted_events: Array[Dictionary] = []
+## While the native core runs, reading this returns the core's queue (a copy, for inspection).
+var _accepted_events: Array[Dictionary] = []:
+	get:
+		if _core == null:
+			return _accepted_events
+		var queued: Array[Dictionary] = []
+		queued.assign(_core.mechanical_core_accepted_events())
+		return queued
 var _accepted_rate_hz := 0.0
 var _accepted_primed := true
 var _accepted_unrendered := false
@@ -79,6 +86,13 @@ var _accepted_events_drained := 0
 var _accepted_events_discarded := 0
 var _accepted_events_overflowed := 0
 var _accepted_discontinuities := 0
+## NK-7e: in accepted-tick mode the native mechanical core (nk_mechanical_audio_core.hpp) keeps the observer, the
+## render view, the motion and event voices' state and the gestures, and writes the players. Motion players are
+## still made here (_ensure_motion_player), when a frame asks for them. This script's accepted path stays the
+## specification and the fallback; the hook is read when accepted mode turns on or the profile is reconfigured.
+var native_core_enabled := true
+var _core: Object = null
+const _NATIVE_CLASS := &"OpenRCNativeKernel"
 
 
 ## Direct presentation benches retain update_sound's legacy sampling by default.
@@ -87,6 +101,34 @@ func set_accepted_tick_observation(enabled: bool) -> void:
 	if enabled == _accepted_tick_observation: return
 	_accepted_tick_observation = enabled
 	reset()
+	_core = null
+	if enabled and native_core_enabled:
+		_bind_core()
+
+
+## Binds after a reset: the core starts from the reset state, with the players that exist now.
+func _bind_core() -> void:
+	if not ClassDB.class_exists(_NATIVE_CLASS):
+		return
+	var core: Object = ClassDB.instantiate(_NATIVE_CLASS)
+	if core == null or not core.has_method(&"mechanical_core_bind"):
+		return
+	var takes: Array = []
+	var counters := PackedInt64Array([_accepted_tick_samples, _accepted_events_observed, _accepted_events_drained,
+		_accepted_events_discarded, _accepted_events_overflowed, _accepted_discontinuities, _events_played, _events_dropped,
+		_far_culled_events, _far_culled_motion_updates, _stale_tick_resets, _reset_count])
+	for role: String in ["servo_start", "servo_stop", "gear_move", "gear_start", "gear_lock"]:
+		takes.append(_event_streams.get(role, []))
+		counters.append(int(_event_take_counters.get(role, 0)))
+	if not core.mechanical_core_bind(_event_players, _servo_loop, _servo_loop.get_length() if _servo_loop != null else 0.0,
+			_gear_loop, _gear_loop.get_length() if _gear_loop != null else 0.0, takes, float(_config.get("servo_level", 1.0)),
+			float(SERVO_PROFILE_PITCH.get(str(_config.get("servo_type", "standard")), 1.0)), counters):
+		return
+	for key_value: Variant in _motion_players:
+		var player: AudioStreamPlayer3D = _motion_players[key_value].get("player") as AudioStreamPlayer3D
+		if player == null or not core.mechanical_core_bind_motion_player(str(key_value), player):
+			return
+	_core = core
 
 
 ## Read-only accepted angle/fraction observation, without player/mixer operations.
@@ -94,6 +136,8 @@ func set_accepted_tick_observation(enabled: bool) -> void:
 ## Duplicate ticks cannot change history; gaps/rate changes/rewinds prime silently.
 func observe_accepted(snapshot: Dictionary) -> bool:
 	if not _accepted_tick_observation: return false
+	if _core != null:
+		return _core.mechanical_core_observe(snapshot)
 	var tick_value: Variant = snapshot.get("tick")
 	var rate_value: Variant = snapshot.get("tick_rate")
 	if not _integer_tick(tick_value) or int(tick_value) > 9007199254740991 \
@@ -184,6 +228,7 @@ func _accepted_result(snapshot: Dictionary) -> Dictionary:
 
 ## Configure with a scene owner, an existing scene-local bus, and a validated profile.
 func configure(owner: Node, bus: StringName, config: Dictionary) -> void:
+	_core = null
 	_dispose_players()
 	_owner = owner
 	_config = _validated_config(config)
@@ -197,6 +242,8 @@ func configure(owner: Node, bus: StringName, config: Dictionary) -> void:
 			owner.add_child(self)
 	_apply_bus(_bus)
 	reset()
+	if _accepted_tick_observation and native_core_enabled:
+		_bind_core()
 
 
 ## Follow the scene Soundscape bus over Workshop detach/reattach lifecycles.
@@ -273,6 +320,9 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		return
 	if str(_bus).is_empty():
 		_refresh_soundscape_bus()
+	if _core != null and _accepted_tick_observation:
+		_update_core(snapshot, delta)
+		return
 	var safe_delta: float = delta if is_finite(delta) and delta > 0.0 else 0.0
 	var dt: float = clampf(safe_delta, 0.0, 0.1)
 	var paused: bool = bool(snapshot.get("paused", false))
@@ -418,6 +468,24 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		stale_tick_s = _stale_tick_s, motion_voice_count = _motion_players.size(), listener = listener}
 
 
+## update_sound through the native core: its first call asks for the motion players this frame starts; they are
+## made here, in its order, then its second call runs the voices.
+func _update_core(snapshot: Dictionary, delta: float) -> void:
+	var needed: Array = _core.mechanical_core_prepare(snapshot, delta)
+	if _core.mechanical_core_failed():
+		push_error("MechanicalAudio: a bound player is gone; the native core stops")
+		_core = null
+		return
+	for key_value: Variant in needed:
+		var key: String = str(key_value)
+		var player := _ensure_motion_player(key, _gear_loop if key == "gear" else _servo_loop)
+		if player == null or not _core.mechanical_core_bind_motion_player(key, player):
+			push_error("MechanicalAudio: the native core could not bind a motion player")
+	if not _core.mechanical_core_finish():
+		push_error("MechanicalAudio: a bound player is gone; the native core stops")
+		_core = null
+
+
 func _all_sources_distant(snapshot: Dictionary) -> bool:
 	var listener: Variant = snapshot.get("listener", null)
 	if not Motion.finite_vector(listener): return false
@@ -437,6 +505,9 @@ func _all_sources_distant(snapshot: Dictionary) -> bool:
 
 
 func reset() -> void:
+	if _core != null:
+		_core.mechanical_core_reset()
+		return
 	_clear_accepted_observation()
 	_motion_state.clear()
 	_motion_targets.clear()
@@ -464,6 +535,8 @@ func reset() -> void:
 
 
 func diagnostics() -> Dictionary:
+	if _core != null:
+		return _core_diagnostics()
 	var active: int = 0
 	for slot: Dictionary in _motion_players.values():
 		var player: AudioStreamPlayer3D = slot.get("player") as AudioStreamPlayer3D
@@ -490,6 +563,34 @@ func diagnostics() -> Dictionary:
 		far_culled_events = _far_culled_events, far_culled_motion_updates = _far_culled_motion_updates,
 		stale_tick_resets = _stale_tick_resets, missing_assets = _missing_assets.duplicate(),
 		last_targets = _last_targets.duplicate(), reset_count = _reset_count}
+
+
+## diagnostics() while the native core runs: the players and assets from here, the rest from the core.
+func _core_diagnostics() -> Dictionary:
+	var n: Dictionary = _core.mechanical_core_diagnostics()
+	var active: int = 0
+	for slot: Dictionary in _motion_players.values():
+		var player: AudioStreamPlayer3D = slot.get("player") as AudioStreamPlayer3D
+		if player != null and player.playing:
+			active += 1
+	var playing_events: int = 0
+	for player: AudioStreamPlayer3D in _event_players:
+		if player.playing:
+			playing_events += 1
+	return {motion_voice_count = _motion_players.size(), motion_voice_limit = MAX_MOTION_VOICES,
+		accepted_tick_observation = _accepted_tick_observation, accepted_tick_samples = n.accepted_tick_samples,
+		accepted_observation_law = ACCEPTED_OBSERVATION_LAW if _accepted_tick_observation else "",
+		accepted_events_observed = n.accepted_events_observed, accepted_events_drained = n.accepted_events_drained,
+		accepted_pending_event_count = n.accepted_pending_event_count, accepted_event_limit = MAX_ACCEPTED_EVENTS,
+		accepted_events_discarded = n.accepted_events_discarded, accepted_events_overflowed = n.accepted_events_overflowed,
+		accepted_discontinuities = n.accepted_discontinuities,
+		event_voice_count = _event_players.size(), event_voice_limit = MAX_EVENT_VOICES,
+		active_motion_voices = active, playing_event_voices = playing_events,
+		pending_event_count = n.pending_event_count,
+		events_played = n.events_played, events_dropped = n.events_dropped,
+		far_culled_events = n.far_culled_events, far_culled_motion_updates = n.far_culled_motion_updates,
+		stale_tick_resets = n.stale_tick_resets, missing_assets = _missing_assets.duplicate(),
+		last_targets = n.last_targets, reset_count = n.reset_count}
 
 
 func _load_profile_assets() -> void:

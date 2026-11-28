@@ -3,7 +3,7 @@
 #   - a 20 m building (mesh, vertex-sampled) east gives its roof's elevation; a flat ground plane changes nothing;
 #   - a shelter within EXCLUDE_RADIUS_M of the eye and hidden nodes are ignored;
 #   - visibility: a disc below the skyline is hidden, above it visible, with a smooth edge over its diameter;
-#   - the result does not depend on the per-frame work budget (captures and replays finish it on the same frame).
+#   - the result depends neither on the per-frame work budget nor on when its worker batches finish.
 # Run: godot --headless --path . --script res://tests/test_sun_skyline.gd
 extends SceneTree
 
@@ -87,6 +87,43 @@ func _field() -> Node3D:
 	return field
 
 
+## 2026-11-26: render/field.gd captures each mesh's geometry while the field is built (behind the loading screen), so
+## the flight's skyline reads no mesh back from the renderer. The captured copies give the same bins and are released
+## once the skyline is done; the flat ground and kilometre-wide terrain sheets are not captured.
+func _test_captured_sources(field: Node3D, expected: PackedFloat32Array) -> void:
+	var building: MeshInstance3D = null
+	var ground: MeshInstance3D = null
+	for child in field.get_children():
+		if child is MeshInstance3D and (child as MeshInstance3D).mesh is BoxMesh \
+				and is_equal_approx(((child as MeshInstance3D).mesh as BoxMesh).size.y, 20.0):
+			building = child
+		elif child is MeshInstance3D and (child as MeshInstance3D).mesh is PlaneMesh:
+			ground = child
+	_check("the synthetic field has its building and ground", building != null and ground != null)
+	if building == null or ground == null:
+		return
+	_check("a mesh above every eye is captured", Skyline.capture_source(building, building.transform)
+		and building.mesh.has_meta(Skyline.SOURCE_META))
+	_check("a captured mesh is not read twice", not Skyline.capture_source(building, building.transform))
+	_check("the flat ground is not captured", not Skyline.capture_source(ground, ground.transform)
+		and not ground.mesh.has_meta(Skyline.SOURCE_META))
+	var sheet := MeshInstance3D.new()
+	var wide := BoxMesh.new()
+	wide.size = Vector3(4000.0, 20.0, 4000.0) # relief 0.5% of its size
+	sheet.mesh = wide
+	_check("a terrain sheet is not captured", not Skyline.capture_source(sheet, Transform3D(Basis.IDENTITY, Vector3(0.0, 5.0, 0.0)))
+		and not wide.has_meta(Skyline.SOURCE_META))
+	sheet.free()
+	var source: Array = building.mesh.get_meta(Skyline.SOURCE_META)
+	var arrays: Array = building.mesh.surface_get_arrays(0)
+	_check("the captured copy is the renderer's geometry", source[0] == arrays[Mesh.ARRAY_VERTEX]
+		and source[1] == arrays[Mesh.ARRAY_INDEX])
+	var captured := Skyline.new(field, EYE)
+	captured.finish()
+	_check("a skyline from captured geometry equals one read from the renderer", captured.bins == expected)
+	_check("a finished skyline releases the copies it read", not building.mesh.has_meta(Skyline.SOURCE_META))
+
+
 func _run() -> void:
 	var field := _field()
 	root.add_child(field)
@@ -130,6 +167,25 @@ func _run() -> void:
 	while not stepped.step(17):
 		frames += 1
 	_check("step-by-step equals finish", stepped.bins == sky.bins, "%d frames" % frames)
+	# 2026-11-26: batches run on a worker thread and a step never waits for one. Waiting a whole frame between steps,
+	# as a flight does, and stepping again at once must give the same bins.
+	var paced := Skyline.new(field, EYE)
+	var skipped := 0
+	while true:
+		var task_before: int = paced._task
+		var finished := paced.step(17)
+		if task_before >= 0 and paced._task == task_before:
+			skipped += 1 # the previous batch was still running: nothing planned this frame
+		if finished:
+			break
+		OS.delay_msec(1)
+	_check("frame-paced worker batches equal finish", paced.bins == sky.bins and paced._task < 0, "%d skipped" % skipped)
+	var dropped := Skyline.new(field, EYE)
+	dropped.step(17)
+	dropped.join() # owners join before dropping a skyline that is still building
+	_check("a joined, unfinished skyline has no batch left", dropped._task < 0 and not dropped.done)
+	dropped = null
+	_test_captured_sources(field, sky.bins)
 	_check("the azimuth wraps", Skyline.azimuth_bin(_toward(359.9, 0.0)) == Skyline.BINS - 1
 		and Skyline.azimuth_bin(_toward(0.1, 0.0)) == 0)
 	var none := Skyline.new(null, EYE)

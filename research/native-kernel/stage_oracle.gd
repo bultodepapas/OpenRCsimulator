@@ -1,7 +1,8 @@
 ## NK-3 milestone 2 stage oracle: byte comparison of the native joint stage and its new parts against the live
 ## reference session (FlightSession._wheel_evaluate and the functions it calls), loaded from app/ at run time.
 ## Components: legacy propeller (stage inflow + loads), soft hull contacts (flat and lake branches),
-## _ground_evaluation, _ground_up and the complete stage dictionary, on random tick contexts and states including
+## _ground_evaluation, _ground_up, the pre-step wing wake (NK-5a) and the complete stage dictionary, on random tick
+## contexts and states including
 ## malformed ones; plus D6 refusals of unported session capabilities and data.
 ## Usage: godot --headless --path app --script <abs>/stage_oracle.gd -- --extension=<abs .gdextension>
 ##        --output=<new json> [--seed=20261027] [--states=12000]
@@ -177,6 +178,13 @@ func _check_stage(session: Node) -> void:
 			_compare("ground_evaluation_loads", ground_reference.loads, ground_native.loads, inputs)
 			_compare("ground_evaluation_derivative", ground_reference.derivative, ground_native.derivative, inputs)
 		_compare("ground_up", PackedFloat64Array([session._ground_up(s)]), PackedFloat64Array([_native.ground_up_component(s)]), s)
+		# NK-5a: the pre-step's wing wake through the prepared stage, from the caller's own air and deflections.
+		var wake_deflections: Dictionary = session._deflections(aux)
+		var wake_up: float = session._ground_up(s)
+		var v_air: PackedFloat64Array = air.v_air
+		_compare("stage_wing_wake", PackedFloat64Array([Aero.wing_wake_velocity(s, air, wake_deflections, context.model, wake_up)]),
+			PackedFloat64Array([_native.stage_wing_wake(s, PackedFloat64Array([v_air[0], v_air[1], v_air[2], air.V, air.alpha, air.beta,
+				air.qbar]), Adapter.deflection_array(wake_deflections), wake_up)]), inputs)
 		var stage_reference: Dictionary = session._wheel_evaluate(s, values, stage_t)
 		var stage_native: Dictionary = _native.stage(s, values, stage_t)
 		_compare_stage(stage_reference, stage_native, inputs)

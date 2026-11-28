@@ -32,11 +32,23 @@ Little-endian and **unaligned**. Strings are fixed 28-byte fields written from `
 
 The geometry is one unindexed triangle list. Sub-mesh ranges are contiguous and end at the vertex count. Node matrices are identity in the corpus: vertices are already in model space. Node names carry roles: `__col*` collision proxies, other `__*` helpers (empty hinge/mass helpers included), the rest visual parts named after the aircraft parts (`left_aileron`, `elevator`, `rudder`, `propBlades`, …).
 
-**Frame and units.** GEO space equals glTF: +X left, +Y up, +Z forward; triangles are counter-clockwise and agree with the stored normals in every checked triangle. Visual span is normalized to about 100 units. The definition's `Physical.Size` sets the metric scale: metres per unit = `Size / 100`. The Easystar check: GEO span 101.56 units × 1.507/100 = 1.531 m, equal to twice its main-wing `Length` (2 × 0.7656 m).
+**Frame and units.** GEO uses the glTF frame (+X left, +Y up, +Z forward). The initial investigation reported agreement between triangle winding and stored normals. The [23 November recount](phoenix-import-audit-2026-11-23.md#installed-aircraft-and-flight-scripts) found exceptions. Visual span is normalized to about 100 units. Metres per unit equals `Physical.Size / 100`. For the EasyStar, 101.56 GEO units × 1.507/100 gives 1.531 m, equal to twice the main wing's `Length` (2 × 0.7656 m).
 
 ### 3.2 Textures
 
-Magic `FF 80 40 20 10 08 04 02`, then an overwritten BMP header, then 24-bit **BGR** rows stored bottom-up. Pixel data starts one byte before `size − width × height × 3`; this phase was fixed on known liveries (the red Fokker Dr.I replica and the yellow J-3 Cub render red and yellow only with it). Width and height are not recoverable from the header: sides are powers of two, square is preferred, and non-square images (1024×512 observed) are resolved by adjacent-row similarity. The UVs then follow glTF convention unchanged once rows are written top-down. Four-channel files are **BGRA** starting two bytes before `size − width × height × 4`: shared glass (`glass_001`, white with alpha ≈ 0.1; `smokedGlass_001`, dark with alpha ≈ 0.76), rotor discs (mostly transparent) and the red Fokker thumbnail decode consistently. Their horizontal registration is verified only on these uniform or thumbnail cases, so the importer reduces small alpha textures (≤ 64 × 64) to their average colour. Shared textures live in `resources/textures/aircraft/` and `resources/textures/misc/`; stock folders also hold `<model>#<Scheme>.bmp` paint schemes.
+*Corrected 2026-11-25.* A stock texture is an ordinary uncompressed BMP file behind the 8-byte signature `FF 80 40 20 10 08 04 02`. When the BMP is at least 2,000 bytes long, its first 2,000 bytes are stored at the end of the file with their two 1,000-byte blocks exchanged:
+
+```text
+stored = signature + bmp[2000:] + bmp[1000:2000] + bmp[0:1000]
+```
+
+The BMP header therefore sits 1,000 bytes before the end of the file. Smaller BMPs (stock propeller-blur strips, 320 and 576 bytes) follow the signature unchanged. The same wrapper carries the installation's DDS files. Image size, bit depth and row order come from the rebuilt header: 24-bit BGR or 32-bit BGRA, `BI_RGB`, rows padded to four bytes and stored bottom-up.
+
+Evidence: all 365 aircraft textures in the 5.5.k corpus rebuild to a BMP whose `bfSize` equals the rebuilt length exactly (333 wrapped, 32 plain). The rebuilt bottom row continues the row above it (median absolute difference 0.86 against 1.21 between interior rows). The GEO texture coordinates of the J-3 Cub (1,024²) and Pawnee (2,048²) wireframes land on their painted islands. On 80 installed DDS files, the same rebuild leaves the first rows as smooth as the interior.
+
+The earlier description was a heuristic fit on colour alone. It started pixel data one byte (BGR) or two bytes (BGRA) before `size − width × height × channels`, and guessed the size from power-of-two candidates. That fit had the right channel order but displaced every row by 1,071 bytes, wrapping each image horizontally by about 357 pixels at 1,024 RGB width. It also chose a wrong size, or none, for 67 of the 365 textures, mostly rotor blades (1,024×256 read as 512×512). This explains the white Cub wing previously noted under open findings. Rendered stock models in the Workshop showed displaced, smeared and partly missing paint.
+
+The fourth byte of a 32-bit texture is alpha. Glass and rotor discs carry graded alpha, and cut-outs carry only 0 and 255. Three 1,024² liveries leave the byte at zero throughout: `MPXfuncopterV2`, `kasamaSrimok90` and the `outrage550#CF` scheme. Treated as alpha, it makes these models invisible. The importer classifies alpha as none, all-zero (unused), mask or blend. It still reduces small textures with stored alpha (≤ 64 × 64, the glass) to their average colour. Shared textures live in `resources/textures/aircraft/` and `resources/textures/misc/`; stock folders also hold `<model>#<Scheme>.bmp` paint schemes.
 
 ### 3.3 Encoded scripts: `.mod` and `.sim`
 
@@ -82,16 +94,17 @@ Engine sounds are plain-text `.pxe` definitions in `resources/engines/` mapping 
 | Check | Result |
 | --- | --- |
 | GEO parse with exact byte consumption | 220 of 221 files under `objects/`; the refusal is `helicopters/Electric/KDSAgile55/output.geo`, a stray file no definition references |
-| Winding versus stored normals | Agreement in every non-degenerate triangle of every accepted file |
+| Winding versus stored normals | The original all-triangle agreement claim was superseded by a [per-node recount](phoenix-import-audit-2026-11-23.md#installed-aircraft-and-flight-scripts) on the installed corpus. |
 | Encoded `.mod` decode + data evaluation | 220 of 220, no diagnostics |
 | Encoded 6.0 `.sim` scripts | 64 of 64 parse; 11 are straight-line, the others stop at function calls as intended |
-| 3-channel textures | 208 of 220 base-name textures decoded; the remainder use other names declared by GEO materials or 4-channel layouts |
+| Textures (corrected 2026-11-25, see [§3.2](#32-textures)) | 365 of 365 aircraft `.bmp` files rebuild to a BMP of exactly the declared size: 303 24-bit and 62 32-bit |
 | `Size / 100` scale rule | GEO visual span × `Size`/100 versus 2 × main-wing `Length` on 116 airplanes/gliders: median ratio 1.046, 95 within ±10 %; outliers are deltas, jets, biplanes and rotor/tiltrotor oddities where the widest mirrored airfoil is not the visual span |
 | GDScript runtime readers (`app/workshop/creator/phoenix/`) | 220/220 definitions and GEO files decoded; 220/220 models converted and admitted by `SourceImporter.inspect_bytes` |
 | Derived flight packages (`phoenix/physics.gd`, local install, 2026-11-20) | 114/114 aeroplanes and gliders yield a physics block; 110 compile after "Set up for flight", 105 have an airborne start and 21 a hand launch |
-| Visual spot checks (Blender 5.2 renders of converted GLBs) | Easystar, J-3 Cub and Fokker Dr.I: correct geometry, metric span, colour and decal orientation |
+| Visual spot checks (Blender 5.2 renders of converted GLBs) | Easystar, J-3 Cub and Fokker Dr.I: correct geometry, metric span, colour and decal orientation. These renders used the superseded texture fit. |
+| Workshop preview renders after the texture correction (2026-11-25, Windows, Godot 4.8 beta 2, Compatibility renderer, six views each) | 14 models: J-3 Cub, Super Cub floats, Easystar, Pawnee, Katana Mini, A-10, Thermal Soarer, BA609, T-Rex 450 Pro and 700E 3G, Blade 400, CH-47, Blade MQX and Funcopter. Paint and lettering sit on their parts, both Cub wings are yellow and the Funcopter is visible. This is not a matched Phoenix comparison. |
 
-Open findings: one J-3 Cub wing half maps into a white texture region (the GLB data and Blender agree, so the conversion is faithful; whether Phoenix tints or substitutes it at runtime is unresolved). Hinge `root_pivot`/`tip_pivot` semantics are clear for elevators and rudders (GEO points on the hinge line). Easystar's zero-length aileron shows that a declared surface can be inactive. Phoenix inertia factors and tuning percentages remain observations and are not OpenRC physical data. Weight, centre of gravity, airfoil labels (which select the installation's polars), surface geometry, propellers and turbine thrust feed Creator's derived packages ([decision](../../DECISIONS.md#phoenix-aeroplanes-fly-on-packages-derived-from-their-own-data)).
+Open findings: the white J-3 Cub wing half was a texture decoding fault, fixed on 2026-11-25 ([§3.2](#32-textures)). Hinge `root_pivot`/`tip_pivot` semantics are clear for elevators and rudders (GEO points on the hinge line). Easystar's zero-length aileron shows that a declared surface can be inactive. Phoenix inertia factors and tuning percentages remain observations and are not OpenRC physical data. Weight, centre of gravity, airfoil labels (which select the installation's polars), surface geometry, propellers and turbine thrust feed Creator's derived packages ([decision](../../DECISIONS.md#phoenix-aeroplanes-fly-on-packages-derived-from-their-own-data)).
 
 ## 5. Public sources and rights
 

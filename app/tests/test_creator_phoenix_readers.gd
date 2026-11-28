@@ -11,6 +11,7 @@ const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const ScriptContainer := preload("res://workshop/creator/phoenix/script_container.gd")
 const Geo := preload("res://workshop/creator/phoenix/geo.gd")
 const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
+const CreatorBytesRef := preload("res://workshop/creator/bytes.gd")
 const GlbWriter := preload("res://workshop/creator/phoenix/glb_writer.gd")
 const SourceImporter := preload("res://workshop/creator/source_importer.gd")
 const Converter := preload("res://workshop/creator/phoenix/converter.gd")
@@ -180,7 +181,7 @@ func _fixed(text: String, length: int) -> PackedByteArray:
 
 
 ## nodes: [{name, material, triangles}] with one sub-mesh per node. Material 0 has a texture name.
-func _geo_bytes(nodes: Array, material_count := 1, mutate := "") -> PackedByteArray:
+func _geo_bytes(nodes: Array, material_count := 1, mutate := "", texture := "demo.bmp") -> PackedByteArray:
 	var triangles := 0
 	for node: Dictionary in nodes:
 		triangles += int(node.triangles)
@@ -197,7 +198,7 @@ func _geo_bytes(nodes: Array, material_count := 1, mutate := "") -> PackedByteAr
 		record.resize(716)
 		record.encode_u32(128, 2 if (mutate == "flag" and index == 0) else (1 if index == 0 or mutate == "textures" else 0))
 		if index == 0 or mutate == "textures":
-			var texture_name := "t%d.bmp" % index if mutate == "textures" else "demo.bmp"
+			var texture_name := "t%d.bmp" % index if mutate == "textures" else texture
 			for at: int in texture_name.length():
 				record[132 + at] = texture_name.unicode_at(at)
 		record.encode_float(680, 0.25)
@@ -292,61 +293,180 @@ func _geo() -> void:
 
 # ---------------------------------------------------------------------------------------- texture
 
-## Magic, 53 filler bytes, 8 x 8 BGR rows stored bottom-up from byte 61 and one trailing byte.
-func _texture_bytes() -> PackedByteArray:
-	var out := PackedByteArray([0xFF, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02])
-	for index: int in 53:
-		out.append((index * 13 + 5) & 0xFF)
-	for row: int in 8: # stored row 0 is the bottom row
-		for x: int in 8:
-			out.append(10 + x) # blue
-			out.append(20 + row) # green
-			out.append(30 + x + row * 8) # red
-	out.append(99)
+## Expected colour of pixel (x, y), counted from the top-left, in the synthetic textures below.
+func _texel(x: int, y: int) -> Array:
+	return [(x * 7 + y) & 0xFF, (y * 5 + 3) & 0xFF, (x + 2 * y + 40) & 0xFF]
+
+
+## An uncompressed BMP file of `_texel` colours: 3 (BGR) or 4 (BGRA, alpha from `alpha`) channels, rows
+## padded to four bytes, bottom-up unless `top_down`, `pad` bytes after the pixels as stock files carry,
+## and an `info`-byte information header (40, or 108 for a V4 header) before the pixels.
+func _bmp(width: int, height: int, channels := 3, alpha := Callable(), top_down := false, pad := 0,
+		info := 40) -> PackedByteArray:
+	var stride := (width * channels + 3) & ~3
+	var offset := 14 + info
+	var out := PackedByteArray()
+	out.resize(offset + stride * height + pad)
+	out[0] = 0x42
+	out[1] = 0x4D
+	out.encode_u32(2, out.size())
+	out.encode_u32(10, offset)
+	out.encode_u32(14, info)
+	out.encode_s32(18, width)
+	out.encode_s32(22, -height if top_down else height)
+	out.encode_u16(26, 1)
+	out.encode_u16(28, channels * 8)
+	for stored: int in height:
+		var y := stored if top_down else height - 1 - stored
+		for x: int in width:
+			var at := offset + stored * stride + x * channels
+			var colour := _texel(x, y)
+			out[at] = colour[2] # blue
+			out[at + 1] = colour[1]
+			out[at + 2] = colour[0] # red
+			if channels == 4:
+				out[at + 3] = int(alpha.call(x, y)) if alpha.is_valid() else 255
 	return out
+
+
+## A BMP stored as a stock Phoenix texture: the signature, then the BMP with its first 2000 bytes moved to the
+## end and their two 1000-byte blocks exchanged (smaller files follow the signature unchanged).
+func _phoenix(bmp: PackedByteArray) -> PackedByteArray:
+	var out := PhoenixTexture.SIGNATURE.duplicate()
+	if bmp.size() >= 2 * PhoenixTexture.BLOCK:
+		out.append_array(bmp.slice(2 * PhoenixTexture.BLOCK))
+		out.append_array(bmp.slice(PhoenixTexture.BLOCK, 2 * PhoenixTexture.BLOCK))
+		out.append_array(bmp.slice(0, PhoenixTexture.BLOCK))
+	else:
+		out.append_array(bmp)
+	return out
+
+
+## 30 x 30 BGR stored wrapped, with padded rows and two trailing bytes like the stock files.
+func _texture_bytes() -> PackedByteArray:
+	return _phoenix(_bmp(30, 30, 3, Callable(), false, 2))
+
+
+func _matches(image: Image, width: int, height: int, alpha := Callable()) -> bool:
+	if image.get_width() != width or image.get_height() != height:
+		return false
+	for y: int in height:
+		for x: int in width:
+			var pixel := image.get_pixel(x, y)
+			var colour := _texel(x, y)
+			if pixel.r8 != colour[0] or pixel.g8 != colour[1] or pixel.b8 != colour[2]:
+				return false
+			if alpha.is_valid() and pixel.a8 != int(alpha.call(x, y)):
+				return false
+	return true
 
 
 func _texture() -> void:
 	var bytes := _texture_bytes()
 	var profile := PhoenixTexture.texture_profile(bytes)
-	check("texture profile", profile.ok and profile.value.kind == "phoenix raw" and profile.value.width == 8
-		and profile.value.height == 8 and profile.value.channels == 3 and profile.value.pixel_offset == 61)
-	check("candidate layouts counted", profile.ok and profile.value.candidates == 3)
+	check("wrapped texture profile", profile.ok and profile.value.kind == PhoenixTexture.KIND_WRAPPED
+		and profile.value.width == 30 and profile.value.height == 30 and profile.value.channels == 3
+		and profile.value.stride == 92 and profile.value.bmp_bytes == bytes.size() - 8)
 	var decoded := PhoenixTexture.decode(bytes)
-	check("texture decodes", decoded.ok)
+	check("wrapped texture decodes", decoded.ok)
 	if decoded.ok:
 		var image: Image = decoded.value.image
-		check("image size and format", image.get_width() == 8 and image.get_height() == 8 and image.get_format() == Image.FORMAT_RGB8)
-		var correct := true
-		for y: int in 8:
-			for x: int in 8:
-				var pixel := image.get_pixel(x, y)
-				# Top row of the image is the last stored row; channels are swapped to RGB.
-				correct = correct and pixel.r8 == 30 + x + (7 - y) * 8 and pixel.g8 == 20 + (7 - y) and pixel.b8 == 10 + x
-		check("pixel colours and bottom-up orientation", correct)
-		check("texture identity", decoded.value.sha256.length() == 64)
-	check("standard BMP is not converted", PhoenixTexture.texture_profile("BM".to_ascii_buffer() + PackedByteArray([0, 0])).ok
-		and not PhoenixTexture.decode("BM".to_ascii_buffer() + PackedByteArray([0, 0])).ok)
+		check("RGB texture without alpha", image.get_format() == Image.FORMAT_RGB8 and not decoded.value.has_alpha
+			and decoded.value.alpha == PhoenixTexture.ALPHA_NONE)
+		check("every texel restored, top row first, padded rows", _matches(image, 30, 30))
+		check("texture identity", decoded.value.sha256 == CreatorBytesRef.sha256(bytes))
+	# A BMP shorter than two blocks follows the signature unchanged; a plain BMP has no signature.
+	var small := _bmp(8, 4)
+	var plain := PhoenixTexture.decode(_phoenix(small))
+	check("small texture stored unwrapped", plain.ok and plain.value.profile.kind == PhoenixTexture.KIND_PLAIN
+		and _matches(plain.value.image, 8, 4))
+	var standard := PhoenixTexture.decode(small)
+	check("standard BMP (a repaint) decodes", standard.ok and standard.value.profile.kind == PhoenixTexture.KIND_BMP
+		and _matches(standard.value.image, 8, 4))
+	var top_down := PhoenixTexture.decode(_phoenix(_bmp(40, 20, 3, Callable(), true)))
+	check("top-down rows", top_down.ok and _matches(top_down.value.image, 40, 20))
+	var tall := PhoenixTexture.decode(_phoenix(_bmp(16, 64)))
+	check("non-square size read from the header", tall.ok and _matches(tall.value.image, 16, 64))
+	var v4 := PhoenixTexture.decode(_phoenix(_bmp(30, 30, 3, Callable(), false, 0, 108)))
+	check("larger information header and later pixel offset", v4.ok and v4.value.profile.pixel_offset == 122
+		and _matches(v4.value.image, 30, 30))
+	# The wrap starts at exactly two blocks: 2000 bytes are wrapped, 1999 stay plain.
+	var at_limit := PhoenixTexture.decode(_phoenix(_bmp(4, 162, 3, Callable(), false, 2)))
+	var below_limit := PhoenixTexture.decode(_phoenix(_bmp(4, 162, 3, Callable(), false, 1)))
+	check("2000-byte BMP is wrapped", at_limit.ok and at_limit.value.profile.bmp_bytes == 2000
+		and at_limit.value.profile.kind == PhoenixTexture.KIND_WRAPPED and _matches(at_limit.value.image, 4, 162))
+	check("1999-byte BMP is plain", below_limit.ok and below_limit.value.profile.bmp_bytes == 1999
+		and below_limit.value.profile.kind == PhoenixTexture.KIND_PLAIN and _matches(below_limit.value.image, 4, 162))
+	# An unwrapped BMP whose pixels happen to hold "BM" where a wrapped header would sit is read as plain.
+	var lookalike := _bmp(40, 40)
+	lookalike[lookalike.size() - PhoenixTexture.BLOCK] = 0x42
+	lookalike[lookalike.size() - PhoenixTexture.BLOCK + 1] = 0x4D
+	var signed := PhoenixTexture.SIGNATURE.duplicate()
+	signed.append_array(lookalike)
+	var fallback := PhoenixTexture.decode(signed)
+	var reference := PhoenixTexture.decode(lookalike)
+	check("plain layout used when the wrapped header does not match", fallback.ok and reference.ok
+		and fallback.value.profile.kind == PhoenixTexture.KIND_PLAIN
+		and fallback.value.image.get_data() == reference.value.image.get_data())
+	# Refusals.
 	var wrong_magic := bytes.duplicate()
 	wrong_magic[0] = 0
 	check("unknown signature refused", not PhoenixTexture.decode(wrong_magic).ok)
-	check("odd layout refused", not PhoenixTexture.decode(bytes.slice(0, bytes.size() - 1)).ok)
-	# 4-channel: magic, 54 filler bytes, 4 x 4 BGRA rows stored bottom-up from byte 62, two trailing bytes.
-	var four := PackedByteArray([0xFF, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02])
-	for index: int in 54:
-		four.append(7)
-	for row: int in 4:
-		for x: int in 4:
-			four.append_array(PackedByteArray([40 + x, 50 + row, 60, 100 + row * 4 + x]))
-	four.append_array(PackedByteArray([0, 0]))
-	var four_result := PhoenixTexture.decode(four)
-	check("four channel texture decodes as RGBA", four_result.ok and four_result.value.has_alpha
-		and four_result.value.image.get_format() == Image.FORMAT_RGBA8 and four_result.value.profile.pixel_offset == 62)
-	if four_result.ok:
-		var top_left: Color = four_result.value.image.get_pixel(0, 0)
-		check("BGRA order and bottom-up rows", top_left.r8 == 60 and top_left.g8 == 53 and top_left.b8 == 40
-			and top_left.a8 == 112)
-		check("mean alpha", is_equal_approx(float(four_result.value.mean[3]), (100.0 + 115.0) / 2.0 / 255.0))
+	check("truncated texture refused", not PhoenixTexture.decode(bytes.slice(0, bytes.size() - 1)).ok)
+	var lying := _bmp(30, 30, 3, Callable(), false, 2)
+	lying.encode_u32(2, lying.size() + 4)
+	check("size mismatch refused", not PhoenixTexture.decode(_phoenix(lying)).ok)
+	var short := _bmp(30, 30)
+	short.encode_s32(22, 40)
+	check("pixels beyond the file refused", not PhoenixTexture.decode(_phoenix(short)).ok)
+	var palette := _bmp(30, 30)
+	palette.encode_u16(28, 8)
+	check("palette image refused", not PhoenixTexture.decode(_phoenix(palette)).ok)
+	var packed := _bmp(30, 30)
+	packed.encode_u32(30, 1)
+	check("compressed image refused", not PhoenixTexture.decode(_phoenix(packed)).ok)
+	var huge := _bmp(30, 30)
+	huge.encode_s32(18, Limits.PNG_SIDE_PIXELS + 1)
+	check("oversized image refused", not PhoenixTexture.decode(_phoenix(huge)).ok)
+	var negative := _bmp(30, 30)
+	negative.encode_s32(18, -30)
+	check("negative width refused", not PhoenixTexture.decode(_phoenix(negative)).ok)
+	var extreme := _bmp(30, 30)
+	extreme.encode_u32(22, 0x80000000)
+	check("most negative height refused", not PhoenixTexture.decode(_phoenix(extreme)).ok)
+	var tiny := "BM".to_ascii_buffer() + PackedByteArray([0, 0])
+	check("truncated plain BMP refused", not PhoenixTexture.decode(tiny).ok)
+	# Alpha: graded, cut-out, opaque and an unused (all-zero) fourth byte.
+	var graded := func(x: int, y: int) -> int: return (x * 9 + y * 3) & 0xFF
+	var blend := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, graded)))
+	check("graded alpha blends", blend.ok and blend.value.alpha == PhoenixTexture.ALPHA_BLEND and blend.value.has_alpha
+		and blend.value.image.get_format() == Image.FORMAT_RGBA8 and _matches(blend.value.image, 32, 24, graded))
+	var cut := func(x: int, _y: int) -> int: return 255 if x < 16 else 0
+	var mask := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, cut)))
+	check("binary alpha is a mask", mask.ok and mask.value.alpha == PhoenixTexture.ALPHA_MASK
+		and _matches(mask.value.image, 32, 24, cut))
+	var opaque := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4)))
+	check("opaque alpha is dropped", opaque.ok and opaque.value.alpha == PhoenixTexture.ALPHA_NONE
+		and not opaque.value.has_alpha and opaque.value.image.get_format() == Image.FORMAT_RGB8)
+	var clear := func(_x: int, _y: int) -> int: return 0
+	var zero := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, clear)))
+	check("all-zero alpha is unused", zero.ok and zero.value.alpha == PhoenixTexture.ALPHA_ZERO
+		and not zero.value.has_alpha and zero.value.image.get_format() == Image.FORMAT_RGB8
+		and _matches(zero.value.image, 32, 24) and float(zero.value.mean[3]) == 0.0)
+	# Thresholds are the importer's own: a near-zero constant is an unused byte, not a cut-out.
+	var faint := func(_x: int, _y: int) -> int: return PhoenixTexture.ALPHA_CLEAR_MAX
+	var unused := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, faint)))
+	check("near-zero constant alpha is unused", unused.ok and unused.value.alpha == PhoenixTexture.ALPHA_ZERO)
+	var near := func(x: int, _y: int) -> int: return PhoenixTexture.ALPHA_OPAQUE_MIN if x < 16 else PhoenixTexture.ALPHA_CLEAR_MAX
+	var near_mask := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, near)))
+	check("near-opaque and near-clear alpha is a mask", near_mask.ok and near_mask.value.alpha == PhoenixTexture.ALPHA_MASK)
+	var faint_tint := func(_x: int, _y: int) -> int: return PhoenixTexture.ALPHA_CLEAR_MAX + 1
+	var graded_low := PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, faint_tint)))
+	check("alpha above the clear range blends", graded_low.ok and graded_low.value.alpha == PhoenixTexture.ALPHA_BLEND)
+	var glass := func(_x: int, _y: int) -> int: return 100
+	var tint := PhoenixTexture.decode(_phoenix(_bmp(4, 4, 4, glass)))
+	check("mean colour", tint.ok and is_equal_approx(float(tint.value.mean[3]), 100.0 / 255.0)
+		and is_equal_approx(float(tint.value.mean[1]), (3.0 + 8.0 + 13.0 + 18.0) / 4.0 / 255.0))
 
 
 # -------------------------------------------------------------------------------------------- glb
@@ -379,7 +499,20 @@ func _glb() -> void:
 			and receipt.get("physics_imported") == false)
 		var materials: Array = json.get("materials", [])
 		check("textured material", materials.size() == 1 and materials[0].pbrMetallicRoughness.has("baseColorTexture"))
+		check("opaque texture keeps the opaque mode", materials.size() == 1 and not materials[0].has("alphaMode"))
 		check("collision node omitted", json.get("nodes", []).size() == 2)
+	# Texture alpha selects the material mode: cut-outs test, graded alpha blends, an unused byte stays opaque.
+	var cut := func(x: int, _y: int) -> int: return 255 if x < 16 else 0
+	var graded := func(x: int, y: int) -> int: return (x * 9 + y * 3) & 0xFF
+	var clear := func(_x: int, _y: int) -> int: return 0
+	for case: Array in [[cut, "MASK"], [graded, "BLEND"], [clear, ""]]:
+		var decoded: Dictionary = PhoenixTexture.decode(_phoenix(_bmp(32, 24, 4, case[0]))).value
+		var with_alpha := GlbWriter.build(geo, decoded, 1.0)
+		var material: Dictionary = _chunk_json(with_alpha.value.bytes).materials[0] if with_alpha.ok else {}
+		check("alpha mode '%s' written and admitted" % case[1], with_alpha.ok
+			and str(material.get("alphaMode", "")) == case[1]
+			and (case[1] != "MASK" or is_equal_approx(float(material.get("alphaCutoff", -1.0)), 0.5))
+			and SourceImporter.inspect_bytes(with_alpha.value.bytes, "alpha.glb").ok)
 	var untextured := GlbWriter.build(geo)
 	check("GLB without a texture builds", untextured.ok and SourceImporter.inspect_bytes(untextured.value.bytes, "plain.glb").ok)
 	if untextured.ok:
@@ -449,6 +582,19 @@ func _converter() -> void:
 		check("textured material", document.has("images") and document.materials[0].pbrMetallicRoughness.has("baseColorTexture"))
 		check("appearance-only note", converted.diagnostics.any(func(d: Dictionary) -> bool:
 			return d.message == Converter.APPEARANCE_ONLY))
+	# A small texture whose alpha byte is unused stays an opaque texture unless it is named as glass.
+	var clear := func(_x: int, _y: int) -> int: return 0
+	for case: Array in [["patch", "patch.bmp", false], ["tint", "tint_glass.bmp", true]]:
+		_write(folder, case[0] + ".mod", _model_chunk())
+		_write(folder, case[0] + ".geo", _geo_bytes(nodes, 1, "", case[1]))
+		_write(folder, case[1], _phoenix(_bmp(16, 16, 4, clear)))
+		var small: Dictionary = Converter.convert(folder.path_join(case[0] + ".mod"))
+		var material: Dictionary = _chunk_json(small.value.source.source_bytes()).materials[0] if small.ok else {}
+		var textured: bool = material.get("pbrMetallicRoughness", {}).has("baseColorTexture")
+		check("small unused-alpha texture: %s" % case[0], small.ok and textured != case[2]
+			and (material.get("alphaMode", "") == "BLEND") == case[2])
+	check("receipt names the texture decoder", converted.ok
+		and _chunk_json(converted.value.source.source_bytes()).asset.extras.openrc_phoenix.texture_profile == PhoenixTexture.PROFILE)
 	_write(folder, "nosize.mod", _model_chunk(false))
 	_write(folder, "nosize.geo", _geo_bytes(nodes))
 	check("model without size refused", not Converter.convert(folder.path_join("nosize.mod")).ok)

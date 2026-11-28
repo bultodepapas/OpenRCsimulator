@@ -42,6 +42,16 @@ python3 tools/godtest/godtest.py performance-tour --repeats 3 \
   --out tmp/performance-tour/baseline-01
 ```
 
+`--graphics fixed` (the default) keeps the comparison workload: MSAA and other
+graphics options stay at the product defaults, and only scene detail, window and pacing come
+from the tour. `--graphics automatic` instead writes the first-run recommendation that
+a fresh install stores for the GPU it runs on: MSAA, shadows, birds, runway meadow,
+aircraft lighting and 3D render scale. The product's own preference writer stores
+it, and the case records it as `identity.graphics`. Pair it with the renderer
+Automatic would choose; on an integrated GPU that is
+`--rendering-method gl_compatibility --scene-detail low`. Fixed and automatic
+results are different workloads and are not compared.
+
 The standard screen is three repeats of three aircraft: **nine separate owned
 application launches**, in Stik → jet → Corsair order for each repeat. `--repeats 1`
 is the first functional smoke run. `--cycles 2` repeats the entire Home/flight/menu
@@ -165,7 +175,19 @@ LaunchServices launch from SSH gets no focus. On a Wayland-only Linux session,
 `debugctl` passes `--display-driver wayland` (Godot otherwise tries X11 and exits).
 There Godot also reports the window undrawable during any stall longer than its
 frame-event timeout (about 1 s); those intervals still invalidate render evidence
-and are marked as freezes. Use the
+and are marked as freezes.
+
+On a **headless Linux host** run Godot on X11 through the compositor's Xwayland:
+`weston --backend=headless --renderer=gl --shell=kiosk --xwayland`, then `DISPLAY` set
+and `WAYLAND_DISPLAY` unset. The host needs `xwayland` and the X11 client libraries
+Godot loads at runtime (`libxcursor1 libxinerama1 libxrandr2 libxi6 libxrender1
+libxext6`). Godot's Wayland backend does not suit a compositor that sends no input or
+frame events: shutdown joins its events thread, which waits in an untimed `poll()`, so
+6 of 21 cases there needed a forced kill. Its frame-timeout suspension also made a
+single 1.7 s startup frame invalidate the phase. On the same UHD 630 hosts X11 gave
+complete, valid cases and clean exits; Xwayland composition cost about 8 % of
+flight FPS. The [2026-11-22 comparison](../../docs/research/god-test/2026-11-22-linux-uhd630-comparison.md)
+records the evidence. Use the
 [existing host admission](../testqueue/README.md) on enrolled machines. The CLI
 retains its owning session through cleanup; the checked headless pool is not a
 replacement for a rendered performance run. Use [the Mac guide](../../docs/tools/macos-m1.md)
@@ -206,6 +228,28 @@ This tour seeds native reconstruction; it does not claim MetalFX qualification.
 The standalone example does not establish Mac graphical-worker admission, panel
 pixel proof or native performance; those remain separate prerequisites.
 
+### Fixed-scale flight comparison
+
+Run the same configuration in separate outputs with `--render-scale 100` and
+`--render-scale 75`, alternating run order. The available percentages are
+100, 85, 75, 67 and 50. The explicit scale overrides the recommended scale
+when used with `--graphics automatic`. Run only one workload at a time.
+Use Forward+/Vulkan on Windows, Mobile/Metal on the M1 native Retina display
+and Compatibility/OpenGL on the UHD 630 as specified in the
+[flight resolution plan](../../docs/plans/dynamic-resolution.md#native-platform-trials).
+The default scenario keeps the existing pacing and profile when the option is omitted.
+
+For a short exploratory run, select `run runway-menus --phase runway_circuit`.
+The case report requires the requested bilinear scale at the start and end
+of each completed, requested pilot phase. These are viewport settings.
+Confirm actual pixels separately for native qualification. Match aircraft,
+camera, output size, scene settings and pacing before comparing p95/p99 and
+missed frames from the corresponding phases. The tour's closed-loop pilot
+can vary its path across repeats. Use recorded input for final paired
+acceptance and check the moving aircraft at each candidate scale. Inspect each
+run's report directly. The existing `compare` command requires the same
+requested workload and only admits supported transition phases.
+
 Windows uses the same Python entry point, normally with the console editor:
 
 ```powershell
@@ -237,6 +281,30 @@ loading Home if the debug observer or its private-profile check is unavailable.
 Godot's [user-data path contract](https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#accessing-persistent-user-data-user)
 explains why the Mac needs the distinct adapter.
 
+### Dynamic resolution flight comparisons
+
+Use `--dynamic-resolution-fps 60 --render-scale 100` with the experimental
+completed-GPU-frame engine. The render scale is the ceiling for this case.
+Pair it with `--dynamic-resolution-fps 0 --render-scale 100` and a readable
+fixed scale such as 85 on the same engine, aircraft workload and display.
+Use the qualified native kernel for that exact engine. The registered stock
+engine lacks the completed-frame API and the runtime rejects a positive request.
+Pass zero explicitly for the fixed controls so every case has the same startup
+argument. These cases use the technical startup route. Keep startup timing
+separate from ordinary product measurements.
+With `--graphics fixed`, these cases save a deliberate renderer profile in
+the isolated settings so the first-flight Automatic renderer calibration does
+not take the viewport timing window. Keep `--graphics automatic` as a separate
+experiment that retains calibration and records any inactive interval.
+
+Each measured flight phase records controller state changes, the requested FPS,
+the configured scale and completed-frame input and output sizes with the frame
+and configuration generation. A verified ceiling is valid when the workload
+has headroom. A fixed fallback or an unconfirmed scale cannot qualify as
+adaptive evidence. Compare retained phases and route landmarks using the
+[experiment design](../../docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md).
+The existing `compare` command's whole-flight geometry gate still applies.
+
 ### Preflight and repeats
 
 Use the pinned engine and current imports, a matching native artifact, and a fresh
@@ -256,7 +324,13 @@ The default is uncapped with VSync disabled, so a cap cannot hide available
 capacity. `--max-fps 60 --vsync-mode enabled` defines a separate player-pacing
 campaign. Do not combine these populations. Every launch has fresh preferences
 with the Master bus muted (`master_volume = 0`, recorded in `profile_overrides`);
-audio streams and mixing still run, unlike the Dummy driver. Source copying and prior launches may warm OS/driver caches. These are not proven
+audio streams and mixing still run. On Linux without an accessible ALSA playback
+device (`/dev/snd/pcmC*D*p`; containers can list the host's cards in
+`/proc/asound/cards` without one), the runner launches Godot's Dummy driver, which
+still mixes every period at real-time pace, and records `audio_output` in
+`execution.json`. Do not give such a host a `pcm null` ALSA default: it never
+blocks, so Godot's mix thread spins a full core while holding the audio lock and
+stalls loading (13.6–19.0 s instead of 6.5 s Home → flight on a UHD 630). Source copying and prior launches may warm OS/driver caches. These are not proven
 OS-cold or shader-cold measurements, and the runner does not clear global caches.
 
 ## Metrics, evidence and verdicts
@@ -264,6 +338,7 @@ OS-cold or shader-cold measurements, and the runner does not clear global caches
 | Evidence | What it tells us | Limits retained |
 | --- | --- | --- |
 | Verified GOD TEST frame stream and phase events | Mean callback FPS, p50/p95/p99/worst intervals, 1% and 0.1% lows; time and counts above 16.667/33.333/50/100 ms; startup/loading and menu latency | Callback intervals, not presented frames; short-tail estimates are labeled |
+| Main-loop phase split in the same stream (`phase_*`, [`frame_phases.gd`](../../app/render/frame_phases.gd)) | Where each interval went: late `_process`, deferred/engine tail, render (recording, acquire, submit, present and fence waits), between iterations, physics ticks, after physics, `process_frame` handlers and `_process`. `python tools/godtest/frame_phases.py RUN_DIR --phase runway_circuit` compares slow frames with typical ones | Intervals with an unobserved boundary are `phase_valid` 0; render time is not GPU time; streams before 24 November 2026 have no split |
 | Existing continuous `frames watch` | Relative stutter, absolute stalls, sustained slow frames, FPS-drop episodes, frozen-frame observations, bounded incident lead-up/recovery and per-second/route views | Armed after initial Home; gaps, detector warmup, clipped edges and capture limits stay visible |
 | Existing `ResourceSampler` | Direct-process CPU time and percentage, RSS/virtual memory, thread count, available host memory and process I/O | 100% means one logical CPU; may exceed 100%; no descendant totals or same-frame CPU attribution |
 | Passive GPU sampler | Device-wide utilization; clocks, temperature, power and memory when supported; every observed device has its own identity | Other processes contribute; the rendering GPU is not automatically identified; Apple memory is shared memory |
@@ -301,6 +376,12 @@ logs, `resources.json`, `gpu.json`, and `frame-watch/` reports/incidents. The su
 report rebuilds child reports and verifies roster, source bytes, settings and
 ordered phase coverage; it does not trust a cached `complete` flag. Do not remove
 the referenced frozen source/import directory while reports need revalidation.
+
+For a staged Fly, `flight_ready.data.loading` in `events.jsonl` records the
+accepted launch and its stage timings. Each stage has a monotonic `started_usec`,
+elapsed `checkpoint_wait_usec` and `work_usec`. Rendered checkpoints wait for a
+post-draw signal. Headless checkpoints wait for process frames. These wall
+durations align with the frame stream and can include scheduling and I/O.
 
 `data`, `coverage`, `monitoring` and `performance` are independent. A useful frame
 recording can survive an unavailable GPU counter or a failed maneuver. A rendered
@@ -384,7 +465,7 @@ marks the freezes detected on Windows and the M1.
 
 | Observed symptom | Next existing tool | Controlled optimization experiment |
 | --- | --- | --- |
-| Brief hitch, freeze or FPS collapse | Retained `frame-watch/report.html`, its incidents, `timeline --stutter`, or `frames --out` | Reproduce the same phase; inspect loading, shader work, allocations, I/O and observer markers |
+| Brief hitch, freeze or FPS collapse | `frame_phases.py` on the run directory, then the retained `frame-watch/report.html`, its incidents, `timeline --stutter`, or `frames --out` | Reproduce the same phase; inspect loading, shader work, allocations, I/O and observer markers |
 | High process CPU with GPU headroom | `launch --script-profile` / `profile`, [native development tools](../../research/native-kernel/README.md#c-development-tools-nk-3) | Change one measured hot path; verify unchanged physics and rerun the same circuit |
 | High GPU utilization / render cost | `render`, `layers`, `ablate`; [graphics ladder](../../research/performance/graphics_ladder/README.md) | One quality feature or resolution change at a time; retain visual acceptance and actual pixels |
 | First-load or menu-only spike | GOD TEST selection/loading/menu phases and verbose `timeline` | Separate asset decode, preparation, upload and scene attachment; compare initial and repeated entries |

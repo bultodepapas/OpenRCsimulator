@@ -94,7 +94,7 @@ First new consumers after SF-03: the multirotor ([drone plan](../../plans/drone-
 
 ## 6. Backend policy (SF-08)
 
-The text below is the policy adopted on **2026-10-15**, preserved as evidence. Later [native decisions](../../DECISIONS.md#native-acceleration-replaces-a-stage-not-the-transaction) supersede its blanket 500 µs port prerequisite and reference-only macOS inventory. Current [backend policy](../../STACK.md#native-backend-policy), [native development preference](../../../AGENTS.md#native-development) and [platform admission](../../../research/native-kernel/README.md#normal-flight-backend-selection) govern new work; numerical, identity and target-host qualification remain required.
+The text below is the policy adopted on **2026-10-15**, preserved as evidence. Later [native decisions](../../DECISIONS.md#native-acceleration-keeps-the-reference-as-its-specification) supersede its blanket 500 µs port prerequisite and reference-only macOS inventory. Current [backend policy](../../STACK.md#native-backend-policy), [native development preference](../../../AGENTS.md#native-development) and [platform admission](../../../research/native-kernel/README.md#normal-flight-backend-selection) govern new work; numerical, identity and target-host qualification remain required.
 
 The reference GDScript evaluator of every vehicle stays authoritative. A native backend may replace exactly one evaluation boundary, never the kernel's tick transaction, and it is adopted only on evidence:
 

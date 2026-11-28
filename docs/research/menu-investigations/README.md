@@ -1,5 +1,9 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-40 — auditoría de flujos del jugador y plan de mejora, 2026-11-26
+
+[Auditoría con capturas nativas a 1080p (EN/ES)](UI-40/README.md): mapa y orden de todas las pantallas, pasos por tarea (pausa, salvar el vuelo, cambiar avión o skin), hallazgos por pantalla, comparación con otros simuladores RC, reglas del sistema de cristal verde y los pasos propuestos UI-40a…r. [Especificación del rediseño](UI-40/redesign.md): menú principal de destinos, Hangar para catálogos grandes, Radio y mandos en primer nivel, Campo y clima, Pausa, Gráficos, tipos de botón y textos de ayuda en EN/ES. Sin radio ni mando físicos; no evalúa rendimiento.
+
 ## UI-15-JETI-05 — scroll and focus audit, 2026-10-26
 
 [Cross-menu findings and regression evidence](scroll-focus-2026-10-26.md): rejected Workshop lighting edits,

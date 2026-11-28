@@ -383,6 +383,24 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(finished.get("cleanup"), "CONFIRMED", finished)
         self.assertEqual(finished["canceled"], 1)
 
+    def test_checked_submit_uses_the_snapshot_after_its_disposable_worktree_is_gone(self):
+        # 2026-11-25 audit: pool batches froze sparse worktrees that were deleted
+        # before dispatch; every later checked submit was refused on Windows.
+        self.worker.draining = True
+        full_snapshot = self.base / "full-scope"
+        snapshots.capture(self.repo, full_snapshot, scope=("app", "tools", "research", "assets", "site", "docs", ".github"))
+        removed = self.base / "worktree-removed"
+        self.repo.rename(removed)
+        self.addCleanup(lambda: removed.exists() and not self.repo.exists() and removed.rename(self.repo))
+        accepted = self._submit("disposable-worktree", headless=True)
+        self.assertEqual(self._status(accepted["job"])["payload"]["source"], str(self.repo.resolve()))
+        self._call("cancel", handle=accepted["handle"])
+        # History presets clone the live checkout, so they still require it.
+        with self.assertRaisesRegex(ValueError, "admitted adapter"):
+            self._call("submit", owner="history-needs-source", preset="suite", options={},
+                       source=str(self.repo), snapshot=str(full_snapshot),
+                       request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex)
+
     def test_changed_submitted_snapshot_never_executes(self):
         self.worker.draining = True
         job = self._submit("must-not-execute")
@@ -1102,7 +1120,7 @@ class WorkerFixture(unittest.TestCase):
 
     def test_external_simulator_appearing_during_preparation_prevents_start(self):
         self.worker.draining = True
-        accepted = self._submit("late-external", headless=True)
+        accepted = self._submit("late-external", headless=True, timeout=1)
         attempt = self.worker.store.allocate(accepted["job"], {"headless": 1}, {"headless": 1})
         self.worker.fixture = False
         self.worker.engine_identity = {"binaries_sha256": {}}
@@ -1112,7 +1130,39 @@ class WorkerFixture(unittest.TestCase):
         status = self._status(accepted["job"])
         self.assertEqual(status.get("outcome"), "INFRA_FAILED", status)
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
+        self.assertEqual(status["launch"], "NOT_CREATED")
+        self.assertEqual(status["nonlaunch"], "CONFIRMED")
+        self.assertEqual(status["reason_code"], "EXTERNAL_SIMULATOR")
+        self.assertEqual(status["stage"], "admission")
         self.assertIn("EXTERNAL_SIMULATOR", status["error"])
+
+    def test_late_external_wait_can_resume_or_cancel_the_same_attempt(self):
+        self.worker.draining = True
+        for cancel in (False, True):
+            with self.subTest(cancel=cancel):
+                self.worker.fixture = True
+                accepted = self._submit("late-external", headless=True)
+                job = accepted["job"]
+                attempt = self.worker.store.allocate(job, {"headless": 1}, {"headless": 1})
+                self.worker.fixture = False
+                self.worker.engine_identity = {"binaries_sha256": {}}
+                cleared = threading.Event()
+                with mock.patch.object(worker_module, "external_simulators", side_effect=lambda: [] if cleared.is_set() else [98765]):
+                    thread = threading.Thread(target=self.worker.execute, args=(job, attempt))
+                    thread.start()
+                    try:
+                        wait_until(lambda: self._status(job).get("reason_code") == "EXTERNAL_SIMULATOR")
+                        self.assertEqual(self._status(job)["state"], "DISPATCHING")
+                        if cancel:
+                            self._call("cancel", handle=accepted["handle"])
+                    finally:
+                        cleared.set()
+                        thread.join(10)
+                self.assertFalse(thread.is_alive())
+                status = self._status(job)
+                self.assertEqual(status["outcome"], "CANCELED" if cancel else "PASSED", status)
+                self.assertEqual(status["launch"], "NOT_CREATED" if cancel else "CREATED_OWNED")
+                self.assertEqual([record["id"] for record in status["attempts"]], [attempt])
 
     def test_operator_abandonment_requires_ownership_drain_and_absent_orphan(self):
         self.worker.draining = True
@@ -1140,6 +1190,35 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(result["state"], "FINISHED")
         self.assertEqual(result["cleanup"], "UNCONFIRMED")
         self.assertEqual(result["outcome"], "INFRA_FAILED")
+
+    def test_reconcile_same_boot_preparation_only_with_unentered_launch_fence(self):
+        self.worker.draining = True
+        accepted = self._submit("interrupted-preparation")
+        job = accepted["job"]
+        identity = {"boot": "fixture-boot", "host": "fixture-machine"}
+        with self.worker.lock:
+            attempt = self.worker.store.allocate(job, {"exclusive": 1}, {"exclusive": 1},
+                                                 {"process": identity, "host": self.worker.host_id})
+            self.worker.store.db.close()
+            self.worker.store = worker_module.Store(self.worker.root)
+        directory = self.worker.root / "attempts" / attempt
+        (directory / "source").mkdir(parents=True)
+        shutil.copy2(self.snapshot / "manifest.json", directory / "manifest.json")
+        with mock.patch.object(worker_module.platform, "system", return_value="Windows"), \
+                mock.patch.object(processes, "host_identity", return_value=identity), \
+                mock.patch.object(processes, "confirm_stopped", return_value=False):
+            (directory / "request.json").write_text("{}", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "cleanup cannot be proved"):
+                self._call("reconcile", handle=accepted["handle"])
+            (directory / "request.json").unlink()
+            with mock.patch.object(self.worker.store, "only_dispatched", return_value=False):
+                with self.assertRaisesRegex(ValueError, "cleanup cannot be proved"):
+                    self._call("reconcile", handle=accepted["handle"])
+            result = self._call("reconcile", handle=accepted["handle"])
+        self.assertEqual(result["state"], "FINISHED")
+        self.assertEqual(result["reconciliation"], "interrupted_before_launch_fence")
+        self.assertEqual(result["launch"], "NOT_CREATED")
+        self.assertFalse(self.worker.store.db.execute("SELECT 1 FROM claims WHERE attempt=?", (attempt,)).fetchone())
 
     def test_operator_abandonment_cannot_bypass_a_pending_attempt_journal(self):
         self.worker.draining = True

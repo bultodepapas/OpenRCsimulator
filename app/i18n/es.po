@@ -13186,8 +13186,8 @@ msgstr "Buscar escenarios"
 msgid "Look toward panel %d"
 msgstr "Mirar hacia el panel %d"
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "Elige un archivo o una carpeta de escenarios de Phoenix, o abre una vista instalada."
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "Elige un archivo o una carpeta de escenarios del simulador Phoenix RC, o abre una vista instalada."
 
 msgid "Install preview"
 msgstr "Instalar vista previa"
@@ -13231,8 +13231,8 @@ msgstr "No se pudo iniciar la operación."
 msgid "Installed locally. Preview only."
 msgstr "Instalado en este equipo. Solo vista previa."
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "No se encontraron escenarios de Phoenix en esta ubicación."
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "No se encontraron escenarios de Phoenix RC en esta ubicación."
 
 msgid "Choose a site to preview its panorama panels."
 msgstr "Elige un escenario para ver su panorama."
@@ -13381,5 +13381,203 @@ msgstr "Elige un avión que admita el despegue desde pista."
 msgid "Preparing panorama"
 msgstr "Preparando el panorama"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "Los gráficos están en calidad básica. Puedes subir la calidad en Ajustes > Gráficos."
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "Los gráficos están en calidad básica. Puedes subir la calidad en Ajustes > Gráficos y la escala de render 3D en Ajustes > Pantalla."
+
+msgid "3D render scale"
+msgstr "Escala de render 3D"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "Renderiza la vista 3D a menor resolución y la amplía. Los valores bajos aumentan los fotogramas por segundo en gráficos integrados; la imagen se vuelve más suave."
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR, DLSS y MetalFX fijan su propia escala de render. Tu elección se recupera con la reconstrucción nativa."
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "Preparando los gráficos para este equipo. Solo el primer inicio tarda tanto."
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "Preparando los gráficos para el primer vuelo en este equipo. Los siguientes vuelos cargan más rápido."
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "Hemos elegido ajustes gráficos más ligeros para tu GPU para que el simulador funcione con fluidez. Los detalles visuales empiezan en el nivel más bajo. En Ajustes > Gráficos, sube una opción a la vez y comprueba cómo va el simulador."
+
+msgid "Tree detail"
+msgstr "Detalle de los árboles"
+
+msgid "Ground detail"
+msgstr "Detalle del terreno"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "Solo cambia cómo se dibujan los árboles. El campo y sus obstáculos físicos se mantienen."
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "Simplifica el sombreado del césped y conserva las marcas de la pista y las referencias del terreno."
+
+msgid "Simple"
+msgstr "Simple"
+
+msgid "THIS FLIGHT"
+msgstr "ESTE VUELO"
+
+msgid "Radio & controls"
+msgstr "Radio y controles"
+
+msgid "Radio & controls · %s"
+msgstr "Radio y controles · %s"
+
+msgid "not connected"
+msgstr "sin conexión"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "Configura, calibra y prueba tu radio o mando."
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "Tiempo %s · Altura %s · Velocidad %s"
+
+msgid "Back to the start with the same setup."
+msgstr "Vuelve a la salida con la misma configuración."
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "Termina este vuelo y abre el catálogo de aviones."
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "Pausa: cambia de avión, vuelve al inicio o ajusta este vuelo."
+
+msgid "Reference flight model."
+msgstr "Modelo de vuelo de referencia."
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "Experimental: física estimada, aún no comparada con el avión real."
+
+msgid "Model only; it cannot fly yet."
+msgstr "Solo el modelo; todavía no vuela."
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "El campo del club ofrece de 1 a 3 compañeros experimentales Ugly Stik que vuelan circuitos. Están desactivados por defecto; empieza con uno. Abre Compañeros de vuelo desde Inicio → Más detalles del vuelo o en el menú de pausa."
+
+msgid "FLIGHT COMPANIONS"
+msgstr "COMPAÑEROS DE VUELO"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "CONECTA UNA RADIO O UN MANDO"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. Conéctalo por USB o Bluetooth. En una radio EdgeTX, elige USB Joystick (Classic) y apaga la RF."
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. Elígelo como Control de vuelo."
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. Pulsa Configurar este dispositivo… para el modo de palancas, la calibración, una prueba en directo y los interruptores principales."
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "Recupera un perfil de una versión anterior o exporta un diagnóstico para informar de un error."
+
+msgid "HANGAR"
+msgstr "HANGAR"
+
+msgid "Airplanes"
+msgstr "Aviones"
+
+msgid "Helicopters"
+msgstr "Helicópteros"
+
+msgid "Drones"
+msgstr "Drones"
+
+msgid "Airships"
+msgstr "Dirigibles"
+
+msgid "Cars & trucks"
+msgstr "Coches y camiones"
+
+msgid "Search by name"
+msgstr "Buscar por nombre"
+
+msgid "%d of %d"
+msgstr "%d de %d"
+
+msgid "%d vehicles"
+msgstr "%d vehículos"
+
+msgid "No vehicle matches this search."
+msgstr "Ningún vehículo coincide con la búsqueda."
+
+msgid "Hangar"
+msgstr "Hangar"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "Pulsa para el siguiente preajuste de viento. Condiciones tiene los valores exactos, la turbulencia y el aire."
+
+msgid "Applies to the next flight"
+msgstr "Se aplica al próximo vuelo"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "Viento medio. Los entrenadores pequeños sufren por encima de unos 6 m/s."
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "De dónde viene el viento: 090° es del este."
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "Velocidad extra de cada ráfaga sobre el viento medio."
+
+msgid "Rising or sinking air inside each gust."
+msgstr "Aire que sube o baja dentro de cada ráfaga."
+
+msgid "How long each gust lasts."
+msgstr "Cuánto dura cada ráfaga."
+
+msgid "Time from the start of one gust to the next."
+msgstr "Tiempo entre el comienzo de una ráfaga y el de la siguiente."
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "Elige un preajuste o cambia un valor. Aplicar los guarda para el próximo vuelo; Cancelar los descarta."
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "Escribe una velocidad y una dirección de viento para verlas sobre la pista."
+
+msgid "Calm: no steady wind on the runway."
+msgstr "Calma: no hay viento constante en la pista."
+
+msgid "headwind %s m/s"
+msgstr "viento de cara %s m/s"
+
+msgid "tailwind %s m/s"
+msgstr "viento de cola %s m/s"
+
+msgid "crosswind %s m/s from the right"
+msgstr "viento cruzado %s m/s por la derecha"
+
+msgid "crosswind %s m/s from the left"
+msgstr "viento cruzado %s m/s por la izquierda"
+
+msgid "no crosswind"
+msgstr "sin viento cruzado"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "Desde %03.0f° a %s m/s."
+
+msgid "Runway start: %s, %s."
+msgstr "Salida en pista: %s, %s."
+
+msgid "Time & sky"
+msgstr "Hora y cielo"
+
+msgid "Ahead"
+msgstr "Delante"
+
+msgid "Behind"
+msgstr "Detrás"
+
+msgid "Left"
+msgstr "Izquierda"
+
+msgid "Sky"
+msgstr "Cielo"
+
+msgid "Ground"
+msgstr "Suelo"

@@ -103,6 +103,14 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, at: f
 		shaft_power = maxf(0.0, Propulsion.engine_torque(rpm, owner.propulsion_throttle(), prop,
 			owner.engine_charge_ratio(body)) * rpm * TAU / 60.0) if running else 0.0
 		joint_stage_context = owner._substep_stage_context(response)
+		if not joint_stage_context.is_empty():
+			# NK-5b: the substep refinement's source-off shaft rate from this same preview. _substeps_joint
+			# used to rebuild the trial properties and this response itself; an unusable response omits it.
+			var source_off: Dictionary = owner._coupled_response(body, base, at, live, false, joint_stage_context)
+			var source_off_rate: float = float(source_off.get("rpm_rate", NAN)) if source_off.get("ok", false) else NAN
+			if is_finite(source_off_rate):
+				joint_stage_context = {air = joint_stage_context.air, pre_reaction_loads = joint_stage_context.pre_reaction_loads,
+					wheel_derivative = joint_stage_context.wheel_derivative, source_off_rpm_rate = source_off_rate}
 	var rate: float = Liquid.flow_rate_kg_s(prop.liquid_fuel,
 		{running = running, shaft_power_w = shaft_power, rpm = rpm})
 	if not is_finite(rate) or rate < 0.0:

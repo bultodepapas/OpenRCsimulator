@@ -8,12 +8,16 @@ no host was selected and may be reconsidered; a timeout does not cancel jobs.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
+from copy import deepcopy
+from functools import partial
 import hashlib
 import json
 import math
 import os
 from pathlib import Path
 import sys
+import threading
 import time
 import uuid
 
@@ -27,6 +31,7 @@ from tools.testqueue.presets import scheduling, validate
 BATCH_VERSION = 2
 RETRY_INITIAL_SECONDS = 0.25
 RETRY_MAX_SECONDS = 30.0
+MAX_HOST_LANES = 4
 
 
 def _error_text(error):
@@ -110,6 +115,42 @@ def _script_specific_refusal(submission):
                for reason in candidate.get("reasons") or [])
 
 
+def _refusal_causes(status):
+    # Free space fluctuates. Back off the same host/cause while preserving
+    # the newest byte counts in the full decision.
+    return {candidate["host"]: sorted({reason.partition(":")[0] for reason in candidate["reasons"]})
+            for candidate in (status.get("decision") or {}).get("candidates", [])}
+
+
+def _reclaim_for_space(pool, submission, deadline):
+    """Ask the pool to reclaim remote hosts that refused for disk space; advisory.
+
+    The sweep's budget never exceeds this observation window.
+    """
+    reclaim = getattr(pool, "reclaim_for_space", None)
+    if not callable(reclaim):
+        return
+    try:
+        budget = min(Pool.AUTO_GC_BUDGET_SECONDS, deadline - time.monotonic())
+        if budget >= 1:
+            reclaim(submission.get("decision"), budget_seconds=budget)
+    except Exception:  # storage work never changes a row's placement state
+        pass
+
+
+def _record_wait(row, submission):
+    now = time.time()
+    previous = row.get("admission_wait") or {}
+    if previous and _refusal_causes(row.get("status") or {}) == _refusal_causes(submission):
+        count, first = previous["consecutive"] + 1, previous["first_observed_at"]
+    else:
+        count, first = 1, now
+    delay = _backoff(count)
+    row.update(phase="WAITING", status=submission, retry_after=now + delay,
+               admission_wait={"first_observed_at": first, "last_observed_at": now, "consecutive": count})
+    return delay
+
+
 def submission_order(pool, rows):
     """Longest expected test first, so short tests fill gaps near the end.
 
@@ -139,12 +180,175 @@ def reobservation_ids(pool, rows):
                  and (row.get("collection") or {}).get("collection_format") != COLLECTION_FORMAT)}
 
 
+def _host_lanes(rows):
+    """Run disjoint pinned hosts or specific platform requirements in parallel."""
+    by_host = all(row["input"]["host"] is not None for row in rows)
+    if not by_host and any(row["input"]["platform"] == "any" for row in rows):
+        return [rows]
+    groups = {}
+    for row in rows:
+        key = row["input"]["host" if by_host else "platform"]
+        groups.setdefault(key, []).append(row)
+    lanes = [[] for _ in range(min(len(groups), MAX_HOST_LANES))]
+    for index, group in enumerate(groups.values()):
+        lanes[index % len(lanes)].extend(group)
+    return lanes
+
+
+def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, deadline, poll_interval, publish, stopped):
+    """Drive rows serially. Publication completes before a dispatch can proceed."""
+    checked_blocked = set()
+    # Preserve failed generations for inspection; a later invocation can
+    # retry collection from the same authority without launching new work.
+    checked_collections = set(failed_verifications)
+    retry_ready = {row["request_id"]: time.monotonic() + min(RETRY_MAX_SECONDS,
+                   max(0, row["retry_after"] - time.time())) for row in rows
+                   if row["phase"] in {"WAITING", "RETRY_WAIT"} and "retry_after" in row}
+    order = submission_order(pool, rows)
+
+    def before_dispatch(row):
+        row.update(phase="SUBMITTING", status={"state": "SUBMITTING", "stage": "placement"})
+        row.pop("retry_after", None)
+        row.pop("admission_wait", None)
+        publish(row)
+
+    while not stopped.is_set():
+        # Every WAITING answer in this pass proves that no host was eligible
+        # for its (platform, host) constraint. Rows whose constraint is the
+        # same or narrower would only repeat the full host probe; they are
+        # reconsidered on the next pass instead.
+        saturated = set()
+        # A slow refusal can consume a whole observation window. Give
+        # less-probed rows their turn, retaining duration order among ties.
+        for row in sorted(order, key=lambda item: item.get("submission_attempts", 0)):
+            if row["phase"] not in {"WAITING", "RETRY_WAIT"}:
+                continue
+            if time.monotonic() < retry_ready.get(row["request_id"], 0):
+                continue
+            if stopped.is_set() or time.monotonic() >= deadline:
+                break
+            constraint = (row["input"]["platform"], row["input"]["host"], row["input"].get("rendering_driver"))
+            if any(platform in {"any", constraint[0]} and host in {None, constraint[1]}
+                   and driver == constraint[2] for platform, host, driver in saturated):
+                continue
+            row["submission_attempts"] = row.get("submission_attempts", 0) + 1
+            started = time.monotonic()
+            row["placement_started_at"] = time.time()
+            row.setdefault("first_placement_at", row["placement_started_at"])
+            try:
+                job = row["input"]
+                submission = pool.submit(snapshot, job["script"], platform=job["platform"],
+                                         require=job["require"], timeout=job["timeout"],
+                                         host_id=job["host"], request_id=row["request_id"],
+                                         expected_manifest_sha256=manifest_sha256,
+                                         before_dispatch=partial(before_dispatch, row),
+                                         **({"rendering_driver": job["rendering_driver"]}
+                                            if job.get("rendering_driver") else {}))
+                if submission.get("state") == "WAITING":
+                    delay = _record_wait(row, submission)
+                    retry_ready[row["request_id"]] = time.monotonic() + delay
+                    if not _script_specific_refusal(submission):
+                        saturated.add(constraint)
+                    _reclaim_for_space(pool, submission, deadline)
+                elif submission.get("job") == row["request_id"]:
+                    row.update(phase="TRACKING", status=submission)
+                else:
+                    raise ValueError("pool returned an invalid submission receipt")
+            except SubmissionRejected as error:
+                row.update(phase="REJECTED", status=error.status)
+                row.setdefault("first_error", str(error))
+            except SubmissionDeferred as error:
+                delay = _backoff(row["submission_attempts"])
+                row.update(phase="RETRY_WAIT", retry_after=time.time() + delay,
+                           status={"state": "WAITING", "reason_code": error.reason_code, "error": str(error),
+                                   **({"transfer": error.detail} if error.detail else {})})
+                row.setdefault("first_error", str(error))
+                retry_ready[row["request_id"]] = time.monotonic() + delay
+            except Exception as error:
+                # The request may have crossed the dispatch boundary: no failover.
+                row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
+                row.setdefault("first_error", str(error))
+                checked_blocked.add(row["request_id"])
+            if row["phase"] != "WAITING":
+                row.pop("admission_wait", None)
+            if row["phase"] not in {"WAITING", "RETRY_WAIT"}:
+                row.pop("retry_after", None)
+            row["last_placement_at"] = time.time()
+            timings = row.setdefault("coordinator_seconds", {})
+            timings["placement"] = timings.get("placement", 0.0) + time.monotonic() - started
+            publish(row)
+
+        for row in rows:
+            if row["phase"] not in {"TRACKING", "BLOCKED"} or row["request_id"] in checked_blocked:
+                continue
+            if stopped.is_set() or time.monotonic() >= deadline:
+                break
+            try:
+                status = pool.status(row["request_id"])
+                if not isinstance(status, dict) or not isinstance(status.get("state"), str):
+                    raise ValueError("pool returned an invalid status")
+                if status.get("reason_code") == "TRANSFER_DEFERRED":
+                    # Proved nondispatched (e.g. a crash right after the deferral was recorded):
+                    # resubmit the SAME id so the pool re-enters the transfer.
+                    delay = _backoff(row.get("submission_attempts", 1))
+                    retry_ready[row["request_id"]] = time.monotonic() + delay
+                    row.update(phase="RETRY_WAIT", retry_after=time.time() + delay, status=status)
+                elif status["state"] == "FINISHED" and status.get("outcome") == "NOT_DISPATCHED":
+                    # Proved never to have run (local tombstone or operator
+                    # reconciliation). There is no evidence to collect.
+                    row.update(phase="REJECTED", status=status)
+                    row.setdefault("first_error", status.get("error") or "not dispatched")
+                else:
+                    phase = "COLLECTING" if status["state"] == "FINISHED" else (
+                        "BLOCKED" if status["state"] in {"UNKNOWN", "SUBMISSION_UNCONFIRMED", "NOT_FOUND"} else "TRACKING")
+                    row.update(phase=phase, status=status)
+            except Exception as error:
+                row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
+                row.setdefault("first_error", str(error))
+            if row["phase"] == "BLOCKED":
+                checked_blocked.add(row["request_id"])
+            publish(row)
+
+        for row in rows:
+            if row["phase"] not in {"COLLECTING", "COLLECTION_BLOCKED"} or row["request_id"] in checked_collections:
+                continue
+            if stopped.is_set() or time.monotonic() >= deadline:
+                break
+            started = time.monotonic()
+            try:
+                report = pool.collect(row["request_id"])
+                if (not isinstance(report, dict) or report.get("pool_job") != row["request_id"]
+                        or report.get("pool_outcome") != row["status"].get("outcome")):
+                    raise ValueError("pool returned an invalid collection report")
+                row.update(phase="DONE", collection=report)
+                row.pop("collection_error", None)
+            except Exception as error:
+                # Collection may be retried on a later invocation; the test never is.
+                row.update(phase="COLLECTION_BLOCKED", collection_error=_error_text(error))
+            checked_collections.add(row["request_id"])
+            timings = row.setdefault("coordinator_seconds", {})
+            timings["collection"] = timings.get("collection", 0.0) + time.monotonic() - started
+            publish(row)
+
+        if (time.monotonic() >= deadline
+                or all(row["phase"] in {"DONE", "REJECTED", "BLOCKED", "COLLECTION_BLOCKED"} for row in rows)):
+            return
+        delay = poll_interval
+        if all(row["phase"] in {"DONE", "REJECTED", "BLOCKED", "COLLECTION_BLOCKED"}
+               or row["phase"] in {"WAITING", "RETRY_WAIT"} and row["request_id"] in retry_ready
+               for row in rows):
+            pending = [retry_ready[row["request_id"]] for row in rows
+                       if row["phase"] in {"WAITING", "RETRY_WAIT"}]
+            delay = max(delay, min(pending) - time.monotonic())
+        time.sleep(min(max(0, delay), max(0, deadline - time.monotonic())))
+
+
 def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=2):
     """Run or resume a batch under its persistent state-file lock.
 
-    SUBMITTING is durable before a call. After interruption, observe its original
-    ID; an absent receipt cannot authorize a new submit. Repeated
-    invocations can observe recovery of an UNKNOWN attempt but cannot relaunch it.
+    The pool invokes the callback before publishing a dispatch receipt. A crash
+    during planning can re-enter with the original ID. Once SUBMITTING is
+    durable, observe the original attempt even when its receipt is missing.
     Config, manifest and snapshot-manifest identities are bound to the batch.
     """
     if type(timeout) not in (int, float) or not math.isfinite(timeout) or timeout <= 0:
@@ -180,7 +384,8 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                 attempts = row.get("submission_attempts", 0)
                 if type(attempts) is not int or attempts < 0:
                     raise ValueError("invalid batch submission count")
-                if row["phase"] == "RETRY_WAIT" and (type(row.get("retry_after")) not in (int, float)
+                if (row["phase"] == "RETRY_WAIT" or row["phase"] == "WAITING" and "retry_after" in row) and (
+                        type(row.get("retry_after")) not in (int, float)
                         or not math.isfinite(row["retry_after"])):
                     raise ValueError("invalid batch retry deadline")
                 if row["phase"] == "SUBMITTING" or state["version"] == 1 and row["phase"] == "WAITING":
@@ -231,122 +436,55 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
             # Every row is durable before the first host can receive a request.
             write_json(state_path, state)
 
+        # The process keeps the batch singleton until every started call returns.
+        # Each lane mutates private rows. Only publish() can change the shared
+        # journal, including the SUBMITTING write required by the pool callback.
+        rows = state["jobs"]
+        indices = {row["request_id"]: i for i, row in enumerate(rows)}
+        lock = threading.Lock()
+        stopped = threading.Event()
+        journal_error = None
+
+        def publish(row):
+            nonlocal journal_error
+            with lock:
+                if journal_error is not None:
+                    raise RuntimeError(f"batch journal publication stopped: {journal_error}") from journal_error
+                if stopped.is_set():
+                    raise RuntimeError("batch observer stopped")
+                index = indices[row["request_id"]]
+                if rows[index] == row:
+                    return
+                try:
+                    rows[index] = deepcopy(row)
+                    state["result"] = _result(state)
+                    write_json(state_path, state)
+                except BaseException as error:
+                    journal_error = error
+                    stopped.set()
+                    raise
+
         deadline = time.monotonic() + timeout
-        checked_blocked = set()
-        # Preserve failed generations for inspection; a later invocation can
-        # retry collection from the same authority without launching new work.
-        checked_collections = set(failed_verifications)
-        retry_ready = {row["request_id"]: time.monotonic() + min(RETRY_MAX_SECONDS,
-                       max(0, row["retry_after"] - time.time())) for row in state["jobs"]
-                       if row["phase"] == "RETRY_WAIT"}
-        order = submission_order(pool, state["jobs"])
-        while True:
-            # Every WAITING answer in this pass proves that no host was eligible
-            # for its (platform, host) constraint. Rows whose constraint is the
-            # same or narrower would only repeat the full host probe; they are
-            # reconsidered on the next pass instead.
-            saturated = set()
-            for row in order:
-                if row["phase"] not in {"WAITING", "RETRY_WAIT"}:
-                    continue
-                if row["phase"] == "RETRY_WAIT" and time.monotonic() < retry_ready[row["request_id"]]:
-                    continue
-                if time.monotonic() >= deadline:
-                    break
-                constraint = (row["input"]["platform"], row["input"]["host"])
-                if any(platform in {"any", constraint[0]} and host in {None, constraint[1]}
-                       for platform, host in saturated):
-                    continue
-                row.update(phase="SUBMITTING", submission_attempts=row.get("submission_attempts", 0) + 1)
-                write_json(state_path, state)
-                try:
-                    job = row["input"]
-                    submission = pool.submit(snapshot, job["script"], platform=job["platform"],
-                                             require=job["require"], timeout=job["timeout"],
-                                             host_id=job["host"], request_id=row["request_id"],
-                                             expected_manifest_sha256=state["snapshot_manifest_sha256"],
-                                             **({"rendering_driver": job["rendering_driver"]}
-                                                if job.get("rendering_driver") else {}))
-                    if submission.get("state") == "WAITING":
-                        row.update(phase="WAITING", status=submission)
-                        if not _script_specific_refusal(submission):
-                            saturated.add(constraint)
-                    elif submission.get("job") == row["request_id"]:
-                        row.update(phase="TRACKING", status=submission)
-                    else:
-                        raise ValueError("pool returned an invalid submission receipt")
-                except SubmissionRejected as error:
-                    row.update(phase="REJECTED", status=error.status)
-                    row.setdefault("first_error", str(error))
-                except SubmissionDeferred as error:
-                    delay = _backoff(row["submission_attempts"])
-                    row.update(phase="RETRY_WAIT", retry_after=time.time() + delay,
-                               status={"state": "WAITING", "reason_code": error.reason_code, "error": str(error),
-                                       **({"transfer": error.detail} if error.detail else {})})
-                    row.setdefault("first_error", str(error))
-                    retry_ready[row["request_id"]] = time.monotonic() + delay
-                except Exception as error:
-                    # The request may have crossed the dispatch boundary: no failover.
-                    row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
-                    row.setdefault("first_error", str(error))
-                    checked_blocked.add(row["request_id"])
-                write_json(state_path, state)
 
-            for row in state["jobs"]:
-                if row["phase"] not in {"TRACKING", "BLOCKED"} or row["request_id"] in checked_blocked:
-                    continue
-                if time.monotonic() >= deadline:
-                    break
-                try:
-                    status = pool.status(row["request_id"])
-                    if not isinstance(status, dict) or not isinstance(status.get("state"), str):
-                        raise ValueError("pool returned an invalid status")
-                    if status.get("reason_code") == "TRANSFER_DEFERRED":
-                        # Proved nondispatched (e.g. a crash right after the deferral was recorded):
-                        # resubmit the SAME id so the pool re-enters the transfer.
-                        delay = _backoff(row.get("submission_attempts", 1))
-                        retry_ready[row["request_id"]] = time.monotonic() + delay
-                        row.update(phase="RETRY_WAIT", retry_after=time.time() + delay, status=status)
-                    else:
-                        phase = "COLLECTING" if status["state"] == "FINISHED" else (
-                            "BLOCKED" if status["state"] in {"UNKNOWN", "SUBMISSION_UNCONFIRMED", "NOT_FOUND"} else "TRACKING")
-                        row.update(phase=phase, status=status)
-                except Exception as error:
-                    row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
-                    row.setdefault("first_error", str(error))
-                if row["phase"] == "BLOCKED":
-                    checked_blocked.add(row["request_id"])
-                write_json(state_path, state)
+        def drive(group):
+            try:
+                _drive_rows(pool, snapshot, state["snapshot_manifest_sha256"], group, failed_verifications,
+                           deadline, poll_interval, publish, stopped)
+            except BaseException:
+                stopped.set()
+                raise
 
-            for row in state["jobs"]:
-                if row["phase"] not in {"COLLECTING", "COLLECTION_BLOCKED"} or row["request_id"] in checked_collections:
-                    continue
-                if time.monotonic() >= deadline:
-                    break
-                try:
-                    report = pool.collect(row["request_id"])
-                    if (not isinstance(report, dict) or report.get("pool_job") != row["request_id"]
-                            or report.get("pool_outcome") != row["status"].get("outcome")):
-                        raise ValueError("pool returned an invalid collection report")
-                    row.update(phase="DONE", collection=report)
-                    row.pop("collection_error", None)
-                except Exception as error:
-                    # Collection may be retried on a later invocation; the test never is.
-                    row.update(phase="COLLECTION_BLOCKED", collection_error=_error_text(error))
-                checked_collections.add(row["request_id"])
-                write_json(state_path, state)
-
-            state["result"] = _result(state)
+        groups = _host_lanes(deepcopy(rows))
+        if len(groups) == 1:
+            drive(groups[0])
+        else:
+            with ThreadPoolExecutor(max_workers=len(groups)) as executor:
+                list(executor.map(drive, groups))
+        result = _result(state)
+        if state.get("result") != result:
+            state["result"] = result
             write_json(state_path, state)
-            if (state["result"] != "INCOMPLETE" or time.monotonic() >= deadline
-                    or all(row["phase"] in {"DONE", "REJECTED", "BLOCKED", "COLLECTION_BLOCKED"} for row in state["jobs"])):
-                return state
-            delay = poll_interval
-            if all(row["phase"] in {"DONE", "REJECTED", "BLOCKED", "COLLECTION_BLOCKED", "RETRY_WAIT"}
-                   for row in state["jobs"]):
-                pending = [retry_ready[row["request_id"]] for row in state["jobs"] if row["phase"] == "RETRY_WAIT"]
-                delay = max(delay, min(pending) - time.monotonic())
-            time.sleep(min(max(0, delay), max(0, deadline - time.monotonic())))
+        return state
     finally:
         guard.close()
 

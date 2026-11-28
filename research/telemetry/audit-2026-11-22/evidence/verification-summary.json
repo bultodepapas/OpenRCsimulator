@@ -1,0 +1,49 @@
+{
+  "baseline_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "date": "2026-11-22",
+  "python": "3.12.14",
+  "godot": "4.8.beta2.official.cafc17a19",
+  "godot_linux_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "baseline_runs": {
+    "receiver-tests.txt": {
+      "passed": 141,
+      "skipped": 1,
+      "sha256": "83db4c3454c4b7845d516e42cf83f4ed8cae03a3b154cd26cebd9a809d88f1d7"
+    },
+    "reference-tests.txt": {
+      "passed": 128,
+      "skipped": 0,
+      "sha256": "e9a8fffc1a9730fe1b2db3d1782ed407fd290929d5aef9c1cd4b82e92eead2f4"
+    },
+    "operations-tests.txt": {
+      "passed": 100,
+      "skipped": 2,
+      "sha256": "b0fb3ee397224f85641deb414b6181e59eafbf9c2f785f431310efbe3266aaa5"
+    },
+    "godot-e2e-test.txt": {
+      "passed": 1,
+      "skipped": 0,
+      "sha256": "a72a8b3a6d32298b7962170504ff6ac5743a29e1cd7c54db1a7262414d1e7da8"
+    }
+  },
+  "distinct_python_passes": 370,
+  "unresolved_platform_skips": 2,
+  "default_godot_e2e_skip_resolved_by_separate_run": true,
+  "core_godot_suites_passed": 5,
+  "python_counterexamples_reproduced": 5,
+  "godot_counterexamples_reproduced": 6,
+  "note": "Counterexample success reproduces a defect or documented residual risk, not correct product behavior. No live deployment or full application acceptance was tested.",
+  "exceptions": [
+    "Initial operations test attempt used a temporary directory inside the checkout; path guards caused 2 failures and 7 errors. External TMPDIR rerun passed 100 tests with 2 platform skips.",
+    "An expanded isolated editor import was terminated by signal 9 after 33.885 s; cause not established. Explicit contract and detector scripts then passed. The final smaller portable-probe project imported successfully."
+  ],
+  "generated_contracts_check": "Contracts match source.",
+  "generated_examples_check": "Examples match source.",
+  "source_inventory_files": 135,
+  "numbered_findings": {
+    "total": 13,
+    "high": 2,
+    "medium": 10,
+    "low": 1
+  }
+}

@@ -268,11 +268,12 @@ class EquivalenceTests(unittest.TestCase):
             records = [(day, encode(p)) for p in payloads]
             self.assertEqual(aggregate_daily_gpu(contracts, records, day, RELEASE, as_of_utc=as_of),
                              reference.aggregate_daily_gpu(records, day, RELEASE, as_of_utc=as_of), name)
-        conflicting = [(day, encode(batch(1, batch_id=1))),
-                       (day, encode(batch(1, batch_id=2, events=[perf_event(1, frames=1700)])))]
-        for fn, args in ((aggregate_daily_gpu, (contracts,)), (reference.aggregate_daily_gpu, ())):
-            with self.assertRaises((ContractError, reference.ContractError)):
-                fn(*args, conflicting, day, RELEASE, as_of_utc=as_of)
+        for frames in (1700, 1800.0):
+            conflicting = [(day, encode(batch(1, batch_id=1))),
+                           (day, encode(batch(1, batch_id=2, events=[perf_event(1, frames=frames)])))]
+            for fn, args in ((aggregate_daily_gpu, (contracts,)), (reference.aggregate_daily_gpu, ())):
+                with self.assertRaisesRegex((ContractError, reference.ContractError), "^conflicting_event$"):
+                    fn(*args, conflicting, day, RELEASE, as_of_utc=as_of)
         for bad_as_of in ("2027-01-14T23:59:59Z", "2027-01-16T00:00:00Z", "2027-01-15T03:00:00+02:00", "nonsense"):
             for fn, args in ((aggregate_daily_gpu, (contracts,)), (reference.aggregate_daily_gpu, ())):
                 with self.assertRaises((ContractError, reference.ContractError), msg=bad_as_of):

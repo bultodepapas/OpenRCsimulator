@@ -1,0 +1,74 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-23",
+  "baseline_commit": "85fc06ff3ed0074586691c1a7fce70687ea1558a",
+  "candidate_commit": "2014cafbb13e2d91324ce451c712f548dc534d12",
+  "candidate_overlay": "Project version 0.3.5 and two D11g guard renewals",
+  "actions_run_id": 45228400624,
+  "platform": "Linux x86_64 on GitHub Actions Ubuntu 24.04, with sequential checked imports and isolated profiles",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "imports": {
+    "baseline": "7775d060a6981936c2a8edf2e70313a0e141bbe48c7c3e1b55bfaf677d119335",
+    "candidate": "cdd8f13acf7f5adcc9bdf7f4a17b9fe2026eb365edc7c8bace759bcd3b799853"
+  },
+  "inventory": {
+    "source_counts": [
+      152,
+      152
+    ],
+    "unchanged": 151,
+    "qualified_sha256_before": "087df168cefe80a55126fb571281f586f8c7189baedaf22dcd3fdfd5c6114430",
+    "qualified_sha256_after": "ad4b79e1b0b3e868c2da770b09ba6e98284abe4c011a047092bf041ea54058b0",
+    "added": {},
+    "removed": {},
+    "changed": {
+      "app/project.godot": {
+        "lf_sha256_before": "443007203274760f74bc0af83cc69886c2d6372f8d9e9e42700738c4c1bca639",
+        "lf_sha256_after": "b8dcc5512600b5831437b7d240936b8dd8736cad3fd87200a0815d3a7f2e5965"
+      }
+    }
+  },
+  "numerical_and_provenance_result": "Six reports agree outside the source inventory and expected data-check result.",
+  "checks": {
+    "baseline": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "388d206fce8f0da55521f3ebdbf25f32684da66d05a26d57843933c8715b57ed",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "25359097baf4835296ede0f19acb606db25b8947afd3b1288d0f62a5bfa9d331",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "renewed": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "ebd27cfda7f9dbbda4cedab7590de8090afdba19cb2ec5ed6860ab68c871fdc2",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "physics-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "4cf4bef96dff9f055dca27f75740c5934c98bc6a680534f99b3774c62271499d",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "version-mutation": {
+      "process_exit": 1,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "e26e8ee4a257ac743a2c3e10010ec4c02a025bb7343bf42ee0fc821c665e3f5f",
+      "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "restored": {
+      "process_exit": 0,
+      "checked_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "report_sha256": "ebd27cfda7f9dbbda4cedab7590de8090afdba19cb2ec5ed6860ab68c871fdc2",
+      "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    }
+  },
+  "limits": "This records Linux provenance checks. The run concluded with a missing farm tractor authoring script in the focused reconstruction after all six D11g checks and the portable collision and scenery-budget checks."
+}

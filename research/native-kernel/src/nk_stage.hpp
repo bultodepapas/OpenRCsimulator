@@ -105,19 +105,25 @@ struct StageResult {
 	SpatialPointContext preview_point;
 	std::array<R, 6> pre_reaction{};
 	std::vector<R> preview_wheel_rates;
+	bool has_preview_source_off = false; // NK-5b: liquid gas preview's finite source-off shaft rate
+	R preview_source_off_rpm_rate = 0.0;
+	R glow_firing_fraction = kNan; // NK-6b: the glow lifecycle point's firing fraction
 };
 
-// A callback into immutable native weather only. Its context is local to one RK stage.
+// A callback into immutable native weather only. Its context is local to one RK stage (the tick's aux) or to one
+// pre-step air sample (NK-5g: the incoming aux, as FlightSession.air_data reads sim.aux before the tick installs).
 struct StageWindContext {
 	const StageModel *model;
 	const TickContext *tick;
+	const std::vector<R> *aux = nullptr; // overrides tick->aux when set
 };
 
 inline bool stage_wind_sample(void *opaque, const R *position, R time, R *wind) {
 	const auto &context = *static_cast<const StageWindContext *>(opaque);
 	const StageModel &m = *context.model;
+	const std::vector<R> &aux = context.aux != nullptr ? *context.aux : context.tick->aux;
 	const auto sample = m.spatial_weather ? spatial_weather_wind(m.spatial, position, time) :
-		weather_wind(m.weather, position, time, context.tick->aux, m.layout.turbulence, m.dt);
+		weather_wind(m.weather, position, time, aux, m.layout.turbulence, m.dt);
 	for (int i = 0; i < 3; ++i) wind[i] = sample[i];
 	return spatial_flow_finite3(wind);
 }
@@ -365,6 +371,7 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		out.rotor = result.rotor;
 		out.has_body_derivative = true;
 		out.body_derivative = result.body_derivative;
+		out.glow_firing_fraction = result.firing_fraction;
 		return out;
 	}
 	ElectricStagePoint source;
@@ -426,6 +433,8 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 			out.preview_point = point_context;
 			out.preview_point.provider = {}; // stack-owned provider must never escape
 			out.preview_wheel_rates = rates;
+			out.has_preview_source_off = result.has_source_off_rate;
+			out.preview_source_off_rpm_rate = result.source_off_rpm_rate;
 		}
 		return out;
 	}

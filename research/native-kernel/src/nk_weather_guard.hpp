@@ -22,10 +22,13 @@
 
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <initializer_list>
 #include <string>
 #include <utility>
+
+#include "nk_guard_plan.hpp"
 #include <vector>
 
 namespace nk {
@@ -76,6 +79,11 @@ class WeatherGuard {
 	int64_t aux_size_ = 0;
 	int64_t turbulence_aux_index_ = -1;
 	std::vector<Watch> watches_;
+	// NK-5h per-tick plan (see nk_configuration_guard.hpp): property watches and the nested watches engine equality
+	// cannot settle, then one engine deep equality per property container against its preparation snapshot.
+	bool plan_ready_ = false;
+	std::vector<std::size_t> plan_watches_;
+	std::vector<std::pair<std::size_t, Variant>> plan_snapshots_;
 
 	// Interned once with the guard, never manufactured during the tick check.
 	StringName p_session_ = "session";
@@ -246,6 +254,62 @@ class WeatherGuard {
 		return same_scalar(current, watch.expected);
 	}
 
+	// NK-5h: the same plan as ConfigurationGuard::build_plan (rules in nk_guard_plan.hpp).
+	bool build_plan() {
+		plan_ready_ = false;
+		plan_watches_.clear();
+		plan_snapshots_.clear();
+		const auto refuse = [this] {
+			plan_watches_.clear();
+			plan_snapshots_.clear();
+			return false;
+		};
+		// Every root container must fit the plan's path budget (nk_guard_plan.hpp kPlanPathBudget).
+		for (const Watch &watch : watches_) {
+			if (watch.source != Parent::Property || watch.container_size < 0) continue;
+			int64_t remaining = guard_plan::kPlanPathBudget;
+			if (!guard_plan::within_budget(watch.expected, remaining, 0, kMaxDepth)) return refuse();
+		}
+		for (std::size_t i = 0; i < watches_.size(); ++i) {
+			const Watch &watch = watches_[i];
+			if (watch.source == Parent::Property) {
+				plan_watches_.push_back(i);
+				if (watch.container_size >= 0) {
+					const Variant snapshot = watch.expected.duplicate(true);
+					if (snapshot.get_type() != watch.expected.get_type() || godot::UtilityFunctions::is_same(snapshot, watch.expected) ||
+							!(snapshot == watch.expected)) {
+						return refuse();
+					}
+					plan_snapshots_.emplace_back(i, snapshot);
+				}
+				continue;
+			}
+			if (watch.container_size >= 0) {
+				bool refused = false;
+				if (guard_plan::holds_retained(watch.expected, 0, kMaxDepth, refused)) plan_watches_.push_back(i);
+				if (refused) return refuse();
+				continue;
+			}
+			switch (guard_plan::classify_scalar(watch.expected)) {
+				case guard_plan::Leaf::Retained: plan_watches_.push_back(i); break;
+				case guard_plan::Leaf::Refuse: return refuse();
+				case guard_plan::Leaf::Exact: break;
+			}
+		}
+		plan_ready_ = true;
+		return true;
+	}
+
+	bool watches_match(bool use_plan) const {
+		if (use_plan && plan_ready_) {
+			for (const std::size_t i : plan_watches_) if (!watch_matches(watches_[i])) return false;
+			for (const auto &root : plan_snapshots_) if (!(root.second == watches_[root.first].expected)) return false;
+			return true;
+		}
+		for (const Watch &watch : watches_) if (!watch_matches(watch)) return false;
+		return true;
+	}
+
 	static Dictionary failure(const char *message) {
 		Dictionary out;
 		out["ok"] = false;
@@ -339,6 +403,8 @@ class WeatherGuard {
 			} else if (thermal_.get_type() != Variant::NIL) return false;
 		} else if (spatial_.get_type() != Variant::NIL || thermal_.get_type() != Variant::NIL) return false;
 		ready_ = true;
+		if (!matches(session, false)) return false;
+		build_plan(); // a refused plan keeps the full leaf walk
 		return weather_guard_matches(session);
 	}
 
@@ -357,7 +423,12 @@ public:
 		return out;
 	}
 
-	bool weather_guard_matches(Object *session) const {
+	bool weather_guard_matches(Object *session) const { return matches(session, true); }
+
+	bool plan_ready() const { return plan_ready_; }
+
+private:
+	bool matches(Object *session, bool use_plan) const {
 		if (!ready_ || !session || godot::ObjectDB::get_instance(session_id_) != session) return false;
 		Object *sim = godot::ObjectDB::get_instance(sim_id_);
 		if (!sim || !instance_matches(session->get_script(), session_script_) ||
@@ -403,8 +474,7 @@ public:
 				if (!instance_matches(thermal->get_script(), thermal_script_)) return false;
 			}
 		}
-		for (const Watch &watch : watches_) if (!watch_matches(watch)) return false;
-		return true;
+		return watches_match(use_plan);
 	}
 };
 

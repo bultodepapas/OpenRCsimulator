@@ -4,12 +4,17 @@ beyond GitHub's 14-day window). Keeps the newest 14 copies. Standard library onl
     python3 backup_archive.py <archive dir> <backup dir>
 """
 from contextlib import closing
-from datetime import datetime, timezone
 import os
 from pathlib import Path
 import sqlite3
 import sys
 import tempfile
+
+if __package__:
+    from ..host.openrc_stats_backup import backup_name, utc_day, validate_archive
+else:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
+    from tools.telemetry.deploy.host.openrc_stats_backup import backup_name, utc_day, validate_archive
 
 KEEP = 14
 
@@ -21,7 +26,8 @@ def main(archive, backups):
         return 1
     backups = Path(backups)
     backups.mkdir(parents=True, exist_ok=True)
-    target = backups / f"github-history-{datetime.now(timezone.utc):%Y-%m-%d}.sqlite3"
+    day = utc_day()
+    target = backups / backup_name(day)
     handle, tmp_name = tempfile.mkstemp(prefix=f".{target.name}.", dir=backups)
     os.close(handle)
     tmp = Path(tmp_name)
@@ -29,10 +35,11 @@ def main(archive, backups):
         with closing(sqlite3.connect(f"{source.resolve().as_uri()}?mode=ro", uri=True)) as src, \
                 closing(sqlite3.connect(tmp)) as dst:
             src.backup(dst)
-            if dst.execute("PRAGMA quick_check").fetchall() != [("ok",)]:
-                raise ValueError("backup failed SQLite integrity check")
-            if dst.execute("SELECT 1 FROM observations LIMIT 1").fetchone() is None:
-                raise ValueError("backup contains no archive observations")
+        validate_archive(tmp, max_bytes=None)
+        if utc_day() != day:
+            raise ValueError("UTC date changed during backup")
+        with tmp.open("r+b") as handle:
+            os.fsync(handle.fileno())
         tmp.replace(target)
     finally:
         tmp.unlink(missing_ok=True)

@@ -1,18 +1,25 @@
 extends Node
 ## GOD: opt-in source/debug benchmark, attached beside Startup, never a new solver.
-## OPENRC_GODTEST_CONFIG names a runner-owned manifest. No user CLI arguments are added.
+## OPENRC_GODTEST_CONFIG names a runner-owned manifest and its optional rendering experiment.
 
 const PILOT_PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop"]
 const MAX_PHASE_FRAMES := 1000000
 const MAX_EVENTS := 20000
 const MAX_TRAJECTORY := 200000
+const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
 
 var config: Dictionary = {}
+## GFX-IGPU-01: "fixed" keeps the comparison workload; "automatic" records the product recommendation it applied.
+var graphics_profile: Dictionary = {mode = "fixed"}
 var output_dir := ""
 var app: Node
 var pilot: RefCounted
 var collector: RefCounted
 var diagnostics: RefCounted
+var frame_phases: RefCounted
 var original_reader: Callable
 var original_shell_reader: Callable
 var bound_session: Node
@@ -51,6 +58,8 @@ var identity: Dictionary = {}
 var frame_report: Dictionary = {}
 var cycle := 0
 var profile_prepared := false
+var dynamic_resolution_fps := 0
+var last_dynamic_resolution: Dictionary = {}
 
 
 ## Called synchronously by Startup before it queues the headless handoff or loads Home.
@@ -59,6 +68,10 @@ func prepare_startup() -> bool:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("OPENRC_GODTEST_CONFIG")))
 	if not parsed is Dictionary: return false
 	config = parsed
+	var target: Variant = config.get("dynamic_resolution_fps", 0)
+	if typeof(target) not in [TYPE_INT, TYPE_FLOAT] or target not in DisplayPreferences.DYNAMIC_RESOLUTION_FPS_VALUES:
+		return false
+	dynamic_resolution_fps = int(target)
 	output_dir = str(config.get("output_dir", "")).replace("\\", "/").simplify_path()
 	var user_dir := OS.get_user_data_dir().replace("\\", "/").simplify_path()
 	if not output_dir.is_absolute_path() or not DirAccess.dir_exists_absolute(output_dir) or not _profile_is_owned(user_dir):
@@ -99,8 +112,10 @@ func _run() -> void:
 		if FileAccess.file_exists(output_dir.path_join(filename)):
 			printerr("GOD TEST: refusing existing artifact ", filename)
 			return
-	if config.get("schema") != "openrc-godtest-scenario-v1" or not OS.get_cmdline_user_args().is_empty():
-		_fail("normal startup requires a supported manifest and no app user arguments")
+	var expected_arguments := PackedStringArray([FlightDynamicResolution.EXPERIMENT_FLAG]) \
+		if config.has("dynamic_resolution_fps") else PackedStringArray()
+	if config.get("schema") != "openrc-godtest-scenario-v1" or OS.get_cmdline_user_args() != expected_arguments:
+		_fail("startup arguments differ from the benchmark manifest")
 		return
 	requested_phases = config.get("phases", [])
 	if requested_phases.is_empty() or requested_phases.size() > 64:
@@ -114,7 +129,8 @@ func _run() -> void:
 	var research := ProjectSettings.globalize_path("res://").trim_suffix("/").get_base_dir().path_join("research/performance/godtest")
 	var frames_script: Script = load(research.path_join("frames.gd"))
 	var diagnostic_script: Script = load("res://render/frame_diagnostics.gd")
-	if frames_script == null or diagnostic_script == null:
+	var phases_script: Script = load("res://render/frame_phases.gd")
+	if frames_script == null or diagnostic_script == null or phases_script == null:
 		_fail("benchmark source helpers unavailable")
 		return
 	collector = frames_script.new()
@@ -123,6 +139,10 @@ func _run() -> void:
 		return
 	diagnostics = diagnostic_script.new()
 	diagnostics.start(get_tree().root)
+	frame_phases = phases_script.acquire(get_tree().root) # shared with the debug bridge's stutter records
+	if frame_phases == null:
+		_fail("frame phase probe unavailable")
+		return
 	events = FileAccess.open(output_dir.path_join("events.jsonl"), FileAccess.WRITE)
 	trajectory = FileAccess.open(output_dir.path_join("trajectory.csv"), FileAccess.WRITE)
 	if events == null or trajectory == null:
@@ -133,18 +153,25 @@ func _run() -> void:
 	previous_drawn = Engine.get_frames_drawn()
 	running = true
 	identity = {engine = Engine.get_version_info(), user_dir = user_dir,
-		application_user_args = Array(OS.get_cmdline_user_args()), startup_route = "normal_startup",
+		application_user_args = Array(OS.get_cmdline_user_args()),
+		startup_route = "technical_render_experiment" if config.has("dynamic_resolution_fps") else "normal_startup",
 		cache_state = "fresh_process_os_cache_unknown", physics_hz = Engine.physics_ticks_per_second,
 		instrumentation = "frames_diagnostics_pilot_v1", physical_presentation = "not_observed",
 		profile_overrides = {first_flight_hint_seen = true, update_checks = false,
 			window_mode = str(config.get("window_mode", "windowed")), master_volume = 0.0}}
-	for key: String in ["max_fps", "vsync_mode"]:
+	for key: String in ["max_fps", "vsync_mode", "render_scale", "dynamic_resolution_fps"]:
 		if config.has(key): identity.profile_overrides[key] = config[key]
+	identity.graphics = graphics_profile.duplicate(true)
+	if config.has("dynamic_resolution_fps"):
+		identity.renderer_profile = RendererPreference.load_state().mode
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
 	_begin("startup")
 	phase.start_usec = started_usec
 	if not await _wait_home(): return
 	identity.effective_display = app.display_preferences.config.duplicate(true)
+	if dynamic_resolution_fps > 0 and not FlightDynamicResolution.supports(get_tree().root):
+		_fail("requested dynamic resolution needs completed GPU frames from the patched renderer")
+		return
 	_event("home_ready", {})
 	await get_tree().process_frame
 	_event("home_draw_observed", {drawn = Engine.get_frames_drawn()})
@@ -241,6 +268,13 @@ func _prepare_profile() -> void:
 	if FileAccess.file_exists("user://settings.cfg") or FileAccess.file_exists("user://settings.cfg.display"):
 		failure = "benchmark requires fresh run-owned settings"
 		return
+	if config.has("dynamic_resolution_fps") and config.get("graphics", "fixed") == "fixed":
+		# Explicit fixed and adaptive controls share a deliberate renderer choice.
+		# An Automatic High first-flight calibration otherwise owns the viewport before DRS.
+		var mode := "high" if RenderingServer.get_current_rendering_method() == "forward_plus" else "standard"
+		if FileAccess.file_exists(RendererPreference.OVERRIDE_PATH) or not RendererPreference.save_state({mode = mode}):
+			failure = "cannot prepare the isolated renderer choice"
+			return
 	var settings := ConfigFile.new()
 	settings.set_value("meta", "schema", 1)
 	settings.set_value("ui", "language", "en")
@@ -259,14 +293,45 @@ func _prepare_profile() -> void:
 	display.set_value("display", "window_resolution", window_resolution)
 	display.set_value("graphics", "scene_detail", str(config.get("scene_detail", "medium")))
 	display.set_value("graphics", "reconstruction", "native")
+	if config.has("render_scale"):
+		display.set_value("graphics", "render_scale", int(config.render_scale))
+	elif dynamic_resolution_fps > 0:
+		display.set_value("graphics", "render_scale", 100)
+	if config.has("dynamic_resolution_fps"):
+		display.set_value("graphics", "dynamic_resolution_fps", dynamic_resolution_fps)
 	if config.has("max_fps"): display.set_value("graphics", "max_fps", int(config.max_fps))
 	if config.has("vsync_mode"): display.set_value("graphics", "vsync_mode", str(config.vsync_mode))
 	display.set_value("camera", "view", str(config.get("camera", "pilot")))
 	display.set_value("camera", "auto_zoom", false)
 	# Silent desk runs: mute the Master bus only; streams and mixing still run.
 	display.set_value("audio", "master_volume", 0.0)
-	if display.save("user://settings.cfg.display") != OK: failure = "cannot prepare isolated display settings"
+	if display.save("user://settings.cfg.display") != OK:
+		failure = "cannot prepare isolated display settings"
+	elif str(config.get("graphics", "fixed")) == "automatic":
+		_apply_automatic_graphics("user://settings.cfg.display")
 	OS.set_environment("OPENRC_SCENE_DETAIL", str(config.get("scene_detail", "medium")))
+
+
+## GFX-IGPU-01: `graphics: automatic` adds the first-run recommendation a fresh install stores for this adapter, through
+## the product's own loader and writer. The tour keeps its window, frame pacing, camera, scene detail and muted audio.
+func _apply_automatic_graphics(path: String) -> void:
+	var adapter := RenderingServer.get_video_adapter_name()
+	var bundle := AutoGraphicsPolicy.first_run(adapter, OS.get_name(), DisplayServer.screen_get_scale(),
+		DisplayServer.screen_get_refresh_rate(), {screen = DisplayServer.screen_get_size(),
+		usable = DisplayServer.screen_get_usable_rect().size, cpu_threads = OS.get_processor_count(),
+		arm64 = OS.has_feature("arm64"), forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"})
+	var candidate := DisplayPreferences.load_from(path)
+	candidate.erase("writable")
+	candidate.erase("note")
+	var applied := {}
+	for key: String in DisplayPreferences.GPU_MANAGED_KEYS:
+		if key != "max_fps" and bundle.has(key) and not (key == "render_scale" and config.has(key)):
+			candidate[key] = bundle[key]
+			applied[key] = bundle[key]
+	if DisplayPreferences.save_to(path, candidate) != OK:
+		failure = "cannot apply the automatic graphics recommendation"
+		return
+	graphics_profile = {mode = "automatic", adapter = adapter, applied = applied}
 
 
 func _wait_frame_watch() -> bool:
@@ -292,8 +357,18 @@ func _configure_home() -> bool:
 	if not app.controllers.select_devices(-1, -1):
 		_fail("ordinary keyboard selection was refused")
 		return false
-	if not app.set_aircraft(str(config.aircraft)) or not app.set_landscape(str(config.landscape)) or not app.set_start_choice(str(config.start)):
-		_fail("Home refused aircraft, landscape or start; no fallback credited")
+	var landscape := str(config.landscape)
+	if not app.set_aircraft(str(config.aircraft)) or not app.set_landscape(landscape):
+		_fail("Home refused aircraft or landscape; no fallback credited")
+		return false
+	# Changing landscapes can rebuild the Home backdrop under the loading screen.
+	if not await _wait_home(true): return false
+	if app.landscape_id != landscape or not is_instance_valid(app.home_scene) \
+			or not app.home_scene.can_refresh_presentation(app.field_path, landscape):
+		_fail("Home did not build the requested landscape")
+		return false
+	if not app.set_start_choice(str(config.start)):
+		_fail("Home refused the requested start")
 		return false
 	var wind: Script = load("res://physics/wind_config.gd")
 	var weather_id := str(config.get("weather", "calm"))
@@ -356,7 +431,11 @@ func _load_flight(pilot_script: Script) -> bool:
 		_fail("loaded flight/model aircraft does not match the selected aircraft")
 		return false
 	identity.flight_aircraft = {requested = selected_aircraft, flight = flight_aircraft, model = model_aircraft}
-	_event("flight_ready", {tick = session.sim.tick, paused = session.sim.paused, holds = session.holds.keys()})
+	var ready := {tick = session.sim.tick, paused = session.sim.paused, holds = session.holds.keys()}
+	var loading: Dictionary = app.last_flight_loading
+	if loading.get("status") == "ready" and int(loading.get("accepted_usec", -1)) >= int(phase.start_usec):
+		ready.loading = loading
+	_event("flight_ready", ready)
 	if session.sim.paused or not session.holds.is_empty():
 		if not DisplayServer.window_is_focused(get_window().get_window_id()):
 			_fail("flight became ready paused: the app window is not focused; unlock the desktop and keep the app in front")
@@ -445,11 +524,6 @@ func _menu_phase(screen_name: String) -> void:
 			return
 		app.pause_menu.settings_button.pressed.emit()
 	else:
-		if not app.pause_menu.session_options_container.visible:
-			if not _usable_menu_button(app.pause_menu.session_options_button):
-				_end("failed", "session options are not available from pause")
-				return
-			app.pause_menu.session_options_button.pressed.emit()
 		if not _usable_menu_button(app.pause_menu.controls_button):
 			_end("failed", "controls button is not available from pause")
 			return
@@ -701,13 +775,14 @@ func _observe_window_focus() -> bool:
 	return running
 
 
-func _wait_home() -> bool:
+func _wait_home(wait_for_rebuild: bool = false) -> bool:
 	var deadline := Time.get_ticks_usec() + int(float(config.get("phase_timeout_s", 180)) * 1000000)
 	while running:
 		var candidate: Node = get_tree().root.get_node_or_null("AppRoot")
 		if candidate != null and candidate.is_node_ready() and candidate.process_mode != Node.PROCESS_MODE_DISABLED:
 			app = candidate
-			if app.home != null and app.screens.is_top("home") and app.flight == null:
+			if app.home != null and app.screens.is_top("home") and app.flight == null and not app.home_build_pending \
+					and (not wait_for_rebuild or not app._home_rebuild_queued):
 				return true
 		if Time.get_ticks_usec() > deadline:
 			_fail("Home readiness deadline reached")
@@ -799,6 +874,7 @@ func _process(delta: float) -> void:
 		paused = int(bound_session.sim.paused)
 		crashed = int(not bound_session.crash.is_empty())
 	var sample: Dictionary = diagnostics.sample()
+	sample.merge(frame_phases.split(began - wall_usec, began))
 	sample.merge({phase_index = phases.size(), cycle = cycle, sim_tick = tick, sim_time_s = sim_s,
 		paused = paused, crashed = crashed, render_frames_drawn = drawn, render_interval_draws = interval_draws,
 		render_window_drawable = int(drawable), render_window_transition = int(mode_transition), window_focused = int(get_tree().root.has_focus()),
@@ -812,6 +888,8 @@ func _process(delta: float) -> void:
 			_fail("phase frame bound reached")
 			return
 		phase_frame_count += 1
+		if phase.has("dynamic_resolution"):
+			_observe_dynamic_resolution(began)
 	if began - last_telemetry_usec >= 100000:
 		last_telemetry_usec = began
 		if is_instance_valid(bound_session) and bound_session.sim.state.size() >= 13:
@@ -844,8 +922,49 @@ func _begin(name_value: String) -> void:
 		start_drawn = Engine.get_frames_drawn(), start_undrawable = undrawable_intervals, start_focus_losses = focus_losses}
 	phase_frames.clear()
 	phase_frame_count = 0
+	if name_value in PILOT_PHASES:
+		if config.has("render_scale"):
+			phase.start_flight_3d_scaling = _flight_3d_scaling()
+		if dynamic_resolution_fps > 0:
+			phase.dynamic_resolution = []
+			last_dynamic_resolution = {}
 	_event("phase_start", {name = name_value, id = phase.id, requested = phase.requested})
 	_progress("running")
+
+
+func _flight_3d_scaling() -> Dictionary:
+	if not _same_bound_session():
+		return {}
+	var viewport := get_tree().root
+	return {bilinear = viewport.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR,
+		scale = viewport.scaling_3d_scale}
+
+
+func _observe_dynamic_resolution(now: int) -> void:
+	var status: Dictionary = get_tree().root.get_meta(FlightDynamicResolution.STATUS_META, {})
+	if status.is_empty():
+		status = {state = "awaiting_controller", target_fps = dynamic_resolution_fps}
+	if status == last_dynamic_resolution:
+		return
+	last_dynamic_resolution = status
+	var observation := {phase_id = phase.id, observed_usec = now, status = status}
+	phase.dynamic_resolution.append(observation)
+	_event("dynamic_resolution", observation)
+
+
+func _closing_dynamic_frame() -> Dictionary:
+	var viewport := get_tree().root
+	var status: Dictionary = viewport.get_meta(FlightDynamicResolution.STATUS_META, {})
+	var confirmed: Dictionary = status.get("completed_frame", {})
+	if status.get("state") != "observing" or confirmed.is_empty():
+		return {}
+	var sample: Dictionary = RenderingServer.call(FlightDynamicResolution.SAMPLE_METHOD, viewport.get_viewport_rid())
+	if sample.is_empty() or sample.get("generation") != confirmed.generation:
+		return {}
+	var input: Vector2i = sample.input_size
+	var output: Vector2i = sample.output_size
+	return {frame_id = sample.frame_id, generation = sample.generation, recorded_usec = sample.recorded_usec,
+		input_size = [input.x, input.y], output_size = [output.x, output.y]}
 
 
 func _runtime_display() -> Dictionary:
@@ -885,6 +1004,11 @@ func _end(status: String = "complete", reason: String = "") -> void:
 	phase.rendered = DisplayServer.get_name() != "headless" and Engine.get_frames_drawn() > int(phase.start_drawn) and undrawable_intervals == int(phase.start_undrawable)
 	phase.focus_losses = focus_losses - int(phase.start_focus_losses)
 	phase.runtime_display = _runtime_display()
+	if phase.has("start_flight_3d_scaling"):
+		phase.end_flight_3d_scaling = _flight_3d_scaling()
+	if phase.has("dynamic_resolution"):
+		_observe_dynamic_resolution(phase.end_usec)
+		phase.dynamic_resolution_end = _closing_dynamic_frame()
 	_event("phase_end", phase)
 	phases.append(phase.duplicate(true))
 	phase.clear()
@@ -933,13 +1057,17 @@ func _finish(success: bool) -> void:
 		if not phases.any(func(record: Dictionary) -> bool: return record.name == str(raw_name) and record.requested): coverage_complete = false
 	if collector != null:
 		frame_report = collector.seal_event(success and failure.is_empty(), "scenario_finished" if success else failure)
-		frame_report.route = "godtest-normal-startup"
+		frame_report.route = "godtest-" + str(identity.startup_route).replace("_", "-")
 		frame_report.render_progress = {drawable_intervals = drawable_intervals, undrawable_intervals = undrawable_intervals,
 			window_mode_transition_intervals = transition_undrawable_intervals, no_draw_intervals = no_draw_intervals}
 		_write_json("frametimes.json", frame_report)
 	if diagnostics != null:
 		diagnostics.stop()
 		identity.diagnostics = diagnostics.metadata()
+	if frame_phases != null:
+		identity.frame_phases = frame_phases.metadata()
+		frame_phases.get_script().release(frame_phases)
+		frame_phases = null
 	identity.actual_resolution = [get_tree().root.size.x, get_tree().root.size.y]
 	identity.final_display = _runtime_display()
 	identity.viewport_size = [get_tree().root.get_visible_rect().size.x, get_tree().root.get_visible_rect().size.y]

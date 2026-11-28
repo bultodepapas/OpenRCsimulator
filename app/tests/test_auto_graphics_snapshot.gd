@@ -109,6 +109,20 @@ func _initialize() -> void:
 		if pair[0] != pair[1]:
 			failures += 1
 			printerr("FAIL: player summary %s != %s" % [pair[0], pair[1]])
+	# GFX-IGPU-01: only recognized weak shared-memory GPUs start below full 3D resolution.
+	var scale_cases := [
+		["Mesa Intel(R) UHD Graphics 630 (CFL GT2)", Policy.LOW_GPU_RENDER_SCALE],
+		["Intel(R) UHD Graphics 630 (CML GT2)", Policy.LOW_GPU_RENDER_SCALE],
+		["NVIDIA GeForce RTX 3090", "-"],
+		["Unknown Example GPU 9000", "-"],
+	]
+	for scale_case: Array in scale_cases:
+		checks += 1
+		var first_run := Policy.first_run(str(scale_case[0]), "Linux", 1.0, 60.0, {screen = Vector2i(1920, 1080)})
+		if first_run.get("render_scale", "-") != scale_case[1]:
+			failures += 1
+			printerr("FAIL: first-run render scale for %s: %s, expected %s" % [scale_case[0],
+				first_run.get("render_scale", "-"), scale_case[1]])
 	checks += 1
 	if table.size() < 1500:
 		failures += 1

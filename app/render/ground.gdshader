@@ -269,7 +269,7 @@ void fragment() {
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
 	float d = length(to_frag);
 	vec3 v = to_frag / max(d, 1e-3);
-	if (terrain_relief_enabled && d < terrain_relief_end_m) {
+	if (!openrc_ground_simple && terrain_relief_enabled && d < terrain_relief_end_m) {
 		float distance_weight = 1.0 - smoothstep(terrain_relief_start_m, terrain_relief_end_m, d);
 		float footprint_m = max(footprint.x, footprint.y);
 		float footprint_weight = 1.0 - smoothstep(terrain_footprint_start_m, terrain_footprint_end_m, footprint_m);
@@ -289,7 +289,7 @@ void fragment() {
 	float far = smoothstep(fields_start_m, fields_full_m, dist_pilot) * (1.0 - smoothstep(fields_fade_start_m, fields_fade_end_m, dist_pilot));
 	float parcel_weight = far * parcel_strength;
 	// The parcel has no effect at zero weight; its nine-site search needs no derivatives.
-	if (parcel_weight != 0.0) {
+	if (!openrc_ground_simple && parcel_weight != 0.0) {
 		col *= mix(vec3(1.0), parcel(world_pos.xz), parcel_weight);
 	}
 	// Derivatives must be evaluated before spatially varying branches/loops (including the bounds early-out).
@@ -323,8 +323,8 @@ void fragment() {
 		}
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
 	}
-	float detail_weight = turf_weight(turf_dx, turf_dy, d);
-	float photo_weight = (rc_surface_enabled || grass_photo_enabled) ? rc_near_weight(turf_dx, turf_dy, d) : 0.0;
+	float detail_weight = openrc_ground_simple ? 0.0 : turf_weight(turf_dx, turf_dy, d);
+	float photo_weight = (rc_surface_enabled || (!openrc_ground_simple && grass_photo_enabled)) ? rc_near_weight(turf_dx, turf_dy, d) : 0.0;
 	detail_weight *= 1.0 - photo_weight;
 	if (detail_weight > 0.0) {
 		vec3 detail = turf_sample(world_pos.xz, turf_dx, turf_dy);

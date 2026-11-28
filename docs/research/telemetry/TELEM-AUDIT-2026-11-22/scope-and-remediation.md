@@ -1,0 +1,133 @@
+# Scope, prior findings and remediation
+
+Part of [TELEM-AUDIT-2026-11-22](README.md), source snapshot `7940a4081e10994f34c858c4acac3d7a1a271464`.
+
+## System boundaries
+
+Product telemetry begins with release admission and player consent, samples bounded context/performance/activity data, seals an in-memory queue and sends it through the receiver. The receiver stores short-lived raw batches, creates ID-free daily aggregates, and exposes controlled reports. Operator dashboards combine those results with independent GitHub/GA4 data. Publication and backups have separate state and trust boundaries. Local flight HUD and ground-vehicle recording use the word “telemetry” too, but are separate consumers of simulation data.
+
+```mermaid
+flowchart TD
+  A["Release admission and consent"] --> B["Client measurements and queue"]
+  B --> C["Receiver and short-lived raw data"]
+  C --> D["Daily rollup and aggregates"]
+  D --> E["Private reports and dashboard"]
+  D --> F["Approved GitHub publication"]
+  G["GitHub and GA4 collection"] --> E
+  E --> H["Independent health check"]
+  G --> I["GitHub-history backup chain"]
+  J["Simulation state and terrain"] --> K["Local HUD and recordings"]
+  J --> B
+```
+
+The diagram shows logical source boundaries, not an inspected live-host inventory. In particular, the automated backup scripts audited here concern the **GitHub-history archive**. They do not prove that receiver aggregate backups exist, and raw receiver data must not be backed up under its stated retention contract.
+
+## Reviewed source and verification matrix
+
+The [source inventory](../../../../research/telemetry/audit-2026-11-22/evidence/source-inventory.json) identifies 135 primary telemetry, test, contract, deployment and selected integration files at the baseline. It is not a count of every repository file or a claim that each surrounding subsystem received an independent full audit.
+
+| Surface | Source review performed | Executed evidence / limits |
+| --- | --- | --- |
+| Client telemetry | All nine `app/telemetry/*.gd` modules: policy/admission, notice store, contract, hardware, frame window, queue, sender, release, service | Five core suites and six targeted probes on the pinned engine |
+| Integration and consent UI | AppRoot context/lifecycle, main flight event/pause flow, telemetry settings screen, related consent/export tests and release wiring | Headless admission and actual sender/receiver bridge; no rendered consent or packaged native release check |
+| Flight event semantics | Detector, semantic event validation and statistics forwarding; revision and activity-slice behavior | Real detector revision probe; statistics/UI as supporting source |
+| Receiver | Every `openrc_telemetry` module: ingress, config, contracts, counters, rate limiting, storage, rollup, insights, report, publisher, CLI | 141 receiver tests plus the separately executed Godot bridge; two new receiver/publication counterexamples |
+| Reference and data contract | Schema/example generators, checked-in schemas/examples, reference aggregation/publication and property tests | 128 reference tests; both generators' `--check` passed |
+| Operator tooling | Dashboard, snapshot, GA4 collector, GitHub archive, release metrics and analytics history | 100 operations/analytics tests; three new Python counterexamples |
+| Deployment design | CT/host units, firewall sample, health checker, archive backup/export/pull, private GitHub synchronization and runbooks | Calendar check and local backup validation; no service installation, live firewall/proxy test or off-site restore |
+| CI and release gates | Telemetry contracts/health workflows and their relation to main release CI | Static review, not a new GitHub Actions/full CI acceptance run |
+| Local HUD | Overlay snapshot, telemetry calculations, panel/flight-data display and terrain producer; ground plot and consumers | Source trace for TA22-H01; no rendered flight/plot or target-hardware claim |
+| Local ground recording | Recording entry point, session channels, bounded capture, reset/replay/exit guards, file output and error cleanup | TA22-L01 source trace; separate from TELEM network consent and sender; no native ground simulation/export execution |
+
+Unrelated debug traces, performance-capture tools and the physics engine as a whole were followed only where they supplied telemetry context. This audit does not replace the existing physics, rendering, test-pool or website-wide audits.
+
+## Prior-audit reconciliation
+
+The historical reports are [19 November](../TELEM-AUDIT-2026-11-19/README.md) and [21 November](../TELEM-AUDIT-2026-11-21/README.md). Their live observations must retain their dates and source identities.
+
+| Earlier observation | State at this baseline | Treatment here |
+| --- | --- | --- |
+| No active receiver/runtime at an early research snapshot | Later reports record rollout/configuration progress; the deployed state was not re-inspected today | Do not repeat the old inactive-state conclusion as current fact |
+| Small-cell overlap could overstate a disclosure floor | [`insights.py:197–231`](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/insights.py#L197-L231) now computes a conservative per-day union lower bound | Earlier defect addressed in source; retain its regression tests |
+| Rolled, suppressed and missing observation coverage needed distinction | Current dashboard has distinct day states; the machine health path still removes actionable warnings | TA22-O01 is the remaining, reproduced propagation defect, not a claim that all coverage work is missing |
+| Busy WAL checkpoint handling needed retry | [`cli.py:68–84`](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/cli.py#L68-L84) retries an unsuccessful purge/checkpoint after the retry delay | Do not repeat “no retry”; all-copy deletion and operator visibility still need qualification |
+| UTC/four-hour observation boundaries required qualification | Rotation still occurs on event append | TA22-C02 adds a pinned-engine counterexample to the open boundary issue |
+| Failed decline persistence on an unwritable location | Current process stops and surfaces the save error, but a readable prior grant can survive removal/replacement failure | Reproduced residual risk, consistent with the documented best-effort limitation; outside the new defect count |
+
+## Residual risks and unverified conditions
+
+### Revocation persistence under filesystem failure
+
+The consent probe observed `on → off`, a nonzero save error, a remaining readable `enabled` grant and `on` in the next service instance. The source and current consent plan already describe best-effort persistence when the filesystem prevents both removal and replacement. See the [client report](client-and-hud.md). A durable revocation guarantee requires an explicit design decision; the audit does not imply such a guarantee is possible when every durable write fails. At minimum, the failure messaging and source comments should accurately distinguish current-process stopping from next-launch behavior.
+
+### Logical retention is not proof of deletion from every copy
+
+[`status_report`](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/services/telemetry/openrc_telemetry/cli.py#L123-L139) derives `retention_ok` from logical raw rows. A retry after a busy checkpoint is valuable, but that field does not attest to WAL truncation, a live reader's snapshot, filesystem copies, proxy logs, VM snapshots, backups or stopped dashboard artifacts. The source README already limits the claim. Verify those surfaces with a dated deletion drill and expose a checkpoint backlog; no current all-copy retention violation was established here.
+
+### CI and deployment evidence remain separate
+
+The [telemetry-contracts workflow](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/.github/workflows/telemetry-contracts.yml#L1-L19) describes itself as nonrequired, filters receiver/reference/tool changes, and does not trigger on an `app/telemetry`-only change. Client tests run through the app suite. Its [receiver step](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/.github/workflows/telemetry-contracts.yml#L46-L69) does not configure the Godot bridge and the requirements do not install the optional cryptography dependency used by the GA4 RS256 test. This audit installed that dependency and exercised both paths locally. Repository branch-protection settings were not queried, so a workflow comment is not proof of the deployed protection rules.
+
+The [daily health workflow](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/.github/workflows/telemetry-health.yml#L19-L38) succeeds without probing when the repository endpoint variable is empty. Previously shipped binaries can still contain their embedded endpoint. Current variable values and delivery of GitHub failure notifications were not checked. Its public `/healthz` test is liveness, not proof of ingestion, aggregation, deletion, release allowlist alignment or backup readiness.
+
+Ground-session backend reporting also needs a qualification decision: the AppRoot projection reads `stage_backend_status()` when present, while the ground session has native/reference internal identities without that same method. This is a dimension-coverage gap; it does not prove which backend is used by a shipped build. Full Linux/Windows/macOS package admission, locale/HiDPI behavior and user-facing consent remain release acceptance work.
+
+### Measurement interpretation remains bounded
+
+Opt-in ephemeral sessions are not unique people or an unbiased sample of all players. A public anonymous measurement endpoint cannot establish that every allowed payload represents a genuine player. The existing session caps, bounded enums and suppression floors should remain intact. Short sessions, quit before a slice/flush, intentional in-memory dropping, and gaps excluded from frame histograms constrain interpretation. These are documented limits rather than newly discovered implementation bugs. Refer to the baseline [data contract](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/plans/telemetry/data-contract.md) and [architecture](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/docs/plans/telemetry/architecture.md).
+
+## Repair sequence and acceptance
+
+The table records the audit's proposed order, ownership and acceptance criteria. Repair evidence from `main` follows below.
+
+| Order | Work item | Suggested owner | Evidence required to close |
+| --- | --- | --- | --- |
+| 1 | TA22-R01: align admitted numeric types with rollup | Receiver/data contract | Complete admitted-payload-to-rollup property test; decimal/exponent and stored-body cases; healthy multi-release day remains correct |
+| 1 | TA22-O01: preserve actionable alerts in machine health | DevOps/dashboard | Overdue-rollup and near-retention fixtures fail/degrade the monitor appropriately; actual notification rehearsal; quiet/suppressed cases stay correctly classified |
+| 2 | TA22-C01/C02: explicit measurement/context/epoch boundaries | Client telemetry | Old-context partial window, correct new warmup, UTC and four-hour split before observation, no migration of counters |
+| 2 | TA22-C03/C04: accident semantics and actual pause eligibility | Flight integration + telemetry | Same accident revision counted once across slices; second accident counted; focused crash/manual pause and resume exercised through AppRoot |
+| 2 | TA22-C05: end-to-end age/deadline policy | Client queue/UI | 599/600/601-second retry/cancel/late-callback cases; pre-seal age and capacity eviction; notice and detailed retention table agree |
+| 3 | TA22-R02: exclusive durable publisher claim | Receiver/publication | Two connections/processes yield at most one remote create; ambiguous outcome remains conservative; ledger cannot be overwritten by a stale owner |
+| 3 | TA22-O02: private credential persistence | Analytics/DevOps | Atomic mode-0600 file creation/replacement on POSIX; traversable parent/ACL threat model checked; existing-file behavior and Windows policy explicit |
+| 3 | TA22-O03/O04: restorable, correctly ordered archive backup | DevOps | Actual archive reader/identity/schema validation, disposable restore, explicit UTC scheduling/dependency chain, retained known-good copy |
+| 4 | TA22-H01: authoritative terrain in the HUD | Flight/HUD | Flat/sloped/enabled-track samples agree with contact terrain; AGL and warning transitions checked without changing physics |
+| 4 | TA22-L01: clean up failed local metadata export | Ground recording | Injected failure after temporary JSON creation leaves no owned orphan; samples remain available; retry and existing-output preservation verified |
+| 4 | Residual consent, deletion and release qualification | Product + client + DevOps | Explicit persistence decision, all-copy deletion drill, packaged OS admission and current deployment evidence |
+
+For each repair, add a regression that asserts the expected behavior and record the repair commit and verification here. Run the affected suites and the Godot-to-receiver bridge when a contract or wire behavior changes. Qualify native packages and deployed operations through their own acceptance gates.
+
+## Verification on main — 2026-11-22
+
+Both source inventories matched all 137 distinct Git blobs at the audited commit. Before repairs, 136 matched integrated `main` at `2bfb4dc7b`. The only difference was the link to this audit in the telemetry plan.
+
+| Finding | Repair and verification | Open acceptance |
+| --- | --- | --- |
+| TA22-R01 | Validated integer metrics stay integral in GPU, vehicle and private insight aggregation. The regression covers stored and newly ingested integer, decimal and exponent forms across two releases. It also checks aggregate equality and original-body retry/conflict behavior. The receiver suite passed 142 tests and the reference suite passed 128. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/25c3736d3badd71e45eae5dcf140c93d9419fbf4) | Loopback Godot bridge and deployed recovery rehearsal |
+| TA22-O01 | Machine health and the independent checker now include warning severity and recovery details. Regression checks cover all six receiver warnings, a recoverable rollup, quiet and suppressed cases, and separation from upstream failures. All 103 operator tests passed on Windows. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/0f859b5f358f4807877ec8bd7fe8009bc3856d3f) | Deploy matching dashboard and checker code and confirm notification delivery before the rollup cutoff |
+| TA22-C01 | Cadence splits at raw display, input, applied graphics and activity boundaries. Partial windows retain the original context and new windows restart warmup. The checked service and AppRoot paths passed, including a same-vehicle restart and a Settings preview during opt-in. | Rendered checks across vehicle families and display configurations |
+| TA22-C02 | The first frame, error or accepted flight event after a UTC day change or the four-hour limit retires the old epoch. Unsealed observations are discarded. Sealed batches retain their bytes and deadline, and expired completions are fenced. Checked service tests passed, including early signals and reentrant consent changes. | Full application CI. |
+| TA22-C03 | Crash revisions and duplicate events count once per detector generation, including across slices and resets. The checked service regression passed. | The earlier Windows request remains queued behind host admission. |
+| TA22-C04 | AppRoot uses each installed activity's pause owner to stop cadence and active-time accumulation. The checked macOS AppRoot flow passed a focused hold and resume, a terminal fixed-wing crash and the flight reset boundary. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/1c766b963) | Rendered ordinary-release crash path and per-family runtime checks |
+| TA22-C05 | The ten-minute clock starts at observation, including for open windows, activity slices, error counters and numbered events. Checked macOS queue and service tests passed at the deadline, including late callbacks, out-of-order expiry and active eviction. The AppRoot preview dropped expired data. All 129 reference tests passed, including the retry at 599 seconds. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/fbb08dc5422d90706f56a66b7de784e8d24ef6d0) | OS suspension and live receiver timing |
+| TA22-R02 | The publisher claims the first create through a committed SQLite revision. Separate processes sent one POST. Competing initial inserts converge, refused attempts use a new revision, and lost or conflicting replies preserve uncertainty or sticky review. The legacy ledger upgrades in place. All 31 publisher checks passed. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/8d5d42f223830dd1138ba29eeb8a52a5272efc65) | Stop older publishers before rollout and rehearse with a private destination |
+| TA22-O02 | GA4 login creates a private temporary file and replaces the target atomically. POSIX mode 0600 under umask 022 and a protected current-account DACL on NTFS passed creation and replacement checks. The exFAT fixture was refused before writing and the injected replacement failure preserved the old file. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/66f6ffa1f438a64d151e6a95c28135c67a2e71f6) | Check the permissions of any credentials already on operator machines |
+| TA22-O03 | The container, exporter and pull validate schema and archive identity, then open the copy with the dashboard reader. A disposable restore preserved the model and timestamps and accepted another collector observation. Wrong identity, incomplete schema and unreadable data retained the known-good copy. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/439a2380c0870333ff565f5f343c7b19b821df9a) | Install the matching reader bundle and record a second-host restore receipt |
+| TA22-O04 | All three daily stages use UTC. The real systemd calendar parser confirmed 02:40, 02:55 and 03:15 UTC under UTC and America/Bogota. A disposable delayed-backup run recovered both transfer stages and preserved the previous copy. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/439a2380c0870333ff565f5f343c7b19b821df9a) | Verify the installed timers and retry behavior on the deployment |
+| TA22-H01 | The production flight overlay snapshot uses the session's composed terrain for AGL. Its Linux regression covers flat and sloped fields, invalid tables, multiple enabled-circuit points and the LOW and STALL transitions with the circuit enabled and disabled. All 94 circuit checks passed. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/9f36ea2e0d24307eefcf683d9b8432199925f7be) | Rendered flight check at the applicable display target |
+| TA22-L01 | Ground recording reserves staging per basename, verifies written metadata and cleans its files after a failed export. Injected partial metadata and cleanup failures preserved in-memory samples. Same-name and fresh-name retries succeeded and existing outputs, directories and dangling links retained ownership. All 177 recording/session checks and 22 exit transaction checks passed. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/70ee7e647d0a54c73a48fd60e934ad3091d19e8f) | Native Windows and rendered garage confirmation |
+
+The AppRoot regression passed again after integrating the graphics and Settings changes already on main. The verified macOS ARM64 job was `855aedaf086f4b0e9ec084b4e908c4de` on source `16580db0506b`. The Linux CI shards containing the AppRoot, queue, service, responsive modal and companion manifest checks passed on the isolated repair candidate. [Candidate CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45057631518).
+
+The hosted telemetry workflow passed schemas, examples, reference, receiver, operator and container-smoke checks for both repairs. [Telemetry contracts run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440057).
+
+The operational repair checks on Ubuntu covered 112 operator cases (109 run, three skipped), 129 reference cases and 149 receiver cases (148 run, the Godot bridge skipped). The Windows GA4 and backup run covered 40 cases (38 run, two platform-specific skips). Generated schemas and examples matched their sources.
+
+The HUD and recording candidate passed 536 source-bound headless checks on Linux with pinned Godot. The run included observer wind and flight-statistics terrain alongside the circuit and ground export and exit checks. [Checked candidate](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45068309779).
+
+The exporter lives in a solver-fingerprinted directory. Nine retained fixed-wing tapes produced byte-identical CSVs before renewing the companion solver pin, and 49 rebind tool checks passed. [Solver rebind receipt](../../ai-companions/AFC-02/rebinds/2026-11-22-339c29ec-to-7e404f01.json).
+
+### Client implementation dependencies
+
+Ground uses its scene's accepted reset boundary. Air activities use their existing recorder reset signals to split cadence. Activity summaries still require an observed rewind or a change of session before ending the previous activity. AppRoot clears telemetry-specific presentation state when collection closes and initializes it from the effective Settings preview on admission. The renewed companion behavior manifest passed its checked admission suite. [Manifest and profile validation](../../../../app/ai/companions/profile_loader.gd).
+
+The integrated client checks used pinned Godot on an Apple Silicon Mac in headless mode. The AppRoot and companion checks are in pool request `ta22-c01-c02-app-final-20261122`. The service and queue checks share that same frozen source and use jobs `03b71824a57d401e8b62f6bf32b4ca5c` and `2ca50785e3c34172a9c1289a4d09a2c8`. Linux admission reported insufficient space before dispatch.

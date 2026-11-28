@@ -254,8 +254,8 @@ def coverage_model(snapshot, rows):
     return releases, cells, day_state
 
 
-def alerts(snapshot, rows, day_state):
-    """[(level, title, detail)], most severe first."""
+def receiver_alerts(snapshot, rows, day_state):
+    """Receiver conditions shared by the dashboard and its independent monitor."""
     status, now = snapshot["status"], snapshot["generated_unix"]
     out = []
     today = rows[-1]["detail"] if rows else {}
@@ -296,6 +296,13 @@ def alerts(snapshot, rows, day_state):
         out.append(("info", "Waiting for first batch", f"no accepted batch in the last {len(rows)} days"))
     elif seen[0] > 86400:
         out.append(("warning", "No batch in 24 h", f"last accepted batch {seen[1]}"))
+    return out
+
+
+def alerts(snapshot, rows, day_state):
+    """[(level, title, detail)], most severe first."""
+    out = receiver_alerts(snapshot, rows, day_state)
+    now = snapshot["generated_unix"]
     model = snapshot.get("github")
     if model is not None:
         note, attempt = model.get("collect_note"), model.get("last_attempt")
@@ -2189,21 +2196,24 @@ def health(snapshot, now, receiver_max_age_s, github_note, problems, *, no_ga4=F
     elif sources["website"]["status"] == "ok" and (website.get("errors") or website.get("missing")
                                                     or website.get("report_quality")):
         sources["website"]["status"] = "partial"
-    issues = []
+    receiver_problems = []
     if snapshot and not problems:
         rows = ingest_rows(snapshot)
         _, _, day_state = coverage_model(snapshot, rows)
-        issues = [title for level, title, _ in alerts(snapshot, rows, day_state) if level == "critical"]
+        receiver_problems = [{"level": level, "title": title, "detail": detail}
+                             for level, title, detail in receiver_alerts(snapshot, rows, day_state)
+                             if level in ("critical", "warning")]
     if receiver_age is None or receiver_age < -300 or problems:
         status = "error"
     elif receiver_age > receiver_max_age_s:
         status = "stale"
-    elif issues or github_note or any(s["status"] not in ("ok", "disabled") for s in sources.values()):
+    elif receiver_problems or github_note or any(s["status"] not in ("ok", "disabled") for s in sources.values()):
         status = "degraded"
     else:
         status = "ok"
     return {"status": status, "built_utc": utc_stamp(now), "receiver_age_s": receiver_age,
-            "receiver_issues": issues, "sources": sources, "github_error": bool(github_note),
+            "receiver_issues": [alert["title"] for alert in receiver_problems], "receiver_alerts": receiver_problems,
+            "sources": sources, "github_error": bool(github_note),
             "website_error": bool(website.get("error") or website.get("refresh_error")),
             "website_connected": bool(website), "problems": problems}
 

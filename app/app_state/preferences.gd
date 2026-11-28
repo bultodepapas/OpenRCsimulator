@@ -50,6 +50,7 @@ const DEFAULTS := {
 	# and the RC blimp's skin. Older builds ignore them; `aircraft` always stays an aircraft.
 	home_vehicle = "",
 	airship_skin = AirshipCatalog.DEFAULT_SKIN,
+	airship_start_choice = "runway",
 	landscape = Landscapes.DEFAULT_ID,
 	start_choice = "runway",
 	# UI-32: additive [flight] keys, no schema change. Rotorcraft keep their own start ("runway" is the pad), so
@@ -149,6 +150,9 @@ static func _load_locked(path: String) -> Dictionary:
 	var airship_skin: Variant = cfg.get_value("flight", "airship_skin", DEFAULTS.airship_skin)
 	if typeof(airship_skin) == TYPE_STRING and AirshipCatalog.contains(airship_skin):
 		prefs.airship_skin = airship_skin
+	var airship_start: Variant = cfg.get_value("flight", "airship_start_choice", DEFAULTS.airship_start_choice)
+	if typeof(airship_start) == TYPE_STRING and airship_start in ["runway", "airborne"]:
+		prefs.airship_start_choice = airship_start
 	var landscape: Variant = cfg.get_value("flight", "landscape", DEFAULTS.landscape)
 	if typeof(landscape) == TYPE_STRING and landscape in Landscapes.ids():
 		prefs.landscape = landscape
@@ -294,6 +298,7 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 	if typeof(prefs.get("latency_marker", DEFAULTS.latency_marker)) != TYPE_BOOL:
 		return ERR_INVALID_DATA
 	if not prefs.get("rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice) in ["runway", "airborne"] \
+			or not prefs.get("airship_start_choice", DEFAULTS.airship_start_choice) in ["runway", "airborne"] \
 			or not prefs.get("battery_mode", DEFAULTS.battery_mode) in Catalog.BATTERY_MODES \
 			or not float(prefs.get("fuel_fill", DEFAULTS.fuel_fill)) in FUEL_FILLS:
 		return ERR_INVALID_DATA
@@ -362,6 +367,7 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 	cfg.set_value("flight", "landscape", prefs.get("landscape", DEFAULTS.landscape))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "rotorcraft_start_choice", prefs.get("rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice))
+	cfg.set_value("flight", "airship_start_choice", prefs.get("airship_start_choice", DEFAULTS.airship_start_choice))
 	cfg.set_value("flight", "battery_mode", prefs.get("battery_mode", DEFAULTS.battery_mode))
 	cfg.set_value("flight", "fuel_fill", float(prefs.get("fuel_fill", DEFAULTS.fuel_fill)))
 	cfg.set_value("flight", "time_of_day", time_of_day)

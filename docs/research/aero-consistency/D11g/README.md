@@ -246,3 +246,45 @@ candidate and the separate physics-source and version mutations, then passed
 again after restoration. The trim, unrounded and rounded derivatives,
 sensitivity rows and generated provenance matched in all six reports.
 The [receipt](2026-11-22-release-v033-qualification.json) binds those reports.
+
+### 2026-11-23 v0.3.4 release renewal
+
+GitHub Actions reconstructed `v0.3.3` and the v0.3.4 candidate on Linux with
+the pinned Godot 4.8 beta2. Of 152 qualified inputs, only `app/project.godot`
+changed. It gained the low-detail ground shader setting and advanced to version
+`0.3.4`. The normalized aggregate is
+`087df168cefe80a55126fb571281f586f8c7189baedaf22dcd3fdfd5c6114430`.
+
+Both guards passed on the baseline and rejected the initial candidate's three
+historical-source leaves. Both passed after renewal, rejected separate
+physics-source and version mutations, and passed again after restoration.
+The trim, unrounded and rounded derivatives, sensitivity rows and generated
+provenance matched across all six reports. The [receipt](2026-11-23-release-v034-qualification.json) binds
+the reports and the checked run.
+
+### 2026-11-23 v0.3.5 release renewal
+
+The hosted Linux check reconstructed the v0.3.4 tag and the v0.3.5 candidate with
+pinned Godot 4.8 beta2. The only change to the 152 qualified inputs was the
+project version. Both guards passed after renewal and rejected separate source
+and version mutations. The derivatives, trim, sensitivity and provenance
+matched across all six reports. The [receipt](2026-11-23-release-v035-qualification.json) records the
+run and aggregate `ad4b79e1b0b3e868c2da770b09ba6e98284abe4c011a047092bf041ea54058b0`.
+
+### 2026-11-28 v0.4.0 release renewal
+
+A local Windows check with pinned Godot 4.8 beta2 reconstructed the `v0.3.5` tag
+(`0b4a3998b`) and the v0.4.0 candidate. Three of the 152 qualified inputs
+changed:
+- `app/physics/glow/flight.gd` (the NK-6b and NK-6d native glow step hooks);
+- `app/physics/multirotor/controlled_plant.gd` (FPV obstacle contact);
+- `app/project.godot` (the PipelineCacheGate autoload and version `0.4.0`).
+
+The baseline reproduced the pinned aggregate exactly and passed both guards. The
+candidate was refused before renewal. After renewal it passed, rejected separate
+physics-source and version mutations, and passed again once restored. The trim,
+unrounded and rounded derivatives, sensitivity rows and generated provenance
+matched across the baseline, candidate and renewed reports. The
+[receipt](2026-11-28-release-v040-qualification.json) records the reports, logs
+and aggregate `ad4fc92685eff46a3d22de3ba8fbdde26e56881db0d73c44e6a734cba4443bbe`.
+This renewal ran on Windows only; the earlier hosted Linux check was not repeated.

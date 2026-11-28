@@ -154,10 +154,15 @@ def load(directory):
     """GitHub model from the archive, or None when there is no archive. Version 1 archives (before the
     community tables) load with empty traffic extras until their next collection upgrades them."""
     path = Path(directory) / github_history.DATABASE_NAME
-    if not path.is_file():
-        return None
-    connection = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True, timeout=2)
+    return load_path(path) if path.is_file() else None
+
+
+def load_path(path, *, immutable=False):
+    """Read either the live archive or an immutable, closed backup file."""
+    flags = "mode=ro&immutable=1" if immutable else "mode=ro"
+    connection = sqlite3.connect(f"{Path(path).resolve().as_uri()}?{flags}", uri=True, timeout=2)
     try:
+        connection.execute("PRAGMA trusted_schema = OFF")
         connection.execute("BEGIN")  # Read one archive generation if collection commits concurrently.
         version = connection.execute("PRAGMA user_version").fetchone()[0]
         if version not in github_history.READABLE_VERSIONS:

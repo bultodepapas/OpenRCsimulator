@@ -13605,8 +13605,8 @@ msgstr "取消操作"
 msgid "Cancelled."
 msgstr "已取消。"
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "选择 Phoenix 场景文件或文件夹，或打开已安装的预览。"
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "选择 Phoenix RC 模拟器的场景文件或文件夹，或打开已安装的预览。"
 
 msgid "Choose a scenery file"
 msgstr "选择场景文件"
@@ -13644,8 +13644,8 @@ msgstr "看向面板 %d"
 msgid "No Phoenix scenery descriptors were found."
 msgstr "未找到 Phoenix 场景描述符。"
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "此来源中未找到 Phoenix 场景。"
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "此来源中未找到 Phoenix RC 场景。"
 
 msgid "Opening preview…"
 msgstr "正在打开预览…"
@@ -13791,5 +13791,203 @@ msgstr "请选择支持跑道起飞的飞机。"
 msgid "Preparing panorama"
 msgstr "正在准备全景"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "已启用基础画质。你可以在“设置”>“图形”中提高画质。"
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "已启用基础画质。你可以在“设置”>“图形”中提高画质，并在“设置”>“显示”中提高 3D 渲染比例。"
+
+msgid "3D render scale"
+msgstr "3D 渲染比例"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "以较低分辨率渲染 3D 视图并放大显示。较低的值可提高集成显卡的帧率，但画面会更柔和。"
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR、DLSS 和 MetalFX 使用各自的渲染比例。切换回原生重建后会恢复你的选择。"
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "正在为这台电脑准备图形。只有首次启动需要这么长时间。"
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "正在为这台电脑上的首次飞行准备图形。之后的飞行会加载得更快。"
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "为了让模拟器保持流畅，我们为您的 GPU 选用了负载较低的图形设置。画面细节从最低级别开始。您可以在“设置 > 图形”中逐项提高画质，并观察模拟器是否仍然流畅。"
+
+msgid "Tree detail"
+msgstr "树木细节"
+
+msgid "Ground detail"
+msgstr "地面细节"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "只改变树木的绘制方式。飞行场地及其物理障碍物保持原样。"
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "简化草地着色，保留跑道标记和地形参照。"
+
+msgid "Simple"
+msgstr "简易"
+
+msgid "THIS FLIGHT"
+msgstr "本次飞行"
+
+msgid "Radio & controls"
+msgstr "遥控器与控制"
+
+msgid "Radio & controls · %s"
+msgstr "遥控器与控制 · %s"
+
+msgid "not connected"
+msgstr "未连接"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "设置、校准并测试你的遥控器或手柄。"
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "时间 %s · 高度 %s · 空速 %s"
+
+msgid "Back to the start with the same setup."
+msgstr "以相同设置回到起点。"
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "结束本次飞行并打开飞机目录。"
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "暂停：更换飞机、返回主界面或调整本次飞行。"
+
+msgid "Reference flight model."
+msgstr "参考飞行模型。"
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "实验性：物理特性为估算值，尚未与真实飞机对比。"
+
+msgid "Model only; it cannot fly yet."
+msgstr "仅有模型，暂时无法飞行。"
+
+msgid "About"
+msgstr "关于"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "俱乐部机场提供 1–3 架实验性的 Ugly Stik 飞行伙伴，它们会绕场飞行。默认关闭；建议从一架开始。可在“主界面 → 更多飞行详情”或暂停菜单中打开“飞行伙伴”。"
+
+msgid "FLIGHT COMPANIONS"
+msgstr "飞行伙伴"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "连接遥控器或手柄"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. 通过 USB 或蓝牙连接。EdgeTX 遥控器请选择 USB Joystick (Classic) 并关闭射频。"
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. 将其选为“飞行控制器”。"
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. 点击“设置此设备…”，完成摇杆模式、校准、实时测试和主要开关。"
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "从旧版本恢复配置文件，或导出诊断信息用于错误报告。"
+
+msgid "HANGAR"
+msgstr "机库"
+
+msgid "Airplanes"
+msgstr "固定翼"
+
+msgid "Helicopters"
+msgstr "直升机"
+
+msgid "Drones"
+msgstr "无人机"
+
+msgid "Airships"
+msgstr "飞艇"
+
+msgid "Cars & trucks"
+msgstr "车辆"
+
+msgid "Search by name"
+msgstr "按名称搜索"
+
+msgid "%d of %d"
+msgstr "%d / %d"
+
+msgid "%d vehicles"
+msgstr "%d 个载具"
+
+msgid "No vehicle matches this search."
+msgstr "没有符合搜索条件的载具。"
+
+msgid "Hangar"
+msgstr "机库"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "按下切换到下一个风况预设。精确数值、湍流和空气在“条件”中设置。"
+
+msgid "Applies to the next flight"
+msgstr "用于下一次飞行"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "平均风速。小型教练机在约 6 m/s 以上会很吃力。"
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "风的来向：090° 表示来自东方。"
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "每次阵风高于平均风速的额外速度。"
+
+msgid "Rising or sinking air inside each gust."
+msgstr "每次阵风中的上升或下沉气流。"
+
+msgid "How long each gust lasts."
+msgstr "每次阵风持续多久。"
+
+msgid "Time from the start of one gust to the next."
+msgstr "从一次阵风开始到下一次开始的时间。"
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "选择预设或修改数值。“应用”会保留到下一次飞行，“取消”会放弃更改。"
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "输入风速和风向即可在跑道上查看。"
+
+msgid "Calm: no steady wind on the runway."
+msgstr "无风：跑道上没有持续风。"
+
+msgid "headwind %s m/s"
+msgstr "逆风 %s m/s"
+
+msgid "tailwind %s m/s"
+msgstr "顺风 %s m/s"
+
+msgid "crosswind %s m/s from the right"
+msgstr "右侧侧风 %s m/s"
+
+msgid "crosswind %s m/s from the left"
+msgstr "左侧侧风 %s m/s"
+
+msgid "no crosswind"
+msgstr "无侧风"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "来自 %03.0f°，%s m/s。"
+
+msgid "Runway start: %s, %s."
+msgstr "跑道起飞：%s，%s。"
+
+msgid "Time & sky"
+msgstr "时间与天空"
+
+msgid "Ahead"
+msgstr "向前"
+
+msgid "Behind"
+msgstr "向后"
+
+msgid "Left"
+msgstr "向左"
+
+msgid "Sky"
+msgstr "天空"
+
+msgid "Ground"
+msgstr "地面"

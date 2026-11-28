@@ -120,6 +120,23 @@ const RUNWAY_LIVE_CONFIG_V6 := {
 		"ideal": {"on": "9c6e96d55c289ac8c6d9d6e34c200da033cc3fd1820831ee61f63318afc2d47f",
 			"off": "c999b8a213e7187ebdc9566b9b233d494805a1f70424ae3c48a676ec826d9a12"}},
 }
+# Linux beta2 reference observations after 3cd6efa05 adds FPV tree descriptors (`fpv_tree`) to the collision proxies.
+# The 460-check typed comparison retains exact row, refusal, frame, setup, outcome, ownership and checkpoint
+# configuration (index 2); only live index 7 (collision-world digest) changes. V6 values remain in the retained
+# baseline capture (docs/research/native-kernel/NK-3/fleet-collision-world-2026-11-25).
+const RUNWAY_LIVE_CONFIG_V7 := {
+	"p51d-mustang-120": {"ideal": {
+		"on": "4fcedb6ffc4f3c877db0da523663fc6fc1683569c74a997798eeff8647921727",
+		"off": "030d000da896c49fb3726ff05e33300f14cb35d65e27d38b8f0d590bd9906b2b"}},
+	"sebart-avanti-s-a200-p100rx": {"ideal": {
+		"on": "2b4db3296a4b61e620915d8accffc67b5ce5d351cc0b640a8e7fe6488a1ea142",
+		"off": "b9d12633ee3f08d78badbf710ae2db1237f27a4bc6aa28e151f7a93c1430b505"}},
+	"turbo-lumber-evolution": {
+		"pack": {"on": "4282583fd4dc68ba23b6bdbdf8ef6a0f22d3f2cd372e34c58b9c55ea2a5b2649",
+			"off": "8bbeba0fe5ded080d6e8a9bded215ec85fe8e7c01a297468ab3ce6c02e5182ba"},
+		"ideal": {"on": "9563ffcbd3edb29ca1e0fc1fa31630d8bb72abea0095e63246de5830cc1a23ba",
+			"off": "94e966e9552db24bf483c260d8959f05a40db7ae6e3f9434866c65eb1a78d161"}},
+}
 const TRIM_START_REFUSAL := "reset failed: trim: reference-speed trim already requires more than the requested throttle"
 const TRIM_START_BOUNDARIES := {
 	"skywalker-x8": {weather = "hot-high", batteries = {"ideal": {default_battery = false,
@@ -899,7 +916,7 @@ static func _fleet_start_proof_valid(row: Dictionary, proof: Variant, requested:
 	var live_hex: Variant = proof.get("live_config_bytes_hex")
 	var expected_live: String = spec.live_config_sha256["on" if row.soft_hull else "off"]
 	if runway:
-		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V6.get(row.aircraft, {})
+		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V7.get(row.aircraft, {})
 		var battery_pins: Dictionary = aircraft_pins.get(row.battery, {})
 		expected_live = str(battery_pins.get("on" if row.soft_hull else "off", ""))
 	if typeof(live_hex) != TYPE_STRING or live_hex.is_empty() or live_hex.length() > 1048576 \

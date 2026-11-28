@@ -141,6 +141,27 @@ func _run() -> void:
 	check("fourfold unsaturated contact power doubles amplitude",absf(gains[6]/gains[5]-2.0)<1e-12)
 	check("saturated reference and larger power retain maximum envelope",gains[8]==0.28 and gains[9]==gains[8])
 	check("power sweep preserves bounded pool and no queued replay",a.voice_count()==8 and a.hull_scrape_diagnostics().queued==0)
+	# F1 presentation cadence: contact-free ticks may be skipped when `since_tick` proves an unbroken interval.
+	a.reset();a.observe_accepted(packet(0,-1.0))
+	var cadenced := packet(4); cadenced.since_tick = 0
+	check("since_tick continuity across skipped contact-free ticks queues the first loaded sample",a.observe_accepted(cadenced) and a.hull_scrape_diagnostics().queued==1)
+	a.reset();a.observe_accepted(packet(0,-1.0))
+	cadenced = packet(4); cadenced.since_tick = 2
+	check("since_tick naming another tick primes like a gap",a.observe_accepted(cadenced) and a.hull_scrape_diagnostics().queued==0)
+	a.reset();a.observe_accepted(packet(0,-1.0))
+	cadenced = packet(4); cadenced.since_tick = -1
+	check("unknown since_tick keeps the strict next-tick rule",a.observe_accepted(cadenced) and a.hull_scrape_diagnostics().queued==0)
+	a.reset();a.observe_accepted(packet(0,-1.0))
+	cadenced = packet(1); cadenced.since_tick = -1
+	check("explicit unknown since_tick on the next tick stays continuous",a.observe_accepted(cadenced) and a.hull_scrape_diagnostics().queued==1)
+	for bad_since in [1.5,"0",-2,null]:
+		a.reset();a.observe_accepted(packet(0,-1.0))
+		cadenced = packet(1); cadenced.since_tick = bad_since
+		check("malformed since_tick rejected",not a.observe_accepted(cadenced) and a.hull_scrape_diagnostics().queued==0)
+	a.reset();a.observe_accepted(packet(0,-1.0))
+	cadenced = packet(4); cadenced.since_tick = 0; cadenced.extra = true
+	check("since_tick does not widen the snapshot shape",not a.observe_accepted(cadenced))
+	a.reset()
 	a.set_accepted_hull_observation(false)
 	check("legacy mode restored without changing voice/bus allocation",not a.accepted_hull_observation_enabled() and a.voice_count()==8)
 	var bus_name := a.output_bus()

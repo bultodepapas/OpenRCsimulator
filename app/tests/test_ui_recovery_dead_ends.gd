@@ -230,7 +230,7 @@ func _controller_routes() -> void:
 	app.open_pause()
 	await ui.settle()
 	_check("lost controller: Controller settings is visible without opening a group", app.pause_menu != null
-		and app.pause_menu.controller_recovery_button.visible and app.pause_menu._open_group == "")
+		and app.pause_menu.controller_recovery_button.is_visible_in_tree()) # UI-40a: Pause has no disclosure groups
 	_check("lost controller: focus is on the recovery action", ui.focus_name() == "ControllerRecovery", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

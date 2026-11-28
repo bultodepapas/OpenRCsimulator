@@ -241,6 +241,23 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(json.loads(Path(result["pool_status"]).read_text()), status)
         self.assertNotIn("ok", result)
 
+    def test_admission_nonlaunch_keeps_legacy_and_current_diagnostics_verifiable(self):
+        status = {"state": "FINISHED", "outcome": "INFRA_FAILED", "cleanup": "CONFIRMED", "evidence": "INCOMPLETE",
+                  "stage": "admission", "reason_code": "EXTERNAL_SIMULATOR", "launch": "NOT_CREATED",
+                  "nonlaunch": "CONFIRMED", "pool_host": "local", "job": self.identifier, "payload": self.status["payload"]}
+        # An older coordinator computed the original binding and fallback label.
+        with patch.object(collection, "_admission_nonlaunch", return_value=False):
+            original = self.collect(status)
+        self.assertEqual(original["diagnostic_stage"], "execution")
+        current = self.collect(status)
+        self.assertEqual(current["diagnostic_stage"], "admission")
+        self.assertIs(current["diagnostic_only"], True)
+        self.assertNotEqual(current["pool_status"], original["pool_status"])
+        for result in (original, current):
+            self.assertEqual(self.pool.verify_collection(self.identifier, result), result)
+        uncertain = self.collect({**status, "nonlaunch": "UNCONFIRMED"})
+        self.assertEqual(uncertain["diagnostic_stage"], "execution")
+
     def test_remote_partial_stage_returns_diagnostic_and_cannot_establish_pass(self):
         self.pool.hosts.append({"id": "remote", "ssh": "fixture-no-network", "python": "python3"})
         write_pool_receipt(self.pool, self.identifier, host="remote")

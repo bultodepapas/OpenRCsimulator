@@ -6,7 +6,7 @@ Set OPENRC_DASHBOARD_DEMO=<dir> to keep the rendered demo page and snapshot for 
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -486,6 +486,47 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(result["sources"]["website"]["status"], "partial")
         self.assertIn("Raw row past 48 h", result["receiver_issues"])
 
+    def test_receiver_warnings_reach_independent_monitor(self):
+        stamp = dashboard.utc_stamp(NOW)
+        now = datetime.fromtimestamp(NOW, timezone.utc)
+        kinds = ("release assets", "traffic", "clones", "community", "referrals", "star history")
+        baseline = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        baseline["github"] = {"source_utc": dict.fromkeys(kinds, stamp), "collected_utc": stamp}
+        baseline["website"] = {"collected_utc": stamp}
+        day = "2027-01-19"
+
+        for title, detail, status, counters in (
+            (f"Rollup overdue for {day}", "within 13.5 h", {}, {"accepted": 8}),
+            ("Raw retention near 48 h", "check the purge loop", {"oldest_raw_age_h": 47}, {}),
+            ("Releases suspended", RELEASE, {"suspended_releases": [RELEASE]}, {}),
+            ("Unapproved release batches", "OPENRC_TELEMETRY_RELEASES", {}, {"rejected:unapproved_release": 4}),
+            ("Rate limiting", "OPENRC_TELEMETRY_TRUST_PROXY", {}, {"rate_limited": 3}),
+            ("No batch in 24 h", "last accepted batch", {"last_accepted_age_s": 86401}, {}),
+        ):
+            with self.subTest(title=title):
+                data = {**baseline, "status": {**baseline["status"], **status}, "ingest": [
+                    {**entry, "counts": counters} if entry["day"] == day else entry for entry in baseline["ingest"]]}
+                report = dashboard.health(data, NOW, 7200, None, [])
+                self.assertEqual(report["status"], "degraded")
+                self.assertEqual(report["receiver_issues"], [title])
+                alert, = report["receiver_alerts"]
+                self.assertEqual((alert["level"], alert["title"]), ("warning", title))
+                failure = check_dashboard_health.check(report, now, 7200)
+                self.assertIn(title, failure)
+                self.assertIn(detail, failure)
+
+        quiet = dashboard.health(baseline, NOW, 7200, None, [])
+        self.assertEqual(quiet["receiver_alerts"], [])  # waiting for the first batch is informational
+        self.assertIsNone(check_dashboard_health.check(quiet, now, 7200))
+        rolled = {**baseline, "rollup_days": {day: "complete"}, "coverage": [
+            {"day": day, "release_id": RELEASE, "table": table, "status": "suppressed"}
+            for table in ("gpu", "vehicle", "cells")]}
+        self.assertIsNone(check_dashboard_health.check(dashboard.health(rolled, NOW, 7200, None, []), now, 7200))
+        baseline["website"]["error"] = "test upstream error"
+        upstream_failure = dashboard.health(baseline, NOW, 7200, None, [])
+        self.assertEqual(upstream_failure["receiver_alerts"], [])
+        self.assertIn("website=error", check_dashboard_health.check(upstream_failure, now, 7200))
+
     def test_partial_rollup_is_visible_in_legacy_snapshot(self):
         data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
         data.pop("rollup_days", None)
@@ -562,14 +603,14 @@ class DashboardCase(unittest.TestCase):
         self.assertTrue(downloads.release_inventory_changed(inventory, model))
 
     def test_external_monitor_rejects_frozen_ok_and_source_failure(self):
-        from datetime import datetime, timezone
-
         now = datetime.fromtimestamp(NOW, timezone.utc)
         stamp = dashboard.utc_stamp(NOW)
         report = {"built_utc": stamp, "status": "ok", "receiver_age_s": 300,
                   "sources": {key: {"status": "ok", "observed_utc": stamp}
                               for key in check_dashboard_health.SOURCE_MAX_AGE}}
         self.assertIsNone(check_dashboard_health.check(report, now, 7200))
+        legacy = {**report, "receiver_issues": ["Incomplete rollup"]}
+        self.assertIn("Incomplete rollup", check_dashboard_health.check(legacy, now, 7200))
         for difference in (-7201, 301):
             bad = {**report, "built_utc": dashboard.utc_stamp(NOW + difference)}
             self.assertIn("age", check_dashboard_health.check(bad, now, 7200))
@@ -613,7 +654,7 @@ class DashboardCase(unittest.TestCase):
             self.assertEqual(backup_archive.main(archive, copies), 0)
         (saved,) = copies.glob("*.sqlite3")
         saved.rename(copies / downloads.github_history.DATABASE_NAME)
-        self.assertEqual(downloads.load(copies)["collected_utc"], downloads.load(archive)["collected_utc"])
+        self.assertEqual(downloads.load(copies), downloads.load(archive))
 
     def test_build_refuses_directories_inside_the_repository(self):
         with self.assertRaises(SystemExit):

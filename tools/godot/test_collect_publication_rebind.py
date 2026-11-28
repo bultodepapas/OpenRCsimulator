@@ -19,7 +19,7 @@ spec.loader.exec_module(collector)
 
 class ReconstructionTest(unittest.TestCase):
     def test_canonical_prior_is_exactly_the_qualified_fixture(self):
-        receipt = json.loads((ROOT / "docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-21.json").read_text())
+        receipt = json.loads((ROOT / "docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-25-nk5d.json").read_text())
         self.assertEqual(collector.BASELINE, receipt["candidate_commit"])
         self.assertEqual(collector.PRIOR_FIXTURE_SHA256, receipt["candidate_fixture_sha256"])
 

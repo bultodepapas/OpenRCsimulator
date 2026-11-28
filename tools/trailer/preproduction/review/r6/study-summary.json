@@ -1,0 +1,95 @@
+{
+  "kind": "synthetic typography study; no game footage",
+  "watermark": "TYPOGRAPHY STUDY · NO GAME FOOTAGE",
+  "plan": "docs/plans/trailer-v2/title-plan-r6.json",
+  "plan_sha256": "60d04beb19a0eb0bc29e47ba83c364bc97e100bee424f00a545f1cca2bc3ba30",
+  "renderer_sha256": "bc64709c45355f141531cfce269f0f3738de26886df52ab8733a813ffa779f04",
+  "generator_sha256": "9db6ed59b46e4f303d93efcdc9d4899b57e671260997dea4f272d3703d00ec28",
+  "dependencies": {
+    "title_assets": {
+      "assets": {
+        "BarlowCondensed-Regular.ttf": {
+          "sha256": "583cec5da3b84bc4dc7c9c72e2a565c94d34e431518b19d7e250b7830ad5f996",
+          "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/BarlowCondensed-Regular.ttf"
+        },
+        "BarlowCondensed-SemiBold.ttf": {
+          "sha256": "7b619d14bc2327509a9ef32b0890f709626f7ecc9ff61191c2a4314c5499d2d9",
+          "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/BarlowCondensed-SemiBold.ttf"
+        },
+        "OFL.txt": {
+          "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+          "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/OFL.txt"
+        }
+      },
+      "provenance_sha256": "bab002c76a45f5a5d9bda67326a2506d14d91c13133d45f38fcf77d39d789299",
+      "pillow": "13.0.0",
+      "freetype": "2.14.3",
+      "raqm": "0.11.0"
+    },
+    "ffmpeg": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+  },
+  "source_windows": [
+    {
+      "global_start_frame": 855,
+      "frames": 195
+    },
+    {
+      "global_start_frame": 3060,
+      "frames": 120
+    },
+    {
+      "global_start_frame": 3615,
+      "frames": 270
+    },
+    {
+      "global_start_frame": 7500,
+      "frames": 120
+    },
+    {
+      "global_start_frame": 7620,
+      "frames": 120
+    },
+    {
+      "global_start_frame": 8700,
+      "frames": 300
+    }
+  ],
+  "study_frames": 1125,
+  "fps": 60,
+  "trial_basis_binding": "unresolved",
+  "publication_ready": false,
+  "production_blockers": [
+    "Establish and bind the accepted trial's estimated or donor basis.",
+    "Recheck website availability before publication; browser, download, installation and runtime flows remain unverified.",
+    "Accept real footage, graphics placement, actual indicators and full-motion readability."
+  ],
+  "ffprobe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1920,
+        "height": 1080,
+        "avg_frame_rate": "60/1",
+        "duration": "18.750000",
+        "nb_frames": "1125"
+      }
+    ],
+    "format": {
+      "duration": "18.750000"
+    }
+  },
+  "outputs": {
+    "mp4": {
+      "file": "typography-study.mp4",
+      "sha256": "cb363d96f7961c9c54fd99dfb85abd16a28b43e8f83b292714331d02d3f908ff"
+    },
+    "contact": {
+      "file": "typography-contact.jpg",
+      "sha256": "b818a1069cf569883c38c2c29200a15e1ed3c59097e8c483868ec14a368df00b"
+    }
+  },
+  "shot_plan_sha256": "c169acfadf944f8df2b532c037ea411a5ba664eda48585397f600cc43eb4f06b"
+}

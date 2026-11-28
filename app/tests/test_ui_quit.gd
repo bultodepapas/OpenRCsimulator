@@ -406,6 +406,7 @@ func _check_workshop_suspended_recording() -> void:
 	_check("trial Pause uses Resume trial and one direct Return to Workshop",
 		trial_pause.continue_button.text == "Resume trial" and trial_pause.restart_button.text == "Restart trial"
 		and trial_pause.end_button.get_parent() != trial_pause.exit_options_container
+		and trial_pause.end_button.get_index() == trial_pause.restart_button.get_index() + 1
 		and not trial_pause.workshop_button.visible and return_actions == 1,
 		"return actions=%d" % return_actions)
 	_check("trial flight hint matches Escape-to-Pause and the visible return action",

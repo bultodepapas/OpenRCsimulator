@@ -7,13 +7,107 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from analysis import report
+from analysis import _dynamic_resolution_problem, report
 from godtest import _case_success, _tour_success
 from runner import write_json
 from test_godtest import artifacts, replace_stream
 
 
 class RenderingEvidenceTests(unittest.TestCase):
+    def test_dynamic_resolution_uses_a_pixel_safe_floor_on_retina(self):
+        output = [3456, 2234]
+        scale = 1676.5 / 2234
+        frame = {"frame_id": 4, "generation": 3, "recorded_usec": 3,
+                 "input_size": [2593, 1676], "output_size": output}
+        status = {"target_fps": 30, "configured_scale": scale, "state": "observing",
+                  "completed_frame": frame}
+        phase = {"id": "recover", "start_usec": 1, "end_usec": 100,
+                 "dynamic_resolution": [{"phase_id": "recover", "observed_usec": 5, "status": status}],
+                 "dynamic_resolution_end": dict(frame, frame_id=6, recorded_usec=99)}
+        manifest = {"dynamic_resolution_fps": 30, "resolution": output, "render_scale": 85}
+        self.assertEqual(_dynamic_resolution_problem(phase, manifest), "")
+        frame["input_size"] = [2592, 1675]
+        status["configured_scale"] = 0.75
+        self.assertEqual(_dynamic_resolution_problem(phase, manifest),
+                         "completed pixels do not match an allowed scale")
+
+    def test_dynamic_resolution_requires_a_confirmed_frame_and_allows_holding_the_ceiling(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "run"
+            artifacts(path)
+            for name in ("manifest.requested.json", "manifest.resolved.json"):
+                manifest = json.loads((path / name).read_text())
+                manifest.update(dynamic_resolution_fps=60, render_scale=100, phases=["recover"])
+                write_json(path / name, manifest)
+            runtime = json.loads((path / "runtime.json").read_text())
+            runtime["identity"]["effective_display"] = {"dynamic_resolution_fps": 60, "render_scale": 100}
+            phase = runtime["phases"][0]
+            phase.update(name="recover", id="0-0-recover", start_usec=1, end_usec=100)
+            frame = {"frame_id": 4, "generation": 3, "recorded_usec": 3,
+                     "input_size": [1920, 1080], "output_size": [1920, 1080]}
+            phase["dynamic_resolution_end"] = dict(frame, frame_id=6, recorded_usec=99)
+            for status, eligible in (
+                ({"state": "observing", "completed_frame": frame}, True),
+                ({"state": "observing"}, False),
+                ({"state": "observing", "completed_frame": dict(frame, input_size=[1632, 918])}, False),
+                ({"state": "fixed", "reason": "gpu_feedback_expired"}, False),
+            ):
+                with self.subTest(status=status):
+                    phase["dynamic_resolution"] = [{"phase_id": phase["id"], "observed_usec": 5,
+                                                     "status": {"target_fps": 60, "configured_scale": 1.0, **status}}]
+                    write_json(path / "runtime.json", runtime)
+                    result = report(path, write=False)
+                    self.assertEqual(result["data"] == "valid", eligible, result["issues"])
+                    if not eligible:
+                        self.assertIn("dynamic resolution not verified", " ".join(result["issues"]))
+            eligible_status = {"target_fps": 60, "configured_scale": 1.0, "state": "observing", "completed_frame": frame}
+            phase["dynamic_resolution"] = [{"phase_id": phase["id"], "observed_usec": 5, "status": eligible_status}]
+            for closing in (None, dict(frame, recorded_usec=0), dict(frame, generation=2)):
+                phase["dynamic_resolution_end"] = closing
+                write_json(path / "runtime.json", runtime)
+                self.assertIn("dynamic resolution not verified", " ".join(report(path, write=False)["issues"]))
+            phase["dynamic_resolution_end"] = dict(frame, frame_id=6, recorded_usec=99)
+            waiting = {"phase_id": phase["id"], "observed_usec": 2,
+                       "status": {"state": "awaiting_controller", "target_fps": 60}}
+            phase["dynamic_resolution"].insert(0, waiting)
+            write_json(path / "runtime.json", runtime)
+            self.assertEqual(report(path, write=False)["data"], "valid")
+            phase["dynamic_resolution"].append(dict(waiting, observed_usec=70))
+            write_json(path / "runtime.json", runtime)
+            self.assertIn("dynamic resolution not verified", " ".join(report(path, write=False)["issues"]))
+            phase["dynamic_resolution"].pop()
+            phase["dynamic_resolution"][1]["observed_usec"] = 110_000
+            phase["end_usec"] = 160_000
+            phase["dynamic_resolution_end"] = dict(frame, frame_id=6, recorded_usec=159_999)
+            write_json(path / "runtime.json", runtime)
+            self.assertIn("controller activation did not cover", " ".join(report(path, write=False)["issues"]))
+
+    def test_explicit_render_scale_requires_matching_bilinear_receipts_at_both_boundaries(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "run"
+            artifacts(path)
+            for name in ("manifest.requested.json", "manifest.resolved.json"):
+                manifest = json.loads((path / name).read_text())
+                manifest.update(render_scale=67, phases=["recover"])
+                write_json(path / name, manifest)
+            runtime = json.loads((path / "runtime.json").read_text())
+            phase = runtime["phases"][0]
+            phase.update(name="recover", id="0-0-recover")
+            phase["start_flight_3d_scaling"] = {"bilinear": True, "scale": 0.6700000166893005}
+            for receipt, eligible in (
+                (phase["start_flight_3d_scaling"], True),
+                (None, False),
+                ({"bilinear": True, "scale": 1.0}, False),
+                ({"bilinear": False, "scale": 0.67}, False),
+            ):
+                with self.subTest(receipt=receipt):
+                    phase["end_flight_3d_scaling"] = receipt
+                    write_json(path / "runtime.json", runtime)
+                    result = report(path, write=False)
+                    self.assertEqual(result["data"] == "valid", eligible, result["issues"])
+                    if not eligible:
+                        self.assertIn("requested bilinear render scale not verified", " ".join(result["issues"]))
+
     def test_missing_false_or_non_boolean_runtime_receipt_fails_closed(self):
         for observed in (None, False, 1, "true"):
             with self.subTest(observed=observed), tempfile.TemporaryDirectory() as temporary:

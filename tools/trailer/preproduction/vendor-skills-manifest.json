@@ -1,0 +1,75 @@
+{
+  "schema": "openrc-trailer-v2-vendored-skills-v1",
+  "researched_on": "2026-11-21",
+  "source_repository": "https://github.com/Benitoow/cinema-skills",
+  "source_commit": "b3d96caaf90729f086ce8bfa96654f40fd98e4e5",
+  "license": "MIT",
+  "author": "Benjamin Leleu",
+  "distribution": "One copy of each SKILL.md and its MIT LICENSE in tools/trailer/skills. The source branch carried identical .agents and .claude copies.",
+  "license_blob_sha": "b6511b06e1658152d11abd0f305355e4f244781c",
+  "skills": [
+    {
+      "name": "shot-list",
+      "upstream_path": "skills/shot-list/SKILL.md",
+      "upstream_blob_sha": "cda95fe902cbedf42df3a8671638d5e31b270886",
+      "copies": [
+        "tools/trailer/skills/shot-list/SKILL.md"
+      ],
+      "licenses": [
+        "tools/trailer/skills/shot-list/LICENSE"
+      ]
+    },
+    {
+      "name": "scene-breakdown",
+      "upstream_path": "skills/scene-breakdown/SKILL.md",
+      "upstream_blob_sha": "1992079a9989426ddf2941c6def94196432fb8de",
+      "copies": [
+        "tools/trailer/skills/scene-breakdown/SKILL.md"
+      ],
+      "licenses": [
+        "tools/trailer/skills/scene-breakdown/LICENSE"
+      ]
+    },
+    {
+      "name": "color-script",
+      "upstream_path": "skills/color-script/SKILL.md",
+      "upstream_blob_sha": "1a400841a05d82a0a7f7508c88b266ea66fc7e44",
+      "copies": [
+        "tools/trailer/skills/color-script/SKILL.md"
+      ],
+      "licenses": [
+        "tools/trailer/skills/color-script/LICENSE"
+      ]
+    },
+    {
+      "name": "cut-list",
+      "upstream_path": "skills/cut-list/SKILL.md",
+      "upstream_blob_sha": "d4940552b8cc7fba8d0ac3be1aee79653541dd7d",
+      "copies": [
+        "tools/trailer/skills/cut-list/SKILL.md"
+      ],
+      "licenses": [
+        "tools/trailer/skills/cut-list/LICENSE"
+      ]
+    },
+    {
+      "name": "export-checklist",
+      "upstream_path": "skills/export-checklist/SKILL.md",
+      "upstream_blob_sha": "fca73c50c62d8663f86fb9a8e73b94741c1e5b3b",
+      "copies": [
+        "tools/trailer/skills/export-checklist/SKILL.md"
+      ],
+      "licenses": [
+        "tools/trailer/skills/export-checklist/LICENSE"
+      ]
+    }
+  ],
+  "new_openrc_original_skills": [
+    "openrc-trailer-director",
+    "openrc-trailer-continuity",
+    "openrc-trailer-ai-previs",
+    "openrc-trailer-edit-review"
+  ],
+  "external_packages_installed": false,
+  "media_generated": false
+}

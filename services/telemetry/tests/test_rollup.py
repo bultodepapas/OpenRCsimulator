@@ -1,13 +1,20 @@
 import hashlib
+import json
+import re
 import unittest
+
+from starlette.testclient import TestClient
 
 from openrc_telemetry.cli import main
 from openrc_telemetry.contract import ContractError, load_contracts
+from openrc_telemetry.ingress import create_app
+from openrc_telemetry.report import validate_vehicle_rows
 from openrc_telemetry.rollup import (aggregate_daily_gpu, check_eligible, eligibility_window, run_rollup,
                                      utc_iso)
 from openrc_telemetry.storage import AggStore, RawStore, StorageUnavailable
 
-from .support import (RELEASE, SCHEMA_DIR, TempDir, activity_event, batch, encode, perf_event, unix)
+from .support import (RELEASE, SCHEMA_DIR, FakeClock, TempDir, activity_event, batch, encode, make_config,
+                      perf_event, unix)
 
 DAY = "2027-01-14"           # Thursday, ISO week 2027-W02
 START = unix("2027-01-14T00:00:00Z")
@@ -155,6 +162,48 @@ class GpuTests(RollupCase):
 
 
 class AtomicRollupTests(RollupCase):
+    def test_integral_numeric_forms_produce_identical_daily_cells(self):
+        other = "v0.2.8"
+        releases = frozenset({RELEASE, other})
+        clock = FakeClock(START + 3600)
+        app = create_app(make_config(self.dir, releases=releases), raw=self.raw, aggregates=self.agg, clock=clock)
+        events = [perf_event(1, gaps=1), activity_event(2),
+                  {"name": "error_count", "seq": 3, "category": "simulation_fault", "count": 2}]
+        decimal_events = [
+            {key: float(value) if type(value) is int else value for key, value in event.items()}
+            for event in events
+        ]
+        decimal_events[0]["interval_histogram"] = [float(value) for value in events[0]["interval_histogram"]]
+        # Existing raw rows are read through the same aggregation path as new arrivals.
+        self.put(batch(100, release=other, events=decimal_events))
+        headers = {"content-type": "application/json"}
+        with TestClient(app) as client:
+            for number in range(20):
+                plain = encode(batch(number + 1, events=events))
+                self.assertEqual(client.post("/v1/batches", content=plain, headers=headers).status_code, 202)
+                if number == 0:
+                    continue
+                decimal = encode(batch(number + 100, release=other, events=decimal_events))
+                alternate = decimal if number % 2 else re.sub(rb"(?<=[:\[,])(\d+)\.0(?=[,}\]])", rb"\1e0", decimal)
+                self.assertEqual(client.post("/v1/batches", content=alternate, headers=headers).status_code, 202)
+                if number == 2:
+                    self.assertNotEqual(alternate, decimal)
+                    self.assertEqual(client.post("/v1/batches", content=alternate, headers=headers).status_code, 202)
+                    self.assertEqual(client.post("/v1/batches", content=decimal, headers=headers).status_code, 409)
+                    self.assertIn((DAY, alternate), self.raw.records_for_day(DAY))
+
+        self.roll(releases=releases)
+        self.assertEqual(self.agg.rollup_commits(), {DAY: 2})
+        for table in ("gpu", "vehicle"):
+            self.assertEqual(self.table(table, other), self.table(table))
+            self.assertEqual(self.table(table, other)[0], "ready")
+        validate_vehicle_rows(contracts, self.table("vehicle", other)[1])
+        actual_cells = self.agg.get_cells(DAY, other)
+        self.assertTrue({"flight_gpu", "usage_vehicle", "usage_backend", "errors"} <= {row[0] for row in actual_cells})
+        self.assertEqual(actual_cells, self.agg.get_cells(DAY, RELEASE))
+        for _, _, _, metrics in actual_cells:
+            self.assertTrue(all(type(value) is int for value in json.loads(metrics).values()))
+
     def test_failure_in_second_release_preserves_prior_committed_day(self):
         self.sessions(19, 1)
         self.roll()

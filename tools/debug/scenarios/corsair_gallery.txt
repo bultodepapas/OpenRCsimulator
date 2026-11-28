@@ -17,10 +17,11 @@ press text="Change skin"
 press text="Carbon 12"
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_id == 'carbon' and home_scene.airplane.livery == 'carbon'"
+# UI-40c: the try-on panel stays open; choosing the paint already on the model requests nothing.
 eval expr="home_scene.set_meta('gallery_generation', home_scene._preview_generation)"
-press text="Change skin"
 press text="Carbon 12"
 assert expr="not home_scene.preview_pending"
 assert expr="home_scene._preview_generation == home_scene.get_meta('gallery_generation')"
+close
 call node=AppRoot method=set_aircraft args=["jensen-das-ugly-stik-60"]
 wait until="not home_scene.preview_pending" timeout_s=30

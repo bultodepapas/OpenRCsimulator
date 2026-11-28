@@ -731,12 +731,19 @@ static func project_stop(values: PackedFloat64Array,index: int,owner: Node) -> P
 ## SF-04: the accepted result is {state, events}: the bounded rotor-stop and tank-exhaustion boundaries, then
 ## a `glow_stopped` lifecycle transition with its reason when a running engine stops within the tick.
 static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative: Callable,first: PackedFloat64Array,owner: Node) -> Variant:
-	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	if combined.size()<SIZE+RB.SIZE:
 		return PackedFloat64Array([NAN])
 	# Only committed transitions are observed; rejected RK/root trials never
 	# publish counters. Discard this local ledger if any later part of the tick fails.
 	var transitions: Array[Dictionary]=[]
+	var resource_events: Array=_recording_events(owner,transitions)
+	var bounded: Dictionary=ResourceStep.advance(combined,time_s,dt,derivative,first,resource_events)
+	if not bounded.ok: return PackedFloat64Array([NAN])
+	return finish(combined,time_s,dt,owner,bounded,transitions)
+
+## The resource events whose committed transitions append {before, after, time_s} to `transitions`.
+## NK-6d: the native kernel integrates with these same events (FlightSession.native_glow_step_plan).
+static func _recording_events(owner: Node, transitions: Array[Dictionary]) -> Array:
 	var resource_events: Array=_resource_events(owner)
 	for event: Dictionary in resource_events:
 		var transition: Callable=event.transition
@@ -746,8 +753,13 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 			if result.get("ok",false):
 				transitions.append({before=connected,after=result.state.duplicate(),time_s=at})
 			return result
-	var bounded: Dictionary=ResourceStep.advance(combined,time_s,dt,derivative,first,resource_events)
-	if not bounded.ok: return PackedFloat64Array([NAN])
+	return resource_events
+
+## The accepted half of step(): lifecycle acceptance, counters, fuel stops and published events of the bounded
+## {state, events} integration. NK-6d: the native kernel calls it after its own integration of the same events.
+static func finish(combined: PackedFloat64Array,time_s: float,dt: float,owner: Node,bounded: Dictionary,
+		transitions: Array[Dictionary]) -> Variant:
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	var values: PackedFloat64Array=bounded.state.slice(RB.SIZE)
 	var before: Dictionary=unpack(combined.slice(RB.SIZE),install)
 	var was_running: bool=bool(before.running)
@@ -759,7 +771,7 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 		# changing live packed state before the whole simulation tick is accepted.
 		before=Life.cut(before).state
 		candidate=Life.cut(candidate).state
-	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
+	var endpoint: Dictionary=_firing_sample(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
 	if not endpoint.ok: return PackedFloat64Array([NAN])
 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
 	var accepted: Dictionary
@@ -812,6 +824,13 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 		events.append({"type":"glow_stopped","reason":stop_reason,"time_s":stopped_time})
 	return {"state":out,"events":events}
 
+## NK-6b: step() and _count_segment read only `ok` and `firing_fraction` of point(). A session's native glow stage
+## answers that fraction from the same point evaluation inside the tick it guards; otherwise point() runs.
+static func _firing_sample(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	var fraction: float=owner.native_glow_firing(body,values,time_s) if owner.has_method("native_glow_firing") else NAN
+	if is_finite(fraction): return {ok=true,firing_fraction=fraction}
+	return point(owner,body,values,time_s)
+
 ## Each completed opportunity belongs to its closing (start, end] source-mode
 ## interval, including a fuel-stop tie. Use that interval's endpoint fraction,
 ## preserving the mean-cycle convention; do not project/wrap intermediate states.
@@ -826,7 +845,7 @@ static func _count_segment(owner: Node, start: PackedFloat64Array, end: PackedFl
 	var probability: float=0.0
 	if start[RB.SIZE+7]==1.0 and int(start[RB.SIZE+SOURCE_MODE_INDEX])!=MODE_STARVED \
 			and owner.engine_running and not _injected_cut(owner):
-		var sample: Dictionary=endpoint if not endpoint.is_empty() else point(owner,
+		var sample: Dictionary=endpoint if not endpoint.is_empty() else _firing_sample(owner,
 			end.slice(0,RB.SIZE),end.slice(RB.SIZE),end_time)
 		if not sample.get("ok",false): return false
 		probability=float(sample.firing_fraction)

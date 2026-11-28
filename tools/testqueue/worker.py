@@ -24,6 +24,8 @@ from .presets import scheduling, validate
 from .store import StaleTransition, Store
 
 
+# Presets whose adapter clones Git history from the submitted live checkout.
+HISTORY_PRESETS = frozenset({"suite", "ci", "godtest", "capture", "aircraft-screenshot"})
 _SCHEDULER_INTERVAL = 0.1
 _SCHEDULER_MAX_BACKOFF = 5.0
 _SCHEDULER_STALE_SECONDS = 30.0
@@ -512,7 +514,11 @@ class Worker:
         if target not in {platform.system().lower(), "any-qualified"}:
             raise ValueError("UNSUPPORTED_PLATFORM: no qualified worker for " + str(target))
         source = Path(request["source"]).resolve()
-        if not (source / "app/project.godot").is_file() or not (source / "tools/testqueue/adapter.py").is_file():
+        checkout = (source / "app/project.godot").is_file() and (source / "tools/testqueue/adapter.py").is_file()
+        # Only history presets clone the live checkout (adapter.prepare_history).
+        # The others execute the materialized snapshot, so a disposable worktree
+        # may be gone by dispatch; it repeatedly blocked pool batches (2026-11-25).
+        if preset in HISTORY_PRESETS and not checkout:
             raise ValueError("source must be an OpenRC checkout with the admitted adapter")
         # Resolve a caller-supplied immutable snapshot before acceptance. A duplicate
         # submission must resolve to these same bytes, not resnapshot a changing tree.
@@ -522,6 +528,8 @@ class Worker:
         if manifest.get("ok") is not True:
             raise ValueError("snapshot verification failed: " + str(manifest))
         receipt = manifest["manifest"]
+        if not checkout and not {"app/project.godot", "tools/testqueue/adapter.py"}.issubset(receipt.get("files") or {}):
+            raise ValueError("snapshot must be an OpenRC checkout with the admitted adapter")
         for key in ("source_digest", "manifest_digest"):
             if key in expected_digests and manifest.get(key) != expected_digests[key]:
                 raise ValueError("SNAPSHOT_MISMATCH: " + key + " differs from the accepted request")
@@ -560,12 +568,53 @@ class Worker:
         # Job Object is named by attempt and remains queryable while it has members.
         from .processes import confirm_stopped
         identity = status.get("process")
-        if not identity or not confirm_stopped(identity):
+        stopped = bool(identity and confirm_stopped(identity))
+        nonlaunch = not stopped and self._restarted_before_launch(status)
+        if not stopped and not nonlaunch:
             raise ValueError("cleanup cannot be proved; resource remains quarantined")
         data = {**status["attempts"][-1]["data"], "cleanup": "CONFIRMED", "outcome": "INFRA_FAILED",
                 "evidence": "INCOMPLETE", "finished": time.time(), "reconciled": True}
+        if nonlaunch:
+            data.update(launch="NOT_CREATED", nonlaunch="CONFIRMED", reconciliation="interrupted_before_launch_fence")
         self.store.update(job, status["attempts"][-1]["id"], "FINISHED", data)
         return self.store.get(job)
+
+    def _restarted_before_launch(self, status: dict) -> bool:
+        """Recover only a Windows preparation interrupted before the launch fence."""
+        if (platform.system() != "Windows" or not self.draining or status["reason"] != "SUPERVISOR_RESTART: reconcile required"
+                or self.active or self.contexts or self._closing or self._unresolved_attempts
+                or self._pending_unknown or self._pending_nonlaunch):
+            return False
+        with self._journal_lock:
+            if self._pending_journal:
+                return False
+        if self.store.db.execute("SELECT 1 FROM attempts WHERE state IN ('DISPATCHING','RUNNING','CLEANING') LIMIT 1").fetchone():
+            return False
+        attempt = status["attempts"][-1]
+        data = attempt["data"]
+        if (set(data) - {"process", "host", "scheduling"} or data.get("host") != self.host_id
+                or not self.store.only_dispatched(status["id"], attempt["id"])):
+            return False
+        from .processes import host_identity
+        from .snapshots import _check_no_links
+        directory = self.root / "attempts" / attempt["id"]
+        try:
+            if data.get("process") != host_identity():
+                return False
+            _check_no_links(directory / "source")
+            _check_no_links(directory / "manifest.json")
+            # The adapter request, profile and temporary directory precede gate
+            # creation. Keep older/incomplete evidence quarantined if any exist.
+            manifest_path = directory / "manifest.json"
+            if ({entry.name for entry in directory.iterdir()} != {"source", "manifest.json"}
+                    or not (directory / "source").is_dir() or not manifest_path.is_file()):
+                return False
+            receipt = json.loads(manifest_path.read_text(encoding="utf-8"))
+            expected = status["payload"]["manifest"]
+            return all(key in expected and receipt.get(key) == expected[key]
+                       for key in ("source_digest", "manifest_digest"))
+        except (OSError, ValueError, RuntimeError):
+            return False
 
     def _scheduler_health(self):
         # A heartbeat is a completed successful scheduler pass, not a promise
@@ -996,10 +1045,13 @@ class Worker:
             write_json(directory / "request.json", payload)
             command = [sys.executable, str(source / "tools/testqueue/adapter.py"), str(directory)]
             process = OwnedProcess(command, cwd=source, env=env, log=directory / "worker.log")
+            admission_deadline = None
             while True:
+                wait_seconds = _SCHEDULER_INTERVAL
                 with self.lock:
                     if self.store.get(job)["canceled"]:
-                        data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
+                        data.update(cleanup="CONFIRMED", outcome="CANCELED", launch="NOT_CREATED",
+                                    nonlaunch="CONFIRMED", finished=time.time())
                         self.store.update(job, attempt, "FINISHED", data)
                         return
                     # A teardown still in progress may yet fail; wait for its proof.
@@ -1012,11 +1064,29 @@ class Worker:
                         except _OwnershipBusy:
                             # Another teardown holds process ownership; re-check later.
                             quarantined = True
-                    if not quarantined:
+                    if admission_deadline is not None and time.monotonic() >= admission_deadline:
+                        confirmed_nonlaunch = True
+                        raise RuntimeError("EXTERNAL_SIMULATOR admission wait expired before process start")
+                    if conflicts:
+                        if payload["preset"] != "checked":
+                            confirmed_nonlaunch = True
+                            raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
+                        # Retain this prepared source and claim. Poll outside the authority lock
+                        # and pass the same cancel, quarantine and fresh occupancy gates on wake.
+                        if admission_deadline is None:
+                            admission_deadline = time.monotonic() + payload["options"]["timeout"]
+                            data.update(stage="admission", reason_code="EXTERNAL_SIMULATOR",
+                                        reason="Waiting for external Godot before starting the checked runner",
+                                        admission_wait_started_at=time.time())
+                            self.store.update(job, attempt, "DISPATCHING", data)
+                        wait_seconds = min(1.0, max(0.0, admission_deadline - time.monotonic()))
+                    elif not quarantined:
                         if not self.fixture and not payload["options"]["headless"] and not desktop_ready():
                             raise RuntimeError("GUI_LOCKED_OR_UNAVAILABLE before process start")
-                        if conflicts:
-                            raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
+                        if admission_deadline is not None:
+                            for field in ("stage", "reason_code", "reason"):
+                                data.pop(field)
+                            data["admission_wait_finished_at"] = time.time()
                         self.contexts[attempt] = (job, secret)
                         # Persist uncertainty before crossing the OS creation boundary.
                         data["launch"] = "CREATION_UNCERTAIN"
@@ -1057,7 +1127,8 @@ class Worker:
                         break
                 # An attempt allocated before quarantine must not cross the gate;
                 # it keeps its claims and can still receive owned cancellation.
-                if self.stopping.wait(_SCHEDULER_INTERVAL):
+                if self.stopping.wait(wait_seconds):
+                    confirmed_nonlaunch = True
                     raise RuntimeError("worker stopped before process start")
             reason = None
             canceled = False
@@ -1207,7 +1278,11 @@ class Worker:
                     if isinstance(error, WorkerBusy):
                         response["code"] = "WORKER_BUSY"
                     encoded = json.dumps(response, allow_nan=False)
-                self.wfile.write((encoded + "\n").encode())
+                try:
+                    self.wfile.write((encoded + "\n").encode())
+                except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError, TimeoutError):
+                    # The request was handled. Its owner can observe the durable result.
+                    return
 
         class Server(socketserver.ThreadingTCPServer):
             daemon_threads = True

@@ -193,12 +193,12 @@ func _settings_cases() -> void:
 	var toggle: Button = reopened.find_child("ShadowGroupToggle", true, false)
 	_check("reopened settings retain the saved selection in Spanish", technique != null
 		and technique.get_item_metadata(technique.selected) == "native" and technique.get_item_text(2) == "Proyectada"
-		and toggle.text.begins_with("Sombras") and technique.get_item_tooltip(1).contains("experimental"))
+		and toggle.text.begins_with("Detalles") and technique.get_item_tooltip(1).contains("experimental"))
 	TranslationServer.set_locale("en")
 	await process_frame
 	_check("open shadow controls follow language changes without losing the selection",
 		technique.get_item_metadata(technique.selected) == "native" and technique.get_item_text(2) == "Projected"
-		and toggle.text.begins_with("Shadows") and technique.get_item_tooltip(1) ==
+		and toggle.text.begins_with("Details") and technique.get_item_tooltip(1) ==
 		"Native shadow coverage is experimental; some objects do not cast shadows.")
 	reopened.queue_free()
 	await process_frame

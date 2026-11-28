@@ -141,10 +141,20 @@ var _k_h := 0.0
 ## law only; part of the model identity. obstacle_class(north, east, down) names the nearest solid's response class.
 var graded_impacts := false
 var obstacle_class: Callable = Callable()
+## Installed scenery provides a swept frame witness. Analytical fixture surfaces can still supply clearance alone.
+var frame_contact: Callable = Callable()
+## Optional common broad phase for the installed solid scenery, covering both the frame and all prop discs.
+var solids_near: Callable = Callable()
+## Density in stationary foliage at the four arm ends. Empty in clear air.
+var foliage_density: Callable = Callable()
+## Conservative spatial rejection for the entire accepted sweep. A clear path needs no quadrature samples.
+var foliage_near: Callable = Callable()
 ## CR-AUD-25: prop_disc_contact(hub_ned, axis_ned, radius_m, half_thickness_m) -> {} or the deepest obstacle that
 ## intersects the finite prop disc: {penetration_m, normal (outward, NED), point_ned, kind}, judged per obstacle.
 ## Unset keeps the hub-clearance estimate.
 var prop_disc_contact: Callable = Callable()
+## Immutable scenery sweep for an individual spinning prop on the candidate path.
+var swept_prop_contact: Callable = Callable()
 ## CR-AUD-01/R2: water_contact(body, time_s) -> true when the airframe touches an enabled lake's water; unset =
 ## no water. Terminal in the endpoint transition (no water force model): the drive is cut, nothing is settled.
 var water_contact: Callable = Callable()
@@ -473,6 +483,96 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 		derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, momentum_z), bus = bus}
 
 
+## Estimated resistance of a 5-inch quad moving through yieldable leaves. At full occupancy the
+## quadratic coefficient is 0.025 kg/m for the whole craft. Each quadrant sees its own ground-relative
+## point velocity. Its force does negative work even during a roll. Limit the damping slope at high speed.
+const FOLIAGE_DRAG_KG_PER_M := 0.025
+const FOLIAGE_MAX_DAMPING_KG_PER_S := 1.5
+
+
+func _apply_foliage_drag(exposure: PackedFloat64Array, velocity: PackedFloat64Array, rates: PackedFloat64Array,
+		force: PackedFloat64Array, moment: PackedFloat64Array) -> void:
+	for i in 4:
+		if exposure[i] <= 0.0:
+			continue
+		var hub: PackedFloat64Array = prepared.rotors[i].hub_frd
+		var local_velocity := M.add(velocity, M.cross(rates, hub))
+		var damping := minf(FOLIAGE_DRAG_KG_PER_M * M.norm(local_velocity), FOLIAGE_MAX_DAMPING_KG_PER_S)
+		var drag := M.scale(local_velocity, -0.25 * exposure[i] * damping)
+		var torque := M.cross(hub, drag)
+		for axis in 3:
+			force[axis] += drag[axis]
+			moment[axis] += torque[axis]
+
+
+## Split the stationary-leaf load from the smooth RK stages. Their trial path can extend past a wood strike.
+## Average the density along the accepted chord only (start, midpoint, end), then apply the incoming impulse
+## before restitution. Position and attitude follow the nominal chord for this tick; the next tick starts with
+## the damped velocities. This is a first-order split for velocity-dependent drag.
+func _foliage_arrival(previous: PackedFloat64Array, arrival: PackedFloat64Array, continuous: PackedFloat64Array,
+		duration: float) -> PackedFloat64Array:
+	if not foliage_density.is_valid() or duration <= 0.0:
+		return arrival
+	if foliage_near.is_valid() and not foliage_near.call(previous, arrival):
+		return arrival
+	var middle := SceneryCollision._state_at(previous, arrival, 0.5)
+	var samples: Array[PackedFloat64Array] = [foliage_density.call(previous, RB._att(previous)),
+		foliage_density.call(middle, RB._att(middle)), foliage_density.call(arrival, RB._att(arrival))]
+	if samples[0].is_empty() and samples[1].is_empty() and samples[2].is_empty():
+		return arrival
+	var exposure := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	for j in 3:
+		if samples[j].is_empty():
+			continue
+		var weight := 4.0 / 6.0 if j == 1 else 1.0 / 6.0
+		for i in 4:
+			exposure[i] += weight * samples[j][i]
+	var velocity := RB._slice3(arrival, RB.VEL)
+	var rates := RB._slice3(arrival, RB.RATE)
+	var force := M.v3(0, 0, 0)
+	var moment := M.v3(0, 0, 0)
+	_apply_foliage_drag(exposure, velocity, rates, force, moment)
+	var impulse := M.scale(force, duration)
+	var angular_impulse := M.scale(moment, duration)
+	var inverse := _effective_inverse if electric else RB.inertia_inverse(prepared.inertia_kg_m2)
+	var delta_rates := RB.inertia_mul(inverse, angular_impulse)
+	var mass: float = prepared.mass_kg
+	var work := M.dot(velocity, impulse) + M.dot(rates, angular_impulse)
+	var curvature := M.dot(impulse, impulse) / mass + M.dot(angular_impulse, delta_rates)
+	if curvature <= 0.0 or work >= 0.0:
+		return arrival
+	# K(s) = K(0) + work*s + curvature*s²/2. Stop at its minimum if the requested discrete impulse is larger.
+	var scale := minf(1.0, -work / curvature)
+	if electric:
+		for i in 4:
+			# Preserve inertial shaft spin through the external impulse, as in the stage's coupled yaw solve.
+			continuous[i] += _spin[i] * delta_rates[2] * scale
+	return _kicked(arrival, impulse, delta_rates, mass, scale)
+
+
+## Locate one terminal/nonterminal scenery contact and damp the approach once. Held wrecks can meet wood
+## but no longer strike spinning props. The candidate and continuous state are detached kernel values.
+func _scenery_arrival(previous: PackedFloat64Array, body: PackedFloat64Array, continuous: PackedFloat64Array,
+		dt: float, wreck := false) -> Dictionary:
+	if solids_near.is_valid() and not solids_near.call(previous, body):
+		return {body = _foliage_arrival(previous, body, continuous, dt), props = {}, frame = {}}
+	var resolve_frame := frame_contact.is_valid() or (foliage_density.is_valid() and obstacle.is_valid())
+	var frame := _frame_obstacle_hit(previous, body, wreck) if resolve_frame else {}
+	var props := {} if wreck else _swept_prop_hits(previous, body, continuous, frame)
+	var at := body
+	var fraction := 1.0
+	if not props.is_empty():
+		fraction = props.fraction
+		at = SceneryCollision.state_at_fraction(previous, body, fraction)
+	elif not frame.is_empty():
+		fraction = frame.fraction
+		at = frame.body
+	at = _foliage_arrival(previous, at, continuous, dt * fraction)
+	if props.is_empty() and not frame.is_empty():
+		frame.body = at
+	return {body = at, props = props, frame = frame}
+
+
 ## The shared bus of one stage: {ok, v_bus, i_motor, i_pack, p_terminal_w, p_pack_loss_w}. Two closed forms cover
 ## flight: no drive (only the auxiliary load), and all four loads driving, accepted only when that active set is
 ## consistent with its own bus voltage. Every other case (a coasting rotor among driving ones) is the exhaustive
@@ -638,14 +738,31 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 	# A crash is adjudicated until one has happened, also for a quad falling on an exhausted pack.
 	if modes[FC.MODE_MOTOR] != FC.MOTOR_CRASHED:
 		var reason := ""
+		var scenery_part := {}
 		if graded_impacts and electric:
-			var graded: Dictionary = _graded_impacts(_previous.body, candidate.body, continuous, float(context.time_s))
+			var graded: Dictionary = _graded_impacts(_previous.body, candidate.body, continuous, float(context.time_s),
+				float(context.get("dt", PARKED_CHECK_DT)))
 			reason = graded.reason
 			candidate.body = graded.body
 			continuous = graded.continuous
 			events.append_array(graded.events)
 		else:
-			reason = crash_reason(_previous.body, candidate.body, continuous)
+			var arrival := _scenery_arrival(_previous.body, candidate.body, continuous, float(context.get("dt", PARKED_CHECK_DT)))
+			candidate.body = arrival.body
+			var hit: Dictionary = arrival.frame
+			var first: Dictionary = arrival.props
+			if not first.is_empty():
+				var rotor_index: int = first.hits.keys()[0]
+				var prop: Dictionary = first.hits[rotor_index]
+				candidate.body = _settle_on(candidate.body, prop.normal, float(prop.penetration_m))
+				reason = "Obstacle strike"
+				scenery_part = {part = "prop", rotor = rotor_index, obstacle_id = prop.obstacle_id}
+			elif not hit.is_empty():
+				candidate.body = _settle_on(hit.body, hit.normal, float(hit.penetration_m))
+				reason = "Obstacle strike"
+				scenery_part = {part = "frame", obstacle_id = hit.obstacle_id}
+			else:
+				reason = crash_reason(_previous.body, candidate.body, continuous, frame_contact.is_valid())
 		if reason.is_empty() and water_contact.is_valid() \
 				and bool(water_contact.call(candidate.body, float(context.time_s))):
 			reason = WATER_CRASH_REASON
@@ -653,7 +770,9 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 			terminal = true
 			modes[FC.MODE_MOTOR] = FC.MOTOR_CRASHED
 			modes[FC.MODE_ARM_BLOCK] = FC.BLOCK_TERMINAL
-			events.append({type = "crash", time_s = float(context.time_s), reason = reason})
+			var crash_event := {type = "crash", time_s = float(context.time_s), reason = reason}
+			crash_event.merge(scenery_part)
+			events.append(crash_event)
 			if reason != "Obstacle strike" and reason != WATER_CRASH_REASON:
 				candidate.body = _settle_impact(candidate.body)
 		elif electric and continuous[C_CHARGE] <= 0.0 and modes[FC.MODE_MOTOR] != FC.MOTOR_DEPLETED:
@@ -663,11 +782,13 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 			terminal = true
 		if electric and terminal:
 			continuous[C_CUT_LATCH] = 1.0
-	elif graded_impacts and electric and obstacle.is_valid():
+	elif frame_contact.is_valid() or foliage_density.is_valid() or (graded_impacts and electric and obstacle.is_valid()):
 		# CR-AUD-20: the crash is adjudicated once, but the wreck stays a solid: later ticks keep the frame's obstacle
 		# response (push-out and bounded bounce), without new events, crash or prop wear.
-		var aftermath := {reason = "", body = candidate.body.duplicate(), continuous = continuous.duplicate(), events = []}
-		_graded_frame_obstacle(_previous.body, aftermath, float(context.time_s), true)
+		var arrival := _scenery_arrival(_previous.body, candidate.body, continuous, float(context.get("dt", PARKED_CHECK_DT)), true)
+		var aftermath := {reason = "", body = arrival.body, continuous = continuous, events = []}
+		if not arrival.frame.is_empty() or (not frame_contact.is_valid() and obstacle.is_valid()):
+			_graded_frame_obstacle(_previous.body, aftermath, float(context.time_s), true, arrival.frame)
 		candidate.body = aftermath.body
 	var accepted := {body = candidate.body, continuous = continuous, aux = candidate.aux, modes = modes}
 	if not state_validator(accepted, context):
@@ -772,8 +893,14 @@ func contact_is_moving(body: PackedFloat64Array, continuous: PackedFloat64Array)
 
 ## "" or the terminal cause at this accepted body state: a hard impact of a foot or hull point, a spinning rotor
 ## disc reaching the terrain, or the airframe sphere reaching a solid obstacle (also tested at the tick midpoint).
-func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, continuous: PackedFloat64Array) -> String:
-	if obstacle.is_valid():
+func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, continuous: PackedFloat64Array,
+		frame_checked := false) -> String:
+	if not frame_checked and frame_contact.is_valid():
+		if not _frame_obstacle_hit(previous_body, body, false).is_empty():
+			return "Obstacle strike"
+		if not _swept_prop_hits(previous_body, body, continuous, {}).is_empty():
+			return "Obstacle strike"
+	elif not frame_checked and obstacle.is_valid():
 		for fraction: float in [0.5, 1.0]:
 			var north: float = lerpf(previous_body[RB.POS], body[RB.POS], fraction)
 			var east: float = lerpf(previous_body[RB.POS + 1], body[RB.POS + 1], fraction)
@@ -863,13 +990,14 @@ func _disc_ground_hit(i: int, position: PackedFloat64Array, attitude: PackedFloa
 ## strike or obstacle touch (crash_reason). The graded law is a declared, deterministic gameplay law, not measured
 ## damage data: severity is the closing speed along the contact normal at the contact point; the frame and the props
 ## are told apart; most contacts bounce or wear the props and the flight goes on, and only the hardest impacts end it.
-const IMPACT_STRICT := "multirotor-strict-impact-v1"
+const IMPACT_STRICT := "multirotor-strict-impact-v3"
 ## v2 (DR-19e §19.4): the frame is a box and each spinning prop a thin disc (v1: spheres of the hub and prop radii,
 ## which reached 7.7 cm above and below the 4.9 cm body and 6.5 cm above and below each prop disc).
 ## v3 (DR-19f §20): grazes and material. Coulomb friction on obstacle and touchdown impulses; props chip only when a
 ## frame hit lands at their disc; prop wear and breaks follow the material and the blade's bite; an obstacle prop strike
 ## brakes and kicks like a ground strike; sliding contacts raise scrape events.
-const IMPACT_GRADED := "multirotor-graded-impact-v3"
+## v4 distinguishes porous vegetation from solids and sweeps the frame against individual solid proxies.
+const IMPACT_GRADED := "multirotor-graded-impact-v5"
 ## A ground touchdown faster than this multiple of contacts.crash_speed ends the flight ("Hard impact").
 const HARD_IMPACT_FACTOR := 3.0
 ## Prop health lost per accepted tick while a spinning prop is in contact, at the hover shaft speed (scales with speed).
@@ -970,6 +1098,15 @@ func _prepare_frame_box() -> void:
 		_frame_box_half[k] = 0.5 * (high[k] - low[k])
 
 
+## Match the enclosing boxes used by the shape sweeps, including the empty corners around a circular blade.
+func scenery_sweep_radius() -> float:
+	var radius := M.norm(_frame_box_centre) + M.norm(_frame_box_half)
+	for rotor: Dictionary in prepared.rotors:
+		var r := 0.5 * float(rotor.diameter_m)
+		radius = maxf(radius, M.norm(rotor.hub_frd) + M.norm(M.v3(r, r, PROP_DISC_HALF_THICKNESS_M)))
+	return radius
+
+
 ## Support (m) of the frame box along the body-axes unit normal `nb` (its extent from the box centre toward -nb), and
 ## the body point (FRD from the CG) that touches a surface with that outward normal.
 func _box_support(nb: PackedFloat64Array) -> Dictionary:
@@ -997,9 +1134,21 @@ static func _disc_support(nb: PackedFloat64Array, axis: PackedFloat64Array, radi
 ## The graded law at an accepted endpoint: {reason ("" unless terminal), body (bounced and pushed out of obstacles),
 ## continuous (prop health), events (impact and prop_damage)}. Pure: the same frames give the same outcome.
 func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array, continuous: PackedFloat64Array,
-		t: float) -> Dictionary:
+		t: float, dt := PARKED_CHECK_DT) -> Dictionary:
 	var out := {reason = "", body = body.duplicate(), continuous = continuous.duplicate(), events = []}
-	if obstacle.is_valid():
+	if frame_contact.is_valid() or foliage_density.is_valid():
+		var arrival := _scenery_arrival(previous_body, out.body, out.continuous, dt)
+		var frame: Dictionary = arrival.frame
+		var first: Dictionary = arrival.props
+		out.body = arrival.body
+		if not first.is_empty():
+			_graded_prop_obstacles(out, t, first.hits)
+		elif not frame.is_empty():
+			_graded_frame_obstacle(previous_body, out, t, false, frame)
+			if not str(out.reason).is_empty():
+				return out
+			_graded_prop_obstacles(out, t)
+	elif obstacle.is_valid():
 		_graded_frame_obstacle(previous_body, out, t)
 		if not str(out.reason).is_empty():
 			return out
@@ -1008,68 +1157,101 @@ func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array
 	return out
 
 
-## Frame (the box over the hubs, hull top and feet) against an obstacle: the endpoint, else the tick's midpoint (a thin
-## solid crossed within the tick). The obstacle is judged by its clearance and normal at the box centre (exact for a
-## wall, roof or bar wider than the box; never wider than a sphere around the box for a thinner one). DR-19f: the bounce
-## carries Coulomb friction (a graze drags and spins the quad), only a hit at a prop's disc chips it, and a sliding
-## contact raises a scrape event.
-## CR-AUD-20: a terminal strike also leaves the solid at its contact with the same bounded response (the crash is a
-## classification, not a pass-through); `aftermath` (after the crash) applies the response only: no events or chips.
-func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float, aftermath := false) -> void:
-	var body: PackedFloat64Array = out.body
+## Return the pose and witness on one solid. Production uses the oriented box sweep. Analytic
+## clearance callables also serve standalone plant fixtures which have no obstacle inventory.
+func _frame_obstacle_hit(previous: PackedFloat64Array, body: PackedFloat64Array, aftermath: bool) -> Dictionary:
+	if frame_contact.is_valid():
+		var hit: Dictionary = frame_contact.call(previous, body, _frame_box_centre, _frame_box_half)
+		if not hit.is_empty():
+			hit.body = SceneryCollision.state_at_fraction(previous, body, float(hit.fraction))
+		return hit
 	var attitude := RB._att(body)
 	var offset := M.q_rotate(attitude, _frame_box_centre)
 	for fraction: float in [1.0, 0.5]:
-		var centre := PackedFloat64Array()
+		if aftermath and fraction < 1.0:
+			break
+		var at := body.duplicate()
 		for k in 3:
-			centre.append(lerpf(previous_body[RB.POS + k], body[RB.POS + k], fraction) + offset[k])
+			at[RB.POS + k] = lerpf(previous[RB.POS + k], body[RB.POS + k], fraction)
+		var centre := M.add(at.slice(RB.POS, RB.POS + 3), offset)
 		var clearance: Variant = obstacle.call(centre[0], centre[1], centre[2])
 		if typeof(clearance) != TYPE_FLOAT or float(clearance) > M.norm(_frame_box_half):
 			continue
 		var normal := _obstacle_normal(centre)
 		var support := _box_support(M.q_rotate(M.q_conj(attitude), normal))
 		var depth: float = float(support.extent) - float(clearance)
-		if not (depth >= 0.0 and is_finite(depth)):
-			continue
-		var kind := str(obstacle_class.call(centre[0], centre[1], centre[2])) if obstacle_class.is_valid() else ""
-		var contact_body: PackedFloat64Array = support.point
-		var speed := _closing_speed(body, contact_body, normal)
-		var terminal: bool = not aftermath and speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS))
-		var point_ned := M.sub(centre, M.scale(normal, float(support.extent)))
-		var slip := _slip_speed(body, contact_body, normal)
-		if aftermath:
-			# The wreck rests on or slides off the solid with the same declared aftermath law as the terrain
-			# (_settle_impact): out of the solid, no inward normal velocity, kept fractions of tangential speed and rates.
-			# Endpoint only, so a resting wreck is not pulled back to the tick midpoint.
-			if fraction == 1.0:
-				out.body = _settle_on(body, normal, depth)
-			return
-		# Survivable: back to this contact position, out of the solid, then a bounded bounce with friction.
-		var moved := body.duplicate()
-		for k in 3:
-			moved[RB.POS + k] = centre[k] - offset[k] + normal[k] * depth
-		out.body = _bounce(moved, contact_body, normal, speed, kind if kind in [FOLIAGE_RESPONSE, AIRFRAME_RESPONSE] else SOLID_RESPONSE,
-			float(OBSTACLE_FRICTION.get(kind, OBSTACLE_FRICTION_DEFAULT)))
-		if terminal:
-			out.reason = "Obstacle strike"
-			return
-		var surface := kind if not kind.is_empty() else "obstacle"
-		if speed > PROP_CHIP_SPEED_MPS:
-			_chip_near(out, contact_body, t, "frame")
-		if speed > IMPACT_EVENT_SPEED_MPS:
-			out.events.append({type = "impact", time_s = t, surface = surface, part = "frame", normal_speed_mps = speed,
-				slip_speed_mps = slip, point_ned = point_ned})
-		if slip > SCRAPE_EVENT_SPEED_MPS and speed > 0.0:
-			out.events.append({type = "scrape", time_s = t, surface = surface, part = "frame", slip_speed_mps = slip,
-				point_ned = point_ned})
+		if depth >= 0.0 and is_finite(depth):
+			var kind := str(obstacle_class.call(centre[0], centre[1], centre[2])) if obstacle_class.is_valid() else ""
+			return {body = at, normal = normal, point_body = support.point, kind = kind, penetration_m = depth,
+				fraction = fraction, obstacle_id = ""}
+	return {}
+
+
+func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float, aftermath := false,
+		hit: Dictionary = {}) -> void:
+	if hit.is_empty():
+		hit = _frame_obstacle_hit(previous_body, out.body, aftermath)
+	if hit.is_empty():
 		return
+	var at: PackedFloat64Array = hit.body
+	var normal: PackedFloat64Array = hit.normal
+	var contact_body: PackedFloat64Array = hit.point_body
+	var kind: String = hit.kind
+	var depth: float = hit.penetration_m
+	if aftermath:
+		out.body = _settle_on(at, normal, depth)
+		return
+	var speed := _closing_speed(at, contact_body, normal)
+	var slip := _slip_speed(at, contact_body, normal)
+	for k in 3:
+		at[RB.POS + k] += normal[k] * depth
+	out.body = _bounce(at, contact_body, normal, speed, kind if kind in [FOLIAGE_RESPONSE, AIRFRAME_RESPONSE] else SOLID_RESPONSE,
+		float(OBSTACLE_FRICTION.get(kind, OBSTACLE_FRICTION_DEFAULT)))
+	if speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS)):
+		out.reason = "Obstacle strike"
+		return
+	var point_ned := M.add(at.slice(RB.POS, RB.POS + 3), M.q_rotate(RB._att(at), contact_body))
+	var surface := kind if not kind.is_empty() else "obstacle"
+	if speed > PROP_CHIP_SPEED_MPS:
+		_chip_near(out, contact_body, t, "frame")
+	if speed > IMPACT_EVENT_SPEED_MPS:
+		out.events.append({type = "impact", time_s = t, surface = surface, part = "frame", normal_speed_mps = speed,
+			slip_speed_mps = slip, point_ned = point_ned})
+	if slip > SCRAPE_EVENT_SPEED_MPS and speed > 0.0:
+		out.events.append({type = "scrape", time_s = t, surface = surface, part = "frame", slip_speed_mps = slip,
+			point_ned = point_ned})
 
 
-## Spinning prop discs (thin discs of the prop radius at their hubs, judged by the clearance and normal at the hub)
+## Earliest forward-spinning rotor(s) on the part of the trajectory actually flown. At an exact tie the frame
+## owns its established response. Equal-time rotor contacts share the located pose and the existing one-bounce law.
+func _swept_prop_hits(previous: PackedFloat64Array, body: PackedFloat64Array, continuous: PackedFloat64Array,
+		frame: Dictionary) -> Dictionary:
+	if not swept_prop_contact.is_valid():
+		return {}
+	var end := float(frame.get("fraction", 1.0))
+	var first := {}
+	var hits := {}
+	for i in 4:
+		if continuous[i] <= prepared.contacts.rotor_strike_speed_rad_s or (electric and continuous[C_HEALTH + i] <= 0.0):
+			continue
+		var rotor: Dictionary = prepared.rotors[i]
+		var hit: Dictionary = swept_prop_contact.call(previous, body, rotor.hub_frd, 0.5 * float(rotor.diameter_m),
+			PROP_DISC_HALF_THICKNESS_M, end)
+		if hit.is_empty() or (not frame.is_empty() and hit.fraction >= frame.fraction):
+			continue
+		if first.is_empty() or hit.fraction < end:
+			hits = {}
+			end = float(hit.fraction)
+			first = {fraction = end, hits = hits}
+		hits[i] = hit
+	return first
+
+
+## Spinning prop discs (thin discs of the prop radius at their hubs)
 ## against obstacles, all judged on the same pose. DR-19f: each touching prop wears by the obstacle's material and the
 ## blade's bite, or breaks above PROP_BREAK_SPEED_MPS / sqrt(material); the blade is braked and kicks the airframe as
 ## on the ground; then one push-out and one bounce at the deepest contact.
-func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
+func _graded_prop_obstacles(out: Dictionary, t: float, swept_hits: Dictionary = {}) -> void:
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	var body: PackedFloat64Array = out.body
 	var attitude := RB._att(body)
@@ -1080,15 +1262,24 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 		var rotor: Dictionary = prepared.rotors[i]
 		var radius: float = 0.5 * float(rotor.diameter_m)
 		var hub := M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, rotor.hub_frd))
-		var clearance: Variant = obstacle.call(hub[0], hub[1], hub[2])
-		# The hub clearance is a cheap gate: no obstacle farther than the disc's rim (and half thickness) can touch it.
-		if typeof(clearance) != TYPE_FLOAT or float(clearance) > radius + PROP_DISC_HALF_THICKNESS_M:
-			continue
 		var normal: PackedFloat64Array
 		var depth: float
 		var kind: String
 		var support_point: PackedFloat64Array
-		if prop_disc_contact.is_valid():
+		var clearance: Variant
+		if swept_hits.is_empty():
+			clearance = obstacle.call(hub[0], hub[1], hub[2])
+			if typeof(clearance) != TYPE_FLOAT or float(clearance) > radius + PROP_DISC_HALF_THICKNESS_M:
+				continue
+		if not swept_hits.is_empty():
+			if not swept_hits.has(i):
+				continue
+			var hit: Dictionary = swept_hits[i]
+			normal = hit.normal
+			depth = hit.penetration_m
+			kind = hit.kind
+			support_point = M.sub(hit.point_body, rotor.hub_frd)
+		elif prop_disc_contact.is_valid():
 			# CR-AUD-25: the finite disc against each obstacle, with that obstacle's own witness, normal and class.
 			var contact: Variant = prop_disc_contact.call(hub, M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0)), radius,
 				PROP_DISC_HALF_THICKNESS_M)

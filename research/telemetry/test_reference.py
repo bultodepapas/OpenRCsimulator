@@ -444,6 +444,23 @@ class ConsentAndDeliveryTests(unittest.TestCase):
         self.assertIsNone(client.begin_send(QUEUE_TTL))
         self.assertFalse(client.queue)
 
+    def test_sealing_and_retry_keep_the_observation_deadline(self):
+        for status in (202, 410):
+            with self.subTest(status=status):
+                client = ClientModel()
+                client.enable()
+                self.assertTrue(client.collect(example, 60, observed=0))
+                first, body = client.begin_send(60)
+                self.assertTrue(client.complete(first, 429, 61, retry_after=538))
+                self.assertIsNone(client.begin_send(598))
+                retry, retry_body = client.begin_send(599)
+                self.assertEqual(retry_body, body)
+                self.assertFalse(client.complete(retry, status, 600))
+                self.assertTrue(client.enabled)
+                self.assertIsNone(client.active)
+                self.assertFalse(client.queue)
+                self.assertFalse(client.collect(example, 601, observed=0))
+
     def test_memory_queue_bounded_and_oldest_evicted(self):
         client = ClientModel()
         client.enable()

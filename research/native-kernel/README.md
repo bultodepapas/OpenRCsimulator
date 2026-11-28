@@ -500,6 +500,7 @@ diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 | `nk_weather*`, `nk_spatial*`, `nk_wake*` | Stage-time weather, atmosphere, local spatial flow and transported/quasistatic wake |
 | `nk_helicopter*` | Helicopter controls, rotor/airframe forces, drive, body derivatives and ground contact |
 | `nk_legacy_ground.hpp` | Legacy no-wheel-state flat/lake contact law for valid older or workshop models |
+| `nk_tick.hpp` | `simulation.gd` legacy joint tick (`_rk4_substeps`, `_locate_substeps`, stage validity), `rigid_body.gd` `derivative`, `integrator.gd` RK4, `event_step.gd` and `event_bracket.gd` (NK-6a); `electric_battery_step.gd`, `electric_stop.gd` and `electric_contact_step.gd` for the finite-pack policy (NK-6c); `resource_event_step.gd` with the stock glow surfaces (NK-6d) |
 | `nk_kernel.cpp` | `OpenRCNativeKernel` (RefCounted): prepare, per-call and per-tick methods, probes, counters, benches |
 
 These rows identify implemented code, not release qualification. Installed fleet, lifecycle and package evidence
@@ -519,12 +520,178 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   `pre_tick`, the inputs, the session's own `_deflections(aux)` (`[elevator, aileron_right, aileron_left, rudder]`)
   and `sim.time()`. `stage(body, continuous, t)` is then the joint stage: `{loads, derivative, rotor_momentum}` with
   `StringName` keys like the reference literal, or `{}` exactly where the reference returns `{}`.
+- `stage_wing_wake(s, air, deflections, ground_up)` (NK-5a) evaluates `aero.gd` `wing_wake_velocity` with the prepared
+  stage's `AeroModel` for the session pre-step's tail downwash lag. `flight_session.gd` calls it only inside
+  `_kernel_pre_step` after the configuration guard passed, and evaluates the reference on NaN
+  ([evidence](../../docs/research/native-kernel/NK-5a/README.md)).
+- A finite-liquid gas stage's accepted-endpoint substep preview (`stage_context`) also carries
+  `source_off_rpm_rate` (NK-5b), the source-off shaft rate of the same trial and wrench, published only when finite.
+  `_substeps_joint` uses it instead of rebuilding `LiquidFlight.properties` and `_coupled_response`; the reference
+  stage publishes the same key ([evidence](../../docs/research/native-kernel/NK-5b/README.md)).
+- The configuration guard primes its watches at preparation (parent containers, `StringName` keys for untyped
+  String keys, raw expected scalars) and keeps the same accept/refuse rules per tick
+  ([NK-5c](../../docs/research/native-kernel/NK-5c/README.md)).
+- `prepare_reach_world(proxies)` and `contact_reach(previous, candidate, hull, extra_reach, lake_threshold)` (NK-5d)
+  prove, conservatively, that no collision proxy or lake water is reachable during an accepted tick; the session then
+  skips only that sweep ([evidence](../../docs/research/native-kernel/NK-5d/README.md)).
+- `stage_compressions(s, aux)` (NK-5e) evaluates the session's `gear_compressions(s)` at the accepted endpoint from
+  the prepared stage ground, posed by the tick context when the gear retracts. `flight_session.gd` asks only while
+  observing the endpoint of the tick whose guarded pre-step installed that context, and evaluates the reference on
+  an empty answer ([evidence](../../docs/research/native-kernel/NK-5e/README.md)).
+  The session publishes that endpoint's compressions to the `stepped` observers after it; the statistics sampler
+  reads them within the same publication (NK-5f, [evidence](../../docs/research/native-kernel/NK-5f/README.md)).
+- `prepare_pre_step(config)` and `pre_step(aux, inputs, dt, state, continuous, time_now, engine_running,
+  flap_mix_simulator, deflections, rng_state)` (NK-5g, `nk_pre_step.hpp`) return `FlightSession._pre_step`'s next
+  aux and `sim.modes[1]` for the prepared fixed-wing stage. Engine `exp`/`log`/`sin`/`cos` are the engine's utility
+  functions and `RandomPCG` is reproduced in integers. `_kernel_pre_step` asks after the configuration guard passed
+  and evaluates the reference on an empty answer ([evidence](../../docs/research/native-kernel/NK-5g/README.md)).
+- The configuration and weather guards run a per-tick plan (NK-5h, `nk_guard_plan.hpp`). Each root container is compared
+  once inside the engine against a deep snapshot taken at preparation. Watches remain only for ±0 floats, packed
+  float arrays holding a zero, Callables and the containers that hold them. A NaN keeps the full leaf walk
+  ([evidence](../../docs/research/native-kernel/NK-5h/README.md)).
+- `stage_endpoint_facts(s, aux, time_s)` (NK-5i) answers the statistics sampler's evaluations of the accepted endpoint
+  in one call: `air_data(s, t).V` (the NK-5g air sample with the endpoint aux), `Environment.ground` (stage surfaces
+  and lake), `Ground.collapsed`'s comparison with each posed contact's decoded `max_compression`, and the endpoint
+  compressions. `FlightSession.published_endpoint_facts` asks only within the `stepped` publication of a natively
+  measured endpoint, without an RC track or pending weather reset; the sampler evaluates the reference on an empty
+  answer ([evidence](../../docs/research/native-kernel/NK-5i/README.md)).
+- `integrate_tick(model, state, continuous, aux, t, dt, tick, mass, gravity, inertia, inertia_inv)` (NK-6a,
+  `nk_tick.hpp`) integrates a legacy, endpoint-free joint tick without a step policy whose stage is this kernel's
+  `stage`. After the reference pre-step installs `aux`, it runs Simulation's tick to the accepted endpoint: the
+  tick's own stage, the rigid-body derivative, RK4, substeps, the declared-event locator and bracket, every
+  stage-validity check and refusal message. The model's rotor-momentum, substep, event-transition, post-step filter
+  and auxiliary-projection callbacks are called where the reference calls them. `Simulation._native_integrator`
+  selects it; `{}` refuses before any evaluation, `{fault}` carries the reference's refusal, and otherwise the
+  endpoint is committed by `Simulation._commit_step`. `tick_stats()` counts calls, answers and faults
+  ([evidence](../../docs/research/native-kernel/NK-6a/README.md)). NK-6c admits one step policy, the finite-pack
+  `FlightSession._electric_step`. Its pure plan (`native_electric_step_plan`: dynamic battery, contact pieces,
+  rotor index, pack supervision) comes first. The kernel then runs the battery step or the contact pieces, with
+  rotor-stop and battery-exhaustion events in the policy's order, and calls back `_project_electric_stop` and
+  `_supervise_pack` ([evidence](../../docs/research/native-kernel/NK-6c/README.md)). NK-6d admits `GlowFlight.step`
+  with this sequence:
+  - It reads the session's recording resource events (`native_glow_step_plan`), only the stock rotor-stop,
+    main-tank and feed-line surfaces.
+  - It runs `resource_event_step.gd` over those surfaces natively and calls the events' recording transitions.
+  - It hands the bounded result to `GlowFlight.finish`, which the reference policy also calls.
+  - It unpacks the policy result as `Simulation._unpack_policy_result` does
+    ([evidence](../../docs/research/native-kernel/NK-6d/README.md)).
+- `stage_glow_firing(body, values, time_s)` (NK-6b) answers `GlowFlight.point(...).firing_fraction`, the only point
+  value the glow step policy's endpoint and counted segments read, from the prepared glow stage's own lifecycle
+  point. `FlightSession.native_glow_firing` asks only inside the tick its guarded pre-step installed, and
+  `GlowFlight._firing_sample` evaluates `point()` on NaN
+  ([evidence](../../docs/research/native-kernel/NK-6b/README.md)).
+- `prepare_glow_validity(bounds)` and `stage_glow_mass_check(values, with_mass)` (NK-6e) answer
+  `GlowFlight.valid(values)` and `GlowFlight.mass_context(values).ok` from the installation's bounds and the
+  prepared glow mass. `FlightSession._native_glow_mass_check` asks inside the guarded tick for the contact mass
+  sampler and the auxiliary projection; -1 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6e/README.md)).
+- `stage_hull_scrape_rows(s, properties)` (NK-6f) answers the GP-19 endpoint diagnostics rows of `HullContact.loads`
+  (prepared hull) or `loads_at_properties` (live hull, packed mass properties) from the same native hull law.
+  `FlightSession._native_hull_scrape_diagnostics` asks for the hull-scrape observation only under the NK-5i
+  published-endpoint conditions; `[0]` (a lake-covered sample, a refused live sample) evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6f/README.md)).
+- `contact_reach(..., lake_bank)` (NK-6g) also proves a null lake sweep when its superset box misses the lake bank's
+  bounds, which the sweep's horizontal reject tests; the pre-tick guard's gear collapse reads the published endpoint
+  compressions (`published_gear_collapsed`)
+  ([evidence](../../docs/research/native-kernel/NK-6g/README.md)).
+- `prepare_liquid_terminal` and `stage_liquid_terminal_quiet(previous, s, usable_before)` (NK-6h) answer
+  `HullContact.terminal_at_properties` for a liquid aircraft's contact sample at fraction 0 only where it must return
+  `{ok, no event}`, with the sample's properties from the stage's live mass; 0 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6h/README.md)). `prepare_glow_terminal` and
+  `stage_glow_terminal_quiet(previous, s, total, line)` (NK-6i) do the same for a glow aircraft's sample
+  ([evidence](../../docs/research/native-kernel/NK-6i/README.md)).
+- `stage_guard_collapsed(s, aux)` (NK-6j) answers the pre-tick guard's `gear_collapsed` from the endpoint compressions
+  of the installed tick context; -1 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6j/README.md)).
+- `prepare_prop_strike` and `stage_prop_strike_clear(s)` (NK-6k) prove `FlightSession._check_prop_strike` finds no
+  strike: the disc's flat-datum depth is at most 0 and the disc is horizontally clear of a valid lake's bank. Every
+  other case, strikes included, evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6k/README.md)).
+- `prepare_hull_guard` and `stage_hull_guard(previous, s)` (NK-6l) prove the session guard's `HullContact.terminal`
+  has no event and its `HullContact.contacts` no contact; 0 evaluates the reference
+  ([evidence](../../docs/research/native-kernel/NK-6l/README.md)).
+- `glow_voice_block(parameters, harmonics, state, frames)` (NK-6m) runs the glow voice's per-sample synthesis loop
+  byte-identically to `GlowVoice.render_telemetry`'s GDScript loop, which remains the reference and the fallback. It is
+  audio only and reads no stage state ([evidence](../../docs/research/native-kernel/NK-6m/README.md)).
+- `integrate_tick` answers `GlowFlight.finish` itself for a steady glow tick (NK-6n, `nk_glow_finish.hpp`): no
+  resource events or transitions, the plan's steady terms present, and no failure or lifecycle stop. Every refusal
+  calls finish ([evidence](../../docs/research/native-kernel/NK-6n/README.md)).
+- `stage_wheel_rows(s, aux, steer, anchors, speeds, brake)` (NK-6o) gives the ground audio `Ground.evaluate`'s
+  per-wheel diagnostics and `Wheels.frame` at a published endpoint, through an optional row collector on the
+  qualified wheel law; [] evaluates the reference ([evidence](../../docs/research/native-kernel/NK-6o/README.md)).
+- `state_valid`, `scenery_state_valid`, `arrays_finite` and `inertia_cached` (NK-6q) are pure, exact ports of
+  `Simulation.step`'s own checks and the session's state checks. `Simulation` uses them only when the installed
+  model's stage belongs to the kernel ([evidence](../../docs/research/native-kernel/NK-6q/README.md)).
+- `retarded_emission(times, positions, listener, now, sound_speed, min_index)` (NK-6r) is `SoundscapeModel.retarded_emission`
+  in the model's mixed precision, for the soundscape's propagation delay; presentation only
+  ([evidence](../../docs/research/native-kernel/NK-6r/README.md)).
+- `glow_vibration(geometry, crank_phase, omega, alpha, firing)` (NK-6s) gives `physics/glow/vibration.gd` `evaluate`'s numbers for
+  a validated geometry, for flight audio's glow voice ([evidence](../../docs/research/native-kernel/NK-6s/README.md)).
+- `stage_liquid_store_valid(values, index)` (NK-6t) answers `LiquidFlight.valid` from the prepared liquid stage, so a
+  liquid aircraft's contact-mass sampler is built only when a contact asks for it
+  ([evidence](../../docs/research/native-kernel/NK-6t/README.md)).
+- `prepare_substeps` (NK-6u, `nk_substeps.hpp`) lets `integrate_tick` count the tick's RK4 substeps from the installed
+  session's plan (`FlightSession.native_substep_plan`), as `_substeps_joint` and `_substeps` do; a tick the plan does
+  not cover still calls them ([evidence](../../docs/research/native-kernel/NK-6u/README.md)).
+- `stage_contact_clear` (NK-6v) proves a tick's contact step touches nothing from the store, reach, state and quiet
+  terminal checks in one call, so `FlightSession._clear_contact_step` skips the reference step
+  ([evidence](../../docs/research/native-kernel/NK-6v/README.md)).
+- `sound_doppler`, `sound_targets`, `sound_humidity`, `sound_absorption_cutoff`, `sound_screening`, `sound_activity`
+  and `sound_distance_gain` (NK-7a, `nk_soundscape.hpp`) are the soundscape model's laws, `Wildlife.activity` and
+  `PowertrainAudio.distance_gain`, exact; `exp`, `log`, `pow` and `Vector3.angle_to` call the engine's own functions
+  ([evidence](../../docs/research/native-kernel/NK-7a/README.md)).
+- `sound_core_bind`, `sound_core_frame`, `sound_core_events`, `sound_core_heard`, `sound_core_reset` and
+  `sound_core_state` (NK-7b, `nk_soundscape_core.hpp`) run `Soundscape.update_sound`: the delay history, mix state and
+  voice and filter writes through the engine's method binds, refusing any frame the reference would read differently
+  ([evidence](../../docs/research/native-kernel/NK-7b/README.md)).
+- `sound_core_bind_bank` (NK-7c) moves the recorded powertrain bank's `update_sound` into that frame and mirrors its
+  state back to the bank ([evidence](../../docs/research/native-kernel/NK-7c/README.md)).
+- `ground_core_*` (NK-7d, `nk_ground_audio_core.hpp`) runs `GroundAudio` in accepted-tick mode: observation,
+  touchdown queries and frame updates, writing its slots' players by method bind
+  ([evidence](../../docs/research/native-kernel/NK-7d/README.md)).
+- `mechanical_core_*` (NK-7e, `nk_mechanical_audio_core.hpp`) runs `MechanicalAudio` in accepted-tick mode: the motion
+  observer, motion and event voices, writing its players by method bind; GDScript still makes the motion players
+  ([evidence](../../docs/research/native-kernel/NK-7e/README.md)).
+- `audio_unloaded_rows` and `audio_source_kinematics` (NK-7f, `nk_audio_rows.hpp`) build flight audio's airborne
+  contact rows and the snapshot's source kinematics from the accepted state, exactly
+  ([evidence](../../docs/research/native-kernel/NK-7f/README.md)).
+- `stage_glow_audio_keys` (NK-7g) builds flight audio's whole glow key set in one call, with the GDScript's key order
+  and types ([evidence](../../docs/research/native-kernel/NK-7g/README.md)).
+- `stage_endpoint_air` (NK-7i) answers flight audio's wind and air data at the published endpoint, as `pre_step_air`
+  evaluates them ([evidence](../../docs/research/native-kernel/NK-7i/README.md)).
+- `stage_wheel_audio_rows` (NK-7j, `nk_audio_rows.hpp` `loaded_rows`) answers the ground audio's wheel rows and, from
+  them, its loaded contact rows in one call, including `surface_observation`'s support sample, region and material
+  ([evidence](../../docs/research/native-kernel/NK-7j/README.md)).
+- `stage_wheel_audio_rows`' band rows and `stage_wheel_approach_speeds` (NK-7k, `nk_audio_rows.hpp` `band_rows` and
+  `approach_speeds`) answer the ground audio's rows beyond the terrain's reach and the skipped ticks' approach speeds
+  from the stage's wheel frames ([evidence](../../docs/research/native-kernel/NK-7k/README.md)).
+- `glow_voice_bind` and `glow_voice_render` (NK-7l, `nk_glow_voice_render.hpp`) render a glow voice's whole block,
+  its preparation and NK-6m's loop, from the voice's state on its worker thread
+  ([evidence](../../docs/research/native-kernel/NK-7l/README.md)).
+- `stage_endpoint_torques` (NK-7m) answers flight audio's shaft-load torques at the published endpoint, from the glow
+  blade model or the Ct/Cp propeller with `pre_step_air`'s air data
+  ([evidence](../../docs/research/native-kernel/NK-7m/README.md)).
+- `shadow_parts_bind` and `shadow_part_poses` (NK-8a, `nk_shadow_parts.hpp`) walk a projected shadow's parts to its
+  source, composing transforms with the engine's own operator and reading visibility by method bind
+  ([evidence](../../docs/research/native-kernel/NK-8a/README.md)).
+- `stage_terrain_sample` (NK-8b) samples the installed stage's prepared ground for render callers when they pass the
+  same surface table, so `main.gd` `_ground_height` reads `FlightSession.render_terrain_sample`
+  ([evidence](../../docs/research/native-kernel/NK-8b/README.md)).
+- `stats_speed_*` (NK-9a, `nk_stats_speed.hpp`) hold and advance one statistics detector's speed window, exactly as
+  `detector.gd`'s speed functions do ([evidence](../../docs/research/native-kernel/NK-9a/README.md)).
+- `stats_sample_*` (NK-9b, `nk_stats_sample.hpp`) build the statistics adapter's published sample in one call, as
+  `fixed_wing_adapter.gd` `sample(true)` does ([evidence](../../docs/research/native-kernel/NK-9b/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
-  replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
+  replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
+  the helicopter tick and observers remain in GDScript.
 - D6: preparation rejects malformed data, unsupported laws, pending configuration changes and exceeded resource
   budgets. Family adapters admit the capabilities listed above. Rejection preserves the reference callbacks;
   a later configuration mutation faults before the next native evaluation rather than using stale coefficients.
+  Since NK-6p a fixed-wing native flight freezes the guarded containers, so a container write fails where it is made
+  and the guard proves the frozen roots by identity; packed leaves, which stay writable in place, keep bitwise watches
+  ([decision](../../docs/DECISIONS.md#a-native-flight-freezes-its-guarded-configuration),
+  [evidence](../../docs/research/native-kernel/NK-6p/README.md)).
 
 ## Exactness rules (keep them when extending the port)
 

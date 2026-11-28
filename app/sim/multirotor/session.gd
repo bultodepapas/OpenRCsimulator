@@ -27,6 +27,9 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const WindFieldLaw := preload("res://physics/wind_field.gd")
 const WindSettings := preload("res://physics/wind_config.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
+const FpvForest := preload("res://scenery/fpv_forest.gd")
+const FrameContact := preload("res://sim/multirotor/frame_obstacle_contact.gd")
+const SweptProp := preload("res://sim/multirotor/swept_prop_contact.gd")
 const Track := preload("res://sim/race/track.gd")
 const AirfieldTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
 const RaceModel := preload("res://sim/race/race_model.gd")
@@ -107,8 +110,8 @@ var _field: Dictionary = {}
 var _start: Dictionary = {}
 var _tape := PackedFloat64Array()
 var _pending_events: Array = []
-## Immutable scenery obstacle inventory (scenery/collision_world.gd); empty = terrain only.
-var _collision_world: Dictionary = {}
+## Detached physical geometry for this quad. Other vehicle families use the shared field inventory.
+var _obstacles := {solids = [], foliage = [], identity = ""}
 var _body_radius := 0.0
 ## True while the kernel steps inside tick_once: session state (tape, crash record) is then mid-transition, so a
 ## checkpoint taken by an observer of the kernel's own signals would be incomplete (CR-AUD-17).
@@ -302,7 +305,11 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 		var loaded_track: Dictionary = Track.load_file(str(opts.race_track))
 		if not loaded_track.ok:
 			return _refused("; ".join(loaded_track.errors))
-		var made_course: Dictionary = Track.prepare(loaded_track.track, field, exact_ground)
+		var wood_index := {}
+		if not collision_identity().is_empty():
+			_prepare_obstacle_index(radius)
+			wood_index = _obstacles.solid_index
+		var made_course: Dictionary = Track.prepare(loaded_track.track, field, exact_ground, wood_index)
 		if not made_course.ok:
 			return _refused("; ".join(made_course.errors))
 		race_course = made_course.course
@@ -319,10 +326,7 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	if not candidate_env.lake.is_empty() and _start_near_water(candidate_env.lake, start, radius):
 		return _refused("multirotor start refused: the start is over or beside the lake and water contact is a crash")
 	var gate_frames: Array = _frame_proxies(race_course.get("frames", []))
-	if not _collision_world.is_empty() or not gate_frames.is_empty():
-		candidate_plant.obstacle = _obstacle_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
-		candidate_plant.obstacle_class = _obstacle_class_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
-		candidate_plant.prop_disc_contact = _prop_disc_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
+	_install_obstacle_queries(candidate_plant, gate_frames, radius)
 	if not candidate_env.lake.is_empty():
 		# R2: water is adjudicated in the plant's endpoint transition, so the drive is cut like any crash.
 		var lake: Dictionary = candidate_env.lake
@@ -522,8 +526,9 @@ func input_size() -> int:
 ## never dropped silently (callers check the bound before they start or replace an attempt).
 func _publish_result(result: Dictionary) -> void:
 	var record: Dictionary = result.duplicate(true)
+	record.records_identity = records_identity()
 	record.session = {data_sha256 = source_sha256, rates = str(plant.config.rates.identity), controller = str(plant.config.identity),
-		collision_identity = collision_identity(), field_id = str(_field.get("id", ""))}
+		collision_identity = collision_identity(), impacts = str(sim.model.identity.impacts), field_id = str(_field.get("id", ""))}
 	record.terminal_tick = int(result.get("terminal_tick", sim.tick))
 	record.saved = false
 	# Diagnostic order inside this session; the file identity is publication_id.
@@ -722,24 +727,107 @@ func set_collision_world(world: Dictionary) -> bool:
 		for proxy: Dictionary in world.proxies:
 			if not CollisionWorld._proxy_is_valid(proxy):
 				return false
-	if prepared and str(world.get("identity", "")) != collision_identity():
+	var projected := FpvForest.project(world)
+	if not projected.ok:
+		load_error = str(projected.error)
+		return false
+	if prepared and str(projected.identity) != collision_identity():
+		if race != null and sim.modes[RaceModel.MODE_PHASE] in [RaceDirector.PHASE_COUNTDOWN, RaceDirector.PHASE_RACING]:
+			load_error = "multirotor obstacle change refused during a race attempt"
+			return false
 		resetting.emit()
-	_collision_world = world.duplicate(true)
+	_obstacles = projected
 	if prepared:
-		var gate_frames: Array = _frame_proxies(course.get("frames", []))
-		var empty: bool = _collision_world.is_empty() and gate_frames.is_empty()
-		plant.obstacle = Callable() if empty else _obstacle_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
-		# The class query follows the same world (the graded law reads terminal speed, friction and material from it).
-		plant.obstacle_class = Callable() if empty \
-			else _obstacle_class_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
-		plant.prop_disc_contact = Callable() if empty \
-			else _prop_disc_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
+		_install_obstacle_queries(plant, _frame_proxies(course.get("frames", [])), _body_radius)
 	return true
 
 
 ## Identity of the installed obstacle inventory ("" = terrain only).
 func collision_identity() -> String:
-	return str(_collision_world.get("identity", ""))
+	return str(_obstacles.identity)
+
+
+## Results compare runs on the same resolved course, obstacle inventory and admitted impact law.
+## Geometry-only keys are retained in the book for earlier attempts.
+func records_identity() -> String:
+	if race == null:
+		return ""
+	return JSON.stringify(["fpv-race-records-v2", course.identity, collision_identity(), sim.model.identity.impacts]).sha256_text()
+
+
+func _prepare_obstacle_index(radius: float) -> void:
+	# Pad restarts and course switches share the installed forest. Refit the search cells
+	# only when the aircraft reach or the projected world changes.
+	if _obstacles.get("index_radius") != radius:
+		_obstacles.solid_index = obstacle_index({proxies = _obstacles.solids}, radius + OBSTACLE_SLACK_M)
+		_obstacles.leaf_index = obstacle_index({proxies = _obstacles.foliage}, radius)
+		_obstacles.index_radius = radius
+
+
+func _install_obstacle_queries(target: RefCounted, frames: Array, radius: float) -> void:
+	_prepare_obstacle_index(radius)
+	var reach := radius + OBSTACLE_SLACK_M
+	var solid: Dictionary = _obstacles.solid_index
+	var has_solids: bool = not _obstacles.solids.is_empty() or not frames.is_empty()
+	target.obstacle = _obstacle_query(solid, frames, reach) if has_solids else Callable()
+	target.obstacle_class = _obstacle_class_query(solid, frames, reach) if has_solids else Callable()
+	var gates := FrameContact.prepare_gates(frames)
+	target.frame_contact = FrameContact.from_prepared(solid, gates) if has_solids else Callable()
+	target.swept_prop_contact = SweptProp.from_prepared(solid, gates) if has_solids else Callable()
+	target.solids_near = FrameContact.near_query(solid, gates, target.scenery_sweep_radius(), reach) if has_solids else Callable()
+	target.prop_disc_contact = _prop_disc_query(solid, frames) if has_solids else Callable()
+	target.foliage_density = Callable()
+	target.foliage_near = Callable()
+	if not _obstacles.foliage.is_empty():
+		target.foliage_density = _foliage_query(_obstacles.leaf_index, radius, target.prepared.rotors)
+		target.foliage_near = _foliage_near_query(_obstacles.leaf_index, radius)
+
+
+## The leaf cells already include the reach of every hub. If the chord stays inside one cell,
+## a scalar altitude check rejects most clear-air ticks before any pose or leaf samples are built.
+static func _foliage_near_query(index: Dictionary, radius: float) -> Callable:
+	var size_m := float(index.cell_m)
+	return func(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
+		if not index.wide.is_empty():
+			return true
+		var cell := Vector2i(floori(a[RB.POS] / size_m), floori(a[RB.POS + 1] / size_m))
+		if cell.x != floori(b[RB.POS] / size_m) or cell.y != floori(b[RB.POS + 1] / size_m):
+			return true
+		var list: Variant = index.cells.get(cell)
+		if list == null:
+			return false
+		var top := minf(a[RB.POS + 2], b[RB.POS + 2]) - radius
+		var bottom := maxf(a[RB.POS + 2], b[RB.POS + 2]) + radius
+		for crown: Dictionary in list:
+			if top <= crown.bounds_down_max and bottom >= crown.bounds_down_min:
+				return true
+		return false
+
+
+## Sample the crown occupancy at the four arm ends in a single spatial lookup. A cell is expanded by
+## the full craft radius at preparation, so a body centred across the cell border can still brush a crown.
+static func _foliage_query(index: Dictionary, radius: float, rotors: Array) -> Callable:
+	var empty := PackedFloat64Array()
+	return func(body: PackedFloat64Array, attitude: PackedFloat64Array) -> PackedFloat64Array:
+		var n := body[RB.POS]
+		var e := body[RB.POS + 1]
+		var d := body[RB.POS + 2]
+		var candidates := obstacle_candidates(index, n, e)
+		if candidates.is_empty():
+			return empty
+		var weights := empty
+		var offsets: Array[PackedFloat64Array] = []
+		for proxy: Dictionary in candidates:
+			if not CollisionWorld._aabb_sphere_overlap(proxy, n, e, d, radius):
+				continue
+			if offsets.is_empty():
+				weights = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+				for rotor: Dictionary in rotors:
+					offsets.append(M.q_rotate(attitude, rotor.hub_frd))
+			for i in offsets.size():
+				var r := offsets[i]
+				weights[i] = maxf(weights[i], FpvForest.density_at(proxy, n + r[0], e + r[1], d + r[2]))
+		return weights
 
 
 ## obstacle(north, east, down) -> signed clearance (m) to the nearest proxy within `reach`, else `reach`. Pure: it
@@ -750,8 +838,7 @@ func collision_identity() -> String:
 ## depend on order or repeats except for a signed zero (bit for bit on 199 376 queries, DR-22/R1,
 ## test_mr_fast_paths). At a 32 m bin border the index can also find a proxy the former query missed by rounding. `frames` are the race course's gate-frame boxes (few:
 ## tested directly, no broad phase).
-static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> Callable:
-	var index: Dictionary = obstacle_index(world, reach)
+static func _obstacle_query(index: Dictionary, frames: Array, reach: float) -> Callable:
 	return func(north: float, east: float, down: float) -> float:
 		var nearest := reach
 		if not index.is_empty() and is_finite(north) and is_finite(east) and is_finite(down):
@@ -766,8 +853,7 @@ static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> C
 
 ## DR-19c: obstacle_class(north, east, down) -> the response class of the nearest proxy within `reach` (gate frames:
 ## "gate_frame"), "" when none; the same pure index and candidates as _obstacle_query.
-static func _obstacle_class_query(world: Dictionary, frames: Array, reach: float) -> Callable:
-	var index: Dictionary = obstacle_index(world, reach)
+static func _obstacle_class_query(index: Dictionary, frames: Array, reach: float) -> Callable:
 	return func(north: float, east: float, down: float) -> String:
 		var nearest := reach
 		var kind := ""
@@ -871,8 +957,7 @@ static func _frame_proxies(frames: Array) -> Array:
 ## CR-AUD-25: prop_disc_contact(hub, axis, radius, half_thickness) -> {} or the deepest obstacle intersecting the finite
 ## prop disc, judged per proxy with its own witness, outward normal and class (gate frames: "gate_frame"). Pure, on
 ## the same index and candidates as _obstacle_query; candidate order is the index order, the deepest wins.
-static func _prop_disc_query(world: Dictionary, frames: Array, reach: float) -> Callable:
-	var index: Dictionary = obstacle_index(world, reach)
+static func _prop_disc_query(index: Dictionary, frames: Array) -> Callable:
 	return func(hub: PackedFloat64Array, axis: PackedFloat64Array, radius: float, half_thickness: float) -> Dictionary:
 		var best := {}
 		if hub.size() != 3 or axis.size() != 3 or not (is_finite(hub[0]) and is_finite(hub[1]) and is_finite(hub[2])):
@@ -996,6 +1081,13 @@ static func _clearance(proxy: Dictionary, n: float, e: float, d: float) -> float
 	var de := e - float(proxy.east)
 	var dd := d - float(proxy.down)
 	if proxy.shape == "capsule":
+		if proxy.has("axis_ned"):
+			var axis: PackedFloat64Array = proxy.axis_ned
+			var t := clampf(dn * axis[0] + de * axis[1] + dd * axis[2], -float(proxy.half_length), float(proxy.half_length))
+			dn -= t * axis[0]
+			de -= t * axis[1]
+			dd -= t * axis[2]
+			return sqrt(dn * dn + de * de + dd * dd) - float(proxy.radius)
 		var along := clampf(dd, -float(proxy.half_length), float(proxy.half_length))
 		return sqrt(dn * dn + de * de + (dd - along) * (dd - along)) - float(proxy.radius)
 	var sh: float = proxy.sin_heading

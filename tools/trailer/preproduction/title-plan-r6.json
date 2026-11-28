@@ -1,0 +1,52 @@
+{
+  "format": "openrc-trailer-title-plan",
+  "version": 1,
+  "revision": "R6",
+  "fps": 60,
+  "duration_frames": 9000,
+  "metadata": {
+    "status": "Editorial plan only; actual footage, readability and placement are not yet accepted.",
+    "trial_basis": "Unresolved. Bind estimated or donor only after the accepted Creator trial establishes its real basis; required for publication.",
+    "website": "bultodepapas.github.io/OpenRCsimulator/ is source-known; HTTP availability was checked on 2026-11-22 and must be rechecked before publication.",
+    "destination_check": {
+      "url": "https://bultodepapas.github.io/OpenRCsimulator/",
+      "date": "2026-11-22",
+      "http_status": 200,
+      "content_type": "text/html",
+      "page_title": "OpenRC Simulator | Simulador de vuelo RC gratis",
+      "response_bytes": 62295,
+      "response_sha256": "fcd468767526bdaa3a0f3290ee08dd2b2a3c664d86eff488aea5b463ed8d4a45",
+      "scope": "HTTP page identity and availability only. Browser behavior, downloads, installation and runtime were not checked; recheck before publication."
+    },
+    "footage_requirements": [
+      "Keep real mode, recovery, arming, power-loss and telemetry indicators visible; do not synthesize their values.",
+      "The 105–109 second comparator requires correct native or separately qualified 7.62 m / 1.52 m / 15 cm span labels by the corresponding models.",
+      "Verify that titles do not obscure aircraft, transmitter, real controls or trial evidence in the actual shots."
+    ],
+    "typography": "Barlow Condensed with warm-white ink, restrained tracking and a soft dark shadow. The end-card brand is typeset, not a redrawn logo icon."
+  },
+  "cues": [
+    {"id":"electric-stick","role":"label","lines":["UGLY STICK · ELECTRIC 6S"],"in_frame":480,"out_frame":660,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"sky","role":"headline","lines":["A SKY WITHIN REACH"],"in_frame":855,"out_frame":1050,"x":112,"y":120,"align":"left","size":96,"tracking":4,"fade_in_frames":18,"fade_out_frames":12,"drift_px":8},
+    {"id":"hx700","role":"label","lines":["HX-700 · MECHANICAL INSPECTION"],"in_frame":3060,"out_frame":3300,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"xcell","role":"label","lines":["X-CELL .60 · RESEARCH HELICOPTER"],"in_frame":3300,"out_frame":3540,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"input","role":"headline","lines":["FEEL EVERY INPUT"],"in_frame":3615,"out_frame":3885,"x":112,"y":120,"align":"left","size":96,"tracking":4,"fade_in_frames":18,"fade_out_frames":12,"drift_px":8},
+    {"id":"failure","role":"label","lines":["FAILURE PRACTICE · ENGINE OUT"],"in_frame":3900,"out_frame":4380,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"companions","role":"label","lines":["AI FLIGHT COMPANIONS"],"in_frame":4380,"out_frame":4620,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"scenery","role":"label","lines":["IMPORTED SCENERY · EXPERIMENTAL RUNWAY"],"in_frame":4620,"out_frame":4860,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"lab-baseline","role":"label","lines":["BASELINE SETUP"],"in_frame":5580,"out_frame":5745,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"lab-changed","role":"label","lines":["CHANGED SETUP"],"in_frame":5835,"out_frame":6000,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"stick-scale","role":"label","lines":["UGLY STICK · .61 GLOW · 10%–500%"],"in_frame":6000,"out_frame":6300,"x":112,"y":870,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"scale-500","role":"label","lines":["GIANT · 500%"],"in_frame":6090,"out_frame":6195,"x":112,"y":930,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"scale-10","role":"label","lines":["TINY · 10%"],"in_frame":6195,"out_frame":6300,"x":112,"y":930,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"size-comparison","role":"label","lines":["CINEMATIC SIZE COMPARISON"],"in_frame":6300,"out_frame":6540,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"liveries","role":"label","lines":["PRESENTATION · LIVERY SHOWCASE"],"in_frame":6540,"out_frame":7140,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"hangar","role":"headline","lines":["EXPAND YOUR HANGAR"],"in_frame":7500,"out_frame":7620,"x":112,"y":120,"align":"left","size":96,"tracking":4,"fade_in_frames":8,"fade_out_frames":8,"drift_px":4},
+    {"id":"phoenix","role":"label","lines":["PHOENIX RC · MODEL PREVIEWS"],"in_frame":7620,"out_frame":7920,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"clearview","role":"label","lines":["CLEARVIEW · MODEL PREVIEWS"],"in_frame":7920,"out_frame":8220,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"trial","role":"label","lines":["EXPERIMENTAL TEST FLIGHT"],"in_frame":8220,"out_frame":8400,"x":112,"y":900,"align":"left","size":38,"tracking":2,"fade_in_frames":0,"fade_out_frames":0},
+    {"id":"end-brand","role":"endcard","lines":["OPEN RC SIMULATOR"],"in_frame":8700,"out_frame":9000,"x":960,"y":300,"align":"center","size":112,"tracking":5,"fade_in_frames":0,"fade_out_frames":0,"drift_px":0},
+    {"id":"end-cta","role":"endcard","lines":["PLAY FREE"],"in_frame":8700,"out_frame":9000,"x":960,"y":455,"align":"center","size":76,"tracking":4,"fade_in_frames":0,"fade_out_frames":0,"drift_px":0},
+    {"id":"end-url","role":"label","lines":["bultodepapas.github.io/OpenRCsimulator/"],"in_frame":8700,"out_frame":9000,"x":960,"y":575,"align":"center","size":38,"tracking":1,"fade_in_frames":0,"fade_out_frames":0}
+  ]
+}

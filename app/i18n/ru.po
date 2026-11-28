@@ -14406,8 +14406,8 @@ msgstr "Отменить операцию"
 msgid "Cancelled."
 msgstr "Отменено."
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "Выберите файл или папку ландшафтов Phoenix либо откройте установленный предпросмотр."
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "Выберите файл или папку ландшафтов из симулятора Phoenix RC либо откройте установленный предпросмотр."
 
 msgid "Choose a scenery file"
 msgstr "Выбрать файл ландшафта"
@@ -14445,8 +14445,8 @@ msgstr "Посмотрите на панель %d."
 msgid "No Phoenix scenery descriptors were found."
 msgstr "Описания ландшафтов Phoenix не найдены."
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "В этом источнике ландшафты Phoenix не найдены."
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "В этом источнике ландшафты Phoenix RC не найдены."
 
 msgid "Opening preview…"
 msgstr "Открытие предпросмотра…"
@@ -14592,5 +14592,203 @@ msgstr "Выберите самолёт, который может взлета�
 msgid "Preparing panorama"
 msgstr "Подготовка панорамы"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "Включены базовые настройки графики. Повысить качество можно в разделе «Настройки» > «Графика»."
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "Включены базовые настройки графики. Повысить качество можно в разделе «Настройки» > «Графика», а масштаб 3D-рендеринга — в разделе «Настройки» > «Экран»."
+
+msgid "3D render scale"
+msgstr "Масштаб 3D-рендеринга"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "Отрисовывает 3D-вид в меньшем разрешении и растягивает его. Меньшие значения повышают частоту кадров на встроенной графике; изображение становится мягче."
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR, DLSS и MetalFX задают собственный масштаб рендеринга. Ваш выбор вернётся при нативной реконструкции."
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "Подготовка графики для этого компьютера. Так долго длится только первый запуск."
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "Подготовка графики для первого полёта на этом компьютере. Следующие полёты загружаются быстрее."
+
+msgid "We selected lighter graphics settings for your GPU to help keep the simulator responsive. Visual detail starts at its lowest setting. In Settings > Graphics, raise one option at a time and check how smoothly the simulator runs."
+msgstr "Мы выбрали облегчённые настройки графики для вашего GPU, чтобы симулятор работал плавно. Детализация изначально установлена на минимум. В разделе «Настройки → Графика» повышайте параметры по одному и проверяйте плавность работы."
+
+msgid "Tree detail"
+msgstr "Детализация деревьев"
+
+msgid "Ground detail"
+msgstr "Детализация поверхности"
+
+msgid "Tree rendering only. The field and its physical obstacles stay the same."
+msgstr "Меняет только отрисовку деревьев. Поле и его физические препятствия сохраняются."
+
+msgid "Simplifies grass shading while keeping runway markings and terrain cues."
+msgstr "Упрощает затенение травы, сохраняя разметку полосы и ориентиры на местности."
+
+msgid "Simple"
+msgstr "Упрощённая"
+
+msgid "THIS FLIGHT"
+msgstr "ЭТОТ ПОЛЁТ"
+
+msgid "Radio & controls"
+msgstr "Пульт и управление"
+
+msgid "Radio & controls · %s"
+msgstr "Пульт и управление · %s"
+
+msgid "not connected"
+msgstr "не подключено"
+
+msgid "Set up, calibrate and test your radio or gamepad."
+msgstr "Настройка, калибровка и проверка пульта или геймпада."
+
+msgid "Time %s · Height %s · Airspeed %s"
+msgstr "Время %s · Высота %s · Скорость %s"
+
+msgid "Back to the start with the same setup."
+msgstr "Вернуться к старту с теми же настройками."
+
+msgid "Ends this flight and opens the aircraft catalog."
+msgstr "Завершает этот полёт и открывает каталог самолётов."
+
+msgid "Pause: change aircraft, return to Home or adjust this flight."
+msgstr "Пауза: сменить самолёт, вернуться на «Главную» или настроить этот полёт."
+
+msgid "Reference flight model."
+msgstr "Эталонная модель полёта."
+
+msgid "Experimental: estimated physics, not yet compared with the real aircraft."
+msgstr "Экспериментально: физика оценочная, ещё не сверена с настоящим самолётом."
+
+msgid "Model only; it cannot fly yet."
+msgstr "Только модель; летать пока нельзя."
+
+msgid "About"
+msgstr "О программе"
+
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or in the pause menu."
+msgstr "На поле клуба доступны экспериментальные самолёты Ugly Stik для полётов по кругу: от 1 до 3. По умолчанию они выключены — начните с одного. Откройте «Самолёты-компаньоны» через Главная → Сведения о полёте или в меню паузы."
+
+msgid "FLIGHT COMPANIONS"
+msgstr "САМОЛЁТЫ-КОМПАНЬОНЫ"
+
+msgid "CONNECT A RADIO OR GAMEPAD"
+msgstr "ПОДКЛЮЧИТЕ АППАРАТУРУ ИЛИ ГЕЙМПАД"
+
+msgid "1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off."
+msgstr "1. Подключите по USB или Bluetooth. На аппаратуре EdgeTX выберите USB Joystick (Classic) и отключите радиомодуль."
+
+msgid "2. Choose it as the Flight controller."
+msgstr "2. Выберите его как «Контроллер полёта»."
+
+msgid "3. Press Set up this device… for stick mode, calibration, a live test and the main switches."
+msgstr "3. Нажмите «Настроить это устройство…»: режим стиков, калибровка, проверка вживую и основные переключатели."
+
+msgid "Recover a profile from an older version or export diagnostics for a bug report."
+msgstr "Восстановите профиль из старой версии или экспортируйте диагностику для отчёта об ошибке."
+
+msgid "HANGAR"
+msgstr "АНГАР"
+
+msgid "Airplanes"
+msgstr "Самолёты"
+
+msgid "Helicopters"
+msgstr "Вертолёты"
+
+msgid "Drones"
+msgstr "Дроны"
+
+msgid "Airships"
+msgstr "Дирижабли"
+
+msgid "Cars & trucks"
+msgstr "Машины"
+
+msgid "Search by name"
+msgstr "Поиск по названию"
+
+msgid "%d of %d"
+msgstr "%d из %d"
+
+msgid "%d vehicles"
+msgstr "Моделей: %d"
+
+msgid "No vehicle matches this search."
+msgstr "Ничего не найдено."
+
+msgid "Hangar"
+msgstr "Ангар"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "Нажмите для следующей предустановки ветра. Точные значения, турбулентность и воздух — в разделе «Условия»."
+
+msgid "Applies to the next flight"
+msgstr "Для следующего полёта"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "Средний ветер. Маленьким тренерам тяжело выше примерно 6 м/с."
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "Откуда дует ветер: 090° — с востока."
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "Дополнительная скорость каждого порыва сверх среднего ветра."
+
+msgid "Rising or sinking air inside each gust."
+msgstr "Восходящий или нисходящий воздух внутри каждого порыва."
+
+msgid "How long each gust lasts."
+msgstr "Сколько длится каждый порыв."
+
+msgid "Time from the start of one gust to the next."
+msgstr "Время от начала одного порыва до следующего."
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "Выберите предустановку или измените значение. «Применить» сохранит их для следующего полёта, «Отмена» отбросит."
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "Введите скорость и направление ветра, чтобы увидеть их над полосой."
+
+msgid "Calm: no steady wind on the runway."
+msgstr "Штиль: на полосе нет постоянного ветра."
+
+msgid "headwind %s m/s"
+msgstr "встречный ветер %s м/с"
+
+msgid "tailwind %s m/s"
+msgstr "попутный ветер %s м/с"
+
+msgid "crosswind %s m/s from the right"
+msgstr "боковой ветер %s м/с справа"
+
+msgid "crosswind %s m/s from the left"
+msgstr "боковой ветер %s м/с слева"
+
+msgid "no crosswind"
+msgstr "без бокового ветра"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "С %03.0f° со скоростью %s м/с."
+
+msgid "Runway start: %s, %s."
+msgstr "Старт с полосы: %s, %s."
+
+msgid "Time & sky"
+msgstr "Время и небо"
+
+msgid "Ahead"
+msgstr "Вперёд"
+
+msgid "Behind"
+msgstr "Назад"
+
+msgid "Left"
+msgstr "Влево"
+
+msgid "Sky"
+msgstr "Небо"
+
+msgid "Ground"
+msgstr "Земля"

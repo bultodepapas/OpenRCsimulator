@@ -48,7 +48,7 @@ const GEAR_EXTENDED := "The Phoenix landing gear is used for runway starts. Retr
 const TEXTURES_LIMITED := "This model uses more than %s textures; %s of them were not imported, so those parts keep their plain colour."
 const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg."
 const MOVING_PARTS := "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
-## Alpha textures up to this many pixels (stock glass is 32 x 32) are reduced to their average colour.
+## Glass textures up to this many pixels (stock glass is 32 x 32) are reduced to their average colour.
 const UNIFORM_PIXELS := 64 * 64
 ## Stacked wings: a second mirrored airfoil this large and this close fore-and-aft (both relative to the main
 ## wing span) is another lifting wing, not a tailplane.
@@ -129,8 +129,11 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		var decoded := PhoenixTexture.decode(bytes.value) if bytes.ok else bytes
 		if decoded.ok:
 			var image: Image = decoded.value.image
-			# A small alpha texture is glass: use its average colour rather than a texture of uncertain registration.
-			decoded.value.uniform = bool(decoded.value.has_alpha) and image.get_width() * image.get_height() <= UNIFORM_PIXELS
+			# A small texture with graded or cut-out alpha is glass or a blur disc, and so is a small glass
+			# texture whose alpha is all clear: its average colour gives a consistent, visible canopy tint.
+			var alpha := str(decoded.value.alpha)
+			decoded.value.uniform = image.get_width() * image.get_height() <= UNIFORM_PIXELS and (bool(decoded.value.has_alpha)
+				or (alpha == PhoenixTexture.ALPHA_ZERO and found.to_lower().contains("glass")))
 			textures[str(wanted).to_lower()] = decoded.value
 			texture_hashes[found] = decoded.value.sha256
 		else:
@@ -150,7 +153,7 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		format = FORMAT, model_id = model_id, name = str(model.get("name", model_id)),
 		definition = {file = label, sha256 = CreatorBytes.sha256(mod_bytes.value)},
 		geometry = {file = geo_name, sha256 = geo.value.sha256},
-		textures = texture_hashes, metres_per_unit = scale, size = size,
+		textures = texture_hashes, texture_profile = PhoenixTexture.PROFILE, metres_per_unit = scale, size = size,
 		coordinate_frame = "gltf: +X left, +Y up, +Z forward", physics_imported = false,
 		model_type = str(model.get("type", "")),
 	}

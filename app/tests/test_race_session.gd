@@ -358,8 +358,19 @@ func _case_prepare() -> Node:
 		and identity.start.race_course == s.course.identity and s.course.track_id == "openrc-practice-oval-1")
 	var free := _session({race_track = ""})
 	_check("1 a session prepared without race_track has an empty race identity and a different identity",
-		free.prepared and free.race == null and free.identity().race.course == "" and free.identity().race.ruleset == ""
+		free.prepared and free.race == null and free.records_identity().is_empty() and free.identity().race.course == "" and free.identity().race.ruleset == ""
 		and var_to_bytes(free.identity()) != var_to_bytes(identity) and free.input_size() == FC.INPUT_SIZE, free.load_error)
+	var category: String = s.records_identity()
+	var opts := {race_track = TRACK, throttle_limit = THROTTLE_LIMIT}
+	_check("the same course, obstacle inventory and law reproduce the records key", free.prepare(_field, opts)
+		and not category.is_empty() and category != s.course.identity and free.records_identity() == category)
+	opts.crash_model = "graded"
+	_check("a different admitted crash law has separate records on identical gates and obstacles", free.prepare(_field, opts)
+		and free.course.identity == s.course.identity and free.collision_identity() == s.collision_identity()
+		and free.records_identity() != category)
+	var graded_key: String = free.records_identity()
+	_check("removing scenery on the pad changes the records key with the same gates and law", free.set_collision_world({})
+		and free.course.identity == s.course.identity and free.records_identity() != graded_key)
 	free.queue_free()
 	return s
 
@@ -440,6 +451,9 @@ func _case_start(s: Node, log: Dictionary) -> bool:
 			var held := _frame_bytes(s)
 			var tape: PackedFloat64Array = s.tape()
 			var tick: int = s.sim.tick
+			var category: String = s.records_identity()
+			_check("an active countdown cannot swap to a different obstacle world while paused",
+				not s.set_collision_world({}) and s.records_identity() == category and _frame_bytes(s) == held)
 			var none := true
 			for _j in 30:
 				none = none and not s.tick_once(_idle_pilot(1))

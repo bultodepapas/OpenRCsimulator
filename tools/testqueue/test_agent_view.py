@@ -57,6 +57,63 @@ class WaitReasonTests(unittest.TestCase):
 
 
 class CompactStatusTests(unittest.TestCase):
+    def test_wait_exposes_host_cause_observation_times_and_next_action(self):
+        for reason, code, action in (("OFFLINE", "NO_ONLINE_HOST_FOR_PLATFORM", "connectivity"),
+                                     ("BUSY", "HOST_BUSY", "owner"),
+                                     ("INSUFFICIENT_DISK: 126 < 130 bytes", "DISK", "space")):
+            with self.subTest(reason=reason):
+                row = _row("WAITING", "linux", [_cand("linux", reason)],
+                           admission_wait={"first_observed_at": 100, "last_observed_at": 120}, retry_after=124)
+                view = agent_view.compact_row(row)["waiting"]
+                self.assertEqual((view["first_observed_at"], view["last_observed_at"], view["next_probe_at"]),
+                                 (100, 120, 124))
+                self.assertEqual((view["code"], view["hosts"]), (code, {"linux": [reason]}))
+                self.assertIn(action, view["next_action"])
+
+    def test_failure_stage_uses_current_and_historical_receipts(self):
+        for active in ({"reason": "EXTERNAL_SIMULATOR: preserve unmanaged process", "state": "QUEUED"},
+                       {"reason_code": "EXTERNAL_SIMULATOR", "state": "DISPATCHING"},
+                       {"reason_code": "EXTERNAL_SIMULATOR", "state": "STARTING"}):
+            row = _row("TRACKING", status={"pool_host": "original", **active})
+            item = agent_view.compact_row(row)
+            self.assertEqual((item["host"], item["stage"], item["waiting"]["code"]),
+                             ("original", "admission", "EXTERNAL_SIMULATOR"))
+        for failure in ({"error": "Refused: external Godot process detected; it was not touched"},
+                        {"error": "EXTERNAL_SIMULATOR appeared during preparation; no process started"},
+                        {"reason_code": "EXTERNAL_SIMULATOR"}):
+            row = _row("DONE", status={"outcome": "INFRA_FAILED", **failure},
+                       collection={"diagnostic_stage": "execution"})
+            item = agent_view.compact_row(row)
+            self.assertEqual((item["stage"], item["cause"]), ("admission", "EXTERNAL_SIMULATOR"))
+        status = {"reason_code": "MISSING_RECEIPT", "error": "restore original receipt", "state": "UNKNOWN"}
+        blocked = agent_view.compact_row(_row("BLOCKED", status=status))
+        self.assertEqual((blocked["stage"], blocked["cause"]), ("dispatch", "MISSING_RECEIPT"))
+        for name, expected in (("j-blocked", "MISSING_RECEIPT"), ("other", None)):
+            error = f"[Errno 2] No such file or directory: 'C:/pool/jobs/{name}.json'"
+            saved = agent_view.compact_row(_row("BLOCKED", status={"state": "UNKNOWN", "error": error}))
+            self.assertEqual(saved.get("cause"), expected)
+        checked = {"elapsed_seconds": 5.6, "reason": "process_exit"}
+        for reports in ({"runner_verdict": {"checked": checked}}, {"checked": checked}):
+            item = agent_view.compact_row(_row("DONE", status={"outcome": "TEST_FAILED", **reports}))
+            self.assertEqual((item["cause"], item["stage_seconds"]), ("process_exit", {"check": 5.6}))
+
+    def test_compact_row_exposes_measured_coordinator_and_transfer_durations(self):
+        row = _row("DONE", status={"transfer_seconds": 1.25})
+        row["coordinator_seconds"] = {"placement": 3.1, "collection": 0.3}
+        self.assertEqual(agent_view.compact_row(row)["stage_seconds"],
+                         {"placement": 3.1, "transfer": 1.25, "collection": 0.3})
+
+    def test_transfer_in_progress_shows_elapsed_time_instead_of_a_past_refusal(self):
+        row = _row("SUBMITTING", status={"state": "SUBMITTING", "stage": "placement"})
+        row.update(placement_started_at=100, first_error="old refusal")
+        row["input"]["host"] = "pinned"
+        with patch.object(agent_view.time, "time", return_value=145):
+            item = agent_view.compact_row(row)
+        self.assertEqual((item["stage"], item["host"], item["placement_elapsed_seconds"]),
+                         ("placement", "pinned", 45.0))
+        self.assertNotIn("error", item)
+        self.assertNotIn("waiting", item)
+
     def test_failed_row_carries_cause_markers_and_flagged_log_lines(self):
         with tempfile.TemporaryDirectory() as tmp:
             log = Path(tmp) / "engine.log"

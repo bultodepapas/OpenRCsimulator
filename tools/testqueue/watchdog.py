@@ -4,7 +4,9 @@ One pass:
 
 * resumes, via the idempotent ``pool_mcp.recover``, every MCP request that has
   a frozen manifest, no final result, no live supervisor, is not
-  ``NEEDS_OPERATOR`` and changed within ``--max-age-hours`` (default 6). Older
+  waiting for operator reconciliation and changed within ``--max-age-hours``
+  (default 6). A new-format, proved capacity wait can wake a stopped
+  observer once an eligible host returns. Older
   ones are reported as stale, never resumed: their queued tests would run days
   old source.
 * with ``--serve-engine``, starts ``testctl serve`` when the local authority does
@@ -30,11 +32,13 @@ sys.path.insert(0, str(REPO))
 from tools.testqueue import pool_mcp
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.pool import Pool, default_config
+from tools.testqueue.pool_batch import BATCH_VERSION
+from tools.testqueue.pool_policy import plan as plan_placement
 
 FINAL = {"PASSED", "FAILED"}
 # ERROR is a supervisor decision with a reason (e.g. changed inputs), not a
 # lost process: resuming it would only repeat the error every pass.
-SKIP_STATES = {"NEEDS_OPERATOR", "FINISHED", "ERROR"}
+SKIP_STATES = {"FINISHED", "ERROR"}
 MAX_RESUMES_PER_DAY = 6
 
 
@@ -55,15 +59,42 @@ def _last_change(directory: Path) -> float:
     return max(times, default=0.0)
 
 
+def _capacity_waits(batch):
+    # Legacy SUBMITTING and v1 WAITING can denote an accepted attempt.
+    # Only the planner's explicit no-placement decision can wake an observer.
+    if batch.get("version") != BATCH_VERSION:
+        return
+    for row in batch.get("jobs") or []:
+        if not isinstance(row, dict) or not isinstance(row.get("input"), dict):
+            continue
+        status = row.get("status") or {}
+        if not isinstance(status, dict):
+            continue
+        decision = status.get("decision") or {}
+        job = status.get("placement_job")
+        if (row.get("phase") == "WAITING" and status.get("state") == "WAITING"
+                and isinstance(decision, dict) and decision.get("selected", False) is None
+                and decision.get("candidates") and isinstance(job, dict)
+                and isinstance(job.get("cache_id"), str) and job["cache_id"]
+                and job.get("platform") == row["input"].get("platform") and row.get("request_id")):
+            yield row, job
+
+
 def plan(pool, *, max_age_hours: float, now: float | None = None) -> dict:
     now = time.time() if now is None else now
-    resume, stale, skipped = [], [], 0
+    resume, stale, unreadable, skipped = [], [], [], 0
+    observations, by_source = None, {}
+    probe_error = None
     root = pool.root / "mcp"
     for directory in sorted(root.iterdir() if root.is_dir() else []):
         if not directory.is_dir() or not (directory / "manifest.json").exists():
             continue
-        batch = _read(directory / "batch.json") or {}
-        supervisor = _read(directory / "supervisor.json") or {}
+        batch_path, supervisor_path = directory / "batch.json", directory / "supervisor.json"
+        batch = _read(batch_path) if batch_path.exists() else {}
+        supervisor = _read(supervisor_path) if supervisor_path.exists() else {}
+        if not isinstance(batch, dict) or not isinstance(batch.get("jobs", []), list) or not isinstance(supervisor, dict):
+            unreadable.append(directory.name)
+            continue
         if batch.get("result") in FINAL or supervisor.get("state") in SKIP_STATES:
             skipped += 1
             continue
@@ -73,17 +104,61 @@ def plan(pool, *, max_age_hours: float, now: float | None = None) -> dict:
         age_hours = (now - _last_change(directory)) / 3600
         entry = {"request_id": directory.name, "supervisor": supervisor.get("state"),
                  "idle_hours": round(age_hours, 1)}
-        (resume if age_hours <= max_age_hours else stale).append(entry)
-    return {"resume": resume, "stale": stale, "skipped": skipped}
+        if age_hours > max_age_hours:
+            stale.append(entry)
+            continue
+        if supervisor.get("state") == "NEEDS_OPERATOR":
+            for row, job in _capacity_waits(batch):
+                if observations is None:
+                    try:
+                        observations = pool.probe()  # one fresh inventory per watchdog pass
+                    except Exception as error:
+                        # The authority restart and ordinary supervisor recovery still run.
+                        observations, probe_error = [], str(error)[:200]
+                candidates = observations
+                if not row["input"].get("host"):
+                    source = job["cache_id"]
+                    if source not in by_source:
+                        by_source[source] = pool._circuit([dict(item) for item in observations], source)
+                    candidates = by_source[source]
+                bound_host = row["input"].get("host") or row["status"].get("placement_host")
+                if bound_host:
+                    candidates = [item for item in candidates if item["id"] == bound_host]
+                try:
+                    selected = plan_placement(job, candidates)["selected"]
+                except ValueError:
+                    continue  # Unusable cached placement data needs manual observation.
+                if selected is not None:
+                    entry["capacity_available_for"] = row["request_id"]
+                    break
+            else:
+                skipped += 1
+                continue
+        resume.append(entry)
+    report = {"resume": resume, "stale": stale, "skipped": skipped}
+    if unreadable:
+        report["unreadable_requests"] = unreadable
+    if probe_error is not None:
+        report["capacity_probe_error"] = probe_error
+    return report
 
 
-def authority_answers() -> bool:
+def authority_status(root: Path) -> tuple[str, str | None]:
     from tools.testqueue.common import rpc
     try:
-        rpc("hosts", timeout=5)
-        return True
-    except Exception:
-        return False
+        rpc("hosts", root=root, timeout=5, deadline=time.monotonic() + 5)
+        return "answers", None
+    except Exception as error:
+        detail = str(error)[:200]
+    # An unresponsive owner may still be starting, or blocked in storage.
+    # A new serve process cannot acquire its persistent singleton.
+    try:
+        lock = root / "worker.lock"
+        if lock.exists():
+            Singleton(lock).close()
+    except OSError as error:
+        return "worker lock unavailable", f"{detail}. {error}"
+    return "unavailable", detail
 
 
 def start_authority(engine: str, log: Path) -> None:
@@ -121,10 +196,19 @@ def run_once(config=None, *, max_age_hours=6.0, dry_run=False, serve_engine=None
     from tools.testqueue.common import state_root
     report["authority_root"] = str(state_root())
     if serve_engine:
-        answers = authority_answers()
-        report["authority"] = "answers" if answers else ("would start" if dry_run else "started")
-        if not answers and not dry_run:
-            start_authority(serve_engine, pool.root / "watchdog-serve.log")
+        status, error = authority_status(state_root())
+        report["authority"] = status
+        if error:
+            report["authority_detail"] = error
+        if status == "unavailable":
+            if dry_run:
+                report["authority"] = "would start"
+            else:
+                try:
+                    start_authority(serve_engine, pool.root / "watchdog-serve.log")
+                    report["authority"] = "start requested"
+                except OSError as error:
+                    report.update(authority="start failed", authority_detail=str(error)[:200])
     if not dry_run:
         try:
             write_json(pool.root / "watchdog.json", report)

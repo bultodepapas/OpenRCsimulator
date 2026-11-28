@@ -34,7 +34,7 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 **SF-01…03.** A session installs one `VehicleModel`; the kernel owns integration, event handling, accepted state and rollback, while models/adapters own vehicle laws and layout. Scalar and packed float64 state preserves small dynamics that Godot rendering types can lose. Rendering converts at the boundary. This eliminates competing tick/checkpoint implementations without adding vehicle branches to the kernel. The [kernel contract](STACK.md#boundaries-and-data-flow) owns coordinates, state layout, timing and callback rules.
 
-### Native acceleration replaces a stage, not the transaction
+### Native acceleration keeps the reference as its specification
 
 **SF-08 / NK-3.** Keep the GDScript reference selectable and replace only an identified evaluation boundary. Receipts and replay bind the actual backend; unsupported configurations or unverified artifacts retain the reference. Owner-directed NK-3 promotion supersedes the blanket fixed-wing deferral: ordinary application flights request native by default for the verified Linux x86_64 aircraft catalog and admitted conditions, including coupled electric/battery, finite glow, liquid combustion, turbine and helicopter capabilities. The shared kernel and existing start, weather and runtime contracts remain authoritative. Completed flights, startup refusals, runtime refusals and terminal collisions carry separate evidence. Low-level sessions remain reference by default. NK-4 admits Windows x86_64 source/debug runs on the same evidence rule: a MinGW-w64 build with engine-matching math (no `sincos` fusion, the Windows engine's lerp order, SSE2 `sqrtsd`) is bit-identical, so the D3 NaN-class tolerance tier is not used; its installation sits beside the Linux one, never over it ([NK-4](research/native-kernel/NK-4/README.md)). Windows release packages, macOS admission and target-host Gate P remain separate qualifications.
 
@@ -43,6 +43,8 @@ The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualif
 **Owner, 2026-11-20: native is the runtime, GDScript the specification.** Performance and flight-feel work runs on the native backend; confirm the logged backend before measuring. The GDScript reference is not retired: the C++ mirrors it bit for bit, so it remains the specification, the qualification oracle, the fallback and the only physics for imported aircraft, servo law, the airship and the multirotor. Historical `.orfl` baselines and replay keep their recorded backend. A fallback from a native request must be visible, not just a log line. [Legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
 
 **DX-06, 2026-11-20; explicit owner preference.** Prefer native development and the native kernel whenever feasible and appropriate, including when planning new simulation work. The [shared native-development rules](../AGENTS.md#native-development) own that preference and its implementation/target-platform criteria. Choosing native does not require first exceeding 500 µs; the budget, reference contract and qualification gates still apply. GDScript remains appropriate where its integration and maintenance advantages serve the task. This is a development direction, not evidence that a new backend, platform or workload is qualified.
+
+**Owner, 2026-11-26: a native core, not native helpers (NK-6).** Offered native helpers inside the GDScript tick transaction or a native tick, the owner chose "núcleo nativo, todo nativo". This supersedes the rule that native code evaluates only model callbacks while `Simulation` integrates. For a model whose stage the kernel owns, the kernel integrates the tick from its first stage to the accepted endpoint. That covers RK4 and its substeps, the declared-event locator and every refusal, with the model's remaining GDScript callbacks called where the reference calls them. Later NK-6 steps port those callbacks, step policies and the helicopter tick. `Simulation` keeps the commit, publication, checkpoints and fault recovery. It runs any tick the kernel does not answer. The GDScript reference stays selectable and is the specification: every native tick must be byte-identical to it, and backend identity, replay and qualification rules are unchanged. [NK-6a](research/native-kernel/NK-6a/README.md).
 
 **DT-MAC-04n1–n4, source-editor admission.** The Apple ARM64 port retains that
 stage boundary and float64 authority. Initial source-default adoption used an exact
@@ -557,6 +559,28 @@ checked-evidence contract is intentionally narrower than a complete per-preset
 artifact inventory; broaden retention only after the ownership, reader-lifetime
 and native durability gates in the [handoff](research/testqueue/2026-11-15-resilience/implementation.md#16-november-re-audit-of-current-main-and-the-review-branch).
 
+**TQ-04-R8 / TQ-05-F0.7, reproducible remote inputs, 2026-11-25.** A remote checked job
+that finished with confirmed cleanup may lose, after the coordinator re-verifies its
+collected evidence, only bytes it can regenerate: archive copies, Godot's import
+cache, Python bytecode and source files whose size and SHA-256 match the job's own
+verified inventory. Files the run wrote or changed stay as reported residue, which
+answers the capture-evidence concern above; `UNKNOWN`, unconfirmed and
+operator-reconciled jobs are never touched. Placement may run this, time-bounded, for
+a host it refuses for disk; a remote `run` refused `BUSY` meanwhile wrote no job and
+is deferred under the same ID. Retained failures
+had filled the Linux host (24 of 25 GB) while rows waited on disk for hours. Local
+`retention.py` already removes whole failed checked sources (TQ-05-F0.1).
+
+**TQ-04-R1, explicit local refusals, 2026-11-25.** An explicit refusal from the
+local authority is settled by that authority's durable submission tombstone after
+`recover` shows no acceptance; it is not inferred from the reply. Transport
+failures stay uncertain, and a refused replay waits ten minutes so a late original
+can still be found. A transient error reply therefore ends the row `REJECTED`
+(relaunch) rather than reserving the host. An acceptance landing between `recover`
+and `cancel_submission` is canceled, never duplicated; an atomic tombstone-if-absent
+operation would remove that window. Checked submissions no longer require the frozen
+worktree to exist; history presets still do.
+
 ### Keep a senior lead with bounded, evidence-producing helpers
 
 **DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**
@@ -701,4 +725,60 @@ field only as the operator `usage_backend` table. Deploy the receiver before tag
 the planned output size to seed individual graphics options. Unknown or ambiguous models
 start at Low with a visible explanation. Track ownership per quality option across
 GPU changes and renderer recovery. The [automatic graphics plan](plans/automatic-graphics.md#first-launch-policy-on-main)
-owns thresholds, hardware examples and evidence limits.
+owns thresholds, hardware examples and evidence limits. **GFX-IGPU-01, 2026-11-22:**
+recognized integrated or software GPUs below the Low threshold also start at a 75 %
+3D render scale. Lowering pixels was the largest measured gain on a UHD 630; driver
+tuning offered none.
+
+**VQ-07d, 2026-11-22.** Following the owner's low-end default request, enable
+dynamic resolution for eligible new profiles and graphics restores when the
+current renderer exposes completed GPU timing. Keep saved targets and ceilings
+across renderer changes. Preserve the Retina MetalFX Spatial policy and fixed
+fallbacks. The [dynamic resolution plan](plans/dynamic-resolution.md#phase-3--implement-the-controller-and-player-controls-m2)
+owns the starting range, capability checks and remaining qualification.
+
+**VQ-07h-A2-R1 / VQ-07d, 2026-11-23.** Apply a lightweight bundle to new
+profiles on identified constrained GPUs and explain it once in Home. Saved
+profiles keep their settings. Keep ground and tree detail independent so players
+can raise individual settings. Automatic keeps simple tree silhouettes for
+collidable placements. The player's explicit Tree detail Off hides those
+silhouettes and preserves the same collision world. Compatibility uses
+rendered-frame cadence to test temporary reductions in pixel load.
+[Lightweight profile](plans/low-end-gpu-performance.md#lightweight-first-start-profile)
+
+### V2 — Bind the shooting package to one explicit revision
+
+**22 November 2026.** The trailer index selects one active script, numeric shot plan, title plan and direction sheet. Generated shot cards, cut tables, maps and camera recipes derive from that revision; title/assembly validation refuses a mixed current/legacy edit. Preserve older locked scripts and their evidence alongside the current package, but do not treat them as current filming instructions. This avoids several plausible yet conflicting scene orders and camera settings.
+
+Keep camera composition separate from aircraft/session admission. A water-plane look target records actual presented CG separately, uses the source lake plane and requires current engine-frame/session-tick evidence. It changes presentation only. Workshop trial IDs and strict ground harnesses retain their real admission boundaries; a proposed shot does not authorize weakening them to make a camera recipe run.
+
+The master uses distinct, frozen lighting sessions with explicit context changes; it does not imply one continuous day. Bind source time arguments and actual readback, because an inherited clock can override a named preset and a frozen sun does not freeze adaptive exposure. Revisit geometry or integration after real rehearsal, regenerating all dependent instructions together. [Current production package](../tools/trailer/preproduction/README.md), [direction contract](../tools/trailer/preproduction/direction-and-continuity.md).
+
+### The accident ledger samples gear support once per frame
+
+**F1, 2026-11-26; explicit owner decision.** The accident ledger (`economy/incident.gd`) holds ticks whose only events
+are persistent gear-support samples and observes them once per frame with each wheel's peak compression. It observes
+every other event, a crash or a restore at its own tick, after the held samples. A checkpoint, an evaluation, an
+archive flush or a ledger action releases the held samples first. Per tick, the bound, revalidation and SHA-256 of
+every sample cost about 0.36 ms of each rolling 240 Hz tick.
+
+Peaks, recommendations and assessed components equal per-tick observation
+([test](../app/tests/test_accident_ledger_hold.gd)). The evidence tick of a held sample and the internal revision
+counts are per frame. `has_damage()` can lag by up to one frame. Persistent hull contacts remain per tick. Revisit if
+a gear damage rule needs per-tick sample timing.
+
+### A native flight freezes its guarded configuration
+
+**F1 / NK-6p, 2026-11-27; explicit owner decision.** Once the kernel accepts a fixed-wing native stage, the
+session's guarded containers become read-only all the way down: the aircraft dictionary, the hull contact and the lake
+(`NativeConfiguration.freeze_guarded`). Godot cannot make a container writable again. The configuration guard
+therefore proves each frozen root's shape by its identity and drops its deep comparison per tick (16–42 → 6–8 µs).
+A later container write fails where it is made, as an engine read-only error, instead of faulting the next native
+tick. Packed arrays are the exception: the engine shares a packed array's buffer with every alias, so an element
+write changes it in place even under a read-only parent. Each packed leaf therefore keeps a bitwise watch, and such
+a write still faults the next native tick. Replacing a root with another instance still refuses the tick. Writable
+containers keep the guard's comparison.
+
+No production code writes these containers after setup. The guard's own tests turn the freeze off to keep covering
+that comparison ([test](../app/tests/test_native_frozen_configuration.gd)). Revisit if a feature must edit the
+aircraft during a native flight: it should replace the dictionary at an accepted boundary instead.

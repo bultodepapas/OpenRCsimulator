@@ -29,7 +29,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Product telemetry
 
-- [Transparent telemetry, 2026-11-18](telemetry/TELEM-00/README.md): 38 primary-source investigations, repository integration audit, independent review, versioned schemas, synthetic examples and offline contract tests. The [TELEM plan](../plans/telemetry.md) owns implementation phases; no runtime collection or receiving service is active.
+- [System audit, 2026-11-22](telemetry/TELEM-AUDIT-2026-11-22/README.md): 13 findings (2 High, 10 Medium, 1 Low) across client, receiver, publication, operations, local HUD and recording; a second pass with five additional findings, two validation gaps and three optimization opportunities, plus baseline evidence, with explicit deployment and native-platform limits.
+- [Transparent telemetry, 2026-11-18](telemetry/TELEM-00/README.md): 38 primary-source investigations, repository integration audit, independent review, versioned schemas, synthetic examples and offline contract tests. The [TELEM plan](../plans/telemetry.md) owns implementation phases; at that research snapshot, no runtime collection or receiving service was active.
 - [Telemetry implementation verification, 2026-11-18](telemetry/TELEM-02/README.md): client, UI, receiver and release-configuration checks for TELEM-02…11, with review dispositions and remaining activation limits.
 - [Adaptive telemetry follow-up, 2026-11-18](telemetry/TELEM-00-R1/README.md): 30 additional investigations in ten/review/ten/ten sequence, including eight non-English source languages; revised operational and publication contracts, test-only generative coverage and a frozen-intent reference. The method record discloses corrected discovery-query deviations.
 
@@ -61,6 +62,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Entry points per track
 
+### Intel UHD 630
+
+The [22 November external investigation](god-test/2026-11-22-intel-gpu-investigation.md) revisited the [Linux tour results](god-test/2026-11-22-linux-uhd630-comparison.md). The [render-internals study](god-test/2026-11-22-intel-render-internals.md) identified sixteen hypotheses. The [adversarial audit](god-test/2026-11-22-intel-plan-adversarial-audit.md) checked their evidence and the [experiment design](god-test/2026-11-22-intel-gpu-experiments.md) describes the proposed Green/Club comparisons. Each study links its original inputs where available. The current execution order and acceptance criteria live in the [Intel performance plan](../plans/low-end-gpu-performance.md).
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.
@@ -69,7 +74,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Cinematic trailer
 
-[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](cinematic-trailer/production-2026-10-17.md) records the first delivery and source identities; [revision 6](cinematic-trailer/revision-6-2026-10-17.md) removes the abrupt ending reset for a 58-second cut, retaining the cinematic feature titles, MONSTER CAR 2 jump, twilight Lumber, two Extra rolls, formation opening and continuous score. The [production plan](../plans/cinematic-trailer.md) retains creative targets and remaining release gates.
+[TRA-00 source investigation, 2026-10-17](../../tools/trailer/history/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](../../tools/trailer/history/production-2026-10-17.md) records the first delivery and source identities; [revision 6](../../tools/trailer/history/revision-6-2026-10-17.md) removes the abrupt ending reset for a 58-second cut, retaining the cinematic feature titles, MONSTER CAR 2 jump, twilight Lumber, two Extra rolls, formation opening and continuous score. The [production plan](../../tools/trailer/history/cinematic-trailer.md) retains creative targets and remaining release gates.
 
 ### Flight logging
 

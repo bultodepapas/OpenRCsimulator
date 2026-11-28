@@ -51,6 +51,14 @@ class PoolTests(unittest.TestCase):
         self.assertEqual(result['state'], 'WAITING')
         rpc.assert_not_called()
 
+    def test_pinned_placement_does_not_wait_for_other_hosts_to_answer(self):
+        self.pool.hosts.append({'id': 'elsewhere'})
+        with patch('tools.testqueue.pool.verify', side_effect=verified_fixture), \
+                patch.object(self.pool, 'probe_host', return_value={'id': 'windows', 'online': False}) as probe:
+            result = self.pool.submit(self.snapshot, 'res://tests/test_math3d.gd', host_id='windows')
+        self.assertEqual(result['state'], 'WAITING')
+        probe.assert_called_once_with(self.pool.hosts[0])
+
     def test_manifest_swap_between_batch_hash_check_and_verification_is_rejected(self):
         path = self.snapshot / 'manifest.json'
         expected = hashlib.sha256(path.read_bytes()).hexdigest()

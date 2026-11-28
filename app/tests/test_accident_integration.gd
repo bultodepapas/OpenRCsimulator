@@ -141,12 +141,17 @@ func _run() -> void:
 	check("unknown structural damage does not invent total loss or servo salvage", incident.report.get("total_minor") == null and incident.report.get("salvage_minor") == 0 and incident.report.get("outcome") != "total_loss")
 	var original_hash: String = session.aircraft.input_identity.sha256
 	var before_reload: Dictionary = incident.report.duplicate(true)
-	session.aircraft.input_identity.sha256 = "developer-reload-test"
+	# A reload replaces the aircraft dictionary; a native flight's own is read-only (NK-6p). The original instance is
+	# back before the next tick, so the native configuration guard never sees the copy.
+	var original_aircraft: Dictionary = session.aircraft
+	var reloaded: Dictionary = original_aircraft.duplicate(true)
+	reloaded.input_identity.sha256 = "developer-reload-test"
+	session.aircraft = reloaded
 	enabled._on_accident_contacts()
 	check("source changes quarantine contacts without catalog, publication or archive work in callback", enabled._accident_reload_pending and enabled._accident_source_hash == original_hash and incident.report == before_reload)
 	enabled._update_accident_report()
 	check("frame-boundary rebind refuses stale prices for a changed aircraft", incident.report.get("outcome") == "unavailable" and incident.report.get("total_minor") == null and enabled._accident_source_hash == "developer-reload-test")
-	session.aircraft.input_identity.sha256 = original_hash
+	session.aircraft = original_aircraft
 	enabled._on_accident_contacts()
 	enabled._update_accident_report()
 	session.reset()

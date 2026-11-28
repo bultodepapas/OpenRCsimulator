@@ -47,8 +47,8 @@ sim_test_run: {"jobs":[{"script":"res://tests/test_x.gd","platform":"linux","ren
 | Item | Value |
 | --- | --- |
 | Slots | 1; a second job waits with `HOST_BUSY` |
-| CPU / RAM | 4 cores (low priority), 3 GiB + 512 MiB swap. While a job runs, the node squeezes its other VMs to make room |
-| Rendered scene size | Light and medium scenes pass (math/camera checks, `phoenix_real_render`, landscape import). **Heavy scenes do not fit:** the iGPU allocates from system RAM outside the CT limit. Flight scenes and `test_advanced_graphics_settings` with Vulkan and MSAA 8x exhausted it, and such a job now fails inside the CT. Run heavy rendered checks on a machine with more RAM or a dedicated GPU |
+| CPU / RAM | 6 cores (low priority), 6 GiB + 512 MiB swap. The node temporarily reclaims memory from other VMs during pool activity |
+| Rendered scene size | Light and medium scenes pass (math/camera checks, `phoenix_real_render`, landscape import). Earlier Vulkan flight and 8× MSAA jobs exhausted memory under the 3 GiB allocation. The iGPU also uses physical node RAM. Verify demanding scenes at their intended settings |
 | Upload per attempt | Full snapshot, ~3.9 GB at ~11 MB/s, about 6 min, until TQ-05-F3.2. The pool includes this in placement, so unpinned headless work usually goes to `linux` |
 | Import | About 20 s with the host's import cache; a cold import takes minutes |
 | Engine | The pinned 4.8-beta2 official binary; the SHA-256 matches the pool config |
@@ -58,11 +58,11 @@ sim_test_run: {"jobs":[{"script":"res://tests/test_x.gd","platform":"linux","ren
 | Symptom | Cause and action |
 | --- | --- |
 | `offline_reason: Bad permissions … openrc_testlab_ed25519` | The MCP uses Windows OpenSSH, which refuses a key readable by groups. Restrict the key's ACL to the user, SYSTEM and Administrators. |
-| Offline, SSH timeout | CT stopped or node unreachable. The node's watchdog stops the CT when node memory, the egress filter or thin-pool space is at risk; a start guard also refuses to start it in those conditions. The operator restarts it on the node. |
+| Offline, SSH timeout | CT stopped or node unreachable. The node watchdog stops the CT if node `MemAvailable` stays below 1536 MiB for 45 s or below 768 MiB for 10 s. The egress filter and thin-pool checks can also stop the CT. A separate startup guard checks admission. The operator checks the watchdog journal before restarting the CT. |
 | `INSUFFICIENT_MEMORY` while another job runs | Expected; one job at a time. |
-| `INFRA_FAILED`, `import: timeout` | A cold import does not fit the default 90 s budget on 4 cores. The host's [import cache](../../tools/testqueue/README.md#remote-import-cache) fixes that once one job imports completely. Give the first job after an engine or asset change a larger `timeout` (for example 900). |
+| `INFRA_FAILED`, `import: timeout` | A cold import can exceed the default 90 s budget. The host can seed its [import cache](../../tools/testqueue/README.md#remote-import-cache) once one job imports completely. Give the first job after an engine or asset change a larger `timeout` (for example 900). |
 | Rendered job `INFRA_FAILED`, `gpu.reason` set | The GPU lane was not usable (compositor, render node, driver). Report it; do not retry on another host as a pass. |
-| Rendered job `INFRA_FAILED` with `TeardownUnconfirmed`, or the host goes offline mid-job | The scene was too large for the node's RAM. The CT ran out of memory, or the node's watchdog stopped it. Use a lighter scene or another machine. After the CT restarts, the operator runs `testctl.py pool remote-reconcile --host primis JOB` to clear the quarantine. |
+| Rendered job `INFRA_FAILED` with `TeardownUnconfirmed`, or the host goes offline mid-job | Check the CT and watchdog logs for the cause. If memory pressure caused the stop, use a lighter scene or another machine. After the CT restarts, the operator runs `testctl.py pool remote-reconcile --host primis JOB` to clear the quarantine. |
 | `INSUFFICIENT_DISK` on `primis` | Failed jobs keep their source copy for 1 h; an hourly timer then removes it. `pool gc --host primis --execute` removes collected passing jobs. |
 | Status stays `total: 0`; supervisor `ERROR: source changed during snapshot` | Another session edited the tree while it was being frozen. Pass `source` pointing to a clean worktree (for example `git worktree add --detach <dir> HEAD`). |
 | `pool configuration changed` on recovery | The pool config was edited while that job was unfinished. Restore the previous config to recover it. |

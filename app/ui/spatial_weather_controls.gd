@@ -59,11 +59,11 @@ const THERMAL_HORIZON_ERROR := "Thermal field requires a time horizon of at leas
 var title_label: Label
 var preset_label: Label
 var preset_picker: OptionButton
-var enable_check: CheckBox
+var enable_check: CheckButton
 var status_label: Label
 var domain_summary_label: Label
 var spatial_note: Label
-var advanced_check: CheckBox
+var advanced_check: CheckButton
 var turbulence_note: Label
 var gust_note: Label
 var basic_grid: GridContainer
@@ -98,8 +98,9 @@ func _init(initial_spatial: Variant = null, enabled: bool = false) -> void:
 	preset_picker.item_selected.connect(_on_preset_selected)
 	add_child(preset_picker)
 
-	enable_check = CheckBox.new()
+	enable_check = CheckButton.new() # UI-40q (UI-40 CO-4): the common switch
 	enable_check.name = "EnableSpatialWind"
+	enable_check.theme_type_variation = "SettingsToggle"
 	enable_check.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	enable_check.toggled.connect(_on_enabled_toggled)
 	add_child(enable_check)
@@ -123,8 +124,9 @@ func _init(initial_spatial: Variant = null, enabled: bool = false) -> void:
 	for key: String in BASIC_KEYS:
 		_add_field(basic_grid, key)
 
-	advanced_check = CheckBox.new()
+	advanced_check = CheckButton.new()
 	advanced_check.name = "SpatialAdvancedSettings"
+	advanced_check.theme_type_variation = "SettingsToggle"
 	advanced_check.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	advanced_check.toggled.connect(_on_advanced_toggled)
 	add_child(advanced_check)

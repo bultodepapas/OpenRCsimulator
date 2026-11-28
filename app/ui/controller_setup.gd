@@ -76,6 +76,8 @@ const KEYBOARD_PAGE_MIN_WIDTH := 700.0
 const KEYBOARD_READ_ONLY_NOTE := "Keyboard keys cannot be remapped yet."
 ## Pages that edit a controller profile; with the Keyboard selected they show its fixed map instead.
 const PROFILE_SECTIONS: Array[String] = ["profile", "axes", "aux", "buttons"]
+## UI-40p: with the fixed keyboard map these pages would only repeat "cannot be remapped", so their tabs hide.
+const KEYBOARD_HIDDEN_SECTIONS: Array[String] = ["profile", "aux"]
 const ACTION_CONFLICT_CODES: Array[String] = ["binding_conflict", "action_aux_source_conflict",
 	"action_flight_axis_conflict", "action_aux_conflict"]
 ## UI-15-UX-06: same-control conflicts that the capture overlay offers to Swap or Replace.
@@ -125,6 +127,11 @@ var calibration_scope_help: Label
 var device_lifetime_help: Label
 var calibration_saves_first := false
 var legacy_import_button: Button
+## UI-40p: the first-connection guide (keyboard only) and the folded recovery and support tools on Devices.
+var connect_guide: VBoxContainer
+var devices_advanced_button: Button
+var devices_advanced_group: VBoxContainer
+var _devices_advanced_chevron: Control
 var legacy_picker: OptionButton
 var legacy_help_label: Label
 var keep_radio_button: Button
@@ -171,6 +178,7 @@ var _profiles: Array[Dictionary] = []
 var _legacy_profiles: Array[Dictionary] = []
 var _devices: Array[Dictionary] = []
 var _draft_profile: Dictionary = {}
+var _action_rows_locale := ""
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
 var _draft_connections: Dictionary = {}
@@ -651,6 +659,7 @@ func apply_menu_verification(profile: Dictionary, device_id: int, generation: in
 	_draft_ui_device_id = device_id
 	_ui_connection = _connection_lease(device_id)
 	_refresh_devices()
+	_update_action_controls()
 	_update_menu_controls()
 	_remember_current_draft()
 	_set_status(tr("Radio menu controls are verified in the draft. Save to use this radio for menus."), false)
@@ -822,6 +831,18 @@ func _build() -> void:
 	_empty_device_label = _label("No controllers connected. Connect a gamepad or radio by USB or Bluetooth, then select it here. Keyboard and mouse remain available.", "SecondaryLabel", true)
 	_empty_device_label.name = "NoControllersConnected"
 	page.add_child(_empty_device_label)
+	# UI-40p: with only the keyboard selected, three steps beside the connection state say how to
+	# start with a radio or gamepad.
+	connect_guide = VBoxContainer.new()
+	connect_guide.name = "ConnectRadioGuide"
+	connect_guide.add_theme_constant_override("separation", 4)
+	connect_guide.visible = false
+	connect_guide.add_child(_section_label("CONNECT A RADIO OR GAMEPAD"))
+	for step: String in ["1. Connect it by USB or Bluetooth. On an EdgeTX radio, choose USB Joystick (Classic) and turn RF off.",
+			"2. Choose it as the Flight controller.",
+			"3. Press Set up this device… for stick mode, calibration, a live test and the main switches."]:
+		connect_guide.add_child(_label(step, "SecondaryLabel", true))
+	page.add_child(connect_guide)
 	page.add_child(_section_label("DEVICES"))
 	var roles := GridContainer.new()
 	_device_roles = roles
@@ -853,7 +874,7 @@ func _build() -> void:
 	var export_button := _button("Export diagnostics…", "", "ExportControllerDiagnostics")
 	export_button.pressed.connect(_open_diagnostics_export)
 	export_button.tooltip_text = tr("Export the current draft and input observed on this screen. Device identifiers are redacted.")
-	navigation_actions.add_child(export_button)
+	role_actions.add_child(export_button) # UI-40p: support tools sit with legacy recovery under Advanced
 	verify_menus_button = _button("Verify radio menus…", "", "VerifyRadioMenus")
 	verify_menus_button.pressed.connect(func() -> void: menu_verification_requested.emit())
 	navigation_actions.add_child(verify_menus_button)
@@ -875,7 +896,6 @@ func _build() -> void:
 	setup_assistant_button.pressed.connect(func() -> void: open_setup_assistant())
 	setup_assistant_button.focus_entered.connect(_queue_mapping_focus_visibility)
 	page.add_child(setup_assistant_button)
-	page.add_child(role_actions)
 	page.add_child(calibrate_button)
 	calibration_prerequisite = _label("Using an RC transmitter? Choose a radio profile before calibrating.", "SecondaryLabel", true)
 	calibration_prerequisite.name = "RadioCalibrationPrerequisite"
@@ -894,6 +914,28 @@ func _build() -> void:
 	page.add_child(calibration_scope_help)
 	page.add_child(navigation_actions)
 	page.add_child(_menu_help)
+	# UI-40p: legacy recovery and diagnostics export are rare; they fold under Advanced at the end of Devices.
+	devices_advanced_button = _button("Advanced", "QuietButton", "DevicesAdvanced")
+	devices_advanced_button.toggle_mode = true
+	devices_advanced_button.tooltip_text = tr("Recover a profile from an older version or export diagnostics for a bug report.")
+	_devices_advanced_chevron = KeyCap.Arrow.new()
+	_devices_advanced_chevron.name = "Chevron"
+	_devices_advanced_chevron.set("direction", "right")
+	_devices_advanced_chevron.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	_devices_advanced_chevron.offset_left = -30.0
+	_devices_advanced_chevron.offset_right = -12.0
+	_devices_advanced_chevron.offset_top = -9.0
+	_devices_advanced_chevron.offset_bottom = 9.0
+	devices_advanced_button.add_child(_devices_advanced_chevron)
+	devices_advanced_button.toggled.connect(set_devices_advanced_open)
+	page.add_child(devices_advanced_button)
+	devices_advanced_group = VBoxContainer.new()
+	devices_advanced_group.name = "DevicesAdvancedGroup"
+	devices_advanced_group.add_theme_constant_override("separation", 10)
+	devices_advanced_group.visible = false
+	page.add_child(devices_advanced_group)
+	devices_advanced_group.add_child(role_actions)
+	page = devices_advanced_group # the legacy recovery rows below appear inside Advanced
 	legacy_picker = _option("Legacy profile")
 	legacy_picker.visible = false
 	legacy_picker.item_selected.connect(_on_legacy_selected)
@@ -1700,14 +1742,11 @@ func _set_axis_grid_layout(use_table: bool) -> void:
 
 
 func _make_section(section_id: String, caption: String) -> VBoxContainer:
-	var button := _button(caption, "", "Section_%s" % section_id)
+	# UI-40g: the same glass tab as Settings, Help, the Hangar and the Workshop, filling its row like theirs. A
+	# shrink-wrapped glass tab kept a stale minimum width here on 4.8-beta2 and lost the last letter of "Devices".
+	var button := _button(caption, "HomeTab", "Section_%s" % section_id)
 	button.toggle_mode = true
-	var active_style := _screen.get_theme_stylebox("normal", "Button").duplicate() as StyleBoxFlat
-	active_style.border_width_bottom = 3
-	active_style.border_color = ScreenTheme.FOCUS
-	button.add_theme_stylebox_override("pressed", active_style)
-	button.add_theme_stylebox_override("hover_pressed", active_style)
-	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.pressed.connect(select_section.bind(section_id))
 	_section_navigation.add_child(button)
 	_section_buttons[section_id] = button
@@ -1812,9 +1851,21 @@ func _choose_radio_profile() -> void:
 
 
 ## Switching sections changes presentation only; all fields share the same draft.
+## UI-40p: opens or closes the Advanced group at the end of Devices.
+func set_devices_advanced_open(open: bool) -> void:
+	devices_advanced_button.set_pressed_no_signal(open)
+	devices_advanced_group.visible = open
+	_devices_advanced_chevron.set("direction", "down" if open else "right")
+	_devices_advanced_chevron.queue_redraw()
+	if open:
+		_queue_mapping_focus_visibility()
+
+
 func select_section(section_id: String, focus_content := false) -> void:
 	if not _section_pages.has(section_id):
 		return
+	if _keyboard_mode and section_id in KEYBOARD_HIDDEN_SECTIONS:
+		section_id = "devices" # UI-40p: the fixed keyboard map has no profile or extra channels to show
 	var section_changed := section_id != _selected_section
 	if section_changed and _is_assignment_busy():
 		_cancel_capture()
@@ -1847,6 +1898,8 @@ func select_section(section_id: String, focus_content := false) -> void:
 		# The Keyboard's read-only pages have nothing to edit; their tab keeps focus.
 		if not target.is_visible_in_tree():
 			target = _section_buttons[section_id]
+	if not target.visible:
+		target = _section_buttons["devices"]
 	target.grab_focus()
 
 
@@ -2050,7 +2103,9 @@ func _ready() -> void:
 	_update_profile_options()
 	_update_axis_controls()
 	_update_aux_controls()
-	_update_action_controls()
+	# configure() populated the action rows. Their labels can go stale while detached.
+	if _action_rows_locale != TranslationServer.get_locale():
+		_update_action_controls()
 	_update_preview()
 	_initial_focus_wait_frames = 2
 
@@ -3495,6 +3550,7 @@ func _update_live_axis_views(connected: bool) -> void:
 func _update_action_controls() -> void:
 	if action_grid == null:
 		return
+	_action_rows_locale = TranslationServer.get_locale()
 	var presentation: Dictionary = _draft_profile.get("presentation", {})
 	var family := str(presentation.get("glyph_family", "auto"))
 	var device := _device_for_id(_draft_flight_device_id)
@@ -3569,7 +3625,7 @@ func _update_action_controls() -> void:
 		workspace.set_chips(chips_by_control)
 	# The shorter Save caption must remain the next D-pad target below the list,
 	# regardless of the Cancel button's relative width in the current language.
-	if is_inside_tree() and last_change_button != null:
+	if last_change_button != null:
 		last_change_button.focus_neighbor_bottom = last_change_button.get_path_to(save_button)
 	# A filter change may hide the focused row; keep keyboard/gamepad focus on a visible control nearby.
 	if focus_in_rows and is_instance_valid(focused) and not focused.is_visible_in_tree():
@@ -4810,7 +4866,7 @@ func _action_conflicts() -> Dictionary:
 func _tag_workspace_rows() -> void:
 	for definition in ControllerActions.ACTIONS:
 		var action_id := str(definition.id)
-		for control: Control in [action_grid.find_child("Remap_%s" % action_id, false, false), _clear_action_buttons[action_id],
+		for control: Control in [_validation_fields["actions." + action_id].control, _clear_action_buttons[action_id],
 				_axis_capture_buttons[action_id]]:
 			_tag_row(control, "action:" + action_id)
 	for aux_name: String in AUX_CHANNELS:
@@ -4975,6 +5031,14 @@ func _set_keyboard_mode(on: bool) -> void:
 	for section: String in PROFILE_SECTIONS:
 		(_page_editables[section] as Control).visible = not on
 		(_keyboard_blocks[section] as Control).visible = on
+	# UI-40p: no empty keyboard tabs; Devices explains how to connect a radio instead.
+	for section: String in KEYBOARD_HIDDEN_SECTIONS:
+		(_section_buttons[section] as Control).visible = not on
+	connect_guide.visible = on
+	if on and _selected_section in KEYBOARD_HIDDEN_SECTIONS:
+		select_section("devices")
+		if is_instance_valid(focused) and focused.is_visible_in_tree():
+			focused.grab_focus()
 	_resize_panel()
 	_place_response_curve()
 	if is_instance_valid(focused) and _screen.is_ancestor_of(focused) and not focused.is_visible_in_tree():
@@ -5077,9 +5141,7 @@ func _update_accessible_names() -> void:
 		var caption := tr(str(definition.label))
 		_name_control(_clear_action_buttons[action_id], tr("Clear %s") % caption)
 		_name_control(_axis_capture_buttons[action_id], tr("Learn axis for %s") % caption)
-		var remap_button := action_grid.find_child("Remap_%s" % action_id, false, false) as Control
-		if remap_button != null:
-			_name_control(remap_button, tr("Remap %s") % caption)
+		_name_control(_validation_fields["actions." + action_id].control, tr("Remap %s") % caption)
 
 
 static func _name_control(control: Control, accessible: String) -> void:

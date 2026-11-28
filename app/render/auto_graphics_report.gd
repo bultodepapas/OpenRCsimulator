@@ -10,12 +10,13 @@ const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const RendererPreference := preload("res://app_state/renderer_preference.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const AutoCalibration := preload("res://render/auto_calibration.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const MetalFX := preload("res://render/metalfx_policy.gd")
 
 const FORMAT := "openrc-auto-graphics-report v1"
 
 
-## inputs: {adapter, os, arm64, screen: Vector2i, scale, refresh, cpu_threads, forward_plus}. Returns {renderer,
-## scene_detail, first_run, reasons}.
+## Inputs mirror AutoGraphicsPolicy.decide. Returns {renderer, scene_detail, first_run, reasons}.
 static func decide(inputs: Dictionary) -> Dictionary:
 	return AutoGraphicsPolicy.decide(inputs)
 
@@ -26,7 +27,7 @@ static func compact(decision: Dictionary) -> String:
 	return "|".join([str(decision.renderer), str(decision.scene_detail),
 		str(first_run.get("msaa_3d", "-")), str(first_run.get("window_mode", "-")), str(first_run.get("max_fps", "-")),
 		str(first_run.get("window_resolution", "-")), str(first_run.get("shadow_quality", "-")),
-		str(first_run.get("shadow_technique", "-"))])
+		str(first_run.get("shadow_technique", "-")), str(first_run.get("render_scale", "-"))])
 
 
 ## VQ-07h-A7: what Settings tells the player about Automatic on this host: the mode and Scene detail it picks, how
@@ -57,11 +58,17 @@ static func runtime(include_driver_info: bool = true) -> Dictionary:
 	var headless := DisplayServer.get_name() == "headless"
 	var index := 0 if headless else DisplayServer.window_get_current_screen()
 	var screen := Vector2i.ZERO if headless else DisplayServer.screen_get_size(index)
+	var tree := Engine.get_main_loop() as SceneTree
+	var dynamic_resolution_supported := tree != null and FlightDynamicResolution.supports(tree.root)
+	var compatibility_supported := tree != null and not dynamic_resolution_supported and FlightDynamicResolution.supports_compatibility(tree.root)
 	var inputs := {adapter = adapter, os = OS.get_name(), arm64 = OS.has_feature("arm64"), screen = screen,
 		usable = Vector2i.ZERO if headless else DisplayServer.screen_get_usable_rect(index).size,
 		scale = 1.0 if headless else DisplayServer.screen_get_scale(index),
 		refresh = 60.0 if headless else DisplayServer.screen_get_refresh_rate(index), cpu_threads = OS.get_processor_count(),
-		forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"}
+		forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus",
+		dynamic_resolution_supported = dynamic_resolution_supported,
+		compatibility_adaptation_supported = compatibility_supported,
+		metalfx_spatial_available = OS.get_name() == "macOS" and MetalFX.runtime_capabilities().metalfx_spatial}
 	if AutoGraphicsPolicy.startup_output_pixels > 0:
 		inputs["output_pixels"] = AutoGraphicsPolicy.startup_output_pixels
 	var memory := OS.get_memory_info()
@@ -76,6 +83,8 @@ static func runtime(include_driver_info: bool = true) -> Dictionary:
 			"driver_info": OS.get_video_adapter_driver_info() if include_driver_info else PackedStringArray(),
 			"os": OS.get_name(), "arm64": inputs.arm64, "template": OS.has_feature("template"),
 			"rendering_method": method, "rendering_driver": RenderingServer.get_current_rendering_driver_name(),
+			"dynamic_resolution_supported": dynamic_resolution_supported,
+			"compatibility_adaptation_supported": compatibility_supported,
 			"screen": [screen.x, screen.y], "screen_scale": inputs.scale, "refresh_hz": inputs.refresh,
 			"window": [] if headless else [DisplayServer.window_get_size().x, DisplayServer.window_get_size().y],
 			"ram_physical_bytes": int(memory.get("physical", -1)),

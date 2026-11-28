@@ -29,7 +29,10 @@ def check(report, now, max_age):
     sources = report["sources"]
     if not isinstance(sources, dict) or SOURCE_MAX_AGE.keys() - sources.keys():
         raise ValueError("missing required source health")
-    issues = list(report.get("receiver_issues", []))
+    receiver_details = {alert["title"]: f"{alert['level']}: {alert['detail']}"
+                        for alert in report.get("receiver_alerts", [])}
+    issues = [f"{title} ({receiver_details[title]})" if title in receiver_details else title
+              for title in report.get("receiver_issues", [])]
     receiver_age = report.get("receiver_age_s")
     if type(receiver_age) is not int or not -300 <= receiver_age + age <= max_age:
         issues.append("receiver snapshot missing or stale")

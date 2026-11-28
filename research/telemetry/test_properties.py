@@ -13,7 +13,7 @@ from hypothesis.stateful import RuleBasedStateMachine, invariant, rule
 from generate_examples import example
 from reference import (
     ClientModel, ContractError, IngressModel, MAX_BODY,
-    QUEUE_BATCHES, QUEUE_BYTES, encode, validate_body,
+    QUEUE_BATCHES, QUEUE_BYTES, QUEUE_TTL, encode, validate_body,
 )
 
 BOUNDED = settings(max_examples=80, deadline=None, derandomize=True, database=None)
@@ -22,7 +22,7 @@ BOUNDED = settings(max_examples=80, deadline=None, derandomize=True, database=No
 def state(client):
     """Snapshot externally relevant consent/request/queue state."""
     return (client.state, client.service_suspended, client.epoch, client.session_id, client.active,
-            tuple((x.body, x.epoch, x.created, x.due, x.retries) for x in client.queue))
+            tuple((x.body, x.epoch, x.observed, x.due, x.retries) for x in client.queue))
 
 
 class GeneratedPayloadTests(unittest.TestCase):
@@ -133,12 +133,13 @@ class ConsentStateMachine(RuleBasedStateMachine):
         self.client.disable()
         self.allowed = False
 
-    @rule()
-    def collect(self):
+    @rule(age=st.sampled_from([0, 1, 60, 599, QUEUE_TTL, QUEUE_TTL + 1]))
+    def collect(self, age):
         before = self.probes
-        collected = self.client.collect(self.payload, self.now)
-        assert self.probes - before == int(self.allowed)
-        assert collected == self.allowed
+        collected = self.client.collect(self.payload, self.now, observed=self.now - age)
+        expected = self.allowed and age < QUEUE_TTL
+        assert self.probes - before == int(expected)
+        assert collected == expected
         if collected:
             body = self.client.queue[-1].body
             self.previewed[validate_body(body)["batch_id"]] = body
@@ -166,7 +167,7 @@ class ConsentStateMachine(RuleBasedStateMachine):
         if result:
             token, body = result
             assert body == self.previewed[validate_body(body)["batch_id"]]
-            assert self.now - self.client.active[1].created < 600
+            assert self.now - self.client.active[1].observed < QUEUE_TTL
             self.attempts.append(token)
 
     @rule(status=st.sampled_from([0, 202, 400, 401, 403, 408, 409, 410, 413, 415, 422, 429, 500, 503]),
@@ -196,6 +197,7 @@ class ConsentStateMachine(RuleBasedStateMachine):
         if self.client.service_suspended:
             assert not self.allowed
         assert len(self.client.queue) <= QUEUE_BATCHES
+        assert all(self.now - item.observed < QUEUE_TTL for item in self.client.queue)
         assert sum(len(item.body) for item in self.client.queue) <= QUEUE_BYTES
         if not self.allowed:
             assert not self.client.queue

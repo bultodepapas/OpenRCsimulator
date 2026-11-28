@@ -105,7 +105,10 @@ class SubmissionBoundaryTests(unittest.TestCase):
         self.assertEqual(repeated["jobs"][0]["first_error"], row["first_error"])
 
     def test_crash_at_call_boundary_with_missing_receipt_never_resubmits(self):
-        with patch.object(self.pool, "submit", side_effect=SystemExit("crash after possible dispatch")):
+        def crash_after_dispatch_boundary(*args, before_dispatch, **kwargs):
+            before_dispatch()
+            raise SystemExit("receipt lost after possible dispatch")
+        with patch.object(self.pool, "submit", side_effect=crash_after_dispatch_boundary):
             with self.assertRaises(SystemExit):
                 self.run_case()
         saved = json.loads(self.state.read_text())
@@ -117,7 +120,73 @@ class SubmissionBoundaryTests(unittest.TestCase):
         submit.assert_not_called()
         rpc.assert_not_called()
         self.assertEqual(result["jobs"][0]["phase"], "BLOCKED")
+        self.assertEqual(result["jobs"][0]["status"]["reason_code"], "MISSING_RECEIPT")
         self.assertEqual(result["jobs"][0]["request_id"], saved["jobs"][0]["request_id"])
+
+    def authority(self, rpc, *, submit, recover=None):
+        calls = []
+
+        def call(operation, **payload):
+            calls.append(operation)
+            if operation == "submit":
+                raise submit
+            if operation == "recover":
+                return recover
+            if operation == "cancel_submission":
+                return {"canceled": True}
+            raise AssertionError("unexpected authority call " + operation)
+        rpc.side_effect = call
+        return calls
+
+    def test_explicit_local_refusal_is_fenced_and_releases_the_host(self):
+        # 2026-11-25: a disposable source worktree deleted after freezing made the
+        # Windows authority refuse every later submit, and each refusal reserved
+        # the host until an operator reconciled it.
+        from tools.testqueue import agent_view
+        stack, rpc = self.admitted()
+        calls = self.authority(rpc, submit=ValueError("source must be an OpenRC checkout with the admitted adapter"))
+        with stack:
+            result = self.run_case()
+        row = result["jobs"][0]
+        self.assertEqual(calls, ["submit", "recover", "cancel_submission"])
+        self.assertEqual((result["result"], row["phase"]), ("FAILED", "REJECTED"))
+        self.assertEqual((row["status"]["reason_code"], row["status"]["pool_host"]), ("LOCAL_SUBMIT_REFUSED", "windows"))
+        self.assertIn("admitted adapter", row["status"]["error"])
+        receipt = json.loads((self.pool.root / "jobs" / (row["request_id"] + ".json")).read_text())
+        self.assertEqual((receipt["state"], receipt["last_status"]["outcome"]), ("CANCELED_BEFORE_DISPATCH", "NOT_DISPATCHED"))
+        self.assertFalse(self.pool._reserve([{"id": "windows", "busy": False}])[0]["busy"])
+        item = agent_view.compact_row(row)
+        self.assertEqual((item["stage"], item["cause"]), ("dispatch", "LOCAL_SUBMIT_REFUSED"))
+        self.assertIn("never ran", item["hint"])
+
+    def test_refusal_after_a_lost_acceptance_or_a_transport_failure_is_never_fenced(self):
+        for error, recovered, expected in (
+                (ValueError("SNAPSHOT_MISMATCH: replay"), {"job": "original", "handle": "original:x"},
+                 ["submit", "recover"]),
+                (RuntimeError("testqueue worker unavailable"), None, ["submit"])):
+            with self.subTest(error=error):
+                if self.state.exists():
+                    self.state.unlink()
+                stack, rpc = self.admitted()
+                calls = self.authority(rpc, submit=error, recover=recovered)
+                with stack:
+                    result = self.run_case()
+                row = result["jobs"][0]
+                self.assertEqual(calls, expected)
+                receipt = json.loads((self.pool.root / "jobs" / (row["request_id"] + ".json")).read_text())
+                self.assertEqual(receipt["state"], "SUBMISSION_UNCONFIRMED")
+                self.assertNotEqual(row["phase"], "REJECTED")  # observed through status instead
+
+    def test_proved_nondispatch_observed_later_rejects_the_row_without_collection(self):
+        nondispatched = {"state": "FINISHED", "outcome": "NOT_DISPATCHED", "cleanup": "CONFIRMED",
+                         "evidence": "INCOMPLETE", "reason_code": "LOCAL_SUBMIT_REFUSED", "error": "refused"}
+        with patch.object(self.pool, "submit", side_effect=lambda *args, request_id, **kwargs:
+                          {"job": request_id, "state": "SUBMISSION_UNCONFIRMED"}), \
+                patch.object(self.pool, "status", return_value=nondispatched), \
+                patch.object(self.pool, "collect") as collect:
+            result = self.run_case()
+        collect.assert_not_called()
+        self.assertEqual((result["result"], result["jobs"][0]["phase"]), ("FAILED", "REJECTED"))
 
     def test_generic_submit_error_is_not_safe_retry_or_rejection(self):
         with patch.object(self.pool, "submit", side_effect=ValueError("possibly accepted before this error")) as submit:
@@ -140,7 +209,7 @@ class SubmissionBoundaryTests(unittest.TestCase):
         self.assertEqual(result["migrated_from_version"], 1)
         self.assertEqual(result["jobs"][0]["phase"], "BLOCKED")
 
-    def test_interrupted_rejection_response_is_not_inferred_from_receipt_absence(self):
+    def test_interrupted_preflight_is_revalidated_with_original_id(self):
         original = self.pool.submit
         def reject_then_crash(*args, **kwargs):
             try:
@@ -150,10 +219,27 @@ class SubmissionBoundaryTests(unittest.TestCase):
         with patch.object(self.pool, "submit", side_effect=reject_then_crash):
             with self.assertRaises(SystemExit):
                 self.run_case()
-        with patch.object(self.pool, "submit") as submit:
+        saved = json.loads(self.state.read_text())["jobs"][0]
+        self.assertEqual(saved["phase"], "WAITING")
+        with patch.object(self.pool, "submit", wraps=original) as submit, patch.object(transport, "rpc") as rpc:
             result = self.run_case()
-        submit.assert_not_called()
-        self.assertEqual(result["jobs"][0]["status"]["state"], "UNKNOWN")
+        submit.assert_called_once()
+        rpc.assert_not_called()
+        self.assertEqual(submit.call_args.kwargs["request_id"], saved["request_id"])
+        self.assertEqual(result["jobs"][0]["status"]["state"], "REJECTED")
+
+    def test_restart_during_placement_keeps_one_request_and_one_dispatch(self):
+        stack, rpc = self.admitted()
+        with stack:
+            with patch.object(self.pool, "probe", side_effect=SystemExit), self.assertRaises(SystemExit):
+                self.run_case()
+            row = json.loads(self.state.read_text())["jobs"][0]
+            self.assertEqual(row["phase"], "WAITING")
+            rpc.assert_not_called()
+            result = self.run_case(timeout=15)
+        self.assertEqual(result["result"], "PASSED")
+        self.assertEqual(result["jobs"][0]["request_id"], row["request_id"])
+        rpc.assert_called_once()
 
 
 if __name__ == "__main__":

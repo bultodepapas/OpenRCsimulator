@@ -5,6 +5,7 @@
 extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const PlayerNotes := preload("res://ui/player_notes.gd") # UI-40d
 const Roster := preload("res://app_state/vehicle_roster.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
@@ -148,7 +149,10 @@ func _run() -> void:
 	await _preview(app)
 	_check("Lumber: shown, experimental, Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and home.limits_label.visible, home.aircraft_status_label.text)
-	var timber_note: String = home.aircraft_status_label.text.to_lower()
+	# UI-40d: the card reads one plain sentence; the engineering note stays one hover away in its tooltip.
+	_check("Lumber status reads the player note", home.aircraft_status_label.text == home.tr(PlayerNotes.player_note(Catalog.entry(TIMBER))),
+		home.aircraft_status_label.text)
+	var timber_note: String = home.aircraft_status_label.tooltip_text.to_lower()
 	_check("Lumber status states the estimated electric, flaps-up configuration",
 		timber_note.contains("electric") and timber_note.contains("estimated") and timber_note.contains("flaps up")
 		and timber_note.contains("fixed wheels") and timber_note.contains("assists off"), timber_note)
@@ -211,7 +215,8 @@ func _run() -> void:
 	var status: Label = home.aircraft_status_label
 	_check("Spanish: catalog counter and status translated", home.aircraft_count_label.text == _aircraft_counter(AVANTI)
 		and home.aircraft_count_label.tooltip_text == _aircraft_counter_tooltip(AVANTI)
-		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
+		and status.atr(status.text).begins_with("Experimental: física estimada") and status.tooltip_text.begins_with("Experimental: primera estimación física (turbina")
+		and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"count=%s tooltip=%s expected=%s status=%s summary=%s" % [home.aircraft_count_label.text,
 			home.aircraft_count_label.tooltip_text, _aircraft_counter_tooltip(AVANTI), status.atr(status.text),
 			home.aircraft_summary_label.atr(home.aircraft_summary_label.text)])
@@ -281,19 +286,18 @@ func _run() -> void:
 
 	# End returns Home with the aircraft selected and persisted; Exit options now discloses End flight.
 	await ui.tap(KEY_ESCAPE)
-	await ui.tap(KEY_DOWN) # Restart
-	await ui.tap(KEY_DOWN) # Session options
-	await ui.tap(KEY_DOWN) # Review active alerts
-	_check("active alerts is keyboard reachable", ui.focus_name() == "ActiveAlerts", ui.focus_name())
-	await ui.tap(KEY_DOWN) # Settings
-	await ui.tap(KEY_DOWN) # Help
-	await ui.tap(KEY_DOWN) # Change aircraft (UI-34a)
-	await ui.tap(KEY_DOWN) # Exit options
-	_check("Exit options is keyboard reachable", ui.focus_name() == "ExitOptions", ui.focus_name())
-	await ui.tap(KEY_ENTER)
-	await ui.tap(KEY_DOWN)
+	# UI-40a: every Pause action is on one list; walk it with real Down presses.
+	var traversed: Array[String] = []
+	for step in 24:
+		if ui.focus_name() == "End":
+			break
+		if ui.focus_name() == "MoreOptions" and not app.pause_menu.more_button.button_pressed:
+			await ui.tap(KEY_ENTER) # a short window folds the less frequent rows
+		await ui.tap(KEY_DOWN)
+		traversed.append(ui.focus_name())
+	_check("active alerts is keyboard reachable", traversed.has("ActiveAlerts"), str(traversed))
 	var end_reachable: bool = ui.focus_name() == "End"
-	_check("End flight is keyboard reachable inside Exit options", end_reachable, ui.focus_name())
+	_check("End flight is keyboard reachable on the Pause list", end_reachable, str(traversed))
 	if not end_reachable:
 		await _close(app)
 		print("all UI aircraft checks failed to reach End flight")

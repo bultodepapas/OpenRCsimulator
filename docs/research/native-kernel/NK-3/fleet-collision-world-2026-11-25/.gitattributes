@@ -1,0 +1,5 @@
+# Retained captures and receipts keep their recorded bytes under every checkout setting.
+*.gz binary
+*.json -text
+*.gd text eol=lf
+*.md text eol=lf

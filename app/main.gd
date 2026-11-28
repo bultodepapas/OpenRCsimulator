@@ -1353,6 +1353,7 @@ func _prepare_flight() -> void:
 		add_child(_accident_report)
 		_accident_incident.assessment_changed.connect(_on_accident_assessment)
 		_accident_report.restart_requested.connect(_request_restart)
+		_accident_report.options_requested.connect(func() -> void: pause_requested.emit()) # UI-40b: same as Escape
 		_accident_report.costing_mode_requested.connect(_on_accident_costing_mode_requested)
 		_accident_report.purchase_package_requested.connect(_on_accident_purchase_package_requested)
 		session.contact_events_changed.connect(_on_accident_contacts)
@@ -2470,7 +2471,9 @@ func _camera_clearance(from: Vector3, to: Vector3) -> float:
 func _ground_height(x: float, z: float) -> float:
 	if session == null:
 		return 0.0
-	var terrain: PackedFloat64Array = GroundTerrain.sample(-z, x, session.ground_surfaces)
+	# NK-8b: FlightSession samples the same terrain natively when its native stage holds this table.
+	var terrain: PackedFloat64Array = session.render_terrain_sample(-z, x) if session.has_method(&"render_terrain_sample") \
+		else GroundTerrain.sample(-z, x, session.ground_surfaces)
 	return terrain[0] if _rc_track.is_empty() else RcTrack.composed(terrain, _rc_track, -z, x)[0]
 
 
@@ -3692,8 +3695,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_controls(_airplane, _surface_rotations_for_render(c), float(c.get("throttle", 0.0)))
 	if session != null and session.flaps_available():
-		var flap_state: Dictionary = session.flap_state()
-		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
+		AirplaneBuilder.apply_flaps(_airplane, session.flap_angle_deg()) # flap_state()'s angle, without its advisory
 	if AirplaneBuilder.has_folds(_airplane):
 		var fractions := {}
 		for key: String in _airplane.folds:

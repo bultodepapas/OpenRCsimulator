@@ -25,6 +25,23 @@ const VEHICLE_FIELDS := ["input_size", "aux_size", "modes_size", "continuous_siz
 	"post_tick_joint", "block_aux", "step_policy", "events", "substeps", "substeps_joint", "endpoint_transition", "state_validator"]
 
 
+## NK-6p (owner decision, 2026-11-27): a native flight freezes the configuration its guard watches. Godot cannot
+## make a container writable again, so the guard proves each frozen root's shape by its identity, without a deep
+## comparison per tick, and a later container write fails where it is made instead of faulting the next tick.
+## Packed arrays stay writable in place (the engine shares their buffers with every alias), so the guard keeps a
+## bitwise watch on each. NativeStage freezes only after the kernel accepted the stage.
+## Test hook: false keeps the containers writable and the guard's deep comparison.
+static var freeze_guarded_configuration := true
+
+
+## Every Dictionary and Array the fixed-wing guard watches, read-only all the way down.
+static func freeze_guarded(session: Node) -> void:
+	for field: String in SESSION_FIELDS:
+		NativeWeather._freeze_containers(session.get(field))
+	for field: String in ENVIRONMENT_FIELDS:
+		NativeWeather._freeze_containers(session.environment.get(field))
+
+
 class Identity:
 	extends RefCounted
 	var owner_kind: String = "fixed_wing"

@@ -76,6 +76,7 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(state["state"], "NEEDS_OPERATOR")
         summary = api.status("blocked1", config=self.config)["summary"]
         self.assertTrue(summary["next_action"].startswith("needs attention"))
+        self.assertGreaterEqual(summary["snapshot_seconds"], 0)
         # The watchdog leaves it for an operator.
         self.assertEqual(watchdog.plan(api.Pool(self.config), max_age_hours=24)["resume"], [])
 
@@ -105,6 +106,43 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(start.call_count, watchdog.MAX_RESUMES_PER_DAY)
         self.assertIn("left for an operator", report["results"][0]["error"])
 
+    def test_stopped_observer_wakes_only_when_original_placement_is_possible(self):
+        write_json(self.directory / "manifest.json", {"snapshot": "x", "jobs": []})
+        write_json(self.directory / "supervisor.json", {"state": "NEEDS_OPERATOR",
+                                                       "detail": "no progress for 21605 s"})
+        row = {"request_id": "waiting", "phase": "WAITING", "input": {"platform": "linux", "host": "a"},
+               "status": {"state": "WAITING", "placement_job": {"platform": "linux", "cache_id": "source",
+                                                                "source_bytes": 1_000_000_000},
+                          "decision": {"selected": None, "candidates": [{"host": "a",
+                                      "reasons": ["INSUFFICIENT_DISK"]}]}}}
+        blocked = {"request_id": "uncertain", "phase": "BLOCKED", "status": {"state": "UNKNOWN"}}
+        path = self.directory / "batch.json"
+        batch = {"version": watchdog.BATCH_VERSION, "jobs": [blocked, row], "result": "INCOMPLETE"}
+        pool = api.Pool(self.config)
+        host = {"id": "a", "platform": "linux", "online": True, "busy": False, "cores": 1, "load": 0,
+                "capabilities": ["headless"], "free_memory_bytes": 5_000_000_000, "free_disk_bytes": 10}
+        with patch.object(pool, "probe", return_value=[host, {**host, "id": "b", "free_disk_bytes": 8_000_000_000}]) as probe:
+            write_json(path, batch)
+            self.assertFalse(watchdog.plan(pool, max_age_hours=6)["resume"])
+            # An originally unpinned deferred transfer may only resume on its bound host.
+            row["input"]["host"] = None
+            row["status"]["placement_host"] = "a"
+            write_json(path, batch)
+            self.assertFalse(watchdog.plan(pool, max_age_hours=6)["resume"])
+            host["free_disk_bytes"] = 8_000_000_000
+            resumed = watchdog.plan(pool, max_age_hours=6)["resume"]
+            self.assertEqual([(r["request_id"], r["capacity_available_for"]) for r in resumed],
+                             [("blocked1", "waiting")])
+            with patch.object(pool, "probe", side_effect=OSError("probe unavailable")):
+                report = watchdog.plan(pool, max_age_hours=6)
+                self.assertEqual((report["resume"], report["capacity_probe_error"]), ([], "probe unavailable"))
+            probe.reset_mock()
+            for state in ({**batch, "version": 1}, {**batch, "jobs": [blocked]},
+                          {**batch, "jobs": [{**row, "phase": "SUBMITTING"}]}):
+                write_json(path, state)
+                self.assertFalse(watchdog.plan(pool, max_age_hours=6)["resume"])
+            probe.assert_not_called()
+
     def test_watchdog_dry_run_and_finished_batches_start_nothing(self):
         write_json(self.directory / "manifest.json", {"snapshot": "x", "jobs": []})
         with patch.object(api, "_start") as start:
@@ -112,6 +150,32 @@ class SupervisorTests(unittest.TestCase):
             write_json(self.directory / "batch.json", {"result": "PASSED", "jobs": []})
             watchdog.run_once(self.config)
         start.assert_not_called()
+
+    def test_malformed_receipt_is_reported_and_other_requests_are_still_observed(self):
+        write_json(self.directory / "manifest.json", {"snapshot": "x", "jobs": []})
+        other = self.directory.parent / "broken"
+        other.mkdir()
+        write_json(other / "manifest.json", {"snapshot": "other", "jobs": []})
+        (other / "batch.json").write_text("{", encoding="utf-8")
+        report = watchdog.plan(api.Pool(self.config), max_age_hours=6)
+        self.assertEqual(report["unreadable_requests"], ["broken"])
+        self.assertEqual([r["request_id"] for r in report["resume"]], ["blocked1"])
+
+    def test_unresponsive_authority_retaining_its_lock_does_not_trigger_another_start(self):
+        authority = self.root / "authority"
+        with patch("tools.testqueue.common.state_root", return_value=authority), \
+                patch("tools.testqueue.common.rpc", side_effect=TimeoutError("observation expired")), \
+                patch.object(watchdog, "start_authority") as start:
+            held = watchdog.Singleton(authority / "worker.lock")
+            try:
+                report = watchdog.run_once(self.config, serve_engine="fixture")
+                self.assertEqual(report["authority"], "worker lock unavailable")
+                self.assertIn("observation expired", report["authority_detail"])
+                start.assert_not_called()
+            finally:
+                held.close()
+            self.assertEqual(watchdog.run_once(self.config, serve_engine="fixture")["authority"], "start requested")
+            start.assert_called_once()
 
 
 @unittest.skipUnless(os.name == "nt", "Windows Job Object behavior")

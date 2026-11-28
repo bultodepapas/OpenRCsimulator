@@ -28,7 +28,7 @@ class ThreeWaySession extends Session:
 	func _rc_track_hit(_p: PackedFloat64Array, _c: PackedFloat64Array, _tick: int) -> Dictionary:
 		return {ok = true, impact = Impact.Snapshot.new(), fraction = 0.5,
 			uncertainty = 0.02, state = PackedFloat64Array()}
-	func _scenery_hit(_p: PackedFloat64Array, _c: PackedFloat64Array, _tick: int, _mass: Callable) -> Dictionary:
+	func _scenery_hit(_p: PackedFloat64Array, _c: PackedFloat64Array, _tick: int, _mass: Callable, _reach: int = 0) -> Dictionary:
 		var event := Pose.Event.new()
 		event.time_fraction = 0.5
 		return {ok = true, event = event}

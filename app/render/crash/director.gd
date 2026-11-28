@@ -19,6 +19,7 @@ const GroundTerrain = preload("res://physics/ground_terrain.gd")
 const AirplaneBuilder = preload("res://render/airplane.gd")
 const WaterEffects = preload("res://render/lake/water_effects.gd")
 const PresentationContext = preload("res://render/crash/presentation_context.gd")
+const Cadence = preload("res://render/presentation_cadence.gd")
 const WATER_CHECKPOINT_VERSION := 1
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["version", "age_s", "event_count", "impact_point_world", "report", "effects"]
 const WATER_REPORT_FIELDS: Array[String] = ["trigger", "surface", "component", "speed_mps", "impact_depth_m", "water_level_down_m", "tick", "contact_point_world", "lake_id", "water_effects_started", "water_audio_enabled"]
@@ -64,6 +65,11 @@ var _water_blur: Node3D
 var _water_blur_was_processing := false
 var _configured := false
 var _hull_capture_ready := false
+## F1: the hull-scrape observation costs about 150 us. A touching tick and the tick after it are observed at once.
+## Contact-free ticks wait for the cadence's 0.1 s bound or a discontinuity; that observation carries `since_tick`, so
+## crash audio keeps the episode continuous. A contact-free observation holds no friction, so no frame needs one.
+var _hull_cadence := Cadence.new()
+var _hull_touch_forced := false
 ## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
 var history: Array = []
 ## CR-22e: scenery wreck contacts created in the crash frame, then per frame (nearest first; 160 in ~7 frames).
@@ -875,6 +881,8 @@ func _visible_water_rings() -> int:
 ## Session owns the earlier stepped connection and commits contact IDs first.
 func _connect_hull_signals() -> void:
 	_hull_capture_ready = false
+	_hull_cadence.reset()
+	_hull_touch_forced = false
 	if context == null or not is_instance_valid(context.session) or context.session.sim == null:
 		return
 	var session := context.session
@@ -907,25 +915,44 @@ func _settle_hull_observer() -> void:
 		return
 	audio.setup()
 	_hull_capture_ready = true
-	_observe_hull_endpoint()
+	_observe_hull_now()
 
 
-func _on_accepted_hull_tick(_tick: int, _time_s: float, _state: PackedFloat64Array,
+func _on_accepted_hull_tick(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
-	_observe_hull_endpoint()
+	# The session's own stepped handler, connected first, has refreshed this tick's soft hull contacts.
+	var touching := _hull_touching()
+	var force := touching or _hull_touch_forced
+	_hull_touch_forced = touching
+	if _hull_cadence.on_tick(tick, force):
+		_observe_hull_endpoint(_hull_cadence.since_tick)
+
+
+func _hull_touching() -> bool:
+	if context == null or not is_instance_valid(context.session):
+		return true # unknown: observe at once, as before
+	var session := context.session
+	return not session.soft_hull_contacts or not session.soft_contacts.is_empty()
+
+
+## Direct observations (priming, pause, lifecycle) record their tick with the cadence first.
+func _observe_hull_now() -> void:
+	if context != null and is_instance_valid(context.session) and context.session.sim != null:
+		_hull_cadence.observe_at(context.session.sim.tick)
+	_observe_hull_endpoint(_hull_cadence.since_tick)
 
 
 func _on_hull_pause(_paused: bool) -> void:
-	_observe_hull_endpoint()
+	_observe_hull_now()
 
 
 func _on_hull_lifecycle(receipt: Dictionary) -> void:
 	if receipt.get("success", false) and audio != null:
 		audio.reset()
-		_observe_hull_endpoint()
+		_observe_hull_now()
 
 
-func _observe_hull_endpoint() -> void:
+func _observe_hull_endpoint(since_tick := -1) -> void:
 	if not _hull_capture_ready or not _audio_enabled or context == null or audio == null:
 		return
 	var session := context.session
@@ -935,4 +962,5 @@ func _observe_hull_endpoint() -> void:
 		audio.request_hull_scrape_cancel()
 		return
 	audio.observe_accepted({observation = session.hull_scrape_observation(),
-		tick_rate = 1.0 / session.sim.dt(), paused = session.sim.paused or not session.holds.is_empty(), terminal = false})
+		tick_rate = 1.0 / session.sim.dt(), paused = session.sim.paused or not session.holds.is_empty(), terminal = false,
+		since_tick = since_tick})

@@ -721,15 +721,22 @@ def probe(root, request):
         graphics = graphics_config(root)
         if graphics:
             capabilities += ["graphics", "gpu:" + graphics["gpu"]]
+    admission = {"enrolled": authority_enrolled(), "busy": busy or bool(states),
+                 "quarantined": any(s["state"] == "UNKNOWN" for s in states),
+                 "active_request_id": states[0].get("request_id") if states else None}
+    if os.name == "posix" and engine["available"] and not admission["busy"] and not admission["enrolled"]:
+        try:
+            if external_engine_present(engine_path):
+                admission.update(busy=True, busy_code="EXTERNAL_SIMULATOR", busy_reason="External Godot is running")
+        except (OSError, subprocess.SubprocessError) as error:
+            admission.update(busy=True, busy_code="OCCUPANCY_UNKNOWN", busy_reason=f"Godot process probe failed: {error}")
     return {"protocol": PROTOCOL,
             "host": {"hostname": platform.node(), "system": system, "release": platform.release(),
                      "machine": machine, "python": platform.python_version()},
             "capabilities": capabilities,
             "capacity": {"cpu_count": os.cpu_count(), "load_average": load, "free_bytes": usage.free,
                          "total_bytes": usage.total, "free_memory_bytes": memory[0], "total_memory_bytes": memory[1]},
-            "engine": engine, "admission": {"enrolled": authority_enrolled(), "busy": busy or bool(states),
-                                            "quarantined": any(s["state"] == "UNKNOWN" for s in states),
-                                            "active_request_id": states[0].get("request_id") if states else None}}
+            "engine": engine, "admission": admission}
 
 
 def launch(root, request):
@@ -1023,12 +1030,40 @@ def external_engine_present(engine):
         # The pool deliberately leaves Windows admission to the enrolled worker.
         raise Refused("native Windows execution belongs to the existing testqueue authority")
     result = subprocess.run(["ps", "-A", "-o", "comm="], text=True, capture_output=True, check=True, timeout=10)
+    if not result.stdout.strip():
+        raise OSError("process table observation was empty")
     base = Path(engine).name.lower()
     for line in result.stdout.splitlines():
         name = Path(line.strip()).name.lower()
         if name and (name == base or "godot" in name):
             return True
     return False
+
+
+def wait_for_engine(directory, state, request):
+    """Keep the original exclusive grant while an external simulator uses the host."""
+    engine = request["engine_path"]
+    if not external_engine_present(engine):
+        return
+    deadline = time.monotonic() + request["options"].get("timeout", 600)
+    state.update(stage="admission", reason_code="EXTERNAL_SIMULATOR",
+                 reason="Waiting for external Godot before starting the checked runner",
+                 admission_wait_started_at=time.time())
+    write_json(directory / "state.json", state)
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            state.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
+            raise Refused("EXTERNAL_SIMULATOR admission wait expired before process start", "EXTERNAL_SIMULATOR")
+        time.sleep(min(1.0, remaining))
+        if time.monotonic() < deadline and not external_engine_present(engine):
+            if authority_enrolled() or digest(engine) != state["engine"]["sha256"]:
+                raise Refused("host enrollment or engine changed during admission wait")
+            if time.monotonic() < deadline and not external_engine_present(engine):
+                break
+    state["admission_wait_finished_at"] = time.time()
+    for field in ("stage", "reason", "reason_code"):
+        state.pop(field)
 
 
 def execute_stage(root, directory, state, stage, deadline):
@@ -1305,8 +1340,6 @@ def supervise(root, identifier):
         state["native_adaptation"] = adapt_native_extensions(source)
         if not (source / "tools/godot/run_checked.py").is_file() or not (source / "app" / request["options"]["script"][6:]).is_file():
             raise Refused("snapshot is missing the checked runner or requested script")
-        if external_engine_present(request["engine_path"]):
-            raise Refused("external Godot process detected; it was not touched")
         state.update(host={"hostname": platform.node(), "system": platform.system(), "machine": platform.machine()},
                      engine={"path": request["engine_path"], "sha256": digest(request["engine_path"])},
                      transformation=transformation, source_inventory_sha256=digest(directory / "source-inventory.json"))
@@ -1318,6 +1351,9 @@ def supervise(root, identifier):
             state["import_cache"] = seed_import_cache(root, source, state["engine"]["sha256"])
         except Exception as error:
             state["import_cache"] = {"seeded": False, "error": f"{type(error).__name__}: {error}"[:300]}
+        # Preparation has no engine subprocess. Recheck occupancy at dispatch.
+        # status/probe inspect the saved state without waiting for this slot.
+        wait_for_engine(directory, state, request)
         end = time.monotonic() + request["options"].get("timeout", 600)
         started = True
         imported = execute_stage(root, directory, state, "import", end)
@@ -1458,12 +1494,98 @@ def _tree_bytes(path):
     return total
 
 
+RECLAIMABLE_FAILURES = frozenset({"TEST_FAILED", "TIMED_OUT", "INFRA_FAILED"})
+RESIDUE_SAMPLE = 20
+
+
+def _failure_reclaim_supported():
+    # Pool hosts are macOS and Linux. Windows unlink fails on read-only files and
+    # its rmtree is not descriptor-based, so a Windows remote keeps failures.
+    return os.name != "nt"
+
+
+def _reclaim_reproducible(directory, state):
+    """Remove only bytes a failed job can regenerate; keep everything the run made.
+
+    Deleted: the job's input archive copies, Godot's import cache
+    (``source/app/.godot``), Python bytecode caches and every extracted source
+    file whose size and SHA-256 still match the job's own verified inventory.
+    Retained as residue: any other file under ``source`` (written or changed by
+    the run, for example by ``isolate_project``), plus the job record, logs,
+    stage outputs and profile outside ``source``. Each step is idempotent, so a
+    retry after an interrupted sweep only finishes the same removal.
+    """
+    removed = {"files": 0, "bytes": 0}
+    names = []
+
+    def unlink(path):
+        info = os.lstat(path)
+        os.unlink(path)
+        removed["files"] += 1
+        removed["bytes"] += info.st_size
+
+    for name in ("input.tar", "retained-input.tar"):
+        target = directory / name
+        if target.is_symlink():
+            raise Refused(f"{name} is a link; not removed", "CONFLICT")
+        if target.is_file():
+            unlink(target)
+            names.append(name)
+    source = directory / "source"
+    if source.is_symlink():
+        raise Refused("source is a link; not removed", "CONFLICT")
+    retained = {"files": 0, "bytes": 0, "sample": []}
+    if not source.is_dir():
+        return names, removed, retained
+    imports = source / "app" / ".godot"
+    if imports.is_symlink():
+        raise Refused("source/app/.godot is a link; not removed", "CONFLICT")
+    if imports.is_dir():
+        removed["bytes"] += _tree_bytes(imports)
+        shutil.rmtree(imports)  # descriptor-based on POSIX; does not follow links
+        names.append("source/app/.godot")
+    inventory = {}
+    inventory_path = directory / "source-inventory.json"
+    if (inventory_path.is_file() and not inventory_path.is_symlink()
+            and digest(inventory_path) == state.get("source_inventory_sha256")):
+        files = read_json(inventory_path).get("files")
+        inventory = files if isinstance(files, dict) else {}
+    for base, dirs, files in os.walk(source, topdown=False):
+        for name in files:
+            path = Path(base) / name
+            relative = path.relative_to(source).as_posix()
+            info = os.lstat(path)
+            expected = inventory.get(relative)
+            reproducible = stat.S_ISREG(info.st_mode) and (
+                path.parent.name == "__pycache__" and name.endswith(".pyc")
+                or isinstance(expected, dict) and expected.get("size") == info.st_size
+                and expected.get("sha256") == digest(path))
+            if reproducible:
+                unlink(path)
+            else:
+                retained["files"] += 1
+                retained["bytes"] += info.st_size
+                if len(retained["sample"]) < RESIDUE_SAMPLE:
+                    retained["sample"].append(relative)
+        for name in dirs:
+            with contextlib.suppress(OSError):
+                os.rmdir(Path(base) / name)  # only empty directories; a link is never followed
+    with contextlib.suppress(OSError):
+        os.rmdir(source)
+    if removed["files"] or not source.exists():
+        names.append("source (inventory-verified files)")
+    return names, removed, retained
+
+
 def collect_garbage(root, request):
-    """Remove the extracted source and archive copies of one collected PASSED job.
+    """Remove reproducible input copies of one collected, finished job.
 
     The coordinator calls this only after verifying its own collected evidence.
-    The job record, logs, reports and stage outputs stay; failed, incomplete and
-    UNKNOWN jobs are never touched.
+    A PASSED/COMPLETE/CONFIRMED job loses its whole extracted source and archive
+    copies. A finished failure with confirmed cleanup (TEST_FAILED, TIMED_OUT,
+    INFRA_FAILED) loses only what ``_reclaim_reproducible`` proves it can
+    regenerate; files the run wrote are retained. The job record, logs, reports
+    and stage outputs always stay; UNKNOWN or unconfirmed jobs are never touched.
     """
     if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256", "operator_confirm"}
             or request.get("operator_confirm") is not True
@@ -1479,9 +1601,30 @@ def collect_garbage(root, request):
         state = read_json(path)
         if state.get("payload_sha256") != request["payload_sha256"]:
             raise Refused("payload identity differs from the collected job", "CONFLICT")
+        if (state.get("state") == "FINISHED" and state.get("cleanup") == "CONFIRMED"
+                and state.get("outcome") in RECLAIMABLE_FAILURES):
+            if (state.get("storage_gc") or {}).get("state") == "RECLAIMED":
+                return {"request_id": request["request_id"], **state["storage_gc"]}
+            if state.get("reconciliation"):
+                # An operator-reconciled UNKNOWN attempt keeps its only forensic copy.
+                raise Refused("an operator-reconciled attempt keeps its source", "CONFLICT")
+            if not _failure_reclaim_supported():
+                raise Refused("failure reclamation needs POSIX unlink semantics", "UNSUPPORTED")
+            # Durable intent first: an interrupted sweep is visible and a retry finishes it.
+            state["storage_gc"] = {"state": "PENDING", "at": time.time(),
+                                   "scope": "reproducible inputs of a finished failure; run residue retained"}
+            publish_terminal(path, state)
+            names, removed, retained = _reclaim_reproducible(directory, state)
+            state["storage_gc"] = {"state": "RECLAIMED", "removed": names, "logical_bytes_removed": removed["bytes"],
+                                   "files_removed": removed["files"], "retained_residue": retained, "at": time.time(),
+                                   "scope": "reproducible inputs of a finished failure; run residue retained"}
+            publish_terminal(path, state)
+            return {"request_id": request["request_id"], "removed": names,
+                    "logical_bytes_removed": removed["bytes"], "retained_residue": retained}
         if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) != (
                 "FINISHED", "PASSED", "COMPLETE", "CONFIRMED"):
-            raise Refused("only a FINISHED/PASSED/COMPLETE/CONFIRMED job is collected", "CONFLICT")
+            raise Refused("only a finished job with confirmed cleanup (PASSED with complete evidence, "
+                          "or TEST_FAILED/TIMED_OUT/INFRA_FAILED) is collected", "CONFLICT")
         removed, names = 0, []
         for name in ("source", "input.tar", "retained-input.tar"):
             target = directory / name

@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://assets/vehicle-paints/turbo-lumber-evolution/aserradero.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://assets/vehicle-paints/turbo-lumber-evolution/aserradero_wood.jpg" id="2"]
+[ext_resource type="Texture2D" path="res://assets/vehicle-paints/turbo-lumber-evolution/aserradero_stamp.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/vehicle-paints/turbo-lumber-evolution/aserradero_propeller.jpg" id="4"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/wood_atlas = ExtResource("2")
+shader_parameter/stamp = ExtResource("3")
+metadata/wood_propeller = ExtResource("4")

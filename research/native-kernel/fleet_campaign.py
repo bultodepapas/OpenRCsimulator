@@ -43,7 +43,8 @@ HEX64 = re.compile(r"[0-9a-f]{64}\Z")
 # Independently pin the named source observations. Runway live-configuration
 # hashes reflect Linux beta2 observations after A35 adds the swept-lake checkpoint
 # identity. The 452-check comparison retains exact frame, setup, outcome and ownership
-# fields. Native-flight verification remains required.
+# fields. Native-flight verification remains required. The runway pins mirror
+# fleet.gd RUNWAY_LIVE_CONFIG_V7 (collision-world digest after 3cd6efa05).
 RUNWAY_START_REASON = "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step"
 # Historical Avanti v4 observation before AV-17-R4; not accepted for current data.
 AVANTI_RUNWAY_V4_HISTORICAL = {
@@ -59,8 +60,8 @@ RUNWAY_START_CASES = {
         "aircraft_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
         "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
         "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
-        "live_config_sha256": {True: "23865f3cbb09ccbcafe23bb27f283f6bc87fcf7f0570fe0e00ed3b9084d1c557",
-                               False: "407eb70d51d1328d1bdc4fe5a3c2dc38d4e1ebe6d34a4c1f9db9405478b28ca7"},
+        "live_config_sha256": {True: "2b4db3296a4b61e620915d8accffc67b5ce5d351cc0b640a8e7fe6488a1ea142",
+                               False: "b9d12633ee3f08d78badbf710ae2db1237f27a4bc6aa28e151f7a93c1430b505"},
         "config_sha256": {True: "538382d692b329fbf227c0f54fcbb239ff8667880dea650b2395add0a16cf2bc",
                           False: "847a2023caa0b2ba18bbb43178ca786643e25b094884d0df971fc6439300d565"}}}},
     "p51d-mustang-120": {
@@ -68,8 +69,8 @@ RUNWAY_START_CASES = {
         "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
         "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
         "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
-        "live_config_sha256": {True: "d108d4faeb85ffb8dbb934e3ab0378ff9508cad5bca1e719ab8afe1e8ff63e49",
-                               False: "0f71be7c6a712582a53b6ce11d23d0835a376ca886857218477c8680a78218db"},
+        "live_config_sha256": {True: "4fcedb6ffc4f3c877db0da523663fc6fc1683569c74a997798eeff8647921727",
+                               False: "030d000da896c49fb3726ff05e33300f14cb35d65e27d38b8f0d590bd9906b2b"},
         "config_sha256": {True: "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
                           False: "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef"}}}},
     "turbo-lumber-evolution": {"weather": "crosswind", "batteries": {
@@ -77,16 +78,16 @@ RUNWAY_START_CASES = {
                  "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
                  "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
                  "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
-                 "live_config_sha256": {True: "f545be87dd002775b8847acdbeac9f834dd81b7492755dab51c011de2bf63ce2",
-                                        False: "96c35659a8b837f54f9f90d9aaa120498ec5f120359b6b6c4e2f33f58e3df446"},
+                 "live_config_sha256": {True: "4282583fd4dc68ba23b6bdbdf8ef6a0f22d3f2cd372e34c58b9c55ea2a5b2649",
+                                        False: "8bbeba0fe5ded080d6e8a9bded215ec85fe8e7c01a297468ab3ce6c02e5182ba"},
                  "config_sha256": {True: "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
                                    False: "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9"}},
         "ideal": {"default_battery": False,
                   "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
                   "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
                   "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
-                  "live_config_sha256": {True: "9c6e96d55c289ac8c6d9d6e34c200da033cc3fd1820831ee61f63318afc2d47f",
-                                         False: "c999b8a213e7187ebdc9566b9b233d494805a1f70424ae3c48a676ec826d9a12"},
+                  "live_config_sha256": {True: "9563ffcbd3edb29ca1e0fc1fa31630d8bb72abea0095e63246de5830cc1a23ba",
+                                         False: "94e966e9552db24bf483c260d8959f05a40db7ae6e3f9434866c65eb1a78d161"},
                   "config_sha256": {True: "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
                                     False: "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6"}}}},
 }

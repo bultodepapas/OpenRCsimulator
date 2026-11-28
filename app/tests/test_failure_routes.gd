@@ -198,14 +198,18 @@ func _run() -> void:
 		_bounds_detail(pause.failure_config_label) + " / " + _bounds_detail(pause.failure_summary_label))
 
 	# All checkbox and percentage edits remain drafts until Apply.
-	await ui.tap(KEY_DOWN) # Restart
-	await ui.tap(KEY_DOWN) # Session options
-	await ui.tap(KEY_ENTER)
-	for step in 8:
-		if ui.focus_name() == "Failures":
+	# UI-40a: below 1000 px the next-flight settings fold under More options.
+	for step in 12:
+		if ui.focus_name() in ["Failures", "MoreOptions"]:
 			break
 		await ui.tap(KEY_DOWN)
-	_check("failure settings are reachable inside Session options", ui.focus_name() == "Failures", ui.focus_name())
+	if ui.focus_name() == "MoreOptions":
+		await ui.tap(KEY_ENTER)
+		for step in 8:
+			if ui.focus_name() == "Failures":
+				break
+			await ui.tap(KEY_DOWN)
+	_check("failure settings are reachable from the pause menu", ui.focus_name() == "Failures", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	menu = app.failure_menu

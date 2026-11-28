@@ -1,0 +1,103 @@
+{
+ "date": "2026-11-25",
+ "platform": "Linux x86_64, WSL2 Ubuntu on the Windows workstation; official Godot 4.8-beta2 Linux editor; LF checkouts",
+ "baseline_commit": "0b4a3998bfc6aec1e0c5faa1fffec823e080acd0",
+ "tested_commit": "065e21263b9b635ddc151dd5c4bde8c73b253600",
+ "tested_tree": "tested_commit with the renewed behavior-manifest.json and Stik profile pin below",
+ "cause": "3cd6efa05 (FPV frame obstacle contact and tree profiles) changed app_root.gd and scenery/collision_world.gd",
+ "changed_behavior_manifest_sources": {
+  "app/app_root.gd": {
+   "before": "d171ae641f7e255cde553d7a9a3946cf97242f09f4cf8e3cde7416b9901730d6",
+   "after": "2c55cd1bee56716288c652d374b915b28d324f7b33d46b32cb2912dd149c4139"
+  },
+  "app/scenery/collision_world.gd": {
+   "before": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+   "after": "3ec1512a8c181cf0e49cd22313b7d6dbacea4c9c2d60941eb66697e3d5a096cb"
+  }
+ },
+ "behavior_manifest_sha256": {
+  "before": "58ffc6af5ff4eca964c4ccbab3e59dbdc842f9673c4bdc68b0ad16ffedee6000",
+  "after": "4d5af7f8839f9f9ff8921bd00932f2f2e2753847c014b078b6e4e782e2c0808d"
+ },
+ "production_report_sha256": {
+  "baseline": "5d8548649d8046997e857eb7248f72e6708bff181519e761155f195df867bf75",
+  "candidate": "5d8548649d8046997e857eb7248f72e6708bff181519e761155f195df867bf75"
+ },
+ "production_result": {
+  "complete": true,
+  "count": 3,
+  "engine": "4.8-beta2 (official)",
+  "failure": "",
+  "format": "openrc-companions-production v1",
+  "min_clearance_m": 34.5677852280569,
+  "physics_hz": 240,
+  "requested_ticks": 28800,
+  "scope": "Full production manager/session callbacks, Club collision inventory and lake context. No rendering/audio or long-session resource-soak claim.",
+  "seed": 1,
+  "ticks": 28800,
+  "weather": "calm"
+ },
+ "checked_suites": {
+  "companions_profiles": {
+   "exit": 0,
+   "result": "AFC-02 companion profile validation: 95 checks, 0 failed",
+   "log_sha256": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26"
+  },
+  "companions_behavior_manifest": {
+   "exit": 0,
+   "result": "companion behavior manifest: 39 checks, 0 failed",
+   "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59"
+  },
+  "companions_manager": {
+   "exit": 0,
+   "result": "companions manager: 53 checks, 0 failed",
+   "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d"
+  },
+  "companions_shell": {
+   "exit": 0,
+   "result": "Companions shell: 0 failed",
+   "log_sha256": "9336b59e2f81a3d093e3028fff5370195ece2fad61113006a6f698ed4a67ab3d"
+  },
+  "companions_pilot": {
+   "exit": 0,
+   "result": "companion pilot: 24 checks, 0 failed",
+   "log_sha256": "72b8e88b2afa1e918d3e4f5d15a34fb52ff5ee35daeb0cbce6a720fe6245782c"
+  },
+  "companions_draft_refresh": {
+   "exit": 0,
+   "result": "companions draft refresh: 60 checks, 0 failed",
+   "log_sha256": "f572476d453699b0616f77af0347174d7ef47a505eefa2e1836f51120dc4483a"
+  },
+  "companions_presentation": {
+   "exit": 0,
+   "result": "companion presentation: 13 checks, 0 failed",
+   "log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0"
+  },
+  "scenery_loader": {
+   "exit": 0,
+   "result": "all scenery loader checks passed",
+   "log_sha256": "592934ca2a342aa29fa356d94becde2baabc3c839bbc443303e5958708479f6e"
+  },
+  "scenery_destruction": {
+   "exit": 0,
+   "result": "scenery destruction: 78 checks, 0 failures",
+   "log_sha256": "490a667cd8f8855729a81ddea88d71ca5615d57dbe551506b7c9787ef1cd3eb8"
+  },
+  "rcv_scenery_collision": {
+   "exit": 0,
+   "result": "CR-AUD-14 car scenery collision: 37 checks, 0 failed",
+   "log_sha256": "608cdd14fb00a772b261f363f17528f4aad0fac5609aae7a794cfcff07106522"
+  },
+  "vehicle_paint": {
+   "exit": 0,
+   "result": "Vehicle paint: 2079 checks, 0 failed",
+   "log_sha256": "22d22d668eb6c3368452788123048896f0d5f30065531dcdeec39f980feea910"
+  },
+  "livery_picker": {
+   "exit": 0,
+   "result": "Livery picker: 293 checks, 0 failed",
+   "log_sha256": "d3f538c2893d8e682928b82867a185b801a437d6c5f46251cb5e0dd061805695"
+  }
+ },
+ "limits": "Bounded headless software evidence on Linux; not physical behavior, rendering/audio, or target-hardware performance qualification."
+}

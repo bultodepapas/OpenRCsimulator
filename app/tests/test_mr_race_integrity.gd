@@ -89,12 +89,15 @@ func _abort(s: Node, ticks: int) -> bool:
 func _same_tick_crash() -> void:
 	var s := _session()
 	var gate: Dictionary = s.course.gates.back()
-	var across: float = float(gate.w) - (float(s._body_radius) - 0.0006)
+	# The frame contact law (frame_obstacle_contact.gd, 3cd6efa05) strikes with the frame and props, not the body
+	# sphere, and ends the accepted chord at first contact. So the centre starts 8 cm inside the gate edge and drifts
+	# 4 m/s toward the bar: it crosses the finish plane first, and the frame meets the bar later in the same tick.
+	var across: float = float(gate.w) - 0.08
 	var envelope: Dictionary = s.checkpoint()
 	var body: PackedFloat64Array = envelope.kernel.state.duplicate()
 	for i in 3:
 		body[RB.POS + i] = float(gate.c[i]) - 0.04 * float(gate.n[i]) + across * float(gate.u[i])
-		body[RB.VEL + i] = 24.0 * float(gate.n[i])
+		body[RB.VEL + i] = 24.0 * float(gate.n[i]) + 4.0 * float(gate.u[i])
 		body[RB.RATE + i] = 0.0
 	body[RB.ATT] = 1.0
 	for i in range(1, 4):

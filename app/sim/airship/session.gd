@@ -130,6 +130,14 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 		load_error = lake_check
 		return false
 	var pilot: Dictionary = field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
+	# A normal wheeled start lines up eastbound at the named runway's midpoint. Explicit
+	# offsets include historical flight logs and retain the recorded release position.
+	if opts.start == "ground" and not requested.has("north_offset_m") and not requested.has("east_offset_m"):
+		for surface: Dictionary in field.get("surfaces", []):
+			if surface.get("type") == "runway" and surface.get("id") == field.get("runway"):
+				opts.north_offset_m = float(surface.center_north) - float(pilot.north)
+				opts.east_offset_m = float(surface.center_east) - float(pilot.east)
+				break
 	var north := float(pilot.north) + float(opts.north_offset_m)
 	var east := float(pilot.east) + float(opts.east_offset_m)
 	var under := candidate_env.ground(north, east)

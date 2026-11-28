@@ -82,11 +82,13 @@ def gpu_report(contracts, payloads, day, release_id, period, minimum=MIN_TOKENS)
             "sessions": set(), "time": 0, "frames": 0, "intervals": 0, "gaps": 0,
             "histogram": [0] * len(HISTOGRAM_UPPER_US)})
         group["sessions"].add(session)
-        group["time"] += event["interval_sum_us"]
-        group["frames"] += event["rendered_frames"]
-        group["intervals"] += event["interval_count"]
-        group["gaps"] += event["excluded_gap_count"]
-        group["histogram"] = [a + b for a, b in zip(group["histogram"], event["interval_histogram"])]
+        # The schema admits integral JSON numbers such as 1.0. Cast validated
+        # metrics at accumulation so the original values still determine event identity.
+        group["time"] += int(event["interval_sum_us"])
+        group["frames"] += int(event["rendered_frames"])
+        group["intervals"] += int(event["interval_count"])
+        group["gaps"] += int(event["excluded_gap_count"])
+        group["histogram"] = [a + int(b) for a, b in zip(group["histogram"], event["interval_histogram"])]
     status = "no_data" if not groups else "ready"
     if any(len(group["sessions"]) < minimum for group in groups.values()):
         status = "suppressed"
@@ -120,7 +122,7 @@ def vehicle_report(payloads, day, release_id, period, minimum=MIN_TOKENS):
         group = groups.setdefault(event["vehicle_id"], {"sessions": set(), "count": 0, "seconds": 0})
         group["sessions"].add(session)
         group["count"] += 1
-        group["seconds"] += event["active_seconds"]
+        group["seconds"] += int(event["active_seconds"])
     status = "no_data" if not groups else "ready"
     if any(len(group["sessions"]) < minimum for group in groups.values()):
         status = "suppressed"

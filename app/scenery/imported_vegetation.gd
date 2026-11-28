@@ -1,6 +1,8 @@
 class_name ImportedVegetation
 extends RefCounted
 
+const FieldDetailPreferences := preload("res://render/field_detail_preferences.gd")
+
 const CATALOG_PATH := "res://assets/landscape/vegetation/catalog.json"
 const WIND_SHADER_PATH := "res://scenery/imported_vegetation_wind.gdshader"
 const DEFAULT_WIND_STRENGTH := 0.025
@@ -273,6 +275,8 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 				if use_tree_wind and has_cull_bounds:
 					multi_mesh.custom_aabb = cull_bounds
 					instance.custom_aabb = cull_bounds
+				if str(asset.get("role", "")) == "tree":
+					FieldDetailPreferences.register_tree(instance)
 				root.add_child(instance)
 				(state["multimeshes"] as Array).append(multi_mesh)
 

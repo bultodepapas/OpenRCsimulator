@@ -41,6 +41,34 @@ waiting never cancels.
   reason (`NO_HOST_FOR_PLATFORM`, `NO_ONLINE_HOST_FOR_PLATFORM`, `HOST_BUSY`,
   `DISK`, `CIRCUIT_OPEN`, `QUARANTINED`, `TRANSFER_DEFERRED`, …). `detail: "full"`
   returns the authoritative rows.
+- For a placement refusal, inspect the row's host reasons, first and last observation
+  and next probe time. Identical refusals back off to 30 seconds. Snapshot duration
+  appears in the summary when the supervisor measured it. An interrupted dispatch
+  without its original receipt is `MISSING_RECEIPT`: keep its ID for reconciliation.
+- When the Windows authority explicitly refuses a submit, the pool asks it whether
+  the request was accepted and, if not, records its durable tombstone. The row
+  ends `REJECTED` with cause `LOCAL_SUBMIT_REFUSED` and the authority's message; the
+  tombstone proves it never ran, so the host is released at once. A transport
+  failure, or a refusal after the authority accepted the ID, stays uncertain. An
+  unconfirmed local receipt older than ten minutes is settled the same way when
+  observed, including by any placement sweep.
+- A remote host refused for `INSUFFICIENT_DISK` triggers `pool gc` on that host
+  (at most every 20 minutes per host, starting no new job after two minutes;
+  journal `retention/auto-gc-<host>.json`). A remote `run` answered `BUSY` (for
+  example during that sweep) wrote no job, so it becomes `TRANSFER_DEFERRED` at
+  stage `run` and the same ID retries on that host.
+- A batch with explicit host pins can advance up to four independent host groups
+  concurrently. A batch that includes unpinned work and specifies an OS for
+  every job can advance independent OS groups concurrently. Overlapping jobs
+  within a group use the shared placement loop. A mixed batch with unpinned
+  work and an `any` constraint uses one lane. An in-flight transfer can outlast
+  an observation window. Cached status still reports its elapsed placement time
+  and other groups' published results while the batch retains ownership.
+  In compact results,
+  `stage_seconds.placement` includes preflight, archive preparation and transfer.
+  The separate transfer duration measures the successful upload/cache check and
+  is already included in placement. Other available durations include admission
+  wait, import, check and collection.
 - `sim_fleet` shows hosts (online, typed `busy_code`, disk/RAM/load, active pool
   jobs) and every Godot process on the coordinator, with unmanaged ones flagged.
   It uses a 15-second cache; `refresh: true` probes now.
@@ -62,7 +90,9 @@ The detached flow below remains for long batches:
    otherwise the repository root is used.
 2. The call returns promptly while source freezing and dispatch proceed in the
    background. Keep the candidate stable until `sim_test_status` reports
-   `source_frozen: true`. Status reads durable state only: `supervisor_active`,
+   `source_frozen: true`. Checked jobs then run from the frozen snapshot on every
+   host, so a disposable worktree may be removed; presets that clone Git history
+   still need it. Status reads durable state only: `supervisor_active`,
    `supervisor`, optional `result` (`INCOMPLETE`, `PASSED` or `FAILED`), snapshot,
    job outcomes and collected artifact locations. It does not launch work.
    Read its `summary` first: counts (`passed`, `failed`, `rejected`, `blocked`,
@@ -105,12 +135,16 @@ scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 6
 
 - resumes, through the idempotent `recover`, every MCP request with a frozen
   manifest, no final result, no live supervisor and a change within 6 hours;
-- skips `ERROR` and `NEEDS_OPERATOR`, and stops resuming a request after six
-  resumes in a day;
+- skips `ERROR`. For `NEEDS_OPERATOR` it can resume a recent frozen batch when
+  a row recorded a proved placement refusal and a fresh probe now satisfies
+  that row's original constraints. Older records without that proof and
+  ambiguous submissions require operator reconciliation. Recovery uses the
+  existing IDs and stops after six automatic resumes per request in a day;
 - reports older requests as stale and never resumes them: their queued tests
   would run old source;
-- starts `testctl serve` when the authority does not answer, for example after a
-  reboot. The machine-wide singleton refuses a second worker.
+- starts `testctl serve` after a failed probe if the authority's worker lock is
+  available. A held or inaccessible lock is recorded in the watchdog report
+  along with the probe error. The machine-wide singleton still guards startup.
 
 The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
 code it started with, so restart the task after updating it:
@@ -325,6 +359,18 @@ settings and may need separate diagnosis if its own initial window remains.
 Placement rejects unavailable/busy hosts, incompatible platforms, mismatched
 engine hashes and insufficient storage/memory. The estimate combines observed
 load, recorded per-test duration, import setup and configured transfer bandwidth.
+Two consecutive source-specific infrastructure failures on one host start a
+600-second cooldown from the terminal observation. After expiry, unpinned
+placement reserves one trial. Explicit host pins keep their normal admission
+checks. Older receipts use the recorded completion time or receipt modification
+time when completion time is unavailable.
+
+For checked jobs, a foreign Godot process that appears after preparation keeps
+the original attempt waiting at the admission gate for up to its configured
+timeout. The execution budget starts at launch. If the conflict persists, the
+authority reports the admission stage, `EXTERNAL_SIMULATOR` and its nonlaunch
+evidence. An interrupted launch still requires ownership reconciliation.
+
 `history.json` keeps the newest nine successful durations per host and script,
 tagged with their pool job so a retried collection adds no second sample (legacy
 single numbers are read as one sample). Placement uses the median, so one cold
@@ -641,12 +687,14 @@ Job active-count zero alone are insufficient. Unobserved membership or failed cl
 quarantines the attempt. Direct children and descendants that inherit the Job are
 covered; external broker/service launches are outside that boundary and unsupported.
 
-After a lost supervisor, same-boot reconciliation remains deliberately conservative:
-the old per-process handles cannot be recovered. `testctl reconcile <handle>` releases
-an unknown attempt only after proving that the same physical host has rebooted since
-its durable prelaunch identity. It does not kill by recorded PID. Preserve the journal
-and use an ordinary host reboot when necessary; never delete a stale lock or edit
-claims to manufacture proof of cleanup.
+After a lost supervisor, `testctl reconcile <handle>` normally requires proof that
+the same physical host rebooted since the durable prelaunch identity. On the same
+Windows boot, a drained worker can also reconcile an attempt interrupted during
+preparation. This requires a single durable dispatch event, the original host and
+boot, and only the materialized source and manifest in the attempt directory. A
+launch-fence record or any adapter setup artifacts rule out that recovery. Preserve
+the journal and use an ordinary host reboot when the evidence cannot establish
+recovery.
 
 An operator who explicitly accepts the remaining cleanup uncertainty can close a
 same-boot Windows orphan with `testctl abandon <handle> --reason "owner request"`.
@@ -738,8 +786,10 @@ against an arbitrary same-account writer.
 
 Source trees, profiles, temporary directories, captures, logs, artifacts, job
 records, journals, locks, shared snapshots and caches remain protected, including
-failed, incomplete and `UNKNOWN` work. Full capture evidence can live inside an
-attempt's source tree. The queue does not yet provide shared-cache garbage collection
+failed, incomplete and `UNKNOWN` work, except for the reproducible inputs that
+`pool gc` removes after verified collection (below). Full capture evidence can live
+inside an attempt's source tree, so that removal keeps every file the run wrote or
+changed. The queue does not yet provide shared-cache garbage collection
 or atomic storage reservations; remote upload can still leave a partial file before
 remote admission checks. A completed infrastructure-failure collection does not
 prove that all remote diagnostics were inventoried. Preserve remote evidence until
@@ -754,8 +804,9 @@ checked attempt keeps a writable copy of the frozen tree (about 3 GB), and each
 remote job keeps its extracted source; local attempts held 52 GB on `C:` and
 `angel` 45 GB. Remote jobs now hard-link the verified incoming archive into the
 job instead of copying it (one copy less; placement counts one upload plus the
-extraction). The explicit operator tools below never touch failed, incomplete or
-`UNKNOWN` work, logs, reports or job records:
+extraction). On 25 November finished failures held 24 GB of the 25 GB queue
+store on `linux`, while 14 waiting rows were refused for disk. The tools below
+never touch `UNKNOWN` or unconfirmed work, logs, reports or job records:
 
 ```powershell
 python tools/testqueue/retention.py                    # dry run: reclaimable inputs and why the rest is held
@@ -773,10 +824,17 @@ python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
 - `local_gc.py` removes `<attempt>/source` only for unclaimed attempts recorded
   `FINISHED/PASSED/COMPLETE/CONFIRMED`. It reads the store read-only and never
   follows a link, junction or reparse point.
-- `pool gc` first collects (or re-verifies) each remote `PASSED` job on this
-  coordinator, then asks the remote agent to remove that job's source and archive
-  copies, then removes incoming archives older than an hour that no unfinished
-  job uses (refused if an unfinished journal is unreadable).
+- `pool gc` first collects (or re-verifies) each finished remote job with
+  `cleanup: CONFIRMED` on this coordinator, then asks the remote agent to reclaim it,
+  then removes incoming archives older than an hour that no unfinished job uses
+  (refused if an unfinished journal is unreadable). A `PASSED/COMPLETE` job loses its
+  source and archive copies. A `TEST_FAILED`, `TIMED_OUT` or `INFRA_FAILED` job loses
+  only reproducible bytes: archive copies, `source/app/.godot`, Python bytecode and
+  source files whose size and SHA-256 match its own verified `source-inventory.json`.
+  Every other file stays and is reported as `retained_residue`; the coordinator
+  receipt records `storage_gc`. Operator-reconciled attempts and Windows remotes
+  keep failures. Placement runs it automatically for a remote host refused for
+  disk (see [MCP checked batches](#mcp-checked-batches)).
 - `pool reconcile` releases a coordinator receipt that never reached execution.
   Local receipts use the authority's durable submission tombstone. A remote
   authority that has no record of the request releases the host only with

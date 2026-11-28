@@ -1,0 +1,13 @@
+{
+  "format": "openrc-trailer-camera",
+  "version": 1,
+  "shot_id": "R4-03",
+  "vehicle_id": "stik-electric-6s",
+  "source_plan_sha256": "dc6e63cd43a0215c1fd5f3f16163d987dd336bb0b34afb16becca25fe871ed8b",
+  "target": "presented_cg",
+  "fov_deg": 34,
+  "mode": "parallel_east",
+  "north_m": 10,
+  "down_m": -2.5,
+  "east_offset_m": -6
+}

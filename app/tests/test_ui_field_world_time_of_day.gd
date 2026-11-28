@@ -97,7 +97,7 @@ func _home_and_flight() -> void:
 		and root.get_visible_rect().size == Vector2(1920, 1080))
 	var home: Control = app.get("home")
 	var button: Button = home.get("time_button")
-	_check("Home shows the saved compact choice", button.text == "Time of day\nNew moon", button.text)
+	_check("Home shows the saved choice on one line at 1080p", button.text == "Time of day: Night, no moon", button.text)
 	_check("Home backdrop receives the saved field-lighting profile and campfire",
 		app.home_scene.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "auto"})
 	var night_stars: Node3D = app.home_scene.get_node_or_null("Stars")
@@ -113,7 +113,7 @@ func _home_and_flight() -> void:
 		return
 	await ui.tap(KEY_ENTER) # next choice after night_dark wraps to day
 	_check("the button advances and wraps to day",
-		home.get("time_of_day") == "day" and button.text == "Time of day\nDay", button.text)
+		home.get("time_of_day") == "day" and button.text == "Time of day: Day", button.text)
 	var day_ready: bool = await ui.wait_until(func() -> bool:
 		return is_instance_valid(app.home_scene) and not app.home_scene.presentation_pending and not app.home_scene.preview_pending)
 	_check("day presentation reaches its asynchronous completion boundary", day_ready)
@@ -129,7 +129,7 @@ func _home_and_flight() -> void:
 	_check("choice saved at once", Preferences.load_from(PREFS).time_of_day == "sunset")
 	TranslationServer.set_locale("es")
 	await ui.settle()
-	_check("Spanish compact label", button.text == "Hora del día\nAtardecer", button.text)
+	_check("Spanish label", button.text == "Hora del día: Atardecer", button.text)
 	TranslationServer.set_locale("en")
 	await ui.settle()
 
@@ -142,12 +142,16 @@ func _home_and_flight() -> void:
 		app.flight.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "auto"})
 	app.open_pause()
 	await ui.settle()
-	_check("field-world flights expose a Sky and lighting action", app.pause_menu.time_of_day_button.text == "Sky and lighting")
-	await ui.tap(KEY_DOWN) # Restart
-	await ui.tap(KEY_DOWN) # Session options
-	await ui.tap(KEY_ENTER)
-	await ui.tap(KEY_DOWN) # Sky and lighting (UI-33: this flight's tools come first in Session options)
-	_check("Sky and lighting is reachable inside Session options", ui.focus_name() == "TimeOfDay", ui.focus_name())
+	_check("field-world flights expose a Sky and lighting action", app.pause_menu.time_of_day_button.text == "Time & sky")
+	# UI-40a: Sky and lighting leads this flight's session tools, folded under More options below 1000 px.
+	for step in 12:
+		if ui.focus_name() in ["TimeOfDay", "MoreOptions"]:
+			break
+		await ui.tap(KEY_DOWN)
+	if ui.focus_name() == "MoreOptions":
+		await ui.tap(KEY_ENTER)
+		await ui.tap(KEY_DOWN)
+	_check("Sky and lighting is reachable from the pause menu", ui.focus_name() == "TimeOfDay", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var field_dialog: CanvasLayer = app.time_of_day_dialog

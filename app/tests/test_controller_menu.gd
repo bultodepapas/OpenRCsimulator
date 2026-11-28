@@ -57,9 +57,7 @@ func _run() -> void:
 	await create_timer(0.25).timeout
 	check("first A on Fly keeps recovery visible for an unverified synthetic pad", app.flight != null and app.pause_menu != null and app.flight.session.radio.device_id == 15 and not app.flight.session.radio.armed and app.flight.session.sim.paused)
 	check("automatic launch creates no saved controller profile", app.controllers.store.load_all().profiles.is_empty())
-	app.pause_menu.exit_options_button.grab_focus()
-	await button(JOY_BUTTON_A) # reveal End inside Exit options
-	await button(JOY_BUTTON_DPAD_DOWN)
+	app.pause_menu.end_button.grab_focus() # UI-40a: Return to Home is always visible
 	await button(JOY_BUTTON_A)
 	check("automatic-controller flight can return Home", app.flight == null and app.screens.is_top("home"))
 	observed.append({"id": 14, "name": "Fake EdgeTX", "kind": "radio", "known": true})
@@ -118,7 +116,8 @@ func _run() -> void:
 		known_subtotal_minor = 539, total_minor = null, lines = [], unresolved = ["inspection required"]}, true)
 	await ui.settle()
 	var accident_trim: float = session.trims.roll
-	await button(JOY_BUTTON_DPAD_RIGHT)
+	await button(JOY_BUTTON_DPAD_RIGHT) # UI-40b: Restart -> Inspect
+	await button(JOY_BUTTON_DPAD_RIGHT) # -> breakdown
 	check("accident navigation does not trim the aircraft", session.trims.roll == accident_trim and root.gui_get_focus_owner() == accident._details_button)
 	await button(JOY_BUTTON_A)
 	check("selected menu pad opens the accident breakdown", accident._details_scroll.visible)
@@ -168,20 +167,17 @@ func _run() -> void:
 	var trim: float = session.trims.roll
 	await button(JOY_BUTTON_DPAD_RIGHT)
 	check("menu D-pad cannot trim aircraft", session.trims.roll == trim)
-	app.pause_menu.session_options_button.grab_focus()
-	await button(JOY_BUTTON_A) # open Session options
-	await button(JOY_BUTTON_B)
-	check("Back closes Session options without resuming the flight",
-		app.pause_menu != null and app.pause_menu.session_options_container.visible == false and session.sim.paused)
-	app.pause_menu.session_options_button.grab_focus()
-	await button(JOY_BUTTON_A)
+	check("Radio & controls is a visible This-flight action",
+		app.pause_menu != null and app.pause_menu.essentials_container.is_visible_in_tree()
+		and app.pause_menu.controls_button.is_visible_in_tree() and session.sim.paused)
+	app.pause_menu.restart_button.grab_focus()
 	var controls_reachable := false
 	for step in 8:
 		if ui.focus_name() == "ControllerSettings":
 			controls_reachable = true
 			break
 		await button(JOY_BUTTON_DPAD_DOWN)
-	check("Controller settings is reachable inside Session options", controls_reachable)
+	check("Radio & controls is reachable with the D-pad", controls_reachable)
 	await button(JOY_BUTTON_A)
 	check("Controls is reachable from Pause", app.screens.is_top("controls"))
 	setup = app.screens.top()
@@ -227,9 +223,7 @@ func _run() -> void:
 	check("closing a changed draft asks before discarding", setup.unsaved_dialog != null and setup.unsaved_dialog.visible and app.screens.is_top("controls"))
 	setup._unsaved_discard_button.pressed.emit()
 	check("closing the draft restores Pause without resuming", app.screens.is_top("pause") and session.sim.paused)
-	app.pause_menu.exit_options_button.grab_focus()
-	await button(JOY_BUTTON_A) # reveal End inside Exit options
-	await button(JOY_BUTTON_DPAD_DOWN)
+	app.pause_menu.end_button.grab_focus() # UI-40a: Return to Home is always visible
 	await button(JOY_BUTTON_A)
 	check("gamepad can end flight and return Home", app.flight == null and app.screens.is_top("home"))
 	await _test_helicopter_flow()
