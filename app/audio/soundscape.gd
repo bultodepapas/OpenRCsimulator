@@ -31,6 +31,8 @@ const HISTORY_COMPACT_MIN: int = 128 # amortize copies while keeping the inactiv
 const DELAYED_CONTINUOUS: Array[String] = ["source", "source_velocity", "exhaust_direction", "rpm", "load",
 	"throttle", "airspeed", "jet_velocity", "jet_velocity_max"]
 const DELAYED_DISCRETE: Array[String] = ["running", "blades", "max_rpm"]
+## Both lists in order, built once (heard_snapshot ran the concatenation every frame).
+const _DELAYED_KEYS: Array[String] = DELAYED_CONTINUOUS + DELAYED_DISCRETE
 var propagation_delay: bool = true
 ## AUD-11b: false holds the absorption filter at its ceiling (source-level calibration, comparison runs).
 var air_absorption: bool = true
@@ -506,7 +508,7 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 		_clear_history()
 		count = 0
 	var sample: Dictionary = {}
-	for key: String in DELAYED_CONTINUOUS + DELAYED_DISCRETE:
+	for key: String in _DELAYED_KEYS:
 		if snapshot.has(key):
 			sample[key] = snapshot[key]
 	var position: Vector3 = snapshot.get("source", Vector3.ZERO)
@@ -525,8 +527,8 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 		_history_positions = _history_positions.slice(_history_start)
 		_history = _history.slice(_history_start)
 		_history_start = 0
-	var emission: Dictionary = Model.retarded_emission(_history_times, _history_positions,
-		snapshot.get("listener", Vector3.ZERO), now, float(snapshot.get("sound_speed", 343.0)), _history_start)
+	var emission: Dictionary = _retarded_emission(snapshot.get("listener", Vector3.ZERO), now,
+		float(snapshot.get("sound_speed", 343.0)))
 	# Keep the original guard for malformed or mismatched history arrays.
 	if int(emission.index) < _history_start:
 		emission = {index = _history_start, alpha = 0.0, delay = now - _history_times[_history_start], truncated = true}
@@ -546,6 +548,31 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 		if nearest.has(key):
 			heard[key] = nearest[key]
 	return heard
+
+
+## Model.retarded_emission over this soundscape's history. NK-6r: the native kernel answers it exactly (its bisection
+## cost about 10 µs per frame in GDScript); without the verified library, or with native_emission_enabled off, the
+## model runs here.
+func _retarded_emission(listener: Vector3, now: float, sound_speed: float) -> Dictionary:
+	if native_emission_enabled:
+		if _native == null and not _native_unavailable and ClassDB.class_exists(_NATIVE_CLASS):
+			var candidate: Object = ClassDB.instantiate(_NATIVE_CLASS)
+			if candidate != null and candidate.has_method(&"retarded_emission"):
+				_native = candidate
+			else:
+				_native_unavailable = true
+		if _native != null:
+			var r: PackedFloat64Array = _native.retarded_emission(_history_times, _history_positions, listener, now,
+				sound_speed, _history_start)
+			return {index = int(r[0]), alpha = r[1], delay = r[2], truncated = r[3] != 0.0}
+	return Model.retarded_emission(_history_times, _history_positions, listener, now, sound_speed, _history_start)
+
+
+const _NATIVE_CLASS := &"OpenRCNativeKernel"
+## NK-6r test hook: false runs Model.retarded_emission in GDScript.
+var native_emission_enabled := true
+var _native: Object = null
+var _native_unavailable := false
 
 
 ## AUD-11b: ISO 9613-1 path loss over the heard (retarded) path and canopy screening, on the aircraft bus.

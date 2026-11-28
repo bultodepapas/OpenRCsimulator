@@ -8,6 +8,8 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/variant/array.hpp>
+#include <godot_cpp/variant/packed_vector3_array.hpp>
+#include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/packed_float64_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
@@ -15,7 +17,11 @@
 #include <godot_cpp/variant/string_name.hpp>
 
 #include <chrono>
+#include <algorithm>
 #include <cmath>
+#if defined(__x86_64__) || defined(_M_X64)
+#include <xmmintrin.h>
+#endif
 #include <cstdint>
 #include <cstring>
 #include <initializer_list>
@@ -1250,6 +1256,8 @@ protected:
 			&OpenRCNativeKernel::stage_wheel_rows);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
+		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
+			"min_index"), &OpenRCNativeKernel::retarded_emission);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_blade_torques", "rpm", "axial_speed", "density"),
 			&OpenRCNativeKernel::stage_glow_blade_torques);
 		godot::ClassDB::bind_method(D_METHOD("scenery_state_valid", "s"), &OpenRCNativeKernel::scenery_state_valid);
@@ -2019,6 +2027,70 @@ public:
 		out.resize(2);
 		out[0] = moving.ok ? moving.torque_nm.v : nk::kNan;
 		out[1] = still.ok ? still.torque_nm.v : nk::kNan;
+		return out;
+	}
+
+	// NK-6r: audio/soundscape_model.gd retarded_emission, exact: [index, alpha, delay, truncated (1/0)]. Presentation
+	// only; GDScript's mixed precision is kept: times, the sound speed and the bisection run in double, while
+	// Vector3.lerp (its weight cast to float), the difference and the length run in float, as Godot's real_t.
+	static float emission_distance(const godot::Vector3 &p, const godot::Vector3 &listener) {
+		const float dx = listener.x - p.x; // Vector3::distance_to: (p_to - *this).length()
+		const float dy = listener.y - p.y;
+		const float dz = listener.z - p.z;
+		const float x2 = dx * dx;
+		const float y2 = dy * dy;
+		const float z2 = dz * dz;
+#if defined(__x86_64__) || defined(_M_X64)
+		return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(x2 + y2 + z2))); // correctly rounded, no library call
+#else
+		return std::sqrt(x2 + y2 + z2);
+#endif
+	}
+
+	static double emission_lerp(double from, double to, double weight) { return from + (to - from) * weight; }
+
+	PackedFloat64Array retarded_emission(const PackedFloat64Array &times, const godot::PackedVector3Array &positions,
+			const godot::Vector3 &listener, double now, double sound_speed, int64_t min_index) const {
+		PackedFloat64Array out;
+		out.resize(4);
+		const int64_t count = std::min(times.size(), positions.size());
+		if (count == 0) {
+			out[0] = -1.0; out[1] = 0.0; out[2] = 0.0; out[3] = 1.0;
+			return out;
+		}
+		const int64_t first = std::min(std::max(min_index, int64_t(0)), count - 1);
+		const double c = std::min(std::max(sound_speed, 300.0), 380.0);
+		const double *t = times.ptr();
+		const godot::Vector3 *pos = positions.ptr();
+		const double newer_g = (now - t[count - 1]) - double(emission_distance(pos[count - 1], listener)) / c;
+		if (newer_g >= 0.0) {
+			out[0] = double(count - 1); out[1] = 0.0; out[2] = now - t[count - 1]; out[3] = 0.0;
+			return out;
+		}
+		for (int64_t k = count - 2; k >= first; --k) {
+			const double g = (now - t[k]) - double(emission_distance(pos[k], listener)) / c;
+			if (g >= 0.0) {
+				double low = 0.0;
+				double high = 1.0;
+				for (int iteration = 0; iteration < 40; ++iteration) {
+					const double mid = 0.5 * (low + high);
+					const double t_mid = emission_lerp(t[k], t[k + 1], mid);
+					const float w = static_cast<float>(mid); // Vector3.lerp(p_to, real_t p_weight)
+					const godot::Vector3 a = pos[k];
+					const godot::Vector3 b = pos[k + 1];
+					const godot::Vector3 lerped(a.x + (b.x - a.x) * w, a.y + (b.y - a.y) * w, a.z + (b.z - a.z) * w);
+					if ((now - t_mid) - double(emission_distance(lerped, listener)) / c >= 0.0) {
+						low = mid;
+					} else {
+						high = mid;
+					}
+				}
+				const double alpha = 0.5 * (low + high);
+				out[0] = double(k); out[1] = alpha; out[2] = now - emission_lerp(t[k], t[k + 1], alpha); out[3] = 0.0;
+				return out;
+			}
+		}
+		out[0] = double(first); out[1] = 0.0; out[2] = now - t[first]; out[3] = 1.0;
 		return out;
 	}
 

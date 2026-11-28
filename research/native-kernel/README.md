@@ -622,6 +622,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `state_valid`, `scenery_state_valid`, `arrays_finite` and `inertia_cached` (NK-6q) are pure, exact ports of
   `Simulation.step`'s own checks and the session's state checks. `Simulation` uses them only when the installed
   model's stage belongs to the kernel ([evidence](../../docs/research/native-kernel/NK-6q/README.md)).
+- `retarded_emission(times, positions, listener, now, sound_speed, min_index)` (NK-6r) is `SoundscapeModel.retarded_emission`
+  in the model's mixed precision, for the soundscape's propagation delay; presentation only
+  ([evidence](../../docs/research/native-kernel/NK-6r/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
