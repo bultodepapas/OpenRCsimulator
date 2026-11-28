@@ -1,7 +1,7 @@
 {
   "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
   "branch": "audit/native-visual-cohesion-2026-11-28",
-  "audit_stage": "source_component_and_headless_integration_verified_rendered_and_target_performance_pending",
+  "audit_stage": "final source and scoped software-render evidence independently reviewed; physical target performance, motion/human acceptance open",
   "severity_basis": "Qualitative severity of the demonstrated source/measurement issue in its stated path, independent of visual magnitude or prevalence. Corroborating duplicates identify the same issue.",
   "reviewed_findings": [
     {
@@ -38,7 +38,8 @@
       "kind": "source defect",
       "claim": "Club lake Beer path uses axial rather than ray distance",
       "evidence": "water_material.gd:35 and lake_terrain.gd:78 bind water.gdshader. Baseline lines 137–147,179–193 use axial separation. Independently computed absorbed fractions .601480959/.478235133 for identical 2 m ray at 0°/45°. PBRT 4e §11.2. Pinned GLES and clustered source use -normalize(vertex) for VIEW in the single-view path.",
-      "missing": "Matched center/off-axis, near/orthographic/foreground controls, and real GPU measurement."
+      "missing": "An isolated rendered centered/off-axis water slab, moving shoreline and target-device cost.",
+      "evidence_needed_at_intake": "Matched center/off-axis, near/orthographic/foreground controls, and real GPU measurement."
     },
     {
       "id": "N2",
@@ -47,7 +48,8 @@
       "kind": "portability defect",
       "claim": "Signed Gaussian argument to floating-point pow",
       "evidence": "lens_film.gdshader:70–82 calls pow with negative base for y>edge−.006. GLSL §8.2 explicitly leaves this undefined even if exponent is 2. Intended rim .1287578044 at ±1. The sample at y=edge+.002 is multiplied by zero sheet coverage; use a slightly negative covered offset to demonstrate a surviving change rather than relying on that boundary.",
-      "missing": "Backend compile, signed covered-distance numeric test, held curtain images. No assertion of a visible failure on this driver."
+      "missing": "Application on additional driver families and deployment hardware. User-visible improvement is unproven on these drivers.",
+      "evidence_needed_at_intake": "Backend compile, signed covered-distance numeric test, held curtain images. No assertion of a visible failure on this driver."
     },
     {
       "id": "M1",
@@ -56,7 +58,8 @@
       "kind": "source defect",
       "claim": "Absolute UV determinant discards valid normal maps on buildings/pit shelter",
       "evidence": "building_roofs.gdshader:18–30 and pit_shelter_roof.gdshader:132–147. Orthogonal equal-scale derivatives yield 1.23457e-6 at 900 px/tile vs 8.57339e-7 at 1080; conditioning stays one. Independent Pillow clay source (150,300) = (249,139,164), clay strength .67 gives 65.94495° norm tilt before texture filtering.",
-      "missing": "Matched zoom/geometry, both owners and backends; verify signed mirror, collinear/zero, no-NaN and flat-map controls."
+      "missing": "Moving close approaches, shipped device drivers and per-pass GPU cost.",
+      "evidence_needed_at_intake": "Matched zoom/geometry, both owners and backends; verify signed mirror, collinear/zero, no-NaN and flat-map controls."
     },
     {
       "id": "M2",
@@ -65,7 +68,8 @@
       "kind": "source defect",
       "claim": "Moon texture mip estimate loses 2D derivatives",
       "evidence": "moon_disc.gdshaderinc:77–100 uses radial derivative for both edge and texture LOD. Four symmetric offsets (±.1,±.1) give zero radial derivative even as map coordinates vary; independent true equatorial max footprint 65.629 texels → LOD 6.036263. Atmosphere binds real 2048/1024 width maps. Vector derivative remedy is a bounded filter heuristic; it is approximate near limb/pole.",
-      "missing": "Matched subpixel phases, limb/pole and moonrise, reference supersampling and actual night captures. No claim of observed flicker yet."
+      "missing": "Subpixel motion, independent supersampled lunar reference, different phases, poles, moonrise and target-device GPU behavior.",
+      "evidence_needed_at_intake": "Matched subpixel phases, limb/pole and moonrise, reference supersampling and actual night captures. No claim of observed flicker yet."
     },
     {
       "id": "L1",
@@ -74,7 +78,8 @@
       "kind": "source defect",
       "claim": "RC dirt GGX ignores per-light specular strength",
       "evidence": "ground.gdshader:344,373,398–412; DirtLoopSurface instantiated by airfield_track_view.gd. Active car spots use .35. Independently reopened pinned GLES rasterizer_scene_gles3.cpp:2075 and RD light_storage.cpp:1075; each sends 2×the positional setting. Correct multiplier .70 on this isolated contribution; does not imply 30% change in a scene pixel.",
-      "missing": "Actual dirt patch with the same spot at 0/.35/.5 plus diffuse/directional and off-track controls."
+      "missing": "Additional light types, material boundaries and physical target behavior. Encoded image levels do not measure linear BRDF weights.",
+      "evidence_needed_at_intake": "Actual dirt patch with the same spot at 0/.35/.5 plus diffuse/directional and off-track controls."
     },
     {
       "id": "L2",
@@ -92,7 +97,8 @@
       "kind": "source defect",
       "claim": "Authored countryside hex colors used as RD-linear albedo",
       "evidence": "bake_countryside.py:33,91–105,237 converts #515351 to integer/255, and countryside.gd:54–71 puts RGB unconverted in ARRAY_COLOR. Shader uses it as ALBEDO. Expected red .082282707 versus .317647059. Independently scanned all 7168 indexed triangles; none has varying RGB. Pinned shader_types.cpp:87 exposes OUTPUT_IS_SRGB across spatial stages. UV2 owns tags/width. Decode only the author-proven palette.",
-      "missing": "Bound Forward+/Mobile swatches and Compatibility open-air control; no claim all other art constants are encoded."
+      "missing": "Mobile renderer and physical displays. The chosen headland pigment does not establish a transfer convention for every scenery constant.",
+      "evidence_needed_at_intake": "Bound Forward+/Mobile swatches and Compatibility open-air control; no claim all other art constants are encoded."
     },
     {
       "id": "PBR-02",
@@ -101,7 +107,8 @@
       "kind": "source defect",
       "claim": "Rigid windsock normals use diameter taper instead of radius taper",
       "evidence": "windsock_deformation.gdshaderinc:25–30,85–102,129–136; default.json:8561–69 overrides shader default. At 2.5 m and .45/.18 m diameters, slope -.054 gives 3.0909700° correct angle; implementation -.108 gives 6.1640524°. Exact argument is limited to rigid circular section.",
-      "missing": "Position finite-difference reference at several rigid t/azimuths, deformed fabric and matching geometry/shadow frames."
+      "missing": "Dynamic cloth motion/normal behavior, shadow movement and target hardware.",
+      "evidence_needed_at_intake": "Position finite-difference reference at several rigid t/azimuths, deformed fabric and matching geometry/shadow frames."
     },
     {
       "id": "PBR-03",
@@ -110,7 +117,8 @@
       "kind": "source defect",
       "claim": "Aserradero periodic joint filter aliases at integral pitch",
       "evidence": "Selected paint aserradero.gdshader:26–27,42–44,70–76,101,124 computes derivative after folding. Pixel centers a 43 mm pitch apart sample identical folded distance; I recomputed expected slot coverage 1.1/43=.0255813953 regardless of phase. Baseline produces 0 or 1. Regional color impact is limited to this paint.",
-      "missing": "Verify centered phase, both sides/negative coordinates, tiny through multiple pitches, stable pan, magnification. Keep unfolded derivatives in uniform flow."
+      "missing": "Temporal shimmer, moving-distance or subpixel sweeps, and target hardware.",
+      "evidence_needed_at_intake": "Verify centered phase, both sides/negative coordinates, tiny through multiple pitches, stable pan, magnification. Keep unfolded derivatives in uniform flow."
     },
     {
       "id": "W1",
@@ -119,7 +127,8 @@
       "kind": "corroborating duplicate",
       "claim": "Same physical ray versus camera-axis issue as N1",
       "evidence": "Independently resolved as N1; second specialist describes the same shader term and counterexample. Count one unique finding.",
-      "missing": "See N1."
+      "missing": "See the final N1 source and image disposition.",
+      "evidence_needed_at_intake": "See N1."
     },
     {
       "id": "W2",
@@ -155,7 +164,8 @@
       "kind": "source defect",
       "claim": "Rain curtain's derivative across wrapped UVs selects a false coarse mip",
       "evidence": "rain_curtain.gdshader:15–20 and storm_bank.gd:79–95. Independently opened shipped FX_CloudAlpha06 2048×2048: alpha endpoints at row floor(.46H) both zero, full-image mean 51.81723595/255. At 500 px sheet mip 3.61918 vs 10.99132 across wrap. Averages illustrate model; actual import/compositing determines screenshot.",
-      "missing": "Electrical-storm rain at both seams, broad/interior controls, 1080p pan across quad phases. Verify selected import has mipmaps."
+      "missing": "Moving seam traversals across quad phases, artist judgment on persistent shimmer and physical target measurements.",
+      "evidence_needed_at_intake": "Electrical-storm rain at both seams, broad/interior controls, 1080p pan across quad phases. Verify selected import has mipmaps."
     },
     {
       "id": "ATM2",
@@ -200,7 +210,8 @@
       "kind": "source optimization opportunity",
       "claim": "Uniform dark-Moon return may precede projection/derivatives",
       "evidence": "moon_disc.gdshaderinc:67–80 computes derivatives before uniform zero return. sky.gdshader:204–206 calls on non-cubemap sky. Source admits skipping work on inactive frames; compiler optimization and GPU load preclude any speed claim.",
-      "missing": "Byte-identical inactive frames and an enabled control. Actual real-GPU sky-pass timings for speed claims."
+      "missing": "Isolated dark-Moon draw cost, proof of eliminated driver work and a matched on/off dark-Moon experiment.",
+      "evidence_needed_at_intake": "Byte-identical inactive frames and an enabled control. Actual real-GPU sky-pass timings for speed claims."
     },
     {
       "id": "PERF-CAP",
@@ -209,7 +220,8 @@
       "kind": "measurement limitation",
       "claim": "Fixture resolution, renderer labels and sample attribution",
       "evidence": "capture_landscape_upgrade.gd:119–121,291,449–492 sets root size and uses a literal renderer label. Its timed process_frame/post_draw loop includes initial setup interval, and even-count median selects upper middle. render_probe.gd:96–108 labels absent/zero and unverified GPU reading freshness. Per-process resource sampling differs from viewport render CPU.",
-      "missing": "Actual device and renderer, decoded PNGs, verified raw intervals, matched variants, independent repetitions and OS process measurement; broad fixtures do not cover all individual feature changes."
+      "missing": "Hardware timing, actual presentation rate, CPU SKU/core count, timestamp freshness and standalone costs of individual shaders.",
+      "evidence_needed_at_intake": "Actual device and renderer, decoded PNGs, verified raw intervals, matched variants, independent repetitions and OS process measurement; broad fixtures do not cover all individual feature changes."
     },
     {
       "id": "HARDWARE",
@@ -224,88 +236,159 @@
   "reviewed_changes": [
     {
       "id": "N1",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "An isolated rendered centered/off-axis water slab, moving shoreline and target-device cost.",
+      "initial_integration_file_sha256": {
         "app/render/lake/water.gdshader": "6e40728845e10a4fd0c4d4124c4078ae36599de44750d73c95aa98533abde04f"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/lake/water.gdshader": "6e40728845e10a4fd0c4d4124c4078ae36599de44750d73c95aa98533abde04f"
+      },
+      "final_observation": "The analytic camera-ray absorption tests pass. The Compatibility lake overview changes 35,053 pixels by at most one RGB code, and lake shore changes 224,421 by −3 to +5 codes. Same-variant repeats are identical. Forward+ wide views also contain countryside changes."
     },
     {
       "id": "N2",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Application on additional driver families and deployment hardware. User-visible improvement is unproven on these drivers.",
+      "initial_integration_file_sha256": {
         "app/render/lens/lens_film.gdshader": "def1faa2ebe5facf66233ff272c1a7035828221762ecc25de3e2a6bfd83335be"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/lens/lens_film.gdshader": "def1faa2ebe5facf66233ff272c1a7035828221762ecc25de3e2a6bfd83335be"
+      },
+      "final_observation": "Signed finite Gaussian samples pass the source-bound test. Both software drivers preserve the disabled diagnostic chart and two active native curtain ages pixel-for-pixel."
     },
     {
       "id": "M1",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Moving close approaches, shipped device drivers and per-pass GPU cost.",
+      "initial_integration_file_sha256": {
         "app/scenery/building_roofs.gdshader": "5aa7e91a83ba08022778701c90a20738763673565248921d477ec65861a18db9",
         "app/scenery/pit_shelter_roof.gdshader": "0018da50ff094227420091a8043ea5ab85a2f05dbe6221b73b6b6da764cba2f7"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/scenery/building_roofs.gdshader": "5aa7e91a83ba08022778701c90a20738763673565248921d477ec65861a18db9",
+        "app/scenery/pit_shelter_roof.gdshader": "0018da50ff094227420091a8043ea5ab85a2f05dbe6221b73b6b6da764cba2f7"
+      },
+      "final_observation": "Actual roof materials at 2 m produce |det UV| 2.24314e−7 and 2.76123e−7 at the target. Both roof owners and both methods show changed native close-up shading; distant Compatibility controls have zero or single-code differences. Mirrored, collapsed and degenerate inputs were examined separately."
     },
     {
       "id": "M2",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Subpixel motion, independent supersampled lunar reference, different phases, poles, moonrise and target-device GPU behavior.",
+      "initial_integration_file_sha256": {
         "app/render/world/moon_disc.gdshaderinc": "6eeb74974dbd723aa22b1608fdba3e6ef2c49e7d96d41ac64862242146eccb57"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/world/moon_disc.gdshaderinc": "0468425bd15236aa2310c5cf657034cf0fb09c3635c1b7173a0dbee2ce8950e3"
+      },
+      "final_observation": "The first close-disc edge was rejected. The revised radial floor restores every channel of the untreated baseline in both native full-Moon close/wide controls on both software methods. The synthetic symmetric center quad retains LOD 6.692645 through the change."
     },
     {
       "id": "P1",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Isolated dark-Moon draw cost, proof of eliminated driver work and a matched on/off dark-Moon experiment.",
+      "initial_integration_file_sha256": {
         "app/render/world/moon_disc.gdshaderinc": "6eeb74974dbd723aa22b1608fdba3e6ef2c49e7d96d41ac64862242146eccb57"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/world/moon_disc.gdshaderinc": "0468425bd15236aa2310c5cf657034cf0fb09c3635c1b7173a0dbee2ce8950e3"
+      },
+      "final_observation": "Source confirms the inactive uniform guard precedes the lunar projection and implicit derivatives. The two active full-Moon controls preserve the baseline after the LOD correction."
     },
     {
       "id": "L1",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Additional light types, material boundaries and physical target behavior. Encoded image levels do not measure linear BRDF weights.",
+      "initial_integration_file_sha256": {
         "app/render/ground.gdshader": "2f0a54a8b7857a89a59ccb0b70725a20d3c6a12e5749cdcc2ac8b68e95518b83"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/ground.gdshader": "2f0a54a8b7857a89a59ccb0b70725a20d3c6a12e5749cdcc2ac8b68e95518b83"
+      },
+      "final_observation": "In both software methods, the untreated lit material ignores the source property. The corrected powered 0.00, 0.35 and 0.50 controls increase output monotonically, retaining diffuse illumination at zero. Lamp off and 0.50 reproduce the baseline exactly."
     },
     {
       "id": "PBR-01",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Mobile renderer and physical displays. The chosen headland pigment does not establish a transfer convention for every scenery constant.",
+      "initial_integration_file_sha256": {
         "app/render/landscape_upgrade/countryside_surface.gdshader": "06e67e32b2379fae45603d19e623222b49f6564f0cc730daa612da41ec4cf864"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/landscape_upgrade/countryside_surface.gdshader": "9dc794c13360241358ba1e8505550dccbe967de8f76d0b39e4d24f984196797b"
+      },
+      "final_observation": "The first mixed-pigment Forward+ headland was rejected. Final field-entry crop Y′ difference is 11.5818 (initial candidate 75.7860 and original 18.2899), within the declared 6–30 range. The crop row, track, stubble and highway road controls remain unchanged between candidates. Compatibility preserves the original field-entry and highway images."
     },
     {
       "id": "PBR-02",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Dynamic cloth motion/normal behavior, shadow movement and target hardware.",
+      "initial_integration_file_sha256": {
         "app/render/windsock_deformation.gdshaderinc": "def2404b78ac467301925dbd87dc6fdbe997735d1aa5118ef5f1709b9687ba97"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/windsock_deformation.gdshaderinc": "def2404b78ac467301925dbd87dc6fdbe997735d1aa5118ef5f1709b9687ba97"
+      },
+      "final_observation": "The fabric, throat and complete windsock have changed shading, while the isolated rigid base remains identical on the checked native frames. The source-bound rigid-taper slope probe passes."
     },
     {
       "id": "PBR-03",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Temporal shimmer, moving-distance or subpixel sweeps, and target hardware.",
+      "initial_integration_file_sha256": {
         "app/assets/vehicle-paints/turbo-lumber-evolution/aserradero.gdshader": "534af2a88323165e6dd977830659b56ae1a5de4b27c012ac1a173f7d84c679e1"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/assets/vehicle-paints/turbo-lumber-evolution/aserradero.gdshader": "534af2a88323165e6dd977830659b56ae1a5de4b27c012ac1a173f7d84c679e1"
+      },
+      "final_observation": "Native front-three-quarter and top views use the selected Aserradero paint. Paired stills localize the visible change to the veneer shading. The periodic integral independently matches the analytic seam mean across signed coordinate phases and multiple pitches."
     },
     {
       "id": "ATM1",
-      "state": "admitted_source_and_independent_analytic_check",
-      "working_tree_file_sha256": {
+      "state": "admitted for stated source, component and scoped software-render evidence",
+      "missing": "Moving seam traversals across quad phases, artist judgment on persistent shimmer and physical target measurements.",
+      "initial_integration_file_sha256": {
         "app/render/weather/rain_curtain.gdshader": "28f62584bbcdd0334b2fd1ba035c4cc7c356630a7bcd09e1901cc698bf5873ce"
       },
-      "missing": "Full pinned-engine rendered attribution and independent target-hardware measurements."
+      "final_source_file_sha256": {
+        "app/render/weather/rain_curtain.gdshader": "28f62584bbcdd0334b2fd1ba035c4cc7c356630a7bcd09e1901cc698bf5873ce"
+      },
+      "final_observation": "The native rain sheet is present in the two storm views. In Compatibility only 189/213 pixels increase by one RGB code. The unwrapped-gradient component test removes the false edge derivative without demonstrating a perceptible still-image improvement."
     }
   ],
-  "visual_evidence": [],
-  "performance_evidence": [],
+  "visual_evidence": [
+    {
+      "path": "evidence/hosted-independent-review.json",
+      "candidate": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "workloads": 24,
+      "baseline_candidate_image_pairs": 60,
+      "pixels_per_native_image": [
+        1920,
+        1080
+      ],
+      "disposition": "Matched images accepted in the particular views, conditions and renderer recorded. Historical failed/partial experiments and extra eligible or incomplete fallback attempts are documented separately."
+    },
+    {
+      "path": "visual-review.md",
+      "scope": "Art review and crops"
+    },
+    {
+      "path": "screenshots.md",
+      "scope": "Side-by-side reduced previews; full-image provenance appears in the gallery manifest."
+    }
+  ],
+  "performance_evidence": [
+    {
+      "path": "evidence/hosted-field-performance.json",
+      "sha256": "57f7e1d4c4fcd916d427d91170140d598463ed30101419eae7418dede1519623",
+      "candidate": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "field_cases": 12,
+      "accepted_engine_field_invocations": 48,
+      "wall_intervals_per_side_and_case": 60,
+      "scope": "Paired A/B/B/A within each hosted software-render VM. Direct Godot user/system time and peak RSS are sampled separately. Positive viewport GPU poll age is unverified. No physical GPU or presented FPS claim."
+    }
+  ],
   "intake_counts": {
     "CONDITIONAL": 6,
     "VALIDATED": 17,
@@ -391,7 +474,29 @@
       "source_hashes_independently_matched": true,
       "instrumentation_scope": "Program excerpts; rain computes an observed gradient-based LOD with substituted samplers; Moon returns the instrumented LOD before texture fetch. For roofs, shelter helper exercised and building path inspected separately; colors/windsock/light use scalar probes. No game imagery, performance or user-visible qualification.",
       "attempt_history": "shader-math-01 failed the baseline Moon oracle because the centered sample straddled derivative quads. Corrected phase selected a single hardware-style 2x2 derivative quad; new baseline LOD = 0 and candidate = 6.692645. Original retained.",
-      "initial_receipt_path": "evidence/shader-math-initial.json"
+      "initial_receipt_path": "evidence/shader-math-initial.json",
+      "production_candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3"
+    },
+    {
+      "path": "evidence/shader-math-headland.json",
+      "sha256": "b2bbc3358615fcd72bcd3f577a5aec31747585ed1048a6043e3ef234ca654c3d",
+      "production_candidate": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "sample_cases": 1271,
+      "group_count": 9,
+      "source_hashes_independently_matched": 11,
+      "independent_execution": "Every retained field except emitted UTC reproduced. Scope is the same component instrumentation described in the original receipt."
+    },
+    {
+      "path": "evidence/moon-floor-math.json",
+      "sha256": "8bee8046103c489d815413575ee185ebf86bb9692da3a9365e31b0494a2c857e",
+      "production_shader_sha256": "0468425bd15236aa2310c5cf657034cf0fb09c3635c1b7173a0dbee2ce8950e3",
+      "source_variants": [
+        "baseline",
+        "first_candidate",
+        "corrected_lunar_floor"
+      ],
+      "checks": 5,
+      "scope": "Independent replay of instrumented actual-source center and diagonal limb arithmetic, including the failed first-candidate control."
     }
   ],
   "integration_evidence": {
@@ -407,6 +512,31 @@
       "successful_candidate_warnings": 1,
       "candidate_errors_after_hydration": 0,
       "offline_capture_tool_tests_at_review": 8
+    },
+    "production_candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3"
+  },
+  "initial_production_candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3",
+  "final_production_candidate": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+  "capture_protocol": {
+    "path": "evidence/capture-protocol-review.json",
+    "sha256": "a5b73d9517b509d5eaf4b807c8eef92d84138e391be3821cd179e4b61f227433",
+    "offline_tests_at_review": 12,
+    "scope": "Sharded software-render jobs, checked nested child processes and 30-second image-only cleanup after validated unchanged outputs. Four field invocations require natural exits."
+  },
+  "first_candidate_regressions": [
+    {
+      "id": "M2-limb",
+      "disposition": "initial visual implementation rejected",
+      "receipt": "evidence/moon-limb-followup.json",
+      "reason": "Initial plane-only footprint reduced existing diagonal limb LOD at particular sample positions; a fixed full-Moon frame exposed a high-contrast one-pixel edge discrepancy. The correction preserves the original radial footprint as a floor.",
+      "final_state": "corrected and accepted on the specified static close and wide views of both render methods"
+    },
+    {
+      "id": "PBR-01-headland",
+      "disposition": "initial visual implementation rejected",
+      "receipt": "evidence/headland-followup.json",
+      "reason": "The unconverted headland pigment and converted field rows made a conspicuous wedge on Forward+. A single renderer-aware swatch corrected the mixed color convention without changing the farm textures or paint.",
+      "final_state": "corrected and accepted in the specified field-entry and highway views; Compatibility controls remain exact"
     }
-  }
+  ]
 }

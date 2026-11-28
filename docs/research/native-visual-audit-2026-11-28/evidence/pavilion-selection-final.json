@@ -1,0 +1,150 @@
+{
+  "format": "OpenRC predeclared final Forward+ field selection v1",
+  "case": "postcard_pavilion",
+  "production_source": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+  "policy": "pavilion-recovery-protocol.json",
+  "policy_sha256": "6ec7a577febf8d3f58322f431ab2e6903f7b8c430f045a85662a78799da19a28",
+  "selected_attempt": "recovery",
+  "selection_reason": "Primary incomplete, complete checked fallback selected",
+  "shared_runtime_manifest_sha256": "262695ea4d6b30939e82372c8a607837e5893fe0982a282f5fa4c501ef205908",
+  "source_engine_shaders_and_harnesses_match": true,
+  "attempts": {
+    "primary": {
+      "workflow_run": 46172321068,
+      "workflow_head": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "job_id": 141070360773,
+      "job_conclusion": "cancelled",
+      "job_started_utc": "2026-11-28T18:56:00Z",
+      "job_completed_utc": "2026-11-28T19:41:16Z",
+      "job_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46172321068/job/141070360773",
+      "artifact_id": 15278355929,
+      "original_zip_sha256": "d743e13c4e4502e98d1aa93fdf7c346acbee20b95d15e5e67440e77839da193a",
+      "original_zip_bytes": 5527829,
+      "original_expires_utc": "2026-12-12T19:41:13Z",
+      "production_source": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "inputs_sha256": "5cab6e5c0ca8dba7d571ce8054c3d8bd366a0e8cc56cd01c191cae91055ff878",
+      "complete_natural_exit_abba": false,
+      "blocks": [
+        {
+          "block": "1-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 581.054696,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 525.657729,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "2-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 5.750429,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 520.287112,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "3-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 5.631798,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 520.548285,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "4-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 5.633715,
+          "field_checked": false,
+          "field_native_returncode": null,
+          "field_elapsed_s": null,
+          "field_report_present": false,
+          "resource_sidecar_present": false,
+          "case_png_present": false
+        }
+      ]
+    },
+    "recovery": {
+      "workflow_run": 46179049192,
+      "workflow_head": "4ed6eed644e51522c068eec0e7f46c813f83fd75",
+      "job_id": 141084226997,
+      "job_conclusion": "success",
+      "job_started_utc": "2026-11-28T19:06:04Z",
+      "job_completed_utc": "2026-11-28T19:40:07Z",
+      "job_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46179049192/job/141084226997",
+      "artifact_id": 15278390564,
+      "original_zip_sha256": "d47a96b8cf04877187820d42c97b6fe3043c8bb219090abe6e86f6806ac5f49f",
+      "original_zip_bytes": 3941429,
+      "original_expires_utc": "2026-12-12T19:40:02Z",
+      "production_source": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "inputs_sha256": "2980e332e5a0365c694e3b05126db8da9c4ca8d6a895cb53bb6374ee2c1fe386",
+      "complete_natural_exit_abba": true,
+      "blocks": [
+        {
+          "block": "1-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 433.468023,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 358.794229,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "2-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 4.325762,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 356.208608,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "3-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 4.38295,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 356.374678,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": false
+        },
+        {
+          "block": "4-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 4.284171,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 354.47902,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": false
+        }
+      ]
+    }
+  },
+  "selected_replay": {
+    "archive": "field-benchmarks-final.zip",
+    "sha256": "3af02ab7617a4838b2ce9d164fe5683a5ec40d8708c38fa128c0dd3d955ef47c",
+    "prefix": "forward_plus/field-postcard_pavilion/"
+  },
+  "alternate_evidence": {
+    "attempt": "primary",
+    "archive": "pavilion-alternate-final.zip",
+    "sha256": "46ae9ddf24cdf8f735c46c6e0a0ed3c0b3b95cd2dac1cf2601fb39c6c588a8f3",
+    "bytes": 140254,
+    "member_files": 26,
+    "embedded_manifest_sha256": "3cc3908d60658ba4ae90e0b0114737f8e8c4c03ea854292a6702139d54d3207e"
+  }
+}

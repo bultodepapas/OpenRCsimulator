@@ -1,0 +1,150 @@
+{
+  "format": "OpenRC predeclared final Forward+ field selection v1",
+  "case": "pilot_north",
+  "production_source": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+  "policy": "pilot-recovery-protocol.json",
+  "policy_sha256": "84ab16cc8c44e9d606e499d658f4ad9d09c264a167a729df5c44be458270107d",
+  "selected_attempt": "primary",
+  "selection_reason": "Primary completed and verified",
+  "shared_runtime_manifest_sha256": "262695ea4d6b30939e82372c8a607837e5893fe0982a282f5fa4c501ef205908",
+  "source_engine_shaders_and_harnesses_match": true,
+  "attempts": {
+    "primary": {
+      "workflow_run": 46172321068,
+      "workflow_head": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "job_id": 141070360763,
+      "job_conclusion": "success",
+      "job_started_utc": "2026-11-28T18:42:49Z",
+      "job_completed_utc": "2026-11-28T19:17:55Z",
+      "job_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46172321068/job/141070360763",
+      "artifact_id": 15278010338,
+      "original_zip_sha256": "d80acb58c750a15e343e051ae26f5092732eb9879354d8834d3e33d2e98f0e94",
+      "original_zip_bytes": 3229607,
+      "original_expires_utc": "2026-12-12T19:17:53Z",
+      "production_source": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "inputs_sha256": "6febbf38bce32b10e5b782a08e2fc378fd1277d2767d7bcaa2815677480e7edc",
+      "complete_natural_exit_abba": true,
+      "blocks": [
+        {
+          "block": "1-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 439.336569,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 385.712687,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "2-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 5.316786,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 380.417879,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "3-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 5.392831,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 374.770161,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": false
+        },
+        {
+          "block": "4-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 5.309697,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 376.593865,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": false
+        }
+      ]
+    },
+    "recovery": {
+      "workflow_run": 46173885431,
+      "workflow_head": "57ea3da93de5ad5c7cf8cf39e6099cbcb72f1003",
+      "job_id": 141068137486,
+      "job_conclusion": "success",
+      "job_started_utc": "2026-11-28T18:08:35Z",
+      "job_completed_utc": "2026-11-28T18:56:47Z",
+      "job_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46173885431/job/141068137486",
+      "artifact_id": 15276393806,
+      "original_zip_sha256": "343cd48b58f4a1fb9eb50b55249e66a7f6b22eb599f2cf5fb83b8883440a5125",
+      "original_zip_bytes": 3264829,
+      "original_expires_utc": "2026-12-12T18:56:42Z",
+      "production_source": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "inputs_sha256": "5cab6e5c0ca8dba7d571ce8054c3d8bd366a0e8cc56cd01c191cae91055ff878",
+      "complete_natural_exit_abba": true,
+      "blocks": [
+        {
+          "block": "1-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 579.294332,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 544.870392,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "2-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 5.836883,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 541.129267,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": true
+        },
+        {
+          "block": "3-candidate",
+          "import_checked": true,
+          "import_elapsed_s": 5.716151,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 541.077299,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": false
+        },
+        {
+          "block": "4-baseline",
+          "import_checked": true,
+          "import_elapsed_s": 5.818176,
+          "field_checked": true,
+          "field_native_returncode": 0,
+          "field_elapsed_s": 543.80208,
+          "field_report_present": true,
+          "resource_sidecar_present": true,
+          "case_png_present": false
+        }
+      ]
+    }
+  },
+  "selected_replay": {
+    "archive": "field-benchmarks-final.zip",
+    "sha256": "3af02ab7617a4838b2ce9d164fe5683a5ec40d8708c38fa128c0dd3d955ef47c",
+    "prefix": "forward_plus/field-pilot_north/"
+  },
+  "alternate_evidence": {
+    "attempt": "recovery",
+    "archive": "pilot-alternate-final.zip",
+    "sha256": "9e5334be25d15238265380e603fd693495c8947a8809d28ba0b2c6e7fd63f457",
+    "bytes": 190081,
+    "member_files": 31,
+    "embedded_manifest_sha256": "07ae0d046031f1532d10edb15298d34d0b219cb6a2bd696467715565ea2f472a"
+  }
+}
