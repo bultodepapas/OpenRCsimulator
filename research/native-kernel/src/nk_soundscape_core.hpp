@@ -148,6 +148,8 @@ struct EngineBinds {
 	GDExtensionMethodBindPtr set_cutoff = nullptr;
 	GDExtensionMethodBindPtr set_gain = nullptr;
 	GDExtensionMethodBindPtr play = nullptr;
+	GDExtensionMethodBindPtr stop = nullptr; // NK-7d
+	GDExtensionMethodBindPtr is_playing = nullptr; // NK-7d
 	void *player_tag = nullptr;
 	void *filter_tag = nullptr;
 	bool ok = false;
@@ -172,13 +174,15 @@ inline const EngineBinds &engine_binds() {
 		b.set_cutoff = method_bind("AudioEffectFilter", "set_cutoff", 373806689);
 		b.set_gain = method_bind("AudioEffectFilter", "set_gain", 373806689);
 		b.play = method_bind("AudioStreamPlayer3D", "play", 1958160172);
+		b.stop = method_bind("AudioStreamPlayer3D", "stop", 3218959716);
+		b.is_playing = method_bind("AudioStreamPlayer3D", "is_playing", 36873697);
 		const godot::StringName player("AudioStreamPlayer3D");
 		const godot::StringName filter("AudioEffectFilter");
 		b.player_tag = godot::gdextension_interface::classdb_get_class_tag(player._native_ptr());
 		b.filter_tag = godot::gdextension_interface::classdb_get_class_tag(filter._native_ptr());
 		b.ok = b.set_volume_db && b.set_pitch_scale && b.get_pitch_scale && b.set_stream_paused && b.get_unit_size &&
 			b.set_global_position && b.get_global_position && b.set_cutoff && b.set_gain && b.player_tag &&
-			b.filter_tag && b.play && engine_angle_method() != nullptr;
+			b.filter_tag && b.play && b.stop && b.is_playing && engine_angle_method() != nullptr;
 		return b;
 	}();
 	return binds;
@@ -224,6 +228,14 @@ inline void call_set(GDExtensionMethodBindPtr method, const Bound &object, bool 
 inline void call_set(GDExtensionMethodBindPtr method, const Bound &object, const godot::Vector3 &value) {
 	const GDExtensionConstTypePtr args[1] = {&value};
 	godot::gdextension_interface::object_method_bind_ptrcall(method, object.ptr, args, nullptr);
+}
+inline void call_void(GDExtensionMethodBindPtr method, const Bound &object) {
+	godot::gdextension_interface::object_method_bind_ptrcall(method, object.ptr, nullptr, nullptr);
+}
+inline bool call_get_bool(GDExtensionMethodBindPtr method, const Bound &object) {
+	GDExtensionBool result = 0;
+	godot::gdextension_interface::object_method_bind_ptrcall(method, object.ptr, nullptr, &result);
+	return result != 0;
 }
 inline double call_get_double(GDExtensionMethodBindPtr method, const Bound &object) {
 	double result = 0.0;

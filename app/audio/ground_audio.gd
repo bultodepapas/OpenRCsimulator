@@ -54,6 +54,14 @@ var contact_slot_count: int:
 	get:
 		return _slots.size()
 
+## NK-7d: in accepted-tick mode the native ground core (nk_ground_audio_core.hpp) keeps the accepted wheel states,
+## queued touchdowns and roll levels, and writes the slots' players. Slots are still made here, in the same order.
+## This script's accepted path stays the specification and the fallback; the hook is read when accepted mode turns
+## on. While the core runs, only touchdown_events, _was_paused, _scene_gain and _needs_seed are kept here.
+var native_core_enabled := true
+var _core: Object = null
+const _NATIVE_CLASS := &"OpenRCNativeKernel"
+
 
 ## Direct presentation callers retain render sampling. Production supplies every
 ## accepted endpoint; capture never creates players, touches buses or plays audio.
@@ -61,10 +69,35 @@ func set_accepted_tick_observation(enabled: bool) -> void:
 	if enabled == _accepted_tick_observation: return
 	_accepted_tick_observation = enabled
 	reset()
+	_core = null
+	if enabled and native_core_enabled:
+		_bind_core()
+
+
+func _bind_core() -> void:
+	if not ClassDB.class_exists(_NATIVE_CLASS):
+		return
+	var core: Object = ClassDB.instantiate(_NATIVE_CLASS)
+	if core == null or not core.has_method(&"ground_core_open") or not core.ground_core_open():
+		return
+	for slot: Dictionary in _slots:
+		if not _bind_slot(core, slot):
+			return
+	_core = core
+
+
+func _bind_slot(core: Object, slot: Dictionary) -> bool:
+	var roll: Array = slot.get("roll", [])
+	var lengths := PackedFloat64Array()
+	for player: AudioStreamPlayer3D in roll:
+		lengths.append(player.stream.get_length() if player.stream != null else 0.0)
+	return core.ground_core_bind_slot(str(slot.id), roll, slot.get("impact"), float(slot.get("roll_offset", 0.0)), lengths)
 
 
 func observe_accepted(snapshot: Dictionary) -> bool:
 	if not _accepted_tick_observation: return false
+	if _core != null:
+		return _core.ground_core_observe(snapshot)
 	if not _valid_accepted_snapshot(snapshot):
 		_clear_accepted_observation()
 		_accepted_refused += 1
@@ -120,6 +153,8 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 ## can load (see GroundAudioModel). Liftoff age is then a conservative lower
 ## estimate; the two deferred boundaries can omit at most two cadence gaps.
 func touchdown_possible() -> bool:
+	if _core != null:
+		return _core.ground_core_touchdown_possible()
 	if _accepted_states.is_empty():
 		return true
 	for state: Dictionary in _accepted_states.values():
@@ -135,6 +170,8 @@ func touchdown_possible() -> bool:
 ## does a tick where a grounded wheel is uncompressed (its liftoff onset). A small margin keeps a contact whose two
 ## evaluations round differently. Unknown wheels keep the full answer.
 func touchdown_possible_at(identities: PackedStringArray, compressions: PackedFloat64Array) -> bool:
+	if _core != null:
+		return _core.ground_core_touchdown_possible_at(identities, compressions)
 	if _accepted_states.is_empty() or identities.size() != compressions.size():
 		return true
 	var covered := 0
@@ -156,6 +193,9 @@ func touchdown_possible_at(identities: PackedStringArray, compressions: PackedFl
 ## tick (GroundAudioModel.approach_speeds). Only the latest skipped tick is kept; an observation on the next tick
 ## gives a wheel that was airborne this sample as its last airborne approach, as a per-tick observer would.
 func note_skipped_tick(tick: int, identities: PackedStringArray, approaches: PackedFloat64Array) -> void:
+	if _core != null:
+		_core.ground_core_note_skipped_tick(tick, identities, approaches)
+		return
 	_skipped_tick = tick
 	_skipped_approach.clear()
 	if identities.size() != approaches.size():
@@ -168,7 +208,7 @@ func note_skipped_tick(tick: int, identities: PackedStringArray, approaches: Pac
 
 ## Tick of the last accepted observation, or -1.
 func accepted_tick() -> int:
-	return _accepted_tick
+	return _core.ground_core_accepted_tick() if _core != null else _accepted_tick
 
 
 static func _valid_accepted_snapshot(snapshot: Dictionary) -> bool:
@@ -225,6 +265,8 @@ func _drain_accepted_events(tick: int, rate: float) -> void:
 
 
 func accepted_diagnostics() -> Dictionary:
+	if _core != null:
+		return _core.ground_core_diagnostics()
 	return {law = ACCEPTED_OBSERVATION_LAW, tick = _accepted_tick, states = _accepted_states.size(),
 		queued = _accepted_events.size(), observed = _accepted_observed, drained = _accepted_drained,
 		discarded = _accepted_discarded, overflowed = _accepted_overflowed, refused = _accepted_refused}
@@ -278,6 +320,9 @@ func rebind(bus: StringName) -> void:
 ## rolling_speed_mps, surface, and optional roll_enabled. A false roll_enabled keeps touchdown impacts.
 func update_contacts(tick: int, paused: bool, contacts: Array, engine_power: float, delta: float,
 		listener: Vector3 = Vector3.ZERO, tick_rate_hz: float = 240.0) -> void:
+	if _core != null:
+		_update_core(tick, paused, engine_power, delta, listener, tick_rate_hz)
+		return
 	if tick < _last_tick:
 		if _accepted_tick_observation:
 			_reset_playback() # Keep legitimate post-rewind cues captured before rendering.
@@ -330,6 +375,29 @@ func update_contacts(tick: int, paused: bool, contacts: Array, engine_power: flo
 		_set_roll_targets(slot, "hard", 0.0, dt)
 		slot["state"] = {}
 	_needs_seed = false
+
+
+## update_contacts through the native core (accepted mode): the bus follows the Soundscape as below, then the core
+## asks for the slots this frame would make, and runs the rest.
+func _update_core(tick: int, paused: bool, engine_power: float, delta: float, listener: Vector3, tick_rate_hz: float) -> void:
+	if not paused and is_instance_valid(_soundscape) and _soundscape.has_method("output_bus"):
+		rebind(StringName(_soundscape.call("output_bus")))
+	for pending: Array in _core.ground_core_pending_slots(tick, paused):
+		var slot := _slot_for(str(pending[0]), int(pending[1]))
+		if slot.is_empty() or not _bind_slot(_core, slot):
+			push_error("GroundAudio: the native core could not bind a contact slot")
+	var out: PackedFloat64Array = _core.ground_core_frame(tick, paused, engine_power, delta, listener, tick_rate_hz,
+		_needs_seed)
+	_last_tick = tick
+	_listener_position = listener
+	if out.size() != 4:
+		push_error("GroundAudio: a bound player is gone; the native core stops")
+		_core = null
+		return
+	touchdown_events = int(out[0])
+	_was_paused = out[1] != 0.0
+	_scene_gain = out[2]
+	_needs_seed = out[3] != 0.0
 
 
 func _update_contact(contact: Dictionary, slot: Dictionary, state_delta: float, seed_only: bool,
@@ -458,6 +526,9 @@ func _slot_for(identity: String, fallback_index: int) -> Dictionary:
 
 
 func stop() -> void:
+	if _core != null:
+		_core.ground_core_stop()
+		return
 	for slot: Dictionary in _slots:
 		for player: AudioStreamPlayer3D in slot.get("roll", []):
 			player.stop()
@@ -471,6 +542,15 @@ func stop() -> void:
 
 
 func reset() -> void:
+	if _core != null:
+		_core.ground_core_reset()
+		_last_tick = -1
+		_needs_seed = true
+		_engine_mask = 1.0
+		_scene_gain = 1.0
+		_was_paused = false
+		touchdown_events = 0
+		return
 	_clear_accepted_observation()
 	_accepted_observed = 0
 	_accepted_drained = 0
@@ -493,8 +573,11 @@ func _reset_playback() -> void:
 
 
 func _on_buses_releasing() -> void:
-	_clear_accepted_observation()
-	stop()
+	if _core != null:
+		_core.ground_core_release_buses()
+	else:
+		_clear_accepted_observation()
+		stop()
 	_bus = StringName()
 	_needs_seed = true
 

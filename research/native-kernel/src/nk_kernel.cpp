@@ -45,6 +45,7 @@
 #include "nk_configuration_guard.hpp"
 #include "nk_soundscape.hpp"
 #include "nk_soundscape_core.hpp"
+#include "nk_ground_audio_core.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1031,6 +1032,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::WeatherGuard weather_guard_;
 	nk::ConfigurationGuard configuration_guard_;
 	std::unique_ptr<nk::sound::Core> sound_core_; // NK-7b: this instance's soundscape core, made on first bind
+	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
@@ -1280,6 +1282,25 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("sound_core_reset", "absorption"), &OpenRCNativeKernel::sound_core_reset);
 		godot::ClassDB::bind_method(D_METHOD("sound_core_state"), &OpenRCNativeKernel::sound_core_state);
 		godot::ClassDB::bind_method(D_METHOD("sound_core_history_size"), &OpenRCNativeKernel::sound_core_history_size);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_open"), &OpenRCNativeKernel::ground_core_open);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_bind_slot", "id", "roll", "impact", "roll_offset", "stream_lengths"),
+			&OpenRCNativeKernel::ground_core_bind_slot);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_observe", "snapshot"), &OpenRCNativeKernel::ground_core_observe);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_touchdown_possible"), &OpenRCNativeKernel::ground_core_touchdown_possible);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_touchdown_possible_at", "identities", "compressions"),
+			&OpenRCNativeKernel::ground_core_touchdown_possible_at);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_note_skipped_tick", "tick", "identities", "approaches"),
+			&OpenRCNativeKernel::ground_core_note_skipped_tick);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_pending_slots", "tick", "paused"),
+			&OpenRCNativeKernel::ground_core_pending_slots);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_frame", "tick", "paused", "engine_power", "delta", "listener",
+			"tick_rate_hz", "seed"), &OpenRCNativeKernel::ground_core_frame);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_stop"), &OpenRCNativeKernel::ground_core_stop);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_reset"), &OpenRCNativeKernel::ground_core_reset);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_release_buses"), &OpenRCNativeKernel::ground_core_release_buses);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_accepted_tick"), &OpenRCNativeKernel::ground_core_accepted_tick);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_diagnostics"), &OpenRCNativeKernel::ground_core_diagnostics);
+		godot::ClassDB::bind_method(D_METHOD("ground_core_state"), &OpenRCNativeKernel::ground_core_state);
 		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
 			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
@@ -2141,6 +2162,39 @@ public:
 
 	int64_t sound_core_history_size() const { return sound_core_ ? sound_core_->history_size() : 0; }
 
+	// NK-7d: audio/ground_audio.gd in accepted-tick mode (nk_ground_audio_core.hpp). open makes a fresh core and
+	// answers whether the engine binds it needs exist; slots then bind in _slot_for's order.
+	bool ground_core_open() {
+		ground_core_ = std::make_unique<nk::sound::GroundCore>();
+		return nk::sound::engine_binds().ok;
+	}
+	bool ground_core_bind_slot(const godot::String &id, const godot::Array &roll, const godot::Variant &impact, double roll_offset,
+			const PackedFloat64Array &stream_lengths) {
+		return ground_core_ && ground_core_->bind_slot(id, roll, impact, roll_offset, stream_lengths);
+	}
+	bool ground_core_observe(const godot::Dictionary &snapshot) { return ground_core_ && ground_core_->observe(snapshot); }
+	bool ground_core_touchdown_possible() const { return !ground_core_ || ground_core_->touchdown_possible(); }
+	bool ground_core_touchdown_possible_at(const PackedStringArray &identities, const PackedFloat64Array &compressions) const {
+		return !ground_core_ || ground_core_->touchdown_possible_at(identities, compressions);
+	}
+	void ground_core_note_skipped_tick(int64_t tick, const PackedStringArray &identities, const PackedFloat64Array &approaches) {
+		if (ground_core_) ground_core_->note_skipped_tick(tick, identities, approaches);
+	}
+	godot::Array ground_core_pending_slots(int64_t tick, bool paused) const {
+		return ground_core_ ? ground_core_->pending_slots(tick, paused) : godot::Array();
+	}
+	PackedFloat64Array ground_core_frame(int64_t tick, bool paused, double engine_power, double delta,
+			const godot::Vector3 &listener, double tick_rate_hz, bool seed) {
+		return ground_core_ ? ground_core_->frame(tick, paused, engine_power, delta, listener, tick_rate_hz, seed)
+			: PackedFloat64Array();
+	}
+	void ground_core_stop() { if (ground_core_) ground_core_->stop(); }
+	void ground_core_reset() { if (ground_core_) ground_core_->reset(); }
+	void ground_core_release_buses() { if (ground_core_) ground_core_->release_buses(); }
+	int64_t ground_core_accepted_tick() const { return ground_core_ ? ground_core_->accepted_tick() : -1; }
+	godot::Dictionary ground_core_diagnostics() const { return ground_core_ ? ground_core_->diagnostics() : godot::Dictionary(); }
+	godot::Array ground_core_state() const { return ground_core_ ? ground_core_->state() : godot::Array(); }
+
 	// NK-6s: physics/glow/vibration.gd evaluate's numbers for a validated geometry [crank radius, rod, reciprocating
 	// mass, cosine 1x, cosine 2x, cycle revolutions]: [ok (1/0), phase, source force, 1x cosine, 1x sine, 2x cosine,
 	// 2x sine, 1x peak, 2x peak, opportunity Hz, mean fire rate Hz], in its operation order. 0 wherever evaluate fails
@@ -2444,6 +2498,11 @@ public:
 			{"0.055", 0.055}, {"1.3", 1.3}, {"450.0", 450.0}, {"18000.0", 18000.0}, {"0.24", 0.24}, {"0.76", 0.76},
 			{"0.28", 0.28}, {"0.42", 0.42}, {"1.25", 1.25}, {"0.40", 0.40}, {"0.015", 0.015}, {"0.985", 0.985},
 			{"2.6", 2.6}, {"0.7", 0.7}, {"0.035", 0.035}, {"0.00001", 0.00001}, {"0.173", 0.173}, {"2.5", 2.5},
+			// NK-7d: audio/ground_audio.gd and ground_audio_motion.gd.
+			{"0.035", 0.035}, {"0.018", 0.018}, {"0.14", 0.14}, {"0.65", 0.65}, {"0.42", 0.42}, {"0.9", 0.9},
+			{"0.94", 0.94}, {"1.12", 1.12}, {"1.18", 1.18}, {"0.85", 0.85}, {"0.025", 0.025}, {"1.35", 1.35},
+			{"0.86", 0.86}, {"0.34", 0.34}, {"0.18", 0.18}, {"0.0001", 0.0001}, {"1e-6", 1e-6},
+			{"10000.0", 10000.0},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.

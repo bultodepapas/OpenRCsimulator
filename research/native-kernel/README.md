@@ -637,6 +637,9 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   ([evidence](../../docs/research/native-kernel/NK-7b/README.md)).
 - `sound_core_bind_bank` (NK-7c) moves the recorded powertrain bank's `update_sound` into that frame and mirrors its
   state back to the bank ([evidence](../../docs/research/native-kernel/NK-7c/README.md)).
+- `ground_core_*` (NK-7d, `nk_ground_audio_core.hpp`) runs `GroundAudio` in accepted-tick mode: observation,
+  touchdown queries and frame updates, writing its slots' players by method bind
+  ([evidence](../../docs/research/native-kernel/NK-7d/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
