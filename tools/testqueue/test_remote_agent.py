@@ -218,18 +218,34 @@ class RemoteAgentTests(unittest.TestCase):
         self.assertGreaterEqual(result["admission_wait_finished_at"], result["admission_wait_started_at"])
         self.assertNotIn("reason_code", result)
 
-    def test_remote_lost_waiting_supervisor_remains_uncertain(self):
+    def test_remote_lost_waiting_supervisor_is_settled_as_never_launched(self):
+        # Before TQ-07-A9 this stayed UNKNOWN and quarantined the host. A STARTING
+        # record precedes every stage, and every stage records RUNNING before it
+        # creates a process; the settlement happens under the host lock, which a
+        # late supervisor re-checks before doing anything.
         request = self.request(self.sample_archive())
         self.accepted(request)
         path = agent.state_path(self.root, "job1")
         state = agent.read_json(path)
         state.update(stage="admission", reason_code="EXTERNAL_SIMULATOR", accepted_at=time.time() - 2 * agent.START_GRACE)
         agent.write_json(path, state)
-        with mock.patch.object(agent.subprocess, "Popen") as spawn:
+        # Without a recorded supervisor PID (an older agent's record) the
+        # supervisor's helpers cannot be checked: it stays uncertain.
+        self.assertEqual(agent.status(self.root, "job1")["state"], "UNKNOWN")
+        state.update(state="STARTING", supervisor_pid=4242)
+        agent.write_json(path, state)
+        with mock.patch.object(agent.subprocess, "Popen") as spawn, \
+                mock.patch.object(agent, "supervisor_alive", return_value=False), \
+                mock.patch.object(agent, "_posix_group_absent", return_value=True):
             result = agent.launch(self.root, request)
-        spawn.assert_not_called()
-        self.assertEqual((result["state"], result["cleanup"]), ("UNKNOWN", "UNCONFIRMED"))
-        self.assertNotIn("nonlaunch", result)
+        spawn.assert_not_called()  # the same ID is never relaunched
+        self.assertEqual((result["state"], result["cleanup"], result["launch"], result["nonlaunch"],
+                          result["reason_code"], result["previous_reason_code"]),
+                         ("FINISHED", "CONFIRMED", "NOT_CREATED", "CONFIRMED", "SUPERVISOR_LOST", "EXTERNAL_SIMULATOR"))
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "execute_stage") as execute:
+            self.assertEqual(agent.supervise(self.root, "job1"), 1)  # a late supervisor runs nothing
+        execute.assert_not_called()
 
     def test_supervisor_runs_import_and_check_in_owned_process(self):
         archive = self.sample_archive()
@@ -245,6 +261,43 @@ class RemoteAgentTests(unittest.TestCase):
         self.assertEqual(status["artifacts"]["check/run/engine.log"]["sha256"],
                          agent.digest(self.root / "jobs/job1/check/run/engine.log"))
         self.assertEqual(status["checked"]["required_text"], ["0 failed"])
+
+    def test_import_has_its_own_budget_and_the_timeout_bounds_the_check(self):
+        # TQ-07-A8: one deadline used to cover import and check, so a cold import
+        # consumed the 90 s test budget and the test never started.
+        archive = self.sample_archive()
+        request = self.request(archive)
+        request["expected_engine_sha256"] = agent.digest(self.engine)
+        self.accepted(request)
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "execute_stage", wraps=agent.execute_stage) as execute:
+            self.assertEqual(agent.supervise(self.root, "job1"), 0)
+        deadlines = {call.args[3]: call.args[4] for call in execute.call_args_list}
+        self.assertEqual(set(deadlines), {"import", "check"})
+        # The check's 90 s starts after the import; the import had 900 s of its own.
+        self.assertGreater(deadlines["import"] - deadlines["check"], agent.IMPORT_BUDGET_SECONDS - 90 - 60)
+        self.assertEqual(agent.status(self.root, "job1")["outcome"], "PASSED")
+
+    def test_import_timeout_is_typed_and_never_reaches_the_check(self):
+        archive = self.sample_archive()
+        request = self.request(archive)
+        request["expected_engine_sha256"] = agent.digest(self.engine)
+        self.accepted(request)
+        stages = []
+
+        def timed_out(root, directory, state, stage, deadline):
+            stages.append(stage)
+            return {"ok": False, "complete": False, "reason": "timeout"}
+
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "execute_stage", side_effect=timed_out):
+            agent.supervise(self.root, "job1")
+        status = agent.status(self.root, "job1")
+        self.assertEqual(stages, ["import"])
+        self.assertEqual((status["outcome"], status["reason_code"], status["cleanup"]),
+                         ("INFRA_FAILED", "IMPORT_TIMEOUT", "CONFIRMED"))
 
     def test_changed_archive_fails_before_process_start(self):
         archive = self.sample_archive()
@@ -280,12 +333,17 @@ class RemoteAgentTests(unittest.TestCase):
         request = self.request(archive)
         request["options"]["timeout"] = 1
         self.accepted(request)
-        with mock.patch.object(agent, "authority_enrolled", return_value=False), mock.patch.object(agent, "external_engine_present", return_value=False):
+        # Since TQ-07-A8 the import stage has its own budget; shrink it so the
+        # hanging runner is stopped at that deadline.
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "IMPORT_BUDGET_SECONDS", 1):
             agent.supervise(self.root, "job1")
         result = agent.status(self.root, "job1")
         self.assertEqual((result["state"], result["outcome"], result["cleanup"], result["evidence"]),
                          ("FINISHED", "INFRA_FAILED", "CONFIRMED", "INCOMPLETE"), result)
         self.assertEqual(result["import"]["reason"], "timeout")
+        self.assertEqual(result["reason_code"], "IMPORT_TIMEOUT")
 
     def test_missing_real_marker_cannot_pass(self):
         archive = self.sample_archive()
@@ -376,7 +434,7 @@ class RemoteAgentTests(unittest.TestCase):
         from tools.testqueue import processes
 
         def refuse(witnessed):
-            def start(process):
+            def start(process, **options):  # options: release=False since TQ-07-A9b
                 process._nonlaunch_confirmed = witnessed
                 raise processes.ProcessNotStartedError("injected runner log open failure")
             return start
@@ -523,7 +581,9 @@ class RemoteAgentTests(unittest.TestCase):
         running = {"state": "RUNNING", "request": {"archive": {"sha256": "b" * 64}}}
         with mock.patch.object(agent, "scan", return_value=[running]):
             result = agent.collect_incoming(self.root, {"operator_confirm": True})
-        self.assertEqual(result, {"removed_files": 1, "logical_bytes_removed": 10})
+        self.assertEqual({key: result[key] for key in ("removed_files", "removed_reserves", "logical_bytes_removed")},
+                         {"removed_files": 1, "removed_reserves": 0, "logical_bytes_removed": 10})
+        self.assertEqual((result["store"]["entries"], result["import_caches"]["engines"]), (0, 0))
         self.assertEqual(sorted(path.name for path in incoming.iterdir()),
                          sorted([active, young, "d" * 64 + ".tar.job9.pending"]))
         with mock.patch.object(agent, "scan", return_value=[{"state": "UNKNOWN", "error": "unreadable journal"}]), \

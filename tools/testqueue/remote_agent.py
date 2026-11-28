@@ -27,6 +27,20 @@ import tarfile
 import time
 
 PROTOCOL = 1
+# Optional capabilities a coordinator may rely on; an older agent lacks the list.
+FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget", "launch-order", "recover-boot", "describe",
+            "content-store")
+# A checked job's project import runs under this budget, before and apart from
+# the job's own timeout, which bounds the check (TQ-07-A8).
+IMPORT_BUDGET_SECONDS = 900
+# TQ-07-A9b: each stage's process identity is durable before its gate is
+# released, so a RUNNING record without one proves the command never ran.
+LAUNCH_ORDER = "identity-before-release"
+# TQ-07-A9d: a supervisor waits this long for the host lock (a storage sweep
+# holds it for one job at a time) instead of giving up after START_GRACE.
+SUPERVISOR_LOCK_WAIT = 600.0
+# TQ-07-A9e: space released just before the terminal journal on a full disk.
+TERMINAL_RESERVE_BYTES = 1024 * 1024
 LIMIT = 1024 * 1024
 RESERVE = 512 * 1024 * 1024
 MAX_ARCHIVE = 128 * 1024**3
@@ -180,6 +194,21 @@ def publish_terminal(path, value):
             time.sleep(TERMINAL_WRITE_DELAY * 2 ** attempt)
 
 
+def journal_before_release(path, value):
+    """Durably record a gated stage's identity; bounded retries (TQ-07-A9b).
+
+    Nothing runs while this retries: the gate holds its command until released.
+    """
+    for attempt in range(TERMINAL_WRITE_ATTEMPTS):
+        try:
+            write_json(path, value)
+            return True
+        except (OSError, ValueError, TypeError):
+            if attempt + 1 < TERMINAL_WRITE_ATTEMPTS:
+                time.sleep(TERMINAL_WRITE_DELAY * 2 ** attempt)
+    return False
+
+
 def read_json(path):
     with Path(path).open(encoding="utf-8") as stream:
         return json.load(stream)
@@ -213,6 +242,155 @@ def job_path(root, identifier):
     if not isinstance(identifier, str) or not ID.fullmatch(identifier):
         raise Refused("request_id must be a safe opaque token")
     return root / "jobs" / identifier
+
+
+def fence_path(root, identifier):
+    job_path(root, identifier)  # same validation as a job ID
+    return root / "fences" / (identifier + ".json")
+
+
+def _sync_directory(path):
+    if os.name == "posix":
+        fd = os.open(path, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+
+
+def machine_id():
+    """A digest of the operating system's machine identifier, or None (TQ-07-A1).
+
+    Only the digest leaves the host. Containers report their own identifier.
+    """
+    raw = None
+    try:
+        if sys.platform.startswith("linux"):
+            for name in ("/etc/machine-id", "/var/lib/dbus/machine-id"):
+                try:
+                    raw = Path(name).read_text(encoding="ascii").strip() or None
+                except (OSError, UnicodeDecodeError):
+                    continue
+                if raw:
+                    break
+        elif sys.platform == "darwin":
+            output = subprocess.run(["/usr/sbin/ioreg", "-rd1", "-c", "IOPlatformExpertDevice"],
+                                    capture_output=True, text=True, timeout=5).stdout
+            match = re.search(r'"IOPlatformUUID"\s*=\s*"([0-9A-Fa-f-]{8,64})"', output)
+            raw = match.group(1) if match else None
+        elif os.name == "nt":
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography") as key:
+                raw = str(winreg.QueryValueEx(key, "MachineGuid")[0]) or None
+    except (OSError, ValueError, subprocess.SubprocessError):
+        raw = None
+    return hashlib.sha256(("openrc-machine-v1:" + raw).encode("utf-8")).hexdigest()[:32] if raw else None
+
+
+def store_id(root):
+    """A random identity for this job store, created once (TQ-07-A1).
+
+    It changes when the store is wiped and recreated, so a coordinator cannot
+    read "request not found" from a new store as proof about the old one.
+    """
+    path = Path(root) / "store-id.json"
+    try:
+        value = read_json(path)
+        if isinstance(value, dict) and isinstance(value.get("store_id"), str) and re.fullmatch(r"[0-9a-f]{32}", value["store_id"]):
+            return value["store_id"]
+    except (OSError, ValueError):
+        pass
+    candidate = {"store_id": secrets.token_hex(16), "created_at": time.time()}
+    try:
+        with path.open("xb") as stream:
+            stream.write(encode(candidate) + b"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        value = read_json(path)  # a concurrent creator won; a damaged file stays visible as an error
+        if not isinstance(value, dict) or not isinstance(value.get("store_id"), str):
+            raise Refused("store-id.json is damaged; inspect it before using this store", "CONFLICT")
+        return value["store_id"]
+    try:
+        _sync_directory(path.parent)
+    except OSError:
+        pass  # best effort: a lost identity only makes later settlement refuse, never succeed wrongly
+    return candidate["store_id"]
+
+
+def host_identity(root):
+    return {"machine_id": machine_id(), "store_id": store_id(root)}
+
+
+def _discard_unjournaled_job(directory):
+    """Remove a job directory whose launch died before its journal (TQ-07-A9a).
+
+    The launcher holds the host lock from before ``mkdir`` until after it starts
+    the supervisor and writes ``state.json`` first, so under that lock a
+    directory without a journal was never accepted. Anything unexpected inside
+    it is kept for inspection.
+    """
+    if directory.is_symlink() or not directory.is_dir():
+        raise Refused("job path is not a plain directory; inspect it", "CONFLICT")
+    entries = list(directory.iterdir())
+    if any(entry.name != "state.json.pending" or entry.is_symlink() or not entry.is_file() for entry in entries):
+        raise Refused("an unjournaled job directory has unexpected contents; inspect it", "CONFLICT")
+    for entry in entries:
+        entry.unlink()
+    directory.rmdir()
+    _sync_directory(directory.parent)
+
+
+def fence(root, request):
+    """Durably promise that a request ID will never run here, unless it already did (TQ-07-A2).
+
+    ``fence`` writes its tombstone, then looks for the job directory; ``run``
+    creates the job directory, then looks for the tombstone. Whatever the
+    interleaving, at least one sees the other, so a request is never both
+    fenced and launched. Returns FENCED, KNOWN (with the job's status), or
+    refuses BUSY while a launch may still be in flight.
+    """
+    if not isinstance(request, dict) or set(request) != {"request_id"}:
+        raise Refused("fence requires request_id")
+    identifier = request["request_id"]
+    directory = job_path(root, identifier)
+    journal = state_path(root, identifier)
+    identity = host_identity(root)
+
+    def known():
+        return {"request_id": identifier, "state": "KNOWN", "identity": identity, "status": status(root, identifier)}
+
+    if journal.is_file():
+        return known()
+    tombstone = fence_path(root, identifier)
+    tombstone.parent.mkdir(exist_ok=True)
+    # A tombstone is never removed: another fencer may already have answered
+    # FENCED on the strength of it. Beside a journaled job it is inert, because
+    # both ``fence`` and ``run`` answer from the journal first.
+    try:
+        with tombstone.open("xb") as stream:
+            stream.write(encode({"request_id": identifier, "fenced_at": time.time(), "identity": identity}) + b"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        pass
+    _sync_directory(tombstone.parent)  # the tombstone must be durable before anyone relies on it
+    fenced = {"request_id": identifier, "state": "FENCED", "identity": identity}
+    if not directory.exists():
+        return fenced
+    if journal.is_file():
+        return known()
+    try:
+        lock = Lock(root / "pool.lock")
+    except Refused:
+        raise Refused("a launch of this request may still be in flight; observe it again later", "BUSY")
+    try:
+        if journal.is_file():
+            return known()
+        _discard_unjournaled_job(directory)  # CONFLICT keeps the evidence; the tombstone still holds
+        return fenced
+    finally:
+        lock.close()
 
 
 def state_path(root, identifier):
@@ -386,6 +564,9 @@ def _reclaim_success_input_locked(root, identifier, *, max_bytes=RETENTION_MAX_B
         if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) != (
                 "FINISHED", "PASSED", "COMPLETE", "CONFIRMED"):
             return {"state": "SKIPPED", "reason": "attempt is not a confirmed complete success"}
+        if "archive" not in request:
+            return {"state": "SKIPPED", "logical_bytes_removed": 0,
+                    "reason": "content-store job: no input archive was copied"}
         archive = request["archive"]
         archive_path = Path(archive["path"])
         if archive_path.parent != root / "incoming" or archive_path.name in ("", ".", ".."):
@@ -574,19 +755,27 @@ def authority_enrolled():
 
 
 def validate_request(request):
-    required = {"request_id", "preset", "archive", "engine_path", "options"}
-    if not isinstance(request, dict) or not required <= set(request) or set(request) - required - {"expected_engine_sha256"}:
-        raise Refused("run requires request_id, preset, archive, engine_path and options")
+    required = {"request_id", "preset", "engine_path", "options"}
+    if (not isinstance(request, dict) or not required <= set(request)
+            or set(request) - required - {"expected_engine_sha256", "archive", "source_manifest"}
+            or ("archive" in request) == ("source_manifest" in request)):
+        raise Refused("run requires request_id, preset, engine_path, options and exactly one of archive "
+                      "or source_manifest")
     identifier = request["request_id"]
     if not isinstance(identifier, str) or not ID.fullmatch(identifier):
         raise Refused("invalid request_id")
     if request["preset"] != "checked":
         raise Refused("only checked jobs are supported")
-    archive = request["archive"]
-    if (not isinstance(archive, dict) or set(archive) != {"path", "sha256"}
-            or not isinstance(archive["path"], str) or not Path(archive["path"]).is_absolute()
-            or not isinstance(archive["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", archive["sha256"])):
-        raise Refused("archive needs an absolute path and lowercase SHA-256")
+    if "archive" in request:
+        archive = request["archive"]
+        if (not isinstance(archive, dict) or set(archive) != {"path", "sha256"}
+                or not isinstance(archive["path"], str) or not Path(archive["path"]).is_absolute()
+                or not isinstance(archive["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", archive["sha256"])):
+            raise Refused("archive needs an absolute path and lowercase SHA-256")
+    else:
+        manifest = request["source_manifest"]
+        if not isinstance(manifest, dict) or set(manifest) != {"sha256"} or not DIGEST.fullmatch(str(manifest["sha256"])):
+            raise Refused("source_manifest needs a lowercase SHA-256")
     if not isinstance(request["engine_path"], str) or not Path(request["engine_path"]).is_absolute():
         raise Refused("engine_path must be absolute")
     expected_engine = request.get("expected_engine_sha256")
@@ -653,18 +842,242 @@ def status(root, identifier):
             return public_status(state)
         try:
             state = read_json(path)
-            expired = state.get("state") == "RUNNING" or (state.get("state") == "STARTING" and time.time() - state.get("accepted_at", 0) >= START_GRACE)
-            if expired:
-                state.update(state="UNKNOWN", cleanup="UNCONFIRMED", error="supervisor disappeared; host is quarantined")
+            # The host lock is free, so no supervisor holds this job.
+            nonlaunch = None
+            if state.get("state") == "STARTING" and type(state.get("supervisor_pid")) is int:
+                if time.time() - state.get("accepted_at", 0) < START_GRACE or supervisor_alive(state, identifier):
+                    return public_status(state)
                 try:
-                    write_json(path, state)
-                except OSError as error:
-                    # The durable RUNNING/STARTING record already keeps the host
-                    # quarantined; report the truthful observation, not a crash.
-                    state["error"] += f"; quarantine record not persisted ({error})"
+                    helpers_gone = _posix_group_absent(state["supervisor_pid"])
+                except (OSError, RuntimeError, subprocess.SubprocessError):
+                    helpers_gone = False
+                if not helpers_gone:
+                    # A preparation helper (an import-cache copy) of the dead
+                    # supervisor still runs; observe again once it ends.
+                    return public_status(state)
+                # STARTING is written before any stage, and every stage records
+                # RUNNING before creating a process; supervise re-checks STARTING
+                # under this lock, so a late supervisor cannot start one now.
+                nonlaunch = "the supervisor ended before any stage process was created and left no helper"
+            elif state.get("state") == "RUNNING" and state.get("launch_order") == LAUNCH_ORDER \
+                    and not isinstance(state.get("process"), dict):
+                # TQ-07-A9b: the identity is journaled before the gate is released.
+                nonlaunch = ("the supervisor ended before releasing the " + str(state.get("stage") or "stage")
+                             + " gate; that command never ran")
+            if nonlaunch is not None:
+                # An earlier stage (the import) may have run and been torn down;
+                # then the claim is about this stage only.
+                earlier = isinstance(state.get("import"), dict) and state.get("stage") != "import"
+                if state.get("reason_code"):
+                    state["previous_reason_code"] = state["reason_code"]
+                state.update(state="FINISHED", outcome="INFRA_FAILED", cleanup="CONFIRMED", evidence="INCOMPLETE",
+                             nonlaunch_stage=state.get("stage") or "preparation", error=nonlaunch,
+                             reason_code="SUPERVISOR_LOST", finished_at=time.time())
+                if not earlier:
+                    state.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
+            elif state.get("state") == "STARTING" and time.time() - state.get("accepted_at", 0) < START_GRACE:
+                return public_status(state)
+            elif state.get("state") in ("STARTING", "RUNNING"):
+                state.update(state="UNKNOWN", cleanup="UNCONFIRMED", error="supervisor disappeared; host is quarantined")
+            try:
+                write_json(path, state)
+            except OSError as error:
+                # The durable RUNNING/STARTING record already keeps the host
+                # quarantined; report the truthful observation, not a crash.
+                state["error"] = str(state.get("error", "")) + f"; record not persisted ({error})"
         finally:
             lock.close()
     return public_status(state)
+
+
+def supervisor_alive(state, identifier):
+    """Whether the recorded supervisor of this job is still running (TQ-07-A9d)."""
+    pid = state.get("supervisor_pid")
+    if type(pid) is not int or pid <= 0 or os.name != "posix":
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        pass  # exists under another account: compare its command line below
+    except OSError:
+        return False
+    try:
+        command = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True,
+                                 text=True, timeout=5).stdout
+    except (OSError, subprocess.SubprocessError):
+        return True  # cannot tell: never settle a job whose supervisor may be waiting
+    return "_supervise" in command and identifier in command
+
+
+HARDWARE_CACHE_SECONDS = 24 * 3600
+RUNTIME_FILES = ("remote_agent.py", "processes.py", "common.py")
+
+
+def _run_text(argv, timeout=5):
+    try:
+        return subprocess.run(argv, capture_output=True, text=True, timeout=timeout).stdout
+    except (OSError, subprocess.SubprocessError):
+        return ""
+
+
+def _arch():
+    machine = platform.machine().lower()
+    return {"amd64": "x86_64", "x64": "x86_64", "aarch64": "arm64"}.get(machine, machine)
+
+
+def runtime_identity():
+    """Digests of the agent's own deployed files (TQ-07-B1/B4)."""
+    here = Path(__file__).resolve().parent
+    files = {}
+    for name in RUNTIME_FILES:
+        try:
+            files[name] = digest(here / name)
+        except OSError:
+            files[name] = None
+    combined = hashlib.sha256(encode(files)).hexdigest()
+    return {"files": files, "digest": combined}
+
+
+def _hardware(root):
+    """Slow, stable facts, cached under the root for a day. Every value may be None."""
+    path = Path(root) / "hardware.json"
+    try:
+        cached = read_json(path)
+        if isinstance(cached, dict) and time.time() - cached.get("observed_at", 0) < HARDWARE_CACHE_SECONDS:
+            return cached
+    except (OSError, ValueError):
+        pass
+    facts = {"observed_at": time.time(), "os": platform.system().lower(), "os_release": platform.release(),
+             "arch": _arch(), "cpu_model": None, "physical_cores": None, "logical_cores": os.cpu_count(),
+             "memory_total_bytes": None, "gpus": []}
+    if sys.platform == "darwin":
+        facts["os_version"] = _run_text(["sw_vers", "-productVersion"]).strip() or None
+        facts["cpu_model"] = _run_text(["sysctl", "-n", "machdep.cpu.brand_string"]).strip() or None
+        cores = _run_text(["sysctl", "-n", "hw.physicalcpu"]).strip()
+        facts["physical_cores"] = int(cores) if cores.isdigit() else None
+        memory = _run_text(["sysctl", "-n", "hw.memsize"]).strip()
+        facts["memory_total_bytes"] = int(memory) if memory.isdigit() else None
+        text = _run_text(["system_profiler", "SPDisplaysDataType"], timeout=15)
+        facts["gpus"] = [line.split(":", 1)[1].strip() for line in text.splitlines()
+                         if line.strip().startswith("Chipset Model:")]
+    elif sys.platform.startswith("linux"):
+        try:
+            info = Path("/proc/cpuinfo").read_text(encoding="utf-8", errors="replace")
+            names = [line.split(":", 1)[1].strip() for line in info.splitlines() if line.startswith("model name")]
+            facts["cpu_model"] = names[0] if names else None
+            cores = {(line.split(":", 1)[1].strip()) for line in info.splitlines() if line.startswith("core id")}
+            sockets = {(line.split(":", 1)[1].strip()) for line in info.splitlines() if line.startswith("physical id")}
+            facts["physical_cores"] = len(cores) * max(1, len(sockets)) if cores else None
+        except OSError:
+            pass
+        try:
+            for line in Path("/etc/os-release").read_text(encoding="utf-8").splitlines():
+                if line.startswith("PRETTY_NAME="):
+                    facts["os_version"] = line.split("=", 1)[1].strip('"')
+        except OSError:
+            pass
+        for node in sorted(Path("/sys/class/drm").glob("renderD*")) if Path("/sys/class/drm").is_dir() else []:
+            try:
+                vendor = (node / "device/vendor").read_text().strip()
+                device = (node / "device/device").read_text().strip()
+                facts["gpus"].append(f"{node.name} {vendor}:{device}")
+            except OSError:
+                continue
+    try:
+        write_json(path, facts)
+    except OSError:
+        pass
+    return facts
+
+
+def _volatile(root):
+    """Facts that change between probes. Every value may be None."""
+    facts = {"clock": time.time(), "uptime_seconds": None, "boot": None, "power": None, "session": None,
+             "memory_available_bytes": None, "inodes_free": None}
+    try:
+        runtime = str(Path(__file__).resolve().parents[2])
+        if runtime not in sys.path:
+            sys.path.insert(0, runtime)
+        from tools.testqueue.processes import host_identity as process_identity
+        facts["boot"] = process_identity().get("boot")
+    except Exception:
+        pass
+    try:
+        stats = os.statvfs(root)
+        facts["inodes_free"] = stats.f_favail
+    except (AttributeError, OSError):
+        pass
+    if sys.platform == "darwin":
+        boot = re.search(r"sec\s*=\s*(\d+)", _run_text(["sysctl", "-n", "kern.boottime"]))
+        facts["uptime_seconds"] = round(time.time() - int(boot.group(1))) if boot else None
+        battery = _run_text(["pmset", "-g", "batt"])
+        percent = re.search(r"(\d+)%", battery)
+        facts["power"] = {"source": "ac" if "AC Power" in battery else "battery" if "Battery Power" in battery else None,
+                          "battery_percent": int(percent.group(1)) if percent else None}
+        thermal = _run_text(["pmset", "-g", "therm"])
+        facts["power"]["thermal_warning"] = None if not thermal else ("No thermal warning level has been recorded" not in thermal
+                                                                     and "CPU_Speed_Limit \t= 100" not in thermal)
+        user = _run_text(["stat", "-f", "%Su", "/dev/console"]).strip()
+        facts["session"] = {"console_user": user if user and user != "root" else None}
+        pages = _run_text(["vm_stat"])
+        size = re.search(r"page size of (\d+) bytes", pages)
+        free = sum(int(value) for key, value in re.findall(r"Pages (free|inactive|speculative):\s+(\d+)", pages))
+        if size:
+            facts["memory_available_bytes"] = free * int(size.group(1))
+    elif sys.platform.startswith("linux"):
+        try:
+            facts["uptime_seconds"] = round(float(Path("/proc/uptime").read_text().split()[0]))
+        except (OSError, ValueError, IndexError):
+            pass
+        supplies = Path("/sys/class/power_supply")
+        if supplies.is_dir():
+            online = [p for p in supplies.glob("*/online")]
+            capacity = [p for p in supplies.glob("*/capacity")]
+            try:
+                on_ac = any(p.read_text().strip() == "1" for p in online) if online else None
+                facts["power"] = {"source": "ac" if on_ac or not capacity else "battery",
+                                  "battery_percent": int(capacity[0].read_text().strip()) if capacity else None}
+            except (OSError, ValueError):
+                pass
+    return facts
+
+
+def _caches(root):
+    """What this host already holds, so placement need not charge a transfer for it."""
+    incoming = sorted(path.name[:-4] for path in (Path(root) / "incoming").glob("*.tar")
+                      if re.fullmatch(r"[0-9a-f]{64}\.tar", path.name))
+    engines = {}
+    base = Path(root) / IMPORT_CACHE
+    for directory in sorted(base.iterdir()) if base.is_dir() else []:
+        meta = {}
+        try:
+            meta = read_json(directory / "cache.json")
+        except (OSError, ValueError):
+            pass
+        engines[directory.name] = {key: meta.get(key) for key in ("files", "bytes", "published_at", "source_job")
+                                   if isinstance(meta, dict) and key in meta}
+    store = None
+    try:
+        bounds = read_json(Path(root) / CACHE_BOUNDS)
+        last = bounds.get("store") if isinstance(bounds, dict) else None
+        if isinstance(last, dict) and "bytes_after" in last:
+            store = {"entries": last.get("entries", 0) - last.get("removed", 0), "bytes": last["bytes_after"],
+                     "budget": last.get("budget"), "measured_at": bounds.get("at")}
+    except (OSError, ValueError):
+        pass
+    return {"incoming_archives": incoming, "import_cache_engines": engines, "content_store": store}
+
+
+def describe_host(root, states):
+    """TQ-07-B1: one self-description for scheduling; unknown is None, never a guess."""
+    hardware = _hardware(root)
+    return {"runtime": runtime_identity(), "hardware": hardware, "volatile": _volatile(root),
+            "caches": _caches(root),
+            "slots": {"headless": 1, "running": [state.get("request_id") for state in states
+                                                 if state.get("state") in ("STARTING", "RUNNING")],
+                      "unknown": [state.get("request_id") for state in states if state.get("state") == "UNKNOWN"]}}
 
 
 def probe(root, request):
@@ -702,6 +1115,13 @@ def probe(root, request):
     except (AttributeError, OSError):
         load = None
     states = scan(root)
+    try:
+        description = describe_host(root, states)
+    except Exception as error:  # a self-description fault never hides the host
+        description = {"error": f"{type(error).__name__}: {error}"[:200]}
+    if memory[0] is None:
+        memory = ((description.get("volatile") or {}).get("memory_available_bytes"),
+                  (description.get("hardware") or {}).get("memory_total_bytes"))
     busy = False
     try:
         lock = Lock(root / "pool.lock")
@@ -730,7 +1150,8 @@ def probe(root, request):
                 admission.update(busy=True, busy_code="EXTERNAL_SIMULATOR", busy_reason="External Godot is running")
         except (OSError, subprocess.SubprocessError) as error:
             admission.update(busy=True, busy_code="OCCUPANCY_UNKNOWN", busy_reason=f"Godot process probe failed: {error}")
-    return {"protocol": PROTOCOL,
+    return {"protocol": PROTOCOL, "features": list(FEATURES), "identity": host_identity(root),
+            "description": description,
             "host": {"hostname": platform.node(), "system": system, "release": platform.release(),
                      "machine": machine, "python": platform.python_version()},
             "capabilities": capabilities,
@@ -750,6 +1171,8 @@ def launch(root, request):
         if previous.get("payload_sha256") != payload_sha:
             raise Refused("request_id already belongs to different inputs", "CONFLICT")
         return status(root, identifier)
+    if fence_path(root, identifier).is_file():
+        raise Refused("this request was fenced and will never run here", "FENCED")
     if authority_enrolled():
         raise Refused("host has an enrolled testqueue; submit to that authority", "ENROLLED")
     if request["options"].get("workload") == "graphics" and graphics_config(root) is None:
@@ -763,15 +1186,31 @@ def launch(root, request):
             return public_status(previous)
         if scan(root):
             raise Refused("unresolved or unknown job quarantines this host", "QUARANTINED")
-        incoming = (root / "incoming").resolve()
-        archive = Path(request["archive"]["path"])
-        if archive.is_symlink() or archive.resolve().parent != incoming or not archive.is_file():
-            raise Refused("archive must be a regular file directly inside incoming")
+        if "archive" in request:
+            incoming = (root / "incoming").resolve()
+            archive = Path(request["archive"]["path"])
+            if archive.is_symlink() or archive.resolve().parent != incoming or not archive.is_file():
+                raise Refused("archive must be a regular file directly inside incoming")
+        else:
+            # TQ-07-E4a: every file the job needs must already be in the store.
+            missing = store_missing(root, read_source_manifest(root, request["source_manifest"]["sha256"]))
+            if missing:
+                # Typed, before any job exists: the coordinator re-sends and runs the same ID.
+                raise Refused(f"the content store lacks {len(missing)} file(s) of this source; upload them first",
+                              "STORE_MISSING")
         engine = Path(request["engine_path"])
         if not engine.is_file() or (os.name != "nt" and not os.access(engine, os.X_OK)):
             raise Refused("engine is unavailable or not executable")
         directory = job_path(root, identifier)
+        if directory.exists():
+            # Under this lock a directory without a journal is a launch that died
+            # before writing it; it was never accepted (TQ-07-A9a).
+            _discard_unjournaled_job(directory)
         directory.mkdir(parents=True, exist_ok=False)
+        if fence_path(root, identifier).is_file():
+            # The other half of the fence handshake: the tombstone won.
+            directory.rmdir()
+            raise Refused("this request was fenced and will never run here", "FENCED")
         state = {"protocol": PROTOCOL, "request_id": identifier, "state": "STARTING", "request": request,
                  "payload_sha256": payload_sha, "accepted_at": time.time(), "cleanup": "UNCONFIRMED",
                  "evidence": "INCOMPLETE", "output": str(directory)}
@@ -780,9 +1219,18 @@ def launch(root, request):
         # inherit it instead of opening visible console windows.
         flags = (subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW) if os.name == "nt" else 0
         with (directory / "supervisor.log").open("ab") as log:
-            subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_supervise", "--root", str(root), "--request-id", identifier],
-                             stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
-                             close_fds=True, start_new_session=os.name != "nt", creationflags=flags)
+            supervisor = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_supervise", "--root", str(root), "--request-id", identifier],
+                                          stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                                          close_fds=True, start_new_session=os.name != "nt", creationflags=flags)
+        try:
+            # TQ-07-A9d: status can tell a supervisor still waiting for the lock
+            # from a dead one. Advisory: without it the start grace applies.
+            pid = getattr(supervisor, "pid", None)
+            if type(pid) is int:
+                state["supervisor_pid"] = pid
+                write_json(path, state)
+        except OSError:
+            pass
         return public_status(state)
     finally:
         lock.close()
@@ -801,6 +1249,248 @@ def safe_name(name):
     if any(re.fullmatch(r"(?i)(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?", p) for p in parts):
         raise Refused("reserved archive path")
     return name
+
+
+STORE = "store"
+DIGEST = re.compile(r"[0-9a-f]{64}\Z")
+MAX_STORE_REQUEST_DIGESTS = 400_000
+# TQ-07-G3: the store is least-recently-used above its budget, pruned down to
+# the target. One full snapshot is about 1 GiB, so several commits' variants fit.
+STORE_BUDGET_BYTES = 4 * 1024 ** 3
+STORE_PRUNE_TARGET_BYTES = 3 * 1024 ** 3
+# An entry used this recently is never pruned. store-have refreshes every entry
+# it reports present, and an upload plus run takes far less than this, so a
+# prune between a coordinator's transfer and its run cannot undercut the run.
+STORE_RECENT_SECONDS = 3600
+IMPORT_CACHE_IDLE_SECONDS = 14 * 86400
+
+
+def _mark_used(path):
+    """Refresh a cache entry's mtime: the prune's least-recently-used order."""
+    try:
+        os.utime(path)
+    except OSError:
+        pass  # a stale mark only makes the entry an earlier prune candidate
+
+
+def store_path(root, sha256):
+    if not isinstance(sha256, str) or not DIGEST.fullmatch(sha256):
+        raise Refused("store digests are lowercase SHA-256")
+    return Path(root) / STORE / sha256[:2] / sha256
+
+
+def store_have(root, request):
+    """Which of these content digests the store lacks (TQ-07-E4a).
+
+    Every present entry is marked used, so the coordinator can rely on it
+    until its run starts (see ``STORE_RECENT_SECONDS``).
+    """
+    if not isinstance(request, dict) or set(request) != {"digests"} or not isinstance(request["digests"], list) \
+            or len(request["digests"]) > MAX_STORE_REQUEST_DIGESTS:
+        raise Refused("store-have requires a list of digests")
+    missing = []
+    for sha in dict.fromkeys(request["digests"]):
+        path = store_path(root, sha)
+        try:
+            os.utime(path)  # the presence test and the use mark are one call (G3 review)
+        except FileNotFoundError:
+            missing.append(sha)
+        except OSError:
+            if not path.is_file():  # present but unmarkable still counts as present
+                missing.append(sha)
+    return {"missing": missing, "asked": len(request["digests"])}
+
+
+def store_put(root, stream):
+    """Add content-addressed files from a tar stream; each member's name is its SHA-256.
+
+    Every member is hashed while written to a private temporary and published by
+    atomic rename only when its digest matches its name, so a broken or partial
+    upload never leaves a wrong file under a digest.
+    """
+    stored = skipped = size = 0
+    with tarfile.open(fileobj=stream, mode="r|") as bundle:
+        for member in bundle:
+            if not member.isfile() or not DIGEST.fullmatch(member.name):
+                raise Refused("store-put accepts regular members named by their SHA-256")
+            target = store_path(root, member.name)
+            if target.is_file():
+                _mark_used(target)
+                skipped += 1
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if shutil.disk_usage(target.parent).free < member.size + RESERVE:
+                raise Refused("insufficient disk for the content store and reserve")
+            temporary = target.with_name(target.name + "." + secrets.token_hex(6) + ".pending")
+            source = bundle.extractfile(member)
+            h = hashlib.sha256()
+            try:
+                with source, temporary.open("xb") as output:
+                    while block := source.read(1024 * 1024):
+                        h.update(block)
+                        output.write(block)
+                    output.flush()
+                    os.fsync(output.fileno())
+                if h.hexdigest() != member.name:
+                    raise Refused("uploaded bytes differ from their digest " + member.name)
+                os.replace(temporary, target)
+            finally:
+                if temporary.exists():
+                    temporary.unlink()
+            stored += 1
+            size += member.size
+    return {"stored": stored, "already_present": skipped, "bytes": size}
+
+
+def prune_store(root, protected, *, budget=None, target=None, recent=None, now=None):
+    """Remove least-recently-used store entries while the store exceeds its budget (TQ-07-G3).
+
+    Called under the host lock, so no job is materializing. An entry in
+    ``protected`` (named by an unfinished job's manifest) or used within
+    ``recent`` seconds is kept even if the store stays over budget. Every entry
+    is a reproducible cache: a later transfer sends a missing one again.
+    """
+    budget = STORE_BUDGET_BYTES if budget is None else budget
+    target = STORE_PRUNE_TARGET_BYTES if target is None else target
+    recent = STORE_RECENT_SECONDS if recent is None else recent
+    base = Path(root) / STORE
+    now = time.time() if now is None else now
+    entries, total = [], 0
+    for path in base.glob("*/*") if base.is_dir() else []:
+        if not DIGEST.fullmatch(path.name) or path.parent.name != path.name[:2]:
+            continue  # upload temporaries are swept by age elsewhere
+        try:
+            info = path.lstat()
+        except OSError:
+            continue
+        if not stat.S_ISREG(info.st_mode):
+            continue
+        total += info.st_size
+        entries.append((info.st_mtime, path.name, info.st_size, path))
+    removed = freed = kept_recent = failed = 0
+    if total > budget:
+        for mtime, name, size, path in sorted(entries):
+            if total - freed <= target:
+                break
+            if name in protected:
+                continue
+            try:
+                # Re-read the mark: store-have may have used this entry since the scan.
+                if now - path.lstat().st_mtime < recent:
+                    kept_recent += 1
+                    continue
+                path.unlink()
+            except FileNotFoundError:
+                continue
+            except OSError:
+                failed += 1  # one unremovable entry never stops the prune
+                continue
+            removed += 1
+            freed += size
+    return {"entries": len(entries), "bytes": total, "budget": budget, "removed": removed,
+            "bytes_removed": freed, "bytes_after": total - freed, "kept_recent": kept_recent,
+            "protected": len(protected), "failed": failed}
+
+
+def prune_import_caches(root, keep, *, idle=None, now=None):
+    """Remove import caches of engines no job has used for ``idle`` seconds (TQ-07-G3).
+
+    Called under the host lock, so nothing seeds or publishes meanwhile. The
+    most recently used engine's cache is always kept, as is any engine in
+    ``keep`` (an unfinished job's). A removed cache only makes the next import
+    of that engine cold.
+    """
+    idle = IMPORT_CACHE_IDLE_SECONDS if idle is None else idle
+    base = Path(root) / IMPORT_CACHE
+    now = time.time() if now is None else now
+    caches = []
+    for directory in base.iterdir() if base.is_dir() else []:
+        if directory.is_symlink() or not directory.is_dir() or not DIGEST.fullmatch(directory.name):
+            continue
+        marker = directory / "cache.json"
+        try:
+            used = marker.stat().st_mtime if marker.is_file() else directory.stat().st_mtime
+        except OSError:
+            continue
+        caches.append((used, directory))
+    removed, failed, freed = [], [], 0
+    newest = max(caches, key=lambda item: item[0])[1] if caches else None
+    for used, directory in caches:
+        if directory == newest or directory.name in keep or now - used < idle:
+            continue
+        size = _tree_stats(directory)[1]
+        try:
+            imported = directory / "imported"
+            if imported.is_dir() and not imported.is_symlink():
+                # Move it aside first, so an interrupted removal is never seeded as a cache.
+                os.rename(imported, directory / ("old-prune-" + secrets.token_hex(4)))
+            shutil.rmtree(directory)
+        except OSError:
+            failed.append(directory.name)
+            continue
+        freed += size
+        removed.append(directory.name)
+    return {"engines": len(caches), "removed": sorted(removed), "bytes_removed": freed, "failed": sorted(failed)}
+
+
+def read_source_manifest(root, sha256):
+    """The file map a content-store job materializes, verified against its digest."""
+    path = store_path(root, sha256)
+    try:
+        data = path.read_bytes()
+    except OSError:
+        raise Refused("source manifest is not in the store; upload it first", "STORE_MISSING") from None
+    if hashlib.sha256(data).hexdigest() != sha256:
+        raise Refused("stored source manifest differs from its digest")
+    value = json.loads(data)
+    files = value.get("files") if isinstance(value, dict) else None
+    if not isinstance(files, dict) or len(files) > MAX_FILES:
+        raise Refused("source manifest has no valid file map")
+    for name, entry in files.items():
+        safe_name(name)
+        if (not isinstance(entry, dict) or set(entry) != {"size", "sha256"} or type(entry["size"]) is not int
+                or entry["size"] < 0 or not DIGEST.fullmatch(str(entry["sha256"]))):
+            raise Refused("source manifest entry is invalid: " + name)
+    return files
+
+
+def store_missing(root, files):
+    return sorted({entry["sha256"] for entry in files.values() if not store_path(root, entry["sha256"]).is_file()})
+
+
+def materialize_from_store(root, files, destination):
+    """Build a job's private source tree from the store (copies, never links: Godot writes files)."""
+    destination = Path(destination)
+    destination.mkdir(exist_ok=False)
+    seen, total = set(), 0
+    for name, entry in files.items():
+        key = safe_name(name).casefold()
+        if key in seen:
+            raise Refused("source manifest has a duplicate path: " + name)
+        seen.add(key)
+        total += entry["size"]
+        if total > MAX_ARCHIVE:
+            raise Refused("source expansion limit exceeded")
+    if shutil.disk_usage(destination).free < total + RESERVE:
+        raise Refused("insufficient disk for the job's source and reserve")
+    for name, entry in sorted(files.items()):
+        target = destination.joinpath(*safe_name(name).split("/"))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        stored = store_path(root, entry["sha256"])
+        h = hashlib.sha256()
+        with stored.open("rb") as source, target.open("xb") as output:
+            while block := source.read(1024 * 1024):
+                h.update(block)
+                output.write(block)
+        if h.hexdigest() != entry["sha256"]:
+            # A damaged store entry heals: removed here, it is reported missing and
+            # uploaded again by the next job instead of failing every later one.
+            try:
+                stored.unlink()
+            except OSError:
+                pass
+            raise Refused("store entry " + entry["sha256"] + " was damaged and has been removed; the next job uploads it again")
+    return {name: {"size": entry["size"], "sha256": entry["sha256"]} for name, entry in files.items()}
 
 
 def extract_archive(archive, destination):
@@ -995,6 +1685,7 @@ def seed_import_cache(root, source, engine_sha256):
         shutil.rmtree(target, ignore_errors=True)  # a partial seed would only slow Godot down; start cold
         raise
     meta = read_json(cache.parent / "cache.json") if (cache.parent / "cache.json").is_file() else {}
+    _mark_used(cache.parent / "cache.json")  # recently used engines keep their cache (TQ-07-G3)
     return {"seeded": True, "files": files, "bytes": size, "seconds": round(time.monotonic() - started, 2),
             "from_job": meta.get("job")}
 
@@ -1085,26 +1776,43 @@ def execute_stage(root, directory, state, stage, deadline):
                            cwd=source, env=env, log=directory / (stage + "-runner.log"))
     # A previous stage's closed process must never be attributed to this stage.
     state.pop("process", None)
-    state.update(state="RUNNING", stage=stage, dispatch_at=time.time())
+    state.update(state="RUNNING", stage=stage, dispatch_at=time.time(), launch_order=LAUNCH_ORDER)
     write_json(directory / "state.json", state)
     started = False
     timed_out = False
     code = None
     try:
-        process.start()
+        # TQ-07-A9b: create the gated process, make its identity durable, and only
+        # then release the gate. A record without an identity proves nothing ran.
+        process.start(release=False)
         started = True
         state["process"] = process.identity
-        # Storage failure after creation is an observation fault: the child stays
-        # owned and the absolute monotonic deadline below remains in force. Only
-        # this single supervisor thread writes the live dict, so newest wins.
-        journaled = publish_observation(directory / "state.json", state)
+        if not journal_before_release(directory / "state.json", state):
+            process.close_unreleased()  # the gate never released its command; teardown witnessed
+            started = False
+            state.pop("process", None)
+            return {"ok": False, "complete": False, "reason": "journal_unavailable_before_release"}
+        process.release()
+        journaled = True
         retry_at = time.monotonic() + JOURNAL_RETRY_SECONDS
-        while process.alive():
+        unobserved = 0
+        while True:
             code = process.poll()
             now = time.monotonic()
             if now >= deadline or (code is not None and code != 0):
                 timed_out = now >= deadline
                 process.terminate()
+                break
+            try:
+                alive = process.alive()
+            except (subprocess.TimeoutExpired, OSError):
+                # TQ-07-A9c: a slow process listing is a missing observation, not a
+                # reason to tear down healthy work; the deadline above still holds.
+                unobserved += 1
+                time.sleep(min(2.0, 0.1 * 2 ** min(unobserved, 5)))
+                continue
+            unobserved = 0
+            if not alive:
                 break
             if not journaled and now >= retry_at:
                 journaled = publish_observation(directory / "state.json", state)
@@ -1116,7 +1824,10 @@ def execute_stage(root, directory, state, stage, deadline):
     except BaseException as failure:
         if started:
             try:
-                process.close()
+                if getattr(process, "released", True):
+                    process.close()
+                else:
+                    process.close_unreleased()  # its command never ran (TQ-07-A9b)
             except Exception as error:
                 raise TeardownUnconfirmed("process cleanup was not confirmed") from error
         elif not (isinstance(failure, ProcessNotStartedError) and process.nonlaunch_confirmed is True):
@@ -1172,8 +1883,9 @@ def invoke(root, identifier, stage):
         raise Refused("invalid internal stage")
     command = checked_command(request["engine_path"], str(source / "app"), options, stage)
     if stage != "check" or options.get("workload") != "graphics":
-        # The supervisor owns the stricter total deadline and verified cleanup.
-        result = module.run_checked(command, directory / stage, timeout=options.get("timeout", 600) + 60, **kwargs)
+        # The supervisor owns the stricter per-stage deadline and verified cleanup.
+        budget = IMPORT_BUDGET_SECONDS if stage == "import" else options.get("timeout", 600)
+        result = module.run_checked(command, directory / stage, timeout=budget + 60, **kwargs)
         write_json(directory / (stage + "-result.json"), result)
         return 0
     config = graphics_config(root)
@@ -1296,9 +2008,39 @@ def verify_result(directory, stage, result, request):
             raise Refused("checked log does not contain its required markers")
 
 
+def reserve_path(root, identifier):
+    job_path(root, identifier)
+    return root / "reserves" / identifier
+
+
+def make_terminal_reserve(root, identifier):
+    """Hold a little disk for the terminal journal (TQ-07-A9e); best effort.
+
+    Kept outside the job directory so it is never inventoried as evidence.
+    """
+    try:
+        path = reserve_path(root, identifier)
+        path.parent.mkdir(exist_ok=True)
+        with path.open("wb") as stream:
+            stream.write(b"\0" * TERMINAL_RESERVE_BYTES)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except (OSError, Refused):
+        pass
+
+
+def release_terminal_reserve(root, identifier):
+    try:
+        reserve_path(root, identifier).unlink()
+    except (OSError, Refused):
+        pass
+
+
 def supervise(root, identifier):
     path = state_path(root, identifier)
-    deadline = time.monotonic() + START_GRACE
+    # A storage sweep holds the host lock for one job at a time; wait for it
+    # rather than leaving a never-started job behind (TQ-07-A9d).
+    deadline = time.monotonic() + SUPERVISOR_LOCK_WAIT
     while True:
         try:
             lock = Lock(root / "pool.lock")
@@ -1310,32 +2052,42 @@ def supervise(root, identifier):
     state = read_json(path)
     directory = path.parent
     started = False
+    make_terminal_reserve(root, identifier)
     try:
         if state.get("state") != "STARTING":
             return 1
         request = validate_request(state["request"])
         if authority_enrolled():
             raise Refused("host enrolled before launch")
-        source_archive = Path(request["archive"]["path"])
-        copied = directory / "input.tar"
-        try:
-            # A hard link pins the verified inode without a second copy: incoming
-            # archives are published by atomic replace, never rewritten in place.
-            os.link(source_archive, copied)
-            state["input_link"] = True
-        except OSError:
-            if shutil.disk_usage(directory).free < source_archive.stat().st_size + RESERVE:
-                raise Refused("insufficient disk for archive and reserve")
-            with source_archive.open("rb") as src, copied.open("xb") as dst:
-                shutil.copyfileobj(src, dst, 1024 * 1024)
-                dst.flush()
-                os.fsync(dst.fileno())
-        if digest(copied) != request["archive"]["sha256"]:
-            raise Refused("transferred archive SHA-256 differs")
         source = directory / "source"
-        files = extract_archive(copied, source)
-        verify_source(source, files)
-        write_json(directory / "source-inventory.json", {"archive_sha256": request["archive"]["sha256"], "files": files})
+        if "source_manifest" in request:
+            # TQ-07-E4a: the source comes from the content store; only missing
+            # files ever crossed the network.
+            manifest_sha = request["source_manifest"]["sha256"]
+            files = materialize_from_store(root, read_source_manifest(root, manifest_sha), source)
+            verify_source(source, files)
+            write_json(directory / "source-inventory.json", {"manifest_sha256": manifest_sha, "files": files})
+            state["input_mode"] = "content-store"
+        else:
+            source_archive = Path(request["archive"]["path"])
+            copied = directory / "input.tar"
+            try:
+                # A hard link pins the verified inode without a second copy: incoming
+                # archives are published by atomic replace, never rewritten in place.
+                os.link(source_archive, copied)
+                state["input_link"] = True
+            except OSError:
+                if shutil.disk_usage(directory).free < source_archive.stat().st_size + RESERVE:
+                    raise Refused("insufficient disk for archive and reserve")
+                with source_archive.open("rb") as src, copied.open("xb") as dst:
+                    shutil.copyfileobj(src, dst, 1024 * 1024)
+                    dst.flush()
+                    os.fsync(dst.fileno())
+            if digest(copied) != request["archive"]["sha256"]:
+                raise Refused("transferred archive SHA-256 differs")
+            files = extract_archive(copied, source)
+            verify_source(source, files)
+            write_json(directory / "source-inventory.json", {"archive_sha256": request["archive"]["sha256"], "files": files})
         transformation = isolate_project(source, identifier)
         state["native_adaptation"] = adapt_native_extensions(source)
         if not (source / "tools/godot/run_checked.py").is_file() or not (source / "app" / request["options"]["script"][6:]).is_file():
@@ -1354,14 +2106,20 @@ def supervise(root, identifier):
         # Preparation has no engine subprocess. Recheck occupancy at dispatch.
         # status/probe inspect the saved state without waiting for this slot.
         wait_for_engine(directory, state, request)
-        end = time.monotonic() + request["options"].get("timeout", 600)
         started = True
-        imported = execute_stage(root, directory, state, "import", end)
+        # TQ-07-A8: the import has its own budget; the job's timeout bounds the
+        # check alone. A cold import used to consume the 90 s test budget.
+        imported = execute_stage(root, directory, state, "import", time.monotonic() + IMPORT_BUDGET_SECONDS)
         verify_result(directory, "import", imported, request)
         state["import"] = imported
+        if imported.get("reason") == "timeout":
+            state["reason_code"] = "IMPORT_TIMEOUT"
         if digest(request["engine_path"]) != state["engine"]["sha256"]:
             raise Refused("engine executable changed during import")
+        end = time.monotonic() + request["options"].get("timeout", 600)
         result = execute_stage(root, directory, state, "check", end) if imported.get("ok") is True and imported.get("complete") is True else None
+        if (result or {}).get("reason") == "timeout":
+            state["reason_code"] = "CHECK_TIMEOUT"
         if result is not None:
             verify_result(directory, "check", result, request)
         state["checked"] = result
@@ -1401,6 +2159,9 @@ def supervise(root, identifier):
             state["storage_cleanup"] = ({"state": "SKIPPED", "logical_bytes_removed": 0,
                                          "reason": "job input is a hard link to the verified incoming archive; no redundant copy"}
                                         if state.get("input_link") else
+                                        {"state": "SKIPPED", "logical_bytes_removed": 0,
+                                         "reason": "content-store job: no input archive was copied"}
+                                        if state.get("input_mode") == "content-store" else
                                         {"state": "PENDING", "phase": "PREPARING", "logical_bytes_removed": None}
                                         if _retention_supported() else
                                         {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable",
@@ -1414,7 +2175,9 @@ def supervise(root, identifier):
         try:
             # FINISHED and its process-cleanup receipt must be durable before
             # reclaiming storage or releasing the host lock. Readers may observe
-            # storage cleanup pending.
+            # storage cleanup pending. The reserve goes first so a full disk can
+            # still take this record (TQ-07-A9e).
+            release_terminal_reserve(root, identifier)
             publish_terminal(path, state)
             if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) == (
                     "FINISHED", "PASSED", "COMPLETE", "CONFIRMED") and _retention_supported() \
@@ -1425,6 +2188,12 @@ def supervise(root, identifier):
                     # The already-published execution outcome remains valid;
                     # unresolved cleanup is visible in its separate field.
                     pass
+            # Bound the caches after every job, while this lock is held anyway, so
+            # the store never grows until placement refuses the host for disk.
+            try:
+                bound_caches_locked(root, scan(root))
+            except Exception:
+                pass  # caches are reproducible; the next job or gc-incoming retries
         finally:
             lock.close()
     return 0
@@ -1481,6 +2250,59 @@ def reconcile_unknown(root, request):
                      finished_at=time.time())
         publish_terminal(path, state)
         return public_status(state)
+    finally:
+        lock.close()
+
+
+def _group_proved_absent(pid):
+    if type(pid) is not int or pid <= 1:
+        return False
+    try:
+        return _posix_group_absent(pid)
+    except (OSError, RuntimeError, subprocess.SubprocessError):
+        return False
+
+
+def recover_boot(root, request):
+    """Settle every UNKNOWN job whose recorded boot ended (TQ-07-A9f).
+
+    The coordinator calls this for a host that returns. A reboot since the
+    recorded process identity is the one proof accepted without an operator;
+    same-boot evidence keeps the operator ``reconcile`` path.
+    """
+    if not isinstance(request, dict) or request:
+        raise Refused("recover-boot takes an empty request")
+    runtime = str(Path(__file__).resolve().parents[2])  # pinned agent runtime, as in execute_stage
+    if runtime not in sys.path:
+        sys.path.insert(0, runtime)
+    from tools.testqueue.processes import confirm_stopped
+    lock = Lock(root / "pool.lock")
+    try:
+        settled, kept = [], []
+        for path in sorted((root / "jobs").glob("*/state.json")):
+            try:
+                state = read_json(path)
+            except (OSError, ValueError):
+                kept.append(path.parent.name)
+                continue
+            if state.get("state") != "UNKNOWN":
+                continue
+            process = state.get("process")
+            if isinstance(process, dict) and confirm_stopped({"host": process.get("host"), "boot": process.get("boot")}) \
+                    and _group_proved_absent(process.get("pid")):
+                # macOS derives its boot identity from kern.boottime, which can
+                # shift without a reboot; unattended settlement therefore also
+                # needs the recorded process group gone, as a real reboot ensures.
+                state.update(state="FINISHED", outcome="INFRA_FAILED", cleanup="CONFIRMED", evidence="INCOMPLETE",
+                             reason_code="HOST_REBOOTED",
+                             reconciliation={"proof": "host rebooted since the recorded boot", "automatic": True,
+                                             "at": time.time(), "previous_error": state.get("error")},
+                             finished_at=time.time())
+                publish_terminal(path, state)
+                settled.append(path.parent.name)
+            else:
+                kept.append(path.parent.name)
+        return {"settled": settled, "still_unknown": kept}
     finally:
         lock.close()
 
@@ -1669,15 +2491,84 @@ def collect_incoming(root, request, *, min_age=3600):
             removed += path.stat().st_size
             path.unlink()
             files.append(path.name)
-        return {"removed_files": len(files), "logical_bytes_removed": removed}
+        # Temporaries of an interrupted store upload (TQ-07-E4a review); a live
+        # upload publishes or removes its own within the hour.
+        for path in sorted((root / STORE).glob("*/*.pending")) if (root / STORE).is_dir() else []:
+            if path.is_symlink() or not path.is_file() or now - path.stat().st_mtime < min_age:
+                continue
+            removed += path.stat().st_size
+            path.unlink()
+        # Terminal reserves a lost supervisor left behind (TQ-07-A9e). Under this
+        # lock no supervisor runs, so only an unfinished job's reserve is kept.
+        reserves = 0
+        live = {state.get("request_id") for state in unfinished}
+        for path in sorted((root / "reserves").glob("*")) if (root / "reserves").is_dir() else []:
+            if path.is_symlink() or not path.is_file() or path.name in live:
+                continue
+            removed += path.stat().st_size
+            path.unlink()
+            reserves += 1
+        try:
+            bounds = bound_caches_locked(root, unfinished)
+        except Exception as error:  # what was already removed above is still reported
+            text = f"{type(error).__name__}: {error}"[:300]
+            bounds = {"store": {"skipped": text}, "import_caches": {"skipped": text}}
+        removed += bounds["store"].get("bytes_removed", 0) + bounds["import_caches"].get("bytes_removed", 0)
+        return {"removed_files": len(files), "removed_reserves": reserves, "logical_bytes_removed": removed,
+                "store": bounds["store"], "import_caches": bounds["import_caches"]}
     finally:
         lock.close()
 
 
+CACHE_BOUNDS = "cache-bounds.json"
+
+
+def bound_caches_locked(root, unfinished):
+    """Keep the content store and import caches within their bounds (TQ-07-G3).
+
+    The caller holds the host lock. An unfinished job keeps every file its
+    manifest names and its engine's import cache. A job whose request or
+    manifest cannot be read leaves those unknown, so nothing is pruned. The
+    report is kept in ``cache-bounds.json`` for the probe.
+    """
+    protected, engines, request_unknown, manifest_unknown = set(), set(), False, False
+    for state in unfinished:
+        request = state.get("request")
+        if not isinstance(request, dict):
+            request_unknown = True
+            continue
+        for engine in ((state.get("engine") or {}).get("sha256"), request.get("expected_engine_sha256")):
+            if isinstance(engine, str):
+                engines.add(engine)
+        manifest = (request.get("source_manifest") or {}).get("sha256")
+        if manifest is None:
+            continue
+        protected.add(manifest)
+        try:
+            protected.update(entry["sha256"] for entry in read_source_manifest(root, manifest).values())
+        except (Refused, OSError, ValueError):
+            manifest_unknown = True
+    if request_unknown or manifest_unknown:
+        why = "an unfinished job's " + ("request" if request_unknown else "source manifest") + " is unreadable"
+        store = {"skipped": why + "; the store is kept whole"}
+    else:
+        store = prune_store(root, protected)
+    import_caches = ({"skipped": "an unfinished job's request is unreadable; its engine is unknown"}
+                     if request_unknown else prune_import_caches(root, engines))
+    report = {"store": store, "import_caches": import_caches}
+    if "skipped" not in store:
+        try:
+            write_json(Path(root) / CACHE_BOUNDS, {**report, "at": time.time()})
+        except OSError:
+            pass  # the probe then shows an older store size; pruning itself already happened
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("probe", "run", "status", "reclaim-input", "reconcile", "gc",
-                                           "gc-incoming", "_supervise", "_invoke"))
+    parser.add_argument("action", choices=("probe", "run", "status", "fence", "recover-boot", "store-have",
+                                           "store-put", "reclaim-input", "reconcile", "gc", "gc-incoming",
+                                           "_supervise", "_invoke"))
     parser.add_argument("--root", required=True)
     parser.add_argument("--request-id")
     parser.add_argument("--stage")
@@ -1692,6 +2583,10 @@ def main():
         return invoke(root, args.request_id, args.stage)
     request = None
     try:
+        if args.action == "store-put":
+            # A tar stream of content-addressed files, not a JSON request (TQ-07-E4a).
+            print(json.dumps({"ok": True, "result": store_put(root, sys.stdin.buffer)}, allow_nan=False))
+            return 0
         raw = sys.stdin.buffer.read(LIMIT + 1)
         if len(raw) > LIMIT:
             raise Refused("request too large")
@@ -1700,6 +2595,12 @@ def main():
             result = probe(root, request)
         elif args.action == "run":
             result = launch(root, request)
+        elif args.action == "fence":
+            result = fence(root, request)
+        elif args.action == "recover-boot":
+            result = recover_boot(root, request)
+        elif args.action == "store-have":
+            result = store_have(root, request)
         elif args.action == "reclaim-input":
             if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256"}
                     or not isinstance(request.get("request_id"), str) or not ID.fullmatch(request["request_id"])

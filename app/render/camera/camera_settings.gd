@@ -6,7 +6,7 @@ extends RefCounted
 const PilotCamera := preload("res://render/pilot_camera.gd")
 
 ## The view a Home flight starts in (D1: the pilot view stays the default).
-const VIEWS: Array[String] = ["pilot", "chase", "flyby", "orbit"]
+const VIEWS: Array[String] = ["pilot", "chase", "flyby", "orbit", "fpv"]
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -34,7 +34,7 @@ const DEFAULTS := {
 static func errors(raw: Dictionary) -> PackedStringArray:
 	var out := PackedStringArray()
 	if typeof(raw.get("camera_view", DEFAULTS.camera_view)) != TYPE_STRING or raw.get("camera_view", DEFAULTS.camera_view) not in VIEWS:
-		out.append("camera_view must be pilot, chase, flyby or orbit")
+		out.append("camera_view must be one of %s" % ", ".join(VIEWS))
 	if typeof(raw.get("camera_fov", DEFAULTS.camera_fov)) != TYPE_INT or raw.get("camera_fov", DEFAULTS.camera_fov) not in FOVS:
 		out.append("camera_fov must be one of the offered fields of view")
 	if typeof(raw.get("camera_magnifier", DEFAULTS.camera_magnifier)) != TYPE_STRING or raw.get("camera_magnifier", DEFAULTS.camera_magnifier) not in MAGNIFIER_MODES:

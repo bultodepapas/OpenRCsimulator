@@ -40,6 +40,8 @@ FINAL = {"PASSED", "FAILED"}
 # lost process: resuming it would only repeat the error every pass.
 SKIP_STATES = {"FINISHED", "ERROR"}
 MAX_RESUMES_PER_DAY = 6
+SETTLE_BUDGET_SECONDS = 45.0
+BOOT_RECOVERY_INTERVAL_SECONDS = 600.0
 
 
 def _read(path):
@@ -193,6 +195,29 @@ def run_once(config=None, *, max_age_hours=6.0, dry_run=False, serve_engine=None
             results.append({"request_id": identifier, "resumed": False, "error": str(error)[:200]})
     report["results"] = results
     report["resume_history"] = {key: value for key, value in history.items() if value}
+    if not dry_run:
+        # TQ-07-A2: receipts that reserve a host with no batch watching them.
+        try:
+            report["receipts"] = pool.settle_reserving_receipts(SETTLE_BUDGET_SECONDS)
+        except Exception as error:  # one bad pass must not stop supervision
+            report["receipts"] = {"error": str(error)[:200]}
+        # TQ-07-A9f: a remote host that rebooted settles its quarantine without an operator.
+        last = previous.get("boot_recovery_at")
+        if type(last) not in (int, float) or now - last >= BOOT_RECOVERY_INTERVAL_SECONDS:
+            try:
+                report["boot_recovery"] = pool.recover_quarantined_hosts()
+            except Exception as error:
+                report["boot_recovery"] = {"error": str(error)[:200]}
+            report["boot_recovery_at"] = now
+        else:
+            report["boot_recovery_at"] = last
+        # TQ-07-B3: the keeper's heartbeat keeps each remote host's reachability
+        # current, so placement never waits on an offline host's connect timeout.
+        # Last, so a hung host's probe timeout cannot delay settlement or recovery.
+        try:
+            report["health"] = {host: (entry or {}).get("state") for host, entry in pool.heartbeat().items()}
+        except Exception as error:
+            report["health"] = {"error": str(error)[:200]}
     from tools.testqueue.common import state_root
     report["authority_root"] = str(state_root())
     if serve_engine:

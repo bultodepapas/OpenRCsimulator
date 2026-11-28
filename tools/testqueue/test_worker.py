@@ -1366,6 +1366,55 @@ class WorkerFixture(unittest.TestCase):
                     self.worker._external_conflicts()
         self.assertEqual(len(calls), 1)
 
+    def test_checked_import_does_not_consume_the_test_budget(self):
+        # TQ-07-A8: a cold local import (4.5 min on 25 November) ran inside the
+        # 90 s timeout, so six checks in six days ended TIMED_OUT untested.
+        checked = {"preset": "checked", "options": {"timeout": 90}}
+        session = {"preset": "debug-session", "options": {"timeout": 90}}
+        self.assertEqual(self.worker._hard_budget(checked), 90)  # fixture workers run no import
+        self.worker.fixture = False
+        try:
+            self.assertEqual(self.worker._hard_budget(checked), 90 + worker_module.CHECKED_IMPORT_ALLOWANCE_SECONDS)
+            self.assertEqual(self.worker._hard_budget(session), 90)
+        finally:
+            self.worker.fixture = True
+        adapter = (Path(worker_module.__file__).parent / "adapter.py").read_text(encoding="utf-8")
+        self.assertIn('"--import"], directory / "imports", timeout=600)', adapter)  # the allowance covers this cap
+        self.assertGreater(worker_module.CHECKED_IMPORT_ALLOWANCE_SECONDS, 600)
+
+    def test_own_engine_processes_are_never_external_simulators(self):
+        # TQ-07-A7 (N8): the occupancy listing is cached up to 1 s. An engine of
+        # this attempt that exited meanwhile (import handing over to check), or
+        # one of an attempt that just finished, used to read as external.
+        class Owned:
+            def __init__(self, live, known):
+                self.live, self.known = set(live), set(known)
+
+            def pids(self):
+                return set(self.live)
+
+            def known_pids(self):
+                return set(self.known)
+
+        running = Owned(live={200}, known={100, 200})  # 100 was the import engine
+        with mock.patch.object(worker_module, "external_simulators", return_value=[100, 200, 300, 400]):
+            self.worker._occupancy_cache = None
+            with self.worker._process_lock:
+                self.worker.active["A-running"] = running
+            try:
+                self.assertEqual(self.worker._external_conflicts(), {300, 400})
+                with self.worker._process_lock:
+                    self.worker._remember_released(Owned(live=set(), known={300}))  # just finished
+                self.assertEqual(self.worker._external_conflicts(), {400})  # 400 is truly foreign
+                with mock.patch.object(worker_module.time, "monotonic",
+                                       return_value=time.monotonic() + Worker.RELEASED_PID_SECONDS + 1):
+                    self.worker._occupancy_cache = (time.monotonic() + Worker.RELEASED_PID_SECONDS + 1,
+                                                    {100, 200, 300, 400})
+                    self.assertEqual(self.worker._external_conflicts(), {300, 400})  # the grace ends
+            finally:
+                with self.worker._process_lock:
+                    self.worker.active.pop("A-running", None)
+
     def test_hard_deadline_and_teardown_do_not_wait_for_a_stalled_journal(self):
         # 6 s leaves slow CI room to reach started.json before the deadline.
         accepted = self._submit("long-stalled-storage", headless=True, timeout=6)

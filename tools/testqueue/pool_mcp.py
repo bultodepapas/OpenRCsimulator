@@ -13,9 +13,10 @@ import time
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
-from tools.testqueue import agent_view
+from tools.testqueue import agent_view, routing
+from tools.testqueue.pool_policy import platform_set
 from tools.testqueue.common import Singleton, write_json
-from tools.testqueue.pool import Pool, default_config, digest
+from tools.testqueue.pool import Pool, default_config
 from tools.testqueue.pool_batch import _finished_success, reobservation_ids, run_batch
 from tools.testqueue.pool_history import expected_seconds
 from tools.testqueue.presets import validate, scheduling
@@ -41,12 +42,27 @@ def _jobs(jobs):
         driver = job.get("rendering_driver")
         if driver is not None and driver not in {"vulkan", "opengl3"}:
             raise ValueError("rendering_driver must be vulkan or opengl3")
-        # GPU-lane jobs default to Linux, the only OS with a graphics host today.
-        target = job.get("platform", "linux" if job.get("rendering_driver") else platform.system().lower())
-        if target not in {"windows", "linux", "darwin", "any"}:
-            raise ValueError("invalid platform")
-        options = validate("checked", {"script": job.get("script"), "require": job.get("require", []),
-                                      "timeout": job.get("timeout", 90), "headless": True})
+        # TQ-07-D2/D3: a reviewed registry entry supplies what the agent omitted,
+        # so a known-portable script can run on whichever listed OS is free.
+        entry = routing.lookup(job.get("script")) if driver is None and isinstance(job.get("script"), str) else None
+        if "platform" in job:
+            target = job["platform"]
+        elif driver is not None:
+            target = "linux"  # GPU-lane jobs: the only OS with a graphics host today
+        elif entry is not None:
+            target = routing.platform_of(entry)
+        else:
+            target = platform.system().lower()
+        try:
+            platform_set(target)
+        except ValueError:
+            raise ValueError("invalid platform") from None
+        if isinstance(target, list):
+            target = sorted(target)
+        require = job["require"] if "require" in job else (entry or {}).get("require", [])
+        timeout = job["timeout"] if "timeout" in job else (entry or {}).get("timeout", 90)
+        options = validate("checked", {"script": job.get("script"), "require": require,
+                                      "timeout": timeout, "headless": True})
         if scheduling("checked", options)["workload"] == "performance":
             raise ValueError("performance tests require a dedicated same-host campaign")
         item = {"script": options["script"], "require": options["require"],
@@ -103,6 +119,10 @@ def _active(directory):
     return False
 
 
+def _without_config_digest(request):
+    return {key: value for key, value in request.items() if key != "config_sha256"} if isinstance(request, dict) else request
+
+
 def launch(request_id, jobs, source=None, *, config=None):
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
@@ -115,7 +135,10 @@ def launch(request_id, jobs, source=None, *, config=None):
     try:
         path = directory / "request.json"
         if path.exists():
-            if _read(path) != request:
+            # The configuration digest records what was current at launch. Each
+            # dispatched row binds its own destination (TQ-07-A1), so an unrelated
+            # configuration edit does not make a repeated launch a different request.
+            if _without_config_digest(_read(path)) != _without_config_digest(request):
                 raise ValueError("request_id already binds different inputs; use the original request")
         else:
             write_json(path, request)
@@ -336,8 +359,8 @@ def recover(request_id, *, config=None):
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
     request = _request(directory, request_id)
-    if digest(pool.config_path) != request["config_sha256"]:
-        raise ValueError("pool configuration changed; restore the original configuration before recovery")
+    if Path(request.get("config", pool.config_path)).resolve() != pool.config_path:
+        raise ValueError("this request belongs to a different pool configuration file; recover it with that file")
     if (directory / "batch.json").exists():
         batch = _read(directory / "batch.json")
         if batch.get("result") in {"PASSED", "FAILED"} and not reobservation_ids(pool, batch["jobs"]):
@@ -410,8 +433,8 @@ def supervise(directory):
         write_json(state_path, {"state": state, "updated_at": time.time(), **timings, **extra})
     try:
         request = _read(directory / "request.json")
-        if digest(request["config"]) != request["config_sha256"]:
-            raise ValueError("pool configuration changed; restore it before recovery")
+        # Configuration edits are allowed: every dispatched row checks its own
+        # bound destination, and rows not yet placed use the current hosts.
         pool = Pool(request["config"])
         manifest = directory / "manifest.json"
         previous = _read(state_path) if state_path.exists() else {}

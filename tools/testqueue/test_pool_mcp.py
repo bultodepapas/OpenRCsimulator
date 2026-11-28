@@ -20,7 +20,8 @@ class PoolMcpTests(unittest.TestCase):
         (self.source / "app/project.godot").write_text("config_version=5")
         self.config = self.root / "config.json"
         write_json(self.config, {"state_root": str(self.root / "pool"), "hosts": []})
-        self.jobs = [{"script": "res://tests/test_math3d.gd"}]
+        # Not in the routing registry, so the caller-OS default applies (TQ-07-D2).
+        self.jobs = [{"script": "res://tests/test_fixture_unrouted.gd"}]
         self.directory = self.root / "pool/mcp/test1"
 
     def launch(self, **kwargs):
@@ -95,14 +96,24 @@ class PoolMcpTests(unittest.TestCase):
             self.assertEqual(api.recover("test1", config=self.config)["result"], "FAILED")
         start.assert_not_called()
 
-    def test_config_change_blocks_recovery(self):
+    def test_unrelated_config_edit_keeps_launch_and_recovery_working(self):
+        # TQ-07-A1: rows bind their own destination, so editing the pool
+        # configuration (here an unrelated key) no longer strands the request.
         with patch.object(api, "_start"):
             self.launch()
+        original = (self.directory / "request.json").read_bytes()
         value = api._read(self.config)
         value["changed"] = True
         write_json(self.config, value)
-        with patch.object(api, "_start") as start, self.assertRaisesRegex(ValueError, "configuration changed"):
+        with patch.object(api, "_start") as start:
+            self.launch()  # same request, still idempotent
             api.recover("test1", config=self.config)
+        start.assert_called()
+        self.assertEqual(original, (self.directory / "request.json").read_bytes())
+        other = self.root / "other-config.json"
+        write_json(other, value)
+        with patch.object(api, "_start") as start, self.assertRaisesRegex(ValueError, "different pool configuration"):
+            api.recover("test1", config=other)
         start.assert_not_called()
 
     def test_supervisor_freezes_once_and_resumes_original_manifest(self):

@@ -11,7 +11,7 @@ For the precise claim supported, original table/section where recorded, hardware
 - **Implementation precedent:** official PX4/Rotorflight, compiler, contact-engine and profiling references help choose bounded algorithms. They do not qualify OpenRC’s gain values, replay or target speed.
 - **Reusable checks:** the lead reopened NASA NESC check-case material and the standard-atmosphere reference. The numerical fixtures in this audit are explicitly identified; no unexecuted external benchmark is claimed as passed.
 
-## Referenced URLs (61)
+## Original domain reference URLs (61)
 
 | Source | Used in |
 | --- | --- |
@@ -38,7 +38,7 @@ For the precise claim supported, original table/section where recorded, hardware
 | [UIUC wind-tunnel data](https://m-selig.ae.illinois.edu/props/volume-2/data/da4002_5x4.92_1195ga_6041.txt) | [multirotor](domains/multirotor.md) |
 | [Ananda, Deters and Selig, wing/propeller experiments](https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2014-AIAA-2014-2152.pdf) | [fixed wing](domains/fixed-wing.md) |
 | [UIUC low-Re finite-wing experiments](https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf) | [fixed wing](domains/fixed-wing.md) |
-| [Selig, Full-Envelope Aerodynamics Modeling, §III](https://m-selig.ae.illinois.edu/pubs/Selig-2010-AIAA-2010-7635-FullEnvelopeAeroSim.pdf) | [fixed wing](domains/fixed-wing.md) |
+| [Selig, Full-Envelope Aerodynamics Modeling, §IV.A, pp. 5–6](https://m-selig.ae.illinois.edu/pubs/Selig-2010-AIAA-2010-7635-FullEnvelopeAeroSim.pdf) | [fixed wing](domains/fixed-wing.md) |
 | [UIUC Low-Speed Airfoil Tests, volumes 1–5](https://m-selig.ae.illinois.edu/uiuc_lsat.html) | [fixed wing](domains/fixed-wing.md) |
 | [MuJoCo computation, primal problem](https://mujoco.readthedocs.io/en/3.8.0/computation/) | [mechanics](domains/mechanics.md) |
 | [MuJoCo simulation initialization](https://mujoco.readthedocs.io/en/stable/programming/simulation.html#initialization) | [native engine](domains/native-engine.md) |
@@ -76,3 +76,18 @@ For the precise claim supported, original table/section where recorded, hardware
 | [Scorpion manufacturer bench table](https://www.scorpionsystem.com/files/i2%2C653_data_chart.htm) | [electric edf](domains/electric-edf.md) |
 | [Manufacturer sheet archive](https://www.vrhc.co.uk/images/RC_Helicopters/USA/Miniature_Aircraft/X-Cell/Instruction_upgrades.pdf) | [helicopter](domains/helicopter.md) |
 | [NASA Glenn, general thrust equation](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/thrust-force/) | [combustion turbine](domains/combustion-turbine.md), [electric edf](domains/electric-edf.md) |
+
+## Refresh reference details
+
+The [refresh review](refresh.md) revisits the original sources and adds precise method/boundary references below. These are methodological support and source measurements; the numerical software witnesses are reproduced from the committed probes. Different URLs for a paper or catalog are not additional independent experiments.
+
+| Reference | Application and limit |
+| --- | --- |
+| [MIT, propeller performance §§11.7.2–4](https://web.mit.edu/16.unified/www/FALL/thermodynamics/notes/node86.html) | Ideal steady isolated-disc power bound; not a universal shrouded/ground-effect/descent bound |
+| [Shampine and Thompson, Event Location for Ordinary Differential Equations](https://doi.org/10.1016/S0898-1221(00)00045-6) | Event conditioning and integration accuracy; a locator tolerance alone does not determine physical crossing accuracy |
+| [PX4 attitude source, lines 62–75](https://px4.github.io/Firmware-Doxygen/db/de4/_attitude_control_8cpp_source.html) | Separate reduced-attitude/opposition branches; gains and tie behavior are not transplanted as OpenRC calibration |
+| [Mettler, Kanade and Tischler, §5, Eq. 26](https://publications.ri.cmu.edu/storage/publications/pub_files/pub2/mettler_bernard_2000_1/mettler_bernard_2000_1.pdf) | Installation-specific servo/rotor identification; Yamaha R-50 constants do not identify X-Cell actuators |
+| [Many et al., §§3.1–3.2](https://www.dglr.de/publikationen/2022/550281.pdf) | Distinct ECU sample rate, thrust sampling and clock drift; independent fuel-mass calibration still needed |
+| [JetCat September 2019 catalog](https://www.jetcat.de/jetcat/Kataloge/190905%20JetCat%20ENGINES%202019.pdf) and [RX manual](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf) | Engine/ECU version identity; differing idle specifications must not be averaged |
+| [Weinstein and Simmons, NASA report record](https://ntrs.nasa.gov/citations/20230017299) | Bracket-tare correction, high-J exclusion from DOE, and validation split; installed thrust and shaft-load maps need separate evidence |
+| [Eberly capsule intersection implementation](https://www.geometrictools.com/GTE/Mathematics/IntrLine3Capsule3.h) | Explicit exposed-hemisphere conditions; geometric reference rather than OpenRC response policy |

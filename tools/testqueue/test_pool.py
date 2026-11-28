@@ -6,6 +6,7 @@ from pathlib import Path
 import shlex
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -128,6 +129,9 @@ class PoolTests(unittest.TestCase):
         self.assertEqual(receipt['state'], 'SUBMITTED')
 
     def test_missing_dispatch_metadata_never_confirms_nonexecution(self):
+        # A legacy PREPARING receipt may belong to the first coordinator, which
+        # released the job lock before dispatch: fresh, it stays in doubt and keeps
+        # its host reserved; it is never rewritten as unconfirmed forever.
         path = self.pool.root / 'jobs' / 'prepared.json'
         path.parent.mkdir()
         path.write_text(json.dumps({'state': 'PREPARING', 'host': 'windows'}))
@@ -135,8 +139,33 @@ class PoolTests(unittest.TestCase):
             result = self.pool.recover('prepared')
         self.assertEqual(result['state'], 'UNKNOWN')
         self.assertEqual(result['cleanup'], 'UNCONFIRMED')
-        self.assertEqual(json.loads(path.read_text())['state'], 'SUBMISSION_UNCONFIRMED')
+        self.assertEqual(result['reason_code'], 'PREPARATION_IN_DOUBT')
+        self.assertEqual(json.loads(path.read_text())['state'], 'PREPARING')
+        self.assertTrue(self.pool._reserve([{'id': 'windows', 'busy': False}])[0]['busy'])
         rpc.assert_not_called()
+
+    def test_interrupted_preparation_is_proved_nondispatched(self):
+        # TQ-07-A2: once nothing can still be dispatching it, a PREPARING receipt
+        # becomes a deferral of the same ID and releases its host.
+        jobs = self.pool.root / 'jobs'
+        jobs.mkdir()
+        bound = jobs / 'boundprep.json'
+        bound.write_text(json.dumps({'state': 'PREPARING', 'host': 'windows', 'request_id': 'boundprep',
+                                     'destination': {'host': 'windows', 'local': True}}))
+        aged = jobs / 'agedprep.json'
+        aged.write_text(json.dumps({'state': 'PREPARING', 'host': 'windows', 'request_id': 'agedprep'}))
+        old = time.time() - self.pool.PREPARATION_SETTLE_SECONDS - 5
+        os.utime(aged, (old, old))
+        with patch('tools.testqueue.pool.rpc') as rpc:
+            for identifier, path in (('boundprep', bound), ('agedprep', aged)):
+                with self.subTest(identifier=identifier):
+                    result = self.pool.status(identifier)
+                    self.assertEqual((result['state'], result['reason_code']), ('WAITING', 'TRANSFER_DEFERRED'))
+                    stored = json.loads(path.read_text())
+                    self.assertEqual(stored['state'], 'TRANSFER_DEFERRED')
+                    self.assertEqual(stored['transfer']['code'], 'COORDINATOR_INTERRUPTED')
+        rpc.assert_not_called()
+        self.assertFalse(self.pool._reserve([{'id': 'windows', 'busy': False}])[0]['busy'])
 
     def receipt(self, identifier, host):
         path = self.pool.root / 'jobs' / (identifier + '.json')

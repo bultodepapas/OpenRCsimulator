@@ -272,6 +272,12 @@ done
 python3 "$HERE/../tools/godot/summarize.py" "$CAPTURES/lighting-pixels"
 python3 "$HERE/../tools/ci/capture_groups.py" verify-metrics --root "$CAPTURES"
 record_check quality:lighting-pixels
+# CAM-FPV-02a: compare the whole normal stock nose image to the same view with the model hidden.
+xvfb-run -a -s "-screen 0 1920x1080x24" python3 "$HERE/../tools/godot/run_checked.py" --timeout "$((300 + EXTRA_TIMEOUT))" \
+  --out-dir "$CAPTURES/fpv-nose" --label fpv-nose --require-text "FPV nose pixels passed at 1920x1080" -- \
+  "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy --resolution 1920x1080 \
+  --script res://tests/check_fpv_nose_pixels.gd -- --out="$CAPTURES/fpv-nose"
+record_check quality:fpv-nose
 finish_phase
 fi
 if includes terrain-atmosphere; then

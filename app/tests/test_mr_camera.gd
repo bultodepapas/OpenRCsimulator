@@ -7,6 +7,7 @@ extends SceneTree
 
 const Cam := preload("res://vehicles/multirotor/multirotor_camera.gd")
 const Frames := preload("res://render/frames.gd")
+const FpvOptics := preload("res://render/camera/fpv_optics.gd")
 
 const EPS := 1.0e-4
 
@@ -44,6 +45,45 @@ func _orthonormal(t: Transform3D) -> bool:
 	return absf(b.x.length() - 1.0) < EPS and absf(b.y.length() - 1.0) < EPS and absf(b.z.length() - 1.0) < EPS \
 		and absf(b.x.dot(b.y)) < EPS and absf(b.y.dot(b.z)) < EPS and absf(b.z.dot(b.x)) < EPS \
 		and absf(b.determinant() - 1.0) < EPS
+
+
+## Independent optical axes and position for the CAM-FPV-00d mount fixtures.
+func _shared_optics() -> void:
+	var east := Basis(Vector3.DOWN, PI / 2.0)
+	var datum := Transform3D(east, Vector3(200.0, 20.0, -100.0))
+	var mount := Transform3D(Basis.IDENTITY, Vector3(0.2, 0.1, -0.5))
+	var eye := FpvOptics.compose(datum, mount)
+	_check("FPV fixture at NED (99.8, 200.5, -20.1) faces east",
+		_near(eye.origin, Vector3(200.5, 20.1, -99.8)) and _near(-eye.basis.z, Vector3.RIGHT))
+	var roll := Basis(Vector3.FORWARD, PI / 2.0)
+	var banked := Transform3D(roll * Basis.from_scale(Vector3(2.0, 3.0, 4.0)), Vector3.ZERO)
+	mount.basis = east * Basis(Vector3.RIGHT, PI / 6.0)
+	eye = FpvOptics.compose(banked, mount)
+	_check("scaled offset is banked once", _near(eye.origin, Vector3(0.3, -0.4, -2.0)))
+	_check("bank then local yaw and pitch has unit optical axes independent of model scale",
+		_orthonormal(eye) and _near(-eye.basis.z, Vector3(0.5, -sqrt(0.75), 0.0))
+		and _near(eye.basis.y, Vector3(sqrt(0.75), 0.5, 0.0)))
+	_check("collapsed, reflected and nonfinite mount frames are refused",
+		not FpvOptics.is_valid_frame(Transform3D(Basis.from_scale(Vector3(1, 0, 1)), Vector3.ZERO))
+		and not FpvOptics.is_valid_frame(Transform3D(Basis.from_scale(Vector3(-1, 1, 1)), Vector3.ZERO))
+		and not FpvOptics.is_valid_frame(Transform3D(Basis.IDENTITY, Vector3.INF))
+		and FpvOptics.is_valid_frame(banked))
+	var pos := PackedFloat64Array([100.0, 200.0, -20.0])
+	var offset := PackedFloat64Array([0.5, 0.2, -0.1])
+	var q := PackedFloat64Array([0.7, 0.2, -0.4, 0.55])
+	for tilt: float in [0.0, 0.42, PI / 3.0]:
+		var scalar := Cam.fpv_transform(pos, q, offset, tilt)
+		var composed := FpvOptics.from_ned(pos, q, offset, tilt)
+		var negative := PackedFloat64Array([-q[0], -q[1], -q[2], -q[3]])
+		_check("native and scalar quad poses agree at tilt %.3f for either quaternion sign" % tilt,
+			composed.is_equal_approx(scalar) and composed.is_equal_approx(FpvOptics.from_ned(pos, negative, offset, tilt)))
+	for bad: PackedFloat64Array in [PackedFloat64Array(), PackedFloat64Array([0, 0, 0, 0]), PackedFloat64Array([NAN, 0, 0, 0])]:
+		_check("invalid body quaternion produces an inadmissible optical pose",
+			not FpvOptics.is_valid_frame(FpvOptics.from_ned(pos, bad, offset, 0.0)))
+	var large := FpvOptics.from_ned(PackedFloat64Array([16777216.49, 0, 0]), PackedFloat64Array([1, 0, 0, 0]),
+		PackedFloat64Array([0.6, 0, 0]), 0.0)
+	_check("add the sub-metre mount before the single cast to render precision",
+		large.origin == Vector3(0.0, 0.0, -16777217.09))
 
 
 ## Chase framing: its own 62° lens, 1.2–1.8 m from the CG, above it, the 0.3 m airframe at least a sixth of the
@@ -183,8 +223,13 @@ func _run() -> void:
 		"fov %.4f aspect %.4f" % [camera.fov, aspect])
 	var direct := Cam.fpv_transform(PackedFloat64Array([0.0, 0.0, -2.0]), PackedFloat64Array([1.0, 0.0, 0.0, 0.0]), mount, deg_to_rad(40.0))
 	_check("FPV view places the camera exactly at the rigid mount (no smoothing)", camera.global_transform.is_equal_approx(direct))
+	var native_pose := camera.global_transform
+	view.use_engine_transform = false
+	view.update(pose, mount, 0.016, Callable())
+	_check("the reference path gives the same installed camera pose", camera.global_transform.is_equal_approx(native_pose))
 	_inspection_views(view, pose, mount)
 	holder.free()
 	_horizon()
+	_shared_optics()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

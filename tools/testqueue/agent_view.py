@@ -34,7 +34,7 @@ def _gb(value):
 
 # ---------------------------------------------------------------- fleet view
 
-def _host_view(observation: dict, work: dict) -> dict:
+def _host_view(observation: dict, work: dict, unsettled: dict | None = None) -> dict:
     view = {"id": observation.get("id"), "platform": observation.get("platform"),
             "online": bool(observation.get("online"))}
     if not view["online"]:
@@ -50,6 +50,23 @@ def _host_view(observation: dict, work: dict) -> dict:
                 pool_jobs_active=work.get(observation.get("id"), 0))
     if view["busy"] and not view["busy_code"]:
         view["busy_code"] = "BUSY"
+    if unsettled and observation.get("id") in unsettled:
+        view["unsettled_receipts"] = unsettled[observation["id"]]
+    if observation.get("runtime"):
+        view["runtime"] = observation["runtime"]  # TQ-07-B4: current, behind or unknown
+    description = observation.get("description") if isinstance(observation.get("description"), dict) else {}
+    hardware, volatile = description.get("hardware") or {}, description.get("volatile") or {}
+    facts = {"arch": hardware.get("arch"), "cpu": hardware.get("cpu_model"),
+             "gpus": hardware.get("gpus") or None, "power": volatile.get("power"),
+             "console_user": (volatile.get("session") or {}).get("console_user") if volatile.get("session") else None,
+             "uptime_hours": round(volatile["uptime_seconds"] / 3600, 1)
+             if isinstance(volatile.get("uptime_seconds"), (int, float)) else None,
+             "cached_inputs": len(observation.get("cached_inputs") or []) or None,
+             "store_gb": round(((description.get("caches") or {}).get("content_store") or {})["bytes"] / 1e9, 2)
+             if isinstance(((description.get("caches") or {}).get("content_store") or {}).get("bytes"), int) else None}
+    facts = {key: value for key, value in facts.items() if value not in (None, [], {})}
+    if facts:
+        view["facts"] = facts  # TQ-07-B1
     capabilities = observation.get("capabilities")
     if isinstance(capabilities, list) and "graphics" in capabilities:
         # TQ-06: tell agents which hosts take rendering_driver jobs, and on which GPU.
@@ -57,17 +74,46 @@ def _host_view(observation: dict, work: dict) -> dict:
     return {key: value for key, value in view.items() if value is not None}
 
 
-def _active_pool_work(pool_root: Path) -> dict:
-    counts = {}
+LIVE_STATES = {"RUNNING", "STARTING", "ACCEPTED", "QUEUED", "DISPATCHING", "CLEANING"}
+SETTLED_RECEIPTS = {"REJECTED", "OPERATOR_RECONCILED_ABSENT", "CANCELED_BEFORE_DISPATCH", "TRANSFER_DEFERRED"}
+# A receipt last written longer ago than this is not evidence of work running now.
+WORK_FRESH_SECONDS = 2 * 3600
+
+
+def _pool_work(pool_root: Path, now: float | None = None) -> tuple[dict, dict]:
+    """(active, unsettled) per host (TQ-07-A5).
+
+    Active: the receipt's newest observation is a live state (or a submission
+    still in its first moments) and was written recently. Unsettled: open
+    records that are not evidence of current work, such as a job whose host
+    forgot it or a receipt nobody has observed for hours; they are reported with
+    their age instead of being counted as running jobs.
+    """
+    now = time.time() if now is None else now
+    active, unsettled = {}, {}
     for path in (pool_root / "jobs").glob("*.json"):
         receipt = _read(path) or {}
+        host = receipt.get("host")
         last = receipt.get("last_status") or {}
-        if last.get("state") != "FINISHED" and receipt.get("state") not in {"REJECTED", "OPERATOR_RECONCILED_ABSENT",
-                                                                           "CANCELED_BEFORE_DISPATCH"}:
-            host = receipt.get("host")
-            if isinstance(host, str):
-                counts[host] = counts.get(host, 0) + 1
-    return counts
+        if (not isinstance(host, str) or last.get("state") == "FINISHED" or receipt.get("state") in SETTLED_RECEIPTS
+                or (receipt.get("terminal_observation") or {}).get("cleanup") == "CONFIRMED"):
+            continue
+        try:
+            age = now - path.stat().st_mtime
+        except OSError:
+            continue
+        starting = receipt.get("state") in {"PREPARING", "SUBMISSION_UNCONFIRMED"} and "last_status" not in receipt
+        if (last.get("state") in LIVE_STATES or starting) and age < WORK_FRESH_SECONDS:
+            active[host] = active.get(host, 0) + 1
+        else:
+            entry = unsettled.setdefault(host, {"count": 0, "oldest_hours": 0.0})
+            entry["count"] += 1
+            entry["oldest_hours"] = max(entry["oldest_hours"], round(age / 3600, 1))
+    return active, unsettled
+
+
+def _active_pool_work(pool_root: Path) -> dict:
+    return _pool_work(pool_root)[0]
 
 
 def godot_processes(managed_roots=()) -> list[dict]:
@@ -119,10 +165,11 @@ def fleet(pool, *, refresh: bool = False, queue_root: Path | None = None) -> dic
     now = time.time()
     if not isinstance(data, dict) or now - float(data.get("observed_at", 0)) > FLEET_TTL_SECONDS:
         started = time.monotonic()
-        observations = pool.probe()
-        work = _active_pool_work(pool.root)
+        # refresh asks for the truth now: even an offline host in backoff is probed (TQ-07-B3).
+        observations = pool.probe(live=True) if refresh else pool.probe()
+        work, unsettled = _pool_work(pool.root)
         data = {"observed_at": time.time(), "probe_seconds": round(time.monotonic() - started, 2),
-                "hosts": [_host_view(item, work) for item in observations]}
+                "hosts": [_host_view(item, work, unsettled) for item in observations]}
         try:
             write_json(cache, data)
         except OSError:
@@ -328,8 +375,10 @@ def compact_row(row: dict) -> dict:
         if why:
             item["why"] = why
             if why == "import timeout":
-                item["hint"] = ("the host spent the whole timeout importing project assets; "
-                                "raise timeout or prefer a host with a warm import")
+                # Since TQ-07-A8 the import has its own budget (900 s remote, 600 s
+                # local); the job's timeout bounds only the check.
+                item["hint"] = ("the project import outlasted its own budget before the test started; "
+                                "the host is cold or overloaded: prefer a host with a warm import cache")
         if collection.get("missing_required_text"):
             item["missing_markers"] = collection["missing_required_text"][:5]
         log = collection.get("log") or collection.get("diagnostic_log") or _diagnostic_log(collection)

@@ -2,24 +2,28 @@
 #   pilot    the RC pilot's eyes at the field's station (render/pilot_camera.gd), auto-zoom (Z) and manual zoom;
 #   chase    horizon-locked follow behind the flight path (chase_view.gd);
 #   orbit    a sphere around the airplane, right mouse drag and wheel (orbit_view.gd);
-#   closeup  the rigid inspection offset (Spec.INSPECT_OFFSET), unchanged.
+#   closeup  the rigid inspection offset (Spec.INSPECT_OFFSET);
+#   fpv      the active optical mount on the drawn vehicle datum, when the route supplies one.
 # Presentation only: it reads the interpolated render pose main.gd draws the airplane with and never writes the
 # session. Pilot and close-up delegate to PilotCamera, so their pictures are unchanged when no zoom is applied.
 extends RefCounted
 
+signal fpv_look_active_changed(active: bool)
+
 const Spec := preload("res://spec.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraMath := preload("res://render/camera/camera_math.gd")
+const FpvOptics := preload("res://render/camera/fpv_optics.gd")
+const FpvGimbal := preload("res://render/camera/fpv_gimbal.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
 const FlybyView := preload("res://render/camera/flyby_view.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 
-## The C cycle, in order. Number keys select pilot (1), chase (2), fly-by (4) and orbit (5); 3, 6, 7 are reserved
-## (plan §4.4).
+## Common view IDs keep their order for existing selectors. An installed FPV mount adds one final choice.
 const VIEWS := ["pilot", "chase", "flyby", "orbit", "closeup"]
 ## Names the input panel, captures and evidence show (the historical "pilot" and "close-up" are kept).
-const NAMES := { pilot = "pilot", chase = "chase", flyby = "fly-by", orbit = "orbit", closeup = "close-up" }
+const NAMES := { pilot = "pilot", chase = "chase", flyby = "fly-by", orbit = "orbit", closeup = "close-up", fpv = "FPV" }
 ## One +/− step or wheel notch: a quarter of a doubling.
 const ZOOM_STEP := 1.189207115002721 # 2^(1/4)
 ## Pilot manual zoom limits (multiplies tan(fov/2): < 1 narrows) and chase boom limits.
@@ -56,7 +60,18 @@ const WRECK_CHASE_MIN_FOV := 12.0
 
 var camera: Camera3D
 var view := "pilot"
-var fixed_pilot_eye := false
+var fixed_pilot_eye := false:
+	set(value):
+		fixed_pilot_eye = value
+		if value and view != "pilot":
+			set_view("pilot")
+var _fpv_mount := Transform3D.IDENTITY
+var _fpv_hfov_deg := 0.0 # Zero until a mount is admitted.
+var _fpv_near_m := 0.0
+var _fpv_gimbal: FpvGimbal
+var use_engine_transform := true
+var _fpv_backend := "pending"
+var _fpv_look_active := false
 var auto_zoom := true
 ## Pilot view: multiplies tan(fov/2) on top of the auto-zoom law (1 = the law's own FOV).
 var pilot_zoom := 1.0
@@ -75,7 +90,10 @@ var magnifier := "off"
 var _bias_amount := 0.0 # 0 → 1 as the horizon tilt eases in or out
 var _screen_up := Vector3.ZERO # the overhead-smoothed screen up (ZERO: follow the exact one)
 ## Landscape review (L0): (azimuth, elevation) in degrees from the pilot's eye; NAN follows the airplane.
-var look := Vector2(NAN, NAN)
+var look := Vector2(NAN, NAN):
+	set(value):
+		look = value
+		_sync_fpv_look()
 var look_height := 1.7
 var chase := ChaseView.new()
 var orbit := OrbitView.new()
@@ -106,7 +124,46 @@ func set_span(span: float) -> void:
 
 
 static func is_view(id: String) -> bool:
-	return id in VIEWS
+	return id in VIEWS or id == "fpv"
+
+
+## View IDs available to this activity, in the same order used by cycle().
+func available_views() -> Array:
+	if fixed_pilot_eye:
+		return ["pilot"]
+	return VIEWS + ["fpv"] if _fpv_hfov_deg > 0.0 else VIEWS
+
+
+## Lens relative to the visual model datum. Its basis must be a proper rotation.
+## A refused replacement preserves the admitted lens, optics and current view.
+func set_fpv_mount(mount: Transform3D, hfov_deg: float, near_m: float, look_limits_deg := Vector2.ZERO) -> bool:
+	if not FpvGimbal.valid_limits(look_limits_deg):
+		return false
+	if not FpvOptics.is_valid_frame(mount) or not (mount.basis.transposed() * mount.basis).is_equal_approx(Basis.IDENTITY):
+		return false
+	var projection_hfov := PilotCamera.projection_value(hfov_deg)
+	var projection_near := PilotCamera.projection_value(near_m)
+	if not is_finite(projection_hfov) or projection_hfov <= 0.0 or projection_hfov >= 180.0 \
+			or not is_instance_valid(camera) or not is_finite(projection_near) or projection_near <= 0.0 or projection_near >= camera.far:
+		return false
+	var previous_limits := _fpv_gimbal.limits_deg if _fpv_gimbal != null else Vector2.ZERO
+	var new_mount := mount != _fpv_mount or look_limits_deg != previous_limits
+	if view == "fpv" and (new_mount or hfov_deg != _fpv_hfov_deg or near_m != _fpv_near_m):
+		queue_history_reset("camera_fpv_mount_changed")
+	if new_mount:
+		_fpv_gimbal = FpvGimbal.new(look_limits_deg) if look_limits_deg != Vector2.ZERO else null
+	_fpv_mount = mount
+	_fpv_hfov_deg = hfov_deg
+	_fpv_near_m = near_m
+	_sync_fpv_look()
+	return true
+
+
+func clear_fpv_mount() -> void:
+	_fpv_gimbal = null
+	_fpv_hfov_deg = 0.0
+	if view == "fpv":
+		set_view("pilot")
 
 
 func view_name() -> String:
@@ -115,11 +172,15 @@ func view_name() -> String:
 
 ## Selects a view. Chase restarts settled behind the airplane; orbit starts from the camera's current position.
 func set_view(id: String) -> bool:
-	if not is_view(id) or (fixed_pilot_eye and id != "pilot"):
+	if not is_view(id) or (id == "fpv" and _fpv_hfov_deg == 0.0) or (fixed_pilot_eye and id != "pilot"):
 		return false
 	if id == view:
 		return true
+	if _fpv_gimbal != null and (id == "fpv" or view == "fpv"):
+		_fpv_gimbal.reset()
 	view = id
+	_fpv_backend = "pending"
+	_sync_fpv_look()
 	_history_chase_zoom = NAN
 	queue_history_reset("camera_view_changed")
 	_screen_up = Vector3.ZERO
@@ -147,7 +208,8 @@ func select_view(id: String) -> bool:
 
 
 func cycle(step: int) -> void:
-	set_view(VIEWS[posmod(VIEWS.find(view) + step, VIEWS.size())])
+	var views := available_views()
+	set_view(views[posmod(views.find(view) + step, views.size())])
 
 
 ## CAM-06: another auto-zoom law, reached smoothly like a zoom change.
@@ -192,6 +254,9 @@ func zoom(steps: float) -> void:
 ## Backspace: the current view's zoom and offsets back to their defaults.
 func reset_view() -> void:
 	match view:
+		"fpv":
+			if _fpv_gimbal != null:
+				_fpv_gimbal.recenter()
 		"pilot":
 			if pilot_zoom != default_pilot_zoom:
 				_mark_fov_jump()
@@ -221,14 +286,48 @@ static func release_cursor_if_up() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
-## Right-button drag (relative pixels). Only the orbit view turns today.
+func can_drag_fpv() -> bool:
+	return view == "fpv" and _fpv_gimbal != null and is_nan(look.x)
+
+
+func _sync_fpv_look() -> void:
+	var active := can_drag_fpv()
+	if active != _fpv_look_active:
+		_fpv_look_active = active
+		if not active:
+			hold_fpv_gimbal()
+		fpv_look_active_changed.emit(active)
+
+
+func seal_fpv_input_after(accepted_tick: int) -> void:
+	if can_drag_fpv():
+		_fpv_gimbal.seal_input_after(accepted_tick)
+
+
+func accept_fpv_tick(tick: int, time_s: float, step_s: float) -> void:
+	if can_drag_fpv():
+		_fpv_gimbal.accept(tick, time_s, step_s)
+
+
+func hold_fpv_gimbal() -> void:
+	if _fpv_gimbal != null:
+		_fpv_gimbal.hold()
+
+
+## Right-button drag in pixels. An FPV mount with admitted travel accepts an
+## angle request; the frame owner stamps its first eligible accepted tick.
 func drag(relative: Vector2) -> void:
 	if view == "orbit":
 		orbit.rotate(relative)
+	elif can_drag_fpv():
+		var pixels := Vector2(relative.x, relative.y if orbit.invert_y else -relative.y)
+		_fpv_gimbal.aim_by(pixels * OrbitView.DEGREES_PER_PIXEL * orbit.sensitivity)
 
 
 ## A restarted flight: views with memory start settled again.
 func reset() -> void:
+	if _fpv_gimbal != null:
+		_fpv_gimbal.reset()
 	queue_history_reset("camera_flight_reset")
 	_history_chase_zoom = NAN
 	chase.reset()
@@ -246,7 +345,7 @@ func reset() -> void:
 ## Camera consumers (audio listener, lake reflection, sun glare) must run after this call, and after focus() during a
 ## crash aftermath, in the same frame.
 func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable,
-		velocity := Vector3.INF, obstacles := Callable(), defer_history_reset := false) -> void:
+		velocity := Vector3.INF, obstacles := Callable(), defer_history_reset := false, fpv_fraction := 1.0) -> void:
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
@@ -269,6 +368,19 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 			if _bias_amount > 1e-4:
 				_tilt_to_horizon(target)
 			_smooth_overhead(dt)
+		"fpv":
+			if not FpvOptics.is_valid_frame(airplane):
+				return
+			var optical := FpvOptics.compose(airplane, _fpv_mount) if use_engine_transform \
+				else FpvOptics.compose_reference(airplane, _fpv_mount)
+			if _fpv_gimbal != null:
+				optical.basis *= _fpv_gimbal.orientation(1.0 if paused else fpv_fraction)
+			camera.transform = optical
+			_fpv_backend = "godot_transform_ops" if use_engine_transform else "gdscript_reference"
+			var extent := camera.get_viewport().get_visible_rect().size
+			if extent.x > 0.0 and extent.y > 0.0:
+				var fov := _fpv_hfov_deg if camera.keep_aspect == Camera3D.KEEP_WIDTH else CameraMath.vertical_fov(_fpv_hfov_deg, extent.aspect())
+				PilotCamera.set_fov_if_changed(camera, fov)
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
 		"chase":
@@ -335,6 +447,13 @@ func _submit_history_reset(viewport: Viewport, reason: String) -> void:
 func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 	if not is_nan(look.x):
 		return
+	if view == "fpv":
+		# The crashed airframe no longer owns a live mount. Place an exterior orbit
+		# around the wreck immediately, before the route commits this frame's cut.
+		set_view("orbit")
+		orbit.reset()
+		_orbit_primed = true
+		camera.near = near_plane()
 	match view:
 		"orbit":
 			if _orbit_entry_eye.is_finite():
@@ -356,6 +475,8 @@ func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 
 ## The current view's near plane (m); the landscape look views stand at the pilot's eye.
 func near_plane() -> float:
+	if view == "fpv" and is_nan(look.x):
+		return _fpv_near_m
 	if view == "orbit" and is_nan(look.x):
 		# Half the gap between the camera and a sphere of 0.7 span around the CG: 0.25 m at the default two spans.
 		var closest := minf(orbit.distance, orbit.shown_distance()) # easing in or out, the nearer of the two
@@ -364,8 +485,11 @@ func near_plane() -> float:
 
 
 func evidence() -> Dictionary:
-	return { view = view, auto_zoom = auto_zoom, pilot_zoom = pilot_zoom, chase_zoom = chase.zoom,
+	var state := { view = view, auto_zoom = auto_zoom, pilot_zoom = pilot_zoom, chase_zoom = chase.zoom,
 		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance] }
+	if view == "fpv" and is_nan(look.x):
+		state.fpv_optics_backend = _fpv_backend
+	return state
 
 
 func _apply(placed: Dictionary) -> void:

@@ -18,6 +18,7 @@ const FLIGHT := [
 
 ## Shortcuts while flying: [keys, what they do] (main.gd _unhandled_input).
 const SHORTCUTS := [
+	[[KEY_3], "Ugly Stick FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."],
 	[[KEY_BRACKETLEFT, KEY_BRACKETRIGHT], "Aileron trim: left / right"],
 	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
 	[[KEY_COMMA, KEY_PERIOD], "Rudder trim: left / right"],
@@ -60,6 +61,7 @@ const ROTORCRAFT_FLIGHT := [
 
 ## Shortcuts implemented by helicopter_main.gd. Keep this table limited to its handled key set.
 const ROTORCRAFT_SHORTCUTS := [
+	[[KEY_3], "FPV (when available)"],
 	[[KEY_L], "Night lights: auto / all / navigation / off"],
 	[[KEY_ESCAPE], "Pause menu / cancel radio calibration"],
 	[[KEY_R], "Restart the selected helicopter start"],

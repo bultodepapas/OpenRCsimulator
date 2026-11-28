@@ -127,33 +127,7 @@ On Windows the supervisor breaks away from the MCP client's Job Object. MCP
 clients start their servers inside a kill-on-close job, so a plain child used to
 die with the agent session and leave a batch claiming `RUNNING` for days.
 
-### Watchdog
-
-`tools/testqueue/watchdog.py` runs from the `\OpenRC\TestWatchdog` logon
-scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 60
---serve-engine <pinned console engine>`. Each pass:
-
-- resumes, through the idempotent `recover`, every MCP request with a frozen
-  manifest, no final result, no live supervisor and a change within 6 hours;
-- skips `ERROR`. For `NEEDS_OPERATOR` it can resume a recent frozen batch when
-  a row recorded a proved placement refusal and a fresh probe now satisfies
-  that row's original constraints. Older records without that proof and
-  ambiguous submissions require operator reconciliation. Recovery uses the
-  existing IDs and stops after six automatic resumes per request in a day;
-- reports older requests as stale and never resumes them: their queued tests
-  would run old source;
-- starts `testctl serve` after a failed probe if the authority's worker lock is
-  available. A held or inaccessible lock is recorded in the watchdog report
-  along with the probe error. The machine-wide singleton still guards startup.
-
-The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
-code it started with, so restart the task after updating it:
-
-```powershell
-python tools/testqueue/watchdog.py --dry-run
-Stop-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog; Start-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog
-Unregister-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog   # remove
-``` Infrastructure failures retain their available diagnostics
+Infrastructure failures retain their available diagnostics
 and cannot qualify a passing batch.
 If freezing is interrupted before a snapshot manifest exists, exact inputs were not
 frozen and no tests were dispatched. Submit a new request ID for a stable source.
@@ -176,12 +150,74 @@ sim_test_status: {"request_id":"mathcheck20261114a"}
 sim_test_recover: {"request_id":"mathcheck20261114a"}
 ```
 
-The MCP default targets the caller's OS. Set `platform` to `windows`, `linux` or
-`darwin` for a specific OS, or explicitly to `any` only for a reviewed portable
-check. A pass on one host does not establish coverage on the other platforms.
+`platform` is `windows`, `linux`, `darwin`, a list of them (for example
+`["linux", "darwin"]`), or `any` for a reviewed portable check. When a job omits
+it, the MCP looks the script up in the reviewed
+[routing registry](routing.json) (TQ-07-D2/D3). A listed script runs on whichever
+of its operating systems has a free host first, and its reviewed markers and
+timeout fill an omitted `require`/`timeout`. A script without an entry keeps the
+caller's OS. An entry claims only operating systems where the pool recorded a pass;
+`python tools/testqueue/routing.py --suggest` lists candidates from the pool's
+receipts for review, and `--check` (also a CI fixture) validates the file. A pass
+on one host does not establish coverage on the other platforms: the result names
+the host and OS it ran on.
 Tests with performance, interactive or composite-suite requirements retain their
 existing dedicated entry points and acceptance gates. Functional checks that need
 real Linux GPU rendering use the GPU lane below.
+
+### Watchdog
+
+`tools/testqueue/watchdog.py` runs from the `\OpenRC\TestWatchdog` logon
+scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 60
+--serve-engine <pinned console engine>`. Each pass:
+
+- resumes, through the idempotent `recover`, every MCP request with a frozen
+  manifest, no final result, no live supervisor and a change within 6 hours;
+- skips `ERROR`. For `NEEDS_OPERATOR` it can resume a recent frozen batch when
+  a row recorded a proved placement refusal and a fresh probe now satisfies
+  that row's original constraints. Older records without that proof and
+  ambiguous submissions require operator reconciliation. Recovery uses the
+  existing IDs and stops after six automatic resumes per request in a day;
+- reports older requests as stale and never resumes them: their queued tests
+  would run old source;
+- starts `testctl serve` after a failed probe if the authority's worker lock is
+  available. A held or inaccessible lock is recorded in the watchdog report
+  along with the probe error. The machine-wide singleton still guards startup;
+- runs the keeper heartbeat (TQ-07-B3), described below.
+
+The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
+code it started with, so restart the task after updating it:
+
+```powershell
+python tools/testqueue/watchdog.py --dry-run
+Stop-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog; Start-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog
+Unregister-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog   # remove
+```
+
+#### Host reachability (TQ-07-B3)
+
+Each remote host has a reachability state in `<pool root>/fleet-health.json`:
+
+- One failed probe makes a host `SUSPECT`; a second in a row, at least 5 s after
+  the first, makes it `OFFLINE`. Several placements that see one blip in the same
+  moment count once. One good probe makes it `ONLINE` again.
+- An `OFFLINE` host is checked again after 15 s, 30 s, then every 60 s, so a
+  returning host rejoins within a minute.
+- The heartbeat probes every remote host that is not waiting for its next check.
+  A host that fails right after being online is probed once more 5 s later, so
+  an unplugged host is `OFFLINE` within one pass.
+- Between checks, placement and `sim_fleet` answer for an `OFFLINE` host from
+  that state ("offline since 14:02:11, next check in 40 s: …") instead of
+  waiting on its SSH connect timeout. A probe of one named host,
+  `testctl pool hosts` and `sim_fleet` with `refresh` are always live.
+  Without a heartbeat for 2 minutes after a check fell due, placement makes the
+  check itself. A next check further away than 60 s (a clock stepped back) counts
+  as due.
+- The heartbeat runs last in each watchdog pass, after receipt settlement and
+  boot recovery.
+- Changes between `ONLINE` and `OFFLINE` are appended to
+  `<pool root>/fleet-events.jsonl`. A host flapping between one good and one
+  failed probe stays `ONLINE` and logs nothing.
 
 ### Rendered checks on a GPU host
 
@@ -255,10 +291,145 @@ complete checked evidence, confirmed cleanup and locally verified artifacts
 before the batch passes. Failed tests remain failed. SSH ambiguity retains the
 selected host and request identity. `recover` retries that identical submission
 on the same host only after querying the original authority and only when the
-saved destination permits replay. New receipts bind configuration bytes and the
-local authority root. Restore the original configuration if recovery reports a
-changed destination. Legacy unbound receipts permit observation, not automatic
-replay. A receipt missing dispatch metadata stays `UNKNOWN/UNCONFIRMED`.
+saved destination permits replay. A receipt also missing its dispatch metadata
+stays `UNKNOWN/UNCONFIRMED`.
+
+#### Destination binding and settlement (TQ-07-A1/A2)
+
+Each new receipt binds its own **destination**: the host ID, whether it is the
+local authority, and for a remote host its root, SSH alias and the store identity
+the agent reported (a digest of the OS machine ID plus a random `store_id` kept in
+`<root>/store-id.json`). Editing `config.json` no longer strands work in flight:
+adding a host or changing another host's settings leaves every receipt observable,
+recoverable and collectable. A running supervisor follows the edit. Only a change
+to the receipt's own destination refuses it, naming the field (`root`, `ssh`,
+`local`); the SSH alias may change only when the bound store identity is proved
+again before a replay. A refused destination leaves the receipt untouched, so it
+cannot start reserving its host. The pool keeps every configuration it loads under
+`<pool root>/config-history/<sha256>.json`; an older receipt that bound a whole-file
+digest is resolved from there or from a backup beside the file (`config.json*`).
+Without either it may be observed but never replayed or settled automatically.
+
+Receipts that reserve a host are settled only with proof:
+
+- `PREPARING`: dispatch happens only after `SUBMISSION_UNCONFIRMED` is durable,
+  and a coordinator that binds a destination holds the job lock until then. Under
+  that lock the receipt becomes `TRANSFER_DEFERRED` (`COORDINATOR_INTERRUPTED`)
+  and the same ID retries on the same host. Older receipts wait one hour first,
+  because the first coordinator released the lock before dispatch.
+- A remote `SUBMISSION_UNCONFIRMED` receipt that was never acknowledged, is older
+  than ten minutes and binds a store identity: on `NOT_FOUND` the pool asks the
+  agent to `fence` the request. The agent writes a durable tombstone and then
+  checks for the job directory, while `run` creates the directory and then checks
+  for the tombstone, so a request is either fenced and never launched or launched
+  and reported. Only a `FENCED` reply naming the request and the bound store
+  settles the receipt (`CANCELED_BEFORE_DISPATCH`, `REMOTE_FENCED`). A transport
+  error, a `KNOWN` reply, another store or an agent without `fence` settles
+  nothing. `pool reconcile` uses the same proof without `--operator-confirm`; an
+  operator release still leaves a tombstone where the agent supports it.
+- The watchdog sweeps overdue reserving receipts every pass (45 s budget), so a
+  receipt with no live batch still reaches these proofs; hosts whose observation
+  is slow are skipped for that pass.
+
+A job directory left without its journal by a launch that died is cleared under
+the host lock by the next `run` or `fence` of that ID (TQ-07-A9a).
+
+#### A remote supervisor that dies (TQ-07-A9b–f)
+
+- **Launch order.** Each stage writes `RUNNING` with
+  `launch_order: identity-before-release`, creates its gated process, makes the
+  process identity durable (bounded retries; on failure the gate is torn down
+  unreleased and nothing runs), and only then releases the gate. The gate runs
+  nothing until it reads that byte. With the host lock free (no live supervisor),
+  `status` settles a `RUNNING` record of this order without an identity as
+  `FINISHED`/`INFRA_FAILED`/cleanup `CONFIRMED`, `reason_code: SUPERVISOR_LOST`
+  and `nonlaunch_stage`. `launch: NOT_CREATED` is set only when no earlier stage
+  ran; an earlier `reason_code` is kept as `previous_reason_code`.
+- **Never started.** A `STARTING` record older than 30 s whose recorded
+  `supervisor_pid` is gone, and whose process group has no member left (an
+  import-cache copy can outlive it), is settled the same way. `supervise`
+  re-checks `STARTING` under the host lock, so a late supervisor runs nothing. A
+  record without `supervisor_pid` (older agents) still becomes `UNKNOWN`.
+- **Slow observation.** A process listing that times out is retried with backoff;
+  it no longer tears down healthy work. The deadline still applies.
+- **Waiting for the lock.** A supervisor waits up to 600 s for the host lock
+  instead of 30 s.
+- **Full disk.** A 1 MiB reserve under `<root>/reserves/<id>` is released just
+  before the terminal journal. `gc-incoming` removes reserves left by a lost
+  supervisor.
+- **Reboot.** Agent action `recover-boot` settles every `UNKNOWN` job whose
+  recorded boot ended and whose process group is gone (`reason_code:
+  HOST_REBOOTED`). Both are needed because macOS derives its boot identity from
+  `kern.boottime`. The watchdog calls it every 10 minutes for quarantined hosts
+  that advertise the feature.
+
+Deploy `remote_agent.py` **and** `processes.py` together: the launch order needs
+`OwnedProcess.start(release=False)`.
+
+#### Host description and agent deployment (TQ-07-B1/B4)
+
+`probe` returns a `description`:
+
+- **runtime:** digests of the agent's own files;
+- **hardware** (cached for a day in `<root>/hardware.json`): OS and version,
+  architecture, CPU, cores, memory, GPUs;
+- **volatile facts:** clock, uptime, boot, power and battery, macOS thermal
+  warning and console user, memory without `psutil`, free inodes;
+- **caches:** incoming archives and import-cache engines;
+- **slots.**
+
+Unknown facts are `null`. The pool counts an archive the host already holds as
+`cached_inputs`, so placement charges no transfer for it. The digest of each
+coordinator archive is recorded beside it as `archives/<source>.tar.sha256`.
+`sim_fleet` shows a compact `facts` summary and `runtime: current|behind|unknown`,
+comparing the host's digest with the LF bytes this coordinator runs.
+
+```powershell
+python tools/testqueue/testctl.py pool deploy --host linux            # dry run: current or behind
+python tools/testqueue/testctl.py pool deploy --host linux --execute  # install, verify, or roll back
+```
+
+`deploy` installs only bytes that Git already stores. It stages them on the host,
+then swaps them under the host lock with no unfinished job, keeping
+`<file>.prev-<timestamp>`. If the host does not then report the expected digest,
+it restores the previous files.
+
+#### Send only missing files (TQ-07-E4a)
+
+A remote host that advertises `content-store` keeps files named by their
+SHA-256 under `<root>/store/`. For such a host the coordinator builds no archive.
+It asks `store-have` which digests are missing, streams only those plus a
+canonical file manifest to `store-put`, checks that nothing is missing any more,
+and sends `run` with `source_manifest: {sha256}` instead of `archive`.
+
+- The host publishes a stored file only when its bytes hash to its name.
+- `run` refuses while any file is missing.
+- The job copies its private tree from the store (never links, because Godot
+  writes files) and re-verifies every file before it runs.
+- A second snapshot of the same commit sends a few kilobytes instead of about
+  1 GB.
+- The receipt records `content_transfer` (`files_sent`, `bytes_sent`).
+- Hosts without the feature keep the archive path.
+
+Store bounds (TQ-07-G3). After every remote job, and on `gc-incoming`, the
+agent prunes under the host lock:
+
+- The store is least-recently-used above 4 GiB, down to 3 GiB. `store-have`
+  and `store-put` mark every entry they find present as used.
+- Kept regardless: files that an unfinished job's manifest names, and any entry
+  used within the last hour. A transfer takes at most 30 minutes, so files the
+  coordinator just checked survive until its `run`.
+- An unfinished job whose manifest cannot be read keeps the whole store.
+- An engine's import cache goes after 14 days without a seed or publication,
+  except the most recently used one and those of unfinished jobs.
+- Each pass is reported in `<root>/cache-bounds.json`; `sim_fleet` shows the
+  size as `facts.store_gb`.
+- If `run` still finds a file missing, it refuses with `STORE_MISSING` before
+  writing a job. This is a proved nondispatch, in submission and in
+  `recover`'s replay: the receipt becomes `TRANSFER_DEFERRED` and the next
+  submit of the same ID sends the files again.
+
+#### Batch state
 
 Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
 interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
@@ -581,6 +752,10 @@ studio renders after checking native GPU/RAM/disk headroom:
 python tools/testqueue/testctl.py serve --engine .tools/Godot_v4.8-beta2_win64_console.exe --headless-slots 2 --capture-slots 2
 ```
 
+Explicit slot flags are remembered in `<authority root>/capacity.json`. A later
+`serve` without flags, such as the watchdog's restart, reuses them instead of
+falling back to one slot (TQ-07-A6). Pass the flag again to change a count.
+
 Create a fresh frozen snapshot as above, then submit a studio capture:
 
 ```powershell
@@ -687,6 +862,18 @@ Job active-count zero alone are insufficient. Unobserved membership or failed cl
 quarantines the attempt. Direct children and descendants that inherit the Job are
 covered; external broker/service launches are outside that boundary and unsupported.
 
+When `testctl serve` starts, before it accepts clients or schedules, it settles
+the `UNKNOWN` attempts that already carry an accepted proof (TQ-07-A10): the host
+rebooted since the recorded process identity, or the attempt never durably wrote
+its launch fence. Every worker version writes `RUNNING` (now with
+`launch: CREATION_UNCERTAIN`) in one transaction before creating a process, so
+without that event nothing was created. Such attempts finish `INFRA_FAILED` with
+`reason_code: WORKER_RESTART`, release their claims, and the pool treats the cause
+as host-transient. The `RESTART_RECOVERY` event lists them. Every other `UNKNOWN`
+stays quarantined, and `hosts` now reports `condition: QUARANTINED` with
+`quarantined_attempts` instead of `READY`; the pool shows it as
+`CONDITION_QUARANTINED`.
+
 After a lost supervisor, `testctl reconcile <handle>` normally requires proof that
 the same physical host rebooted since the durable prelaunch identity. On the same
 Windows boot, a drained worker can also reconcile an attempt interrupted during
@@ -714,8 +901,17 @@ let that journal recover first.
 
 Remote jobs never receive `.godot`, so each one used to import the whole project
 cold. With the current assets that took 4–9 minutes on a Mac, and on a loaded
-host it exceeded the default 90-second budget (`why: import timeout`). Each
-remote host now keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
+host it exceeded the default 90-second budget (`why: import timeout`).
+
+The import now has its own budget and the job's `timeout` bounds only the check
+(TQ-07-A8): 900 s on a remote host (`IMPORT_BUDGET_SECONDS`, feature
+`import-budget`) and the adapter's 600 s locally, where the worker's hard stop
+allows `timeout + 660 s` for a checked attempt. An import that outlasts its budget
+ends `INFRA_FAILED` with `reason_code: IMPORT_TIMEOUT`; a check that outlasts the
+timeout carries `CHECK_TIMEOUT`. Older remote agents keep the shared deadline
+until they are redeployed.
+
+Each remote host also keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
 
 - **Seeding.** Before the import stage, and outside the test budget, the
   supervisor copies that directory into the job's `app/.godot/imported/`.
@@ -819,6 +1015,7 @@ python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
 - `retention.py` (TQ-05-F0.1) removes, after `--min-age-hours` (default 24):
   - the `source` copy of finished, unclaimed `checked`/`debug-session` attempts, whatever their outcome except `UNKNOWN`. Those presets keep their evidence outside `source`.
   - local and pool snapshots, and pool archives, that no unfinished job, unresolved submission, non-terminal receipt or non-final batch/MCP request names.
+  - A batch or MCP request without a final result that has not changed for `--stale-request-hours` (default 72; `0` disables) no longer pins its snapshot (TQ-07-G4). The watchdog stops resuming a request after 6 h, so its undispatched rows would run days-old source. Rows it did dispatch keep their snapshot through their own non-terminal receipts. On 28 November this released 45 snapshots (30.2 GB) on `C:` that requests idle for 5–13 days had pinned.
 
   It prints hold reasons, so an abandoned batch that pins inputs is visible. Any unreadable pool receipt holds every pool input. `--execute` journals the plan under `<pool root>/retention/`, then recomputes references and removes only inputs that are still unreferenced. Archives are removed under the builder's lock. Records, verdicts, logs, collected results and `*.pending` files are never removed. The first run, on 20 November 2026, reclaimed 101 GB on `C:`.
 - `local_gc.py` removes `<attempt>/source` only for unclaimed attempts recorded
@@ -834,7 +1031,12 @@ python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
   Every other file stays and is reported as `retained_residue`; the coordinator
   receipt records `storage_gc`. Operator-reconciled attempts and Windows remotes
   keep failures. Placement runs it automatically for a remote host refused for
-  disk (see [MCP checked batches](#mcp-checked-batches)).
+  disk (see [MCP checked batches](#mcp-checked-batches)), at most once per host in
+  20 minutes unless the last sweep ran out of budget with jobs left (TQ-07-G2).
+- A batch does the same for each remote job as soon as it has collected and
+  verified that job's evidence (TQ-07-G2): the row records `storage_reclaim`.
+  A refusal, for example `BUSY` while the host runs the next job, leaves the job
+  for the next sweep and changes nothing else.
 - `pool reconcile` releases a coordinator receipt that never reached execution.
   Local receipts use the authority's durable submission tombstone. A remote
   authority that has no record of the request releases the host only with

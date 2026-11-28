@@ -1,0 +1,231 @@
+{
+  "format": "openrc-test-routing v1",
+  "note": "Reviewed routing for checked scripts (TQ-07-D2). Each entry claims only OSes with a recorded pool pass. Add entries by review; see tools/testqueue/routing.py.",
+  "entries": [
+    {
+      "script": "res://tests/test_auto_calibration.gd",
+      "os": [
+        "darwin",
+        "windows"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 600,
+      "evidence": "pool passes on darwin, windows"
+    },
+    {
+      "script": "res://tests/test_controller_sections.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "checks passed"
+      ],
+      "timeout": 110,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_golden.gd",
+      "os": [
+        "linux",
+        "windows"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 600.0,
+      "evidence": "pool passes on linux, windows"
+    },
+    {
+      "script": "res://tests/test_graphics_reset_transaction.gd",
+      "os": [
+        "darwin",
+        "windows"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 900,
+      "evidence": "pool passes on darwin, windows"
+    },
+    {
+      "script": "res://tests/test_landscape_import.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 120,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_landscape_import_zip64.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "offset 4294967553",
+        "0 failed"
+      ],
+      "timeout": 90,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_livery_picker.gd",
+      "os": [
+        "darwin",
+        "windows"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 1200,
+      "evidence": "pool passes on darwin, windows; test failures also on darwin, windows"
+    },
+    {
+      "script": "res://tests/test_math3d.gd",
+      "os": [
+        "darwin",
+        "linux",
+        "windows"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 900,
+      "evidence": "pool passes on darwin, linux, windows"
+    },
+    {
+      "script": "res://tests/test_mr_graded_crashes.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 420,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_shaft_publication.gd",
+      "os": [
+        "linux",
+        "windows"
+      ],
+      "require": [],
+      "timeout": 1200,
+      "evidence": "pool passes on linux, windows"
+    },
+    {
+      "script": "res://tests/test_skin_fleet.gd",
+      "os": [
+        "darwin",
+        "windows"
+      ],
+      "require": [
+        "Skin fleet:",
+        "0 failed"
+      ],
+      "timeout": 420,
+      "evidence": "pool passes on darwin, windows"
+    },
+    {
+      "script": "res://tests/test_startup_loading.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [],
+      "timeout": 420.0,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_telemetry_queue.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "all telemetry queue checks passed"
+      ],
+      "timeout": 120,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_telemetry_sender.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "all telemetry sender checks passed"
+      ],
+      "timeout": 180,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_ui_home.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "all UI home checks passed"
+      ],
+      "timeout": 720,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_ui_home_layout.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "all UI home layout checks passed"
+      ],
+      "timeout": 720,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_ui_screen_stack.gd",
+      "os": [
+        "darwin",
+        "linux"
+      ],
+      "require": [
+        "all UI screen stack checks passed"
+      ],
+      "timeout": 720,
+      "evidence": "pool passes on darwin, linux"
+    },
+    {
+      "script": "res://tests/test_vehicle_paint.gd",
+      "os": [
+        "darwin",
+        "windows"
+      ],
+      "require": [
+        "0 failed"
+      ],
+      "timeout": 1200,
+      "evidence": "pool passes on darwin, windows; test failures also on darwin, windows"
+    },
+    {
+      "script": "res://tests/test_weather_publication.gd",
+      "os": [
+        "linux",
+        "windows"
+      ],
+      "require": [],
+      "timeout": 1200,
+      "evidence": "pool passes on linux, windows"
+    }
+  ]
+}

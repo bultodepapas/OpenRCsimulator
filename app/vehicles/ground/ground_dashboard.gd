@@ -463,7 +463,7 @@ func set_spawn_proposal(current: String, pending: String = "") -> void:
 
 func update_camera(selected: int) -> void:
 	_camera_mode = selected
-	var names := [tr("Chase"), tr("Pilot stand"), tr("Orbit"), tr("Circuit overview")]
+	var names := [tr("Chase"), tr("Pilot stand"), tr("Orbit"), tr("Circuit overview"), tr("FPV")]
 	camera_button.text = tr("Camera: %s · C") % names[selected]
 	camera_status.text = tr("Used when you select Drive.") if selected != 3 else tr("Overview is active in the garage and while driving.")
 	if overview_button != null:

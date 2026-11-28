@@ -26,6 +26,7 @@ sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool import Pool, SubmissionDeferred, SubmissionRejected
+from tools.testqueue.pool_policy import platform_set
 from tools.testqueue.presets import scheduling, validate
 
 BATCH_VERSION = 2
@@ -74,8 +75,10 @@ def _manifest(path):
         if driver is not None and driver not in {"vulkan", "opengl3"}:
             raise ValueError("rendering_driver must be vulkan or opengl3")
         platform = item.get("platform", "any")
-        if not isinstance(platform, str) or platform not in {"any", "windows", "linux", "darwin"}:
-            raise ValueError("invalid job platform")
+        try:
+            platform_set(platform)  # 'any', one OS, or a list of OSes (TQ-07-D1)
+        except ValueError:
+            raise ValueError("invalid job platform") from None
         host = item.get("host")
         if host is not None and (not isinstance(host, str) or not host):
             raise ValueError("host must be a nonempty ID")
@@ -138,14 +141,26 @@ def _reclaim_for_space(pool, submission, deadline):
         pass
 
 
+WAIT_HISTORY_ENTRIES = 10
+
+
 def _record_wait(row, submission):
     now = time.time()
     previous = row.get("admission_wait") or {}
-    if previous and _refusal_causes(row.get("status") or {}) == _refusal_causes(submission):
+    causes = _refusal_causes(submission)
+    if previous and _refusal_causes(row.get("status") or {}) == causes:
         count, first = previous["consecutive"] + 1, previous["first_observed_at"]
     else:
         count, first = 1, now
     delay = _backoff(count)
+    # TQ-07-D7: why the row waited survives its placement (admission_wait does
+    # not). One entry per distinct per-host refusal, bounded.
+    history = row.setdefault("wait_history", [])
+    if history and history[-1].get("causes") == causes:
+        history[-1].update(last_at=now, count=history[-1].get("count", 1) + 1)
+    else:
+        history.append({"causes": causes, "first_at": now, "last_at": now, "count": 1})
+        del history[:-WAIT_HISTORY_ENTRIES]
     row.update(phase="WAITING", status=submission, retry_after=now + delay,
                admission_wait={"first_observed_at": first, "last_observed_at": now, "consecutive": count})
     return delay
@@ -183,7 +198,9 @@ def reobservation_ids(pool, rows):
 def _host_lanes(rows):
     """Run disjoint pinned hosts or specific platform requirements in parallel."""
     by_host = all(row["input"]["host"] is not None for row in rows)
-    if not by_host and any(row["input"]["platform"] == "any" for row in rows):
+    # Overlapping OS constraints ('any' or a list) share one placement loop.
+    if not by_host and any(not isinstance(row["input"]["platform"], str) or row["input"]["platform"] == "any"
+                           for row in rows):
         return [rows]
     groups = {}
     for row in rows:
@@ -227,9 +244,11 @@ def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, dea
                 continue
             if stopped.is_set() or time.monotonic() >= deadline:
                 break
-            constraint = (row["input"]["platform"], row["input"]["host"], row["input"].get("rendering_driver"))
-            if any(platform in {"any", constraint[0]} and host in {None, constraint[1]}
-                   and driver == constraint[2] for platform, host, driver in saturated):
+            constraint = (platform_set(row["input"]["platform"]), row["input"]["host"], row["input"].get("rendering_driver"))
+            # A WAITING answer for a constraint proves no host was eligible for it,
+            # so a row whose OS set is the same or narrower would only re-probe.
+            if any(constraint[0] <= platforms and host in {None, constraint[1]}
+                   and driver == constraint[2] for platforms, host, driver in saturated):
                 continue
             row["submission_attempts"] = row.get("submission_attempts", 0) + 1
             started = time.monotonic()
@@ -322,6 +341,15 @@ def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, dea
                     raise ValueError("pool returned an invalid collection report")
                 row.update(phase="DONE", collection=report)
                 row.pop("collection_error", None)
+                # TQ-07-G2: collect, then reclaim at once, so a host does not
+                # fill with collected jobs between sweeps. Advisory: a refusal
+                # leaves the job to the next sweep and never changes the row.
+                reclaim = getattr(pool, "reclaim_collected", None)
+                if callable(reclaim):
+                    try:
+                        row["storage_reclaim"] = reclaim(row["request_id"], report)
+                    except Exception as error:
+                        row["storage_reclaim"] = {"error": _error_text(error)}
             except Exception as error:
                 # Collection may be retried on a later invocation; the test never is.
                 row.update(phase="COLLECTION_BLOCKED", collection_error=_error_text(error))
@@ -366,10 +394,19 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
         failed_verifications = set()
         if state_path.exists():
             state = json.loads(state_path.read_text(encoding="utf-8"))
-            if (state.get("version") not in {1, BATCH_VERSION} or state.get("config_sha256") != config_digest
+            if (state.get("version") not in {1, BATCH_VERSION}
                     or state.get("manifest_sha256") != manifest_digest or state.get("snapshot") != str(snapshot)
                     or [row.get("input") for row in state.get("jobs", [])] != jobs):
                 raise ValueError("batch inputs changed; preserve and recover the original state")
+            changed = False
+            if state.get("config_sha256") != config_digest:
+                # TQ-07-A1: each dispatched row's receipt binds its own destination,
+                # so a configuration edit (a new host, another host's settings) no
+                # longer strands the batch. Keep the history for evidence.
+                history = state.setdefault("config_history", [])
+                history.append({"config_sha256": state.get("config_sha256"), "replaced_at": time.time()})
+                state["config_sha256"] = config_digest
+                changed = True
             ids = [row.get("request_id") for row in state["jobs"]]
             if (len(set(ids)) != len(ids) or any(not isinstance(item, str) or not item.isalnum() for item in ids)
                     or any(row.get("phase") not in {"WAITING", "SUBMITTING", "RETRY_WAIT", "REJECTED",
@@ -378,7 +415,6 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                 raise ValueError("invalid batch state")
             # Older batch receipts could mark FINISHED rows done without
             # collecting their evidence. Recover those same IDs, never submit.
-            changed = False
             reobserve = reobservation_ids(pool, state["jobs"])
             for row in state["jobs"]:
                 attempts = row.get("submission_attempts", 0)

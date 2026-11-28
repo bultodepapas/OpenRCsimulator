@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -149,7 +150,7 @@ class CompactStatusTests(unittest.TestCase):
                                   "diagnostic_only": True}}
             item = agent_view.compact_row(row)
         self.assertEqual(item["why"], "import timeout")
-        self.assertIn("importing project assets", item["hint"])
+        self.assertIn("import outlasted its own budget", item["hint"])  # TQ-07-A8 wording
         self.assertEqual(item["log_tail"], ["ERROR: GDExtension dynamic library not found"])
         view = agent_view.compact_status({"request_id": "z", "summary": {
             "next_action": "inspect attention[].evidence and attention[].log; fix"}, "jobs": []})
@@ -182,8 +183,9 @@ class FakePool:
         self.root, self.probes = Path(root), 0
         (self.root / "jobs").mkdir(parents=True)
 
-    def probe(self):
+    def probe(self, *, live=False):
         self.probes += 1
+        self.live = live
         return [{"id": "windows", "platform": "windows", "online": True, "busy": True, "busy_code": "EXTERNAL_SIMULATOR",
                  "free_disk_bytes": 9e10, "free_memory_bytes": 3e10, "cores": 24, "load": 1.234},
                 {"id": "linux", "platform": "linux", "online": True, "busy": False, "free_disk_bytes": 2e10,
@@ -201,8 +203,10 @@ class FleetTests(unittest.TestCase):
             first = agent_view.fleet(pool)
             again = agent_view.fleet(pool)
             self.assertEqual(pool.probes, 1)
+            self.assertFalse(pool.live)  # the cached view may answer an offline host from its backoff
             agent_view.fleet(pool, refresh=True)
             self.assertEqual(pool.probes, 2)
+            self.assertTrue(pool.live)  # refresh probes every host now (TQ-07-B3)
         hosts = {host["id"]: host for host in first["hosts"]}
         self.assertEqual(hosts["windows"]["busy_code"], "EXTERNAL_SIMULATOR")
         self.assertEqual(hosts["linux"]["pool_jobs_active"], 1)
@@ -211,6 +215,36 @@ class FleetTests(unittest.TestCase):
         self.assertGreaterEqual(again["age_seconds"], 0)
         self.assertTrue(any("idle now: linux=linux" in hint for hint in first["hints"]))
         self.assertTrue(any("unmanaged" in hint for hint in first["hints"]))
+
+    def test_only_fresh_live_receipts_count_as_running_work(self):
+        # TQ-07-A5: on 28 November `angela` showed 29 active jobs and `angel` 50; none was real.
+        with tempfile.TemporaryDirectory() as tmp:
+            jobs = Path(tmp) / "jobs"
+            jobs.mkdir()
+            receipts = {
+                "live": {"host": "linux", "state": "SUBMITTED", "last_status": {"state": "RUNNING"}},
+                "starting": {"host": "linux", "state": "SUBMISSION_UNCONFIRMED"},
+                "silent": {"host": "linux", "state": "SUBMITTED", "last_status": {"state": "RUNNING"}},
+                "forgotten": {"host": "angel", "state": "SUBMITTED", "last_status": {"state": "UNKNOWN"},
+                              "terminal_observation": {"cleanup": "CONFIRMED", "outcome": "PASSED"}},
+                "orphan": {"host": "angela", "state": "SUBMISSION_UNCONFIRMED",
+                           "last_status": {"state": "UNKNOWN", "error": "request not found"}},
+                "deferred": {"host": "linux", "state": "TRANSFER_DEFERRED"},
+            }
+            old = time.time() - 30 * 3600
+            for name, value in receipts.items():
+                path = jobs / (name + ".json")
+                path.write_text(json.dumps(value), encoding="utf-8")
+                if name in {"silent", "orphan"}:
+                    os.utime(path, (old, old))
+            active, unsettled = agent_view._pool_work(Path(tmp))
+        self.assertEqual(active, {"linux": 2})
+        self.assertEqual(unsettled["linux"]["count"], 1)
+        self.assertEqual(unsettled["angela"]["count"], 1)
+        self.assertGreaterEqual(unsettled["angela"]["oldest_hours"], 29.9)
+        self.assertNotIn("angel", unsettled)
+        view = agent_view._host_view({"id": "angela", "online": True, "busy": False}, active, unsettled)
+        self.assertEqual((view["pool_jobs_active"], view["unsettled_receipts"]["count"]), (0, 1))
 
 
 class RunTests(unittest.TestCase):

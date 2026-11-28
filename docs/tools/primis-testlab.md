@@ -60,12 +60,12 @@ sim_test_run: {"jobs":[{"script":"res://tests/test_x.gd","platform":"linux","ren
 | `offline_reason: Bad permissions … openrc_testlab_ed25519` | The MCP uses Windows OpenSSH, which refuses a key readable by groups. Restrict the key's ACL to the user, SYSTEM and Administrators. |
 | Offline, SSH timeout | CT stopped or node unreachable. The node watchdog stops the CT if node `MemAvailable` stays below 1536 MiB for 45 s or below 768 MiB for 10 s. The egress filter and thin-pool checks can also stop the CT. A separate startup guard checks admission. The operator checks the watchdog journal before restarting the CT. |
 | `INSUFFICIENT_MEMORY` while another job runs | Expected; one job at a time. |
-| `INFRA_FAILED`, `import: timeout` | A cold import can exceed the default 90 s budget. The host can seed its [import cache](../../tools/testqueue/README.md#remote-import-cache) once one job imports completely. Give the first job after an engine or asset change a larger `timeout` (for example 900). |
+| `INFRA_FAILED`, `reason_code: IMPORT_TIMEOUT` | The import has its own 900 s budget, separate from the job's `timeout` (TQ-07-A8); a cold import on a loaded host can still exceed it. The host seeds its [import cache](../../tools/testqueue/README.md#remote-import-cache) once one job imports completely, so the next job is warm. |
 | Rendered job `INFRA_FAILED`, `gpu.reason` set | The GPU lane was not usable (compositor, render node, driver). Report it; do not retry on another host as a pass. |
 | Rendered job `INFRA_FAILED` with `TeardownUnconfirmed`, or the host goes offline mid-job | Check the CT and watchdog logs for the cause. If memory pressure caused the stop, use a lighter scene or another machine. After the CT restarts, the operator runs `testctl.py pool remote-reconcile --host primis JOB` to clear the quarantine. |
 | `INSUFFICIENT_DISK` on `primis` | Failed jobs keep their source copy for 1 h; an hourly timer then removes it. `pool gc --host primis --execute` removes collected passing jobs. |
 | Status stays `total: 0`; supervisor `ERROR: source changed during snapshot` | Another session edited the tree while it was being frozen. Pass `source` pointing to a clean worktree (for example `git worktree add --detach <dir> HEAD`). |
-| `pool configuration changed` on recovery | The pool config was edited while that job was unfinished. Restore the previous config to recover it. |
+| `pool configuration changed for host primis: <field> differs` | This host's own entry (root, SSH alias or local flag) changed while a job was unfinished. Restore that field to recover the job. Edits to other hosts or settings no longer block recovery ([destination binding](../../tools/testqueue/README.md#destination-binding-and-settlement-tq-07-a1a2)). |
 
 ## Host setup (operator)
 

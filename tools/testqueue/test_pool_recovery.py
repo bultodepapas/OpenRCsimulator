@@ -45,6 +45,7 @@ class PoolRecoveryTests(unittest.TestCase):
         self.uncertain()
         value = self.receipt()
         value.pop("config_sha256")
+        value.pop("destination")  # receipts before TQ-07-A1 bound no destination
         value.pop("local_authority_root")
         value.update(state="NOT_DISPATCHED", last_status={"state": "FINISHED",
                      "outcome": "INFRA_FAILED", "cleanup": "CONFIRMED", "error": "missing input"})

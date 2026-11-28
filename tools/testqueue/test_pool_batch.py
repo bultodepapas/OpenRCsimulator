@@ -94,6 +94,27 @@ class PoolBatchTests(unittest.TestCase):
         # so this only absorbs slow fsync/antivirus stalls on loaded hosts.
         return run_batch(self.pool, self.config, self.manifest, self.state, timeout=15, poll_interval=0)
 
+    def test_each_collected_row_is_reclaimed_at_once_and_a_reclaim_error_changes_nothing(self):
+        # TQ-07-G2: collect, then reclaim, in the same pass.
+        a, b = "res://tests/test_a.gd", "res://tests/test_b.gd"
+        self.inputs([{"script": a}, {"script": b}])
+        reclaimed = []
+
+        def reclaim(request_id, report):
+            reclaimed.append((request_id, report["pool_outcome"]))
+            if len(reclaimed) == 2:
+                raise RuntimeError("ssh: connection reset")
+            return {"reclaimed": True, "logical_bytes_removed": 5}
+
+        self.pool.reclaim_collected = reclaim
+        result = self.run_case()
+        self.assertEqual(result["result"], "PASSED")
+        self.assertEqual([outcome for _, outcome in reclaimed], ["PASSED", "PASSED"])
+        rows = {row["input"]["script"]: row for row in json.loads(self.state.read_text())["jobs"]}
+        self.assertEqual({row["phase"] for row in rows.values()}, {"DONE"})
+        outcomes = sorted((row["storage_reclaim"] for row in rows.values()), key=lambda item: "error" in item)
+        self.assertEqual(outcomes, [{"reclaimed": True, "logical_bytes_removed": 5}, {"error": "ssh: connection reset"}])
+
     def test_independent_rows_wait_then_run_without_retrying_failure(self):
         first = "res://tests/test_a.gd"
         second = "res://tests/test_b.gd"
@@ -162,6 +183,10 @@ class PoolBatchTests(unittest.TestCase):
             result = self.run_case()
         self.assertEqual(result["result"], "PASSED")
         self.assertEqual(self.pool.submit_calls, [(first, identifier)] * 3)
+        # TQ-07-D7: the reason for the wait outlives the placement.
+        history = json.loads(self.state.read_text())["jobs"][0]["wait_history"]
+        self.assertEqual([(entry["causes"], entry["count"]) for entry in history],
+                         [({"linux": ["INSUFFICIENT_DISK"]}, 2)])
         self.assertEqual(self.pool.submissions, {identifier: first})
 
     def test_slow_placement_cannot_starve_another_host_across_observation_windows(self):

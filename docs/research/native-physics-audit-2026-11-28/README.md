@@ -2,12 +2,15 @@
 
 **OpenRC Simulator · 28 November 2026 · production baseline `8d4169f8febfd7d78a028eaa817414217a54f24b`.** This is an audit and implementation plan. It changes no production force law, integration policy, controller, aircraft data or native binary.
 
+**Refreshed against main `4bf5b399` after initial publication `d65b7334`.** The ten specialist roles and independent verifier retained all 39 primary classifications, checked unchanged law/source identities, and strengthened the acceptance plan with six reproducible component-oracle groups. Read the [refresh and its new qualifications](refresh.md) and [independent refresh review](refresh-verification.md). The audit-specific diff remains documentation/research only; the branch also inherits upstream main changes.
+
 The strongest immediate opportunities are passive-contact energy, heading-independent ground constraints, continuous and saturation-aware FPV control, and consistent operating inputs across propulsion and tail-load paths. Fix those bounded inconsistencies before expanding unmeasured flight regimes. Native allocation and repeated-work reductions can proceed in parallel, with actual execution ownership and target timings recorded. Richer rotor, airfoil, turbine and EDF models need matched data and separate physical acceptance.
 
 | Review entry point | Contents |
 | --- | --- |
 | [Prioritized improvement plan](improvement-plan.md) | Affected files, native designs, dependencies, engineering effort, benefits, risks and measurable acceptance gates |
 | [Independent verification](verification.md) | Per-finding adjudication, independent checks, narrowed/rejected claims and final evidence limits |
+| [Refresh review](refresh.md) and [hosted CI](hosted-ci.md) | New acceptance counterexamples, current source reconciliation, successful native source/editor jobs and the failed aggregate's limits |
 | [Baseline and scope](baseline-and-scope.md) | Pinned source, 27-suite baseline, native admission limits, units, frames and coverage |
 | [Reproduce the evidence](../../../research/native-physics-audit-2026-11-28/README.md) | Checked-engine runner, actual C++ header probes, independent equations, production-function counterexamples and compact receipts |
 | [Research sources](sources.md) | Primary scientific, engineering, manufacturer and experimental references, with report-specific transfer limits |
@@ -17,7 +20,7 @@ The strongest immediate opportunities are passive-contact energy, heading-indepe
 
 All **27 selected existing reference-engine suites passed, with 6,527 reported assertions** and unchanged production-source fingerprints. The source inventory covers 272 physics/simulation/native files and 106,404 lines; it defines the inspected surface, not exhaustive verification of every line or state. Actual native-header components and independent equation/data witnesses add checks that the existing regression suite did not contain. The lead also reproduced the FPV frame-energy defect and two controller defects by calling the actual prepared production functions through the checked engine.
 
-The environment did not contain an admitted native aircraft or ground sidecar. Its GCC 14.2 differs from the qualified Linux GCC 13.3. There was no GPU, configured test pool or controlled production target. A ground native comparison explicitly skipped. Consequently these results establish software/source/component evidence, **not** a qualified native release, pilot acceptance, matched physical flight accuracy or a measured FPS gain. The plan retains those gates.
+The original local environment did not contain an admitted native aircraft or ground sidecar. Its GCC 14.2 differs from the qualified Linux GCC 13.3. There was no GPU, configured test pool or controlled production target. A ground native comparison explicitly skipped. Later [hosted CI](hosted-ci.md) adds successful aircraft-native source qualification and ground production-path editor checks on identified platforms. Its overall run failed on two independently reproduced upstream app checks; release/package jobs were skipped. The original local evidence and later hosted results do not establish a qualified exported game, pilot acceptance, matched physical flight accuracy or measured FPS gain. The plan retains those gates and requires a new CI result for the refreshed branch.
 
 The independent reviewer adjudicates **39 primary subclaims** from nine domain reports, counting the two electric initialization input errors separately, plus two previously reported collision cross-checks. A finding can confirm that a deliberate simplification exists without calling it a bug. Physical-error magnitude, player incidence and performance gains remain unverified wherever no matched experiment or target trace exists. The [ledger](verification.md) is authoritative for those distinctions.
 

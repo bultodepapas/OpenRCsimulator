@@ -27,6 +27,7 @@ const Slipstream := preload("res://physics/slipstream.gd")
 const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
+const FpvStockMounts := preload("res://render/camera/fpv_stock_mounts.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
 const CameraCollision := preload("res://render/camera/camera_collision.gd")
@@ -403,7 +404,7 @@ var _magnifier: Magnifier
 var _camera_obstacles: Dictionary = {}
 ## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
 var _rc_track: Dictionary = {}
-## The view a flight starts in: --view=<pilot|chase|orbit|closeup>, or closeup with --inspect.
+## The view a flight starts in: --view=<pilot|chase|flyby|orbit|closeup|fpv>, or closeup with --inspect.
 var _initial_view := "pilot"
 var _camera_dt := 0.0
 var _panel: Label
@@ -595,7 +596,8 @@ func _ready() -> void:
 			get_tree().quit(ERR_CANT_CREATE)
 			return
 	var startup_args := _user_args()
-	var prime_pose := (interactive_start and startup_checkpoint.is_valid()) or startup_args.has("quick-flight")
+	var prime_pose := (interactive_start and startup_checkpoint.is_valid()) or startup_args.has("quick-flight") \
+			or (_rig != null and _rig.view == "fpv")
 	if prime_pose and not _capturing and not _scripted and not startup_args.has("capture") and not startup_args.has("trace") \
 			and startup_error.is_empty() \
 			and not _startup_cancel_requested() and is_instance_valid(session) and session.is_flyable():
@@ -840,7 +842,7 @@ func _prepare_flight() -> void:
 	if args.has("view"):
 		_initial_view = str(args.view)
 		if not CameraRig.is_view(_initial_view) or (args.has("visual_pose") and _initial_view != "pilot"):
-			push_error("--view must be one of %s (visual poses need the pilot view)" % ", ".join(CameraRig.VIEWS))
+			push_error("--view must be one of %s (visual poses need the pilot view)" % ", ".join(CameraRig.VIEWS + ["fpv"]))
 			set_process(false)
 			set_process_unhandled_input(false)
 			get_tree().quit(ERR_INVALID_PARAMETER)
@@ -985,12 +987,9 @@ func _prepare_flight() -> void:
 			printerr(startup_error)
 			get_tree().quit(ERR_INVALID_DATA)
 		return
-	_rig.set_view(_initial_view)
 	_rig.auto_zoom = _auto_zoom
 	_rig.look = _look
 	_rig.look_height = float(field.pilot.eye_height) if _rig.fixed_pilot_eye else _look_height
-	if not camera_preferences.is_empty():
-		CameraSettings.apply_at_start(_rig, camera_preferences)
 	if args.has("hide_airplane"):
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
 		_airplane.root.visible = false
@@ -1042,6 +1041,20 @@ func _prepare_flight() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_DATA)
 		return
+	_rig.fpv_look_active_changed.connect(_set_fpv_tick_observer)
+	_refresh_fpv_mount()
+	if not _rig.set_view(_initial_view) and _initial_view == "fpv":
+		startup_error = "No FPV mount is available for this aircraft, visual and field."
+		printerr(startup_error)
+		session.free()
+		session = null
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	if not camera_preferences.is_empty():
+		CameraSettings.apply_at_start(_rig, camera_preferences)
 	if session.aircraft.get("ok", false) and session.aircraft.model.propulsion.get("glow", {}).is_empty() and startup_checkpoint.is_valid():
 		_sync_shadow_preference()
 		_bind_aircraft_shadow()
@@ -1531,6 +1544,10 @@ func _process(delta: float) -> void:
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times.remove_at(0)
 	var sim: Node = session.sim
+	# Godot runs the frame's outstanding physics callbacks before _process. Only
+	# the next committed tick may begin moving towards input received this frame.
+	if _fpv_input_available():
+		_rig.seal_fpv_input_after(sim.tick)
 	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.wheel_brake_available()
 		or not Input.is_physical_key_pressed(KEY_B)):
 		_clear_wheel_brake()
@@ -1596,6 +1613,8 @@ func _process(delta: float) -> void:
 				_rig.focus(_crash_director.focus_point(), _ground_height, _camera_clearance)
 		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
+	if not crash_camera_active and _rig.view == "fpv" and not session.crash.is_empty():
+		_rig.focus(_last_render_pose.pos, _ground_height, _camera_clearance)
 	if crash_camera_active != _history_crash_camera_active:
 		_rig.queue_history_reset("camera_crash_focus_changed")
 		_history_crash_camera_active = crash_camera_active
@@ -1633,6 +1652,41 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
 		_rig.set_span(_extent.x)
 	return true
+
+
+## Resolve once on installation or reload. The visual root supplies its drawn datum each frame.
+func _refresh_fpv_mount() -> void:
+	if aircraft_id == Catalog.DEFAULT_ID and session.aircraft.get("ok", false) and workshop_trial.is_empty() \
+			and donor_visual.is_empty() and _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() \
+			and not _scripted and _visual_pose.is_empty() and not _rig.fixed_pilot_eye and is_nan(_look.x):
+		var front := FpvStockMounts.front(_airplane)
+		if not front.is_empty() and _rig.set_fpv_mount(front.mount, front.hfov_deg, front.near_m, front.look_limits_deg):
+			return
+	_rig.clear_fpv_mount()
+
+
+## Only the active steerable lens subscribes to the installed simulation's committed steps.
+func _set_fpv_tick_observer(active: bool) -> void:
+	var stepped: Signal = session.sim.stepped
+	var paused: Signal = session.sim.paused_changed
+	var observe := _on_fpv_tick.unbind(4)
+	if active:
+		stepped.connect(observe)
+		paused.connect(_on_fpv_pause)
+	else:
+		stepped.disconnect(observe)
+		paused.disconnect(_on_fpv_pause)
+		CameraRig.hold_cursor(false)
+
+
+func _on_fpv_tick(tick: int, time_s: float) -> void:
+	_rig.accept_fpv_tick(tick, time_s, session.sim.dt())
+
+
+func _on_fpv_pause(paused: bool) -> void:
+	if paused:
+		_rig.hold_fpv_gimbal()
+		CameraRig.hold_cursor(false)
 
 
 func _update_cg_model() -> void:
@@ -1918,7 +1972,10 @@ func _current_pose() -> Dictionary:
 		return _pose_of(session.sim.state)
 	# The engine interpolation clock keeps moving while this session is held.
 	var fraction := 1.0 if session.sim.paused else Engine.get_physics_interpolation_fraction()
-	return _pose_of(session.sim.interpolated(fraction))
+	var pose := _pose_of(session.sim.interpolated(fraction))
+	if _rig.can_drag_fpv():
+		pose.fpv_fraction = fraction
+	return pose
 
 
 ## vel: the CG's inertial velocity in render axes (body FRD velocity rotated by the attitude), for the camera rig.
@@ -1956,7 +2013,7 @@ func controller_action(action: String) -> bool:
 		"camera_zoom_in": _rig.zoom(1.0)
 		"camera_zoom_out": _rig.zoom(-1.0)
 		"camera_auto_zoom": _rig.toggle_auto_zoom()
-		"view_reset": _rig.reset_view()
+		"view_reset": _reset_camera_input()
 		"lights_cycle": _cycle_night_lights()
 		"smoke_toggle":
 			if session.sim.paused: return true
@@ -2211,6 +2268,9 @@ func _input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		if _rig != null and _rig.can_drag_fpv():
+			_rig.hold_fpv_gimbal()
+			CameraRig.hold_cursor(false)
 		_companions_application_focused = false
 		_companions_resume_after_reset = false
 		_clear_wheel_brake()
@@ -2326,6 +2386,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.set_view("pilot")
 			KEY_2:
 				_rig.select_view("chase") # again: 3D follow (CAM-09)
+			KEY_3:
+				_rig.set_view("fpv")
 			KEY_4:
 				_rig.set_view("flyby")
 			KEY_5:
@@ -2335,7 +2397,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_MINUS:
 				_rig.zoom(-1.0)
 			KEY_BACKSPACE:
-				_rig.reset_view()
+				_reset_camera_input()
 			KEY_K:
 				session.start_calibration()
 			KEY_ENTER, KEY_KP_ENTER:
@@ -2369,10 +2431,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				if not _sync_accepted_installation_geometry():
 					# The physical reload already committed. Keep it accepted and pause
 					# explicitly instead of presenting a stale collision/visual pairing.
+					_rig.clear_fpv_mount()
 					session.hold(INSTALLATION_GEOMETRY_HOLD)
 					session.pause_reason = INSTALLATION_GEOMETRY_HOLD
 					_note += "; " + session.pause_reason + "; simulation paused"
 				else:
+					_refresh_fpv_mount()
 					session.release(INSTALLATION_GEOMETRY_HOLD)
 				_update_cg_model()
 				print(_note)
@@ -2444,7 +2508,16 @@ func apply_camera_preferences(config: Dictionary) -> void:
 	camera_preferences = CameraSettings.normalized(config)
 
 
-## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
+func _fpv_input_available() -> bool:
+	return _rig.can_drag_fpv() and not session.sim.paused and _companions_application_focused
+
+
+func _reset_camera_input() -> void:
+	if _rig.view != "fpv" or _fpv_input_available():
+		_rig.reset_view()
+
+
+## CAM-04: mouse wheel zooms, right-button drag turns an orbit or an active look mount.
 func _camera_input(event: InputEvent) -> bool:
 	if _rig == null:
 		return false
@@ -2454,8 +2527,10 @@ func _camera_input(event: InputEvent) -> bool:
 		get_viewport().set_input_as_handled()
 		return true
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
-		CameraRig.hold_cursor(event.pressed and _rig.view == "orbit")
+		CameraRig.hold_cursor(event.pressed and (_rig.view == "orbit" or _fpv_input_available()))
 	if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
+		if _rig.view == "fpv" and not _fpv_input_available():
+			return false
 		_rig.drag(event.relative)
 		get_viewport().set_input_as_handled()
 		return true
@@ -3222,6 +3297,8 @@ func _on_resetting() -> void:
 	_visual_context_status = "present"
 	_t = 0.0
 	if _rig != null:
+		if _rig.can_drag_fpv():
+			CameraRig.hold_cursor(false)
 		_rig.reset()
 	if recorder.recording:
 		recorder.stop()
@@ -3394,7 +3471,7 @@ func _cycle_shadow_mode() -> void:
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
-## --alt=4 (start altitude, m), --autozoom=0, --view=pilot|chase|orbit|closeup (CAM-04), --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
+## --alt=4 (start altitude, m), --autozoom=0, --view=pilot|chase|flyby|orbit|closeup|fpv (CAM-04), --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
 ## --hide_airplane (readability reference), --hide_treeline (L6c tree-mask reference; refused without field objects),
 ## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
@@ -3712,7 +3789,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
-		_camera_clearance, defer_camera_cut)
+		_camera_clearance, defer_camera_cut, float(pose.get("fpv_fraction", 1.0)))
 	if _magnifier != null:
 		_magnifier.mode = _rig.magnifier
 		_magnifier.update(_camera, pose.pos, _extent.x, _airplane.root, _rig.view == "pilot" and is_nan(_look.x)

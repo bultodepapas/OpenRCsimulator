@@ -42,7 +42,7 @@ const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
 const MOTOR_AUDIO_REFERENCE_HZ := 232.1
 const FULL_SPEED_RPM := 7800.0
 const BLADES := 3.0
-const VIEW_KEYS := {KEY_1: "pilot", KEY_2: "chase", KEY_4: "flyby", KEY_5: "orbit"}
+const VIEW_KEYS := {KEY_1: "pilot", KEY_2: "chase", KEY_3: "fpv", KEY_4: "flyby", KEY_5: "orbit"}
 
 signal home_requested
 signal skin_changed(id: String)
@@ -166,6 +166,7 @@ func prepare_activity() -> void:
 	camera = PilotCamera.create(self, field.pilot)
 	_rig = CameraRig.new(camera, float(session.data.envelope.length))
 	_rig.light_direction = Atmosphere.shadow_direction(_lighting)
+	_bind_fpv_mount()
 	if camera_preferences.is_empty():
 		_rig.set_view("chase")
 	else:
@@ -178,13 +179,14 @@ func prepare_activity() -> void:
 		names.append(str(skins[i].name))
 		if skins[i].id == skin_id:
 			selected = i
+	hud.set_camera_views(_rig.available_views())
 	hud.set_skins(names, selected)
 	hud.select_choice("ballast", ballast_index)
 	hud.select_choice("wind", wind_index)
 	hud.select_choice("start", start_index)
 	if workshop_trial.is_empty() and creator_visual.is_empty() and field.id != "default":
 		(hud.choices.start as OptionButton).set_item_disabled(1, true)
-	hud.select_choice("camera", CameraRig.VIEWS.find(_rig.view))
+	hud.select_choice("camera", _rig.available_views().find(_rig.view))
 	if not workshop_trial.is_empty():
 		var length := float(session.data.envelope.length)
 		hud.set_workshop_trial("Workshop trial · RC blimp %.1f m — experimental" % length, length)
@@ -192,7 +194,7 @@ func prepare_activity() -> void:
 		hud.set_workshop_trial(tr(CREATOR_LABEL) % str(creator_visual.get("name", "")), float(session.data.envelope.length))
 	hud.action_requested.connect(handle_action)
 	hud.option_selected.connect(_option_selected)
-	session.crashed.connect(func(reason: String) -> void: _open_menu(reason + ". Restart to fly again."))
+	session.crashed.connect(_on_crash)
 	session.crashed.connect(_lens_crash)
 	session.resetting.connect(func() -> void:
 		if _lens != null:
@@ -209,6 +211,33 @@ func prepare_activity() -> void:
 	_open_menu(session.pause_reason)
 	_note_weigh_off()
 	_process(0.0)
+
+
+## All three catalog skins carry the same fixed shell name and forward (-Z) datum.
+## Resolve its actual foremost fitting once per accepted skin/scale, outside the draw loop.
+func _bind_fpv_mount() -> void:
+	if creator_visual.is_empty() and session.crash.is_empty():
+		var shell := visual.model.find_child("airship_mesh", true, false) as MeshInstance3D
+		if shell != null and shell.mesh != null:
+			var bounds: AABB = CreatorVisual.relative(visual.root, shell) * shell.get_aabb()
+			if bounds.has_volume():
+				var lens := Vector3(0.0, 0.0, bounds.position.z - 0.025 * _size)
+				if _rig.set_fpv_mount(Transform3D(Basis.IDENTITY, lens), 90.0, 0.025 * _size):
+					return
+	_rig.clear_fpv_mount()
+
+
+func _refresh_fpv_mount() -> void:
+	_bind_fpv_mount()
+	hud.set_camera_views(_rig.available_views())
+	hud.select_choice("camera", _rig.available_views().find(_rig.view))
+
+
+func _on_crash(reason: String) -> void:
+	if _rig.view == "fpv":
+		_rig.set_view("orbit")
+	_refresh_fpv_mount()
+	_open_menu(reason + ". Restart to fly again.")
 
 
 ## AC-CV: hides the stock envelope and shows the imported ClearView model in its place, scaled so its length
@@ -597,11 +626,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			KEY_C:
 				_rig.cycle(-1 if event.shift_pressed else 1)
-				hud.select_choice("camera", CameraRig.VIEWS.find(_rig.view))
+				hud.select_choice("camera", _rig.available_views().find(_rig.view))
 				get_viewport().set_input_as_handled()
-			KEY_1, KEY_2, KEY_4, KEY_5:
+			KEY_1, KEY_2, KEY_3, KEY_4, KEY_5:
 				_rig.select_view(VIEW_KEYS[event.physical_keycode])
-				hud.select_choice("camera", CameraRig.VIEWS.find(_rig.view))
+				hud.select_choice("camera", _rig.available_views().find(_rig.view))
 				get_viewport().set_input_as_handled()
 			KEY_EQUAL, KEY_MINUS:
 				_rig.zoom(1.0 if event.physical_keycode == KEY_EQUAL else -1.0)
@@ -694,8 +723,9 @@ func _option_selected(option: String, index: int) -> void:
 				start_index = previous
 				hud.select_choice("start", previous)
 		"camera":
-			if index >= 0 and index < CameraRig.VIEWS.size():
-				_rig.set_view(CameraRig.VIEWS[index])
+			var views := _rig.available_views()
+			if index >= 0 and index < views.size():
+				_rig.set_view(views[index])
 
 
 ## A configuration change is a new admitted model: prepare and reset, keeping the old session on refusal.
@@ -705,6 +735,7 @@ func _restart() -> bool:
 		return false
 	input.reset_throttle()
 	_rig.reset()
+	_refresh_fpv_mount()
 	if visual.has_method("reset_lighting"):
 		visual.reset_lighting()
 	_open_menu(session.pause_reason)
@@ -732,6 +763,7 @@ func _swap_skin(next_skin: String) -> void:
 	if shadow_cue != null:
 		shadow_cue.set_vehicle(visual.root) # rebinds the new skin's silhouette on its next frame
 	_configure_lights()
+	_refresh_fpv_mount()
 	_process(0.0)
 	skin_changed.emit(skin_id)
 
@@ -770,7 +802,9 @@ func _process(delta: float) -> void:
 		CameraRig.hold_cursor(false)
 	else:
 		CameraRig.release_cursor_if_up()
-	_rig.update(target, inspection, body_basis, delta, session.paused, _ground_height_render, velocity, _camera_clearance)
+	# The inspection boom has its own scale. FPV already binds the scaled shell in the visual root's frame.
+	_rig.update(target, pose if _rig.view == "fpv" else inspection, body_basis, delta, session.paused,
+		_ground_height_render, velocity, _camera_clearance)
 	if _environment != null:
 		World.update(_environment, 37.0 + session.sim.time(), Vector3.ZERO, target, camera)
 	if _lens != null:

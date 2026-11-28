@@ -112,16 +112,23 @@ TOOLS = [
      "frames, render, ablate, rewind, gizmos, break, sample, eval, ...).",
      "inputSchema": _schema({"command": {"type": "string"}, "args": {"type": "object"}}, ["command"])},
 ]
+_PLATFORM = {"anyOf": [{"type": "string", "enum": ["any", "windows", "linux", "darwin"]},
+                       {"type": "array", "minItems": 1, "maxItems": 3,
+                        "items": {"type": "string", "enum": ["windows", "linux", "darwin"]}}],
+             "description": "Omit to use the reviewed routing registry (tools/testqueue/routing.json), which lets a "
+                            "known-portable script run on whichever of its OSes is free; without an entry the caller's "
+                            "OS. A list such as [\"linux\", \"darwin\"] allows any of those."}
 TOOLS += [
     {"name": "sim_test_launch", "description": "Start independent headless checked tests in the shared Windows/Mac/Linux pool. "
      "Returns a durable ticket immediately; source freezing, placement and verified artifact collection run in a detached supervisor. "
-     "Reuse your stable request_id after a lost reply. Platform defaults to caller OS; choose any only for portable tests. "
+     "Reuse your stable request_id after a lost reply. Without platform, the routing registry decides (portable scripts "
+     "go to a free host of any listed OS), else the caller OS; choose any only for portable tests. "
      "A job with rendering_driver (vulkan|opengl3) renders on a real GPU host (sim_fleet capability 'graphics'; "
      "Linux Intel UHD 630 on 'primis') at 1920x1080 under headless Wayland and fails unless that GPU was used. "
      "Use existing native tools for performance and composite suites.",
      "inputSchema": _schema({"request_id": {"type": "string"}, "source": {"type": "string"},
          "jobs": {"type": "array", "minItems": 1, "maxItems": 64, "items": _schema({
-             "script": {"type": "string"}, "platform": {"type": "string", "enum": ["any", "windows", "linux", "darwin"]},
+             "script": {"type": "string"}, "platform": _PLATFORM,
              "require": {"type": "array", "items": {"type": "string"}}, "timeout": {"type": "number"},
              "host": {"type": "string"},
              "rendering_driver": {"type": "string", "enum": ["vulkan", "opengl3"]}}, ["script"])}}, ["request_id", "jobs"])},
@@ -129,12 +136,13 @@ TOOLS += [
      "(default 60, max 300) for the result in one call. Returns the compact status: per test outcome, host, seconds, "
      "failing log lines, or a typed waiting reason. If still running, call it again with the returned request_id "
      "(or sim_test_status). request_id is optional; omit it for a new run. Waiting never cancels the tests. "
-     "Platform defaults to caller OS; choose any only for portable tests. Add rendering_driver (vulkan|opengl3) "
-     "with platform linux to render on the real GPU lane (host primis) instead of headless.",
+     "Omit platform and require for scripts in the routing registry: known-portable ones run on whichever listed OS "
+     "is free, with their reviewed markers and timeout; otherwise platform defaults to the caller OS. "
+     "Add rendering_driver (vulkan|opengl3) with platform linux to render on the real GPU lane (host primis) instead of headless.",
      "inputSchema": _schema({"request_id": {"type": "string"}, "source": {"type": "string"},
          "wait_s": {"type": "number"},
          "jobs": {"type": "array", "minItems": 1, "maxItems": 64, "items": _schema({
-             "script": {"type": "string"}, "platform": {"type": "string", "enum": ["any", "windows", "linux", "darwin"]},
+             "script": {"type": "string"}, "platform": _PLATFORM,
              "require": {"type": "array", "items": {"type": "string"}}, "timeout": {"type": "number"},
              "host": {"type": "string"},
              "rendering_driver": {"type": "string", "enum": ["vulkan", "opengl3"]}}, ["script"])}}, ["jobs"])},
@@ -159,7 +167,9 @@ INSTRUCTIONS += (" For independent checked headless regression tests call sim_te
                  "sim_fleet shows which hosts are online/idle and why others are busy; sim_test_list finds earlier requests. "
                  "sim_test_launch (stable caller-generated request_id) + sim_test_status remain for detached batches. "
                  "Compatible tests are placed automatically across the configured pool. "
-                 "Declare platform=any only for portable checks; otherwise keep native coverage. Evidence is collected automatically. "
+                 "Omit platform for scripts in the routing registry (tools/testqueue/routing.json): known-portable "
+                 "ones run on whichever listed OS is free. Declare platform=any (or a list of OSes) only for portable "
+                 "checks; otherwise keep native coverage. Evidence is collected automatically. "
                  "Use sim_test_recover on a stopped supervisor, preserving the same request. For a Linux real-GPU rendering check "
                  "add rendering_driver (vulkan or opengl3) with platform linux; it runs on a host with the graphics capability. "
                  "Performance checks keep their native workflows.")

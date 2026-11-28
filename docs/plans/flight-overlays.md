@@ -7,6 +7,8 @@
 
 ## 1. What exists
 
+The proposed FPV OSD shares HUD calculations, units, battery observations, alerts and layout controls. HUD owns these services and DR owns quad/race behavior. Per-vehicle telemetry inputs and selectable INAV-style and ArduPilot-style screens are specified in the [Universal FPV plan](universal-fpv.md).
+
 Home flights provide nine legacy overlays and seven player instruments on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus. Diagnostics docks beside the control guide and below active warning chips to keep their headers accessible.
 
 | ID | Overlay | Anchor | Content |

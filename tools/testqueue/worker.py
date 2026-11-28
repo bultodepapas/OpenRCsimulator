@@ -40,6 +40,9 @@ _PROCESS_LOCK_SECONDS = 0.2
 _HOSTS_LOCK_SECONDS = 1.0
 _CAPACITY_SECONDS = 1.0
 _RPC_LOCK_SECONDS = 25.0
+# The checked adapter's own project import is bounded at 600 s (adapter.py),
+# separately from the test's timeout; the hard deadline allows for both.
+CHECKED_IMPORT_ALLOWANCE_SECONDS = 660
 
 
 def _exists(path):
@@ -234,18 +237,59 @@ class Worker:
                 self._occupancy_cache = (now, error)
         if isinstance(self._occupancy_cache[1], BaseException):
             raise RuntimeError(f"occupancy probe failed: {self._occupancy_cache[1]}")
-        managed = set()
         # Callers hold ``lock``; never let them wait out another attempt's
         # teardown. Busy ownership is unknown occupancy, which fails closed.
         if not self._process_lock.acquire(timeout=_PROCESS_LOCK_SECONDS):
             raise _OwnershipBusy("managed process ownership is busy (teardown in progress)")
         try:
-            for process in self.active.values():
-                if process is not None:
-                    managed.update(process.pids())
+            managed = self._managed_pids_locked(now)
         finally:
             self._process_lock.release()
         return self._occupancy_cache[1] - managed
+
+    def _hard_budget(self, payload):
+        """Seconds from process creation to the enforced stop (TQ-07-A8).
+
+        The job's ``timeout`` bounds its check. A checked attempt may first
+        import the project, which the adapter bounds separately, so the hard
+        stop allows for both. Fixture workers run no real import.
+        """
+        allowance = 0 if self.fixture else CHECKED_IMPORT_ALLOWANCE_SECONDS
+        return payload["options"]["timeout"] + (allowance if payload["preset"] == "checked" else 0)
+
+    # The occupancy listing is cached for up to 1 s; IDs of a finished attempt
+    # stay "ours" a little longer than that (TQ-07-A7).
+    RELEASED_PID_SECONDS = 2.5
+
+    def _managed_pids_locked(self, now):
+        """Owned process IDs, current and recent. The caller holds ``_process_lock``."""
+        managed = set()
+        for process in self.active.values():
+            if process is not None:
+                known = getattr(process, "known_pids", None)
+                managed.update(known() if callable(known) else process.pids())
+        recent = getattr(self, "_released_pids", {})
+        for pid, expiry in list(recent.items()):
+            if expiry <= now:
+                del recent[pid]
+            else:
+                managed.add(pid)
+        return managed
+
+    def _remember_released(self, process):
+        """Keep a finished attempt's IDs managed while a cached listing may still show them.
+        The caller holds ``_process_lock``."""
+        if process is None:
+            return
+        try:
+            known = getattr(process, "known_pids", None)
+            pids = known() if callable(known) else process.pids()
+        except Exception:  # observation only: a closed process reports nothing new
+            return
+        expiry = time.monotonic() + self.RELEASED_PID_SECONDS
+        recent = self.__dict__.setdefault("_released_pids", {})
+        for pid in pids:
+            recent[pid] = expiry
 
     def _engine_identity(self):
         if not self.engine.is_file():
@@ -432,6 +476,7 @@ class Worker:
             scheduler = self._scheduler_health()
             inventory_error = None
             queued = None
+            quarantined = None
             if not locked:
                 # Do not wait behind a hung journal or scheduler pass. Unknown
                 # inventory is never presented as an empty claim set.
@@ -442,6 +487,8 @@ class Worker:
                     claims = [dict(row) for row in self.store.db.execute("SELECT * FROM claims")]
                     # Queued work holds no claim yet; placement must still see it.
                     queued = self.store.db.execute("SELECT COUNT(*) FROM jobs WHERE state='QUEUED'").fetchone()[0]
+                    # A durable UNKNOWN stops every admission; say so instead of READY (TQ-07-A10).
+                    quarantined = self.quarantined_attempts()
                 except Exception as error:
                     claims, inventory_error = None, str(error)
                     with self._scheduler_lock:
@@ -453,14 +500,14 @@ class Worker:
             with self._journal_lock:
                 pending_journals = len(self._pending_journal)
                 journal_errors = dict(self._journal_errors)
-            condition = ("DRAINING" if self.draining else "READY"
+            condition = ("DRAINING" if self.draining else "QUARANTINED" if quarantined else "READY"
                          if scheduler["state"] == "READY" and inventory_error is None
                          and not self._unresolved_attempts and not pending_journals else "DEGRADED")
             reservation = self.reservation
             return {"id": self.host_id, "platform": platform.system().lower(), "architecture": platform.machine(),
                     "engine": self.engine_identity, "worker_version": VERSION, "observed_at": time.time(),
                     "condition": condition, "scheduler": scheduler, "inventory_error": inventory_error,
-                    "storage": storage,
+                    "storage": storage, "quarantined_attempts": quarantined,
                     "pending_quarantines": len(self._unresolved_attempts),
                     "pending_journals": pending_journals, "journal_errors": journal_errors,
                     "reservation": ({key: value for key, value in reservation.items() if key != "secret"} if reservation else None),
@@ -578,6 +625,54 @@ class Worker:
             data.update(launch="NOT_CREATED", nonlaunch="CONFIRMED", reconciliation="interrupted_before_launch_fence")
         self.store.update(job, status["attempts"][-1]["id"], "FINISHED", data)
         return self.store.get(job)
+
+    def recover_after_restart(self):
+        """Settle UNKNOWN attempts that already carry an accepted proof (TQ-07-A10).
+
+        Runs before the scheduler and the RPC server start, while this process
+        holds the authority singleton, so no attempt of the previous worker can
+        still be preparing or launching. Two proofs only:
+
+        * the machine rebooted since the recorded process identity, or
+        * the attempt never durably recorded its launch fence (RUNNING), which
+          the worker writes in one transaction before any OS process creation.
+
+        A worker restart used to quarantine the whole host until a person
+        reconciled or rebooted it. Everything else stays quarantined, including
+        an attempt whose Job Object and gate are merely absent (decision D9).
+        """
+        from .processes import confirm_stopped
+        settled = []
+        with self.lock:
+            rows = list(self.store.db.execute("SELECT id, job, data FROM attempts WHERE state='UNKNOWN'"))
+            for row in rows:
+                attempt, job = row["id"], row["job"]
+                try:
+                    data = json.loads(row["data"])
+                except ValueError:
+                    continue
+                if not isinstance(data, dict):
+                    continue
+                identity = data.get("process") if isinstance(data.get("process"), dict) else None
+                if identity is not None and identity.get("pid") and confirm_stopped(identity):
+                    proof = "the host rebooted since the recorded process identity"
+                elif data.get("launch") is None and not self.store.reached_launch_fence(job, attempt):
+                    proof = "the launch fence (RUNNING) was never written, so no process was created"
+                else:
+                    continue
+                update = {**data, "cleanup": "CONFIRMED", "outcome": "INFRA_FAILED", "evidence": "INCOMPLETE",
+                          "finished": time.time(), "reconciled": True, "reconciliation": proof,
+                          "reason_code": "WORKER_RESTART",
+                          "error": "the queue worker restarted before this attempt finished; " + proof}
+                if "launch fence" in proof:
+                    update.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
+                self.store.update(job, attempt, "FINISHED", update)
+                settled.append({"job": job, "attempt": attempt, "proof": proof})
+        return settled
+
+    def quarantined_attempts(self):
+        """Durable UNKNOWN attempts; any one of them stops all admission. Caller holds ``lock``."""
+        return [row["id"] for row in self.store.db.execute("SELECT id FROM attempts WHERE state='UNKNOWN' LIMIT 20")]
 
     def _restarted_before_launch(self, status: dict) -> bool:
         """Recover only a Windows preparation interrupted before the launch fence."""
@@ -942,6 +1037,9 @@ class Worker:
         self._closing.add(attempt)
         try:
             with self._process_lock:
+                # A cached occupancy listing may still show these IDs after the
+                # handles close; keep them ours briefly (TQ-07-A7).
+                self._remember_released(process)
                 try:
                     process.close()
                 except BaseException as error:
@@ -1110,7 +1208,9 @@ class Worker:
                             raise
                         # Arm the admitted hard budget from the creation boundary,
                         # before any journal I/O that could block, hang or fail.
-                        deadline = time.monotonic() + payload["options"]["timeout"]
+                        # A checked attempt's own import (the adapter bounds it at
+                        # 600 s) no longer consumes the test's budget (TQ-07-A8).
+                        deadline = time.monotonic() + self._hard_budget(payload)
                         start_completed = True
                         with self._process_lock:
                             self.active[attempt] = process
@@ -1292,6 +1392,11 @@ class Worker:
         if policy.exists():
             saved = json.loads(policy.read_text())
             self.draining, self.reservation = saved["draining"], saved["reservation"]
+        # Before any client or the scheduler can act (TQ-07-A10).
+        settled = self.recover_after_restart()
+        if settled:
+            with self.store.db:
+                self.store.event(None, "RESTART_RECOVERY", {"settled": settled})
         with Server(("127.0.0.1", port), Handler) as server:
             write_json(self.root / "endpoint.json", {"version": VERSION, "port": server.server_address[1], "auth": self.auth,
                                                       "pid": os.getpid(), "host": self.host_id})
