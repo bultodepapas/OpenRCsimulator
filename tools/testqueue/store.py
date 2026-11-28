@@ -63,6 +63,24 @@ class Store:
     def event(self, job: str | None, event: str, data=None):
         self.db.execute("INSERT INTO events(at,job,event,data) VALUES(?,?,?,?)", (time.time(), job, event, json.dumps(data or {})))
 
+    def reached_launch_fence(self, job: str, attempt: str) -> bool:
+        """True when the attempt ever durably recorded RUNNING (or later).
+
+        The worker writes RUNNING with ``launch: CREATION_UNCERTAIN`` in one
+        transaction before it calls the OS to create a process. Without that
+        event no process of this attempt was ever created (TQ-07-A10). An
+        unreadable event counts as reached, which keeps the attempt quarantined.
+        """
+        for row in self.db.execute(
+                "SELECT data FROM events WHERE job=? AND event IN ('RUNNING','CLEANING','FINISHED')", (job,)):
+            try:
+                event = json.loads(row["data"])
+            except ValueError:
+                return True
+            if not isinstance(event, dict) or event.get("attempt") in (attempt, None):
+                return True
+        return False
+
     def only_dispatched(self, job: str, attempt: str) -> bool:
         """The durable launch fence writes RUNNING before the launch gate can start."""
         try:

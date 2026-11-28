@@ -481,7 +481,7 @@ class Pool:
 
     @classmethod
     def _host_transient(cls, status):
-        if status.get('reason_code') == 'EXTERNAL_SIMULATOR':
+        if status.get('reason_code') in {'EXTERNAL_SIMULATOR', 'WORKER_RESTART'}:
             return True
         text = ' '.join(str(status.get(key) or '') for key in ('error', 'reason', 'detail')).lower()
         return any(token in text for token in cls._HOST_TRANSIENT)

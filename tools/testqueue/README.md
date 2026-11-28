@@ -729,6 +729,18 @@ Job active-count zero alone are insufficient. Unobserved membership or failed cl
 quarantines the attempt. Direct children and descendants that inherit the Job are
 covered; external broker/service launches are outside that boundary and unsupported.
 
+When `testctl serve` starts, before it accepts clients or schedules, it settles
+the `UNKNOWN` attempts that already carry an accepted proof (TQ-07-A10): the host
+rebooted since the recorded process identity, or the attempt never durably wrote
+its launch fence. Every worker version writes `RUNNING` (now with
+`launch: CREATION_UNCERTAIN`) in one transaction before creating a process, so
+without that event nothing was created. Such attempts finish `INFRA_FAILED` with
+`reason_code: WORKER_RESTART`, release their claims, and the pool treats the cause
+as host-transient. The `RESTART_RECOVERY` event lists them. Every other `UNKNOWN`
+stays quarantined, and `hosts` now reports `condition: QUARANTINED` with
+`quarantined_attempts` instead of `READY`; the pool shows it as
+`CONDITION_QUARANTINED`.
+
 After a lost supervisor, `testctl reconcile <handle>` normally requires proof that
 the same physical host rebooted since the durable prelaunch identity. On the same
 Windows boot, a drained worker can also reconcile an attempt interrupted during
