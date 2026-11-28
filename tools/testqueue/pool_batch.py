@@ -341,6 +341,15 @@ def _drive_rows(pool, snapshot, manifest_sha256, rows, failed_verifications, dea
                     raise ValueError("pool returned an invalid collection report")
                 row.update(phase="DONE", collection=report)
                 row.pop("collection_error", None)
+                # TQ-07-G2: collect, then reclaim at once, so a host does not
+                # fill with collected jobs between sweeps. Advisory: a refusal
+                # leaves the job to the next sweep and never changes the row.
+                reclaim = getattr(pool, "reclaim_collected", None)
+                if callable(reclaim):
+                    try:
+                        row["storage_reclaim"] = reclaim(row["request_id"], report)
+                    except Exception as error:
+                        row["storage_reclaim"] = {"error": _error_text(error)}
             except Exception as error:
                 # Collection may be retried on a later invocation; the test never is.
                 row.update(phase="COLLECTION_BLOCKED", collection_error=_error_text(error))

@@ -1031,7 +1031,12 @@ python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
   Every other file stays and is reported as `retained_residue`; the coordinator
   receipt records `storage_gc`. Operator-reconciled attempts and Windows remotes
   keep failures. Placement runs it automatically for a remote host refused for
-  disk (see [MCP checked batches](#mcp-checked-batches)).
+  disk (see [MCP checked batches](#mcp-checked-batches)), at most once per host in
+  20 minutes unless the last sweep ran out of budget with jobs left (TQ-07-G2).
+- A batch does the same for each remote job as soon as it has collected and
+  verified that job's evidence (TQ-07-G2): the row records `storage_reclaim`.
+  A refusal, for example `BUSY` while the host runs the next job, leaves the job
+  for the next sweep and changes nothing else.
 - `pool reconcile` releases a coordinator receipt that never reached execution.
   Local receipts use the authority's durable submission tombstone. A remote
   authority that has no record of the request releases the host only with

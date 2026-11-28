@@ -2003,6 +2003,43 @@ class Pool:
         except OSError:
             pass  # advisory: the next sweep simply asks again
 
+    def reclaim_collected(self, identifier, collected):
+        """TQ-07-G2: free one job's reproducible inputs on its host right after verified collection.
+
+        The same checks and agent call as one job of ``gc``, without re-collecting:
+        ``collected`` is the report the caller has just verified. Advisory: any
+        refusal (BUSY while the host runs the next job, an older agent) leaves the
+        job a candidate for the next sweep, and nothing here touches evidence.
+        """
+        if not isinstance(identifier, str) or not identifier.isalnum():
+            return {'skipped': 'invalid job id'}
+        try:
+            receipt = json.loads((self.root / 'jobs' / (identifier + '.json')).read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return {'skipped': 'receipt unreadable'}
+        host_id = receipt.get('host') if isinstance(receipt, dict) else None
+        host = next((item for item in self.hosts if item['id'] == host_id), None)
+        if host is None or host.get('local'):
+            return {'skipped': 'not a remote job'}
+        if not self._gc_candidate(receipt, host_id):
+            return {'skipped': 'not a reclaim candidate'}
+        outcome = (collected or {}).get('pool_outcome')
+        if outcome == 'PASSED':
+            if collected.get('diagnostic_only') is not False:
+                return {'skipped': 'collection is not a complete pass'}
+        elif outcome not in self.RECLAIMABLE_FAILURES or outcome != receipt['last_status'].get('outcome'):
+            return {'skipped': 'collection does not match the finished outcome'}
+        if outcome != 'PASSED' and time.time() < self._gc_memory(host_id).get('failures_refused_until', 0):
+            return {'skipped': "this host's agent does not reclaim failures"}
+        try:
+            result = self.remote(host, 'gc', {'request_id': identifier, 'operator_confirm': True,
+                                              'payload_sha256': request_digest(receipt['request'])},
+                                 timeout=self.GC_REMOTE_TIMEOUT)
+        except Exception as error:  # still a candidate for the next sweep
+            return {'error': str(error)[:300]}
+        self._remember_storage_gc(identifier, result)
+        return {'reclaimed': True, 'logical_bytes_removed': result.get('logical_bytes_removed')}
+
     @staticmethod
     def _agent_refuses_failures(text):
         # Agents before failure reclamation answer every failed job with this.
@@ -2046,7 +2083,12 @@ class Pool:
                 except (OSError, ValueError):
                     last = {}
                 last = last if isinstance(last, dict) else {}
-                if type(last.get('at')) in (int, float) and time.time() - last['at'] < self.AUTO_GC_INTERVAL_SECONDS:
+                # A sweep that ran out of budget with work left does not make the
+                # host wait out the interval (TQ-07-G2: on 28 November a request
+                # waited 17 min while 8.9 GB of collected jobs sat on `linux`).
+                backlog = last.get('state') == 'DONE' and type(last.get('deferred')) is int and last['deferred'] > 0
+                if (type(last.get('at')) in (int, float) and time.time() - last['at'] < self.AUTO_GC_INTERVAL_SECONDS
+                        and not backlog):
                     continue
                 write_json(journal, {'host': host_id, 'at': time.time(), 'state': 'RUNNING'})
                 try:

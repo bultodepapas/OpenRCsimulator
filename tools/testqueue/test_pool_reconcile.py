@@ -320,6 +320,45 @@ class RemoteStorageGcTests(PoolReconcileTests):
         self.assertEqual(self.pool.reclaim_for_space({"selected": "mac"}), {})
         self.assertEqual(self.pool.reclaim_for_space(None), {})
 
+    def test_a_sweep_with_work_left_does_not_wait_out_the_interval(self):
+        # TQ-07-G2: a request waited 17 min while collected jobs filled the host.
+        decision = {"selected": None, "candidates": [{"host": "mac", "reasons": ["INSUFFICIENT_DISK: 1 < 3 bytes"]}]}
+        partial = {"candidates": 5, "reclaimed": 2, "deferred": 3, "logical_bytes_removed": 9, "skipped": []}
+        finished = {"candidates": 3, "reclaimed": 3, "deferred": None, "logical_bytes_removed": 9, "skipped": []}
+        with patch.object(self.pool, "gc", side_effect=[partial, finished]) as gc:
+            self.assertIn("mac", self.pool.reclaim_for_space(decision))
+            self.assertIn("mac", self.pool.reclaim_for_space(decision))  # backlog: runs again at once
+            self.assertEqual(self.pool.reclaim_for_space(decision), {})  # done: the interval applies again
+        self.assertEqual(gc.call_count, 2)
+
+    def test_a_collected_job_is_reclaimed_at_once_and_a_refusal_leaves_it_to_the_sweep(self):
+        self.finished("pass1", "PASSED")
+        self.finished("fail1", "TEST_FAILED")
+        self.finished("local1", "PASSED", host="windows")
+        self.finished("unconf1", "TEST_FAILED", cleanup="UNCONFIRMED")
+        calls = []
+
+        def remote(host, action, payload, timeout=45):
+            calls.append((host["id"], action, payload["request_id"]))
+            if payload["request_id"] == "fail1":
+                raise RuntimeError("host pool is busy")
+            return {"logical_bytes_removed": 1000}
+
+        complete = {"pool_outcome": "PASSED", "diagnostic_only": False}
+        with patch.object(self.pool, "remote", side_effect=remote):
+            self.assertEqual(self.pool.reclaim_collected("pass1", complete),
+                             {"reclaimed": True, "logical_bytes_removed": 1000})
+            self.assertIn("busy", self.pool.reclaim_collected(
+                "fail1", {"pool_outcome": "TEST_FAILED", "diagnostic_only": True})["error"])
+            self.assertIn("skipped", self.pool.reclaim_collected("local1", complete))
+            self.assertIn("skipped", self.pool.reclaim_collected("unconf1", {"pool_outcome": "TEST_FAILED"}))
+            self.assertIn("skipped", self.pool.reclaim_collected("pass1", complete))  # already reclaimed
+            self.assertIn("skipped", self.pool.reclaim_collected(
+                "fail1", {"pool_outcome": "TIMED_OUT"}))  # the collection must match the outcome
+        self.assertEqual(calls, [("mac", "gc", "pass1"), ("mac", "gc", "fail1")])
+        self.assertEqual(self.stored("pass1")["storage_gc"]["state"], "RECLAIMED")
+        self.assertEqual(self.pool.gc("mac")["request_ids"], ["fail1"])  # the refused one waits for the sweep
+
 
 class PoolCircuitTests(PoolReconcileTests):
     def finished(self, identifier, host, outcome, created, source="src", **status):
