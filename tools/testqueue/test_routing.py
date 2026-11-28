@@ -19,6 +19,8 @@ def host(name, system, **extra):
 
 class RegistryTests(unittest.TestCase):
     def test_committed_registry_is_valid_and_names_existing_scripts(self):
+        if not (routing.REPO / "app" / "tests").is_dir():
+            self.skipTest("needs a full checkout with app/tests")
         self.assertEqual(routing.check(), [])
         entries = routing.load()
         self.assertIn("res://tests/test_math3d.gd", entries)

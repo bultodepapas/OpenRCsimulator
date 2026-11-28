@@ -1201,6 +1201,94 @@ class Pool:
             raise TransferFailure(stage, 'TRANSFER_FAILED', _describe(error)) from error
         return remote_archive
 
+    CONTENT_TRANSFER_SECONDS = 1800
+    STORE_HAVE_CHUNK = 5000  # about 340 KB of JSON, well under the agent's 1 MiB request limit
+
+    @staticmethod
+    def source_manifest_blob(manifest):
+        """The canonical file map a content-store host materializes, and its digest."""
+        files = {path: {'size': entry['size'], 'sha256': entry['sha256']} for path, entry in manifest['files'].items()}
+        blob = json.dumps({'files': files}, sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode('ascii')
+        return files, blob, hashlib.sha256(blob).hexdigest()
+
+    def _transfer_content(self, host, snapshot, manifest):
+        """Send only the files the host's content store lacks (TQ-07-E4a).
+
+        Nothing here calls ``run``, so every failure is proved nondispatched.
+        Each file is named by its SHA-256 and the host publishes it only when
+        the bytes match, so a changed or partial upload is never accepted.
+        """
+        files, blob, manifest_sha = self.source_manifest_blob(manifest)
+        digests = sorted({entry['sha256'] for entry in files.values()} | {manifest_sha})
+        by_digest = {entry['sha256']: (path, entry['size']) for path, entry in files.items()}
+        stage = 'have'
+        flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+
+        def missing_of(wanted):
+            # The agent reads at most 1 MiB of JSON: ask in chunks (review finding).
+            found = []
+            for start in range(0, len(wanted), self.STORE_HAVE_CHUNK):
+                found += self.remote(host, 'store-have', {'digests': wanted[start:start + self.STORE_HAVE_CHUNK]},
+                                     timeout=120)['missing']
+            return found
+
+        try:
+            missing = missing_of(digests)
+            sent = {'files_total': len(files), 'files_sent': 0, 'bytes_sent': 0, 'manifest_sha256': manifest_sha}
+            if missing:
+                stage = 'put'
+                command = shlex.join([host['python'], host['agent'], 'store-put', '--root', host['root']])
+                process = subprocess.Popen(ssh_command(host, command), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE, creationflags=flags)
+                timer = threading.Timer(self.CONTENT_TRANSFER_SECONDS, process.kill)
+                timer.start()
+                write_error = None
+                try:
+                    try:
+                        with tarfile.open(fileobj=process.stdin, mode='w|') as bundle:
+                            for sha in missing:
+                                info = tarfile.TarInfo(sha)
+                                if sha == manifest_sha:
+                                    info.size = len(blob)
+                                    bundle.addfile(info, io.BytesIO(blob))
+                                else:
+                                    path, size = by_digest[sha]
+                                    info.size = size
+                                    with (Path(snapshot) / 'source' / path).open('rb') as stream:
+                                        bundle.addfile(info, stream)
+                                sent['files_sent'] += 1
+                                sent['bytes_sent'] += info.size
+                        process.stdin.flush()
+                    except (OSError, ValueError) as error:
+                        write_error = error  # the agent may have refused mid-stream; read its reason below
+                    try:
+                        output, errors = process.communicate(timeout=60 if write_error else self.CONTENT_TRANSFER_SECONDS)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        output, errors = process.communicate()
+                finally:
+                    timer.cancel()
+                    if process.poll() is None:
+                        process.kill()
+                        process.wait()
+                lines = output.decode('utf-8', 'replace').strip().splitlines() if output else []
+                try:
+                    reply = json.loads(lines[-1]) if lines else {}
+                except ValueError:
+                    reply = {}
+                if write_error or process.returncode or reply.get('ok') is not True:
+                    raise RuntimeError(reply.get('error') or (errors or b'').decode('utf-8', 'replace')[-300:]
+                                       or str(write_error) or 'store-put failed')
+                stage = 'verify'
+                still = missing_of(digests)
+                if still:
+                    raise RuntimeError(f'{len(still)} file(s) still missing after the upload')
+        except subprocess.TimeoutExpired as error:
+            raise TransferFailure(stage, 'TRANSFER_TIMEOUT', _describe(error)) from error
+        except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError, tarfile.TarError) as error:
+            raise TransferFailure(stage, 'TRANSFER_FAILED', _describe(error)) from error
+        return sent
+
     def _destination(self, receipt, *, replay=False):
         """Resolve the receipt's original host, or raise without touching the receipt.
 
@@ -1380,7 +1468,10 @@ class Pool:
                         waiting['placement_host'] = bound_host
                     return waiting
                 host = next(item for item in self.hosts if item['id'] == decision['selected'])
-                if not host.get('local') and archive is None:
+                selected = next((item for item in observations if item['id'] == host['id']), {})
+                # TQ-07-E4a: a content-store host needs no archive; only missing files travel.
+                content_store = not host.get('local') and 'content-store' in (selected.get('features') or [])
+                if not host.get('local') and not content_store and archive is None:
                     # Building inputs does not reserve an execution host. Other
                     # jobs may dispatch while this call holds only its request
                     # and archive locks; reselect under the dispatch lock after
@@ -1434,6 +1525,21 @@ class Pool:
                     request['expected_manifest_digest'] = manifest['manifest_digest']
                 submission_receipt(self.root, request)
                 receipt['request'] = request
+            elif content_store:
+                transfer_started = time.monotonic()
+                try:
+                    sent = self._transfer_content(host, snapshot, manifest)
+                except TransferFailure as error:
+                    self._defer_transfer(receipt, receipt_path, error)  # always raises TransferDeferred
+                receipt['transfer_seconds'] = round(time.monotonic() - transfer_started, 3)
+                if receipt.get('content_transfer'):  # a resumed transfer keeps the first attempt's numbers
+                    receipt['content_transfer_history'] = [*receipt.get('content_transfer_history', []),
+                                                           receipt['content_transfer']][-5:]
+                receipt['content_transfer'] = sent
+                receipt['request'] = {'request_id': identifier, 'preset': 'checked',
+                                      'source_manifest': {'sha256': sent['manifest_sha256']},
+                                      'expected_engine_sha256': host['engine_sha256'],
+                                      'engine_path': host['engine'], 'options': options}
             else:
                 transfer_started = time.monotonic()
                 try:

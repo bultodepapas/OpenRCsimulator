@@ -28,7 +28,8 @@ import time
 
 PROTOCOL = 1
 # Optional capabilities a coordinator may rely on; an older agent lacks the list.
-FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget", "launch-order", "recover-boot", "describe")
+FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget", "launch-order", "recover-boot", "describe",
+            "content-store")
 # A checked job's project import runs under this budget, before and apart from
 # the job's own timeout, which bounds the check (TQ-07-A8).
 IMPORT_BUDGET_SECONDS = 900
@@ -563,6 +564,9 @@ def _reclaim_success_input_locked(root, identifier, *, max_bytes=RETENTION_MAX_B
         if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) != (
                 "FINISHED", "PASSED", "COMPLETE", "CONFIRMED"):
             return {"state": "SKIPPED", "reason": "attempt is not a confirmed complete success"}
+        if "archive" not in request:
+            return {"state": "SKIPPED", "logical_bytes_removed": 0,
+                    "reason": "content-store job: no input archive was copied"}
         archive = request["archive"]
         archive_path = Path(archive["path"])
         if archive_path.parent != root / "incoming" or archive_path.name in ("", ".", ".."):
@@ -751,19 +755,27 @@ def authority_enrolled():
 
 
 def validate_request(request):
-    required = {"request_id", "preset", "archive", "engine_path", "options"}
-    if not isinstance(request, dict) or not required <= set(request) or set(request) - required - {"expected_engine_sha256"}:
-        raise Refused("run requires request_id, preset, archive, engine_path and options")
+    required = {"request_id", "preset", "engine_path", "options"}
+    if (not isinstance(request, dict) or not required <= set(request)
+            or set(request) - required - {"expected_engine_sha256", "archive", "source_manifest"}
+            or ("archive" in request) == ("source_manifest" in request)):
+        raise Refused("run requires request_id, preset, engine_path, options and exactly one of archive "
+                      "or source_manifest")
     identifier = request["request_id"]
     if not isinstance(identifier, str) or not ID.fullmatch(identifier):
         raise Refused("invalid request_id")
     if request["preset"] != "checked":
         raise Refused("only checked jobs are supported")
-    archive = request["archive"]
-    if (not isinstance(archive, dict) or set(archive) != {"path", "sha256"}
-            or not isinstance(archive["path"], str) or not Path(archive["path"]).is_absolute()
-            or not isinstance(archive["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", archive["sha256"])):
-        raise Refused("archive needs an absolute path and lowercase SHA-256")
+    if "archive" in request:
+        archive = request["archive"]
+        if (not isinstance(archive, dict) or set(archive) != {"path", "sha256"}
+                or not isinstance(archive["path"], str) or not Path(archive["path"]).is_absolute()
+                or not isinstance(archive["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", archive["sha256"])):
+            raise Refused("archive needs an absolute path and lowercase SHA-256")
+    else:
+        manifest = request["source_manifest"]
+        if not isinstance(manifest, dict) or set(manifest) != {"sha256"} or not DIGEST.fullmatch(str(manifest["sha256"])):
+            raise Refused("source_manifest needs a lowercase SHA-256")
     if not isinstance(request["engine_path"], str) or not Path(request["engine_path"]).is_absolute():
         raise Refused("engine_path must be absolute")
     expected_engine = request.get("expected_engine_sha256")
@@ -1165,10 +1177,16 @@ def launch(root, request):
             return public_status(previous)
         if scan(root):
             raise Refused("unresolved or unknown job quarantines this host", "QUARANTINED")
-        incoming = (root / "incoming").resolve()
-        archive = Path(request["archive"]["path"])
-        if archive.is_symlink() or archive.resolve().parent != incoming or not archive.is_file():
-            raise Refused("archive must be a regular file directly inside incoming")
+        if "archive" in request:
+            incoming = (root / "incoming").resolve()
+            archive = Path(request["archive"]["path"])
+            if archive.is_symlink() or archive.resolve().parent != incoming or not archive.is_file():
+                raise Refused("archive must be a regular file directly inside incoming")
+        else:
+            # TQ-07-E4a: every file the job needs must already be in the store.
+            missing = store_missing(root, read_source_manifest(root, request["source_manifest"]["sha256"]))
+            if missing:
+                raise Refused(f"the content store lacks {len(missing)} file(s) of this source; upload them first")
         engine = Path(request["engine_path"])
         if not engine.is_file() or (os.name != "nt" and not os.access(engine, os.X_OK)):
             raise Refused("engine is unavailable or not executable")
@@ -1220,6 +1238,126 @@ def safe_name(name):
     if any(re.fullmatch(r"(?i)(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?", p) for p in parts):
         raise Refused("reserved archive path")
     return name
+
+
+STORE = "store"
+DIGEST = re.compile(r"[0-9a-f]{64}\Z")
+MAX_STORE_REQUEST_DIGESTS = 400_000
+
+
+def store_path(root, sha256):
+    if not isinstance(sha256, str) or not DIGEST.fullmatch(sha256):
+        raise Refused("store digests are lowercase SHA-256")
+    return Path(root) / STORE / sha256[:2] / sha256
+
+
+def store_have(root, request):
+    """Which of these content digests the store lacks (TQ-07-E4a)."""
+    if not isinstance(request, dict) or set(request) != {"digests"} or not isinstance(request["digests"], list) \
+            or len(request["digests"]) > MAX_STORE_REQUEST_DIGESTS:
+        raise Refused("store-have requires a list of digests")
+    missing = [sha for sha in dict.fromkeys(request["digests"]) if not store_path(root, sha).is_file()]
+    return {"missing": missing, "asked": len(request["digests"])}
+
+
+def store_put(root, stream):
+    """Add content-addressed files from a tar stream; each member's name is its SHA-256.
+
+    Every member is hashed while written to a private temporary and published by
+    atomic rename only when its digest matches its name, so a broken or partial
+    upload never leaves a wrong file under a digest.
+    """
+    stored = skipped = size = 0
+    with tarfile.open(fileobj=stream, mode="r|") as bundle:
+        for member in bundle:
+            if not member.isfile() or not DIGEST.fullmatch(member.name):
+                raise Refused("store-put accepts regular members named by their SHA-256")
+            target = store_path(root, member.name)
+            if target.is_file():
+                skipped += 1
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if shutil.disk_usage(target.parent).free < member.size + RESERVE:
+                raise Refused("insufficient disk for the content store and reserve")
+            temporary = target.with_name(target.name + "." + secrets.token_hex(6) + ".pending")
+            source = bundle.extractfile(member)
+            h = hashlib.sha256()
+            try:
+                with source, temporary.open("xb") as output:
+                    while block := source.read(1024 * 1024):
+                        h.update(block)
+                        output.write(block)
+                    output.flush()
+                    os.fsync(output.fileno())
+                if h.hexdigest() != member.name:
+                    raise Refused("uploaded bytes differ from their digest " + member.name)
+                os.replace(temporary, target)
+            finally:
+                if temporary.exists():
+                    temporary.unlink()
+            stored += 1
+            size += member.size
+    return {"stored": stored, "already_present": skipped, "bytes": size}
+
+
+def read_source_manifest(root, sha256):
+    """The file map a content-store job materializes, verified against its digest."""
+    path = store_path(root, sha256)
+    try:
+        data = path.read_bytes()
+    except OSError:
+        raise Refused("source manifest is not in the store; upload it first") from None
+    if hashlib.sha256(data).hexdigest() != sha256:
+        raise Refused("stored source manifest differs from its digest")
+    value = json.loads(data)
+    files = value.get("files") if isinstance(value, dict) else None
+    if not isinstance(files, dict) or len(files) > MAX_FILES:
+        raise Refused("source manifest has no valid file map")
+    for name, entry in files.items():
+        safe_name(name)
+        if (not isinstance(entry, dict) or set(entry) != {"size", "sha256"} or type(entry["size"]) is not int
+                or entry["size"] < 0 or not DIGEST.fullmatch(str(entry["sha256"]))):
+            raise Refused("source manifest entry is invalid: " + name)
+    return files
+
+
+def store_missing(root, files):
+    return sorted({entry["sha256"] for entry in files.values() if not store_path(root, entry["sha256"]).is_file()})
+
+
+def materialize_from_store(root, files, destination):
+    """Build a job's private source tree from the store (copies, never links: Godot writes files)."""
+    destination = Path(destination)
+    destination.mkdir(exist_ok=False)
+    seen, total = set(), 0
+    for name, entry in files.items():
+        key = safe_name(name).casefold()
+        if key in seen:
+            raise Refused("source manifest has a duplicate path: " + name)
+        seen.add(key)
+        total += entry["size"]
+        if total > MAX_ARCHIVE:
+            raise Refused("source expansion limit exceeded")
+    if shutil.disk_usage(destination).free < total + RESERVE:
+        raise Refused("insufficient disk for the job's source and reserve")
+    for name, entry in sorted(files.items()):
+        target = destination.joinpath(*safe_name(name).split("/"))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        stored = store_path(root, entry["sha256"])
+        h = hashlib.sha256()
+        with stored.open("rb") as source, target.open("xb") as output:
+            while block := source.read(1024 * 1024):
+                h.update(block)
+                output.write(block)
+        if h.hexdigest() != entry["sha256"]:
+            # A damaged store entry heals: removed here, it is reported missing and
+            # uploaded again by the next job instead of failing every later one.
+            try:
+                stored.unlink()
+            except OSError:
+                pass
+            raise Refused("store entry " + entry["sha256"] + " was damaged and has been removed; the next job uploads it again")
+    return {name: {"size": entry["size"], "sha256": entry["sha256"]} for name, entry in files.items()}
 
 
 def extract_archive(archive, destination):
@@ -1787,26 +1925,35 @@ def supervise(root, identifier):
         request = validate_request(state["request"])
         if authority_enrolled():
             raise Refused("host enrolled before launch")
-        source_archive = Path(request["archive"]["path"])
-        copied = directory / "input.tar"
-        try:
-            # A hard link pins the verified inode without a second copy: incoming
-            # archives are published by atomic replace, never rewritten in place.
-            os.link(source_archive, copied)
-            state["input_link"] = True
-        except OSError:
-            if shutil.disk_usage(directory).free < source_archive.stat().st_size + RESERVE:
-                raise Refused("insufficient disk for archive and reserve")
-            with source_archive.open("rb") as src, copied.open("xb") as dst:
-                shutil.copyfileobj(src, dst, 1024 * 1024)
-                dst.flush()
-                os.fsync(dst.fileno())
-        if digest(copied) != request["archive"]["sha256"]:
-            raise Refused("transferred archive SHA-256 differs")
         source = directory / "source"
-        files = extract_archive(copied, source)
-        verify_source(source, files)
-        write_json(directory / "source-inventory.json", {"archive_sha256": request["archive"]["sha256"], "files": files})
+        if "source_manifest" in request:
+            # TQ-07-E4a: the source comes from the content store; only missing
+            # files ever crossed the network.
+            manifest_sha = request["source_manifest"]["sha256"]
+            files = materialize_from_store(root, read_source_manifest(root, manifest_sha), source)
+            verify_source(source, files)
+            write_json(directory / "source-inventory.json", {"manifest_sha256": manifest_sha, "files": files})
+            state["input_mode"] = "content-store"
+        else:
+            source_archive = Path(request["archive"]["path"])
+            copied = directory / "input.tar"
+            try:
+                # A hard link pins the verified inode without a second copy: incoming
+                # archives are published by atomic replace, never rewritten in place.
+                os.link(source_archive, copied)
+                state["input_link"] = True
+            except OSError:
+                if shutil.disk_usage(directory).free < source_archive.stat().st_size + RESERVE:
+                    raise Refused("insufficient disk for archive and reserve")
+                with source_archive.open("rb") as src, copied.open("xb") as dst:
+                    shutil.copyfileobj(src, dst, 1024 * 1024)
+                    dst.flush()
+                    os.fsync(dst.fileno())
+            if digest(copied) != request["archive"]["sha256"]:
+                raise Refused("transferred archive SHA-256 differs")
+            files = extract_archive(copied, source)
+            verify_source(source, files)
+            write_json(directory / "source-inventory.json", {"archive_sha256": request["archive"]["sha256"], "files": files})
         transformation = isolate_project(source, identifier)
         state["native_adaptation"] = adapt_native_extensions(source)
         if not (source / "tools/godot/run_checked.py").is_file() or not (source / "app" / request["options"]["script"][6:]).is_file():
@@ -1878,6 +2025,9 @@ def supervise(root, identifier):
             state["storage_cleanup"] = ({"state": "SKIPPED", "logical_bytes_removed": 0,
                                          "reason": "job input is a hard link to the verified incoming archive; no redundant copy"}
                                         if state.get("input_link") else
+                                        {"state": "SKIPPED", "logical_bytes_removed": 0,
+                                         "reason": "content-store job: no input archive was copied"}
+                                        if state.get("input_mode") == "content-store" else
                                         {"state": "PENDING", "phase": "PREPARING", "logical_bytes_removed": None}
                                         if _retention_supported() else
                                         {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable",
@@ -2201,6 +2351,13 @@ def collect_incoming(root, request, *, min_age=3600):
             removed += path.stat().st_size
             path.unlink()
             files.append(path.name)
+        # Temporaries of an interrupted store upload (TQ-07-E4a review); a live
+        # upload publishes or removes its own within the hour.
+        for path in sorted((root / STORE).glob("*/*.pending")) if (root / STORE).is_dir() else []:
+            if path.is_symlink() or not path.is_file() or now - path.stat().st_mtime < min_age:
+                continue
+            removed += path.stat().st_size
+            path.unlink()
         # Terminal reserves a lost supervisor left behind (TQ-07-A9e). Under this
         # lock no supervisor runs, so only an unfinished job's reserve is kept.
         reserves = 0
@@ -2218,8 +2375,9 @@ def collect_incoming(root, request, *, min_age=3600):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("probe", "run", "status", "fence", "recover-boot", "reclaim-input",
-                                           "reconcile", "gc", "gc-incoming", "_supervise", "_invoke"))
+    parser.add_argument("action", choices=("probe", "run", "status", "fence", "recover-boot", "store-have",
+                                           "store-put", "reclaim-input", "reconcile", "gc", "gc-incoming",
+                                           "_supervise", "_invoke"))
     parser.add_argument("--root", required=True)
     parser.add_argument("--request-id")
     parser.add_argument("--stage")
@@ -2234,6 +2392,10 @@ def main():
         return invoke(root, args.request_id, args.stage)
     request = None
     try:
+        if args.action == "store-put":
+            # A tar stream of content-addressed files, not a JSON request (TQ-07-E4a).
+            print(json.dumps({"ok": True, "result": store_put(root, sys.stdin.buffer)}, allow_nan=False))
+            return 0
         raw = sys.stdin.buffer.read(LIMIT + 1)
         if len(raw) > LIMIT:
             raise Refused("request too large")
@@ -2246,6 +2408,8 @@ def main():
             result = fence(root, request)
         elif args.action == "recover-boot":
             result = recover_boot(root, request)
+        elif args.action == "store-have":
+            result = store_have(root, request)
         elif args.action == "reclaim-input":
             if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256"}
                     or not isinstance(request.get("request_id"), str) or not ID.fullmatch(request["request_id"])

@@ -366,6 +366,26 @@ then swaps them under the host lock with no unfinished job, keeping
 `<file>.prev-<timestamp>`. If the host does not then report the expected digest,
 it restores the previous files.
 
+#### Send only missing files (TQ-07-E4a)
+
+A remote host that advertises `content-store` keeps files named by their
+SHA-256 under `<root>/store/`. For such a host the coordinator builds no archive.
+It asks `store-have` which digests are missing, streams only those plus a
+canonical file manifest to `store-put`, checks that nothing is missing any more,
+and sends `run` with `source_manifest: {sha256}` instead of `archive`.
+
+- The host publishes a stored file only when its bytes hash to its name.
+- `run` refuses while any file is missing.
+- The job copies its private tree from the store (never links, because Godot
+  writes files) and re-verifies every file before it runs.
+- A second snapshot of the same commit sends a few kilobytes instead of about
+  1 GB.
+- The receipt records `content_transfer` (`files_sent`, `bytes_sent`).
+- Hosts without the feature keep the archive path.
+- The store is not pruned yet (TQ-07-G3).
+
+#### Batch state
+
 Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
 interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
 blindly resubmitted. Proved predispatch lock/I/O deferral uses `RETRY_WAIT` with
