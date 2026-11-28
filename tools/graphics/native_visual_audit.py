@@ -18,6 +18,8 @@ import statistics
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 
 BASE = "71306784a250d634854f0c8bab3a927cc46a61b8"
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,16 +39,21 @@ FIELD = "app/tests/capture_landscape_upgrade.gd"
 CASES = ("lake_shore", "lake_overview", "pilot_north", "plain_highway", "plain_field_entry", "postcard_pavilion")
 CONTROL_IDS = ("dirt_light_off", "dirt_specular_000", "dirt_specular_035", "dirt_specular_050",
                "lens_disabled", "lens_curtain_partial", "lens_curtain_held")
+ROOF_FOOTPRINTS = {
+    "pavilion_normal_footprint": ("res://scenery/building_roofs.gdshader", "Roof_prop_pavilion_00_slate", 2.24587e-7),
+    "pit_normal_footprint": ("res://scenery/pit_shelter_roof.gdshader", "PitShelter_prop_pit-shelters_00", 2.75892e-7),
+}
 DETAIL = {
     "controls": ("tools/graphics/capture_native_shader_controls.gd", CONTROL_IDS),
     "moon": ("tools/world/moon_capture.gd", ("full_high-close", "full_high-wide")),
     "roofs": ("tools/landscape/capture_building_roofs.gd",
-              ("club_air", "pavilion_pilot", "pavilion_roof", "shed_roof", "farm_roofs")),
+              ("club_air", "pavilion_pilot", "pavilion_roof", "shed_roof", "farm_roofs", *ROOF_FOOTPRINTS)),
     "windsock": ("tools/ground/capture_windsock_detail.gd", ("whole", "fabric", "throat", "base")),
     "storm": ("tools/atmosphere/storm_bank_capture.gd", ("distant_storm-day-pilot-fov50", "distant_storm-day-pilot-fov25")),
     "paint": ("tools/skins/paint_preview.gd", ("turbo-lumber-evolution_aserradero_front34", "turbo-lumber-evolution_aserradero_top")),
 }
 DETAIL_ARGS = {
+    "roofs": ("--normal-footprint=on",),
     "moon": ("--cases=full_high", "--views=close,wide"),
     "storm": ("--only=day", "--view=pilot", "--seed=1253"),
     "paint": ("--vehicle=turbo-lumber-evolution", "--skin=aserradero", "--views=front34,top", "--env=flight", "--zoom=1.0"),
@@ -58,12 +65,14 @@ PAINT_READBACK = """		var canopy := node.find_child("canopy_glass", true, false)
 		var active: ShaderMaterial = canopy.get_active_material(0) as ShaderMaterial if canopy != null else null
 		var shader_path: String = active.shader.resource_path if active != null and active.shader != null else ""
 		var camera_target := centre + Vector3(0, lift, 0)
-		print("OPENRC_PAINT_VIEW ", JSON.stringify({"view": view, "shader": shader_path, "vehicle": vehicle, "skin": skin,
+		var audit_record := {"view": view, "shader": shader_path, "vehicle": vehicle, "skin": skin,
 			"position": [_camera.position.x, _camera.position.y, _camera.position.z],
 			"target": [camera_target.x, camera_target.y, camera_target.z], "fov": _camera.fov,
-			"environment": _option("env", "flight"), "zoom": zoom}))
+			"environment": _option("env", "flight"), "zoom": zoom}
 """
+WORKLOADS = [*("field:" + case for case in CASES), *("detail:" + name for name in DETAIL)]
 ORDER = ("baseline", "candidate", "candidate", "baseline")
+SHUTDOWN_GRACE_S = 30
 DRIVERS = {"gl_compatibility": ("opengl3", "Compatibility"), "forward_plus": ("vulkan", "Forward+")}
 FIXED_ENV = {"OPENRC_SCENERY": "on", "OPENRC_SCENERY_AUDIO": "off", "OPENRC_SCENERY_BIRDS": "off",
              "OPENRC_SCENE_DETAIL": "medium", "LP_NUM_THREADS": "2", "LIBGL_ALWAYS_SOFTWARE": "1"}
@@ -72,7 +81,7 @@ SAMPLES = 31
 COVERAGE_LIMITS = [
     "Static world fixture. Flight simulation, thermal behavior and physical GPU throughput are unmeasured.",
     "Dirt and lens controls are isolated views. The storm and paint images use stationary cameras.",
-    "Detail fixtures have one matched image per variant per view. Roof Jacobian threshold, lunar phase sweep and motion shimmer are unmeasured.",
+    "Detail fixtures have one matched image per variant per view. The lunar phase sweep and motion shimmer are unmeasured.",
 ]
 
 
@@ -164,38 +173,50 @@ def fixture_bytes(path):
         if data.count(marker) != 1:
             raise ValueError("Cannot locate studio readback point")
         data = data.replace(marker, PAINT_READBACK.encode() + marker)
+        data = data.replace(b"var _camera: Camera3D", b"var _audit_records: Array[Dictionary] = []\nvar _camera: Camera3D")
+        data = data.replace(b'\t\tprint("saved ", path)', b'\t\taudit_record["sha256"] = FileAccess.get_sha256(path)\n'
+                            b'\t\t_audit_records.append(audit_record)\n\t\tprint("saved ", path)')
+        close = b"\tvar manifest := FileAccess.open(out.path_join(\"capture.json\"), FileAccess.WRITE)\n"
+        close += b"\tif manifest == null:\n\t\tquit(1)\n\t\treturn\n"
+        close += b'\tmanifest.store_string(JSON.stringify({"complete": true, "method": RenderingServer.get_current_rendering_method(),'
+        close += b' "adapter": RenderingServer.get_video_adapter_name(), "records": _audit_records}))\n\tmanifest.close()\n'
+        data = data.replace(b"\tnode.queue_free()", close + b"\tnode.queue_free()")
     return data
 
 
-def commands(engine, renderer, output):
+def commands(engine, renderer, output, workload="all"):
     runner = [sys.executable, str(ROOT / "tools/godot/run_checked.py")]
     base_cmd = [engine, "--path", str(ROOT / "app"), "--audio-driver", "Dummy"]
     rendered = [*base_cmd, "--rendering-method", renderer, "--rendering-driver", DRIVERS[renderer][0],
                 "--resolution", "1920x1080", "--windowed", "--max-fps", "0"]
+    if workload != "all" and workload not in WORKLOADS:
+        raise ValueError(f"Unknown workload: {workload}")
+    field_cases = (workload.removeprefix("field:"),) if workload.startswith("field:") else CASES
+    detail_kinds = (workload.removeprefix("detail:"),) if workload.startswith("detail:") else DETAIL
+    order = ORDER[:2] if workload.startswith("detail:") else ORDER
     result = []
-    for idx, side in enumerate(ORDER, 1):
+    for idx, side in enumerate(order, 1):
         block = f"{idx}-{side}"
         directory = output / block
-        checks = directory / "checks"
-        def checked(label, extra, command):
-            return [*runner, "--out-dir", str(checks / label), "--label", label, *extra, "--", *command]
-        # A fresh process reimports any affected resource dependencies for each variant.
+        def checked(label, flags, command):
+            return [*runner, "--out-dir", str(directory / "checks" / label), "--label", label, *flags, "--", *command]
         steps = {"import": checked("import", ["--timeout", "1200"], [*base_cmd, "--headless", "--import"])}
-        common = ["--timeout", "1200", "--resources", "--resource-interval", "1"]
-        field = [*rendered, "--script", "res://tests/capture_landscape_upgrade.gd", "--",
-                 f"--out={directory / 'field'}", "--width=1920", "--height=1080", "--motion=off",
-                 "--measure_render_time=on", f"--frames={SAMPLES}", "--cases=" + ",".join(CASES)]
-        steps["field"] = checked("field", [*common, "--require-text", "LU native capture complete:"], field)
-        if idx <= 2:
-            for kind in DETAIL:
+        if not workload.startswith("detail:"):
+            field = [*rendered, "--script", "res://tests/capture_landscape_upgrade.gd", "--",
+                     f"--out={directory / 'field'}", "--width=1920", "--height=1080", "--motion=off",
+                     "--measure_render_time=on", f"--frames={SAMPLES}", "--cases=" + ",".join(field_cases)]
+            flags = ["--timeout", "1200", "--resources", "--resource-interval", "1",
+                     "--require-text", "LU native capture complete:"]
+            steps["field"] = checked("field", flags, field)
+        if idx <= 2 and not workload.startswith("field:"):
+            for kind in detail_kinds:
                 cmd = [*rendered, "--script", str(output / "harnesses" / (kind + ".gd")), "--",
-                       f"--out={directory / kind}"]
-                cmd.extend(DETAIL_ARGS.get(kind, ()))
-                checks_needed = ["--timeout", "900"]
-                if kind == "controls":
-                    checks_needed.extend(("--require-text", "Native shader controls complete:"))
-                steps[kind] = checked(kind, checks_needed, cmd)
-        result.append({"block": block, "variant": side, "commands": steps})
+                       f"--out={directory / kind}", *DETAIL_ARGS.get(kind, ())]
+                helper = [sys.executable, str(Path(__file__).resolve()), "detail-process", kind, renderer,
+                          str(directory / kind), *cmd]
+                steps[kind] = checked(kind, ["--timeout", "900", "--require-text", "Verified detail-process receipt:"], helper)
+        result.append({"block": block, "variant": side, "field_cases": list(field_cases) if "field" in steps else [],
+                       "commands": steps})
     return result
 
 
@@ -242,7 +263,7 @@ def common_conditions(label, report, renderer):
                   "mesh_lod_threshold_px", "reflection_slots", "night_options")}
         lake = {key: report["lake"][key] for key in ("identity", "bounds", "triangles", "vertices", "bank_shader")}
         cases = {name: {key: report["cases"][name][key] for key in ("exposure", "night_options", "ground_materials",
-                        "worn_photo_enabled", "worn_shoulder_enabled")} for name in CASES}
+                        "worn_photo_enabled", "worn_shoulder_enabled")} for name in report["cases"]}
         return {**static, "arguments": args, "lake": lake, "by_case": cases}
     if label == "controls":
         expected_times = dict.fromkeys(CONTROL_IDS, 3.0)
@@ -312,8 +333,17 @@ def common_conditions(label, report, renderer):
     if set(rows) != set(DETAIL[label][1]) or len(rows) != len(report["records"]):
         raise ValueError(f"Incomplete {label} camera records")
     keys = ("eye_ned", "at_ned", "fov") if label == "roofs" else ("eye", "fov")
-    return {"adapter": report["adapter"], "by_view": {
-        view: {key: row[key] for key in keys} for view, row in rows.items()}}
+    by_view = {view: {key: row[key] for key in keys} for view, row in rows.items()}
+    if label == "roofs":
+        for view, (shader, mesh_node, expected_det) in ROOF_FOOTPRINTS.items():
+            sample = rows[view]["normal_footprint"]
+            if (sample["shader"] != shader or sample["mesh_node"] != mesh_node or sample["viewport"] != list(SIZE)
+                    or rows[view]["fov"] != 42 or not math.isclose(sample["center_distance_m"], 2.0, abs_tol=0.01)
+                    or not math.isclose(sample["uv_det_abs"], expected_det, rel_tol=0.05)
+                    or not 0 < sample["uv_det_abs"] < 1e-6):
+                raise ValueError(f"Roof centre did not resolve the intended sub-threshold material at {view}")
+            by_view[view]["normal_footprint"] = sample
+    return {"adapter": report["adapter"], "by_view": by_view}
 
 
 def verify_matched_inputs(observations):
@@ -337,14 +367,15 @@ def run_block(block, output, renderer, env):
         if label == "import":
             continue
         log = checks.with_name("engine.log").read_text(errors="replace")
-        evidence[label] = {"device": renderer_line(log, renderer)}
+        evidence[label] = {"device": renderer_line(log, renderer),
+                           "re_spirv_unsupported_opcode_count": log.count("OpVectorExtractDynamic is not supported yet.")}
         if label == "field":
             report = json.loads((directory / label / "report.json").read_text())
-            if (report["width"], report["height"]) != SIZE or set(report["cases"]) != set(CASES) or not report["lake"]:
+            if (report["width"], report["height"]) != SIZE or set(report["cases"]) != set(block["field_cases"]) or not report["lake"]:
                 raise ValueError("Wrong render target, incomplete case set or absent production lake")
             if not re.search(r"llvmpipe|lavapipe", report["adapter"], re.I):
                 raise ValueError(f"Unexpected adapter {report['adapter']}")
-            evidence[label]["cases"] = {case: metrics(report["cases"][case]) for case in CASES}
+            evidence[label]["cases"] = {case: metrics(report["cases"][case]) for case in block["field_cases"]}
             resources = checks.with_name("resources.json")
             telemetry = json.loads(resources.read_text())
             if sha(resources.read_bytes()) != verdict["resources"]["sha256"] or telemetry["capture_id"] != verdict["capture_id"]:
@@ -355,23 +386,17 @@ def run_block(block, output, renderer, env):
             system_cpu = summary["counter_deltas"]["cpu_system_seconds"]
             if telemetry["sample_count"] < 2 or not rss or user_cpu is None or system_cpu is None:
                 raise ValueError("Missing direct-process CPU/RSS samples")
-            evidence[label]["process_including_startup_and_all_cases"] = {
+            evidence[label]["process_including_startup_and_selected_cases"] = {
                 "sampled_peak_rss_bytes": rss, "sampled_cpu_seconds": user_cpu + system_cpu,
                 "coverage": telemetry["required_coverage"], "sample_count": telemetry["sample_count"]}
-        elif label == "paint":
-            prefix = "OPENRC_PAINT_VIEW "
-            report = [json.loads(line.removeprefix(prefix)) for line in log.splitlines() if line.startswith(prefix)]
+            evidence[label]["conditions"] = common_conditions(label, report, renderer)
+            evidence[label]["images"] = validate_images(directory / label, block["field_cases"])
         else:
-            manifest = "manifest.json" if label in ("moon", "storm") else "capture.json"
-            report = json.loads((directory / label / manifest).read_text())
-        pictures = CASES if label == "field" else DETAIL[label][1]
-        evidence[label]["conditions"] = common_conditions(label, report, renderer)
-        evidence[label]["images"] = validate_images(directory / label, pictures)
-        if label == "controls":
-            expected_hashes = {row["view"]: row["sha256"] for row in report["records"]}
-            for name, image in evidence[label]["images"].items():
-                if image["png_sha256"] != expected_hashes[name]:
-                    raise ValueError(f"Unmatched control fixture PNG digest: {name}")
+            snapshot = detail_snapshot(label, renderer, directory / label)
+            lifecycle = json.loads((directory / (label + "-lifecycle.json")).read_text())
+            if not lifecycle["accepted"] or lifecycle["verified_digest"] != snapshot["digest"]:
+                raise ValueError(f"Invalid capture lifecycle receipt for {label}")
+            evidence[label].update(conditions=snapshot["conditions"], images=snapshot["images"], lifecycle=lifecycle)
     dump(directory / "observation.json", evidence)
     return evidence
 
@@ -383,6 +408,10 @@ def validate_images(directory, pictures):
     images = {}
     for name in pictures:
         path = directory / (name + ".png")
+        if not path.read_bytes().endswith(b"\x00\x00\x00\x00IEND\xaeB\x60\x82"):
+            raise ValueError(f"Incomplete PNG at {path}")
+        with Image.open(path) as png:
+            png.verify()
         with Image.open(path) as image:
             if image.format != "PNG" or image.size != SIZE:
                 raise ValueError(f"Expected lossless 1920x1080 PNG at {path}")
@@ -391,6 +420,132 @@ def validate_images(directory, pictures):
                 raise ValueError(f"Uniform image at {path}")
             images[name] = {"png_sha256": sha(path.read_bytes()), "rgb_sha256": sha(rgb.tobytes())}
     return images
+
+
+def detail_snapshot(kind, renderer, directory):
+    """Validate all required native records and fully decode every output before trusting completion."""
+    name = "manifest.json" if kind in ("moon", "storm") else "capture.json"
+    manifest_bytes = (directory / name).read_bytes()
+    report = json.loads(manifest_bytes)
+    if not re.search(r"llvmpipe|lavapipe", report["adapter"], re.I):
+        raise ValueError(f"Unexpected capture device {report['adapter']}")
+    if kind == "paint":
+        if report["complete"] is not True or report["method"] != renderer:
+            raise ValueError("Incomplete studio capture or actual renderer mismatch")
+        conditions = common_conditions(kind, [{k: v for k, v in record.items() if k != "sha256"}
+                                               for record in report["records"]], renderer)
+    else:
+        conditions = common_conditions(kind, report, renderer)
+    images = validate_images(directory, DETAIL[kind][1])
+    if "records" in report:
+        for row in report["records"]:
+            stem = "turbo-lumber-evolution_aserradero_" + row["view"] if kind == "paint" else row["view"]
+            if images[stem]["png_sha256"] != row["sha256"]:
+                raise ValueError(f"Wrong native output hash for {kind}/{stem}")
+    digest = sha(json.dumps({"manifest": sha(manifest_bytes), "images": images}, sort_keys=True).encode())
+    return {"conditions": conditions, "images": images, "digest": digest}
+
+
+def observe_detail_shutdown(process, snapshot, grace=SHUTDOWN_GRACE_S, poll_interval=0.5):
+    """Only our explicit signal following stable, already verified output may close a stuck image fixture."""
+    started = time.monotonic()
+    verified = None
+    saved_at = None
+    before_signal = None
+    requested_at = None
+    sent = []
+    while process.poll() is None:
+        if saved_at is None:
+            try:
+                verified = snapshot()
+            except (OSError, ValueError, KeyError, TypeError, IndexError):
+                pass  # Partial/missing/invalid files never authorize termination.
+            else:
+                saved_at = time.monotonic()
+        elif time.monotonic() - saved_at >= grace:
+            before_signal = snapshot()
+            if before_signal != verified:
+                raise ValueError("Image evidence changed during exit grace")
+            if process.poll() is None:
+                try:
+                    os.kill(process.pid, signal.SIGTERM)
+                    sent.append(signal.SIGTERM)
+                    requested_at = time.monotonic()
+                except ProcessLookupError:
+                    pass
+                try:
+                    process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    try:
+                        os.kill(process.pid, signal.SIGKILL)
+                        sent.append(signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+            break
+        time.sleep(poll_interval)
+    code = process.wait()
+    forced = code < 0 and -code in sent
+    exited_at = time.monotonic()
+    receipt = {"engine_pid": process.pid, "engine_returncode": code, "signals_sent": [int(s) for s in sent],
+               "forced_post_save_cleanup": forced, "grace_seconds": grace, "accepted": False,
+               "initial_verified_digest": verified, "pre_signal_verified_digest": before_signal,
+               "first_verified_after_s": None if saved_at is None else saved_at-started,
+               "first_signal_after_s": None if requested_at is None else requested_at-started,
+               "exit_observed_after_s": exited_at-started}
+    if code == 0 or forced:
+        final = snapshot()
+        if verified is not None and final != verified:
+            raise ValueError("Final image evidence differs from verified output")
+        receipt.update(accepted=True, verified_digest=final)
+    return receipt
+
+
+def detail_process(kind, renderer, directory, command):
+    # Forward every byte through EOF to the checked runner. Its disk log is buffered, so
+    # validate the startup device from our bounded in-memory copy of the same bytes.
+    header = bytearray()
+    relay_errors = []
+    child = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    def relay():
+        try:
+            with child.stdout as pipe:
+                while chunk := pipe.read1(65536):
+                    header.extend(chunk[:max(0, 65536-len(header))])
+                    sys.stdout.buffer.write(chunk)
+                    sys.stdout.buffer.flush()
+        except (OSError, ValueError) as exc:
+            relay_errors.append(str(exc))
+    def snapshot():
+        if child.poll() is not None:
+            forwarding.join(timeout=5)
+            if relay_errors or forwarding.is_alive():
+                raise ValueError("Engine output did not drain through EOF")
+        renderer_line(bytes(header).decode(errors="replace"), renderer)
+        return detail_snapshot(kind, renderer, directory)["digest"]
+    forwarding = threading.Thread(target=relay, daemon=True)
+    forwarding.start()
+    receipt_path = directory.parent / (kind + "-lifecycle.json")
+    try:
+        receipt = observe_detail_shutdown(child, snapshot)
+    except Exception as exc:
+        if child.poll() is None:
+            child.kill()
+        dump(receipt_path, {"accepted": False, "engine_pid": child.pid, "engine_returncode": child.wait(),
+                            "evidence_validation_error": str(exc)})
+        raise
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait()
+        forwarding.join(timeout=5)
+    if relay_errors or forwarding.is_alive():
+        receipt.update(accepted=False, log_relay_error=relay_errors or ["did not reach EOF"])
+    dump(receipt_path, receipt)
+    if not receipt["accepted"]:
+        code = receipt["engine_returncode"]
+        return 128-code if code < 0 else code or 1
+    print("Verified detail-process receipt:", json.dumps(receipt), flush=True)
+    return 0
 
 
 def image_pairs(output, blocks, observations):
@@ -480,18 +635,20 @@ def execute(args, plan):
         raise ValueError("Unexpected tracked runtime changes after restoration")
     verify_matched_inputs(checked)
     pairs = image_pairs(out, plan["blocks"], checked)
-    dump(out / "results.json", {"completed": True, "order": ORDER, "observations": checked, "pairs": pairs,
+    dump(out / "results.json", {"completed": True, "workload": args.workload,
+         "order": [block["variant"] for block in plan["blocks"]], "observations": checked, "pairs": pairs,
          "coverage_limits": COVERAGE_LIMITS, "scope": "Software renderer, static production field views. Wall values are post-draw loop intervals. "
                   "GPU polls have unverified age. RSS and CPU seconds include startup. No target-GPU result."})
     # Repeat sources can be audited via their raw report + pixel hashes. Keep original evidence if pixels differ.
     for i, key in ((2, "candidate_repeat_rgb_identical"), (3, "baseline_repeat_rgb_identical")):
-        for name in CASES:
+        for name in plan["blocks"][0]["field_cases"]:
             if pairs["field-" + name][key]:
                 (out / plan["blocks"][i]["block"] / "field" / (name + ".png")).unlink()
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--workload", choices=["all", *WORKLOADS], default="all")
     parser.add_argument("--renderer", choices=DRIVERS, default="gl_compatibility")
     parser.add_argument("--godot", default="PINNED_GODOT")
     parser.add_argument("--out", type=Path, default=ROOT / "tmp/native-visual-audit")
@@ -501,10 +658,10 @@ def main():
     args.out = args.out.resolve()
     if args.godot != "PINNED_GODOT":
         args.godot = str(Path(args.godot).resolve())
-    plan = {"base": BASE, "candidate_head": git("rev-parse", "HEAD").decode().strip(),
+    plan = {"workload": args.workload, "base": BASE, "candidate_head": git("rev-parse", "HEAD").decode().strip(),
             "app_asset_changes_including_worktree": source_changes(BASE, plan=True),
             "env": FIXED_ENV, "warmup_frames_per_case": 60, "first_interval_excluded": True, "coverage_limits": COVERAGE_LIMITS,
-            "display": "1920x1080x24 Xvfb", "blocks": commands(args.godot, args.renderer, args.out)}
+            "display": "1920x1080x24 Xvfb", "blocks": commands(args.godot, args.renderer, args.out, args.workload)}
     if args.plan:
         print(json.dumps(plan, indent=2))
     elif args.disposable_checkout:
@@ -518,4 +675,9 @@ def main():
 
 
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["detail-process"]:
+        kind, renderer, directory, *engine_command = sys.argv[2:]
+        if kind not in DETAIL or renderer not in DRIVERS or not engine_command:
+            raise SystemExit("Invalid image fixture process")
+        raise SystemExit(detail_process(kind, renderer, Path(directory), engine_command))
     main()

@@ -1,4 +1,7 @@
+import importlib.util
 import json
+import signal
+import sys
 from pathlib import Path
 import subprocess
 import tempfile
@@ -25,6 +28,102 @@ class NativeVisualAuditTests(unittest.TestCase):
                 with audit.shader_variant(root, saved, desired):
                     self.fail("must reject before writing")
             self.assertEqual(path.read_bytes(), b"other edit")
+
+    def test_shards_preserve_same_runner_orders_and_native_case_settings(self):
+        for workload in audit.WORKLOADS:
+            group, name = workload.split(":")
+            blocks = audit.commands("/godot", "forward_plus", Path("/outputs"), workload)
+            expected_order = audit.ORDER if group == "field" else audit.ORDER[:2]
+            self.assertEqual(tuple(b["variant"] for b in blocks), expected_order)
+            matched = set()
+            for block in blocks:
+                label = "field" if group == "field" else name
+                self.assertEqual(set(block["commands"]), {"import", label})
+                command = block["commands"][label]
+                if group == "field":
+                    self.assertEqual(block["field_cases"], [name])
+                    self.assertIn("--resources", command)
+                    for arg in ("--frames=31", "--motion=off", "--measure_render_time=on", "--cases=" + name):
+                        self.assertIn(arg, command)
+                    self.assertNotIn("detail-process", command)
+                else:
+                    self.assertNotIn("--resources", command)
+                    self.assertIn("detail-process", command)
+                matched.add(json.dumps(command).replace(block["block"], "fixed"))
+            self.assertEqual(len(matched), 1)
+
+    def test_post_save_signal_is_distinct_from_early_exit_and_external_kill(self):
+        def run(code, grace):
+            with subprocess.Popen([sys.executable, "-c", code]) as proc:
+                return audit.observe_detail_shutdown(proc, lambda: "verified", grace, .01)
+        natural = run("pass", 2)
+        self.assertTrue(natural["accepted"])
+        self.assertFalse(natural["signals_sent"])
+        failed = run("raise SystemExit(13)", 2)
+        self.assertEqual((failed["accepted"], failed["engine_returncode"]), (False, 13))
+        killed = run("import os,signal; os.kill(os.getpid(), signal.SIGTERM)", 2)
+        self.assertFalse(killed["accepted"])
+        self.assertFalse(killed["signals_sent"])
+        forced = run("import time; time.sleep(5)", .1)
+        self.assertTrue(forced["forced_post_save_cleanup"])
+        self.assertEqual(forced["signals_sent"], [signal.SIGTERM])
+        self.assertTrue(forced["accepted"])
+        self.assertEqual((forced["initial_verified_digest"], forced["pre_signal_verified_digest"],
+                          forced["verified_digest"]), ("verified",) * 3)
+        self.assertGreaterEqual(forced["first_signal_after_s"]-forced["first_verified_after_s"], .1)
+        caught = run("import signal,time,sys; signal.signal(signal.SIGTERM,lambda *_:sys.exit(17)); time.sleep(5)", .4)
+        self.assertFalse(caught["accepted"])
+        self.assertEqual(caught["engine_returncode"], 17)
+
+    def test_unstable_or_missing_image_evidence_cannot_authorize_cleanup(self):
+        def missing():
+            raise ValueError("incomplete")
+        with subprocess.Popen([sys.executable, "-c", "pass"]) as proc:
+            with self.assertRaisesRegex(ValueError, "incomplete"):
+                audit.observe_detail_shutdown(proc, missing, .01, .01)
+        with subprocess.Popen([sys.executable, "-c", "import time; time.sleep(5)"]) as proc:
+            try:
+                snapshots = iter(("first", "changed"))
+                with self.assertRaisesRegex(ValueError, "changed"):
+                    audit.observe_detail_shutdown(proc, lambda: next(snapshots), .05, .01)
+                self.assertIsNone(proc.poll())
+            finally:
+                proc.kill()
+
+    @unittest.skipUnless(importlib.util.find_spec("PIL"), "Pinned visual environment supplies Pillow")
+    def test_real_checked_runner_drains_short_log_and_rejects_late_engine_errors(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            fixture = out / "moon"
+            fixture.mkdir()
+            rows = []
+            for name in audit.DETAIL["moon"][1]:
+                image = Image.new("RGB", audit.SIZE)
+                image.putpixel((2, 3), (255, 200, 100))
+                image.save(fixture / (name + ".png"))
+                rows.append({"file": name + ".png"})
+            (fixture / "manifest.json").write_text(json.dumps(
+                {"adapter": "llvmpipe", "engine": "fixture", "cases": rows}))
+            header = "Vulkan 1.3 - Forward+ - Using Device #0: Mesa - llvmpipe (LLVM)"
+            checked = [sys.executable, str(audit.ROOT / "tools/godot/run_checked.py"), "--out-dir", str(out / "checks"),
+                       "--label", "moon", "--timeout", "10", "--require-text", "Verified detail-process receipt:", "--",
+                       sys.executable, str(Path(audit.__file__)), "detail-process", "moon", "forward_plus", str(fixture),
+                       sys.executable, "-c"]
+            for marker, good in (("short stderr record", True), ("ERROR: simulated late fixture error", False)):
+                child = f"import sys; print({header!r}, flush=True); print({marker!r},file=sys.stderr,flush=True)"
+                result = subprocess.run([*checked, child], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                self.assertEqual(result.returncode == 0, good, result.stdout.decode(errors="replace"))
+                lifecycle = json.loads((out / "moon-lifecycle.json").read_text())
+                self.assertTrue(lifecycle["accepted"])
+                self.assertEqual(lifecycle["engine_returncode"], 0)
+            logs = [p.read_bytes() for p in (out / "checks").glob("*/engine.log")]
+            self.assertTrue(any(b"short stderr record" in log and header.encode() in log for log in logs))
+            self.assertTrue(any(b"ERROR: simulated late fixture error" in log for log in logs))
+            first = fixture / rows[0]["file"]
+            first.write_bytes(first.read_bytes()[:-1])
+            with self.assertRaisesRegex(ValueError, "Incomplete PNG"):
+                audit.detail_snapshot("moon", "forward_plus", fixture)
 
     def test_metrics_suppress_zeros_and_drop_bootstrap(self):
         row = dict(timing_valid=True, render_timing_enabled=True,

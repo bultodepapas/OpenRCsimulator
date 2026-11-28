@@ -14,7 +14,7 @@
     "initial_candidate_sparse_failures": 2,
     "successful_candidate_warnings": 1,
     "candidate_errors_after_hydration": 0,
-    "offline_capture_tool_tests_at_review": 7
+    "offline_capture_tool_tests_at_review": 8
   },
   "reproduction": {
     "tracked_inputs": [
@@ -390,5 +390,48 @@
       "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
       "independently_rehashed_log": true
     }
-  ]
+  ],
+  "native_control_fixture": {
+    "no_render": true,
+    "fixture_and_runner_sha256": {
+      "tools/graphics/capture_native_shader_controls.gd": "5bd37500e6de0692853616b6475b990b25fc0246bf46f04673017f349fd37b9c",
+      "tools/graphics/native_visual_audit.py": "37d8c3679d2daf7ebe95f665e39afa99030a47a404f18942230081bc8ff268fb",
+      "tools/graphics/test_native_visual_audit.py": "5cf9305a3e2f9f71c9c2e63dfe487c517878a819187971ef542e3b45ec327f52"
+    },
+    "author_parse_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "checked_reviewer_parse_attempts": [
+      {
+        "attempt": "control-harness-parse-independent",
+        "capture_id": "fd6a204c-436c-4571-a746-8f97bf949d44",
+        "ok": false,
+        "completed": true,
+        "engine_exit": 1,
+        "counts": {
+          "error": 3,
+          "warning": 0
+        },
+        "engine_log_sha256": "933c781705c6f10981a7bbaba5b2d1217977b065c6b48040a4200a7b74e9605d",
+        "receipt_sha256": "c0aef9b63e7841dec63a7f02fdbce0033fbacff5af66868cdf06879a325cfb3f",
+        "interpretation": "Initial invocation passed an external script as a relative path. Godot resolved it under app, so no source was loaded. Retried with its absolute path."
+      },
+      {
+        "attempt": "control-harness-parse-independent-absolute",
+        "capture_id": "90438704-b84f-49ac-9cb8-95d81dea9792",
+        "ok": true,
+        "completed": true,
+        "engine_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+        "receipt_sha256": "2f3972b73ef984651078471813645905520cdbefbac6c475ed3d3855d6fbfc69",
+        "interpretation": "Verified pinned engine loaded and parsed the production-bound external fixture; no render."
+      }
+    ],
+    "offline_test_result": "8 passed",
+    "planned_views_per_renderer": 28,
+    "detail_controls_per_renderer": 7,
+    "scope": "The fixture is an isolated renderer input. Source and parse checks do not qualify capture execution, GPU compilation, frame timing or production-frame appearance. A same-driver unchanged lens image can be legitimate because compilers can fold integer power expressions."
+  }
 }

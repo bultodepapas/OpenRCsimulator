@@ -396,7 +396,7 @@
   ],
   "integration_evidence": {
     "path": "evidence/integration.json",
-    "sha256": "8b86d99004f024ddbe5177ae570d445a18cbb14d7c36dd44a29d1f1b284e9ac4",
+    "sha256": "5441094ce0d232fec5cb3ffd1b77c04b9e454642b7798e02874ad8a2f9bbc98a",
     "summary": {
       "successful_candidate_suites": 9,
       "candidate_numbered_assertions": 2407,
@@ -406,7 +406,7 @@
       "initial_candidate_sparse_failures": 2,
       "successful_candidate_warnings": 1,
       "candidate_errors_after_hydration": 0,
-      "offline_capture_tool_tests_at_review": 7
+      "offline_capture_tool_tests_at_review": 8
     }
   }
 }
