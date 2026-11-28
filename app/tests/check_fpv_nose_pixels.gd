@@ -120,17 +120,39 @@ func _run() -> void:
 
 func _clear_frame(model: Node3D, blur: Node3D, label: String, out := "") -> bool:
 	var visible := await _grab()
+	var repeated := await _grab()
 	var hidden := await _without_aircraft(model, blur)
-	if not _full_size(visible) or not _full_size(hidden) or not _has_contrast(hidden):
+	if not _full_size(visible) or not _full_size(repeated) or not _full_size(hidden) or not _has_contrast(hidden):
 		_fail(label + ": missing 1920x1080 field image with contrast")
 		return false
 	if not out.is_empty() and (visible.save_png(out.path_join("visible.png")) != OK \
+			or repeated.save_png(out.path_join("visible-repeat.png")) != OK \
 			or hidden.save_png(out.path_join("hidden.png")) != OK):
 		_fail("failed to save nose readbacks")
 		return false
-	if visible.get_data() != hidden.get_data():
-		_fail(label + ": aircraft or propeller visibility changed the nose image")
-		return false
+	var reference := visible.get_data()
+	return _compare_pixels(reference, repeated.get_data(), label + " visible/repeat") \
+			and _compare_pixels(reference, hidden.get_data(), label + " visible/hidden")
+
+
+## Frozen RTX 3090 Compatibility readbacks can differ by one 8-bit RGB level.
+## Apply the same bound to every pixel of the unchanged control and the aircraft comparison.
+func _compare_pixels(reference: PackedByteArray, candidate: PackedByteArray, label: String) -> bool:
+	var changed := 0
+	if reference != candidate:
+		for offset in range(0, reference.size(), 4):
+			if reference.decode_u32(offset) == candidate.decode_u32(offset):
+				continue
+			changed += 1
+			if reference[offset + 3] != candidate[offset + 3] \
+					or absi(reference[offset] - candidate[offset]) > 1 \
+					or absi(reference[offset + 1] - candidate[offset + 1]) > 1 \
+					or absi(reference[offset + 2] - candidate[offset + 2]) > 1:
+				var pixel := offset / 4
+				_fail("%s: pixel (%d, %d) RGBA %s → %s" % [label, pixel % SIZE.x, pixel / SIZE.x,
+						reference.slice(offset, offset + 4), candidate.slice(offset, offset + 4)])
+				return false
+	print("%s: %d pixels differed by one RGB level, alpha matched" % [label, changed])
 	return true
 
 
@@ -148,11 +170,14 @@ func _without_aircraft(model: Node3D, blur: Node3D) -> Image:
 func _grab() -> Image:
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
-	return root.get_texture().get_image()
+	var image := root.get_texture().get_image()
+	if image != null and image.get_format() == Image.FORMAT_RGB8:
+		image.convert(Image.FORMAT_RGBA8)
+	return image
 
 
 func _full_size(frame: Image) -> bool:
-	return frame != null and not frame.is_empty() and frame.get_size() == SIZE
+	return frame != null and not frame.is_empty() and frame.get_size() == SIZE and frame.get_format() == Image.FORMAT_RGBA8
 
 
 func _has_contrast(frame: Image) -> bool:

@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 from unittest import mock
+import zlib
 
 import capture_groups as receipts
 
@@ -94,8 +95,8 @@ elif args:
         report = run_checked([sys.executable, '-c', f'print({output!r})', '--script', opt('--script')],
                              Path(opt('--out-dir')), required=required, label=opt('--label'))
         if opt('--label') == 'fpv-nose':
-            for name in ('visible.png', 'hidden.png'):
-                write(Path(opt('--out-dir')) / name, 'synthetic nose')
+            for name in ('visible.png', 'visible-repeat.png', 'hidden.png'):
+                (Path(opt('--out-dir')) / name).write_bytes((Path(root) / 'nose-fixture.png').read_bytes())
         if not env.get('FAKE_PIXEL_NO_METRICS') and ('segment_filter' in opt('--label') or 'skin_patterns' in opt('--label')):
             sys.path.insert(0, str(Path(root) / 'tools/ci'))
             from capture_groups import SEGMENT_METRIC_NAMES, SKIN_METRIC_NAMES
@@ -147,6 +148,41 @@ elif args:
             write(latest / 'sync.json', '[{"ok": true}]')
             write(latest / 'report.html', '<html>synthetic</html>')
 '''
+
+
+def nose_fixture_png(last_pixel=bytes((64, 96, 128, 255))):
+    def chunk(kind, data):
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+
+    size = (1920, 1080)
+    header = struct.pack(">IIBBBBB", *size, 8, 6, 0, 0, 0)
+    row = b"\x00" + bytes((64, 96, 128, 255)) * size[0]
+    rows = row * (size[1] - 1) + row[:-4] + last_pixel
+    return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", header) + chunk(b"IDAT", zlib.compress(rows, 1)) + chunk(b"IEND", b"")
+
+
+class FpvNoseReceiptTests(unittest.TestCase):
+    def test_per_channel_limits_cover_the_last_pixel_and_the_unchanged_control(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            nose = root / 'fpv-nose'
+            nose.mkdir()
+            baseline = nose_fixture_png()
+            (nose / 'visible.png').write_bytes(baseline)
+            (nose / 'visible-repeat.png').write_bytes(baseline)
+            hidden = nose / 'hidden.png'
+            hidden.write_bytes(nose_fixture_png(bytes((63, 97, 129, 255))))
+            receipts.verify_fpv_nose(root)
+            for name, last_pixel, error in (
+                ('hidden', (64, 96, 130, 255), 'RGB'), ('hidden', (64, 96, 128, 254), 'alpha'),
+                ('visible-repeat', (62, 96, 128, 255), 'RGB'),
+            ):
+                with self.subTest(image=name, pixel=last_pixel):
+                    path = nose / (name + '.png')
+                    path.write_bytes(nose_fixture_png(bytes(last_pixel)))
+                    with self.assertRaisesRegex(ValueError, f'visible/{name}: {error}'):
+                        receipts.verify_fpv_nose(root)
+                    path.write_bytes(baseline)
 
 
 class InventoryVolatilityTests(unittest.TestCase):
@@ -331,6 +367,9 @@ class CaptureGroupsTests(unittest.TestCase):
             shutil.copy2(ROOT / 'tools/testqueue' / name, admission / name)
         (self.root / 'tools/ci').mkdir()
         shutil.copy2(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
+        (self.root / 'tools/grass').mkdir()
+        shutil.copy2(ROOT / 'tools/grass/quality_compare.py', self.root / 'tools/grass/quality_compare.py')
+        (self.root / 'nose-fixture.png').write_bytes(nose_fixture_png())
         self.bin = self.root / "bin"
         self.bin.mkdir()
         stub = self.root / "fixture_stub.py"
@@ -515,7 +554,7 @@ assert capture_groups.TREELINE_CASES == [case.case_id for case in treeline_reada
                 path.write_text('fixture source\n')
         shutil.copyfile(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
         self.executable(self.app / 'capture.sh', self.current)
-        (self.root / '.gitignore').write_text('/out-*\n/bin/\n/commands.jsonl\n/app/captures/\n/results/\n')
+        (self.root / '.gitignore').write_text('/out-*\n/bin/\n/commands.jsonl\n/app/captures/\n/results/\n__pycache__/\n')
         for command in (['git', 'init', '-q'], ['git', 'add', '.'],
                         ['git', '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
                          'commit', '-qm', 'fixture']):

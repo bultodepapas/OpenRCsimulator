@@ -23,6 +23,9 @@ import subprocess
 import sys
 import tempfile
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.grass.quality_compare import EvidenceError, decode_png, png_dimensions
+
 RECEIPT = "capture-group-receipt.json"
 START = ".capture-start.json"
 CHECKS = ".capture-checks"
@@ -52,7 +55,7 @@ DIRECT_SOURCES = (
     "app/tests/test_field_failures.py", "app/tests/test_treeline_readability.py",
     "app/tests/treeline_readability.py", "tools/ci/capture_groups.py",
     "app/tests/test_lighting_skin_patterns.gd", "app/tests/test_lighting_segment_filter.gd",
-    "tools/godot/run_checked.py", "tools/godot/summarize.py",
+    "tools/godot/run_checked.py", "tools/godot/summarize.py", "tools/grass/quality_compare.py",
     "tools/trees/check_review.py", "tools/trees/check_wind.py",
     "tools/terrain/check_horizon.py", "tools/atmosphere/check_phase6.py",
     "tools/atmosphere/check_cloud_probe.py", "tools/ground/check_surfaces.py",
@@ -92,7 +95,7 @@ REQUIRED_OUTPUTS = {
     "ui": [],
     "quality": ["vq01b/visual-quality-run-manifest.json", "aircraft-lights/summary.json",
                 "lighting-pixels/segment_filter-metrics.json", "lighting-pixels/skin_patterns-metrics.json",
-                "fpv-nose/visible.png", "fpv-nose/hidden.png"],
+                "fpv-nose/visible.png", "fpv-nose/visible-repeat.png", "fpv-nose/hidden.png"],
     "terrain-atmosphere": ["l6b/repeat-1/review.json", "l7/capture-summary.json",
                            "l4b/capture-summary.json", "l15d/summary.json"],
     "ground": ["l9c/summary.json", "l9c/stripes/summary.json", "l10a/summary.json",
@@ -313,6 +316,29 @@ def verify_matrix(root: Path, relative: str, expected_ids: list[str]) -> None:
             fail(f"{relative}: matrix image or sidecar hash mismatch")
 
 
+def verify_fpv_nose(root: Path) -> None:
+    def pixels(path: Path) -> bytes:
+        try:
+            if png_dimensions(path) != (1920, 1080):
+                fail(f"{path.name}: stock nose capture must be 1920x1080")
+            return decode_png(path)[2]
+        except EvidenceError as error:
+            fail(str(error))
+
+    visible = local_file(root, "fpv-nose/visible.png")
+    reference = pixels(visible)
+    reference_hash = digest(visible)
+    for name in ("visible-repeat", "hidden"):
+        path = local_file(root, f"fpv-nose/{name}.png")
+        if digest(path) == reference_hash:
+            continue
+        candidate = pixels(path)
+        if reference[3::4] != candidate[3::4]:
+            fail(f"stock nose visible/{name}: alpha differs")
+        if any(abs(a - b) > 1 for a, b in zip(reference, candidate)):
+            fail(f"stock nose visible/{name}: RGB differs by more than one level")
+
+
 def verify_outputs(root: Path, group: str) -> dict[str, str]:
     if (root / "run-manifest.json").exists():
         fail("a partial group must never contain the legacy complete marker")
@@ -335,8 +361,7 @@ def verify_outputs(root: Path, group: str) -> dict[str, str]:
             fail(f"{group}: image/sidecar mismatch: {name}")
     if group == "quality":
         verify_lighting_metrics(root)
-        if digest(root / "fpv-nose/visible.png") != digest(root / "fpv-nose/hidden.png"):
-            fail("stock nose visible/hidden images differ")
+        verify_fpv_nose(root)
         verify_matrix(root, "vq01b", VQ_CASES)
         light_summary = read_json(root / "aircraft-lights/summary.json")
         if not isinstance(light_summary, dict) or light_summary.get("ok") is not True:
@@ -637,6 +662,7 @@ def inventory(args) -> None:
         valid_run_id(args.run_id)
     if args.group in ("all", "quality"):
         verify_lighting_metrics(args.root)
+        verify_fpv_nose(args.root)
     source = source_identity(args.repo)
     atomic_new_json(args.out, {
         "format": "openrc-capture-inventory v1", "group": args.group,
