@@ -38,7 +38,11 @@ static func flight_running(tree: SceneTree) -> bool:
 	if tree == null or tree.paused:
 		return false
 	var app := tree.root.get_node_or_null("AppRoot")
-	if app == null or bool(app.get("_loading_active")):
+	if app == null:
+		return false
+	# A root without the property (a test harness's AppRoot) is not loading; bool(null) is not a valid conversion.
+	var loading: Variant = app.get("_loading_active")
+	if loading is bool and loading:
 		return false
 	var flight: Variant = app.get("flight")
 	var vehicle: Variant = app.get("ground_vehicle")
