@@ -28,7 +28,7 @@ import time
 
 PROTOCOL = 1
 # Optional capabilities a coordinator may rely on; an older agent lacks the list.
-FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget", "launch-order", "recover-boot")
+FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget", "launch-order", "recover-boot", "describe")
 # A checked job's project import runs under this budget, before and apart from
 # the job's own timeout, which bounds the check (TQ-07-A8).
 IMPORT_BUDGET_SECONDS = 900
@@ -899,6 +899,166 @@ def supervisor_alive(state, identifier):
     return "_supervise" in command and identifier in command
 
 
+HARDWARE_CACHE_SECONDS = 24 * 3600
+RUNTIME_FILES = ("remote_agent.py", "processes.py", "common.py")
+
+
+def _run_text(argv, timeout=5):
+    try:
+        return subprocess.run(argv, capture_output=True, text=True, timeout=timeout).stdout
+    except (OSError, subprocess.SubprocessError):
+        return ""
+
+
+def _arch():
+    machine = platform.machine().lower()
+    return {"amd64": "x86_64", "x64": "x86_64", "aarch64": "arm64"}.get(machine, machine)
+
+
+def runtime_identity():
+    """Digests of the agent's own deployed files (TQ-07-B1/B4)."""
+    here = Path(__file__).resolve().parent
+    files = {}
+    for name in RUNTIME_FILES:
+        try:
+            files[name] = digest(here / name)
+        except OSError:
+            files[name] = None
+    combined = hashlib.sha256(encode(files)).hexdigest()
+    return {"files": files, "digest": combined}
+
+
+def _hardware(root):
+    """Slow, stable facts, cached under the root for a day. Every value may be None."""
+    path = Path(root) / "hardware.json"
+    try:
+        cached = read_json(path)
+        if isinstance(cached, dict) and time.time() - cached.get("observed_at", 0) < HARDWARE_CACHE_SECONDS:
+            return cached
+    except (OSError, ValueError):
+        pass
+    facts = {"observed_at": time.time(), "os": platform.system().lower(), "os_release": platform.release(),
+             "arch": _arch(), "cpu_model": None, "physical_cores": None, "logical_cores": os.cpu_count(),
+             "memory_total_bytes": None, "gpus": []}
+    if sys.platform == "darwin":
+        facts["os_version"] = _run_text(["sw_vers", "-productVersion"]).strip() or None
+        facts["cpu_model"] = _run_text(["sysctl", "-n", "machdep.cpu.brand_string"]).strip() or None
+        cores = _run_text(["sysctl", "-n", "hw.physicalcpu"]).strip()
+        facts["physical_cores"] = int(cores) if cores.isdigit() else None
+        memory = _run_text(["sysctl", "-n", "hw.memsize"]).strip()
+        facts["memory_total_bytes"] = int(memory) if memory.isdigit() else None
+        text = _run_text(["system_profiler", "SPDisplaysDataType"], timeout=15)
+        facts["gpus"] = [line.split(":", 1)[1].strip() for line in text.splitlines()
+                         if line.strip().startswith("Chipset Model:")]
+    elif sys.platform.startswith("linux"):
+        try:
+            info = Path("/proc/cpuinfo").read_text(encoding="utf-8", errors="replace")
+            names = [line.split(":", 1)[1].strip() for line in info.splitlines() if line.startswith("model name")]
+            facts["cpu_model"] = names[0] if names else None
+            cores = {(line.split(":", 1)[1].strip()) for line in info.splitlines() if line.startswith("core id")}
+            sockets = {(line.split(":", 1)[1].strip()) for line in info.splitlines() if line.startswith("physical id")}
+            facts["physical_cores"] = len(cores) * max(1, len(sockets)) if cores else None
+        except OSError:
+            pass
+        try:
+            for line in Path("/etc/os-release").read_text(encoding="utf-8").splitlines():
+                if line.startswith("PRETTY_NAME="):
+                    facts["os_version"] = line.split("=", 1)[1].strip('"')
+        except OSError:
+            pass
+        for node in sorted(Path("/sys/class/drm").glob("renderD*")) if Path("/sys/class/drm").is_dir() else []:
+            try:
+                vendor = (node / "device/vendor").read_text().strip()
+                device = (node / "device/device").read_text().strip()
+                facts["gpus"].append(f"{node.name} {vendor}:{device}")
+            except OSError:
+                continue
+    try:
+        write_json(path, facts)
+    except OSError:
+        pass
+    return facts
+
+
+def _volatile(root):
+    """Facts that change between probes. Every value may be None."""
+    facts = {"clock": time.time(), "uptime_seconds": None, "boot": None, "power": None, "session": None,
+             "memory_available_bytes": None, "inodes_free": None}
+    try:
+        runtime = str(Path(__file__).resolve().parents[2])
+        if runtime not in sys.path:
+            sys.path.insert(0, runtime)
+        from tools.testqueue.processes import host_identity as process_identity
+        facts["boot"] = process_identity().get("boot")
+    except Exception:
+        pass
+    try:
+        stats = os.statvfs(root)
+        facts["inodes_free"] = stats.f_favail
+    except (AttributeError, OSError):
+        pass
+    if sys.platform == "darwin":
+        boot = re.search(r"sec\s*=\s*(\d+)", _run_text(["sysctl", "-n", "kern.boottime"]))
+        facts["uptime_seconds"] = round(time.time() - int(boot.group(1))) if boot else None
+        battery = _run_text(["pmset", "-g", "batt"])
+        percent = re.search(r"(\d+)%", battery)
+        facts["power"] = {"source": "ac" if "AC Power" in battery else "battery" if "Battery Power" in battery else None,
+                          "battery_percent": int(percent.group(1)) if percent else None}
+        thermal = _run_text(["pmset", "-g", "therm"])
+        facts["power"]["thermal_warning"] = None if not thermal else ("No thermal warning level has been recorded" not in thermal
+                                                                     and "CPU_Speed_Limit \t= 100" not in thermal)
+        user = _run_text(["stat", "-f", "%Su", "/dev/console"]).strip()
+        facts["session"] = {"console_user": user if user and user != "root" else None}
+        pages = _run_text(["vm_stat"])
+        size = re.search(r"page size of (\d+) bytes", pages)
+        free = sum(int(value) for key, value in re.findall(r"Pages (free|inactive|speculative):\s+(\d+)", pages))
+        if size:
+            facts["memory_available_bytes"] = free * int(size.group(1))
+    elif sys.platform.startswith("linux"):
+        try:
+            facts["uptime_seconds"] = round(float(Path("/proc/uptime").read_text().split()[0]))
+        except (OSError, ValueError, IndexError):
+            pass
+        supplies = Path("/sys/class/power_supply")
+        if supplies.is_dir():
+            online = [p for p in supplies.glob("*/online")]
+            capacity = [p for p in supplies.glob("*/capacity")]
+            try:
+                on_ac = any(p.read_text().strip() == "1" for p in online) if online else None
+                facts["power"] = {"source": "ac" if on_ac or not capacity else "battery",
+                                  "battery_percent": int(capacity[0].read_text().strip()) if capacity else None}
+            except (OSError, ValueError):
+                pass
+    return facts
+
+
+def _caches(root):
+    """What this host already holds, so placement need not charge a transfer for it."""
+    incoming = sorted(path.name[:-4] for path in (Path(root) / "incoming").glob("*.tar")
+                      if re.fullmatch(r"[0-9a-f]{64}\.tar", path.name))
+    engines = {}
+    base = Path(root) / IMPORT_CACHE
+    for directory in sorted(base.iterdir()) if base.is_dir() else []:
+        meta = {}
+        try:
+            meta = read_json(directory / "cache.json")
+        except (OSError, ValueError):
+            pass
+        engines[directory.name] = {key: meta.get(key) for key in ("files", "bytes", "published_at", "source_job")
+                                   if isinstance(meta, dict) and key in meta}
+    return {"incoming_archives": incoming, "import_cache_engines": engines}
+
+
+def describe_host(root, states):
+    """TQ-07-B1: one self-description for scheduling; unknown is None, never a guess."""
+    hardware = _hardware(root)
+    return {"runtime": runtime_identity(), "hardware": hardware, "volatile": _volatile(root),
+            "caches": _caches(root),
+            "slots": {"headless": 1, "running": [state.get("request_id") for state in states
+                                                 if state.get("state") in ("STARTING", "RUNNING")],
+                      "unknown": [state.get("request_id") for state in states if state.get("state") == "UNKNOWN"]}}
+
+
 def probe(root, request):
     if not isinstance(request, dict) or set(request) - {"engine_path"}:
         raise Refused("probe accepts only engine_path")
@@ -934,6 +1094,13 @@ def probe(root, request):
     except (AttributeError, OSError):
         load = None
     states = scan(root)
+    try:
+        description = describe_host(root, states)
+    except Exception as error:  # a self-description fault never hides the host
+        description = {"error": f"{type(error).__name__}: {error}"[:200]}
+    if memory[0] is None:
+        memory = ((description.get("volatile") or {}).get("memory_available_bytes"),
+                  (description.get("hardware") or {}).get("memory_total_bytes"))
     busy = False
     try:
         lock = Lock(root / "pool.lock")
@@ -963,6 +1130,7 @@ def probe(root, request):
         except (OSError, subprocess.SubprocessError) as error:
             admission.update(busy=True, busy_code="OCCUPANCY_UNKNOWN", busy_reason=f"Godot process probe failed: {error}")
     return {"protocol": PROTOCOL, "features": list(FEATURES), "identity": host_identity(root),
+            "description": description,
             "host": {"hostname": platform.node(), "system": system, "release": platform.release(),
                      "machine": machine, "python": platform.python_version()},
             "capabilities": capabilities,

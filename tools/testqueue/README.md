@@ -330,6 +330,34 @@ the host lock by the next `run` or `fence` of that ID (TQ-07-A9a).
 Deploy `remote_agent.py` **and** `processes.py` together: the launch order needs
 `OwnedProcess.start(release=False)`.
 
+#### Host description and agent deployment (TQ-07-B1/B4)
+
+`probe` returns a `description`:
+
+- **runtime:** digests of the agent's own files;
+- **hardware** (cached for a day in `<root>/hardware.json`): OS and version,
+  architecture, CPU, cores, memory, GPUs;
+- **volatile facts:** clock, uptime, boot, power and battery, macOS thermal
+  warning and console user, memory without `psutil`, free inodes;
+- **caches:** incoming archives and import-cache engines;
+- **slots.**
+
+Unknown facts are `null`. The pool counts an archive the host already holds as
+`cached_inputs`, so placement charges no transfer for it. The digest of each
+coordinator archive is recorded beside it as `archives/<source>.tar.sha256`.
+`sim_fleet` shows a compact `facts` summary and `runtime: current|behind|unknown`,
+comparing the host's digest with the LF bytes this coordinator runs.
+
+```powershell
+python tools/testqueue/testctl.py pool deploy --host linux            # dry run: current or behind
+python tools/testqueue/testctl.py pool deploy --host linux --execute  # install, verify, or roll back
+```
+
+`deploy` installs only bytes that Git already stores. It stages them on the host,
+then swaps them under the host lock with no unfinished job, keeping
+`<file>.prev-<timestamp>`. If the host does not then report the expected digest,
+it restores the previous files.
+
 Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
 interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
 blindly resubmitted. Proved predispatch lock/I/O deferral uses `RETRY_WAIT` with

@@ -52,6 +52,19 @@ def _host_view(observation: dict, work: dict, unsettled: dict | None = None) -> 
         view["busy_code"] = "BUSY"
     if unsettled and observation.get("id") in unsettled:
         view["unsettled_receipts"] = unsettled[observation["id"]]
+    if observation.get("runtime"):
+        view["runtime"] = observation["runtime"]  # TQ-07-B4: current, behind or unknown
+    description = observation.get("description") if isinstance(observation.get("description"), dict) else {}
+    hardware, volatile = description.get("hardware") or {}, description.get("volatile") or {}
+    facts = {"arch": hardware.get("arch"), "cpu": hardware.get("cpu_model"),
+             "gpus": hardware.get("gpus") or None, "power": volatile.get("power"),
+             "console_user": (volatile.get("session") or {}).get("console_user") if volatile.get("session") else None,
+             "uptime_hours": round(volatile["uptime_seconds"] / 3600, 1)
+             if isinstance(volatile.get("uptime_seconds"), (int, float)) else None,
+             "cached_inputs": len(observation.get("cached_inputs") or []) or None}
+    facts = {key: value for key, value in facts.items() if value not in (None, [], {})}
+    if facts:
+        view["facts"] = facts  # TQ-07-B1
     capabilities = observation.get("capabilities")
     if isinstance(capabilities, list) and "graphics" in capabilities:
         # TQ-06: tell agents which hosts take rendering_driver jobs, and on which GPU.

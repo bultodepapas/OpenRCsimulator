@@ -4,10 +4,12 @@ from __future__ import annotations
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import io
 import itertools
 import json
 import math
 import os
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -174,6 +176,22 @@ def _discard_owned_archive_temporary(path, identity):
         path.unlink()
     except OSError as error:
         raise ArchiveTemporaryUnresolved(f'Unpublished archive temporary could not be removed: {path}: {error}') from error
+
+
+RUNTIME_FILES = ('remote_agent.py', 'processes.py', 'common.py')
+
+
+def runtime_files(directory=None):
+    """The agent runtime this coordinator runs, as LF bytes (what Git stores) (TQ-07-B4)."""
+    directory = Path(directory) if directory else Path(__file__).resolve().parent
+    return {name: (directory / name).read_bytes().replace(b'\r\n', b'\n') for name in RUNTIME_FILES}
+
+
+def runtime_digest(files):
+    """The same combined digest the agent reports for its own files."""
+    hashes = {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}
+    encoded = json.dumps(hashes, sort_keys=True, separators=(',', ':'), ensure_ascii=True, allow_nan=False)
+    return hashlib.sha256(encoded.encode('ascii')).hexdigest()
 
 
 def outcome_is_failure(receipt):
@@ -433,6 +451,8 @@ class Pool:
                          'capabilities': remote['capabilities'], 'engine': remote['engine'],
                          # Older agents report no identity; their receipts bind root and SSH alias only.
                          'identity': remote.get('identity') if isinstance(remote.get('identity'), dict) else None,
+                         'features': [item for item in remote.get('features') or [] if isinstance(item, str)],
+                         'description': remote.get('description') if isinstance(remote.get('description'), dict) else None,
                          'busy_code': ('QUARANTINED' if admission['quarantined'] else
                                        busy_code if admission['busy'] else
                                        'ENROLLED_HOST' if admission['enrolled'] else None)}
@@ -442,6 +462,16 @@ class Pool:
                 raise ValueError('Remote engine differs from the configured verified pin')
             value.update(id=host['id'], local=host.get('local', False))
             value.setdefault('online', True)
+            if not host.get('local'):
+                description = value.get('description') or {}
+                # TQ-07-B1: an archive the host already holds costs no transfer.
+                incoming = set((description.get('caches') or {}).get('incoming_archives') or [])
+                value['cached_inputs'] = sorted(source for source, archive in self._archive_digests().items()
+                                                if archive in incoming)
+                # TQ-07-B4: a host running another agent build is visible as drift.
+                reported = (description.get('runtime') or {}).get('digest')
+                value['runtime'] = ('current' if reported and reported == self.expected_runtime()
+                                    else 'behind' if reported else 'unknown')
             value.setdefault('cached_inputs', [])
             value.setdefault('durations', {})
             value['transfer_bytes_per_second'] = host.get('transfer_bytes_per_second', 10 * 1024 * 1024)
@@ -452,6 +482,37 @@ class Pool:
             return value
         except (OSError, ValueError, RuntimeError, ImportError, subprocess.SubprocessError) as error:
             return {'id': host['id'], 'online': False, 'reason': str(error)}
+
+    _expected_runtime = None
+
+    def expected_runtime(self):
+        """Digest of the agent runtime this coordinator would deploy; None if unreadable."""
+        if self._expected_runtime is None:
+            try:
+                self._expected_runtime = runtime_digest(runtime_files())
+            except OSError:
+                return None
+        return self._expected_runtime
+
+    def _archive_digests(self):
+        """Source digest -> archive SHA-256, from sidecars written when archives were prepared."""
+        found = {}
+        for path in (self.root / 'archives').glob('*.tar.sha256'):
+            try:
+                value = path.read_text(encoding='ascii').strip()
+            except OSError:
+                continue
+            if re.fullmatch(r'[0-9a-f]{64}', value):
+                found[path.name[:-len('.tar.sha256')]] = value
+        return found
+
+    def _remember_archive_digest(self, source_digest, archive_digest):
+        try:
+            path = self.root / 'archives' / (source_digest + '.tar.sha256')
+            if not path.exists():
+                path.write_text(archive_digest + '\n', encoding='ascii')
+        except OSError:
+            pass  # advisory: only the transfer estimate depends on it
 
     def history(self):
         """Advisory duration history; unreadable history never takes a host offline."""
@@ -753,6 +814,110 @@ class Pool:
                 pass
             finally:
                 guard.close()
+
+    _INSTALLER = (
+        'import fcntl, hashlib, json, os, shutil, sys, time\n'
+        'staging, runtime, root, expected, rollback = sys.argv[1], sys.argv[2], sys.argv[3], json.loads(sys.argv[4]), sys.argv[5] == "1"\n'
+        'def out(value, code=0):\n'
+        '    print(json.dumps(value)); sys.exit(code)\n'
+        'lock = open(os.path.join(root, "pool.lock"), "a+b")\n'
+        'try:\n'
+        '    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)\n'
+        'except OSError:\n'
+        '    out({"ok": False, "error": "BUSY: the host lock is held"}, 1)\n'
+        'jobs = os.path.join(root, "jobs")\n'
+        'for name in (os.listdir(jobs) if os.path.isdir(jobs) else []):\n'
+        '    path = os.path.join(jobs, name, "state.json")\n'
+        '    try:\n'
+        '        state = json.load(open(path)).get("state")\n'
+        '    except Exception:\n'
+        '        state = "UNREADABLE" if os.path.exists(path) else None\n'
+        '    if state in ("STARTING", "RUNNING", "UNKNOWN", "UNREADABLE"):\n'
+        '        out({"ok": False, "error": "BUSY: job " + name + " is " + state}, 1)\n'
+        'if rollback:\n'
+        '    restored = []\n'
+        '    for name in expected:\n'
+        '        previous = os.path.join(runtime, name + ".prev-deploy")\n'
+        '        if os.path.exists(previous):\n'
+        '            os.replace(previous, os.path.join(runtime, name)); restored.append(name)\n'
+        '    out({"ok": True, "restored": restored})\n'
+        'for name, sha in expected.items():\n'
+        '    data = open(os.path.join(staging, name), "rb").read()\n'
+        '    if hashlib.sha256(data).hexdigest() != sha:\n'
+        '        out({"ok": False, "error": "staged " + name + " differs from the expected digest"}, 1)\n'
+        'for name in expected:\n'
+        '    current = os.path.join(runtime, name)\n'
+        '    if os.path.exists(current):\n'
+        '        shutil.copy2(current, current + ".prev-deploy")\n'
+        '        shutil.copy2(current, current + ".prev-" + time.strftime("%Y%m%dT%H%M%S"))\n'
+        '    os.replace(os.path.join(staging, name), current)\n'
+        'fd = os.open(runtime, os.O_RDONLY); os.fsync(fd); os.close(fd)\n'
+        'shutil.rmtree(staging, ignore_errors=True)\n'
+        'out({"ok": True, "installed": sorted(expected)})\n')
+
+    def deploy_runtime(self, host_id, *, execute=False):
+        """Install this coordinator's agent runtime on one idle remote host (TQ-07-B4).
+
+        Only bytes that Git already stores are installed. The swap happens under
+        the host lock with no unfinished job, keeps the previous files, and is
+        rolled back if the host does not then report the expected runtime.
+        """
+        host = self._remote_host(host_id)
+        files = runtime_files()
+        expected_digest = runtime_digest(files)
+        for name, data in files.items():
+            oid = subprocess.run(['git', '-C', str(REPO), 'hash-object', '--stdin'], input=data,
+                                 capture_output=True, check=True).stdout.decode().strip()
+            if subprocess.run(['git', '-C', str(REPO), 'cat-file', '-e', oid], capture_output=True).returncode != 0:
+                raise ValueError(f'{name} is not committed; only committed agent bytes are deployed')
+        probe = self.remote(host, 'probe', {'engine_path': None}, timeout=60)
+        reported = ((probe.get('description') or {}).get('runtime') or {}).get('digest')
+        report = {'host': host_id, 'expected': expected_digest, 'reported': reported,
+                  'up_to_date': reported == expected_digest, 'execute': execute}
+        if reported == expected_digest or not execute:
+            return report
+        admission = probe.get('admission') or {}
+        if admission.get('busy') or admission.get('quarantined'):
+            raise ValueError(f'{host_id} is not idle ({admission.get("busy_code") or "busy"}); deploy later')
+        runtime = str(Path(host['agent']).parent).replace('\\', '/')
+        staging = f"{runtime}/.staging-{uuid.uuid4().hex}"
+        hashes = {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}
+        flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        buffer = tempfile.SpooledTemporaryFile()
+        with tarfile.open(fileobj=buffer, mode='w') as bundle:
+            for name, data in files.items():
+                info = tarfile.TarInfo(name)
+                info.size, info.mode = len(data), 0o644
+                bundle.addfile(info, io.BytesIO(data))
+        buffer.seek(0)
+        subprocess.run(ssh_command(host, shlex.join(['mkdir', '-p', staging]) + ' && ' +
+                                   shlex.join(['tar', '-x', '-C', staging])),
+                       input=buffer.read(), capture_output=True, check=True, timeout=120, creationflags=flags)
+
+        def install(rollback):
+            command = shlex.join([host['python'], '-', staging, runtime, host['root'], json.dumps(hashes),
+                                  '1' if rollback else '0'])
+            result = subprocess.run(ssh_command(host, command), input=self._INSTALLER.encode(),
+                                    capture_output=True, timeout=120, creationflags=flags)
+            try:
+                return json.loads(result.stdout.decode().strip().splitlines()[-1])
+            except (ValueError, IndexError):
+                return {'ok': False, 'error': (result.stderr.decode(errors='replace') or 'no reply')[-300:]}
+
+        installed = install(False)
+        report['install'] = installed
+        if not installed.get('ok'):
+            return report
+        try:
+            after = self.remote(host, 'probe', {'engine_path': None}, timeout=60)
+            report['reported_after'] = ((after.get('description') or {}).get('runtime') or {}).get('digest')
+        except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+            report['reported_after'] = None
+            report['probe_error'] = str(error)[:200]
+        report['up_to_date'] = report['reported_after'] == expected_digest
+        if not report['up_to_date']:
+            report['rollback'] = install(True)
+        return report
 
     def recover_quarantined_hosts(self):
         """Ask each quarantined remote host to settle jobs its reboot proves ended (TQ-07-A9f).
@@ -1224,6 +1389,7 @@ class Pool:
                         archive = self._prepare_archive(snapshot, manifest)
                         verify_archive(archive, manifest)
                         archive_digest = digest(archive)
+                        self._remember_archive_digest(manifest['source_digest'], archive_digest)
                     except (OSError, PoolLockTimeout) as error:
                         # This invocation has not written a dispatch receipt or
                         # called an execution authority. The typed deferral is
@@ -1788,6 +1954,10 @@ def main(argv=None):
                                    '(dry run unless --execute)')
     gc.add_argument('--host', required=True)
     gc.add_argument('--execute', action='store_true')
+    deploy = sub.add_parser('deploy', help="install this coordinator's committed agent runtime on an idle remote "
+                                           'host (dry run unless --execute)')
+    deploy.add_argument('--host', required=True)
+    deploy.add_argument('--execute', action='store_true')
     remote_reconcile = sub.add_parser('remote-reconcile', help='operator release of a remote UNKNOWN job with proof')
     remote_reconcile.add_argument('--host', required=True)
     remote_reconcile.add_argument('job')
@@ -1834,6 +2004,8 @@ def main(argv=None):
         value = pool.gc(args.host, execute=args.execute)
     elif args.command == 'remote-reconcile':
         value = pool.remote_reconcile(args.host, args.job)
+    elif args.command == 'deploy':
+        value = pool.deploy_runtime(args.host, execute=args.execute)
     else:
         deadline = time.monotonic() + (args.timeout if args.command == 'wait' else 0)
         while True:
