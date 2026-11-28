@@ -6086,6 +6086,41 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 	return count
 
 
+## NK-6u test hook: false leaves every tick's substep count to _substeps_joint and _substeps, for equivalence checks.
+var native_substeps_enabled := true
+
+
+## NK-6u: the inputs of _substeps_with_context that only the guarded configuration decides, for the native tick
+## integrator's own count (NativeStage.install; nk_substeps.hpp). The configuration guard refuses a tick after any change
+## to them. The kernel reads the RC-track overlay and the tick's aux itself, and leaves to the callbacks above every tick
+## whose count needs the power latch or the coupled response. {} keeps the callbacks for every tick.
+func native_substep_plan() -> Dictionary:
+	if not native_substeps_enabled or get_script().resource_path != SELF_PATH or sim == null \
+			or not aircraft.get("ok", false):
+		return {}
+	var plan := {battery_dynamic = battery_is_dynamic(), gear_mode = 0, gear_count = 1, reach = 0.0,
+		terrain = 0.0 if ground_surfaces.is_empty() else GroundTerrain.max_height_validated(ground_surfaces),
+		gear_aux_index = gear_aux_index(), gear_aux_size = GEAR_AUX_SIZE, shaft_base = false,
+		liquid = liquid_fuel_is_active(), rotor_index = _rotor_index(), stopped_rpm = Propulsion.STOPPED_RPM,
+		max_substeps = Sim.MAX_SUBSTEPS, margin = Ground.SUBSTEP_REACH_MARGIN_M}
+	if aircraft.model.get("landing_gear") is Dictionary:
+		var gear: Dictionary = aircraft.model.landing_gear
+		plan.gear_mode = 2 if gear_is_retractable() else 1
+		if not gear.is_empty():
+			var declared: Variant = gear.get("substeps", 1)
+			if typeof(declared) not in [TYPE_INT, TYPE_FLOAT]:
+				return {}
+			plan.gear_count = int(declared)
+			if plan.gear_count > 1:
+				if typeof(gear.get("reach")) not in [TYPE_INT, TYPE_FLOAT]:
+					return {}
+				plan.reach = float(gear.reach)
+	var prop: Dictionary = aircraft.model.propulsion
+	plan.shaft_base = shaft_is_coupled() and not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
+		and Propulsion.has_rotor_dynamics(prop)
+	return plan
+
+
 ## NK-2a: capability and layout answers that depend only on the committed aircraft data, memoized for one
 ## kernel tick. The kernel's pre_tick arms the memo; the accepted (stepped) or rejected (faulted) tick drops
 ## it, so data replaced or edited between ticks (load, Workshop, tests) is always read afresh. Direct

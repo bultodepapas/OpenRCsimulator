@@ -153,6 +153,8 @@ var _strike_lake: Dictionary = {}
 var _liquid_terminal_bound := false
 ## NK-6t: the liquid installation answers LiquidFlight.valid (stage_liquid_store_valid).
 var _liquid_store_bound := false
+## NK-6u: the kernel counts the installed session's substeps from FlightSession.native_substep_plan.
+var _substeps_bound := false
 ## NK-6i: the glow installation prepared its quiet hull terminal (prepare_glow_terminal).
 var _glow_terminal_bound := false
 ## NK-5g: the installed stage prepared its native pre-step; with turbulence it also owns sim.modes[1] on an answer.
@@ -454,6 +456,10 @@ func install(session: Node) -> Callable:
 		and bool(_native.prepare_liquid_terminal(HullContact.crash_depth(session._hull_contact), _liquid_sample_static_ok(session)))
 	_glow_terminal_bound = _family == "glow" and _native.has_method("prepare_glow_terminal") and _prepare_glow_terminal(session)
 	_prop_strike_bound = _family != "helicopter" and _native.has_method("prepare_prop_strike") and _prepare_prop_strike(session)
+	_substeps_bound = false
+	if _native.has_method("prepare_substeps"): # always, so a plan never outlives its installation
+		_substeps_bound = bool(_native.prepare_substeps(session, session.native_substep_plan() \
+			if _family != "helicopter" and session.has_method("native_substep_plan") else {}))
 	_guard_hull = {}
 	_hull_guard_bound = _family != "helicopter" and _native.has_method("prepare_hull_guard") \
 		and session.get("_hull_contact") is Dictionary and not session._hull_contact.is_empty() \
@@ -495,6 +501,9 @@ func uninstall(session: Node) -> Callable:
 	_liquid_terminal_bound = false
 	_liquid_store_bound = false
 	_glow_terminal_bound = false
+	if _substeps_bound and _native != null:
+		_native.prepare_substeps(null, {})
+	_substeps_bound = false
 	_pre_step_bound = false
 	_prop_strike_bound = false
 	_strike_disc = {}

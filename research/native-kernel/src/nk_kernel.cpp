@@ -49,6 +49,7 @@
 #include "nk_mechanical_audio_core.hpp"
 #include "nk_audio_rows.hpp"
 #include "nk_shadow_parts.hpp"
+#include "nk_substeps.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1039,6 +1040,15 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
 	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
 	std::unique_ptr<nk::render::ShadowParts> shadow_parts_; // NK-8a: one projected shadow's parts
+	// NK-6u: the installed session's substep plan (nk_substeps.hpp) and the names its tick checks read.
+	struct SubstepNames {
+		godot::StringName joint{"_substeps_joint"}, plain{"_substeps"}, rc_track{"_rc_track"}, electric{"_electric_step"},
+			step_policy{"step_policy"}, substeps_joint{"substeps_joint"}, substeps{"substeps"};
+	};
+	nk::SubstepPlan substep_plan_;
+	uint64_t substep_session_id_ = 0;
+	std::unique_ptr<SubstepNames> substep_names_;
+	int64_t substep_answers_ = 0, substep_refined_ = 0;
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
@@ -1375,6 +1385,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("integrate_tick", "model", "state", "continuous", "aux", "t", "dt", "tick",
 			"mass", "gravity", "inertia", "inertia_inv"), &OpenRCNativeKernel::integrate_tick);
 		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
+		godot::ClassDB::bind_method(D_METHOD("prepare_substeps", "session", "plan"), &OpenRCNativeKernel::prepare_substeps);
+		godot::ClassDB::bind_method(D_METHOD("stage_substep_probe", "model", "state", "continuous", "aux", "t", "dt"),
+			&OpenRCNativeKernel::stage_substep_probe);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_firing", "body", "values", "time_s"),
 			&OpenRCNativeKernel::stage_glow_firing);
 		godot::ClassDB::bind_method(D_METHOD("prepare_glow_validity", "bounds"), &OpenRCNativeKernel::prepare_glow_validity);
@@ -3011,6 +3024,97 @@ public:
 		return Dictionary();
 	}
 
+	// NK-6u: FlightSession.native_substep_plan for `session`; an empty plan (or any malformed field) clears it.
+	bool prepare_substeps(godot::Object *session, const Dictionary &plan) {
+		substep_plan_ = nk::SubstepPlan();
+		substep_session_id_ = 0;
+		if (session == nullptr || plan.is_empty()) return false;
+		nk::SubstepPlan p;
+		auto boolean = [&](const char *key, bool &out) {
+			const Variant v = plan.get(key, Variant());
+			if (v.get_type() != Variant::BOOL) return false;
+			out = bool(v);
+			return true;
+		};
+		auto integer = [&](const char *key, int64_t &out) {
+			const Variant v = plan.get(key, Variant());
+			if (v.get_type() != Variant::INT) return false;
+			out = int64_t(v);
+			return true;
+		};
+		auto number = [&](const char *key, double &out) {
+			const Variant v = plan.get(key, Variant());
+			if (v.get_type() != Variant::FLOAT || !std::isfinite(double(v))) return false;
+			out = double(v);
+			return true;
+		};
+		int64_t gear_mode = 0;
+		if (plan.size() != 13 || !boolean("battery_dynamic", p.battery_dynamic) || !integer("gear_mode", gear_mode) ||
+				gear_mode < 0 || gear_mode > 2 || !integer("gear_count", p.gear_count) || !number("reach", p.reach) ||
+				!number("terrain", p.terrain) || !integer("gear_aux_index", p.gear_aux_index) ||
+				!integer("gear_aux_size", p.gear_aux_size) || p.gear_aux_size < 2 || !boolean("shaft_base", p.shaft_base) ||
+				!boolean("liquid", p.liquid) || !integer("rotor_index", p.rotor_index) || p.rotor_index < 0 ||
+				!number("stopped_rpm", p.stopped_rpm) || !integer("max_substeps", p.max_substeps) ||
+				p.max_substeps < 1 || p.max_substeps > nk::kTickMaxSubsteps || !number("margin", p.margin)) {
+			return false;
+		}
+		p.gear_mode = static_cast<int>(gear_mode);
+		p.ready = true;
+		if (!substep_names_) substep_names_ = std::make_unique<SubstepNames>();
+		substep_plan_ = p;
+		substep_session_id_ = session->get_instance_id();
+		return true;
+	}
+
+	// NK-6u: the session's own substep count for this tick from its plan, or -1 when its callback must decide: another
+	// owner's callback, an RC-track overlay, or a tick the plan does not cover (nk_substeps.hpp).
+	int64_t tick_substeps(const godot::Callable &policy, const godot::Callable &joint, const godot::Callable &plain,
+			const nk::StageResult &current, const nk::R *combined, int size, const PackedFloat64Array &aux, double dt) const {
+		if (!substep_plan_.ready || !substep_names_) return -1;
+		godot::Object *session = godot::ObjectDB::get_instance(substep_session_id_);
+		if (session == nullptr) return -1;
+		const SubstepNames &n = *substep_names_;
+		const bool use_joint = joint.is_valid();
+		if (use_joint ? joint != godot::Callable(session, n.joint) : plain != godot::Callable(session, n.plain)) return -1;
+		const Variant track = session->get(n.rc_track);
+		if (track.get_type() != Variant::DICTIONARY || !Dictionary(track).is_empty()) return -1;
+		const bool electric = policy.is_valid() && policy == godot::Callable(session, n.electric);
+		nk::SubstepPreview preview;
+		if (use_joint && current.has_preview) {
+			bool valid = true;
+			for (int i = 0; i < 3; ++i) valid = valid && nk::is_finite(current.preview_air.v[i]);
+			for (const nk::R &value : current.pre_reaction) valid = valid && nk::is_finite(value);
+			for (const nk::R &value : current.preview_wheel_rates) valid = valid && nk::is_finite(value);
+			preview.valid = valid;
+			preview.has_rate = valid && current.has_preview_source_off && nk::is_finite(current.preview_source_off_rpm_rate);
+			preview.rate = current.preview_source_off_rpm_rate;
+		}
+		return nk::substep_count(substep_plan_, combined, size, aux.ptr(), aux.size(), nk::R(dt), electric, preview);
+	}
+
+	// NK-6u test probe: [the kernel's count (-1: the callback decides), the stage dictionary the joint callback would
+	// receive] for one stage evaluation of (state, continuous) at t under the installed tick context; [] when unready.
+	Array stage_substep_probe(godot::Object *model, const PackedFloat64Array &state, const PackedFloat64Array &continuous,
+			const PackedFloat64Array &aux, double t, double dt) {
+		Array out;
+		if (model == nullptr || !substep_names_ || heli_stage_ready_ || !stage_ready_ || !tick_.ready ||
+				state.size() != kStateSize || continuous.is_empty() ||
+				continuous.size() != static_cast<int64_t>(continuous_scratch_.size())) {
+			return out;
+		}
+		const int size = kStateSize + static_cast<int>(continuous.size());
+		std::vector<nk::R> combined(static_cast<size_t>(size));
+		for (int i = 0; i < kStateSize; ++i) combined[static_cast<size_t>(i)] = state[i];
+		for (int64_t i = 0; i < continuous.size(); ++i) combined[static_cast<size_t>(kStateSize + i)] = continuous[i];
+		nk::StageResult current;
+		tick_stage(combined.data(), size, t, current);
+		const SubstepNames &n = *substep_names_;
+		out.push_back(tick_substeps(model->get(n.step_policy), model->get(n.substeps_joint), model->get(n.substeps), current,
+			combined.data(), size, aux, dt));
+		out.push_back(stage_dictionary(current, state));
+		return out;
+	}
+
 	Dictionary tick_fault(const String &reason) {
 		++tick_faults_;
 		Dictionary out;
@@ -3105,7 +3209,14 @@ public:
 		Variant declared = int64_t(1);
 		const godot::Callable substeps_joint = model->get(k_substeps_joint);
 		const godot::Callable substeps = model->get(k_substeps);
-		if (substeps_joint.is_valid()) {
+		// NK-6u: the session's own count from its plan, exactly; -1 leaves it to the callback below.
+		const int64_t planned_pieces = substeps_joint.is_valid() || substeps.is_valid()
+			? tick_substeps(policy, substeps_joint, substeps, current, combined, size, aux, dt) : -1;
+		if (planned_pieces >= 0) {
+			declared = planned_pieces;
+			++substep_answers_;
+			if (planned_pieces > 1) ++substep_refined_;
+		} else if (substeps_joint.is_valid()) {
 			const PackedFloat64Array body = tick_slice(tick_combined_, 0, kStateSize);
 			declared = substeps_joint.call(body, tick_slice(tick_combined_, kStateSize, size), t, stage_dictionary(current, body));
 		} else if (substeps.is_valid()) {
@@ -3505,6 +3616,8 @@ public:
 		out["faults"] = tick_faults_;
 		out["glow_firing_calls"] = glow_firing_calls_;
 		out["glow_firing_answers"] = glow_firing_answers_;
+		out["substep_answers"] = substep_answers_;
+		out["substep_refined"] = substep_refined_;
 		return out;
 	}
 
