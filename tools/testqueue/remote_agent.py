@@ -1058,7 +1058,16 @@ def _caches(root):
             pass
         engines[directory.name] = {key: meta.get(key) for key in ("files", "bytes", "published_at", "source_job")
                                    if isinstance(meta, dict) and key in meta}
-    return {"incoming_archives": incoming, "import_cache_engines": engines}
+    store = None
+    try:
+        bounds = read_json(Path(root) / CACHE_BOUNDS)
+        last = bounds.get("store") if isinstance(bounds, dict) else None
+        if isinstance(last, dict) and "bytes_after" in last:
+            store = {"entries": last.get("entries", 0) - last.get("removed", 0), "bytes": last["bytes_after"],
+                     "budget": last.get("budget"), "measured_at": bounds.get("at")}
+    except (OSError, ValueError):
+        pass
+    return {"incoming_archives": incoming, "import_cache_engines": engines, "content_store": store}
 
 
 def describe_host(root, states):
@@ -1186,7 +1195,9 @@ def launch(root, request):
             # TQ-07-E4a: every file the job needs must already be in the store.
             missing = store_missing(root, read_source_manifest(root, request["source_manifest"]["sha256"]))
             if missing:
-                raise Refused(f"the content store lacks {len(missing)} file(s) of this source; upload them first")
+                # Typed, before any job exists: the coordinator re-sends and runs the same ID.
+                raise Refused(f"the content store lacks {len(missing)} file(s) of this source; upload them first",
+                              "STORE_MISSING")
         engine = Path(request["engine_path"])
         if not engine.is_file() or (os.name != "nt" and not os.access(engine, os.X_OK)):
             raise Refused("engine is unavailable or not executable")
@@ -1243,6 +1254,23 @@ def safe_name(name):
 STORE = "store"
 DIGEST = re.compile(r"[0-9a-f]{64}\Z")
 MAX_STORE_REQUEST_DIGESTS = 400_000
+# TQ-07-G3: the store is least-recently-used above its budget, pruned down to
+# the target. One full snapshot is about 1 GiB, so several commits' variants fit.
+STORE_BUDGET_BYTES = 4 * 1024 ** 3
+STORE_PRUNE_TARGET_BYTES = 3 * 1024 ** 3
+# An entry used this recently is never pruned. store-have refreshes every entry
+# it reports present, and an upload plus run takes far less than this, so a
+# prune between a coordinator's transfer and its run cannot undercut the run.
+STORE_RECENT_SECONDS = 3600
+IMPORT_CACHE_IDLE_SECONDS = 14 * 86400
+
+
+def _mark_used(path):
+    """Refresh a cache entry's mtime: the prune's least-recently-used order."""
+    try:
+        os.utime(path)
+    except OSError:
+        pass  # a stale mark only makes the entry an earlier prune candidate
 
 
 def store_path(root, sha256):
@@ -1252,11 +1280,24 @@ def store_path(root, sha256):
 
 
 def store_have(root, request):
-    """Which of these content digests the store lacks (TQ-07-E4a)."""
+    """Which of these content digests the store lacks (TQ-07-E4a).
+
+    Every present entry is marked used, so the coordinator can rely on it
+    until its run starts (see ``STORE_RECENT_SECONDS``).
+    """
     if not isinstance(request, dict) or set(request) != {"digests"} or not isinstance(request["digests"], list) \
             or len(request["digests"]) > MAX_STORE_REQUEST_DIGESTS:
         raise Refused("store-have requires a list of digests")
-    missing = [sha for sha in dict.fromkeys(request["digests"]) if not store_path(root, sha).is_file()]
+    missing = []
+    for sha in dict.fromkeys(request["digests"]):
+        path = store_path(root, sha)
+        try:
+            os.utime(path)  # the presence test and the use mark are one call (G3 review)
+        except FileNotFoundError:
+            missing.append(sha)
+        except OSError:
+            if not path.is_file():  # present but unmarkable still counts as present
+                missing.append(sha)
     return {"missing": missing, "asked": len(request["digests"])}
 
 
@@ -1274,6 +1315,7 @@ def store_put(root, stream):
                 raise Refused("store-put accepts regular members named by their SHA-256")
             target = store_path(root, member.name)
             if target.is_file():
+                _mark_used(target)
                 skipped += 1
                 continue
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -1300,13 +1342,104 @@ def store_put(root, stream):
     return {"stored": stored, "already_present": skipped, "bytes": size}
 
 
+def prune_store(root, protected, *, budget=None, target=None, recent=None, now=None):
+    """Remove least-recently-used store entries while the store exceeds its budget (TQ-07-G3).
+
+    Called under the host lock, so no job is materializing. An entry in
+    ``protected`` (named by an unfinished job's manifest) or used within
+    ``recent`` seconds is kept even if the store stays over budget. Every entry
+    is a reproducible cache: a later transfer sends a missing one again.
+    """
+    budget = STORE_BUDGET_BYTES if budget is None else budget
+    target = STORE_PRUNE_TARGET_BYTES if target is None else target
+    recent = STORE_RECENT_SECONDS if recent is None else recent
+    base = Path(root) / STORE
+    now = time.time() if now is None else now
+    entries, total = [], 0
+    for path in base.glob("*/*") if base.is_dir() else []:
+        if not DIGEST.fullmatch(path.name) or path.parent.name != path.name[:2]:
+            continue  # upload temporaries are swept by age elsewhere
+        try:
+            info = path.lstat()
+        except OSError:
+            continue
+        if not stat.S_ISREG(info.st_mode):
+            continue
+        total += info.st_size
+        entries.append((info.st_mtime, path.name, info.st_size, path))
+    removed = freed = kept_recent = failed = 0
+    if total > budget:
+        for mtime, name, size, path in sorted(entries):
+            if total - freed <= target:
+                break
+            if name in protected:
+                continue
+            try:
+                # Re-read the mark: store-have may have used this entry since the scan.
+                if now - path.lstat().st_mtime < recent:
+                    kept_recent += 1
+                    continue
+                path.unlink()
+            except FileNotFoundError:
+                continue
+            except OSError:
+                failed += 1  # one unremovable entry never stops the prune
+                continue
+            removed += 1
+            freed += size
+    return {"entries": len(entries), "bytes": total, "budget": budget, "removed": removed,
+            "bytes_removed": freed, "bytes_after": total - freed, "kept_recent": kept_recent,
+            "protected": len(protected), "failed": failed}
+
+
+def prune_import_caches(root, keep, *, idle=None, now=None):
+    """Remove import caches of engines no job has used for ``idle`` seconds (TQ-07-G3).
+
+    Called under the host lock, so nothing seeds or publishes meanwhile. The
+    most recently used engine's cache is always kept, as is any engine in
+    ``keep`` (an unfinished job's). A removed cache only makes the next import
+    of that engine cold.
+    """
+    idle = IMPORT_CACHE_IDLE_SECONDS if idle is None else idle
+    base = Path(root) / IMPORT_CACHE
+    now = time.time() if now is None else now
+    caches = []
+    for directory in base.iterdir() if base.is_dir() else []:
+        if directory.is_symlink() or not directory.is_dir() or not DIGEST.fullmatch(directory.name):
+            continue
+        marker = directory / "cache.json"
+        try:
+            used = marker.stat().st_mtime if marker.is_file() else directory.stat().st_mtime
+        except OSError:
+            continue
+        caches.append((used, directory))
+    removed, failed, freed = [], [], 0
+    newest = max(caches, key=lambda item: item[0])[1] if caches else None
+    for used, directory in caches:
+        if directory == newest or directory.name in keep or now - used < idle:
+            continue
+        size = _tree_stats(directory)[1]
+        try:
+            imported = directory / "imported"
+            if imported.is_dir() and not imported.is_symlink():
+                # Move it aside first, so an interrupted removal is never seeded as a cache.
+                os.rename(imported, directory / ("old-prune-" + secrets.token_hex(4)))
+            shutil.rmtree(directory)
+        except OSError:
+            failed.append(directory.name)
+            continue
+        freed += size
+        removed.append(directory.name)
+    return {"engines": len(caches), "removed": sorted(removed), "bytes_removed": freed, "failed": sorted(failed)}
+
+
 def read_source_manifest(root, sha256):
     """The file map a content-store job materializes, verified against its digest."""
     path = store_path(root, sha256)
     try:
         data = path.read_bytes()
     except OSError:
-        raise Refused("source manifest is not in the store; upload it first") from None
+        raise Refused("source manifest is not in the store; upload it first", "STORE_MISSING") from None
     if hashlib.sha256(data).hexdigest() != sha256:
         raise Refused("stored source manifest differs from its digest")
     value = json.loads(data)
@@ -1552,6 +1685,7 @@ def seed_import_cache(root, source, engine_sha256):
         shutil.rmtree(target, ignore_errors=True)  # a partial seed would only slow Godot down; start cold
         raise
     meta = read_json(cache.parent / "cache.json") if (cache.parent / "cache.json").is_file() else {}
+    _mark_used(cache.parent / "cache.json")  # recently used engines keep their cache (TQ-07-G3)
     return {"seeded": True, "files": files, "bytes": size, "seconds": round(time.monotonic() - started, 2),
             "from_job": meta.get("job")}
 
@@ -2054,6 +2188,12 @@ def supervise(root, identifier):
                     # The already-published execution outcome remains valid;
                     # unresolved cleanup is visible in its separate field.
                     pass
+            # Bound the caches after every job, while this lock is held anyway, so
+            # the store never grows until placement refuses the host for disk.
+            try:
+                bound_caches_locked(root, scan(root))
+            except Exception:
+                pass  # caches are reproducible; the next job or gc-incoming retries
         finally:
             lock.close()
     return 0
@@ -2368,9 +2508,60 @@ def collect_incoming(root, request, *, min_age=3600):
             removed += path.stat().st_size
             path.unlink()
             reserves += 1
-        return {"removed_files": len(files), "removed_reserves": reserves, "logical_bytes_removed": removed}
+        try:
+            bounds = bound_caches_locked(root, unfinished)
+        except Exception as error:  # what was already removed above is still reported
+            text = f"{type(error).__name__}: {error}"[:300]
+            bounds = {"store": {"skipped": text}, "import_caches": {"skipped": text}}
+        removed += bounds["store"].get("bytes_removed", 0) + bounds["import_caches"].get("bytes_removed", 0)
+        return {"removed_files": len(files), "removed_reserves": reserves, "logical_bytes_removed": removed,
+                "store": bounds["store"], "import_caches": bounds["import_caches"]}
     finally:
         lock.close()
+
+
+CACHE_BOUNDS = "cache-bounds.json"
+
+
+def bound_caches_locked(root, unfinished):
+    """Keep the content store and import caches within their bounds (TQ-07-G3).
+
+    The caller holds the host lock. An unfinished job keeps every file its
+    manifest names and its engine's import cache. A job whose request or
+    manifest cannot be read leaves those unknown, so nothing is pruned. The
+    report is kept in ``cache-bounds.json`` for the probe.
+    """
+    protected, engines, request_unknown, manifest_unknown = set(), set(), False, False
+    for state in unfinished:
+        request = state.get("request")
+        if not isinstance(request, dict):
+            request_unknown = True
+            continue
+        for engine in ((state.get("engine") or {}).get("sha256"), request.get("expected_engine_sha256")):
+            if isinstance(engine, str):
+                engines.add(engine)
+        manifest = (request.get("source_manifest") or {}).get("sha256")
+        if manifest is None:
+            continue
+        protected.add(manifest)
+        try:
+            protected.update(entry["sha256"] for entry in read_source_manifest(root, manifest).values())
+        except (Refused, OSError, ValueError):
+            manifest_unknown = True
+    if request_unknown or manifest_unknown:
+        why = "an unfinished job's " + ("request" if request_unknown else "source manifest") + " is unreadable"
+        store = {"skipped": why + "; the store is kept whole"}
+    else:
+        store = prune_store(root, protected)
+    import_caches = ({"skipped": "an unfinished job's request is unreadable; its engine is unknown"}
+                     if request_unknown else prune_import_caches(root, engines))
+    report = {"store": store, "import_caches": import_caches}
+    if "skipped" not in store:
+        try:
+            write_json(Path(root) / CACHE_BOUNDS, {**report, "at": time.time()})
+        except OSError:
+            pass  # the probe then shows an older store size; pruning itself already happened
+    return report
 
 
 def main():

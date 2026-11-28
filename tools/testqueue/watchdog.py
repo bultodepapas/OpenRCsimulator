@@ -211,6 +211,13 @@ def run_once(config=None, *, max_age_hours=6.0, dry_run=False, serve_engine=None
             report["boot_recovery_at"] = now
         else:
             report["boot_recovery_at"] = last
+        # TQ-07-B3: the keeper's heartbeat keeps each remote host's reachability
+        # current, so placement never waits on an offline host's connect timeout.
+        # Last, so a hung host's probe timeout cannot delay settlement or recovery.
+        try:
+            report["health"] = {host: (entry or {}).get("state") for host, entry in pool.heartbeat().items()}
+        except Exception as error:
+            report["health"] = {"error": str(error)[:200]}
     from tools.testqueue.common import state_root
     report["authority_root"] = str(state_root())
     if serve_engine:

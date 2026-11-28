@@ -127,33 +127,7 @@ On Windows the supervisor breaks away from the MCP client's Job Object. MCP
 clients start their servers inside a kill-on-close job, so a plain child used to
 die with the agent session and leave a batch claiming `RUNNING` for days.
 
-### Watchdog
-
-`tools/testqueue/watchdog.py` runs from the `\OpenRC\TestWatchdog` logon
-scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 60
---serve-engine <pinned console engine>`. Each pass:
-
-- resumes, through the idempotent `recover`, every MCP request with a frozen
-  manifest, no final result, no live supervisor and a change within 6 hours;
-- skips `ERROR`. For `NEEDS_OPERATOR` it can resume a recent frozen batch when
-  a row recorded a proved placement refusal and a fresh probe now satisfies
-  that row's original constraints. Older records without that proof and
-  ambiguous submissions require operator reconciliation. Recovery uses the
-  existing IDs and stops after six automatic resumes per request in a day;
-- reports older requests as stale and never resumes them: their queued tests
-  would run old source;
-- starts `testctl serve` after a failed probe if the authority's worker lock is
-  available. A held or inaccessible lock is recorded in the watchdog report
-  along with the probe error. The machine-wide singleton still guards startup.
-
-The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
-code it started with, so restart the task after updating it:
-
-```powershell
-python tools/testqueue/watchdog.py --dry-run
-Stop-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog; Start-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog
-Unregister-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog   # remove
-``` Infrastructure failures retain their available diagnostics
+Infrastructure failures retain their available diagnostics
 and cannot qualify a passing batch.
 If freezing is interrupted before a snapshot manifest exists, exact inputs were not
 frozen and no tests were dispatched. Submit a new request ID for a stable source.
@@ -190,6 +164,60 @@ the host and OS it ran on.
 Tests with performance, interactive or composite-suite requirements retain their
 existing dedicated entry points and acceptance gates. Functional checks that need
 real Linux GPU rendering use the GPU lane below.
+
+### Watchdog
+
+`tools/testqueue/watchdog.py` runs from the `\OpenRC\TestWatchdog` logon
+scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 60
+--serve-engine <pinned console engine>`. Each pass:
+
+- resumes, through the idempotent `recover`, every MCP request with a frozen
+  manifest, no final result, no live supervisor and a change within 6 hours;
+- skips `ERROR`. For `NEEDS_OPERATOR` it can resume a recent frozen batch when
+  a row recorded a proved placement refusal and a fresh probe now satisfies
+  that row's original constraints. Older records without that proof and
+  ambiguous submissions require operator reconciliation. Recovery uses the
+  existing IDs and stops after six automatic resumes per request in a day;
+- reports older requests as stale and never resumes them: their queued tests
+  would run old source;
+- starts `testctl serve` after a failed probe if the authority's worker lock is
+  available. A held or inaccessible lock is recorded in the watchdog report
+  along with the probe error. The machine-wide singleton still guards startup;
+- runs the keeper heartbeat (TQ-07-B3), described below.
+
+The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
+code it started with, so restart the task after updating it:
+
+```powershell
+python tools/testqueue/watchdog.py --dry-run
+Stop-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog; Start-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog
+Unregister-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog   # remove
+```
+
+#### Host reachability (TQ-07-B3)
+
+Each remote host has a reachability state in `<pool root>/fleet-health.json`:
+
+- One failed probe makes a host `SUSPECT`; a second in a row, at least 5 s after
+  the first, makes it `OFFLINE`. Several placements that see one blip in the same
+  moment count once. One good probe makes it `ONLINE` again.
+- An `OFFLINE` host is checked again after 15 s, 30 s, then every 60 s, so a
+  returning host rejoins within a minute.
+- The heartbeat probes every remote host that is not waiting for its next check.
+  A host that fails right after being online is probed once more 5 s later, so
+  an unplugged host is `OFFLINE` within one pass.
+- Between checks, placement and `sim_fleet` answer for an `OFFLINE` host from
+  that state ("offline since 14:02:11, next check in 40 s: …") instead of
+  waiting on its SSH connect timeout. A probe of one named host,
+  `testctl pool hosts` and `sim_fleet` with `refresh` are always live.
+  Without a heartbeat for 2 minutes after a check fell due, placement makes the
+  check itself. A next check further away than 60 s (a clock stepped back) counts
+  as due.
+- The heartbeat runs last in each watchdog pass, after receipt settlement and
+  boot recovery.
+- Changes between `ONLINE` and `OFFLINE` are appended to
+  `<pool root>/fleet-events.jsonl`. A host flapping between one good and one
+  failed probe stays `ONLINE` and logs nothing.
 
 ### Rendered checks on a GPU host
 
@@ -382,7 +410,24 @@ and sends `run` with `source_manifest: {sha256}` instead of `archive`.
   1 GB.
 - The receipt records `content_transfer` (`files_sent`, `bytes_sent`).
 - Hosts without the feature keep the archive path.
-- The store is not pruned yet (TQ-07-G3).
+
+Store bounds (TQ-07-G3). After every remote job, and on `gc-incoming`, the
+agent prunes under the host lock:
+
+- The store is least-recently-used above 4 GiB, down to 3 GiB. `store-have`
+  and `store-put` mark every entry they find present as used.
+- Kept regardless: files that an unfinished job's manifest names, and any entry
+  used within the last hour. A transfer takes at most 30 minutes, so files the
+  coordinator just checked survive until its `run`.
+- An unfinished job whose manifest cannot be read keeps the whole store.
+- An engine's import cache goes after 14 days without a seed or publication,
+  except the most recently used one and those of unfinished jobs.
+- Each pass is reported in `<root>/cache-bounds.json`; `sim_fleet` shows the
+  size as `facts.store_gb`.
+- If `run` still finds a file missing, it refuses with `STORE_MISSING` before
+  writing a job. This is a proved nondispatch, in submission and in
+  `recover`'s replay: the receipt becomes `TRANSFER_DEFERRED` and the next
+  submit of the same ID sends the files again.
 
 #### Batch state
 

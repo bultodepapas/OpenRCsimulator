@@ -581,7 +581,9 @@ class RemoteAgentTests(unittest.TestCase):
         running = {"state": "RUNNING", "request": {"archive": {"sha256": "b" * 64}}}
         with mock.patch.object(agent, "scan", return_value=[running]):
             result = agent.collect_incoming(self.root, {"operator_confirm": True})
-        self.assertEqual(result, {"removed_files": 1, "removed_reserves": 0, "logical_bytes_removed": 10})
+        self.assertEqual({key: result[key] for key in ("removed_files", "removed_reserves", "logical_bytes_removed")},
+                         {"removed_files": 1, "removed_reserves": 0, "logical_bytes_removed": 10})
+        self.assertEqual((result["store"]["entries"], result["import_caches"]["engines"]), (0, 0))
         self.assertEqual(sorted(path.name for path in incoming.iterdir()),
                          sorted([active, young, "d" * 64 + ".tar.job9.pending"]))
         with mock.patch.object(agent, "scan", return_value=[{"state": "UNKNOWN", "error": "unreadable journal"}]), \

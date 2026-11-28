@@ -61,7 +61,9 @@ def _host_view(observation: dict, work: dict, unsettled: dict | None = None) -> 
              "console_user": (volatile.get("session") or {}).get("console_user") if volatile.get("session") else None,
              "uptime_hours": round(volatile["uptime_seconds"] / 3600, 1)
              if isinstance(volatile.get("uptime_seconds"), (int, float)) else None,
-             "cached_inputs": len(observation.get("cached_inputs") or []) or None}
+             "cached_inputs": len(observation.get("cached_inputs") or []) or None,
+             "store_gb": round(((description.get("caches") or {}).get("content_store") or {})["bytes"] / 1e9, 2)
+             if isinstance(((description.get("caches") or {}).get("content_store") or {}).get("bytes"), int) else None}
     facts = {key: value for key, value in facts.items() if value not in (None, [], {})}
     if facts:
         view["facts"] = facts  # TQ-07-B1
@@ -163,7 +165,8 @@ def fleet(pool, *, refresh: bool = False, queue_root: Path | None = None) -> dic
     now = time.time()
     if not isinstance(data, dict) or now - float(data.get("observed_at", 0)) > FLEET_TTL_SECONDS:
         started = time.monotonic()
-        observations = pool.probe()
+        # refresh asks for the truth now: even an offline host in backoff is probed (TQ-07-B3).
+        observations = pool.probe(live=True) if refresh else pool.probe()
         work, unsettled = _pool_work(pool.root)
         data = {"observed_at": time.time(), "probe_seconds": round(time.monotonic() - started, 2),
                 "hosts": [_host_view(item, work, unsettled) for item in observations]}

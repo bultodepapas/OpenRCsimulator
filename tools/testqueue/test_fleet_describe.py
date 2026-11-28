@@ -124,6 +124,20 @@ class PoolViewTests(unittest.TestCase):
         self.assertEqual([call for call in calls if call != "other"], ["install", "rollback"])
 
 
+class FleetFactsTests(unittest.TestCase):
+    def test_the_fleet_view_shows_described_facts_and_the_store_size(self):
+        from tools.testqueue.agent_view import _host_view
+        observation = {"id": "linux", "platform": "linux", "online": True, "cached_inputs": ["a" * 64],
+                       "description": {"hardware": {"arch": "x86_64", "cpu_model": "Fixture CPU", "gpus": []},
+                                       "volatile": {"uptime_seconds": 7200},
+                                       "caches": {"content_store": {"entries": 9, "bytes": 1_250_000_000}}}}
+        facts = _host_view(observation, {})["facts"]
+        self.assertEqual(facts, {"arch": "x86_64", "cpu": "Fixture CPU", "uptime_hours": 2.0, "cached_inputs": 1,
+                                 "store_gb": 1.25})
+        observation["description"]["caches"] = {"content_store": None}  # an agent that never pruned
+        self.assertNotIn("store_gb", _host_view(observation, {})["facts"])
+
+
 @unittest.skipUnless(os.name == "posix", "the installer runs on POSIX pool hosts")
 class InstallerTests(unittest.TestCase):
     def test_installer_swaps_under_the_lock_keeps_previous_and_refuses_open_jobs(self):

@@ -183,8 +183,9 @@ class FakePool:
         self.root, self.probes = Path(root), 0
         (self.root / "jobs").mkdir(parents=True)
 
-    def probe(self):
+    def probe(self, *, live=False):
         self.probes += 1
+        self.live = live
         return [{"id": "windows", "platform": "windows", "online": True, "busy": True, "busy_code": "EXTERNAL_SIMULATOR",
                  "free_disk_bytes": 9e10, "free_memory_bytes": 3e10, "cores": 24, "load": 1.234},
                 {"id": "linux", "platform": "linux", "online": True, "busy": False, "free_disk_bytes": 2e10,
@@ -202,8 +203,10 @@ class FleetTests(unittest.TestCase):
             first = agent_view.fleet(pool)
             again = agent_view.fleet(pool)
             self.assertEqual(pool.probes, 1)
+            self.assertFalse(pool.live)  # the cached view may answer an offline host from its backoff
             agent_view.fleet(pool, refresh=True)
             self.assertEqual(pool.probes, 2)
+            self.assertTrue(pool.live)  # refresh probes every host now (TQ-07-B3)
         hosts = {host["id"]: host for host in first["hosts"]}
         self.assertEqual(hosts["windows"]["busy_code"], "EXTERNAL_SIMULATOR")
         self.assertEqual(hosts["linux"]["pool_jobs_active"], 1)

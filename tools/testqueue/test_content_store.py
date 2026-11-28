@@ -4,11 +4,13 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -94,6 +96,7 @@ class AgentStoreTests(unittest.TestCase):
         with self.assertRaises(agent.Refused) as refused:
             self.launch()
         self.assertIn("lacks 2 file", str(refused.exception))
+        self.assertEqual(refused.exception.code, "STORE_MISSING")  # a typed, proved nondispatch
         self.upload(*SOURCE)
         self.assertEqual(self.launch()["state"], "STARTING")
         with mock.patch.object(agent, "authority_enrolled", return_value=False), \
@@ -139,6 +142,138 @@ class AgentStoreTests(unittest.TestCase):
                        {**request, "source_manifest": {"sha256": "XYZ"}}):
             with self.subTest(broken=sorted(broken)), self.assertRaises(agent.Refused):
                 agent.validate_request(broken)
+
+    def age(self, path, seconds):
+        stamp = time.time() - seconds
+        os.utime(path, (stamp, stamp))
+
+    def test_store_have_and_put_mark_present_entries_used(self):
+        self.upload("app/project.godot")
+        entry = agent.store_path(self.root, self.files["app/project.godot"]["sha256"])
+        self.age(entry, 5 * 86400)
+        agent.store_have(self.root, {"digests": [self.files["app/project.godot"]["sha256"]]})
+        self.assertLess(time.time() - entry.stat().st_mtime, 60)
+        self.age(entry, 5 * 86400)
+        self.upload("app/project.godot")  # already present: skipped, but used
+        self.assertLess(time.time() - entry.stat().st_mtime, 60)
+
+    def test_prune_removes_least_recently_used_down_to_target(self):
+        blobs = {name: (name * 1000).encode() for name in "abcde"}  # 1,000 bytes each
+        agent.store_put(self.root, tar_of({sha(data): data for data in blobs.values()}))
+        path = {name: agent.store_path(self.root, sha(data)) for name, data in blobs.items()}
+        for days, name in enumerate("abcd", start=1):  # a used 6 days ago, d 9 days ago; e is recent
+            self.age(path[name], (5 + days) * 86400)
+        protected = {sha(blobs["d"])}  # the least recently used, but an unfinished job needs it
+        report = agent.prune_store(self.root, protected, budget=4500, target=2500)
+        self.assertEqual((report["bytes"], report["removed"], report["bytes_after"]), (5000, 3, 2000))
+        self.assertEqual({name for name in path if path[name].exists()}, {"d", "e"})
+        # Under budget, nothing is touched.
+        self.assertEqual(agent.prune_store(self.root, set(), budget=4500, target=2500)["removed"], 0)
+        # Over budget: an old entry goes, a recent one stays even though the target is not met.
+        last = agent.prune_store(self.root, set(), budget=100, target=0)
+        self.assertEqual((last["removed"], last["kept_recent"], last["bytes_after"]), (1, 1, 1000))
+        self.assertTrue(path["e"].exists())
+
+    def test_an_entry_used_after_the_scan_is_kept_and_one_bad_entry_does_not_stop_the_prune(self):
+        blobs = {name: (name * 100).encode() for name in "abc"}
+        agent.store_put(self.root, tar_of({sha(data): data for data in blobs.values()}))
+        for data in blobs.values():
+            self.age(agent.store_path(self.root, sha(data)), 2 * 86400)
+        used, stuck = sha(blobs["a"]), sha(blobs["b"])
+        real_lstat, real_unlink, marked = Path.lstat, Path.unlink, set()
+
+        def lstat(path, *args, **kwargs):
+            result = real_lstat(path, *args, **kwargs)
+            if path.name == used and used not in marked:
+                marked.add(used)
+                os.utime(path)  # store-have uses it right after the scan read it as old
+            return result
+
+        def unlink(path, *args, **kwargs):
+            if path.name == stuck:
+                raise PermissionError(13, "Permission denied")
+            return real_unlink(path, *args, **kwargs)
+
+        with mock.patch.object(Path, "lstat", lstat), mock.patch.object(Path, "unlink", unlink):
+            report = agent.prune_store(self.root, set(), budget=0, target=0)
+        self.assertEqual((report["removed"], report["kept_recent"], report["failed"]), (1, 1, 1))
+        self.assertTrue(agent.store_path(self.root, used).exists())
+        self.assertFalse(agent.store_path(self.root, sha(blobs["c"])).exists())
+
+    def test_a_cache_that_cannot_be_fully_removed_is_never_seeded(self):
+        base = self.root / agent.IMPORT_CACHE
+        for name, days in (("a", 30), ("b", 1)):
+            (base / (name * 64) / "imported").mkdir(parents=True)
+            write_json(base / (name * 64) / "cache.json", {"job": "j"})
+            self.age(base / (name * 64) / "cache.json", days * 86400)
+        with mock.patch.object(agent.shutil, "rmtree", side_effect=PermissionError(13, "Permission denied")):
+            report = agent.prune_import_caches(self.root, set())
+        self.assertEqual((report["removed"], report["failed"]), ([], ["a" * 64]))
+        source = self.root / "workspace"
+        source.mkdir()
+        self.assertFalse(agent.seed_import_cache(self.root, source, "a" * 64)["seeded"])
+
+    def test_a_seed_counts_as_use_of_its_engine_cache(self):
+        cache = self.root / agent.IMPORT_CACHE / ("a" * 64)
+        (cache / "imported").mkdir(parents=True)
+        (cache / "imported/file.res").write_bytes(b"x")
+        write_json(cache / "cache.json", {"job": "j"})
+        self.age(cache / "cache.json", 30 * 86400)
+        source = self.root / "workspace"
+        source.mkdir()
+        self.assertTrue(agent.seed_import_cache(self.root, source, "a" * 64)["seeded"])
+        self.assertLess(time.time() - (cache / "cache.json").stat().st_mtime, 60)
+
+    def test_gc_incoming_keeps_an_unfinished_jobs_files_and_prunes_the_rest(self):
+        self.upload(*SOURCE)
+        stray = b"from an older snapshot"
+        agent.store_put(self.root, tar_of({sha(stray): stray}))
+        self.launch()  # STARTING: unfinished until its supervisor runs
+        for entry in (self.root / agent.STORE).glob("*/*"):
+            self.age(entry, 2 * 86400)
+        with mock.patch.object(agent, "STORE_BUDGET_BYTES", 0), mock.patch.object(agent, "STORE_PRUNE_TARGET_BYTES", 0):
+            result = agent.collect_incoming(self.root, {"operator_confirm": True})
+        self.assertEqual(result["store"]["removed"], 1)
+        self.assertFalse(agent.store_path(self.root, sha(stray)).exists())
+        self.assertEqual(agent.store_missing(self.root, self.files), [])
+        self.assertTrue(agent.store_path(self.root, self.manifest_sha).exists())
+        # A manifest that cannot be read leaves its files unknown: the store is kept whole.
+        agent.store_path(self.root, self.manifest_sha).unlink()
+        with mock.patch.object(agent, "STORE_BUDGET_BYTES", 0), mock.patch.object(agent, "STORE_PRUNE_TARGET_BYTES", 0):
+            result = agent.collect_incoming(self.root, {"operator_confirm": True})
+        self.assertIn("skipped", result["store"])
+        self.assertEqual(agent.store_missing(self.root, self.files), [])
+
+    def test_every_job_bounds_the_store_and_the_probe_reports_its_size(self):
+        stray = b"from an older snapshot"
+        agent.store_put(self.root, tar_of({sha(stray): stray}))
+        self.age(agent.store_path(self.root, sha(stray)), 2 * 86400)
+        self.upload(*SOURCE)  # fresh: the job's own files are recent, the stray is not
+        self.launch()
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False), \
+                mock.patch.object(agent, "STORE_BUDGET_BYTES", 0), mock.patch.object(agent, "STORE_PRUNE_TARGET_BYTES", 0):
+            self.assertEqual(agent.supervise(self.root, "job1"), 0)
+        self.assertEqual(agent.status(self.root, "job1")["outcome"], "PASSED")
+        self.assertFalse(agent.store_path(self.root, sha(stray)).exists())
+        self.assertEqual(agent.store_missing(self.root, self.files), [])
+        store = agent._caches(self.root)["content_store"]
+        self.assertEqual(store["entries"], len(self.files) + 1)  # the job's files and its manifest
+        self.assertEqual(store["budget"], 0)
+
+    def test_import_caches_of_idle_engines_go_but_the_newest_and_in_use_stay(self):
+        base = self.root / agent.IMPORT_CACHE
+        engines = {name: name * 64 for name in "abc"}
+        for days, name in ((30, "a"), (20, "b"), (40, "c")):
+            (base / engines[name] / "imported").mkdir(parents=True)
+            (base / engines[name] / "imported/file.res").write_bytes(b"x" * 100)
+            write_json(base / engines[name] / "cache.json", {"job": "j"})
+            self.age(base / engines[name] / "cache.json", days * 86400)
+        (base / "not-an-engine").mkdir()
+        report = agent.prune_import_caches(self.root, {engines["c"]})
+        self.assertEqual(report["removed"], [engines["a"]])  # b is the newest; c is in use
+        self.assertGreaterEqual(report["bytes_removed"], 100)
+        self.assertEqual(sorted(path.name for path in base.iterdir()), sorted([engines["b"], engines["c"], "not-an-engine"]))
 
     def test_cli_store_put_reads_a_tar_stream(self):
         data = b"cli bytes"
@@ -236,6 +371,71 @@ class CoordinatorTransferTests(unittest.TestCase):
         self.assertNotIn("archive", runs[0])
         receipt = json.loads((self.pool.root / "jobs/cs1.json").read_text())
         self.assertEqual(receipt["content_transfer"]["files_sent"], 1)
+
+    def submit_fixture(self):
+        observation = {"id": "linux", "platform": "linux", "online": True, "busy": False, "local": False,
+                       "capabilities": ["headless"], "features": ["content-store"], "free_disk_bytes": 10**11,
+                       "free_memory_bytes": 10**10, "load": 0.0, "cores": 8}
+        job = {"platform": "linux", "workload": "headless", "source_bytes": 10, "cache_id": "src",
+               "duration_key": "res://tests/test_sample.gd", "estimated_seconds": 90,
+               "memory_bytes": 1, "disk_bytes": 1}
+        manifest = {**self.manifest, "source_digest": "src", "source_root": "/s"}
+        options = {"script": "res://tests/test_sample.gd", "require": [], "timeout": 90, "headless": True}
+        return observation, manifest, options, job
+
+    def test_files_pruned_before_the_run_are_sent_again_for_the_same_id(self):
+        # G3 review F1: a refused run is typed STORE_MISSING, a proved nondispatch.
+        from tools.testqueue.pool import RemoteRefusal, SubmissionDeferred, request_digest
+        observation, manifest, options, job = self.submit_fixture()
+        sent = {"files_total": 3, "files_sent": 1, "bytes_sent": 10, "manifest_sha256": "c" * 64}
+        answers = [RemoteRefusal("the content store lacks 1 file(s) of this source", "STORE_MISSING")]
+        actions = []
+
+        def remote(host, action, payload, timeout=45):
+            actions.append(action)
+            if answers:
+                raise answers.pop(0)
+            return {"request_id": payload["request_id"], "payload_sha256": request_digest(payload), "state": "STARTING"}
+
+        with mock.patch.object(self.pool, "_preflight", return_value=(manifest, options, job)), \
+                mock.patch.object(self.pool, "probe", return_value=[observation]), \
+                mock.patch.object(self.pool, "_transfer_content", return_value=sent) as transfer, \
+                mock.patch.object(self.pool, "remote", side_effect=remote):
+            with self.assertRaises(SubmissionDeferred):
+                self.pool.submit(self.snapshot, "res://tests/test_sample.gd", platform="linux", request_id="cs2")
+            receipt = json.loads((self.pool.root / "jobs/cs2.json").read_text())
+            self.assertEqual((receipt["state"], receipt["transfer"]["code"]), ("TRANSFER_DEFERRED", "STORE_MISSING"))
+            result = self.pool.submit(self.snapshot, "res://tests/test_sample.gd", platform="linux", request_id="cs2")
+        self.assertEqual(result["state"], "SUBMITTED")
+        self.assertEqual(transfer.call_count, 2)  # the files went again before the second run
+        self.assertEqual(actions, ["run", "run"])
+
+    def test_a_replay_that_finds_the_files_pruned_defers_instead_of_wedging(self):
+        from tools.testqueue.pool import RemoteRefusal, request_digest
+        observation, manifest, options, job = self.submit_fixture()
+        sent = {"files_total": 3, "files_sent": 1, "bytes_sent": 10, "manifest_sha256": "c" * 64}
+        script = [OSError("ssh: connection reset"),  # first run: outcome unknown
+                  RemoteRefusal("no such job", "NOT_FOUND"),  # recover: status
+                  RemoteRefusal("source manifest is not in the store; upload it first", "STORE_MISSING")]
+
+        def remote(host, action, payload, timeout=45):
+            if script:
+                raise script.pop(0)
+            return {"request_id": payload["request_id"], "payload_sha256": request_digest(payload), "state": "STARTING"}
+
+        with mock.patch.object(self.pool, "_preflight", return_value=(manifest, options, job)), \
+                mock.patch.object(self.pool, "probe", return_value=[observation]), \
+                mock.patch.object(self.pool, "_transfer_content", return_value=sent) as transfer, \
+                mock.patch.object(self.pool, "remote", side_effect=remote):
+            first = self.pool.submit(self.snapshot, "res://tests/test_sample.gd", platform="linux", request_id="cs3")
+            self.assertEqual(first["state"], "SUBMISSION_UNCONFIRMED")
+            recovered = self.pool.recover("cs3")
+            self.assertEqual(recovered.get("reason_code"), "TRANSFER_DEFERRED")
+            receipt = json.loads((self.pool.root / "jobs/cs3.json").read_text())
+            self.assertEqual((receipt["state"], receipt["transfer"]["code"]), ("TRANSFER_DEFERRED", "STORE_MISSING"))
+            self.assertEqual(self.pool.submit(self.snapshot, "res://tests/test_sample.gd", platform="linux",
+                                              request_id="cs3")["state"], "SUBMITTED")
+        self.assertEqual(transfer.call_count, 2)
 
     @unittest.skipUnless(sys.platform != "win32", "runs the agent through sh in place of ssh")
     def test_real_streaming_to_a_local_agent(self):

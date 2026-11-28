@@ -526,13 +526,193 @@ class Pool:
         """Fleet-best median duration of one script, or None when never measured."""
         return pool_history.expected_seconds(self.history(), script)
 
-    def probe(self, host_id=None):
+    def probe(self, host_id=None, *, live=False):
+        """Observe hosts for placement; an offline host in backoff is not probed again.
+
+        A named host, and every host with ``live``, is always probed. Otherwise a
+        remote host that the health state holds ``OFFLINE`` returns its cached
+        reason until its next check is due; the keeper's heartbeat makes that
+        check, so placement does not wait on a connect timeout. If no heartbeat
+        ran for ``HEALTH_INLINE_GRACE`` after the check fell due, the probe makes
+        it itself.
+        """
         if host_id is not None:
             host = next(host for host in self.hosts if host['id'] == host_id)
-            return self._reserve([self.probe_host(host)])
-        with ThreadPoolExecutor(max_workers=len(self.hosts) or 1) as executor:
-            observations = list(executor.map(self.probe_host, self.hosts))
-        return self._reserve(observations)
+            observation = self._observe(host)
+            self._record_health([observation])
+            return self._reserve([observation])
+        now = time.time()
+        health = {} if live else self.health()
+        held, due = {}, []
+        for host in self.hosts:
+            entry = health.get(host['id'])
+            if not host.get('local') and self._in_backoff(entry, now, self.HEALTH_INLINE_GRACE):
+                held[host['id']] = self._held_offline(host, entry, now)
+            else:
+                due.append(host)
+        observed = self._probe_hosts(due)
+        self._record_health(observed)
+        by_id = {**held, **{item['id']: item for item in observed}}
+        return self._reserve([by_id[host['id']] for host in self.hosts])
+
+    def _observe(self, host):
+        started = time.time()
+        observation = self.probe_host(host)
+        observation['probed_at'] = started
+        return observation
+
+    def _probe_hosts(self, hosts):
+        if not hosts:
+            return []
+        with ThreadPoolExecutor(max_workers=len(hosts)) as executor:
+            return list(executor.map(self._observe, hosts))
+
+    # TQ-07-B3, first slice: reachability with hysteresis and backoff. Two failed
+    # probes at least HEALTH_CONFIRM_DELAY_SECONDS apart make a host OFFLINE (two
+    # concurrent placements seeing one blip are one failure); one good probe
+    # brings it back. Deliberately two misses and a 60 s cap rather than section
+    # 4.2's three misses and 5 min: the keeper runs every 60 s today and exit
+    # gate B wants a returning host online within 60 s.
+    HEALTH_FAILURES_TO_OFFLINE = 2
+    HEALTH_BACKOFF_SECONDS = (15, 30, 60)  # then every 60 s: a returning host rejoins within a minute
+    HEALTH_INLINE_GRACE = 120
+    HEALTH_CONFIRM_DELAY_SECONDS = 5
+    HEALTH_EVENTS_MAX_BYTES = 1 << 20
+
+    def health(self, *, strict=False):
+        """Per-host reachability state; advisory, so missing or damaged means unknown.
+
+        ``strict`` raises on a read error other than a missing file, so an update
+        never replaces state it could not read (a transient sharing violation).
+        """
+        try:
+            text = (self.root / 'fleet-health.json').read_text(encoding='utf-8')
+        except FileNotFoundError:
+            return {}
+        except OSError:
+            if strict:
+                raise
+            return {}
+        try:
+            value = json.loads(text)
+        except (ValueError, RecursionError):
+            return {}
+        return value if isinstance(value, dict) else {}
+
+    def _in_backoff(self, entry, now, grace=0):
+        """An OFFLINE host whose next check is not yet due (plus ``grace``).
+
+        A next check further away than the longest backoff can only come from a
+        clock that stepped back; it counts as due, so no host is held for the step.
+        """
+        if not (isinstance(entry, dict) and entry.get('state') == 'OFFLINE'
+                and type(entry.get('next_check_at')) in (int, float)):
+            return False
+        remaining = entry['next_check_at'] - now
+        return remaining + grace > 0 and remaining <= max(self.HEALTH_BACKOFF_SECONDS)
+
+    @staticmethod
+    def _held_offline(host, entry, now):
+        wait = max(0, round(entry['next_check_at'] - now))
+        since = entry.get('since') if type(entry.get('since')) in (int, float) else now
+        return {'id': host['id'], 'online': False, 'held': True,
+                'reason': f"offline since {time.strftime('%H:%M:%S', time.localtime(since))}, next check in {wait} s: "
+                          + str(entry.get('reason') or 'unreachable')[:240],
+                'health': {key: entry.get(key) for key in ('state', 'since', 'failures', 'next_check_at', 'last_ok_at')}}
+
+    def _record_health(self, observations):
+        """Apply probe results to each remote host's state; transitions become events.
+
+        Several processes probe; the update is merged under a short lock, and an
+        observation older than the stored one for its host is ignored. A lock,
+        read or write failure only loses this update of advisory state.
+        """
+        local = {host['id'] for host in self.hosts if host.get('local')}
+        observations = [item for item in observations if item.get('id') not in local and not item.get('held')]
+        if not observations:
+            return
+        now = time.time()
+        try:
+            guard = acquire_lock(self.root / 'fleet-health.lock', timeout=5)
+        except PoolLockTimeout:
+            return
+        try:
+            health = self.health(strict=True)
+            events = []
+            for observation in observations:
+                previous = health.get(observation['id']) if isinstance(health.get(observation['id']), dict) else {}
+                at = observation.get('probed_at') if type(observation.get('probed_at')) in (int, float) else now
+                stored = previous.get('observed_at')
+                if type(stored) in (int, float) and at < stored <= now:
+                    continue  # another process already applied a newer probe of this host
+                entry = self._health_transition(previous, observation, at, now)
+                # Events record settled changes only: a host flapping between one
+                # good and one failed probe stays ONLINE and logs nothing.
+                settled = previous.get('settled', previous.get('state'))
+                entry['settled'] = settled if entry['state'] == 'SUSPECT' else entry['state']
+                health[observation['id']] = entry
+                if entry['settled'] != settled:
+                    events.append({'at': now, 'host': observation['id'], 'from': settled,
+                                   'to': entry['settled'], 'reason': entry.get('reason')})
+            write_json(self.root / 'fleet-health.json', health)
+            if events:
+                self._append_fleet_events(events)
+        except OSError:
+            pass
+        finally:
+            guard.close()
+
+    def _health_transition(self, previous, observation, at, now):
+        """``at`` is when the probe started; the backoff counts from ``now``, when it ended."""
+        state = previous.get('state')
+        if observation.get('online') is True:
+            return {'state': 'ONLINE', 'failures': 0, 'since': previous.get('since') if state == 'ONLINE' else at,
+                    'observed_at': at, 'last_ok_at': at}
+        failures = (previous.get('failures') if type(previous.get('failures')) is int else 0) + 1
+        first = previous.get('first_failure_at') if state in ('SUSPECT', 'OFFLINE') else None
+        if type(first) not in (int, float) or first > at:
+            first = at
+        entry = {'failures': failures, 'observed_at': at, 'last_ok_at': previous.get('last_ok_at'),
+                 'first_failure_at': first, 'reason': str(observation.get('reason') or 'engine unavailable')[:300]}
+        if state != 'OFFLINE' and (failures < self.HEALTH_FAILURES_TO_OFFLINE
+                                   or at - first < self.HEALTH_CONFIRM_DELAY_SECONDS):
+            # A failure within the confirm delay of the first is the same blip seen twice.
+            return {**entry, 'failures': min(failures, self.HEALTH_FAILURES_TO_OFFLINE - 1), 'state': 'SUSPECT',
+                    'since': previous.get('since') if state == 'SUSPECT' else at}
+        step = min(failures - self.HEALTH_FAILURES_TO_OFFLINE, len(self.HEALTH_BACKOFF_SECONDS) - 1)
+        return {**entry, 'state': 'OFFLINE', 'since': previous.get('since') if state == 'OFFLINE' else at,
+                'next_check_at': now + self.HEALTH_BACKOFF_SECONDS[step]}
+
+    def _append_fleet_events(self, events):
+        path = self.root / 'fleet-events.jsonl'
+        try:
+            if path.stat().st_size > self.HEALTH_EVENTS_MAX_BYTES:
+                os.replace(path, path.with_suffix('.jsonl.1'))  # one older generation is kept
+        except FileNotFoundError:
+            pass
+        with path.open('a', encoding='utf-8') as stream:
+            for event in events:
+                stream.write(json.dumps(event, sort_keys=True) + '\n')
+
+    def heartbeat(self):
+        """The keeper's pass (TQ-07-B3): probe every remote host that is not in backoff.
+
+        A host that was online and now fails is probed once more after the
+        confirm delay, so an unplugged host is OFFLINE within one pass rather
+        than two. Returns the health state after the pass.
+        """
+        now = time.time()
+        health = self.health()
+        due = [host for host in self.hosts if not host.get('local') and not self._in_backoff(health.get(host['id']), now)]
+        observed = self._probe_hosts(due)
+        self._record_health(observed)
+        current = self.health()
+        confirm = [host for host in due if (current.get(host['id']) or {}).get('state') == 'SUSPECT']
+        if confirm:
+            time.sleep(self.HEALTH_CONFIRM_DELAY_SECONDS)
+            self._record_health(self._probe_hosts(confirm))
+            current = self.health()
+        return {host['id']: current.get(host['id']) for host in self.hosts if not host.get('local')}
 
     CIRCUIT_FAILURES = 2
     CIRCUIT_RETRY_SECONDS = 600
@@ -1218,6 +1398,7 @@ class Pool:
         Each file is named by its SHA-256 and the host publishes it only when
         the bytes match, so a changed or partial upload is never accepted.
         """
+        started = time.monotonic()
         files, blob, manifest_sha = self.source_manifest_blob(manifest)
         digests = sorted({entry['sha256'] for entry in files.values()} | {manifest_sha})
         by_digest = {entry['sha256']: (path, entry['size']) for path, entry in files.items()}
@@ -1287,6 +1468,7 @@ class Pool:
             raise TransferFailure(stage, 'TRANSFER_TIMEOUT', _describe(error)) from error
         except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError, tarfile.TarError) as error:
             raise TransferFailure(stage, 'TRANSFER_FAILED', _describe(error)) from error
+        sent['seconds'] = round(time.monotonic() - started, 2)  # the whole exchange: ask, send, verify
         return sent
 
     def _destination(self, receipt, *, replay=False):
@@ -1572,9 +1754,10 @@ class Pool:
                         accepted = self.remote(host, 'run', receipt['request'])
                     except RemoteRefusal as error:
                         # The agent answers an ID it already knows with its status and
-                        # raises BUSY only from the host lock, before writing a job.
-                        # This is the only run call for this ID, so nothing was accepted.
-                        busy = error if error.code == 'BUSY' else None
+                        # raises BUSY only from the host lock, and STORE_MISSING under it,
+                        # both before writing a job. This is the only run call for this
+                        # ID, so nothing was accepted.
+                        busy = error if error.code in ('BUSY', 'STORE_MISSING') else None
                         raise
                     self._verify_remote_status(receipt, accepted)
                 receipt['accepted'] = accepted
@@ -1586,9 +1769,11 @@ class Pool:
                 # request was accepted. Keep its identity and original host.
             write_json(receipt_path, receipt)
             if busy is not None:
-                # For example a storage sweep holding the host lock (2026-11-25 review).
-                # Proved nondispatched: retry the same ID on the same host.
-                self._defer_transfer(receipt, receipt_path, TransferFailure('run', 'HOST_BUSY', str(busy)))
+                # For example a storage sweep holding the host lock (2026-11-25 review),
+                # or store files pruned before the run (TQ-07-G3): proved nondispatched,
+                # so the same ID retries on the same host and the retry re-sends files.
+                code = 'HOST_BUSY' if busy.code == 'BUSY' else 'STORE_MISSING'
+                self._defer_transfer(receipt, receipt_path, TransferFailure('run', code, str(busy)))
             if refused:
                 fenced = self._fence_local_refusal(receipt, receipt_path, local)
                 if fenced is not None:
@@ -1653,7 +1838,17 @@ class Pool:
                         if error.code != 'NOT_FOUND':
                             raise
                         self._destination(receipt, replay=True)
-                        result = self.remote(host, 'run', receipt['request'])
+                        try:
+                            result = self.remote(host, 'run', receipt['request'])
+                        except RemoteRefusal as refusal:
+                            if refusal.code != 'STORE_MISSING':
+                                raise
+                            # TQ-07-G3: the host pruned this source's files before the
+                            # replay. Refused before any job was written; only a submit,
+                            # which holds the snapshot, can re-send them. The same ID stays
+                            # bound to the same host, so a late original cannot run twice.
+                            self._record_deferral(receipt, path, 'run', 'STORE_MISSING', str(refusal))
+                            return self._status_locked(identifier)
                     self._verify_remote_status(receipt, result)
             except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
                 receipt.update(state='SUBMISSION_UNCONFIRMED', error=str(error),
@@ -2084,7 +2279,7 @@ def main(argv=None):
         parser.error('--config or OPENRC_TESTPOOL_CONFIG is required')
     pool = Pool(args.config)
     if args.command == 'hosts':
-        value = pool.probe()
+        value = pool.probe(live=True)  # an operator asks for the truth now
     elif args.command == 'run':
         from tools.testqueue.pool_batch import run_batch
         snapshot_path = pool.snapshot(args.source)
