@@ -298,14 +298,20 @@ func snapshot() -> Dictionary:
 	if not Atmosphere.state.is_empty():
 		elevation = float(Atmosphere.state.get("sun_elevation_deg", elevation))
 	var glow_state: Dictionary = {}
+	var glow_assembled := false
 	# F5b: a glow aircraft's audio keys without GlowFlight.telemetry's full point() evaluation (glow_audio_state.gd).
 	if not glow_family.is_empty() and session.has_method("presented_glow_firing"):
-		glow_state = GlowAudioState.build(session)
+		# NK-7g: the whole key set below in one native call; {} assembles it here.
+		glow_state = GlowAudioState.native_keys(session, source_running,
+			float(glow_profile.get("operation", {}).get("max_rpm", EngineSound.reference_rpm(prop))), load_amount)
+		glow_assembled = not glow_state.is_empty()
+		if not glow_assembled:
+			glow_state = GlowAudioState.build(session)
 	if glow_state.is_empty() and session.has_method("glow_state"):
 		var accepted_glow: Variant = session.call("glow_state")
 		if accepted_glow is Dictionary:
 			glow_state = accepted_glow.duplicate()
-	if not glow_family.is_empty():
+	if not glow_family.is_empty() and not glow_assembled:
 		var operation: Dictionary = glow_profile.get("operation", {})
 		glow_state["family"] = str(glow_state.get("family", glow_family))
 		glow_state["rpm"] = float(glow_state.get("rpm", rpm))

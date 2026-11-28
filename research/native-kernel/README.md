@@ -655,6 +655,8 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
 - `audio_unloaded_rows` and `audio_source_kinematics` (NK-7f, `nk_audio_rows.hpp`) build flight audio's airborne
   contact rows and the snapshot's source kinematics from the accepted state, exactly
   ([evidence](../../docs/research/native-kernel/NK-7f/README.md)).
+- `stage_glow_audio_keys` (NK-7g) builds flight audio's whole glow key set in one call, with the GDScript's key order
+  and types ([evidence](../../docs/research/native-kernel/NK-7g/README.md)).
 - `shadow_parts_bind` and `shadow_part_poses` (NK-8a, `nk_shadow_parts.hpp`) walk a projected shadow's parts to its
   source, composing transforms with the engine's own operator and reading visibility by method bind
   ([evidence](../../docs/research/native-kernel/NK-8a/README.md)).

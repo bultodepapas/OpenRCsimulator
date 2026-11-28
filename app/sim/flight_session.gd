@@ -3636,12 +3636,24 @@ func native_glow_firing(body: PackedFloat64Array, values: PackedFloat64Array, ti
 ## this answers only without failures, an RC track or a pending weather reset, unpaused and with no hold, and with the
 ## engine running now and at that pre-step. NaN: evaluate GlowFlight.telemetry.
 func presented_glow_firing() -> float:
-	if not native_glow_audio_enabled or _native_stage == null or _failures != null or not _rc_track.is_empty() \
-			or _weather_pending_reset or sim.paused or not holds.is_empty() or not engine_running \
-			or not _context_engine_running or get_script().resource_path != SELF_PATH or not glow_is_active() \
-			or not _flight_ready():
+	if not _presented_glow_allowed():
 		return NAN
 	return _native_stage.glow_firing(sim.state, sim.continuous, sim.time())
+
+
+func _presented_glow_allowed() -> bool:
+	return native_glow_audio_enabled and _native_stage != null and _failures == null and _rc_track.is_empty() \
+		and not _weather_pending_reset and not sim.paused and holds.is_empty() and engine_running \
+		and _context_engine_running and get_script().resource_path == SELF_PATH and glow_is_active() and _flight_ready()
+
+
+## NK-7g: flight audio's glow key set (GlowAudioState.native_keys) from the native glow stage, under presented_glow_firing's
+## own conditions; {} otherwise.
+func presented_glow_audio_keys(geometry: PackedFloat64Array, family: Variant, geometry_family: Variant,
+		frame: PackedFloat64Array) -> Dictionary:
+	if not _presented_glow_allowed():
+		return {}
+	return _native_stage.glow_audio_keys(sim.state, sim.continuous, sim.time(), geometry, family, geometry_family, frame)
 
 
 ## F5b: [GlowProp torque at (rpm, axial speed), at (rpm, 0)] for flight audio's shaft load from the native glow stage's

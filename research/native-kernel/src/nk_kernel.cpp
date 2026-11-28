@@ -1040,6 +1040,22 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
 	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
 	std::unique_ptr<nk::render::ShadowParts> shadow_parts_; // NK-8a: one projected shadow's parts
+	// NK-7g: flight audio's glow key names, made on the first call (never function-local statics).
+	struct GlowAudioKeys {
+		godot::StringName ok{"ok"}, family{"family"}, rpm{"rpm"}, running{"running"}, firing_fraction{"firing_fraction"},
+			blade_count{"blade_count"}, phase_revolutions{"phase_revolutions"}, opportunity_count{"opportunity_count"},
+			fire_count{"fire_count"}, firing_accumulator{"firing_accumulator"}, fuel_kg{"fuel_kg"},
+			source_vibration{"source_vibration"}, errors{"errors"}, cycle_revolutions{"cycle_revolutions"},
+			firing_order{"firing_order"}, phase_rad{"phase_rad"}, omega_rad_s{"omega_rad_s"}, alpha_rad_s2{"alpha_rad_s2"},
+			constant_speed_assumption{"constant_speed_assumption"}, source_force_n{"source_force_n"},
+			order_1x_force_cosine_n{"order_1x_force_cosine_n"}, order_1x_force_sine_n{"order_1x_force_sine_n"},
+			order_2x_force_cosine_n{"order_2x_force_cosine_n"}, order_2x_force_sine_n{"order_2x_force_sine_n"},
+			order_1x_force_peak_n{"order_1x_force_peak_n"}, order_2x_force_peak_n{"order_2x_force_peak_n"},
+			opportunity_frequency_hz{"opportunity_frequency_hz"},
+			mean_successful_fire_rate_hz{"mean_successful_fire_rate_hz"};
+		godot::String max_rpm_text{"max_rpm"}, load_text{"load"}, throttle_text{"throttle"}, sample_tick_text{"sample_tick"};
+	};
+	std::unique_ptr<GlowAudioKeys> glow_audio_keys_;
 	// NK-6u: the installed session's substep plan (nk_substeps.hpp) and the names its tick checks read.
 	struct SubstepNames {
 		godot::StringName joint{"_substeps_joint"}, plain{"_substeps"}, rc_track{"_rc_track"}, electric{"_electric_step"},
@@ -1393,6 +1409,8 @@ protected:
 			&OpenRCNativeKernel::stage_contact_clear);
 		godot::ClassDB::bind_method(D_METHOD("stage_substep_probe", "model", "state", "continuous", "aux", "t", "dt"),
 			&OpenRCNativeKernel::stage_substep_probe);
+		godot::ClassDB::bind_method(D_METHOD("stage_glow_audio_keys", "body", "values", "time_s", "geometry", "family",
+			"geometry_family", "frame"), &OpenRCNativeKernel::stage_glow_audio_keys);
 		godot::ClassDB::bind_method(D_METHOD("stage_glow_firing", "body", "values", "time_s"),
 			&OpenRCNativeKernel::stage_glow_firing);
 		godot::ClassDB::bind_method(D_METHOD("prepare_glow_validity", "bounds"), &OpenRCNativeKernel::prepare_glow_validity);
@@ -3559,6 +3577,81 @@ public:
 		std::vector<nk::R> values_in(static_cast<size_t>(values.size()));
 		for (int64_t i = 0; i < values.size(); ++i) values_in[static_cast<size_t>(i)] = values[i];
 		return glow_firing_at(state, values_in.data(), values.size(), time_s);
+	}
+
+	// NK-7g: FlightAudio.snapshot's whole glow key set (GlowAudioState.build, then the snapshot's own keys), in the
+	// GDScript's key order and value types: GlowFlight.unpack's checks, the native firing fraction (NK-6b), the vibration
+	// numbers (NK-6s) and their read-only dictionary. geometry: glow_vibration's six inputs; frame: [unusable fuel,
+	// blade count, max rpm, load, throttle, tick, source running (1/0)]. Empty wherever the GDScript would refuse or
+	// fall back, so the caller assembles the keys itself.
+	Dictionary stage_glow_audio_keys(const PackedFloat64Array &body, const PackedFloat64Array &values, double time_s,
+			const PackedFloat64Array &geometry, const Variant &family, const Variant &geometry_family,
+			const PackedFloat64Array &frame) {
+		Dictionary out;
+		if (frame.size() != 7 || geometry.size() != 6) return out;
+		const double firing = stage_glow_firing(body, values, time_s);
+		if (!std::isfinite(firing)) return out;
+		// GlowFlight.unpack: SIZE values, all finite, a 0/1 latch and a stop reason index.
+		const int64_t n = values.size();
+		if (n < 19) return out;
+		const double *v = values.ptr();
+		for (int64_t i = 0; i < n; ++i) {
+			if (!std::isfinite(v[i])) return out;
+		}
+		if (!(v[7] == 0.0 || v[7] == 1.0) || v[8] != std::floor(v[8]) || v[8] < 0.0 || v[8] >= 7.0) return out;
+		if (!(v[1] > 0.0)) return out;
+		const double counter_limit = static_cast<double>(std::numeric_limits<int32_t>::max());
+		if (std::fabs(v[9]) >= counter_limit || std::fabs(v[10]) >= counter_limit || std::fabs(frame[1]) >= counter_limit ||
+				std::fabs(frame[5]) >= counter_limit) {
+			return out;
+		}
+		const bool running = v[7] == 1.0 && v[1] > frame[0];
+		const nk::R tau = 6.2831853071795864769252867666;
+		const double crank_phase = (nk::R(v[6]) * tau).v;
+		const double omega = ((nk::R(v[0]) * tau) / nk::R(60.0)).v;
+		const PackedFloat64Array r = glow_vibration(geometry, crank_phase, omega, 0.0, running ? firing : 0.0);
+		if (r.size() != 11 || r[0] != 1.0) return out;
+		if (!glow_audio_keys_) glow_audio_keys_ = std::make_unique<GlowAudioKeys>();
+		const GlowAudioKeys &k = *glow_audio_keys_;
+		const int64_t cycle = static_cast<int64_t>(geometry[5]);
+		Dictionary vibration;
+		vibration[k.ok] = true;
+		vibration[k.errors] = godot::PackedStringArray();
+		vibration[k.family] = geometry_family;
+		vibration[k.cycle_revolutions] = cycle;
+		vibration[k.firing_order] = 1.0 / static_cast<double>(cycle);
+		vibration[k.phase_rad] = r[1];
+		vibration[k.omega_rad_s] = omega;
+		vibration[k.alpha_rad_s2] = 0.0;
+		vibration[k.constant_speed_assumption] = true;
+		vibration[k.source_force_n] = r[2];
+		vibration[k.order_1x_force_cosine_n] = r[3];
+		vibration[k.order_1x_force_sine_n] = r[4];
+		vibration[k.order_2x_force_cosine_n] = r[5];
+		vibration[k.order_2x_force_sine_n] = r[6];
+		vibration[k.order_1x_force_peak_n] = r[7];
+		vibration[k.order_2x_force_peak_n] = r[8];
+		vibration[k.opportunity_frequency_hz] = r[9];
+		vibration[k.mean_successful_fire_rate_hz] = r[10];
+		vibration.make_read_only();
+		out[k.ok] = true;
+		out[k.family] = godot::String(family);
+		out[k.rpm] = v[0];
+		out[k.running] = frame[6] != 0.0 && running;
+		out[k.firing_fraction] = firing;
+		out[k.blade_count] = static_cast<int64_t>(frame[1]);
+		out[k.phase_revolutions] = v[6];
+		out[k.opportunity_count] = static_cast<int64_t>(v[9]);
+		out[k.fire_count] = static_cast<int64_t>(v[10]);
+		out[k.firing_accumulator] = v[11];
+		out[k.fuel_kg] = v[1];
+		out[k.source_vibration] = vibration;
+		// The snapshot adds these with `glow_state["key"] = ...`: String keys, unlike build()'s literal StringName keys.
+		out[k.max_rpm_text] = frame[2];
+		out[k.load_text] = frame[3];
+		out[k.throttle_text] = frame[4];
+		out[k.sample_tick_text] = static_cast<int64_t>(frame[5]);
+		return out;
 	}
 
 	// stage_glow_firing on raw arrays (NK-6n reads the bounded end state in place).

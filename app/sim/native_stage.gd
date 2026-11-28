@@ -793,6 +793,14 @@ func glow_mass_check(values: PackedFloat64Array, with_mass: bool) -> int:
 ## NK-6b: GlowFlight.point(owner, body, values, time_s).firing_fraction from the prepared glow stage and the tick
 ## context of the guarded pre-step; NaN means "use the reference". The session owns the tick checks
 ## (FlightSession.native_glow_firing).
+## NK-7g: flight audio's glow key set from the prepared glow stage (stage_glow_audio_keys); {} to assemble it in GDScript.
+func glow_audio_keys(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, geometry: PackedFloat64Array,
+		family: Variant, geometry_family: Variant, frame: PackedFloat64Array) -> Dictionary:
+	if not _installed or not _glow_firing_bound or _native == null or not _native.has_method(&"stage_glow_audio_keys"):
+		return {}
+	return _native.stage_glow_audio_keys(body, values, time_s, geometry, family, geometry_family, frame)
+
+
 func glow_firing(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> float:
 	if not _installed or not _glow_firing_bound or _native == null: return NAN
 	return _native.stage_glow_firing(body, values, time_s)

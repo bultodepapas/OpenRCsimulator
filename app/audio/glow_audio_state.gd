@@ -52,6 +52,35 @@ static func vibration(prepared: Dictionary, crank_phase: float, omega: float, al
 	return GlowFlight.Vibration.evaluate(prepared, crank_phase, omega, alpha, firing)
 
 
+## NK-7g: FlightAudio.snapshot's whole glow key set (build() and the snapshot's own keys) from one native call, for a
+## glow installation whose prepared vibration geometry vibration() would answer natively. {} wherever build() refuses,
+## vibration() would fall back, or the session cannot answer: the snapshot then assembles the keys as before.
+static func native_keys(session: Node, source_running: bool, max_rpm: float, load: float) -> Dictionary:
+	if not native_keys_enabled or _vibration_kernel() == null or not session.has_method(&"presented_glow_audio_keys"):
+		return {}
+	var install: Dictionary = session.aircraft.model.propulsion.glow
+	var prepared: Dictionary = session.get_meta(GlowFlight.VIBRATION_EVALUATOR_META, {})
+	if session.get_meta(GlowFlight.EVALUATOR_IDENTITY_META, {}) != install.identity or prepared.is_empty():
+		return {}
+	var geometry: Variant = prepared.get("prepared", null)
+	if not prepared.get("ok", false) or not geometry is Dictionary or not (geometry as Dictionary).is_read_only():
+		return {}
+	if not is_same(geometry, _checked_geometry) and GlowFlight.Vibration._valid_prepared(geometry):
+		_checked_geometry = geometry
+	if not is_same(geometry, _checked_geometry):
+		return {}
+	var cycle: int = int(geometry.cycle_revolutions)
+	return session.presented_glow_audio_keys(PackedFloat64Array([float(geometry.crank_radius_m),
+		float(geometry.connecting_rod_m), float(geometry.reciprocating_mass_kg), float(geometry.cosine_1x_displacement_m),
+		float(geometry.cosine_2x_displacement_m), float(cycle)]), install.profile.family, geometry.family,
+		PackedFloat64Array([float(install.get("unusable_fuel_kg", 0.0)), float(int(install.propeller.blades)), max_rpm, load,
+		float(session.sim.inputs[3]), float(session.sim.tick), 1.0 if source_running else 0.0]))
+
+
+## NK-7g test hook: false always assembles the glow keys in GDScript.
+static var native_keys_enabled := true
+
+
 ## NK-6s test hook: false always runs GlowFlight.Vibration.evaluate.
 static var native_vibration_enabled := true
 static var _kernel: Object = null
