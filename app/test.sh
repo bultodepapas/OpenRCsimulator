@@ -507,6 +507,7 @@ for t in "${unit_tests[@]}"; do
     test_p51_envelope.gd) test_timeout=180 ;; # Segmented slipstream full-flight checks measured 61 s on the native editor.
     test_rcv_powertrain.gd) test_timeout=180 ;; # Nine complete powertrain checks; measured 64 s at 240/480 Hz.
     test_rcv_passivity.gd) test_timeout=300 ;; # RK-stage drive/reversal and 240/480 Hz checks took 52 s on a shared Windows host.
+    test_session_reach_bounds.gd) test_timeout=180 ;; # NK-6e fleet reach sweeps (propeller, probe, takeoff pairs): 58.3 s on hosted Linux at 8d4169f8, over 60 s at c84c2f8b.
     # Full scene transitions and subprocess startup can exceed 60 s; benchmark tools own timing gates.
     test_flight_loading.gd|test_ui_pause.gd|test_ui_screen_stack.gd|test_ui_time_of_day.gd|test_landing_variations.gd|test_input_report_cli.gd|test_latency_patch_cli.gd) test_timeout=180 ;;
     test_ui_home_preview_cache.gd) test_timeout=180 ;; # F4U-20-R2: all 13 imported paints, fresh/cached light parity and eviction; 46 s natively.
