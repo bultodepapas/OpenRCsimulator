@@ -132,12 +132,15 @@ func _frozen(id: String, s: Node) -> void:
 	_check(id + ": the kept rotor index equals a fresh computation", s._rotor_index() == fresh_rotor
 		and s._rotor_index() == fresh_rotor)
 	# The other kept capability facts equal the values an equal but unfrozen copy computes afresh.
-	var kept_facts := [s.flaps_available(), s.gear_is_retractable(), s.anchor_count(), s.downwash_index(), s.wheel_count()]
-	var kept_again := [s.flaps_available(), s.gear_is_retractable(), s.anchor_count(), s.downwash_index(), s.wheel_count()]
-	_check(id + ": the frozen aircraft keeps its capability facts", s._frozen_fact_values.size() == 5, str(s._frozen_fact_values))
+	var kept_facts := [s.flaps_available(), s.gear_is_retractable(), s.anchor_count(), s.downwash_index(), s.wheel_count(),
+		s.gear_aux_index(), s.flap_aux_index(), s._input_count()]
+	var kept_again := [s.flaps_available(), s.gear_is_retractable(), s.anchor_count(), s.downwash_index(), s.wheel_count(),
+		s.gear_aux_index(), s.flap_aux_index(), s._input_count()]
+	_check(id + ": the frozen aircraft keeps its capability facts", s._frozen_fact_values.size() == 8, str(s._frozen_fact_values))
 	var frozen_aircraft: Dictionary = s.aircraft
 	s.aircraft = frozen_aircraft.duplicate(true)
-	var fresh_facts := [s.flaps_available(), s.gear_is_retractable(), s.anchor_count(), s.downwash_index(), s.wheel_count()]
+	var fresh_facts := [s.flaps_available(), s.gear_is_retractable(), s.anchor_count(), s.downwash_index(), s.wheel_count(),
+		s.gear_aux_index(), s.flap_aux_index(), s._input_count()]
 	s.aircraft = frozen_aircraft
 	_check(id + ": kept capability facts equal fresh ones", kept_facts == fresh_facts and kept_again == fresh_facts,
 		"%s vs %s" % [str(kept_facts), str(fresh_facts)])

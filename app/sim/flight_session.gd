@@ -5080,7 +5080,12 @@ func flaps_available() -> bool:
 
 
 func _input_count() -> int:
-	return 4 + (1 if gear_is_retractable() else 0) + (1 if wheel_brake_input_index() >= 0 else 0) + (1 if flaps_available() else 0)
+	# Kept for a frozen aircraft: gear retraction, wheel-brake hardware and flaps are aircraft facts kept for it too.
+	var count: int = _kept_fact(&"input_count")
+	if count == _FACT_UNKNOWN:
+		count = 4 + (1 if gear_is_retractable() else 0) + (1 if wheel_brake_input_index() >= 0 else 0) + (1 if flaps_available() else 0)
+		_keep_fact(&"input_count", count)
+	return count
 
 
 func flap_input_index() -> int:
@@ -5090,8 +5095,12 @@ func flap_input_index() -> int:
 func flap_aux_index() -> int:
 	if _fact_flap_aux_index != _FACT_UNKNOWN:
 		return _fact_flap_aux_index
-	var index: int = (AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
-		+ (GEAR_AUX_SIZE if gear_is_retractable() else 0)) if flaps_available() else -1
+	# Kept for a frozen aircraft: every fact it reads is kept for it too.
+	var index: int = _kept_fact(&"flap_aux_index")
+	if index == _FACT_UNKNOWN:
+		index = (AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+			+ (GEAR_AUX_SIZE if gear_is_retractable() else 0)) if flaps_available() else -1
+		_keep_fact(&"flap_aux_index", index)
 	if _facts_armed: _fact_flap_aux_index = index
 	return index
 
@@ -5145,9 +5154,13 @@ func gear_is_retractable() -> bool:
 func gear_aux_index() -> int:
 	if _fact_gear_aux_index != _FACT_UNKNOWN:
 		return _fact_gear_aux_index
-	var index: int = -1
-	if gear_is_retractable():
-		index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+	# Kept for a frozen aircraft: every fact it reads is kept for it too.
+	var index: int = _kept_fact(&"gear_aux_index")
+	if index == _FACT_UNKNOWN:
+		index = -1
+		if gear_is_retractable():
+			index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+		_keep_fact(&"gear_aux_index", index)
 	if _facts_armed: _fact_gear_aux_index = index
 	return index
 
