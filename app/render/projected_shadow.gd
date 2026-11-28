@@ -52,6 +52,12 @@ var _frame_bounds := AABB()
 var _frame_blur := 0.0
 # SA-03: {node, bounds (node frame), rest, material, proxy}; drawn transforms/visibility of the last mask.
 var _parts: Array[Dictionary] = []
+## NK-8a: one native walk per part gives the parts' poses and visibility (nk_shadow_parts.hpp); _part_pose and
+## _part_visible stay the specification and answer whenever the kernel cannot (no verified library, the hook off).
+static var native_part_poses_enabled := true
+var _parts_revision := 0
+var _native_parts: Object = null
+var _native_parts_revision := -1
 var _drawn_parts: Array[Transform3D] = []
 var _drawn_part_visibility: Array[bool] = []
 var _drawn_box := AABB() # bind bounds plus visible parts at their drawn poses
@@ -459,6 +465,7 @@ func setup(model: Node3D, shape: Dictionary, resolution: int = RESOLUTION, antia
 	proxy.material_override = mask_material
 	viewport.add_child(proxy)
 	_parts.clear()
+	_parts_revision += 1
 	for part: Dictionary in shape.get("parts", []):
 		var node := model.get_node_or_null(part.path) as Node3D
 		var part_proxy := MeshInstance3D.new()
@@ -533,9 +540,10 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 	var pose := source.global_transform if source.is_inside_tree() else source.transform
 	var part_poses: Array[Transform3D] = []
 	var part_visibility: Array[bool] = []
-	for part: Dictionary in _parts:
-		part_poses.append(_part_pose(part))
-		part_visibility.append(_part_visible(part))
+	if not _native_part_poses(part_poses, part_visibility):
+		for part: Dictionary in _parts:
+			part_poses.append(_part_pose(part))
+			part_visibility.append(_part_visible(part))
 	var frame: Rect2
 	# Reuse the drawn mask while every corner stays within what the blurred shadow cannot show (SA-07).
 	# The error is measured from the last DRAWN mask, so it never accumulates past the tolerance.
@@ -587,6 +595,36 @@ func _set_mask_parameter(parameter: String, value: Variant) -> void:
 
 
 ## The part node's live transform in the model frame (SA-03).
+## NK-8a: fills both arrays from the kernel; false leaves them empty for the GDScript walks.
+func _native_part_poses(part_poses: Array[Transform3D], part_visibility: Array[bool]) -> bool:
+	if not native_part_poses_enabled or _parts.is_empty() or not is_instance_valid(source):
+		return false
+	if _native_parts == null or _native_parts_revision != _parts_revision:
+		_native_parts = null
+		if not ClassDB.class_exists(&"OpenRCNativeKernel"):
+			return false
+		var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+		if kernel == null or not kernel.has_method(&"shadow_parts_bind"):
+			return false
+		var ids := PackedInt64Array()
+		var rests: Array = []
+		var bound := PackedByteArray()
+		for part: Dictionary in _parts:
+			ids.append(part.node.get_instance_id() if is_instance_valid(part.node) else 0)
+			rests.append(part.rest)
+			bound.append(1 if bool(part.bound) else 0)
+		if not kernel.shadow_parts_bind(ids, rests, bound):
+			return false
+		_native_parts = kernel
+		_native_parts_revision = _parts_revision
+	var answer: Array = _native_parts.shadow_part_poses(source.get_instance_id())
+	if answer.size() != 2:
+		return false
+	part_poses.assign(answer[0])
+	part_visibility.assign(answer[1])
+	return true
+
+
 func _part_pose(part: Dictionary) -> Transform3D:
 	if not is_instance_valid(part.node):
 		return part.rest

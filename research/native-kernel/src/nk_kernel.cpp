@@ -48,6 +48,7 @@
 #include "nk_ground_audio_core.hpp"
 #include "nk_mechanical_audio_core.hpp"
 #include "nk_audio_rows.hpp"
+#include "nk_shadow_parts.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1037,6 +1038,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
 	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
 	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
+	std::unique_ptr<nk::render::ShadowParts> shadow_parts_; // NK-8a: one projected shadow's parts
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
@@ -1324,6 +1326,8 @@ protected:
 			&OpenRCNativeKernel::audio_unloaded_rows);
 		godot::ClassDB::bind_method(D_METHOD("audio_source_kinematics", "state", "offset", "axis"),
 			&OpenRCNativeKernel::audio_source_kinematics);
+		godot::ClassDB::bind_method(D_METHOD("shadow_parts_bind", "ids", "rests", "bound"), &OpenRCNativeKernel::shadow_parts_bind);
+		godot::ClassDB::bind_method(D_METHOD("shadow_part_poses", "source_id"), &OpenRCNativeKernel::shadow_part_poses);
 		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
 			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
@@ -2253,6 +2257,15 @@ public:
 	PackedFloat64Array audio_source_kinematics(const PackedFloat64Array &state, const PackedFloat64Array &offset,
 			const PackedFloat64Array &axis) const {
 		return nk::sound::source_kinematics(state, offset, axis);
+	}
+
+	// NK-8a: render/projected_shadow.gd's per-part pose and visibility walks (nk_shadow_parts.hpp).
+	bool shadow_parts_bind(const godot::PackedInt64Array &ids, const godot::Array &rests, const godot::PackedByteArray &bound) {
+		if (!shadow_parts_) shadow_parts_ = std::make_unique<nk::render::ShadowParts>();
+		return shadow_parts_->bind(ids, rests, bound);
+	}
+	godot::Array shadow_part_poses(int64_t source_id) const {
+		return shadow_parts_ ? shadow_parts_->poses(source_id) : godot::Array();
 	}
 
 	godot::Array mechanical_core_accepted_events() const {
