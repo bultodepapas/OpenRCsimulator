@@ -1656,7 +1656,7 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 
 ## Resolve once on installation or reload. The visual root supplies its drawn datum each frame.
 func _refresh_fpv_mount() -> void:
-	if aircraft_id == Catalog.DEFAULT_ID and session.aircraft.get("ok", false) and workshop_trial.is_empty() \
+	if _airplane.get("aircraft_id", "") == aircraft_id and session.aircraft.get("ok", false) and workshop_trial.is_empty() \
 			and donor_visual.is_empty() and _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() \
 			and not _scripted and _visual_pose.is_empty() and not _rig.fixed_pilot_eye and is_nan(_look.x):
 		var front := FpvStockMounts.front(_airplane)

@@ -225,7 +225,7 @@ applies that choice again. Distance limits are 100/300/600 m, with shorter limit
 disables High's solar penumbra. These options change presentation only, and higher quality is not a performance
 recommendation. [Implementation and remaining qualification](research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md).
 
-**Settings → Camera** sets the **First view** of flights from Home (pilot, chase, fly-by or orbit), the **Pilot field of view**
+**Settings → Camera** sets the **First view** of flights from Home (pilot, chase, fly-by, orbit or FPV when available), the **Pilot field of view**
 (30–70°, default 50°; about 30° shows the model at its real size on a 24–27-inch screen at arm's length), **Auto zoom**,
 **Chase distance**, **Orbit sensitivity** and **Invert orbit up/down**. Changes apply at once, also from Pause; first view
 waits for the next flight, and auto zoom and chase distance apply only when they change, so a view or zoom chosen in
@@ -235,6 +235,8 @@ default *Constant size*; **Keep the horizon in view** tilts the view down so the
 model; **Smooth overhead passes** stops the picture flipping when the model passes overhead (both share the **Pilot view
 aids** picker); **Magnifier** adds a small window at the top that shows the model up close in the pilot view (Auto shows it
 when the model gets small). [Camera plan](plans/camera-views.md).
+
+In every stock airplane, press **3** for the nose camera. Hold the right mouse button and drag to look up, down or sideways. Press **Backspace** to recenter the gimbal or **1** to return to pilot view.
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental
 Forward+ mode with ambient occlusion, soft sun shadows and sky reflections. Keep

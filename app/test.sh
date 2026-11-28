@@ -501,6 +501,7 @@ for t in "${unit_tests[@]}"; do
     test_race_session.gd|test_race_session_replay.gd) test_timeout=240 ;; # DR-25/26: a complete three-lap race at 240 Hz (and its exact replay); measured 34 s / 40 s on the Windows dev PC.
     test_mr_activity.gd|test_mr_sample_rate.gd|test_mr_flight_log.gd) test_timeout=180 ;; # DR-17/21/36a: activity journey, 240/960/1920 Hz closed loops, record and replay; measured 25 s / 28 s / 16 s on the Windows dev PC.
     test_pilot_trim.gd) test_timeout=300 ;; # Fleet controls plus frozen/live inventory comparisons; measured 117 s natively.
+    test_fpv_airplane_routes.gd) test_timeout=180 ;; # CAM-FPV-02b: 12 complete flight scenes took 54 s on the shared Linux runner.
     test_accident_integration.gd) test_timeout=180 ;; # Multiple complete aircraft/effects rebuilds; native 77-check gate, WSL mounted source exceeds 60 s.
     test_damage_flight_events.gd) test_timeout=120 ;; # Measured 63.8 s on the shared Windows host; retain every assertion.
     test_scenery_trace.gd) test_timeout=180 ;; # Six full child launches: 68.9 s on Windows and exceeded 60 s on hosted Linux; assertions remain unchanged.
