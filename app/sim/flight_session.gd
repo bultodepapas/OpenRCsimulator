@@ -808,6 +808,7 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 		_frozen_facts_owner = aircraft # NK-6p froze it all the way down; see _frozen_facts_owner
 		_frozen_wheel_brake = _FACT_UNKNOWN
 		_frozen_rotor_index = _FACT_UNKNOWN
+		_frozen_fact_values = {}
 	# Each preparation snapshots the lake's packed arrays again, so the kept validity starts over.
 	_frozen_lake_owner = _lake if _lake.is_read_only() else {}
 	_frozen_lake_valid = false
@@ -4933,7 +4934,9 @@ func flap_mix_diagnostics() -> PackedFloat64Array:
 func flaps_available() -> bool:
 	if _fact_flaps != _FACT_UNKNOWN:
 		return _fact_flaps == 1
-	var available: bool = aircraft.get("ok", false) and Flaps.enabled(aircraft.model)
+	var kept := _kept_fact(&"flaps")
+	var available: bool = kept == 1 if kept != _FACT_UNKNOWN else aircraft.get("ok", false) and Flaps.enabled(aircraft.model)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"flaps", int(available))
 	if _facts_armed: _fact_flaps = int(available)
 	return available
 
@@ -4989,7 +4992,10 @@ func flap_angle_deg() -> float:
 func gear_is_retractable() -> bool:
 	if _fact_gear_retractable != _FACT_UNKNOWN:
 		return _fact_gear_retractable == 1
-	var retractable: bool = aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+	var kept := _kept_fact(&"gear_retractable")
+	var retractable: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+	if kept == _FACT_UNKNOWN: _keep_fact(&"gear_retractable", int(retractable))
 	if _facts_armed: _fact_gear_retractable = int(retractable)
 	return retractable
 
@@ -6135,6 +6141,19 @@ var native_pre_step_answers := 0
 var _frozen_facts_owner: Dictionary = {}
 var _frozen_wheel_brake := _FACT_UNKNOWN
 var _frozen_rotor_index := _FACT_UNKNOWN
+## The same for flaps_available, gear_is_retractable, anchor_count, downwash_index and wheel_count, which read only
+## dictionary keys, strings and Array sizes. Recomputed outside the armed tick, they made the renderer's flap angle
+## and the session's status accessors cost 10-20 µs per frame.
+var _frozen_fact_values: Dictionary = {}
+
+
+func _kept_fact(key: StringName) -> int:
+	return int(_frozen_fact_values.get(key, _FACT_UNKNOWN)) if is_same(aircraft, _frozen_facts_owner) else _FACT_UNKNOWN
+
+
+func _keep_fact(key: StringName, value: int) -> void:
+	if is_same(aircraft, _frozen_facts_owner):
+		_frozen_fact_values[key] = value
 ## The same for the lake, which NK-6p also freezes. Its packed arrays stay writable in place, but inside a guarded native
 ## tick the configuration guard has just checked them bit for bit against the prepared lake, so the frozen lake equals
 ## the value whose validity was kept. LakeSurface.is_valid_definition compared the whole lake with its cache every
@@ -6280,11 +6299,14 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 func downwash_index() -> int:
 	if _fact_downwash_index != _FACT_UNKNOWN:
 		return _fact_downwash_index
-	# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
-	var index: int = -1
-	if aircraft.get("ok", false) and not aircraft.model.get("envelope", {}).is_empty() \
-			and aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
-		index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+	var index: int = _kept_fact(&"downwash_index")
+	if index == _FACT_UNKNOWN:
+		# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
+		index = -1
+		if aircraft.get("ok", false) and not aircraft.model.get("envelope", {}).is_empty() \
+				and aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
+			index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+		_keep_fact(&"downwash_index", index)
 	if _facts_armed: _fact_downwash_index = index
 	return index
 
@@ -6350,8 +6372,11 @@ func reset_on_runway(north: float, east: float, heading: float) -> bool:
 func anchor_count() -> int:
 	if _fact_anchor_count != _FACT_UNKNOWN:
 		return _fact_anchor_count
-	var gear: Dictionary = aircraft.get("model", {}).get("landing_gear", {}) if aircraft.get("ok", false) else {}
-	var count: int = gear.contacts.size() if gear.has("breakaway_factor") else 0
+	var count: int = _kept_fact(&"anchor_count")
+	if count == _FACT_UNKNOWN:
+		var gear: Dictionary = aircraft.get("model", {}).get("landing_gear", {}) if aircraft.get("ok", false) else {}
+		count = gear.contacts.size() if gear.has("breakaway_factor") else 0
+		_keep_fact(&"anchor_count", count)
 	if _facts_armed: _fact_anchor_count = count
 	return count
 
@@ -6360,7 +6385,10 @@ func anchor_count() -> int:
 func wheel_count() -> int:
 	if _fact_wheel_count != _FACT_UNKNOWN:
 		return _fact_wheel_count
-	var count: int = _model_wheel_count(aircraft.get("model", {})) if aircraft.get("ok", false) else 0
+	var count: int = _kept_fact(&"wheel_count")
+	if count == _FACT_UNKNOWN:
+		count = _model_wheel_count(aircraft.get("model", {})) if aircraft.get("ok", false) else 0
+		_keep_fact(&"wheel_count", count)
 	if _facts_armed: _fact_wheel_count = count
 	return count
 
