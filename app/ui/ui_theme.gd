@@ -140,6 +140,7 @@ static func build() -> Theme:
 	_controls(theme)
 	_settings(theme)
 	_home(theme)
+	_windows(theme)
 	return theme
 
 
@@ -334,6 +335,35 @@ static func contrast(a: Color, b: Color) -> float:
 static func _luminance(color: Color) -> float:
 	var linear := func(value: float) -> float: return value / 12.92 if value <= 0.04045 else pow((value + 0.055) / 1.055, 2.4)
 	return 0.2126 * linear.call(color.r) + 0.7152 * linear.call(color.g) + 0.0722 * linear.call(color.b)
+
+
+## UI-40q (UI-40 I-1): native dialogs (scenery import, confirmations, file pickers) wear the Settings glass panel
+## instead of Godot's grey default. The embedded border paints the title bar and frame through its expand margins;
+## the dialog panel paints the body in the same colour, so they read as one surface.
+static func _windows(theme: Theme) -> void:
+	var title_size := _font_size(SIZE.body)
+	var title_height := maxi(40, title_size + 14) # enlarged text keeps its title inside the bar
+	var body_color := Color(PANEL, 1.0 if opaque_panels else 0.97)
+	var frame := _box(body_color, 0)
+	frame.set_border_width_all(1)
+	frame.border_color = Color(SURFACE_LIGHT, 0.24)
+	frame.shadow_color = Color(0, 0, 0, 0.42)
+	frame.shadow_size = 24
+	frame.shadow_offset = Vector2(0, 8)
+	frame.expand_margin_left = 12
+	frame.expand_margin_right = 12
+	frame.expand_margin_bottom = 12
+	frame.expand_margin_top = title_height
+	for state in ["embedded_border", "embedded_unfocused_border"]:
+		theme.set_stylebox(state, "Window", frame)
+	theme.set_constant("title_height", "Window", title_height)
+	theme.set_color("title_color", "Window", TEXT)
+	theme.set_font_size("title_font_size", "Window", title_size)
+	var body := _box(body_color, 16)
+	body.set_corner_radius_all(0)
+	body.content_margin_top = 12
+	body.content_margin_bottom = 12
+	theme.set_stylebox("panel", "AcceptDialog", body)
 
 
 static func _settings(theme: Theme) -> void:

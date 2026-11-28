@@ -34,7 +34,7 @@ The [asset pipeline](../tools/night-lighting/README.md) documents the CC0 downlo
 
 ## Sky and cloud controls
 
-Home → **Weather → Sky & clouds** selects the appearance for the next airplane flight. In flight, **Pause → Sky and lighting → Sky & clouds** changes it while the simulation is held. Both editors use the same nine-card gallery and detached draft: Apply saves the choice; Cancel leaves the world and preferences unchanged. Spanish labels are **Clima → Cielo y nubes** and **Cielo e iluminación**.
+Home → **Conditions → Sky & clouds** selects the appearance for the next airplane flight. In flight, **Pause → Time & sky → Sky & clouds** changes it while the simulation is held. Both editors use the same nine-card gallery and detached draft: Apply saves the choice; Cancel leaves the world and preferences unchanged. Spanish labels are **Condiciones → Cielo y nubes** and **Hora y cielo**.
 
 The profiles are Classic clouds, Clear blue, High Cirrus, Fair-Weather Cumulus, Broken Cloud, Overcast, Building Storm, Distant Storm and Electrical Storm. Classic keeps the calibrated original by default. Clear removes every cloud layer and its ground shadow. Distant Storm and Electrical Storm add a world-anchored cloud tower northwest of the field, with a broad cap, dark base and distant rain shafts. They follow the selected cloud motion and the scene's day/night lighting. Their depth-separated cloud images are intended for distant views; they are not traversable cloud volumes. Other profiles retain their projected procedural decks.
 

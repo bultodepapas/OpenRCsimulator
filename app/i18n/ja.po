@@ -13656,8 +13656,8 @@ msgstr "操作をキャンセルする"
 msgid "Cancelled."
 msgstr "キャンセルしました。"
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "Phoenixの風景ファイルやフォルダーを選択するか、保存済みのプレビューを開きます。"
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "Phoenix RC シミュレーターの風景ファイルやフォルダーを選択するか、保存済みのプレビューを開きます。"
 
 msgid "Choose a scenery file"
 msgstr "風景ファイルを選択"
@@ -13695,8 +13695,8 @@ msgstr "パネル %d の方を見る"
 msgid "No Phoenix scenery descriptors were found."
 msgstr "Phoenixの風景記述子が見つかりませんでした。"
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "このソースにPhoenixの風景は見つかりませんでした。"
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "このソースに Phoenix RC の風景は見つかりませんでした。"
 
 msgid "Opening preview…"
 msgstr "プレビューを開いています…"
@@ -13970,3 +13970,75 @@ msgstr "検索に一致する機体はありません。"
 
 msgid "Hangar"
 msgstr "格納庫"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "押すと次の風プリセットに切り替わります。正確な値、乱気流、空気は「条件」で設定します。"
+
+msgid "Applies to the next flight"
+msgstr "次の飛行に適用"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "平均風速。小型トレーナー機は約 6 m/s を超えると苦戦します。"
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "風が吹いてくる方向：090° は東からです。"
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "平均風速に上乗せされる各突風の速度。"
+
+msgid "Rising or sinking air inside each gust."
+msgstr "各突風に含まれる上昇気流または下降気流。"
+
+msgid "How long each gust lasts."
+msgstr "各突風の継続時間。"
+
+msgid "Time from the start of one gust to the next."
+msgstr "ある突風の開始から次の突風までの時間。"
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "プリセットを選ぶか値を変更します。「適用」で次の飛行に使い、「キャンセル」で破棄します。"
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "風速と風向を入力すると滑走路上に表示されます。"
+
+msgid "Calm: no steady wind on the runway."
+msgstr "無風：滑走路に一定の風はありません。"
+
+msgid "headwind %s m/s"
+msgstr "向かい風 %s m/s"
+
+msgid "tailwind %s m/s"
+msgstr "追い風 %s m/s"
+
+msgid "crosswind %s m/s from the right"
+msgstr "右からの横風 %s m/s"
+
+msgid "crosswind %s m/s from the left"
+msgstr "左からの横風 %s m/s"
+
+msgid "no crosswind"
+msgstr "横風なし"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "%03.0f° から %s m/s。"
+
+msgid "Runway start: %s, %s."
+msgstr "滑走路スタート：%s、%s。"
+
+msgid "Time & sky"
+msgstr "時刻と空"
+
+msgid "Ahead"
+msgstr "前"
+
+msgid "Behind"
+msgstr "後ろ"
+
+msgid "Left"
+msgstr "左"
+
+msgid "Sky"
+msgstr "空"
+
+msgid "Ground"
+msgstr "地面"

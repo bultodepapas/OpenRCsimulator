@@ -60,7 +60,7 @@ func _interactive_pause_edit() -> void:
 	var initial_commands: Dictionary = session.commands.duplicate(true)
 	var initial_tick: int = session.sim.tick
 	_check("pause menu offers a Sky and lighting action", app.pause_menu.time_of_day_button.name == "TimeOfDay"
-		and app.pause_menu.time_of_day_button.text == "Sky and lighting")
+		and app.pause_menu.time_of_day_button.text == "Time & sky")
 	await ui.tap(KEY_DOWN)
 	_check("Down reaches Restart", ui.focus_name() == "Restart", ui.focus_name())
 	app.pause_menu.set_more_options_open(true) # UI-40a: a short window folds Sky and lighting under More options
@@ -102,7 +102,7 @@ func _interactive_pause_edit() -> void:
 	await _assert_modal_bounds(dialog, "es", Vector2i(800, 600))
 	await _assert_modal_bounds(dialog, "en", Vector2i(1280, 720))
 	await _assert_modal_bounds(dialog, "es", Vector2i(1280, 720))
-	_check("Spanish modal title and actions are translated", (dialog.get("title_label") as Label).text == "Cielo e iluminación"
+	_check("Spanish modal title and actions are translated", (dialog.get("title_label") as Label).text == "Hora y cielo"
 		and apply_button.text == "Aplicar" and (dialog.get("cancel_button") as Button).text == "Cancelar")
 	TranslationServer.set_locale("en")
 	root.size = Vector2i(800, 600)

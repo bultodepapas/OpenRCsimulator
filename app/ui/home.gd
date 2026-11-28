@@ -24,6 +24,7 @@ const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const PlayerNotes := preload("res://ui/player_notes.gd") # UI-40d
+const WindPresets := preload("res://ui/wind_presets.gd") # UI-40q
 const Landscapes := preload("res://landscapes/catalog.gd")
 const LandscapeImport := preload("res://ui/landscape_import.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
@@ -83,6 +84,8 @@ signal start_requested(choice: String)
 signal weather_requested(from: Control)
 ## The player chose another FW Home preset; the owner rebuilds the backdrop and remembers it.
 signal time_requested(preset: String)
+## UI-40q: the player chose another wind preset (WindPresets id); the owner applies and remembers it.
+signal wind_preset_requested(id: String)
 ## UI-16: the player pressed Download on the update notice (a trusted release page URL) or hid it (its tag).
 signal update_download_requested(url: String)
 signal update_hidden(tag: String)
@@ -153,6 +156,9 @@ var companions_button: Button
 var companion_config: Dictionary = CompanionConfig.defaults()
 var weather_button: Button
 var time_button: Button
+var wind_button: Button # UI-40q: one-step wind presets
+## UI-40q: AppRoot kept the player's own wind for the session; the Wind row returns to it after the presets.
+var custom_wind_available := false
 var language_button: Button
 var help_button: Button
 var quit_button: Button
@@ -470,9 +476,21 @@ func _init() -> void:
 	_landscape_import_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	Widgets.mark_row(_landscape_import_button, "open")
 	_landscape_import_button.pressed.connect(_open_landscape_import)
-	flight_page.add_child(_landscape_import_button)
 	set_landscape(landscape_id)
 	flight_page.add_child(_conditions_row)
+	# UI-40q: the common wind presets in one press, like the landscape and the time; Conditions keeps the fine-tune.
+	wind_button = _button("", "HomeChoice")
+	wind_button.name = "WindPreset"
+	Widgets.mark_row(wind_button, "cycle")
+	wind_button.custom_minimum_size.y = 38
+	wind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wind_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART # a long name wraps instead of widening the rail
+	wind_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	wind_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	wind_button.pressed.connect(func() -> void:
+		wind_preset_requested.emit(WindPresets.next_id(weather_config, Catalog.is_rotorcraft(aircraft_id), 1,
+			custom_wind_available)))
+	_conditions_row.add_child(wind_button)
 	weather_button = _button("", "HomeChoice")
 	weather_button.name = "Weather"
 	Widgets.mark_row(weather_button, "open")
@@ -482,17 +500,19 @@ func _init() -> void:
 	weather_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	weather_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
-	_conditions_row.add_child(weather_button)
 	time_button = _button("", "HomeChoice")
 	time_button.name = "TimeOfDay"
 	Widgets.mark_row(time_button, "cycle")
 	time_button.custom_minimum_size.y = 38
 	time_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	time_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	time_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	time_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	time_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	time_button.pressed.connect(func() -> void: time_requested.emit(Conditions.next_home_choice(time_of_day)))
 	_conditions_row.add_child(time_button)
+	# UI-40q: the quick choices first, then the two editors; in the compact two-column grid they share a row.
+	_conditions_row.add_child(weather_button)
+	_conditions_row.add_child(_landscape_import_button)
 	control_label = _label("", "SecondaryLabel", false)
 	control_label.name = "FlightInputSummary"
 	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1214,10 +1234,8 @@ func _ready() -> void:
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	start_button.focus_neighbor_right = start_button.get_path_to(landscape_button)
 	landscape_button.focus_neighbor_left = landscape_button.get_path_to(start_button)
-	landscape_button.focus_neighbor_bottom = landscape_button.get_path_to(_landscape_import_button)
-	_landscape_import_button.focus_neighbor_top = _landscape_import_button.get_path_to(landscape_button)
-	_landscape_import_button.focus_neighbor_bottom = _landscape_import_button.get_path_to(weather_button)
-	weather_button.focus_neighbor_top = weather_button.get_path_to(_landscape_import_button)
+	landscape_button.focus_neighbor_bottom = landscape_button.get_path_to(wind_button)
+	wind_button.focus_neighbor_top = wind_button.get_path_to(landscape_button)
 	# Practice can scroll at compact heights. Keep its controls in visual order
 	# so keyboard and the selected UI controller reveal every action.
 	var practice_actions: Array[Button] = [statistics_button, natural_random_button, failures_button, trim_practice_button]
@@ -1463,8 +1481,8 @@ func _apply_responsive_layout() -> void:
 	_practice_title.visible = not practice_compact
 	_practice_intro.visible = not practice_compact
 	_pages[2].add_theme_constant_override("separation", 2 if practice_compact else 6)
-	for action: Button in [start_button, landscape_button, _landscape_import_button, weather_button, time_button,
-		_details_button]:
+	for action: Button in [start_button, landscape_button, _landscape_import_button, wind_button, weather_button,
+		time_button, _details_button]:
 		_set_compact_action_density(action, compact_action_density)
 	for action: Button in [statistics_button, natural_random_button, failures_button, trim_practice_button]:
 		_set_compact_action_density(action, practice_compact)
@@ -1482,7 +1500,8 @@ func _apply_responsive_layout() -> void:
 	_set_responsive_font(start_button, 20 if compact else UiTheme.SIZE.button)
 	_set_responsive_font(landscape_button, 20 if compact else UiTheme.SIZE.button)
 	_set_responsive_font(_landscape_import_button, 16 if compact else 20)
-	for condition_button in [weather_button, time_button]:
+	_update_weather_text() # compact rows use the two-line form and the shorter wind summary
+	for condition_button in [wind_button, weather_button, time_button]:
 		_set_responsive_font(condition_button, 18 if compact else UiTheme.SIZE.button)
 		condition_button.custom_minimum_size.y = 38.0 if compact else 48.0
 	_set_responsive_font(_details_button, 18 if compact else UiTheme.SIZE.button)
@@ -2503,7 +2522,9 @@ func _update_weather_text() -> void:
 	if compact and time_of_day == "moonrise": time_brief = tr("Moonrise") # FW-MOON-11
 	if compact and time_of_day == "night_dark": time_brief = tr("New moon")
 	if lighting_config.mode == "astronomical": time_brief = TimeOfDay.format_time(int(lighting_config.local_seconds))
-	time_button.text = "%s\n%s" % [tr("Time of day"), time_brief]
+	# UI-40q: one line per quick choice where the rail is wide, like "Landscape: …"; two in the compact two-column grid.
+	var row_format := "%s\n%s" if compact else "%s: %s"
+	time_button.text = row_format % [tr("Time of day"), time_brief]
 	weather_button.clip_text = false
 	var weather_help: String = tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density.")
 	if spatial:
@@ -2532,6 +2553,13 @@ func _update_weather_text() -> void:
 		"%s · %s" % [sky_label, lighting_summary],
 	]
 	time_button.tooltip_text = "%s · %s" % [tr(Conditions.HOME_LABELS[time_of_day]), lighting_summary]
+	var wind_id := WindPresets.current_id(weather_config, Catalog.is_rotorcraft(aircraft_id))
+	wind_button.text = row_format % [tr("Wind"), tr(WindPresets.row_label(wind_id)) if not wind_id.is_empty() else tr("Custom")]
+	wind_button.tooltip_text = "%s\n%s" % [
+		tr("Wind and air settings apply to airplanes and helicopters only.") if not activity_id.is_empty()
+			else tr("Press for the next wind preset. Conditions has the exact values, turbulence and air."),
+		" · ".join(parts) if not parts.is_empty() else tr("Calm"),
+	]
 
 
 ## Show the explicit flight selection. A connected device alone never takes control.

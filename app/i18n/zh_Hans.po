@@ -13605,8 +13605,8 @@ msgstr "取消操作"
 msgid "Cancelled."
 msgstr "已取消。"
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "选择 Phoenix 场景文件或文件夹，或打开已安装的预览。"
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "选择 Phoenix RC 模拟器的场景文件或文件夹，或打开已安装的预览。"
 
 msgid "Choose a scenery file"
 msgstr "选择场景文件"
@@ -13644,8 +13644,8 @@ msgstr "看向面板 %d"
 msgid "No Phoenix scenery descriptors were found."
 msgstr "未找到 Phoenix 场景描述符。"
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "此来源中未找到 Phoenix 场景。"
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "此来源中未找到 Phoenix RC 场景。"
 
 msgid "Opening preview…"
 msgstr "正在打开预览…"
@@ -13919,3 +13919,75 @@ msgstr "没有符合搜索条件的载具。"
 
 msgid "Hangar"
 msgstr "机库"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "按下切换到下一个风况预设。精确数值、湍流和空气在“条件”中设置。"
+
+msgid "Applies to the next flight"
+msgstr "用于下一次飞行"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "平均风速。小型教练机在约 6 m/s 以上会很吃力。"
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "风的来向：090° 表示来自东方。"
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "每次阵风高于平均风速的额外速度。"
+
+msgid "Rising or sinking air inside each gust."
+msgstr "每次阵风中的上升或下沉气流。"
+
+msgid "How long each gust lasts."
+msgstr "每次阵风持续多久。"
+
+msgid "Time from the start of one gust to the next."
+msgstr "从一次阵风开始到下一次开始的时间。"
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "选择预设或修改数值。“应用”会保留到下一次飞行，“取消”会放弃更改。"
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "输入风速和风向即可在跑道上查看。"
+
+msgid "Calm: no steady wind on the runway."
+msgstr "无风：跑道上没有持续风。"
+
+msgid "headwind %s m/s"
+msgstr "逆风 %s m/s"
+
+msgid "tailwind %s m/s"
+msgstr "顺风 %s m/s"
+
+msgid "crosswind %s m/s from the right"
+msgstr "右侧侧风 %s m/s"
+
+msgid "crosswind %s m/s from the left"
+msgstr "左侧侧风 %s m/s"
+
+msgid "no crosswind"
+msgstr "无侧风"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "来自 %03.0f°，%s m/s。"
+
+msgid "Runway start: %s, %s."
+msgstr "跑道起飞：%s，%s。"
+
+msgid "Time & sky"
+msgstr "时间与天空"
+
+msgid "Ahead"
+msgstr "向前"
+
+msgid "Behind"
+msgstr "向后"
+
+msgid "Left"
+msgstr "向左"
+
+msgid "Sky"
+msgstr "天空"
+
+msgid "Ground"
+msgstr "地面"

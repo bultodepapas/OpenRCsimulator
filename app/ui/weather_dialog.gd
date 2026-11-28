@@ -13,6 +13,8 @@ const SkyControls := preload("res://ui/sky_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
+const WindPresets := preload("res://ui/wind_presets.gd")
+const WindCompass := preload("res://ui/wind_compass.gd")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -68,6 +70,16 @@ const SLIDER_SPECS: Dictionary = {
 	"qnh_hpa": { min = 870.0, max = 1085.0, step = 0.1, decimals = 1, unit = "hPa" },
 	"relative_humidity_pct": { min = 0.0, max = 100.0, step = 1.0, decimals = 0, unit = "%" },
 }
+## UI-40q (UI-40 CO-3): what each wind value does, shown as its tooltip and, for keyboard and gamepad, in the help line.
+const FIELD_HELP: Dictionary = {
+	"speed_mps": "Average wind. Small trainers struggle above about 6 m/s.",
+	"from_deg": "Where the wind comes from: 090° is from the east.",
+	"gust_mps": "Extra speed of each gust above the average wind.",
+	"gust_up_mps": "Rising or sinking air inside each gust.",
+	"gust_duration_s": "How long each gust lasts.",
+	"gust_period_s": "Time from the start of one gust to the next.",
+}
+const IDLE_HELP := "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
 const ERROR_TEXT: String = "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
 const ATMOSPHERE_ERROR_TEXT: String = "Check field elevation, temperature, QNH and humidity against the displayed limits."
 const TIME_ERROR_TEXT: String = "Check the time, date, UTC offset and location. Apply will not save invalid lighting."
@@ -96,7 +108,10 @@ var turbulence_inputs: Dictionary = {}
 var turbulence_sliders: Dictionary = {}
 var atmosphere_inputs: Dictionary = {}
 var atmosphere_sliders: Dictionary = {}
-var turbulence_enabled: CheckBox
+var turbulence_enabled: CheckButton
+var wind_compass: Control
+var wind_compass_note: Label
+var help_label: Label
 var atmosphere_mode_picker: OptionButton
 var atmosphere_note: Label
 var atmosphere_preview: Label
@@ -154,13 +169,21 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	var title: Label = _label("Conditions", "TitleLabel")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
+	var scope_label: Label = _label("Applies to the next flight", "SecondaryLabel")
+	scope_label.name = "ConditionsScope"
+	scope_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	# Enlarged text wraps the scope beside the title instead of widening the panel.
+	scope_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scope_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	scope_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	header.add_child(scope_label)
 	column.add_child(header)
 	subtitle_label = _label(LEGACY_WIND_SUBTITLE, "SecondaryLabel", true)
 	subtitle_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
 	var preset_row: HBoxContainer = HBoxContainer.new()
 	preset_row.add_theme_constant_override("separation", 12)
-	preset_row.add_child(_label("Conditions", "SecondaryLabel"))
+	preset_row.add_child(_label("Preset", "SecondaryLabel"))
 	preset_picker = OptionButton.new()
 	preset_picker.name = "WeatherPreset"
 	preset_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -195,7 +218,6 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	page_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page_stack.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	tab_scroll.add_child(page_stack)
-	page_stack.add_child(subtitle_label)
 	wind_page = VBoxContainer.new()
 	wind_page.name = "WindAndGusts"
 	wind_page.add_theme_constant_override("separation", 10)
@@ -205,6 +227,24 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	wind_grid.columns = 2
 	wind_grid.add_theme_constant_override("h_separation", 18)
 	wind_grid.add_theme_constant_override("v_separation", 8)
+	var compass_row := HBoxContainer.new()
+	compass_row.name = "WindCompassRow"
+	compass_row.add_theme_constant_override("separation", 14)
+	wind_compass = WindCompass.new()
+	compass_row.add_child(wind_compass)
+	# The wind intro and the runway sentence sit beside the compass, so the drawing costs no extra row.
+	var compass_text := VBoxContainer.new()
+	compass_text.name = "WindIntro"
+	compass_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	compass_text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	compass_text.add_theme_constant_override("separation", 2)
+	compass_text.add_child(subtitle_label)
+	wind_compass_note = _label("", "SecondaryLabel", true, false)
+	wind_compass_note.name = "WindCompassNote"
+	wind_compass_note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	compass_text.add_child(wind_compass_note)
+	compass_row.add_child(compass_text)
+	wind_page.add_child(compass_row)
 	wind_page.add_child(wind_grid)
 	for key: String in EDITED_KEYS:
 		_add_number_field(wind_grid, key, FIELD_LABELS[key], field_inputs, false, false)
@@ -222,8 +262,9 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	turbulence_page.visible = false
 	page_stack.add_child(turbulence_page)
 	turbulence_page.add_child(_label("Seeded turbulence changes smoothly over time. RMS sets strength by direction; tau controls how quickly it changes.", "SecondaryLabel", true))
-	turbulence_enabled = CheckBox.new()
+	turbulence_enabled = CheckButton.new()
 	turbulence_enabled.name = "EnableTurbulence"
+	turbulence_enabled.theme_type_variation = "SettingsToggle"
 	turbulence_enabled.text = "Enable turbulence"
 	turbulence_enabled.toggled.connect(_on_turbulence_toggled)
 	turbulence_page.add_child(turbulence_enabled)
@@ -303,6 +344,14 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	column.add_child(error_label)
 
 	var actions := Widgets.button_row()
+	# UI-40q: the focused value's help shares the action row, so explaining a field never costs body height.
+	help_label = _label(tr(IDLE_HELP), "SecondaryLabel", true, false)
+	help_label.name = "ConditionsHelp"
+	help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	help_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	help_label.max_lines_visible = 2
+	help_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	actions.add_child(help_label)
 	cancel_button = Button.new()
 	cancel_button.name = "Cancel"
 	cancel_button.text = "Cancel"
@@ -326,6 +375,7 @@ func _ready() -> void:
 	for selector: OptionButton in find_children("*", "OptionButton", true, false):
 		Widgets.fit_option_popup(selector)
 	get_viewport().size_changed.connect(_schedule_scroll_height_update)
+	get_viewport().gui_focus_changed.connect(_on_focus_changed) # disconnected when the dialog is freed
 	panel.resized.connect(_schedule_scroll_height_update)
 	_schedule_scroll_height_update()
 	_focus_initial_control.call_deferred()
@@ -345,6 +395,8 @@ func _notification(what: int) -> void:
 		_update_atmosphere_controls()
 		_update_atmosphere_preview()
 		_update_spatial_mode_controls()
+		_update_wind_compass()
+		_on_focus_changed(get_viewport().gui_get_focus_owner())
 		if error_label.visible:
 			_render_diagnostic()
 		_schedule_scroll_height_update()
@@ -429,6 +481,11 @@ func _update_scroll_height() -> void:
 	var selector_width: float = minf(SELECTOR_MAX_WIDTH, content_width * 0.55)
 	var responsive_layout_changed := false
 	var compact_chrome: bool = viewport_size.y < 620.0
+	# The focused value's help is a convenience; tiny windows and enlarged text keep their height for the values.
+	var show_help: bool = not compact_chrome and UiTheme.text_scale < 1.5
+	if help_label != null and help_label.visible != show_help:
+		help_label.visible = show_help
+		responsive_layout_changed = true
 	if compact_chrome != _compact_chrome:
 		_compact_chrome = compact_chrome
 		(panel.get_child(0) as VBoxContainer).add_theme_constant_override("separation", 6 if compact_chrome else 10)
@@ -528,6 +585,7 @@ func _set_fields(config: Dictionary, selected_preset: int = 0, replace_atmospher
 		_set_error_visible(false)
 	_setting_fields = false
 	_update_spatial_mode_controls()
+	_update_wind_compass()
 	_set_focus_ring()
 	_schedule_scroll_height_update()
 
@@ -552,6 +610,8 @@ func _update_spatial_mode_controls() -> void:
 		return
 	var spatial_enabled: bool = spatial_controls.spatial_enabled()
 	wind_grid.visible = not spatial_enabled
+	wind_compass.visible = not spatial_enabled # the spatial model has its own reference direction
+	wind_compass_note.visible = not spatial_enabled
 	subtitle_label.text = tr(SPATIAL_WIND_SUBTITLE if spatial_enabled else LEGACY_WIND_SUBTITLE)
 	for key: String in EDITED_KEYS:
 		(field_inputs[key] as LineEdit).editable = not spatial_enabled
@@ -573,6 +633,11 @@ func _matching_preset(config: Dictionary) -> int:
 	for index: int in entries.size():
 		var checked: Dictionary = WeatherSettings.validate(entries[index].config)
 		if checked.get("ok", false) and checked.config == config:
+			return index + 1
+	# UI-40q: a wind preset over the player's own air is still that preset, as Home's Wind row names it.
+	var wind_id := WindPresets.current_id(config)
+	for index: int in entries.size():
+		if not wind_id.is_empty() and entries[index].id == wind_id:
 			return index + 1
 	return 0
 
@@ -607,6 +672,7 @@ func _wind_preset_config(config: Dictionary) -> Dictionary:
 func _on_field_changed(_text: String, _key: String) -> void:
 	if _setting_fields:
 		return
+	_update_wind_compass()
 	if field_sliders.has(_key):
 		_sync_slider_from_text(field_sliders[_key], _text)
 	if preset_picker != null and preset_picker.selected != 0:
@@ -1199,7 +1265,7 @@ func _add_number_field(grid: GridContainer, key: String, label_text: String, inp
 		slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		slider.focus_mode = Control.FOCUS_ALL
 		slider.scrollable = false
-		slider.tooltip_text = tr(label_text)
+		slider.tooltip_text = tr(FIELD_HELP.get(key, label_text))
 		_style_slider(slider)
 		slider.value_changed.connect(_on_slider_changed.bind(key, category))
 		slider_map[key] = slider
@@ -1218,6 +1284,10 @@ func _add_number_field(grid: GridContainer, key: String, label_text: String, inp
 		edit.text_changed.connect(_on_turbulence_field_changed.bind(key))
 	else:
 		edit.text_changed.connect(_on_field_changed.bind(key))
+	if FIELD_HELP.has(key):
+		edit.tooltip_text = tr(FIELD_HELP[key])
+		field_label.tooltip_text = tr(FIELD_HELP[key])
+		field_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	inputs[key] = edit
 	values.add_child(edit)
 	if not integer_only:
@@ -1360,6 +1430,47 @@ static func _adjacent_number_text(text: String, direction: int) -> String:
 			return text.substr(0, index) + str(next) + text.substr(index + 1)
 		text = text.substr(0, index) + ("0" if direction > 0 else "9") + text.substr(index + 1)
 	return ""
+
+
+## UI-40q (UI-40 CO-3): the draft wind over the runway, with its along- and across-runway parts.
+func _update_wind_compass() -> void:
+	if wind_compass == null or field_inputs.is_empty():
+		return
+	var speed_text: String = (field_inputs["speed_mps"] as LineEdit).text
+	var from_text: String = (field_inputs["from_deg"] as LineEdit).text
+	if not speed_text.is_valid_float() or not from_text.is_valid_float():
+		wind_compass_note.text = tr("Enter a wind speed and direction to see them on the runway.")
+		return
+	var speed: float = speed_text.to_float()
+	var from: float = from_text.to_float()
+	wind_compass.call("set_wind", speed, from)
+	if speed <= 0.0:
+		wind_compass_note.text = tr("Calm: no steady wind on the runway.")
+		return
+	var parts: Vector2 = WindCompass.components(speed, from)
+	var along := tr("headwind %s m/s") % String.num(absf(parts.x), 1) if parts.x >= 0.0 \
+		else tr("tailwind %s m/s") % String.num(absf(parts.x), 1)
+	var across := tr("crosswind %s m/s from the right") % String.num(absf(parts.y), 1) if parts.y > 0.05 \
+		else tr("crosswind %s m/s from the left") % String.num(absf(parts.y), 1) if parts.y < -0.05 \
+		else tr("no crosswind")
+	wind_compass_note.text = "%s %s" % [
+		tr("From %03.0f° at %s m/s.") % [fposmod(from, 360.0), String.num(speed, 1)],
+		tr("Runway start: %s, %s.") % [along, across],
+	]
+
+
+## UI-40e/UI-40q: keyboard and gamepad users see the explanation a mouse user gets as a tooltip.
+func _on_focus_changed(focused: Control) -> void:
+	if help_label == null:
+		return
+	var description := ""
+	if focused != null and is_instance_valid(focused) and panel.is_ancestor_of(focused):
+		description = focused.tooltip_text
+		if description.is_empty() and focused.get_parent() is Control:
+			description = (focused.get_parent() as Control).tooltip_text
+	var text: String = tr(description) if not description.is_empty() else tr(IDLE_HELP)
+	if help_label.text != text:
+		help_label.text = text
 
 
 static func _label(text: String, variation: String, should_wrap: bool = false, translate: bool = true) -> Label:

@@ -33,6 +33,7 @@ const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
+const WindPresets := preload("res://ui/wind_presets.gd") # UI-40q
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const ActiveAlerts := preload("res://ui/active_alerts.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
@@ -326,6 +327,8 @@ var _update_save_error: int = OK
 var _workshop_screens: Array[Dictionary] = []
 ## UI-40j: the Workshop reopens on the page last used in this app run.
 var _last_workshop_page := "setup"
+## UI-40q: the player's own (non-preset) wind, kept for the session when Home's Wind row cycles away from it.
+var _custom_wind: Dictionary = {}
 var _first_flight_hint_save_pending := false
 var _workshop_previous_flight: Node
 var _workshop_previous_keyboard: Callable
@@ -939,6 +942,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.statistics_requested.connect(open_statistics)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
+	home.wind_preset_requested.connect(set_wind_preset)
 	home.failures_requested.connect(open_failures_settings)
 	home.trim_practice_requested.connect(open_trim_practice_settings)
 	home.companions_requested.connect(open_companions_settings)
@@ -1488,6 +1492,34 @@ func set_time_of_day(preset: String) -> bool:
 	_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	return true
+
+
+## UI-40q: Home's one-step wind preset. The same weather and storage rules as Apply in Conditions with only that preset
+## chosen: the air and, for a selected rotorcraft, the saved airplane turbulence stay as they were. Returns whether
+## the preset is now in effect.
+func set_wind_preset(id: String) -> bool:
+	if _loading_active or home == null or not screens.is_top("home"):
+		return false
+	var selected_aircraft := str(preferences.get("aircraft", Preferences.DEFAULTS.aircraft))
+	var saved: Dictionary = WeatherSettings.validate(preferences.get("weather_config", WeatherSettings.defaults())).config
+	var shown: Dictionary = weather_for_aircraft(home.aircraft_id, saved)
+	if id == WindPresets.CUSTOM_ID:
+		if _custom_wind.is_empty():
+			return false
+		preferences.weather_config = _custom_wind.duplicate(true) # exactly as the player left it
+		home.set_weather_config(weather_for_aircraft(selected_aircraft, _custom_wind))
+		_report_selection_save(Preferences.save_to(preferences_path, preferences))
+		return true
+	var applied: Dictionary = WindPresets.apply(shown, id)
+	if applied.is_empty():
+		return false
+	if WindPresets.current_id(shown, Catalog.is_rotorcraft(home.aircraft_id)).is_empty():
+		_custom_wind = saved.duplicate(true) # one press must not lose an authored wind
+		home.custom_wind_available = true
+	preferences.weather_config = _weather_keeping_saved_turbulence(selected_aircraft, applied).duplicate(true)
+	home.set_weather_config(weather_for_aircraft(selected_aircraft, applied))
+	_report_selection_save(Preferences.save_to(preferences_path, preferences))
 	return true
 
 
@@ -3726,7 +3758,7 @@ func open_pause() -> void:
 	pause_menu.set_companion_config(_flight_companion_config())
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
-	pause_menu.time_of_day_button.text = tr("Sky and lighting")
+	pause_menu.time_of_day_button.text = tr("Time & sky") # UI-40q (UI-40 CO-1): the Conditions tabs' words
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.active_alerts_requested.connect(open_active_alerts)
 	pause_menu.statistics_requested.connect(open_statistics)
@@ -4795,6 +4827,12 @@ func _weather_keeping_saved_turbulence(aircraft_id: String, applied: Dictionary)
 	var merged: Dictionary = weather_for_aircraft(aircraft_id, applied)
 	if saved.has("turbulence_rms_mps") and merged.has("turbulence_rms_mps"):
 		merged.turbulence_rms_mps = saved.turbulence_rms_mps.duplicate()
+	elif WeatherSettings.has_turbulence(saved):
+		# UI-40q: a v1 wind (Calm, Steady breeze…) has no turbulence fields; carry the airplane's over unchanged.
+		merged.format = WeatherSettings.TURBULENCE_FORMAT
+		merged.turbulence_rms_mps = saved.turbulence_rms_mps.duplicate()
+		merged.turbulence_tau_s = saved.turbulence_tau_s
+		merged.turbulence_seed = saved.turbulence_seed
 	var checked := WeatherSettings.validate(merged)
 	return checked.config if checked.ok else weather_for_aircraft(aircraft_id, applied)
 

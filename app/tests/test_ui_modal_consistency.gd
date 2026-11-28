@@ -37,6 +37,13 @@ func _run() -> void:
 	_check("sliders show the shared focus outline", theme.get_stylebox("focus", "HSlider") == theme.get_stylebox("focus", "Button"))
 	var grabber := theme.get_stylebox("grabber_pressed", "VScrollBar") as StyleBoxFlat
 	_check("scrollbars use the theme accent", grabber != null and grabber.bg_color == UiTheme.FOCUS)
+	# UI-40q (UI-40 I-1): native dialogs (scenery import, confirmations, file pickers) wear the glass panel.
+	var window_frame := theme.get_stylebox("embedded_border", "Window") as StyleBoxFlat
+	var window_body := theme.get_stylebox("panel", "AcceptDialog") as StyleBoxFlat
+	_check("native dialogs use the glass frame and body", window_frame != null and window_body != null
+		and Color(window_frame.bg_color, 1.0) == Color(UiTheme.PANEL, 1.0) and window_body.bg_color == window_frame.bg_color
+		and window_frame.expand_margin_top == float(theme.get_constant("title_height", "Window"))
+		and theme.get_color("title_color", "Window") == UiTheme.TEXT)
 
 	# --- VC-5: one error colour.
 	var briefing := NaturalRandomScreen.new()

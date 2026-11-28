@@ -14550,8 +14550,8 @@ msgstr "Vorgang abbrechen"
 msgid "Cancelled."
 msgstr "Abgebrochen."
 
-msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
-msgstr "Wähle eine Phoenix-Datei oder einen Ordner oder öffne eine installierte Vorschau."
+msgid "Choose a scenery file or folder from the Phoenix RC simulator, or reopen an installed preview."
+msgstr "Wähle eine Szenerie-Datei oder einen Ordner aus dem Simulator Phoenix RC oder öffne eine installierte Vorschau."
 
 msgid "Choose a scenery file"
 msgstr "Szeneriedatei auswählen"
@@ -14589,8 +14589,8 @@ msgstr "Schauen Sie in Richtung Panel %d"
 msgid "No Phoenix scenery descriptors were found."
 msgstr "Keine Phoenix-Szeneriebeschreibungen gefunden."
 
-msgid "No Phoenix scenery was found in this source."
-msgstr "In dieser Quelle wurde keine Phoenix-Szenerie gefunden."
+msgid "No Phoenix RC scenery was found in this source."
+msgstr "In dieser Quelle wurde keine Phoenix-RC-Szenerie gefunden."
 
 msgid "Opening preview…"
 msgstr "Vorschau wird geöffnet…"
@@ -14864,3 +14864,75 @@ msgstr "Kein Modell passt zu dieser Suche."
 
 msgid "Hangar"
 msgstr "Hangar"
+
+msgid "Press for the next wind preset. Conditions has the exact values, turbulence and air."
+msgstr "Drücken für die nächste Wind-Voreinstellung. Die genauen Werte, Turbulenz und Luft stehen unter Bedingungen."
+
+msgid "Applies to the next flight"
+msgstr "Gilt für den nächsten Flug"
+
+msgid "Average wind. Small trainers struggle above about 6 m/s."
+msgstr "Mittlerer Wind. Kleine Trainer tun sich über etwa 6 m/s schwer."
+
+msgid "Where the wind comes from: 090° is from the east."
+msgstr "Woher der Wind kommt: 090° ist aus Osten."
+
+msgid "Extra speed of each gust above the average wind."
+msgstr "Zusätzliche Geschwindigkeit jeder Böe über dem mittleren Wind."
+
+msgid "Rising or sinking air inside each gust."
+msgstr "Steigende oder sinkende Luft in jeder Böe."
+
+msgid "How long each gust lasts."
+msgstr "Wie lange jede Böe dauert."
+
+msgid "Time from the start of one gust to the next."
+msgstr "Zeit vom Beginn einer Böe bis zur nächsten."
+
+msgid "Choose a preset or change a value. Apply keeps them for the next flight; Cancel discards them."
+msgstr "Wähle eine Voreinstellung oder ändere einen Wert. Anwenden behält sie für den nächsten Flug; Abbrechen verwirft sie."
+
+msgid "Enter a wind speed and direction to see them on the runway."
+msgstr "Gib Windgeschwindigkeit und Richtung ein, um sie über der Piste zu sehen."
+
+msgid "Calm: no steady wind on the runway."
+msgstr "Windstille: kein stetiger Wind auf der Piste."
+
+msgid "headwind %s m/s"
+msgstr "Gegenwind %s m/s"
+
+msgid "tailwind %s m/s"
+msgstr "Rückenwind %s m/s"
+
+msgid "crosswind %s m/s from the right"
+msgstr "Seitenwind %s m/s von rechts"
+
+msgid "crosswind %s m/s from the left"
+msgstr "Seitenwind %s m/s von links"
+
+msgid "no crosswind"
+msgstr "kein Seitenwind"
+
+msgid "From %03.0f° at %s m/s."
+msgstr "Aus %03.0f° mit %s m/s."
+
+msgid "Runway start: %s, %s."
+msgstr "Pistenstart: %s, %s."
+
+msgid "Time & sky"
+msgstr "Uhrzeit & Himmel"
+
+msgid "Ahead"
+msgstr "Nach vorn"
+
+msgid "Behind"
+msgstr "Nach hinten"
+
+msgid "Left"
+msgstr "Nach links"
+
+msgid "Sky"
+msgstr "Himmel"
+
+msgid "Ground"
+msgstr "Boden"
