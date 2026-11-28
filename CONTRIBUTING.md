@@ -31,6 +31,8 @@ Documentation-only changes need content, local-link/anchor and explicit import c
 
 Keep dated evidence and primary sources in `docs/research/`, and experiments, generators and measurement reducers in `research/`. Pin dependency versions. Reuse suitable free assets with redistribution rights; include their license, provenance and processing steps. Keep reference scans with unclear redistribution rights out of commits.
 
+**Before adding any mesh, livery, texture, sound or other third-party asset, apply the [per-asset license and partner release checklist](docs/ASSET-LICENSING-AND-PARTNERSHIPS.md).** Record the rights holder, exact source files and hashes, attribution and license, source/fork rights, binary/free/commercial distribution scope, modifications, marks and any unresolved restrictions. Do not commit a partner's proprietary master, a raw demo with binary-only permission, or an uncleared asset; a GitHub directory or Git LFS is not private storage. Obtain written authorization for the simplified game mesh separately from any manufacturing CAD.
+
 For a new landscape, follow the [landscape contributor guide](docs/LANDSCAPES.md). Green paradise demonstrates the folder, field data and adapter interface; add one explicit registry entry, keep Club field available, and verify loading, switching, lighting and exported resources.
 
 ## Documentation
