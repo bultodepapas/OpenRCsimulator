@@ -1041,6 +1041,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	std::unique_ptr<nk::sound::GroundCore> ground_core_; // NK-7d: this instance's ground audio core, made on first slot
 	std::unique_ptr<nk::sound::MechanicalCore> mechanical_core_; // NK-7e: this instance's mechanical audio core
 	std::unique_ptr<nk::sound::RowKeys> row_keys_; // NK-7f: made on the first rows
+	std::vector<nk::WheelFrame> audio_frames_; // NK-7k: the contacts' frames of the last band rows or approach speeds
 	std::unique_ptr<nk::render::ShadowParts> shadow_parts_; // NK-8a: one projected shadow's parts
 	// NK-7g: flight audio's glow key names, made on the first call (never function-local statics).
 	struct GlowAudioKeys {
@@ -1297,6 +1298,8 @@ protected:
 			&OpenRCNativeKernel::stage_wheel_rows);
 		godot::ClassDB::bind_method(D_METHOD("stage_wheel_audio_rows", "s", "aux", "steer", "anchors", "speeds", "brake",
 			"arms", "ids", "reference_load", "time_s", "surfaces", "support"), &OpenRCNativeKernel::stage_wheel_audio_rows);
+		godot::ClassDB::bind_method(D_METHOD("stage_wheel_approach_speeds", "s", "aux", "steer", "arms"),
+			&OpenRCNativeKernel::stage_wheel_approach_speeds);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
 		godot::ClassDB::bind_method(D_METHOD("sound_doppler", "source", "listener", "source_velocity", "listener_velocity",
@@ -2159,12 +2162,13 @@ public:
 		return out;
 	}
 
-	// NK-7j: stage_wheel_rows for the published endpoint and, from those rows, GroundAudioModel.snapshot_contacts' loaded
-	// rows (nk_audio_rows.hpp loaded_rows) in one call. Empty: evaluate everything; [wheel rows]: the rows are [0] or the
-	// audio rows are refused, so the caller builds them from the wheel rows; [wheel rows, row dictionaries...]: answered.
-	// surfaces: the environment's table; support: its prepared ground support (Environment._ground_support), which
-	// Environment.sample_support uses while its surfaces equal that table. Both must carry the stage's bits, and the
-	// support must be a successful legacy-law preparation; arms and ids: every contact's.
+	// NK-7j: stage_wheel_rows for the published endpoint and, from those rows, GroundAudioModel.snapshot_contacts' rows
+	// in one call. Empty: evaluate everything; [wheel rows]: the audio rows are refused, so the caller builds them from
+	// the wheel rows; [wheel rows, row dictionaries...]: answered. The loaded rows come from the wheel rows
+	// (nk_audio_rows.hpp loaded_rows); NK-7k: where the rows are [0] (beyond the terrain's reach), from each contact's
+	// frame (band_rows). surfaces: the environment's table; support: its prepared ground support
+	// (Environment._ground_support), which Environment.sample_support uses while its surfaces equal that table. Both must
+	// carry the stage's bits, and the support must be a successful legacy-law preparation; arms and ids: every contact's.
 	godot::Array stage_wheel_audio_rows(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
 			const PackedFloat64Array &anchors, const PackedFloat64Array &speeds, double brake, const PackedFloat64Array &arms,
 			const PackedStringArray &ids, double reference_load, double time_s, const PackedFloat64Array &surfaces,
@@ -2173,7 +2177,8 @@ public:
 		const PackedFloat64Array rows = stage_wheel_rows(s, aux, steer, anchors, speeds, brake);
 		if (rows.is_empty()) return out;
 		out.push_back(rows);
-		const nk::GroundContext *ground = rows.size() > 2 ? endpoint_ground(s, aux) : nullptr;
+		const bool beyond = rows.size() == 1 && rows[0] == 0.0;
+		const nk::GroundContext *ground = rows.size() > 2 || beyond ? endpoint_ground(s, aux) : nullptr;
 		if (ground == nullptr) return out;
 		const nk::SurfaceTable &table = ground->surfaces;
 		const auto same_table = [&table](const PackedFloat64Array &values) {
@@ -2192,14 +2197,59 @@ public:
 				regions.get_type() != Variant::ARRAY) {
 			return out;
 		}
-		const int64_t count = static_cast<int64_t>(rows[1]);
-		if (rows.size() != 2 + count * nk::kWheelRowSize) return out;
 		if (!row_keys_) row_keys_ = std::make_unique<nk::sound::RowKeys>();
-		const godot::Array audio = nk::sound::loaded_rows(*row_keys_, s, rows.ptr() + 2, count, arms, ids, reference_load,
-			time_s, table, ground->lake, regions);
+		godot::Array audio;
+		int64_t count = 0;
+		if (beyond) {
+			// The reference's Ground.loads per contact answers no loads beyond the same bound that answered [0]: the
+			// lake route checks reach + the table's height bound, the plain route reach alone.
+			const nk::R down = s[2];
+			const nk::R reach = ground->gear.reach;
+			if (!(-down > reach + nk::max_height_validated(table)) || !(-down > reach)) return out;
+			if (!endpoint_frames(s, steer, arms, *ground, audio_frames_)) return out;
+			count = static_cast<int64_t>(audio_frames_.size());
+			audio = nk::sound::band_rows(*row_keys_, s, audio_frames_, arms, ids, reference_load, time_s, table,
+				ground->lake, regions);
+		} else {
+			count = static_cast<int64_t>(rows[1]);
+			if (rows.size() != 2 + count * nk::kWheelRowSize) return out;
+			audio = nk::sound::loaded_rows(*row_keys_, s, rows.ptr() + 2, count, arms, ids, reference_load, time_s, table,
+				ground->lake, regions);
+		}
 		if (audio.size() != count) return out;
 		out.append_array(audio);
 		return out;
+	}
+
+	// NK-7k: Wheels.frame for every contact of the endpoint's ground at `s` (the stage's wheel_frame, as
+	// GroundAudioModel._contact_kinematics evaluates it), when `arms` carries every contact position's bits in order.
+	bool endpoint_frames(const PackedFloat64Array &s, double steer, const PackedFloat64Array &arms,
+			const nk::GroundContext &ground, std::vector<nk::WheelFrame> &frames) const {
+		frames.clear();
+		const std::vector<nk::WheelContact> &contacts = ground.gear.contacts;
+		if (!std::isfinite(steer) || contacts.empty() || arms.size() != static_cast<int64_t>(contacts.size()) * 3) {
+			return false;
+		}
+		for (size_t i = 0; i < contacts.size(); ++i) {
+			for (int j = 0; j < 3; ++j) {
+				const double expected = contacts[i].position[j].v;
+				if (std::memcmp(&arms.ptr()[i * 3 + static_cast<size_t>(j)], &expected, sizeof(double)) != 0) return false;
+			}
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		const nk::Rotation a = nk::wheel_rotation(state);
+		for (const nk::WheelContact &c : contacts) frames.push_back(nk::wheel_frame(state, c, steer, ground, a));
+		return true;
+	}
+
+	// NK-7k: GroundAudioModel.approach_speeds' values for the published endpoint (nk_audio_rows.hpp approach_speeds),
+	// one per contact in order; empty to evaluate them in GDScript. arms: every contact's position.
+	PackedFloat64Array stage_wheel_approach_speeds(const PackedFloat64Array &s, const PackedFloat64Array &aux, double steer,
+			const PackedFloat64Array &arms) {
+		const nk::GroundContext *ground = endpoint_ground(s, aux);
+		if (ground == nullptr || !endpoint_frames(s, steer, arms, *ground, audio_frames_)) return PackedFloat64Array();
+		return nk::sound::approach_speeds(s, audio_frames_, arms);
 	}
 
 	int64_t wheel_rows_answers() const { return wheel_rows_answers_; }

@@ -112,11 +112,79 @@ inline godot::String roll_family(const RowKeys &k, const godot::String &material
 	return material == k.gravel ? k.gravel : godot::String();
 }
 
+// One contact's values for a snapshot_contacts row: its frame (position, normal, compression, long speed), the force
+// and the rim speed. The point velocity, approach speed, normal force, rolling speed and support follow from them.
+struct RowInput {
+	V3d position;
+	V3d normal;
+	R compression = 0.0;
+	R long_speed = 0.0;
+	V3d force;
+	double rim = 0.0;
+};
+
+// The point velocity of the contact at `arm` (snapshot_contacts' kinematics), q = [w, x, y, z].
+inline V3d point_velocity(const double *s, const R q[4], const V3d &arm) {
+	return q_rotate_gd(q, v3_add(V3d{s[3], s[4], s[5]}, v3_cross(V3d{s[10], s[11], s[12]}, arm)));
+}
+
+// snapshot_contacts' row for one contact, appended to `rows`: the approach speed, normal force and rolling speed in its
+// operation order, and surface_observation over the environment's prepared support, whose `regions` name each surface
+// row (a lake-covered point has no measured material). False for a region entry the reference would not read as
+// strings.
+inline bool append_row(godot::Array &rows, const RowKeys &k, const godot::String &id, const RowInput &in,
+		const V3d &velocity, double reference_load, double time_s, const SurfaceTable &table, const LakeTerrain &lake,
+		const godot::Array &regions) {
+	const R zero = 0.0;
+	const R approach = maxf(zero, -v3_dot(velocity, in.normal));
+	const R normal_force = maxf(zero, v3_dot(in.force, in.normal));
+	const R rolling = maxf(R(godot::UtilityFunctions::absf(in.long_speed.v)), R(godot::UtilityFunctions::absf(in.rim)));
+	const SupportAnswer support = support_sample(in.position, velocity, time_s, table, lake);
+	godot::String region_id, material = k.unspecified, surface = k.hard;
+	bool resolved = false, fallback = true;
+	if (support.row >= 0) {
+		if (support.row >= regions.size() || regions[support.row].get_type() != godot::Variant::DICTIONARY) return false;
+		const godot::Dictionary region = regions[support.row];
+		const godot::Variant id_value = region.get(k.region_id, godot::Variant());
+		const godot::Variant material_value = region.get(k.material_id, godot::Variant());
+		if (id_value.get_type() != godot::Variant::STRING || material_value.get_type() != godot::Variant::STRING) {
+			return false;
+		}
+		region_id = id_value;
+		if (!support.covered) material = material_value;
+		resolved = material != k.unspecified;
+		const godot::String family = resolved ? roll_family(k, material) : godot::String();
+		if (!family.is_empty()) {
+			surface = family;
+			fallback = false;
+		}
+	}
+	godot::Dictionary row;
+	row[k.id] = id;
+	row[k.position] = ned_to_render(in.position);
+	row[k.velocity] = ned_to_render(velocity);
+	row[k.force] = ned_to_render(in.force);
+	row[k.normal] = ned_to_render(in.normal);
+	row[k.normal_force] = normal_force.v;
+	row[k.reference] = reference_load;
+	row[k.compression] = in.compression.v;
+	row[k.approach] = approach.v;
+	row[k.rolling] = rolling.v;
+	row[k.rim] = in.rim;
+	row[k.surface] = surface;
+	row[k.material] = material;
+	row[k.resolved] = resolved;
+	row[k.fallback] = fallback;
+	row[k.region] = region_id;
+	row[k.grounded] = normal_force.v > 0.0;
+	row[k.roll] = true;
+	rows.push_back(row);
+	return true;
+}
+
 // NK-7j: snapshot_contacts' loaded rows from the native wheel rows of the published endpoint (NK-6o): _row_kinematics,
-// the force and load arithmetic, and surface_observation over the environment's prepared support, whose `regions`
-// name each surface row (a lake-covered point has no measured material). wheel_rows: kWheelRowSize values per contact,
-// in contact order; arms and ids: every contact's position and identity. Empty for malformed input or a region entry
-// the reference would not read as strings.
+// the force and load arithmetic, and the support. wheel_rows: kWheelRowSize values per contact, in contact order; arms
+// and ids: every contact's position and identity. Empty for malformed input or an unreadable region entry.
 inline godot::Array loaded_rows(const RowKeys &k, const godot::PackedFloat64Array &state, const double *wheel_rows,
 		int64_t count, const godot::PackedFloat64Array &arms, const godot::PackedStringArray &ids, double reference_load,
 		double time_s, const SurfaceTable &table, const LakeTerrain &lake, const godot::Array &regions) {
@@ -127,67 +195,70 @@ inline godot::Array loaded_rows(const RowKeys &k, const godot::PackedFloat64Arra
 	}
 	const double *s = state.ptr();
 	const R q[4] = {s[6], s[7], s[8], s[9]};
-	const V3d base_velocity{s[3], s[4], s[5]};
-	const V3d body_rate{s[10], s[11], s[12]};
 	const R zero = 0.0;
 	for (int64_t i = 0; i < count; ++i) {
 		const double *w = wheel_rows + i * kWheelRowSize;
-		const V3d position{w[5], w[6], w[7]};
-		const V3d normal{w[8], w[9], w[10]};
+		RowInput in;
+		in.position = V3d{w[5], w[6], w[7]};
+		in.normal = V3d{w[8], w[9], w[10]};
+		in.compression = w[4];
+		in.long_speed = w[17];
 		const V3d heading{w[11], w[12], w[13]};
 		const V3d side{w[14], w[15], w[16]};
-		const V3d arm{arms[i * 3], arms[i * 3 + 1], arms[i * 3 + 2]};
-		const V3d point_velocity = q_rotate_gd(q, v3_add(base_velocity, v3_cross(body_rate, arm)));
-		const R approach = maxf(zero, -v3_dot(point_velocity, normal));
 		const R normal_load = maxf(zero, R(w[0]));
-		const V3d force = v3_add(v3_scale(normal, normal_load), v3_add(v3_scale(heading, R(w[1])), v3_scale(side, R(w[2]))));
-		const R normal_force = maxf(zero, v3_dot(force, normal));
-		const double rim = w[3];
-		const R rolling = maxf(R(godot::UtilityFunctions::absf(w[17])), R(godot::UtilityFunctions::absf(rim)));
-		const SupportAnswer support = support_sample(position, point_velocity, time_s, table, lake);
-		godot::String region_id, material = k.unspecified, surface = k.hard;
-		bool resolved = false, fallback = true;
-		if (support.row >= 0) {
-			if (support.row >= regions.size() || regions[support.row].get_type() != godot::Variant::DICTIONARY) {
-				return godot::Array();
-			}
-			const godot::Dictionary region = regions[support.row];
-			const godot::Variant id_value = region.get(k.region_id, godot::Variant());
-			const godot::Variant material_value = region.get(k.material_id, godot::Variant());
-			if (id_value.get_type() != godot::Variant::STRING || material_value.get_type() != godot::Variant::STRING) {
-				return godot::Array();
-			}
-			region_id = id_value;
-			if (!support.covered) material = material_value;
-			resolved = material != k.unspecified;
-			const godot::String family = resolved ? roll_family(k, material) : godot::String();
-			if (!family.is_empty()) {
-				surface = family;
-				fallback = false;
-			}
-		}
-		godot::Dictionary row;
-		row[k.id] = ids[i];
-		row[k.position] = ned_to_render(position);
-		row[k.velocity] = ned_to_render(point_velocity);
-		row[k.force] = ned_to_render(force);
-		row[k.normal] = ned_to_render(normal);
-		row[k.normal_force] = normal_force.v;
-		row[k.reference] = reference_load;
-		row[k.compression] = w[4];
-		row[k.approach] = approach.v;
-		row[k.rolling] = rolling.v;
-		row[k.rim] = rim;
-		row[k.surface] = surface;
-		row[k.material] = material;
-		row[k.resolved] = resolved;
-		row[k.fallback] = fallback;
-		row[k.region] = region_id;
-		row[k.grounded] = normal_force.v > 0.0;
-		row[k.roll] = true;
-		rows.push_back(row);
+		in.force = v3_add(v3_scale(in.normal, normal_load), v3_add(v3_scale(heading, R(w[1])), v3_scale(side, R(w[2]))));
+		in.rim = w[3];
+		const V3d velocity = point_velocity(s, q, V3d{arms[i * 3], arms[i * 3 + 1], arms[i * 3 + 2]});
+		if (!append_row(rows, k, ids[i], in, velocity, reference_load, time_s, table, lake, regions)) return godot::Array();
 	}
 	return rows;
+}
+
+// NK-7k: snapshot_contacts' rows where every wheel is beyond the terrain's reach but not clear of the ground (the
+// native wheel rows' [0]): Wheels.frame for each contact (`frames`, the stage's own law), no wheel diagnostics, and
+// Ground.loads answering no loads beyond that same reach bound, so the force stays [0, 0, 0] and the rim speed 0.
+// Empty for malformed input or an unreadable region entry.
+inline godot::Array band_rows(const RowKeys &k, const godot::PackedFloat64Array &state,
+		const std::vector<WheelFrame> &frames, const godot::PackedFloat64Array &arms, const godot::PackedStringArray &ids,
+		double reference_load, double time_s, const SurfaceTable &table, const LakeTerrain &lake,
+		const godot::Array &regions) {
+	godot::Array rows;
+	const int64_t count = static_cast<int64_t>(frames.size());
+	if (state.size() < 13 || count <= 0 || count != ids.size() || arms.size() != count * 3 || table.values.empty()) {
+		return rows;
+	}
+	const double *s = state.ptr();
+	const R q[4] = {s[6], s[7], s[8], s[9]};
+	for (int64_t i = 0; i < count; ++i) {
+		const WheelFrame &f = frames[static_cast<size_t>(i)];
+		RowInput in;
+		in.position = V3d{f.position[0], f.position[1], f.position[2]};
+		in.normal = V3d{f.normal[0], f.normal[1], f.normal[2]};
+		in.compression = f.compression;
+		in.long_speed = f.long_speed;
+		in.force = V3d{0.0, 0.0, 0.0};
+		const V3d velocity = point_velocity(s, q, V3d{arms[i * 3], arms[i * 3 + 1], arms[i * 3 + 2]});
+		if (!append_row(rows, k, ids[i], in, velocity, reference_load, time_s, table, lake, regions)) return godot::Array();
+	}
+	return rows;
+}
+
+// NK-7k: GroundAudioModel.approach_speeds' values: each contact's approach speed against its Wheels.frame normal
+// (`frames`), in contact order. Empty for malformed input.
+inline godot::PackedFloat64Array approach_speeds(const godot::PackedFloat64Array &state,
+		const std::vector<WheelFrame> &frames, const godot::PackedFloat64Array &arms) {
+	godot::PackedFloat64Array out;
+	const int64_t count = static_cast<int64_t>(frames.size());
+	if (state.size() < 13 || count <= 0 || arms.size() != count * 3) return out;
+	const double *s = state.ptr();
+	const R q[4] = {s[6], s[7], s[8], s[9]};
+	out.resize(count);
+	for (int64_t i = 0; i < count; ++i) {
+		const WheelFrame &f = frames[static_cast<size_t>(i)];
+		const V3d velocity = point_velocity(s, q, V3d{arms[i * 3], arms[i * 3 + 1], arms[i * 3 + 2]});
+		out[i] = maxf(R(0.0), -v3_dot(velocity, V3d{f.normal[0], f.normal[1], f.normal[2]})).v;
+	}
+	return out;
 }
 
 // _unloaded_rows. state: the 13 rigid-body values; arms: 3 per row (contacts with a position, in order); ids: their

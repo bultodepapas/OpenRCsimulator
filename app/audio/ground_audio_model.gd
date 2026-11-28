@@ -68,7 +68,8 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	# it published, with the same values; otherwise they are evaluated here.
 	var rows := PackedFloat64Array()
 	if wheel_count > 0:
-		# NK-7j: the native stage may also build this observation's rows from its wheel rows, with the same values.
+		# NK-7j: the native stage may also build this observation's rows from its wheel rows, with the same values;
+		# NK-7k: beyond the terrain's reach ([0] wheel rows), from each contact's wheel frame.
 		var answer: Array = _native_answer(session, state, steer, anchors, speeds, brake, gear_contacts, reference_load)
 		if answer.size() == 1 + gear_contacts.size():
 			contacts_out.assign(answer.slice(1))
@@ -243,6 +244,22 @@ static func approach_speeds(session: Node, identities: PackedStringArray) -> Pac
 	if gear_contacts.is_empty() or _clear_of_ground(state, gear, ground_surfaces, track):
 		return out
 	var steer: float = auxiliary[3]
+	# NK-7k: the native stage answers the same speeds from its wheel frames when every contact has a position.
+	if session.has_method("published_approach_speeds"):
+		var arms := PackedFloat64Array()
+		var ids := PackedStringArray()
+		for index: int in range(gear_contacts.size()):
+			var arm: Variant = (gear_contacts[index] as Dictionary).get("position")
+			if not arm is PackedFloat64Array or (arm as PackedFloat64Array).size() != 3:
+				arms.clear()
+				break
+			arms.append_array(arm)
+			ids.append(str((gear_contacts[index] as Dictionary).get("name", "gear_%d" % index)))
+		if not arms.is_empty():
+			var native: PackedFloat64Array = session.call("published_approach_speeds", state, steer, arms)
+			if native.size() == ids.size():
+				identities.append_array(ids)
+				return native
 	var attitude := M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
 	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
 	var body_rate := state.slice(RB.RATE, RB.RATE + 3)

@@ -3618,10 +3618,7 @@ func published_wheel_audio_rows(s: PackedFloat64Array, steer: float, anchors: Pa
 	if not native_audio_rows_enabled or environment.road.is_valid():
 		var rows := published_wheel_rows(s, steer, anchors, speeds, brake)
 		return [] if rows.is_empty() else [rows]
-	if not native_wheel_rows_enabled or _native_facts_tick <= 0 or _native_facts_tick != sim.tick \
-			or _native_stage == null or not cost_observations_enabled or _cost_support_tick != sim.tick \
-			or not _rc_track.is_empty() or _weather_pending_reset or get_script().resource_path != SELF_PATH \
-			or not _same_bits(s, _cost_support_state) or not _same_bits(sim.aux, _cost_support_aux):
+	if not native_wheel_rows_enabled or not _published_wheel_endpoint(s):
 		return []
 	var answer: Array = _native_stage.wheel_audio_rows(s, sim.aux, steer, anchors, speeds, brake, arms, ids,
 		reference_load, sim.time(), environment.surfaces, environment._ground_support)
@@ -3632,6 +3629,31 @@ func published_wheel_audio_rows(s: PackedFloat64Array, steer: float, anchors: Pa
 	return answer
 
 
+## NK-7k: GroundAudioModel.approach_speeds' values for the published endpoint `s` from the native stage's wheel frames,
+## one per contact; empty for the reference. published_wheel_rows' conditions; `arms`: every contact's position.
+func published_approach_speeds(s: PackedFloat64Array, steer: float, arms: PackedFloat64Array) -> PackedFloat64Array:
+	if not native_approach_speeds_enabled or not _published_wheel_endpoint(s):
+		return PackedFloat64Array()
+	var speeds: PackedFloat64Array = _native_stage.approach_speeds(s, sim.aux, steer, arms)
+	if speeds.is_empty() or speeds.size() * 3 != arms.size():
+		return PackedFloat64Array()
+	native_approach_answers += 1
+	return speeds
+
+
+## published_wheel_rows' publication conditions for the endpoint `s`: this tick's guarded native context and cost
+## observation, `s` and `sim.aux` carrying their bits, no RC track, no pending weather reset, no derived class.
+func _published_wheel_endpoint(s: PackedFloat64Array) -> bool:
+	return _native_facts_tick > 0 and _native_facts_tick == sim.tick and _native_stage != null \
+		and cost_observations_enabled and _cost_support_tick == sim.tick and _rc_track.is_empty() \
+		and not _weather_pending_reset and get_script().resource_path == SELF_PATH \
+		and _same_bits(s, _cost_support_state) and _same_bits(sim.aux, _cost_support_aux)
+
+
+## NK-7k test hook: false always evaluates the ground audio's approach speeds in GDScript.
+var native_approach_speeds_enabled := true
+## Diagnostic: approach-speed queries the native stage answered.
+var native_approach_answers := 0
 ## NK-7j test hook: false builds the ground audio's loaded rows in GDScript from the native wheel rows.
 var native_audio_rows_enabled := true
 ## Diagnostic: ground audio observations whose loaded rows the native stage built.

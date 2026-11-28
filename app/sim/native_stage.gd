@@ -676,6 +676,17 @@ func wheel_audio_rows(s: PackedFloat64Array, aux: PackedFloat64Array, steer: flo
 		surfaces, support)
 
 
+## NK-7k: the ground audio's approach speeds, one per contact, from the stage's wheel frames at the endpoint `s`
+## (stage_wheel_approach_speeds); empty means "use the reference". The session owns the publication checks
+## (FlightSession.published_approach_speeds).
+func approach_speeds(s: PackedFloat64Array, aux: PackedFloat64Array, steer: float,
+		arms: PackedFloat64Array) -> PackedFloat64Array:
+	if not _installed or not _compressions_bound or _native == null \
+			or not _native.has_method(&"stage_wheel_approach_speeds"):
+		return PackedFloat64Array()
+	return _native.stage_wheel_approach_speeds(s, aux, steer, arms)
+
+
 ## NK-6l: the pre-tick guard's hull checks for this installation's hull, which the session passes by identity: bit 1
 ## when HullContact.terminal(previous, s, hull) must return no event, bit 2 when HullContact.contacts(previous, s, hull)
 ## must return no contact; 0 to use the reference for both. The session owns the tick checks.
