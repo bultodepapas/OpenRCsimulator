@@ -365,13 +365,45 @@ class OwnedProcess:
         self._cleanup_error = None
         self._posix_killed = False
         self._nonlaunch_confirmed = False
+        self._released = False
 
     @property
     def nonlaunch_confirmed(self):
         """True only after this instance witnessed and cleaned up a pre-create failure."""
         return self._nonlaunch_confirmed
 
-    def start(self):
+    def release(self):
+        """Let a gate started with ``release=False`` run its command (TQ-07-A9b).
+
+        Until this byte is written the gate runs nothing; if its owner dies
+        first, the gate reads end-of-file and exits without running anything.
+        """
+        if self._process is None or self._closed or self._released:
+            raise RuntimeError("gate is not started, already released or closed")
+        self._process.stdin.write(b"1")
+        self._process.stdin.flush()
+        self._released = True
+
+    @property
+    def released(self):
+        """True once the gate was allowed to run its command."""
+        return self._released
+
+    def close_unreleased(self):
+        """Tear down a gate started with ``release=False`` and never released.
+
+        Its command never ran. The ordinary ``close`` expects a released POSIX
+        session leader that outlives its child; an unreleased one dies on the
+        first signal, so this uses the failed-start teardown instead, which
+        still witnesses an empty group (or Job) before it returns.
+        """
+        if self._process is None or self._closed:
+            return
+        if self._released:
+            raise RuntimeError("gate was released; use close()")
+        self._abort_start()
+
+    def start(self, *, release=True):
         if self._process is not None or self._closed:
             raise RuntimeError("attempt already started or closed")
         creation_entered = False
@@ -430,8 +462,10 @@ class OwnedProcess:
             self.identity = {"pid": self.pid, "creation": creation, "boot": boot, "host": host}
             if os.name == "nt":
                 self.identity.update({"kind": "windows-job-v1", "job": job_name, "host": host})
-            self._process.stdin.write(b"1")
-            self._process.stdin.flush()
+            if release:
+                self._process.stdin.write(b"1")
+                self._process.stdin.flush()
+                self._released = True
         except BaseException as error:
             if status_write is not None:
                 os.close(status_write)

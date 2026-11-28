@@ -28,10 +28,18 @@ import time
 
 PROTOCOL = 1
 # Optional capabilities a coordinator may rely on; an older agent lacks the list.
-FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget")
+FEATURES = ("identity", "fence", "unjournaled-resume", "import-budget", "launch-order", "recover-boot")
 # A checked job's project import runs under this budget, before and apart from
 # the job's own timeout, which bounds the check (TQ-07-A8).
 IMPORT_BUDGET_SECONDS = 900
+# TQ-07-A9b: each stage's process identity is durable before its gate is
+# released, so a RUNNING record without one proves the command never ran.
+LAUNCH_ORDER = "identity-before-release"
+# TQ-07-A9d: a supervisor waits this long for the host lock (a storage sweep
+# holds it for one job at a time) instead of giving up after START_GRACE.
+SUPERVISOR_LOCK_WAIT = 600.0
+# TQ-07-A9e: space released just before the terminal journal on a full disk.
+TERMINAL_RESERVE_BYTES = 1024 * 1024
 LIMIT = 1024 * 1024
 RESERVE = 512 * 1024 * 1024
 MAX_ARCHIVE = 128 * 1024**3
@@ -183,6 +191,21 @@ def publish_terminal(path, value):
             if attempt + 1 == TERMINAL_WRITE_ATTEMPTS:
                 raise
             time.sleep(TERMINAL_WRITE_DELAY * 2 ** attempt)
+
+
+def journal_before_release(path, value):
+    """Durably record a gated stage's identity; bounded retries (TQ-07-A9b).
+
+    Nothing runs while this retries: the gate holds its command until released.
+    """
+    for attempt in range(TERMINAL_WRITE_ATTEMPTS):
+        try:
+            write_json(path, value)
+            return True
+        except (OSError, ValueError, TypeError):
+            if attempt + 1 < TERMINAL_WRITE_ATTEMPTS:
+                time.sleep(TERMINAL_WRITE_DELAY * 2 ** attempt)
+    return False
 
 
 def read_json(path):
@@ -807,18 +830,73 @@ def status(root, identifier):
             return public_status(state)
         try:
             state = read_json(path)
-            expired = state.get("state") == "RUNNING" or (state.get("state") == "STARTING" and time.time() - state.get("accepted_at", 0) >= START_GRACE)
-            if expired:
-                state.update(state="UNKNOWN", cleanup="UNCONFIRMED", error="supervisor disappeared; host is quarantined")
+            # The host lock is free, so no supervisor holds this job.
+            nonlaunch = None
+            if state.get("state") == "STARTING" and type(state.get("supervisor_pid")) is int:
+                if time.time() - state.get("accepted_at", 0) < START_GRACE or supervisor_alive(state, identifier):
+                    return public_status(state)
                 try:
-                    write_json(path, state)
-                except OSError as error:
-                    # The durable RUNNING/STARTING record already keeps the host
-                    # quarantined; report the truthful observation, not a crash.
-                    state["error"] += f"; quarantine record not persisted ({error})"
+                    helpers_gone = _posix_group_absent(state["supervisor_pid"])
+                except (OSError, RuntimeError, subprocess.SubprocessError):
+                    helpers_gone = False
+                if not helpers_gone:
+                    # A preparation helper (an import-cache copy) of the dead
+                    # supervisor still runs; observe again once it ends.
+                    return public_status(state)
+                # STARTING is written before any stage, and every stage records
+                # RUNNING before creating a process; supervise re-checks STARTING
+                # under this lock, so a late supervisor cannot start one now.
+                nonlaunch = "the supervisor ended before any stage process was created and left no helper"
+            elif state.get("state") == "RUNNING" and state.get("launch_order") == LAUNCH_ORDER \
+                    and not isinstance(state.get("process"), dict):
+                # TQ-07-A9b: the identity is journaled before the gate is released.
+                nonlaunch = ("the supervisor ended before releasing the " + str(state.get("stage") or "stage")
+                             + " gate; that command never ran")
+            if nonlaunch is not None:
+                # An earlier stage (the import) may have run and been torn down;
+                # then the claim is about this stage only.
+                earlier = isinstance(state.get("import"), dict) and state.get("stage") != "import"
+                if state.get("reason_code"):
+                    state["previous_reason_code"] = state["reason_code"]
+                state.update(state="FINISHED", outcome="INFRA_FAILED", cleanup="CONFIRMED", evidence="INCOMPLETE",
+                             nonlaunch_stage=state.get("stage") or "preparation", error=nonlaunch,
+                             reason_code="SUPERVISOR_LOST", finished_at=time.time())
+                if not earlier:
+                    state.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
+            elif state.get("state") == "STARTING" and time.time() - state.get("accepted_at", 0) < START_GRACE:
+                return public_status(state)
+            elif state.get("state") in ("STARTING", "RUNNING"):
+                state.update(state="UNKNOWN", cleanup="UNCONFIRMED", error="supervisor disappeared; host is quarantined")
+            try:
+                write_json(path, state)
+            except OSError as error:
+                # The durable RUNNING/STARTING record already keeps the host
+                # quarantined; report the truthful observation, not a crash.
+                state["error"] = str(state.get("error", "")) + f"; record not persisted ({error})"
         finally:
             lock.close()
     return public_status(state)
+
+
+def supervisor_alive(state, identifier):
+    """Whether the recorded supervisor of this job is still running (TQ-07-A9d)."""
+    pid = state.get("supervisor_pid")
+    if type(pid) is not int or pid <= 0 or os.name != "posix":
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        pass  # exists under another account: compare its command line below
+    except OSError:
+        return False
+    try:
+        command = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True,
+                                 text=True, timeout=5).stdout
+    except (OSError, subprocess.SubprocessError):
+        return True  # cannot tell: never settle a job whose supervisor may be waiting
+    return "_supervise" in command and identifier in command
 
 
 def probe(root, request):
@@ -944,9 +1022,18 @@ def launch(root, request):
         # inherit it instead of opening visible console windows.
         flags = (subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW) if os.name == "nt" else 0
         with (directory / "supervisor.log").open("ab") as log:
-            subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_supervise", "--root", str(root), "--request-id", identifier],
-                             stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
-                             close_fds=True, start_new_session=os.name != "nt", creationflags=flags)
+            supervisor = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_supervise", "--root", str(root), "--request-id", identifier],
+                                          stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                                          close_fds=True, start_new_session=os.name != "nt", creationflags=flags)
+        try:
+            # TQ-07-A9d: status can tell a supervisor still waiting for the lock
+            # from a dead one. Advisory: without it the start grace applies.
+            pid = getattr(supervisor, "pid", None)
+            if type(pid) is int:
+                state["supervisor_pid"] = pid
+                write_json(path, state)
+        except OSError:
+            pass
         return public_status(state)
     finally:
         lock.close()
@@ -1249,26 +1336,43 @@ def execute_stage(root, directory, state, stage, deadline):
                            cwd=source, env=env, log=directory / (stage + "-runner.log"))
     # A previous stage's closed process must never be attributed to this stage.
     state.pop("process", None)
-    state.update(state="RUNNING", stage=stage, dispatch_at=time.time())
+    state.update(state="RUNNING", stage=stage, dispatch_at=time.time(), launch_order=LAUNCH_ORDER)
     write_json(directory / "state.json", state)
     started = False
     timed_out = False
     code = None
     try:
-        process.start()
+        # TQ-07-A9b: create the gated process, make its identity durable, and only
+        # then release the gate. A record without an identity proves nothing ran.
+        process.start(release=False)
         started = True
         state["process"] = process.identity
-        # Storage failure after creation is an observation fault: the child stays
-        # owned and the absolute monotonic deadline below remains in force. Only
-        # this single supervisor thread writes the live dict, so newest wins.
-        journaled = publish_observation(directory / "state.json", state)
+        if not journal_before_release(directory / "state.json", state):
+            process.close_unreleased()  # the gate never released its command; teardown witnessed
+            started = False
+            state.pop("process", None)
+            return {"ok": False, "complete": False, "reason": "journal_unavailable_before_release"}
+        process.release()
+        journaled = True
         retry_at = time.monotonic() + JOURNAL_RETRY_SECONDS
-        while process.alive():
+        unobserved = 0
+        while True:
             code = process.poll()
             now = time.monotonic()
             if now >= deadline or (code is not None and code != 0):
                 timed_out = now >= deadline
                 process.terminate()
+                break
+            try:
+                alive = process.alive()
+            except (subprocess.TimeoutExpired, OSError):
+                # TQ-07-A9c: a slow process listing is a missing observation, not a
+                # reason to tear down healthy work; the deadline above still holds.
+                unobserved += 1
+                time.sleep(min(2.0, 0.1 * 2 ** min(unobserved, 5)))
+                continue
+            unobserved = 0
+            if not alive:
                 break
             if not journaled and now >= retry_at:
                 journaled = publish_observation(directory / "state.json", state)
@@ -1280,7 +1384,10 @@ def execute_stage(root, directory, state, stage, deadline):
     except BaseException as failure:
         if started:
             try:
-                process.close()
+                if getattr(process, "released", True):
+                    process.close()
+                else:
+                    process.close_unreleased()  # its command never ran (TQ-07-A9b)
             except Exception as error:
                 raise TeardownUnconfirmed("process cleanup was not confirmed") from error
         elif not (isinstance(failure, ProcessNotStartedError) and process.nonlaunch_confirmed is True):
@@ -1461,9 +1568,39 @@ def verify_result(directory, stage, result, request):
             raise Refused("checked log does not contain its required markers")
 
 
+def reserve_path(root, identifier):
+    job_path(root, identifier)
+    return root / "reserves" / identifier
+
+
+def make_terminal_reserve(root, identifier):
+    """Hold a little disk for the terminal journal (TQ-07-A9e); best effort.
+
+    Kept outside the job directory so it is never inventoried as evidence.
+    """
+    try:
+        path = reserve_path(root, identifier)
+        path.parent.mkdir(exist_ok=True)
+        with path.open("wb") as stream:
+            stream.write(b"\0" * TERMINAL_RESERVE_BYTES)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except (OSError, Refused):
+        pass
+
+
+def release_terminal_reserve(root, identifier):
+    try:
+        reserve_path(root, identifier).unlink()
+    except (OSError, Refused):
+        pass
+
+
 def supervise(root, identifier):
     path = state_path(root, identifier)
-    deadline = time.monotonic() + START_GRACE
+    # A storage sweep holds the host lock for one job at a time; wait for it
+    # rather than leaving a never-started job behind (TQ-07-A9d).
+    deadline = time.monotonic() + SUPERVISOR_LOCK_WAIT
     while True:
         try:
             lock = Lock(root / "pool.lock")
@@ -1475,6 +1612,7 @@ def supervise(root, identifier):
     state = read_json(path)
     directory = path.parent
     started = False
+    make_terminal_reserve(root, identifier)
     try:
         if state.get("state") != "STARTING":
             return 1
@@ -1585,7 +1723,9 @@ def supervise(root, identifier):
         try:
             # FINISHED and its process-cleanup receipt must be durable before
             # reclaiming storage or releasing the host lock. Readers may observe
-            # storage cleanup pending.
+            # storage cleanup pending. The reserve goes first so a full disk can
+            # still take this record (TQ-07-A9e).
+            release_terminal_reserve(root, identifier)
             publish_terminal(path, state)
             if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) == (
                     "FINISHED", "PASSED", "COMPLETE", "CONFIRMED") and _retention_supported() \
@@ -1652,6 +1792,59 @@ def reconcile_unknown(root, request):
                      finished_at=time.time())
         publish_terminal(path, state)
         return public_status(state)
+    finally:
+        lock.close()
+
+
+def _group_proved_absent(pid):
+    if type(pid) is not int or pid <= 1:
+        return False
+    try:
+        return _posix_group_absent(pid)
+    except (OSError, RuntimeError, subprocess.SubprocessError):
+        return False
+
+
+def recover_boot(root, request):
+    """Settle every UNKNOWN job whose recorded boot ended (TQ-07-A9f).
+
+    The coordinator calls this for a host that returns. A reboot since the
+    recorded process identity is the one proof accepted without an operator;
+    same-boot evidence keeps the operator ``reconcile`` path.
+    """
+    if not isinstance(request, dict) or request:
+        raise Refused("recover-boot takes an empty request")
+    runtime = str(Path(__file__).resolve().parents[2])  # pinned agent runtime, as in execute_stage
+    if runtime not in sys.path:
+        sys.path.insert(0, runtime)
+    from tools.testqueue.processes import confirm_stopped
+    lock = Lock(root / "pool.lock")
+    try:
+        settled, kept = [], []
+        for path in sorted((root / "jobs").glob("*/state.json")):
+            try:
+                state = read_json(path)
+            except (OSError, ValueError):
+                kept.append(path.parent.name)
+                continue
+            if state.get("state") != "UNKNOWN":
+                continue
+            process = state.get("process")
+            if isinstance(process, dict) and confirm_stopped({"host": process.get("host"), "boot": process.get("boot")}) \
+                    and _group_proved_absent(process.get("pid")):
+                # macOS derives its boot identity from kern.boottime, which can
+                # shift without a reboot; unattended settlement therefore also
+                # needs the recorded process group gone, as a real reboot ensures.
+                state.update(state="FINISHED", outcome="INFRA_FAILED", cleanup="CONFIRMED", evidence="INCOMPLETE",
+                             reason_code="HOST_REBOOTED",
+                             reconciliation={"proof": "host rebooted since the recorded boot", "automatic": True,
+                                             "at": time.time(), "previous_error": state.get("error")},
+                             finished_at=time.time())
+                publish_terminal(path, state)
+                settled.append(path.parent.name)
+            else:
+                kept.append(path.parent.name)
+        return {"settled": settled, "still_unknown": kept}
     finally:
         lock.close()
 
@@ -1840,15 +2033,25 @@ def collect_incoming(root, request, *, min_age=3600):
             removed += path.stat().st_size
             path.unlink()
             files.append(path.name)
-        return {"removed_files": len(files), "logical_bytes_removed": removed}
+        # Terminal reserves a lost supervisor left behind (TQ-07-A9e). Under this
+        # lock no supervisor runs, so only an unfinished job's reserve is kept.
+        reserves = 0
+        live = {state.get("request_id") for state in unfinished}
+        for path in sorted((root / "reserves").glob("*")) if (root / "reserves").is_dir() else []:
+            if path.is_symlink() or not path.is_file() or path.name in live:
+                continue
+            removed += path.stat().st_size
+            path.unlink()
+            reserves += 1
+        return {"removed_files": len(files), "removed_reserves": reserves, "logical_bytes_removed": removed}
     finally:
         lock.close()
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("probe", "run", "status", "fence", "reclaim-input", "reconcile", "gc",
-                                           "gc-incoming", "_supervise", "_invoke"))
+    parser.add_argument("action", choices=("probe", "run", "status", "fence", "recover-boot", "reclaim-input",
+                                           "reconcile", "gc", "gc-incoming", "_supervise", "_invoke"))
     parser.add_argument("--root", required=True)
     parser.add_argument("--request-id")
     parser.add_argument("--stage")
@@ -1873,6 +2076,8 @@ def main():
             result = launch(root, request)
         elif args.action == "fence":
             result = fence(root, request)
+        elif args.action == "recover-boot":
+            result = recover_boot(root, request)
         elif args.action == "reclaim-input":
             if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256"}
                     or not isinstance(request.get("request_id"), str) or not ID.fullmatch(request["request_id"])

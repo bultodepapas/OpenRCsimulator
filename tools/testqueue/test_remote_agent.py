@@ -218,18 +218,34 @@ class RemoteAgentTests(unittest.TestCase):
         self.assertGreaterEqual(result["admission_wait_finished_at"], result["admission_wait_started_at"])
         self.assertNotIn("reason_code", result)
 
-    def test_remote_lost_waiting_supervisor_remains_uncertain(self):
+    def test_remote_lost_waiting_supervisor_is_settled_as_never_launched(self):
+        # Before TQ-07-A9 this stayed UNKNOWN and quarantined the host. A STARTING
+        # record precedes every stage, and every stage records RUNNING before it
+        # creates a process; the settlement happens under the host lock, which a
+        # late supervisor re-checks before doing anything.
         request = self.request(self.sample_archive())
         self.accepted(request)
         path = agent.state_path(self.root, "job1")
         state = agent.read_json(path)
         state.update(stage="admission", reason_code="EXTERNAL_SIMULATOR", accepted_at=time.time() - 2 * agent.START_GRACE)
         agent.write_json(path, state)
-        with mock.patch.object(agent.subprocess, "Popen") as spawn:
+        # Without a recorded supervisor PID (an older agent's record) the
+        # supervisor's helpers cannot be checked: it stays uncertain.
+        self.assertEqual(agent.status(self.root, "job1")["state"], "UNKNOWN")
+        state.update(state="STARTING", supervisor_pid=4242)
+        agent.write_json(path, state)
+        with mock.patch.object(agent.subprocess, "Popen") as spawn, \
+                mock.patch.object(agent, "supervisor_alive", return_value=False), \
+                mock.patch.object(agent, "_posix_group_absent", return_value=True):
             result = agent.launch(self.root, request)
-        spawn.assert_not_called()
-        self.assertEqual((result["state"], result["cleanup"]), ("UNKNOWN", "UNCONFIRMED"))
-        self.assertNotIn("nonlaunch", result)
+        spawn.assert_not_called()  # the same ID is never relaunched
+        self.assertEqual((result["state"], result["cleanup"], result["launch"], result["nonlaunch"],
+                          result["reason_code"], result["previous_reason_code"]),
+                         ("FINISHED", "CONFIRMED", "NOT_CREATED", "CONFIRMED", "SUPERVISOR_LOST", "EXTERNAL_SIMULATOR"))
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "execute_stage") as execute:
+            self.assertEqual(agent.supervise(self.root, "job1"), 1)  # a late supervisor runs nothing
+        execute.assert_not_called()
 
     def test_supervisor_runs_import_and_check_in_owned_process(self):
         archive = self.sample_archive()
@@ -418,7 +434,7 @@ class RemoteAgentTests(unittest.TestCase):
         from tools.testqueue import processes
 
         def refuse(witnessed):
-            def start(process):
+            def start(process, **options):  # options: release=False since TQ-07-A9b
                 process._nonlaunch_confirmed = witnessed
                 raise processes.ProcessNotStartedError("injected runner log open failure")
             return start
@@ -565,7 +581,7 @@ class RemoteAgentTests(unittest.TestCase):
         running = {"state": "RUNNING", "request": {"archive": {"sha256": "b" * 64}}}
         with mock.patch.object(agent, "scan", return_value=[running]):
             result = agent.collect_incoming(self.root, {"operator_confirm": True})
-        self.assertEqual(result, {"removed_files": 1, "logical_bytes_removed": 10})
+        self.assertEqual(result, {"removed_files": 1, "removed_reserves": 0, "logical_bytes_removed": 10})
         self.assertEqual(sorted(path.name for path in incoming.iterdir()),
                          sorted([active, young, "d" * 64 + ".tar.job9.pending"]))
         with mock.patch.object(agent, "scan", return_value=[{"state": "UNKNOWN", "error": "unreadable journal"}]), \

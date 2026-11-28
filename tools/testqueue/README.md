@@ -298,6 +298,38 @@ Receipts that reserve a host are settled only with proof:
 A job directory left without its journal by a launch that died is cleared under
 the host lock by the next `run` or `fence` of that ID (TQ-07-A9a).
 
+#### A remote supervisor that dies (TQ-07-A9b–f)
+
+- **Launch order.** Each stage writes `RUNNING` with
+  `launch_order: identity-before-release`, creates its gated process, makes the
+  process identity durable (bounded retries; on failure the gate is torn down
+  unreleased and nothing runs), and only then releases the gate. The gate runs
+  nothing until it reads that byte. With the host lock free (no live supervisor),
+  `status` settles a `RUNNING` record of this order without an identity as
+  `FINISHED`/`INFRA_FAILED`/cleanup `CONFIRMED`, `reason_code: SUPERVISOR_LOST`
+  and `nonlaunch_stage`. `launch: NOT_CREATED` is set only when no earlier stage
+  ran; an earlier `reason_code` is kept as `previous_reason_code`.
+- **Never started.** A `STARTING` record older than 30 s whose recorded
+  `supervisor_pid` is gone, and whose process group has no member left (an
+  import-cache copy can outlive it), is settled the same way. `supervise`
+  re-checks `STARTING` under the host lock, so a late supervisor runs nothing. A
+  record without `supervisor_pid` (older agents) still becomes `UNKNOWN`.
+- **Slow observation.** A process listing that times out is retried with backoff;
+  it no longer tears down healthy work. The deadline still applies.
+- **Waiting for the lock.** A supervisor waits up to 600 s for the host lock
+  instead of 30 s.
+- **Full disk.** A 1 MiB reserve under `<root>/reserves/<id>` is released just
+  before the terminal journal. `gc-incoming` removes reserves left by a lost
+  supervisor.
+- **Reboot.** Agent action `recover-boot` settles every `UNKNOWN` job whose
+  recorded boot ended and whose process group is gone (`reason_code:
+  HOST_REBOOTED`). Both are needed because macOS derives its boot identity from
+  `kern.boottime`. The watchdog calls it every 10 minutes for quarantined hosts
+  that advertise the feature.
+
+Deploy `remote_agent.py` **and** `processes.py` together: the launch order needs
+`OwnedProcess.start(release=False)`.
+
 Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
 interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
 blindly resubmitted. Proved predispatch lock/I/O deferral uses `RETRY_WAIT` with

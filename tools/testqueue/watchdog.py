@@ -41,6 +41,7 @@ FINAL = {"PASSED", "FAILED"}
 SKIP_STATES = {"FINISHED", "ERROR"}
 MAX_RESUMES_PER_DAY = 6
 SETTLE_BUDGET_SECONDS = 45.0
+BOOT_RECOVERY_INTERVAL_SECONDS = 600.0
 
 
 def _read(path):
@@ -200,6 +201,16 @@ def run_once(config=None, *, max_age_hours=6.0, dry_run=False, serve_engine=None
             report["receipts"] = pool.settle_reserving_receipts(SETTLE_BUDGET_SECONDS)
         except Exception as error:  # one bad pass must not stop supervision
             report["receipts"] = {"error": str(error)[:200]}
+        # TQ-07-A9f: a remote host that rebooted settles its quarantine without an operator.
+        last = previous.get("boot_recovery_at")
+        if type(last) not in (int, float) or now - last >= BOOT_RECOVERY_INTERVAL_SECONDS:
+            try:
+                report["boot_recovery"] = pool.recover_quarantined_hosts()
+            except Exception as error:
+                report["boot_recovery"] = {"error": str(error)[:200]}
+            report["boot_recovery_at"] = now
+        else:
+            report["boot_recovery_at"] = last
     from tools.testqueue.common import state_root
     report["authority_root"] = str(state_root())
     if serve_engine:

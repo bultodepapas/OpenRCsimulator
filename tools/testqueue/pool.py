@@ -754,6 +754,32 @@ class Pool:
             finally:
                 guard.close()
 
+    def recover_quarantined_hosts(self):
+        """Ask each quarantined remote host to settle jobs its reboot proves ended (TQ-07-A9f).
+
+        Read-only for hosts that are not quarantined or whose agent predates
+        ``recover-boot``. Returns one line of outcome per remote host.
+        """
+        def one(host):
+            try:
+                probe = self.remote(host, 'probe', {'engine_path': None}, timeout=30)
+            except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+                return host['id'], {'skipped': 'unreachable: ' + str(error)[:120]}
+            if not (probe.get('admission') or {}).get('quarantined'):
+                return host['id'], {'skipped': 'not quarantined'}
+            if 'recover-boot' not in (probe.get('features') or []):
+                return host['id'], {'skipped': 'agent predates recover-boot; redeploy it'}
+            try:
+                return host['id'], self.remote(host, 'recover-boot', {}, timeout=60)
+            except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+                return host['id'], {'error': str(error)[:200]}
+
+        remote_hosts = [host for host in self.hosts if not host.get('local')]
+        if not remote_hosts:
+            return {}
+        with ThreadPoolExecutor(max_workers=len(remote_hosts)) as executor:
+            return dict(executor.map(one, remote_hosts))
+
     SETTLE_SLOW_SECONDS = 5.0
 
     def settle_reserving_receipts(self, budget_seconds=45.0):
