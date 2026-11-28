@@ -564,6 +564,12 @@ python3 "$HERE/tests/test_check_math_sensitivity_imports.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
 }; end_section
 
+if [[ "$(uname -s)" == Linux ]]; then
+section "VRC-07-R2: ORFL recorders reject buffered short writes"; section_body() {
+python3 "$HERE/../tools/flight_log/check_packet_writes.py" --godot "$GODOT" --project "$HERE" --out "$CHECK_OUT"
+}; end_section
+fi
+
 section "L5: invalid field files fail before Home or flight can start"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes
 }; end_section

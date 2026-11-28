@@ -61,6 +61,23 @@ A native backend replaces declared model evaluation callbacks. For a model whose
 
 Qualification follows the [native guide](../research/native-kernel/README.md#verification-and-local-installation): byte-identical reference comparisons on at least 10,000 states including malformed inputs, exact kernel trajectories, actual native-call coverage, fault/restore and refusal checks, and the applicable fleet and package gates. Receipts bind the toolchain, engine, ABI/backend version, source/data and library identities; packages additionally bind the executable and manifest. Preserve strict floating-point behavior and the required negative controls. Measure matched production workloads on the target host and report p50/p95 with their defined scope; reference fallback, historical receipts or a partial fleet cannot qualify a new native candidate.
 
+### Shared native and recording boundaries
+
+The shared architecture has one transaction owner and separate numerical backends. Family laws and admission remain with their sessions and installed models; extracting an identical mechanism does not transfer those responsibilities.
+
+| Owner | Responsibility and consumers |
+| --- | --- |
+| [Simulation](../app/sim/simulation.gd) and [VehicleModel](../app/sim/vehicle_model.gd) | Installed layout/callback contract, fixed clock, atomic accepted frame, checkpoint and rollback. Presentation never supplies numerical state. |
+| [NativeStage](../app/sim/native_stage.gd) | Qualified backend selection, guards, installation and context handoff. Family adapters retain their distinct power, preview, failure and helicopter contracts. |
+| [StageConfig](../app/sim/native/stage_config.gd) | Fixed-wing preparation projection and one five-lane control encoder: elevator, right aileron, left aileron, rudder, optional flap. Seven production callers use this encoder; they still choose when to sample servo state. It returns a fresh packet. |
+| [Native kernel](../research/native-kernel/README.md#what-is-ported) | C++ evaluation and supported integration under the qualified float64/ABI contract. Independent reference and research/oracle encoders remain available to detect shared mistakes. |
+| [ORFL packets](../app/sim/orfl_packet.gd) | Session-free binary framing, packet bound, checksum, chain advancement and bounded decoding. Fixed-wing, airship and multirotor recorders share this transport. |
+| Family recorders | File/row limits, headers, schemas, input meaning, observers, resets, finalization and replay policy. The existing [FlightLog](../app/sim/flight_log.gd) container constants/read/hash methods remain public compatibility facades. |
+
+Do not cache a single fixed-wing control packet for an entire tick: downwash can read incoming servo state before the tick context reads the updated state. The research decoder's four-lane format and the no-downwash empty packet are separate retained contracts. Likewise, identical packet framing does not make family reset or replay verdicts interchangeable.
+
+Source organization participates in identity. Native receipts bind mirrored script bytes separately from C++ source, binary and toolchain identities; ORFL solver fingerprints include all scripts under simulation, physics and failures. Moving code can invalidate a receipt or companion fingerprint without changing arithmetic. Preserve rejection and perform the documented qualification/rebinding workflow; never relabel old evidence as current. Priorities and current results live in the [single consolidation plan](plans/vehicle-runtime-consolidation.md#61-native-and-recording-consolidation-cohort--2026-11-28).
+
 ## Godot runtime boundaries
 
 - **Workers and the scene tree:** keep active scene-tree changes on the main thread. Give workers detached inputs and single ownership of mutable resources; synchronize shared plain data. Preserve the existing job owner through completion and discard abandoned results. A mutex does not make arbitrary engine/resource operations thread-safe. The [flight scene loader](../app/ui/flight_scene_load.gd) shows the project's completion and retirement boundary; its engine-specific workaround is not a universal loader recipe.

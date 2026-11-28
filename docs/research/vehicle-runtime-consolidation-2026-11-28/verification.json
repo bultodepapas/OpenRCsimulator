@@ -1,0 +1,821 @@
+{
+  "source": "97fdaf019b87713d024b2bbe2bad5d4d5a1dd4bf",
+  "tree": "bfeb676112eb8e2f79d6dfb8b2c500bd731e5ac9",
+  "byte_equivalent_local_commit": "0c40d4f693d49438c19be4116ba109f01a9316fc",
+  "baseline": "c7b5c3db279b2897e0c0d33d5123ba011abb8a7e",
+  "engine": {
+    "platform": "Linux x86_64",
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+    "stage_backend": "gdscript_reference"
+  },
+  "scope": "Isolated reference/fallback fixture, native binary unavailable. Original validated sources/data with 240 Hz and checked diagnostics. Companion replay used real project.godot and official unmodified tool.",
+  "tests": {
+    "airship_flight_log": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-airship_flight_log-krq62qxh/report.json",
+      "required": "25 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "0255e87d-b881-4654-9f48-7e7f1eb672b2",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_airship_flight_log.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:18.248425+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "2dd5784eaa56da6ac967de94658eb21eb769d9e2384ad509e00edf9633e565d3",
+        "log_bytes": 3858
+      },
+      "report_sha256": "aec7d3598b2bc20fd647f723e3cc2744e4c5bab7b3f0235e1a152bc9151525de"
+    },
+    "checkpoint": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-checkpoint-mi7s5nz7/report.json",
+      "required": "H8 checkpoints: 104 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "3d1d00b1-8e94-49bb-89b5-c81949e1f0bb",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_checkpoint.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:27.018952+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "5659edb3de7be323e7368e13a85bb956da4559af418ed706f3e0f12155be7632",
+        "log_bytes": 1287
+      },
+      "report_sha256": "8c64d014d1898626157a1ad03a9bf723bb562ef4a4f3c435fb8a60da2c52db83"
+    },
+    "checkpoint_integrity": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-checkpoint_integrity-dtc330zk/report.json",
+      "required": "H8-R1 checkpoint integrity: 149 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "144d2e82-a3fb-4399-bd63-fe767ef7ae98",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_checkpoint_integrity.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:32.757160+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "7e5c661f8d87a8956c560c7fdfc9cf459f03081dcdd0d6e29598bff8d57234b0",
+        "log_bytes": 119
+      },
+      "report_sha256": "3705d838d371f61e24846892c1d1fa1d362a378d2da248f623de9e6347ee9696"
+    },
+    "dr_multirotor_kernel": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-dr_multirotor_kernel-40k8kuyk/report.json",
+      "required": "15 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "00d07b64-5947-458e-baa9-1280eec9a29a",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_dr_multirotor_kernel.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:33.063258+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "9808c4119c4bc770ae9800643fda83ad7a328bb1e3da5e82b4bdb4715f33f3bd",
+        "log_bytes": 1263
+      },
+      "report_sha256": "fbe2f0f94fcd3fc6713852197311cdf8cc4cc48201e994d8921ddb02d31c72da"
+    },
+    "flight_log": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-flight_log-z926q0bt/report.json",
+      "required": "FL-04 flight logs: 4421 checks, 0 failures",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "177703b2-5bc0-43eb-84e3-6e17e48292bb",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log.gd",
+          "--",
+          "--out=/home/agent/openrc-validation-20261128/final-fixed",
+          "--reference=/home/agent/openrc-validation-20261128/frozen-writer.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:34.429092+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "5fd46c690d870146484fd4c1604363d09920f562df9ca14fa92f212214899989",
+        "log_bytes": 8717
+      },
+      "report_sha256": "6ce40e74c03dfffa971e9774907fde644278e95b9c74163bd69baa37144edb95"
+    },
+    "flight_log_empty_continuous": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-flight_log_empty_continuous-ck1cahdm/report.json",
+      "required": "Flight log empty continuous: 211 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "809ce25c-6812-4386-a0aa-6139be0b3898",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log_empty_continuous.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:50.725001+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "4d5d7cfe1cfd07e05cbfc0b80d21c834fc22dacc2fc107946dc255bce0aaf499",
+        "log_bytes": 1339
+      },
+      "report_sha256": "242898c914f6494ec5702ee6436c4f107c92e3ea73d0ac9332ff37e02d97afd7"
+    },
+    "flight_log_inputs": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-flight_log_inputs-dwo8fg3n/report.json",
+      "required": "GP-12 flight-log inputs: 284 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "ac30d0d4-62d8-4be4-a427-889975eb96ad",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log_inputs.gd"
+        ],
+        "started_utc": "2026-11-28T15:49:55.189128+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "840939611f36c737cf11207a37844844f97c5301afe2b1cd3b6c5f15c1b77e72",
+        "log_bytes": 4049
+      },
+      "report_sha256": "010e649698e8c664d6bb273bb1ec0e5facea1b2ea76932f9d148523ad45ce639"
+    },
+    "golden": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-golden-p2pjmuvf/report.json",
+      "required": "4 golden flights, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "0c497888-4a20-48a2-9c59-f43b17cdb753",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_golden.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:01.565778+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "9e30cdab61beddf248169a9ecc78607fa1f09769eb55424419a24424e8619dca",
+        "log_bytes": 1061
+      },
+      "report_sha256": "bd96e77d099a4fa94418de7b7e2006c5e686b906dea943057f495be1706bbb4f"
+    },
+    "heli_restore_radio": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-heli_restore_radio-pmdwg5qn/report.json",
+      "required": "HELI restore radio: 80 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "da354a19-7af1-4014-b546-5611e838f0e1",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_restore_radio.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:07.668147+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "4ed74cf041439f56cb53f07acbcbb27a777a9f3afb1984718850ea842ea05c75",
+        "log_bytes": 110
+      },
+      "report_sha256": "595c397ef4eb977691790b93ad116f5cee94edf822d37aa306401ca91f02596a"
+    },
+    "mr_flight_log": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-mr_flight_log-1txtvrjf/report.json",
+      "required": "31 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "90bbc799-a18f-40e5-9d36-282452969089",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_mr_flight_log.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:13.605164+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "68161fc8a692a0c3111f5f47f23d49648fd20aa807900d1db06ba425f3263039",
+        "log_bytes": 5107
+      },
+      "report_sha256": "6bc4a4289500e77a06cd38469901f38f4de4a140b381046f900417513ac41c66"
+    },
+    "native_control_packet": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-native_control_packet-7sw1bjq5/report.json",
+      "required": "Fixed-wing native control packet: 22 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "972082f2-ae6a-4625-ba4d-7f877fef365c",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_control_packet.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:25.582473+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "9e566732b39c289d15dc12b6dfa228ef15a974efdb491b1e774b22b111c59cad",
+        "log_bytes": 124
+      },
+      "report_sha256": "48e84f923b2007f1f9147c18029120a9191fbd34143d44309bb80a0608547cb2"
+    },
+    "native_helicopter_session": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-native_helicopter_session-poiag1hf/report.json",
+      "required": "NK-3 helicopter native session: 305 checks, 0 failures, native exercised=false",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "bd6f2804-10a0-4fc0-97f8-82b64c0b95af",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_helicopter_session.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:28.983143+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "8c23ce7c8a3772a932f2100ec2190aec7a766e85f0a4246ea295197032d83868",
+        "log_bytes": 309
+      },
+      "report_sha256": "2eaaf580c10e25505435dc73a12cddf836ccb9135aec326667ceb23d1464d471"
+    },
+    "native_replay": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-native_replay-tm3s4m1m/report.json",
+      "required": "NK3_NATIVE_REPLAY checks=49 failures=0",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "f182ef6c-a65e-4c64-8641-ef7c42571b94",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_replay.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:36.821274+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "59f9fb70d0e56e9acf05bfcb5c699454e2167b7a39dfe1271f7f67da507e6ba7",
+        "log_bytes": 1956
+      },
+      "report_sha256": "4e5775c21868651b6498e6f2bb5c3ffe7f294ef5e914d9d015179659c9028530"
+    },
+    "native_session": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-native_session-sxg_mn3v/report.json",
+      "required": "NK3_NATIVE_SESSION checks=154 failures=0",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "c3583a36-36a1-4702-94c7-c4a7b3de3d34",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_session.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:41.591636+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "0619b7fa1130e730226d9b793f32a3cf0d9aba22a6e1ddf4707c77d12b048c21",
+        "log_bytes": 1594
+      },
+      "report_sha256": "7e5e19e5f3b6f2c76b2607326e59c4be35e98d6e4a7ead4a37bd3ffd0d89c36f"
+    },
+    "native_stage": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-native_stage-02od9k13/report.json",
+      "required": "Native stage: 90 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "e250503b-8640-4a1c-a5fd-11ff05ac6a9d",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_stage.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:47.496271+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "41c3c314f06914f6fe48d5f28f4f2356809e24a38ff09d361ae03be6c94e7602",
+        "log_bytes": 271
+      },
+      "report_sha256": "32452ee9ce674d2745eb065a37a681222f45f34806aefec390452c44fc46f0a5"
+    },
+    "orfl_packet": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-orfl_packet-y8bgf8yy/report.json",
+      "required": "ORFL packet: 0 failures",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "44b97f85-fe1e-4649-a1ed-e03d63501911",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_orfl_packet.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:51.823622+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "f476a747beb6776800175312dd69d04136a4b497feb06b2e6554ca12108f8186",
+        "log_bytes": 94
+      },
+      "report_sha256": "72b48088c41c69775dd69b133f970eeb56f2d9ce4a784add539dd0d9d04c327a"
+    },
+    "rc_fault_boundaries": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-rc_fault_boundaries-4ka7kcng/report.json",
+      "required": "RC fault boundaries: 26/26 checks passed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "334449cc-8593-40ca-a96c-41b17996cc75",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_fault_boundaries.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:52.128074+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "ab399a98daae1c9c72c721470f56fbe5e9e93d7ddc6977bbc09541e72069e52a",
+        "log_bytes": 111
+      },
+      "report_sha256": "e36c3afedd7cb027d8d218ca7eaf0ff3c4bae02b3ef0be2b0de02615cd8e0f60"
+    },
+    "sf_ground_vehicle_kernel": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-sf_ground_vehicle_kernel-sv6nfe64/report.json",
+      "required": "23 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "22a8fd65-39c0-4e61-9e42-4615c39343ed",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_sf_ground_vehicle_kernel.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:52.539587+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "996b21cd8672c129e818a6609a612b27afd0258cec662bc145dbccecea771f67",
+        "log_bytes": 1139
+      },
+      "report_sha256": "97bb1a701992a2a5aa6c43c2309d06b4939cef4a48a5eceed29d5b3503eda44f"
+    },
+    "sf_vehicle_model": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-sf_vehicle_model-6jxdge_2/report.json",
+      "required": "40 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "e024ff73-2ef5-49c6-8f7d-959fd9b44f55",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_sf_vehicle_model.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:57.139348+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "240e7dcdaf975cddfb675a1535184adfd4ec0ad1660b4fc71dd0adf65fe124e6",
+        "log_bytes": 2370
+      },
+      "report_sha256": "2f06fd8b4cae182857b7dd91711dd5d45243b49b10ffadb6ed5a1d509f148442"
+    },
+    "simulation": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/final-simulation-k2ljaglg/report.json",
+      "required": "11 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "05bdf504-5360-4fac-981c-dc6aa6387c11",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_simulation.gd"
+        ],
+        "started_utc": "2026-11-28T15:50:57.469606+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "311dd35c9cc028529bb4e06314334f115bf67afb27769c24db2120952d9c2e83",
+        "log_bytes": 90
+      },
+      "report_sha256": "128e0b8222be56ad6bddd1bfc73adf87c004eb37dba5679b2409f9639baf7706"
+    },
+    "companions_profiles": {
+      "ok": true,
+      "report": "/home/agent/openrc-validation-20261128/checks/published-companion-companions_profiles-t6iyyzli/report.json",
+      "required": "AFC-02 companion profile validation: 95 checks, 0 failed",
+      "reason": "passed",
+      "checked_run": {
+        "capture_id": "ed3f73eb-fea0-4c73-9f2c-0b7a357a0e35",
+        "command": [
+          "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/agent/openrc-validation-20261128/candidate/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_profiles.gd"
+        ],
+        "started_utc": "2026-11-28T15:52:13.915055+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "92b22d73f6cc4f5a7d1cbc5542337da3da48ffde13d7a8d2301d6b3cd8598e26",
+        "log_bytes": 5243
+      },
+      "report_sha256": "94fb50133080c9d834e11a7654beeebb2e71c8f50a2bbc025f331f2ea3506db2"
+    }
+  },
+  "golden_inputs_unchanged": true,
+  "native_control_mutation_failures": {
+    "swapped_lanes": 21,
+    "electric_raw_aux": 3,
+    "always_filled_downwash_packet": 1
+  },
+  "orfl_recorded_body_blocks": {
+    "fixed": {
+      "blocks": 3,
+      "block_sha256": [
+        "1cc9148f74097b1ecdf5a3235097d58e0e2c5ce1b8b16c9b3460f205ff81d1ab",
+        "8be0227a1bbb1441997cd251c42e7cdf53aeb0535cbed19cc8ac40fdd08f1c85",
+        "a3ee3db626bf4b56e8a2f0bdf61da31e6f6a67ba0306dc6608fbcf7f0f5c9f36"
+      ],
+      "identical_body_blocks": true,
+      "header_equal": false,
+      "footer_equal": false
+    },
+    "blimp": {
+      "blocks": 9,
+      "block_sha256": [
+        "5536e7783255891698080a24334f600b187980e4cdaa85ac0b07ac65a92fb92c",
+        "0793b041d28a0bb87545efd9dbb9723b5657439fe469a37fa94a560590d4afcd",
+        "7de035d2ba952edc774cf82297b466b510357942afd6996559036731f02af1de",
+        "27fb7c5f2ca2ce5421fb92ed99cc76d68394ee1f79a76f4c4fef6c9b6f7f6724",
+        "07ab157dd3448b63911778252d5e544490130001955545178cee8fa3290a77e5",
+        "f983c7da6e3297904b7eca3483f9444507a2eb1e1e546854cb342a09e6489e08",
+        "39c02dea0f7a4ae23476cb80a86aaec4ce1683e3c29791ad550c0725b97bfee3",
+        "f23402f756653d6585a65b1ee9794272a6d2785e8d2f51877093e499dd3cce2f",
+        "881160a75d50cdd6110c8df7166d881606409e7d6cfbe2ba9b812c24349f4e22"
+      ],
+      "identical_body_blocks": true,
+      "header_equal": false,
+      "footer_equal": false
+    },
+    "quad": {
+      "blocks": 6,
+      "block_sha256": [
+        "690d6a47940ee480dece98ded2b87270dd125e2ad65d987e3d015da8df9e5247",
+        "7afa0ed46dee60eacfca78de96bb774c2828ffdadd1295f3d9bcba6a80dfeec8",
+        "ec0205128981b9450bb52e06ba288ad6b5b55af80c1d67c47f03bf6172bef112",
+        "e8bebe09bce0d502c5d3c178e18f3621450275f3095ca7cc37421355222eea51",
+        "03f970a8df4661de145809d3e3186cef8fe02d79b738c37cac90cda0c39bf900",
+        "4360f43f983f782ca0194e2487e6fc5c0e5c9479fc48bc0816b8f0007f6ec65e"
+      ],
+      "identical_body_blocks": true,
+      "header_equal": false,
+      "footer_equal": false
+    }
+  },
+  "retained_flight_replay": {
+    "exact_on_recorded_solver": true,
+    "new_exact_csv": "9d858640d75fe9f53ea674df082a76d400a6fba6ad9c4c6ce06e604da0452d8d",
+    "old_exact_csv": "9d858640d75fe9f53ea674df082a76d400a6fba6ad9c4c6ce06e604da0452d8d",
+    "old_exact_refused_on_final": true,
+    "old_candidate_csv": "9d858640d75fe9f53ea674df082a76d400a6fba6ad9c4c6ce06e604da0452d8d",
+    "candidate_solver_changed": true,
+    "first_tick": 0,
+    "final_tick": 260,
+    "baseline_backend": {
+      "backend": "gdscript_reference"
+    },
+    "current_backend": {
+      "backend": "gdscript_reference"
+    }
+  },
+  "companion_rebind": {
+    "source": "97fdaf019b87713d024b2bbe2bad5d4d5a1dd4bf",
+    "normalized_before": "bd5a8878e457f3171cc3af94472f820b5eda0cbc78e24e9ddde152c17ee41bee",
+    "normalized_after": "02f983b71c34c76444c4dd60ca5717c494408feb00a98023f621b8fd0df9883b",
+    "tapes": 9,
+    "rows_per_tape": 2881,
+    "generated_files": {
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "c6a9b3fb5b8376fd925bd126259b7466b5c894f6d80597fc289de3ff7211b737",
+      "tools/companions/qualification.json": "9a87f865e0274a5703165a59edb4ab606a5e13435ff887d7451ce5d017e8fd8c",
+      "docs/research/ai-companions/AFC-02/rebinds/2026-11-28-bd5a8878-to-02f983b7.json": "916d983ff3b35b4c063944f9d53918d79370fd333e2c2c7a4957dd276eb7b688"
+    },
+    "full_evidence": "/home/agent/openrc-validation-20261128/published-rebind.json",
+    "byte_equal_historical_accepted_and_candidate_csv": true,
+    "historical_accepted_rev": "d52195d0667aec3b22e60cf79228b6aff020efb6",
+    "mode": "Both source versions use candidate replay; baseline=solver retains current non-solver application code."
+  },
+  "changed_gdscript_parse": {
+    "count": 13,
+    "engine_errors": 0,
+    "engine_warnings": 0,
+    "source_bound_reports": "/home/agent/openrc-validation-20261128/published-parse.json"
+  },
+  "baseline_published_equivalent": "7bfb4b0ee57e093ff9b52752cb087771e89ca4ab",
+  "write_failure_regression": {
+    "engine": "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+    "project": "/home/agent/openrc-orfl-repair-0CUR2T/app",
+    "source_sha256": {
+      "tests/probe_orfl_packet_write_error.gd": "b8fccf43f7c5587dcae46529ef5ca54ee82f3a4467f01496cb75f08ca5236dd6",
+      "sim/orfl_packet.gd": "8a746633e71cdeac0b0f69fa643e80ac8529115bc8f551df40a9ef3e7126f7dc",
+      "sim/flight_log.gd": "7ac02cde95f5ae63ee216665652dbb1894b948f574338ed18cd42c9dc7aeb4ee",
+      "sim/airship/flight_log.gd": "d1871e11ce66c36d4b5f6246cb16ead430feb3d4dbbacbae6c2571fb9eeee49a",
+      "sim/multirotor/flight_log.gd": "50309ad8b7b5ba8ea201036b62b2a15868cdccf8bc93b70cfe141663daf88a8e"
+    },
+    "driver_sha256": "df7ca599d38247d0bf97353d83b4a79b492562ec1b7dfe6937c97f857068cf2a",
+    "checks": {
+      "control": {
+        "ok": true,
+        "report": "/home/agent/openrc-orfl-repair-0CUR2T/terminal-checks/orfl-control-m6uu7y68/report.json",
+        "checked_run": {
+          "capture_id": "d6500f28-cce7-4b29-93e8-741dbf3f94d8",
+          "command": [
+            "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/home/agent/openrc-orfl-repair-0CUR2T/app",
+            "--script",
+            "res://tests/probe_orfl_packet_write_error.gd",
+            "--",
+            "control",
+            "/home/agent/openrc-orfl-repair-0CUR2T/terminal-checks-orfl-evidence/orfl-7lo787_o"
+          ],
+          "started_utc": "2026-11-28T15:47:10.642990+00:00",
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "log_sha256": "c18275ec7d173581918ad4653030c31ba091da414a8569db844c8de82c09d882",
+          "log_bytes": 2072
+        },
+        "report_sha256": "e422ace2646ad2c6f6924656083911d9549e39818259666288e0e0e86b8ecb23"
+      },
+      "limited": {
+        "ok": true,
+        "report": "/home/agent/openrc-orfl-repair-0CUR2T/terminal-checks/orfl-limited-b9iux5p9/report.json",
+        "checked_run": {
+          "capture_id": "da691d19-2a67-457b-bc03-a467e1e91263",
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+            "/home/agent/openrc-consolidation-20261128/tools/flight_log/check_packet_writes.py",
+            "--limit-child",
+            "/workspace/scratch/0c86cdd3ea34/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/home/agent/openrc-orfl-repair-0CUR2T/app",
+            "--script",
+            "res://tests/probe_orfl_packet_write_error.gd",
+            "--",
+            "limited",
+            "/home/agent/openrc-orfl-repair-0CUR2T/terminal-checks-orfl-evidence/orfl-7lo787_o"
+          ],
+          "started_utc": "2026-11-28T15:47:16.137922+00:00",
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "log_sha256": "dfbc9639e4df7969fc853c2a55a05fbca74715d15cdd12e949d0976d47b2209c",
+          "log_bytes": 1578
+        },
+        "report_sha256": "753e4e5285a8baa310e1b23546c4581b2cff783c76fef19110aa06e40cbca20e"
+      }
+    }
+  },
+  "ci_phase_routing": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/ci",
+      "-p",
+      "test_phases.py"
+    ],
+    "tests": 14,
+    "passed": true,
+    "app_test_sha256": "73cf78557cef21c9b2c5f9dd7e22124e24a27dce501d3416f5af346748726067",
+    "regression": "Initial placement before H7 failed7 fixture assertions; unchanged gate after H7 passes without changing test assertions."
+  },
+  "independent_review": {
+    "role": 10,
+    "verdict": "Approved scoped consolidation for draft PR and required CI review, after report precision corrections.",
+    "unqualified": [
+      "installed native execution",
+      "full required CI",
+      "platform packages",
+      "target hardware performance",
+      "physical validation"
+    ]
+  }
+}

@@ -2,9 +2,10 @@
 ## Exact Variant packets preserve packed float64 and int64 RNG state. CSV is an offline view.
 extends RefCounted
 
-const MAGIC := "ORFL0001"
+const OrflPacket := preload("res://sim/orfl_packet.gd")
+const MAGIC := OrflPacket.MAGIC
 const FORMAT := "openrc-flight-log v1"
-const MAX_PACKET := 16 * 1024 * 1024
+const MAX_PACKET := OrflPacket.MAX_PACKET
 const CHUNK_TICKS := 240
 const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 const MAX_BYTES := 512 * 1024 * 1024
@@ -360,23 +361,11 @@ func _flush_rows() -> void:
 
 
 func _write_packet(value: Dictionary) -> bool:
-	var payload := var_to_bytes(value)
-	if payload.is_empty() or payload.size() > MAX_PACKET:
-		_failed("Flight log packet exceeds bounded format.", ERR_INVALID_DATA)
+	var result := OrflPacket.append_packet(_file, value, _chain, MAX_BYTES)
+	if not result.ok:
+		_failed(result.error, result.code)
 		return false
-	# Applies to marker/pause-only streams too. Never grow an unbounded file without simulation ticks.
-	if _file.get_position() + payload.size() + 36 > MAX_BYTES:
-		_failed("Flight log byte limit exceeded; file is incomplete.", ERR_FILE_CANT_WRITE)
-		return false
-	var digest := sha256(payload)
-	_file.store_32(payload.size())
-	_file.store_buffer(digest)
-	_file.store_buffer(payload)
-	_file.flush()
-	if _file.get_error() != OK:
-		_failed("Flight log disk write failed; file is incomplete.", ERR_FILE_CANT_WRITE)
-		return false
-	_chain = sha256(_chain + digest)
+	_chain = result.chain
 	return true
 
 
@@ -393,28 +382,11 @@ func _failed(message: String, code: Error) -> Error:
 
 
 static func sha256(bytes: PackedByteArray) -> PackedByteArray:
-	var hash := HashingContext.new()
-	hash.start(HashingContext.HASH_SHA256)
-	hash.update(bytes)
-	return hash.finish()
+	return OrflPacket.sha256(bytes)
 
 
-## No object decoding. Bounds and checksum are checked before decoding a packet.
 static func read_packet(file: FileAccess) -> Dictionary:
-	var remaining := file.get_length() - file.get_position()
-	if remaining < 36:
-		return {ok = false, error = "Missing footer or truncated packet header."}
-	var size := file.get_32()
-	if size <= 0 or size > MAX_PACKET or size > remaining - 36:
-		return {ok = false, error = "Invalid or truncated packet length."}
-	var digest := file.get_buffer(32)
-	var bytes := file.get_buffer(size)
-	if sha256(bytes) != digest:
-		return {ok = false, error = "Packet checksum mismatch."}
-	var value: Variant = bytes_to_var(bytes)
-	if not value is Dictionary:
-		return {ok = false, error = "Packet is not a dictionary."}
-	return {ok = true, value = value, digest = digest}
+	return OrflPacket.read_packet(file)
 
 
 ## Source fingerprint computed once per game process (DR-22/R1: hashing app/physics, app/sim and app/failures takes

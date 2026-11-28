@@ -1,8 +1,9 @@
-## Research-only native Glow stage preparation. The session retains pre_tick,
+## Native glow stage preparation. The session retains pre_tick,
 ## source-mode and accepted-step event policy; this installs no app backend.
 extends RefCounted
 
 const WeatherAdapter := preload("weather_adapter.gd")
+const StageConfig := preload("stage_config.gd")
 
 const MASS_FIELDS := ["reference_mass_kg", "reference_inertia_kgm2", "references", "capacities", "centers", "tensors"]
 const BLADE_FIELDS := ["diameter_m", "pitch_m", "chord_m", "lift_slope", "cd0", "induced_drag", "blades"]
@@ -66,6 +67,6 @@ static func config_for(session: Node) -> Dictionary:
 static func set_context(session: Node, native: Object, aux: PackedFloat64Array,
 		inputs: PackedFloat64Array, at: float) -> bool:
 	var d: Dictionary = session._deflections(aux)
-	var deflections := PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+	var deflections := StageConfig.pack_deflections(d)
 	return native.set_tick_context(aux, inputs, deflections, at) \
 		and native.set_glow_context(session.propulsion_throttle(), session.engine_running, session.failure_power_cut_active())

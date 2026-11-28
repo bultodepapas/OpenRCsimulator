@@ -1,8 +1,9 @@
-## Research-only finite-liquid stage preparation. FlightSession retains all
+## Native finite-liquid stage preparation. FlightSession retains all
 ## tick policies, failure modes, resource events and accepted-step state.
 extends RefCounted
 
 const WeatherAdapter := preload("weather_adapter.gd")
+const StageConfig := preload("stage_config.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const MASS_FIELDS := ["reference_mass_kg", "reference_inertia_kgm2", "references", "capacities", "centers", "tensors"]
@@ -59,7 +60,7 @@ static func config_for(session: Node) -> Dictionary:
 static func set_context(session: Node, native: Object, aux: PackedFloat64Array,
 		inputs: PackedFloat64Array, at: float) -> bool:
 	var d: Dictionary = session._deflections(aux)
-	var deflections := PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
+	var deflections := StageConfig.pack_deflections(d)
 	# The first reset can prepare the native stage before a body is committed.
 	# An empty body may compare equal to itself in the owner's preview predicate,
 	# but cannot identify an actual 13-component RK stage.
