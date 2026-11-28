@@ -56,7 +56,7 @@ func _test_activity_views_and_skin() -> void:
 	var before: PackedFloat64Array = activity.session.sim.state.duplicate()
 	var choices: OptionButton = activity.hud.choices.camera
 	var views := ["pilot", "chase", "flyby", "orbit", "closeup"]
-	_check("blimp menu offers all flight views", choices.item_count == views.size())
+	_check("blimp menu offers all flight views", choices.item_count == views.size() + 1 and choices.get_item_text(views.size()) == "FPV")
 	for i in views.size():
 		choices.select(i)
 		choices.item_selected.emit(i)
@@ -64,6 +64,11 @@ func _test_activity_views_and_skin() -> void:
 		var center: Vector3 = activity.visual.root.global_position
 		_check("blimp %s view frames the envelope" % views[i], activity._rig.view == views[i]
 			and activity.camera.global_transform.is_finite() and activity.camera.is_position_in_frustum(center))
+	var nose_index := views.size()
+	choices.select(nose_index)
+	choices.item_selected.emit(nose_index)
+	activity._process(0.0)
+	_check_blimp_fpv(activity)
 	var previous: Node3D = activity.visual.root
 	var changes: Array[String] = []
 	activity.skin_changed.connect(func(id: String) -> void: changes.append(id))
@@ -71,17 +76,39 @@ func _test_activity_views_and_skin() -> void:
 	skin.select(1)
 	skin.item_selected.emit(1)
 	_check("switching skin replaces the model once and keeps the chosen view", changes == ["historico"]
-		and activity.visual.root != previous and previous.get_parent() == null and activity._rig.view == "closeup")
+		and activity.visual.root != previous and previous.get_parent() == null and activity._rig.view == "fpv")
+	_check_blimp_fpv(activity)
+	skin.select(2)
+	skin.item_selected.emit(2)
+	_check("third stock skin keeps the FPV view", activity.skin_id == "cromo-carbono-azul" and choices.selected == nose_index)
+	_check_blimp_fpv(activity)
 	# A malformed binding in a subsequent candidate must release its partial model and roll back the selection.
 	activity.presentation = activity.presentation.duplicate(true)
 	activity.presentation.bindings.erase("vector_port")
-	skin.select(2)
-	skin.item_selected.emit(2)
-	_check("a refused skin keeps the last working model and selector", skin.selected == 1 and activity.skin_id == "historico"
-		and activity.visual.active_skin == "historico" and changes == ["historico"])
+	skin.select(0)
+	skin.item_selected.emit(0)
+	_check("a refused skin keeps the last working model and selector", skin.selected == 2 and activity.skin_id == "cromo-carbono-azul"
+		and activity.visual.active_skin == "cromo-carbono-azul" and changes == ["historico", "cromo-carbono-azul"])
+	_check_blimp_fpv(activity)
+	var key := InputEventKey.new()
+	key.pressed = true
+	key.physical_keycode = KEY_1
+	activity._unhandled_input(key)
+	key.physical_keycode = KEY_3
+	activity._unhandled_input(key)
+	_check("key 3 selects the admitted blimp FPV in the same list", activity._rig.view == "fpv" and choices.selected == nose_index)
 	_check("presentation changes preserve the accepted flight state", activity.session.sim.state == before)
 	_test_readout(activity)
 	activity.free()
+
+
+func _check_blimp_fpv(activity: Node) -> void:
+	var visual_root: Node3D = activity.visual.root
+	var lens := visual_root.to_local((activity.camera as Camera3D).global_position)
+	# Independent measurement of the static assembly on all three original GLBs.
+	_check("FPV clears the forward shell fitting in %s" % activity.skin_id,
+		lens.distance_to(Vector3(0.0, 0.0, -2.605867)) < 0.002
+		and (-activity.camera.global_basis.z).dot(-visual_root.global_basis.z) > 0.9999, str(lens))
 
 
 func _test_readout(activity: Node) -> void:

@@ -65,6 +65,10 @@ func _file_round_trip() -> void:
 	_check("a camera draft saves", store.save(draft) == OK)
 	var loaded := DisplayPreferences.load_from(path)
 	_check("round trip keeps every camera value", CameraSettings.normalized(loaded) == CameraSettings.normalized(draft), str(CameraSettings.normalized(loaded)))
+	var fpv := draft.duplicate()
+	fpv.camera_view = "fpv"
+	_check("FPV first-view preference round trips", store.save(fpv) == OK and DisplayPreferences.load_from(path).camera_view == "fpv")
+	store.save(draft)
 	var cfg := ConfigFile.new()
 	cfg.load(path)
 	_check("stored under [camera]", cfg.get_value("camera", "fov") == 35 and cfg.get_value("camera", "view") == "chase")

@@ -52,6 +52,7 @@ Complete assertion inventory and performance qualification remain pending, as do
   The environment prefix matches `app/capture.sh` so repeats are byte-identical. View flags:
   - ground, grass, field surfaces: `--look_az=0 --look_el=-15 --hide_airplane` (or `--look_el=0` for the horizon);
   - airplane: `--inspect`; the deflected surfaces add `--roll=1 --pitch=1 --yaw=1`;
+  - stock Ugly Stik nose camera: `--aircraft=jensen-das-ugly-stik-60 --view=fpv`;
   - sun and lighting: `--look_az=225 --look_el=25`; top view: `--look_az=0 --look_el=-90 --look_alt=30`;
   - `--scripted` flies the fixed circle; `--autozoom=0` keeps the follow camera at its default distance (mostly sky).
   Every reference case is a `shot` line in [`app/capture.sh`](../../app/capture.sh).

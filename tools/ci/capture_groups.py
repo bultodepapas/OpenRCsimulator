@@ -29,7 +29,7 @@ CHECKS = ".capture-checks"
 GROUP_CHECKS = {
     "core": ["sun-alignment", "shots", "landscape", "readability", "trace", "trace-check"],
     "ui": ["captures"],
-    "quality": ["tests", "cases", "aircraft-lights", "field-failures", "lighting-pixels"],
+    "quality": ["tests", "cases", "aircraft-lights", "field-failures", "lighting-pixels", "fpv-nose"],
     "terrain-atmosphere": ["tree-review", "horizon", "phase6", "cloud-probe"],
     "ground": ["surfaces", "stripe-tests", "stripes", "windsock", "pilot-station",
                "flightline-barrier", "contact-shadows"],
@@ -48,7 +48,7 @@ DIRECT_SOURCES = (
     "app/tests/fixtures/atmosphere_field.tscn", "app/tests/capture_landscape_upgrade.gd",
     "app/tests/check_landscape_captures.py", "app/tests/compare_captures.py",
     "app/tests/check_trimmed_flight.py", "app/tests/test_visual_quality_cases.py",
-    "app/tests/visual_quality_cases.py", "app/tests/capture_aircraft_lights.gd",
+    "app/tests/visual_quality_cases.py", "app/tests/capture_aircraft_lights.gd", "app/tests/check_fpv_nose_pixels.gd",
     "app/tests/test_field_failures.py", "app/tests/test_treeline_readability.py",
     "app/tests/treeline_readability.py", "tools/ci/capture_groups.py",
     "app/tests/test_lighting_skin_patterns.gd", "app/tests/test_lighting_segment_filter.gd",
@@ -91,7 +91,8 @@ REQUIRED_OUTPUTS = {
              "sun-alignment/report.json", "sun-alignment/sun_alignment.png"],
     "ui": [],
     "quality": ["vq01b/visual-quality-run-manifest.json", "aircraft-lights/summary.json",
-                "lighting-pixels/segment_filter-metrics.json", "lighting-pixels/skin_patterns-metrics.json"],
+                "lighting-pixels/segment_filter-metrics.json", "lighting-pixels/skin_patterns-metrics.json",
+                "fpv-nose/visible.png", "fpv-nose/hidden.png"],
     "terrain-atmosphere": ["l6b/repeat-1/review.json", "l7/capture-summary.json",
                            "l4b/capture-summary.json", "l15d/summary.json"],
     "ground": ["l9c/summary.json", "l9c/stripes/summary.json", "l10a/summary.json",
@@ -334,6 +335,8 @@ def verify_outputs(root: Path, group: str) -> dict[str, str]:
             fail(f"{group}: image/sidecar mismatch: {name}")
     if group == "quality":
         verify_lighting_metrics(root)
+        if digest(root / "fpv-nose/visible.png") != digest(root / "fpv-nose/hidden.png"):
+            fail("stock nose visible/hidden images differ")
         verify_matrix(root, "vq01b", VQ_CASES)
         light_summary = read_json(root / "aircraft-lights/summary.json")
         if not isinstance(light_summary, dict) or light_summary.get("ok") is not True:

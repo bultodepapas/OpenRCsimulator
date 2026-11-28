@@ -13,7 +13,7 @@ const BALLAST_KG := [-0.05, 0.0, 0.08, 0.2]
 const WIND_LABELS := ["Calm", "Breeze 1.5 m/s", "Wind 3 m/s"]
 const WIND_MPS := [0.0, 1.5, 3.0]
 const START_LABELS := ["Airborne release (6 m)", "On the wheels"]
-const CAMERA_LABELS := ["Pilot", "Chase", "Fly-by", "Orbit", "Close-up"]
+const CAMERA_LABELS := {pilot = "Pilot", chase = "Chase", flyby = "Fly-by", orbit = "Orbit", closeup = "Close-up", fpv = "FPV"}
 # Only the numerical readout samples at 12 Hz. Buttons, warnings and camera movement respond every frame.
 const READOUT_INTERVAL_USEC := 83_333
 
@@ -132,7 +132,7 @@ func _build_menu(ui_scale: float) -> void:
 	choices.start = _choice(box, "Start", "start", START_LABELS)
 	choices.ballast = _choice(box, "Ballast weigh-off", "ballast", BALLAST_LABELS)
 	choices.wind = _choice(box, "Steady wind", "wind", WIND_LABELS)
-	choices.camera = _choice(box, "Camera", "camera", CAMERA_LABELS)
+	choices.camera = _choice(box, "Camera", "camera", [])
 	_button(box, "Controls help", "help")
 	menu_help = Label.new()
 	menu_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -167,6 +167,13 @@ func set_workshop_trial(title: String, envelope_length_m: float) -> void:
 	home_button.text = "Return to Workshop"
 	(choices.skin as OptionButton).disabled = true
 	(choices.skin as OptionButton).tooltip_text = "Workshop builds fly with the default skin their paint slots target."
+
+
+func set_camera_views(view_ids: Array) -> void:
+	var button: OptionButton = choices.camera
+	button.clear()
+	for id: String in view_ids:
+		button.add_item(str(CAMERA_LABELS[id]))
 
 
 func set_skins(names: Array, selected: int) -> void:

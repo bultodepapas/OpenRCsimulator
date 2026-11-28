@@ -7,6 +7,7 @@ extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
 const CameraMath = preload("res://render/camera/camera_math.gd")
+const FpvOptics := preload("res://render/camera/fpv_optics.gd")
 
 const VIEWS := ["fpv", "chase", "pilot"]
 const TILT_MIN_DEG := 0.0
@@ -48,6 +49,8 @@ var _shake_time := 0.0
 var view := 0
 var tilt_deg := 40.0
 var hfov_deg := 120.0
+## The original scalar pose remains selectable for parity checks on the same flight.
+var use_engine_transform := true
 var pilot_eye := Vector3.ZERO
 var _chase_heading := 0.0
 var _snap := true
@@ -204,7 +207,11 @@ func update(pose: PackedFloat64Array, mount_frd: PackedFloat64Array, delta: floa
 	var target := Frames.ned_to_render([pose[0], pose[1], pose[2]])
 	match VIEWS[view]:
 		"fpv":
-			camera.global_transform = fpv_transform(position, attitude, mount_frd, deg_to_rad(tilt_deg))
+			var pose_at_lens := FpvOptics.from_ned(position, attitude, mount_frd, deg_to_rad(tilt_deg)) \
+				if use_engine_transform else fpv_transform(position, attitude, mount_frd, deg_to_rad(tilt_deg))
+			if not FpvOptics.is_valid_frame(pose_at_lens):
+				return
+			camera.global_transform = pose_at_lens
 			camera.fov = vertical_fov_deg(hfov_deg, aspect())
 		"chase":
 			var nose := -Frames.quat_to_render(attitude).z

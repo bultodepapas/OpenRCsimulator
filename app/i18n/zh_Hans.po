@@ -542,6 +542,12 @@ msgstr "重新开始飞行"
 msgid "Resume after a radio failsafe"
 msgstr "遥控器失控保护后继续飞行"
 
+msgid "Ugly Stick FPV. Hold the right mouse button and drag to look around. Press Backspace to center the view."
+msgstr "Ugly Stick 第一人称视角。按住鼠标右键并拖动可环顾四周。按退格键可将视角转回正前方。"
+
+msgid "FPV (when available)"
+msgstr "FPV（可用时）"
+
 msgid "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"
 msgstr "视角：下一个（Shift+C 返回）、飞行员、跟随（再按一次：3D）、掠过、环绕"
 
