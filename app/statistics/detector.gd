@@ -53,6 +53,11 @@ var _pending_speed: Array[Dictionary] = []
 var _pending_speed_head := 0
 var _previous_speed: Dictionary = {}
 var _speed_reject_counts: Dictionary = {}
+## NK-9a: the speed window above, held and advanced by the native kernel (nk_stats_speed.hpp) while this is set; the
+## GDScript speed functions stay the specification and run whenever it is not (no verified library, the hook off, a
+## restored snapshot whose speed values are not in the detector's own canonical form).
+static var native_speed_enabled := true
+var _native_speed: Object = null
 
 
 func configure(profile: Dictionary, air_start: bool = false) -> void:
@@ -82,6 +87,7 @@ func configure(profile: Dictionary, air_start: bool = false) -> void:
 	_continuity_lost = false
 	_clear_speed_state()
 	_speed_reject_counts.clear()
+	_bind_native_speed()
 	flight = {}
 	_semantic_sequence = 0
 	_semantic_flight_id = ""
@@ -192,6 +198,7 @@ func end(reason: String) -> Array[Dictionary]:
 
 
 func snapshot() -> Dictionary:
+	var native_state: Array = _native_speed.stats_speed_snapshot() if _native_speed != null else []
 	return {
 		"version": SNAPSHOT_VERSION,
 		"semantic_sequence": _semantic_sequence,
@@ -226,11 +233,11 @@ func snapshot() -> Dictionary:
 		"accident_terminal": _accident_terminal,
 		"continuity_lost": _continuity_lost,
 		"flight": _json_safe(flight),
-		"speed_window": _json_safe(_effective_speed_window()),
-		"speed_window_s": _speed_window_s,
-		"pending_speed": _json_safe(_effective_pending_speed()),
-		"previous_speed": _json_safe(_previous_speed),
-		"speed_reject_counts": _json_safe(_speed_reject_counts),
+		"speed_window": _json_safe(_effective_speed_window()) if native_state.is_empty() else _json_safe(native_state[0]),
+		"speed_window_s": _speed_window_s if native_state.is_empty() else native_state[1],
+		"pending_speed": _json_safe(_effective_pending_speed()) if native_state.is_empty() else _json_safe(native_state[2]),
+		"previous_speed": _json_safe(_previous_speed) if native_state.is_empty() else _json_safe(native_state[3]),
+		"speed_reject_counts": _json_safe(_speed_reject_counts) if native_state.is_empty() else _json_safe(native_state[4]),
 	}
 
 
@@ -304,6 +311,10 @@ func restore(value: Dictionary) -> bool:
 		_speed_reject_counts[key] = int(_speed_reject_counts[key])
 	if not _previous_speed.is_empty():
 		_previous_speed.tick = int(_previous_speed.tick)
+	_bind_native_speed()
+	if _native_speed != null and not _native_speed.stats_speed_restore(_effective_speed_window(), _speed_window_s,
+			_effective_pending_speed(), _previous_speed, _speed_reject_counts):
+		_native_speed = null
 	return true
 
 
@@ -521,6 +532,8 @@ func _start_flight(start_kind: String, backfill_s: float, tick: int, events: Arr
 		"complete_observation": not _continuity_lost,
 	}
 	_speed_reject_counts.clear()
+	if _native_speed != null:
+		_native_speed.stats_speed_clear_counts()
 	_semantic_flight_id = "g%s:f%d" % [str(_profile.get("generation_id", "0")), tick]
 	events.append({"type": "started", "start_kind": start_kind,
 		"tick": tick, "flight": flight.duplicate(true)})
@@ -611,7 +624,29 @@ func _mark_discontinuity() -> void:
 	_clear_speed_state()
 
 
+## NK-9a: a kernel for this detector's speed window, bound to its thresholds and cap; null keeps the GDScript.
+func _bind_native_speed() -> void:
+	_native_speed = null
+	if not native_speed_enabled or not ClassDB.class_exists(&"OpenRCNativeKernel"):
+		return
+	var kernel: Object = ClassDB.instantiate(&"OpenRCNativeKernel")
+	if kernel == null or not kernel.has_method(&"stats_speed_collect"):
+		return
+	var cap := float(_profile.get("speed_cap_mps", _thresholds.default_speed_cap_mps))
+	if not is_finite(cap) or cap <= 0.0:
+		cap = float(_thresholds.default_speed_cap_mps)
+	if kernel.stats_speed_bind(PackedFloat64Array([float(_thresholds.speed_exclusion_after_activation_s), cap,
+			float(_thresholds.speed_acceleration_limit_mps2), float(_thresholds.speed_window_s),
+			float(int(_thresholds.max_speed_samples)), float(_thresholds.speed_stability_absolute_mps),
+			float(_thresholds.speed_stability_fraction)])):
+		_native_speed = kernel
+
+
 func _collect_speed(sample: Dictionary, dt: float, tick: int) -> void:
+	if _native_speed != null:
+		_native_speed.stats_speed_collect(sample, dt, tick, _clock_s, bool(sample.get("incident", false)),
+			bool(sample.get("ground_contact", false)), flight)
+		return
 	if _clock_s <= float(_thresholds.speed_exclusion_after_activation_s) + 1e-12:
 		_clear_speed_state()
 		return
@@ -761,6 +796,8 @@ func _record_speed_rejection(reason: String) -> void:
 
 
 func _clear_speed_state() -> void:
+	if _native_speed != null:
+		_native_speed.stats_speed_clear()
 	_speed_window.clear()
 	_speed_tas_values.clear()
 	_speed_ground_values.clear()

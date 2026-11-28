@@ -50,6 +50,7 @@
 #include "nk_audio_rows.hpp"
 #include "nk_shadow_parts.hpp"
 #include "nk_substeps.hpp"
+#include "nk_stats_speed.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1056,6 +1057,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 		godot::String max_rpm_text{"max_rpm"}, load_text{"load"}, throttle_text{"throttle"}, sample_tick_text{"sample_tick"};
 	};
 	std::unique_ptr<GlowAudioKeys> glow_audio_keys_;
+	std::unique_ptr<nk::stats::SpeedWindow> stats_speed_; // NK-9a: one statistics detector's speed window
 	// NK-6u: the installed session's substep plan (nk_substeps.hpp) and the names its tick checks read.
 	struct SubstepNames {
 		godot::StringName joint{"_substeps_joint"}, plain{"_substeps"}, rc_track{"_rc_track"}, electric{"_electric_step"},
@@ -1404,6 +1406,14 @@ protected:
 			"mass", "gravity", "inertia", "inertia_inv"), &OpenRCNativeKernel::integrate_tick);
 		godot::ClassDB::bind_method(D_METHOD("tick_stats"), &OpenRCNativeKernel::tick_stats);
 		godot::ClassDB::bind_method(D_METHOD("prepare_substeps", "session", "plan"), &OpenRCNativeKernel::prepare_substeps);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_bind", "thresholds"), &OpenRCNativeKernel::stats_speed_bind);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_clear"), &OpenRCNativeKernel::stats_speed_clear);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_clear_counts"), &OpenRCNativeKernel::stats_speed_clear_counts);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_collect", "sample", "dt", "tick", "clock_s", "incident",
+			"ground_contact", "flight"), &OpenRCNativeKernel::stats_speed_collect);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_snapshot"), &OpenRCNativeKernel::stats_speed_snapshot);
+		godot::ClassDB::bind_method(D_METHOD("stats_speed_restore", "window", "window_s", "pending", "previous", "counts"),
+			&OpenRCNativeKernel::stats_speed_restore);
 		godot::ClassDB::bind_method(D_METHOD("stage_contact_clear", "previous", "candidate", "hull", "extra_reach",
 			"lake_threshold", "lake_bank", "previous_values", "candidate_values", "mode", "store_index", "hull_reach"),
 			&OpenRCNativeKernel::stage_contact_clear);
@@ -3107,6 +3117,27 @@ public:
 			return quiet == 1 ? 2 : 0;
 		}
 		return 1;
+	}
+
+	// NK-9a: app/statistics/detector.gd's speed window (nk_stats_speed.hpp); one detector per kernel instance.
+	bool stats_speed_bind(const PackedFloat64Array &thresholds) {
+		if (!stats_speed_) stats_speed_ = std::make_unique<nk::stats::SpeedWindow>();
+		return stats_speed_->bind(thresholds);
+	}
+	void stats_speed_clear() {
+		if (stats_speed_) stats_speed_->clear();
+	}
+	void stats_speed_clear_counts() {
+		if (stats_speed_) stats_speed_->clear_counts();
+	}
+	void stats_speed_collect(const Dictionary &sample, double dt, int64_t tick, double clock_s, bool incident,
+			bool ground_contact, const Dictionary &flight) {
+		if (stats_speed_ && stats_speed_->ready()) stats_speed_->collect(sample, dt, tick, clock_s, incident, ground_contact, flight);
+	}
+	Array stats_speed_snapshot() const { return stats_speed_ ? stats_speed_->snapshot() : Array(); }
+	bool stats_speed_restore(const Array &window, double window_s, const Array &pending, const Dictionary &previous,
+			const Dictionary &counts) {
+		return stats_speed_ && stats_speed_->ready() && stats_speed_->restore(window, window_s, pending, previous, counts);
 	}
 
 	// NK-6u: FlightSession.native_substep_plan for `session`; an empty plan (or any malformed field) clears it.
