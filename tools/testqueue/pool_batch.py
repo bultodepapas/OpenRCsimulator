@@ -141,14 +141,26 @@ def _reclaim_for_space(pool, submission, deadline):
         pass
 
 
+WAIT_HISTORY_ENTRIES = 10
+
+
 def _record_wait(row, submission):
     now = time.time()
     previous = row.get("admission_wait") or {}
-    if previous and _refusal_causes(row.get("status") or {}) == _refusal_causes(submission):
+    causes = _refusal_causes(submission)
+    if previous and _refusal_causes(row.get("status") or {}) == causes:
         count, first = previous["consecutive"] + 1, previous["first_observed_at"]
     else:
         count, first = 1, now
     delay = _backoff(count)
+    # TQ-07-D7: why the row waited survives its placement (admission_wait does
+    # not). One entry per distinct per-host refusal, bounded.
+    history = row.setdefault("wait_history", [])
+    if history and history[-1].get("causes") == causes:
+        history[-1].update(last_at=now, count=history[-1].get("count", 1) + 1)
+    else:
+        history.append({"causes": causes, "first_at": now, "last_at": now, "count": 1})
+        del history[:-WAIT_HISTORY_ENTRIES]
     row.update(phase="WAITING", status=submission, retry_after=now + delay,
                admission_wait={"first_observed_at": first, "last_observed_at": now, "consecutive": count})
     return delay

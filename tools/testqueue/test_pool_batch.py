@@ -162,6 +162,10 @@ class PoolBatchTests(unittest.TestCase):
             result = self.run_case()
         self.assertEqual(result["result"], "PASSED")
         self.assertEqual(self.pool.submit_calls, [(first, identifier)] * 3)
+        # TQ-07-D7: the reason for the wait outlives the placement.
+        history = json.loads(self.state.read_text())["jobs"][0]["wait_history"]
+        self.assertEqual([(entry["causes"], entry["count"]) for entry in history],
+                         [({"linux": ["INSUFFICIENT_DISK"]}, 2)])
         self.assertEqual(self.pool.submissions, {identifier: first})
 
     def test_slow_placement_cannot_starve_another_host_across_observation_windows(self):
