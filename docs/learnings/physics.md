@@ -169,3 +169,14 @@ A native model copy remains isolated from later source edits, but isolation does
 `make_read_only()` does not freeze packed arrays. On Godot 4.8-beta2 a packed array inside a read-only Dictionary or Array still changes in place, through an alias or a direct element write (`model.crash_hull[0] = x`), with no engine error: the engine shares its buffer with every alias. A guard that proves a frozen container by identity must keep a bitwise watch on each packed leaf, and a test of the freeze must attempt that write with the freeze on. [NK-6p](../research/native-kernel/NK-6p/README.md#packed-arrays-stay-writable-in-place).
 
 Include mutation detection, invalidation and returned-value ownership in a cache's cost: protecting a six-entry inertia inverse cost more than recomputing it in EL2a-P3, and returning a packed array can expose cached contents to caller edits. A selected-field snapshot can also cost more than a deep copy once detachment is included. If session data can change between ticks, constrain any reuse to a boundary with explicit invalidation and make off-tick queries read current data. Measure entire paths rather than assuming fewer helper calls or a native port wins after bindings and decoding. [EL2a-P3](../../research/propulsion/el2a-p3/inertia-prototype/README.md), [RCV-42](../research/rc-monster-truck/RCV-42/README.md), [NK-2a](../research/native-kernel/NK-2a/README.md), [H13](../research/simulation-state/H13/README.md).
+
+### Native answers for published endpoints
+
+A presentation reader (flight audio, statistics, shadows) may take a native answer for the accepted endpoint only under that publication's own conditions:
+- the guarded context of this tick;
+- the state and auxiliary values still carrying its bits;
+- no RC track, pending weather reset or derived session class.
+
+Each refusal must fall back to the unchanged reference. Prove each answer by comparing the whole consumer output byte for byte with the answer on, off and with every native answer off, every tick. Include the regimes where the reference branches differently: on the ground, beyond the terrain's reach, on lake-covered ground, and in spatial weather. Add a 1e-9 mutation control. NK-7j's first draft matched every number but not the surface strings, because the environment's prepared support carried region provenance the draft assumed absent. [NK-7j](../research/native-kernel/NK-7j/README.md), [NK-7k](../research/native-kernel/NK-7k/README.md).
+
+A guard or plan that walks containers once per path explodes on an aliased configuration. Twenty-four doubled levels are 16 million paths, and the NK-5h plan took 29 s to prepare one. Budget such walks and keep the alias-aware fallback that shares each container once; `test_native_admission.gd` measures that bound. [Native kernel](../../research/native-kernel/README.md).
