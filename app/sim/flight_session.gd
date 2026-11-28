@@ -299,7 +299,10 @@ func shaft_is_coupled() -> bool:
 func glow_is_active() -> bool:
 	if _fact_glow != _FACT_UNKNOWN:
 		return _fact_glow == 1
-	var active: bool = aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+	var kept := _kept_fact(&"glow")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"glow", int(active))
 	if _facts_armed: _fact_glow = int(active)
 	return active
 
@@ -344,7 +347,10 @@ func start_fuel_kg() -> float:
 func liquid_fuel_is_active() -> bool:
 	if _fact_liquid != _FACT_UNKNOWN:
 		return _fact_liquid == 1
-	var active: bool = aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+	var kept := _kept_fact(&"liquid")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+	if kept == _FACT_UNKNOWN: _keep_fact(&"liquid", int(active))
 	if _facts_armed: _fact_liquid = int(active)
 	return active
 
@@ -5571,7 +5577,10 @@ func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pack
 func battery_is_dynamic() -> bool:
 	if _fact_battery_dynamic != _FACT_UNKNOWN:
 		return _fact_battery_dynamic == 1
-	var active: bool = aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
+	var kept := _kept_fact(&"battery_dynamic")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"battery_dynamic", int(active))
 	if _facts_armed: _fact_battery_dynamic = int(active)
 	return active
 
@@ -5579,7 +5588,10 @@ func battery_is_dynamic() -> bool:
 func battery_is_pack() -> bool:
 	if _fact_battery_pack != _FACT_UNKNOWN:
 		return _fact_battery_pack == 1
-	var active: bool = aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+	var kept := _kept_fact(&"battery_pack")
+	var active: bool = kept == 1 if kept != _FACT_UNKNOWN \
+		else aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+	if kept == _FACT_UNKNOWN: _keep_fact(&"battery_pack", int(active))
 	if _facts_armed: _fact_battery_pack = int(active)
 	return active
 
