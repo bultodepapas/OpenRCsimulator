@@ -1,9 +1,9 @@
 extends SceneTree
-## NK-7b: a soundscape on the native core and one on the GDScript reference, configured alike and fed the same
+## NK-7b/NK-7c: a soundscape on the native core and one on the GDScript reference, configured alike and fed the same
 ## snapshots, end every frame in the same state bit for bit: each voice's volume, pitch, position, pause and playback,
 ## the glow player, the recorded powertrain bank, the windsock, both bus filters, the mix state, levels, targets,
 ## wildlife presence, events and scheduler, and the core's internal state. The run covers every propulsion kind and an
-## unknown one, a glow voice, recorded gasoline and turbine banks, pauses, camera cuts, frame-differenced and accepted
+## unknown one, a glow voice, recorded gasoline, turbine, electric and rotor banks, pauses, camera cuts, frame-differenced and accepted
 ## source velocity, delays of seconds, history expiry and compaction, clock rewinds and gaps, every key missing in turn,
 ## int and bool values, both delay and absorption switches, observer resets, a detach, a core bound mid-flight with
 ## non-default state, and a refused frame handing the mix back. The reference also solves the delay in GDScript
@@ -36,6 +36,8 @@ func _run() -> void:
 		return
 	var gasoline := {id = "parity-gasoline", family = "gasoline", max_rpm = 12000.0, blades = 2, trim_db = 0.0}
 	var turbine := {id = "parity-turbine", family = "turbine", max_rpm = 120000.0, blades = 2, trim_db = -2.0}
+	var electric := {id = "parity-electric", family = "electric", max_rpm = 9000.0, blades = 2, trim_db = 6.0}
+	var rotor := {id = "parity-rotor", family = "rotor", blades = 2} # no max_rpm or trim: the profile defaults
 	var scenarios: Array[Dictionary] = [
 		{label = "glow_prop", kind = "glow_prop", family = "", profile = {}},
 		{label = "electric_prop", kind = "electric_prop", family = "", profile = {}},
@@ -43,6 +45,8 @@ func _run() -> void:
 		{label = "glow voice", kind = "glow_prop", family = "glow_2t", profile = {}},
 		{label = "gasoline bank", kind = "glow_prop", family = "", profile = gasoline},
 		{label = "turbine bank", kind = "turbine", family = "", profile = turbine},
+		{label = "electric bank", kind = "electric_prop", family = "", profile = electric},
+		{label = "rotor bank", kind = "glow_prop", family = "", profile = rotor},
 		{label = "unknown kind", kind = "ducted_fan", family = "", profile = {}},
 		{label = "bound mid-flight", kind = "glow_prop", family = "", profile = gasoline, deferred = true},
 		{label = "refused frame", kind = "electric_prop", family = "", profile = {}, refusal = true},
@@ -250,6 +254,7 @@ func _rig_state(rig: Variant) -> Dictionary:
 	if rig.powertrain != null:
 		bank.append(rig.powertrain.last_targets)
 		bank.append(rig.powertrain.levels)
+		bank.append([rig.powertrain._rpm, rig.powertrain._primed, rig.powertrain._started])
 		for player: AudioStreamPlayer3D in rig.powertrain.players:
 			bank.append(_player_state(player))
 	var wildlife: Variant = rig.wildlife

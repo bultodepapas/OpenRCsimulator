@@ -583,13 +583,13 @@ var _native: Object = null
 var _native_unavailable := false
 
 ## NK-7b: the native soundscape core (nk_soundscape_core.hpp) runs update_sound's delay history, laws, mix state and
-## voice and filter writes in two calls per frame; the powertrain bank, glow voice, windsock fabric and wildlife events
-## stay here. update_sound's GDScript path remains the specification and the fallback. The hook is read when the core
+## voice and filter writes in two calls per frame, and (NK-7c) the recorded powertrain bank's update, whose state it
+## mirrors back to the bank; the glow voice, windsock fabric and wildlife events stay here. update_sound's GDScript path remains the specification and the fallback. The hook is read when the core
 ## binds, at an update with an empty delay history; a refused frame hands the mix state back to GDScript.
 var native_core_enabled := true
 var _core: Object = null
 var _core_refused := false
-const _CORE_FRAME_SIZE := 41
+const _CORE_FRAME_SIZE := 55
 const _CORE_GAIN := 1
 const _CORE_SCREEN_GAIN := 2
 const _CORE_DUCK := 3
@@ -603,11 +603,13 @@ const _CORE_DT := 10
 const _CORE_PAUSED := 11
 const _CORE_TARGETS := 12
 const _CORE_PRESENCE := 22
+const _CORE_BANK := 41
 const _CORE_STATE_LEVELS := 19
 const _CORE_STATE_PRESENCE := 33
 const _CORE_KINDS: Dictionary = {glow_prop = 0, electric_prop = 1, turbine = 2}
 const _CORE_SPECIES: Array[String] = ["bird", "crow", "owl", "dog"]
 const _CORE_PRESENCE_KEYS: Array[String] = ["bird", "crow", "owl", "dog", "cricket"]
+const _CORE_BANK_FAMILIES: Dictionary = {electric = 1, rotor = 2, turbine = 3}
 
 
 func _bind_core() -> bool:
@@ -625,6 +627,18 @@ func _bind_core() -> bool:
 			int(_CORE_KINDS.get(kind, 3)), _core_state()):
 		_core_refused = true
 		return false
+	if powertrain != null:
+		var layers := PackedFloat64Array()
+		for layer: Dictionary in powertrain.layers:
+			layers.append_array([1.0 if layer.has("rpm") else 0.0, float(layer.get("rpm", 0.0)), float(layer.get("gain", 1.0))])
+		var bank_state := PackedFloat64Array([powertrain._rpm, 1.0 if powertrain._primed else 0.0,
+			1.0 if powertrain._started else 0.0])
+		bank_state.append_array(powertrain.levels)
+		var profile: Dictionary = powertrain.profile
+		if not core.sound_core_bind_bank(powertrain.players, layers, int(_CORE_BANK_FAMILIES.get(str(profile.family), 0)),
+				float(profile.get("max_rpm", 12000.0)), float(profile.get("trim_db", 0.0)), bank_state):
+			_core_refused = true
+			return false
 	_core = core
 	return true
 
@@ -666,6 +680,19 @@ func _release_core() -> void:
 		wildlife_presence[_CORE_PRESENCE_KEYS[i]] = s[_CORE_STATE_PRESENCE + i]
 
 
+## NK-7c: the bank's state after the core's update, as PowertrainAudio.update_sound leaves it.
+func _mirror_bank(out: PackedFloat64Array) -> void:
+	var b := _CORE_BANK
+	var count: int = powertrain.players.size()
+	powertrain._rpm = out[b]
+	powertrain._primed = out[b + 6] != 0.0
+	powertrain._started = out[b + 7] != 0.0
+	powertrain.levels = out.slice(b + 8, b + 8 + count)
+	powertrain.last_targets = {rpm = out[b], accepted_rpm = out[b + 1], running = out[b + 2] != 0.0,
+		family = str(powertrain.profile.family), weights = out.slice(b + 11, b + 11 + count), level = out[b + 3],
+		distance_gain = out[b + 4], paused = out[b + 5] != 0.0}
+
+
 ## update_sound through the core; false (after a refusal) leaves the frame to the GDScript path.
 func _update_core(snapshot: Dictionary, delta: float) -> bool:
 	var glow_snapshot: Dictionary = snapshot.get("glow", {})
@@ -696,7 +723,7 @@ func _update_core(snapshot: Dictionary, delta: float) -> bool:
 	if kind == "turbine":
 		last_targets.exhaust_angle_deg = out[t + 9]
 	if powertrain != null:
-		powertrain.update_sound(_core.sound_core_heard(snapshot), dt, gain * screen_gain, last_doppler)
+		_mirror_bank(out)
 	elif use_glow_voice:
 		_update_glow_voice(glow_snapshot, _core.sound_core_heard(snapshot), screen_gain, duck, dt, paused)
 	# The windsock and the wildlife read no delayed key, so the snapshot itself equals the heard one for them.

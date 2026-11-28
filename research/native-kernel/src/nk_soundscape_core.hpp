@@ -1,4 +1,5 @@
-// NK-7b: app/audio/soundscape.gd update_sound in the native kernel, exact. The core owns the propagation-delay
+// NK-7b: app/audio/soundscape.gd update_sound in the native kernel, exact. NK-7c adds the recorded powertrain bank
+// (app/audio/powertrain_audio.gd update_sound). The core owns the propagation-delay
 // history and the mix state and writes the soundscape's voices and bus filters through the engine's own method binds
 // (GDExtension ptrcall; the library's build profile has no audio classes). The powertrain bank, glow voice, windsock
 // fabric and wildlife events stay GDScript callbacks between its two calls per frame. It reads the snapshot
@@ -101,8 +102,17 @@ enum FrameOut : int {
 	             // bird_activity, exhaust_angle_deg
 	kOutPresence = kOutTargets + 10, // bird, crow, owl, dog, cricket
 	kOutLevels = kOutPresence + 5,
-	kOutFrameSize = kOutLevels + kVoices
+	// NK-7c, the bank: rpm, accepted_rpm, running, level, distance_gain, paused, primed, started, then three levels and
+	// three weights (the first `count` of each are the bank's).
+	kOutBank = kOutLevels + kVoices,
+	kOutBankLevels = kOutBank + 8,
+	kOutBankWeights = kOutBankLevels + 3,
+	kOutFrameSize = kOutBankWeights + 3
 };
+
+// powertrain_audio.gd families the bank's level law tells apart.
+enum BankFamily : int { kBankOther = 0, kBankElectric = 1, kBankRotor = 2, kBankTurbine = 3 };
+constexpr int kBankLayers = 3; // PowertrainAudio.MAX_LAYERS
 
 // sound_core_bind / sound_core_state: the soundscape's mix state.
 enum StateSlot : int {
@@ -137,6 +147,7 @@ struct EngineBinds {
 	GDExtensionMethodBindPtr get_global_position = nullptr;
 	GDExtensionMethodBindPtr set_cutoff = nullptr;
 	GDExtensionMethodBindPtr set_gain = nullptr;
+	GDExtensionMethodBindPtr play = nullptr;
 	void *player_tag = nullptr;
 	void *filter_tag = nullptr;
 	bool ok = false;
@@ -160,13 +171,14 @@ inline const EngineBinds &engine_binds() {
 		b.get_global_position = method_bind("Node3D", "get_global_position", 3360562783);
 		b.set_cutoff = method_bind("AudioEffectFilter", "set_cutoff", 373806689);
 		b.set_gain = method_bind("AudioEffectFilter", "set_gain", 373806689);
+		b.play = method_bind("AudioStreamPlayer3D", "play", 1958160172);
 		const godot::StringName player("AudioStreamPlayer3D");
 		const godot::StringName filter("AudioEffectFilter");
 		b.player_tag = godot::gdextension_interface::classdb_get_class_tag(player._native_ptr());
 		b.filter_tag = godot::gdextension_interface::classdb_get_class_tag(filter._native_ptr());
 		b.ok = b.set_volume_db && b.set_pitch_scale && b.get_pitch_scale && b.set_stream_paused && b.get_unit_size &&
 			b.set_global_position && b.get_global_position && b.set_cutoff && b.set_gain && b.player_tag &&
-			b.filter_tag && engine_angle_method() != nullptr;
+			b.filter_tag && b.play && engine_angle_method() != nullptr;
 		return b;
 	}();
 	return binds;
@@ -222,6 +234,27 @@ inline godot::Vector3 call_get_vector3(GDExtensionMethodBindPtr method, const Bo
 	godot::Vector3 result;
 	godot::gdextension_interface::object_method_bind_ptrcall(method, object.ptr, nullptr, &result);
 	return result;
+}
+
+// PowertrainAudio.band_weights: adjacent equal-power bands over the layer reference rpms.
+inline void band_weights(R rpm, const R *references, int count, R *weights) {
+	for (int i = 0; i < count; ++i) weights[i] = 0.0;
+	if (count == 0) return;
+	if (rpm.v <= references[0].v) {
+		weights[0] = 1.0;
+		return;
+	}
+	for (int index = 0; index < count - 1; ++index) {
+		if (rpm.v <= references[index + 1].v) {
+			const R fraction = clampf(R(e_log((rpm / references[index]).v)) /
+				R(e_log((references[index + 1] / references[index]).v)), 0.0, 1.0);
+			const R angle = fraction * R(3.1415926535897932384626433833) * R(0.5); // fraction * PI * 0.5
+			weights[index] = godot::UtilityFunctions::cos(angle.v);
+			weights[index + 1] = godot::UtilityFunctions::sin(angle.v);
+			return;
+		}
+	}
+	weights[count - 1] = 1.0;
 }
 
 // float(value) for the kinds GDScript converts the same way here; any other type refuses.
@@ -303,6 +336,36 @@ public:
 		return true;
 	}
 
+	// NK-7c: the soundscape's recorded powertrain bank. layers: [has_rpm (1/0), rpm, gain] per player, as GDScript read
+	// them; state: [rpm, primed, started, levels...]. False leaves the core without a bank (the soundscape refuses it).
+	bool bind_bank(const godot::Array &players, const godot::PackedFloat64Array &layers, int64_t family,
+			double profile_max_rpm, double trim_db, const godot::PackedFloat64Array &state) {
+		has_bank_ = false;
+		const EngineBinds &b = engine_binds();
+		const int64_t count = players.size();
+		if (!bound_ || count < 1 || count > kBankLayers || layers.size() != count * 3 || state.size() != 3 + count) {
+			return false;
+		}
+		Bank bank;
+		bank.count = static_cast<int>(count);
+		for (int i = 0; i < bank.count; ++i) {
+			if (!bind_object(players[i], b.player_tag, bank.players[i])) return false;
+			bank.has_rpm[i] = layers[i * 3] != 0.0;
+			bank.rpm_reference[i] = layers[i * 3 + 1];
+			bank.gain[i] = layers[i * 3 + 2];
+		}
+		bank.family = static_cast<int>(family);
+		bank.profile_max_rpm = profile_max_rpm;
+		bank.trim_db = trim_db;
+		bank.rpm = state[0];
+		bank.primed = state[1] != 0.0;
+		bank.started = state[2] != 0.0;
+		for (int i = 0; i < bank.count; ++i) bank.levels[i] = state[3 + i];
+		bank_ = bank;
+		has_bank_ = true;
+		return true;
+	}
+
 	godot::PackedFloat64Array state() const {
 		godot::PackedFloat64Array out;
 		out.resize(kStateSize);
@@ -336,6 +399,11 @@ public:
 		clear_history();
 		gain_ = 0.0;
 		for (R &level : levels_) level = 0.0;
+		// Both callers also reset the bank (reset_observer directly, _enter_tree through its rebind).
+		bank_.rpm = 0.0;
+		bank_.primed = false;
+		bank_.started = false;
+		for (R &level : bank_.levels) level = 0.0;
 	}
 
 	// update_sound up to wildlife.advance; empty when refused (nothing changed).
@@ -409,6 +477,7 @@ public:
 			const bool running = h.has(kKeyRunning) ? h.scalar[kKeyRunning] != 0.0 : false;
 			const bool coast = (flags & kFlagGasoline) != 0 && !running;
 			level(1, coast ? t.prop_gain * screen_gain_ * R(0.65) : R(0.0));
+			if (has_bank_) bank_update(source, listener, dt, gain_ * screen_gain_, paused);
 		} else if ((flags & kFlagGlowVoice) != 0) {
 			level(0, 0.0);
 			level(1, 0.0);
@@ -473,6 +542,19 @@ public:
 		for (int i = 0; i < 10; ++i) o[kOutTargets + i] = target_values[i].v;
 		for (int i = 0; i < 5; ++i) o[kOutPresence + i] = presence_[i].v;
 		for (int i = 0; i < kVoices; ++i) o[kOutLevels + i] = levels_[i].v;
+		const Bank &k = bank_;
+		o[kOutBank] = k.rpm.v;
+		o[kOutBank + 1] = k.accepted_rpm.v;
+		o[kOutBank + 2] = k.running ? 1.0 : 0.0;
+		o[kOutBank + 3] = k.level.v;
+		o[kOutBank + 4] = k.distance_gain.v;
+		o[kOutBank + 5] = k.paused ? 1.0 : 0.0;
+		o[kOutBank + 6] = k.primed ? 1.0 : 0.0;
+		o[kOutBank + 7] = k.started ? 1.0 : 0.0;
+		for (int i = 0; i < kBankLayers; ++i) {
+			o[kOutBankLevels + i] = k.levels[i].v;
+			o[kOutBankWeights + i] = k.weights[i].v;
+		}
 		return out;
 	}
 
@@ -543,6 +625,11 @@ private:
 	bool nodes_valid() const {
 		for (const Bound &voice : voices_) {
 			if (!voice.valid()) return false;
+		}
+		if (has_bank_) {
+			for (int i = 0; i < bank_.count; ++i) {
+				if (!bank_.players[i].valid()) return false;
+			}
 		}
 		return (!has_glow_ || glow_.valid()) && absorption_.valid() && screen_.valid();
 	}
@@ -718,6 +805,64 @@ private:
 		call_set(b.set_gain, screen_, db_to_linear(R(-12.0) * screened_).v); // 0.5 * SCREEN_SHELF_DB: gain squared
 	}
 
+	// NK-7c: PowertrainAudio.update_sound(heard snapshot, dt, mix_gain, doppler), as the soundscape calls it.
+	void bank_update(const godot::Vector3 &source, const godot::Vector3 &listener, R dt, R mix_gain, bool paused) {
+		const EngineBinds &b = engine_binds();
+		const Sample &h = heard_;
+		Bank &k = bank_;
+		const R accepted = maxf(h.has(kKeyRpm) ? R(h.scalar[kKeyRpm]) : R(0.0), 0.0);
+		const R maximum = maxf(h.has(kKeyMaxRpm) ? R(h.scalar[kKeyMaxRpm]) : k.profile_max_rpm, 1.0);
+		const bool running = h.has(kKeyRunning) ? h.scalar[kKeyRunning] != 0.0 : false;
+		if (!k.primed) {
+			k.rpm = accepted;
+			k.primed = true;
+		}
+		if (!paused) k.rpm = lerpf(k.rpm, accepted, R(1.0) - R(e_exp((R(-dt.v) / R(0.055)).v)));
+		const R ratio = clampf(k.rpm / maximum, 0.0, 1.3);
+		const R throttle = clampf(h.has(kKeyThrottle) ? R(h.scalar[kKeyThrottle]) : R(0.0), 0.0, 1.0);
+		const R load = clampf(h.has(kKeyLoad) ? R(h.scalar[kKeyLoad]) : throttle, 0.0, 1.0);
+		const R spin = smoothstep(25.0, k.family == kBankTurbine ? 18000.0 : 450.0, accepted);
+		// Running combustion depends on power, not windmilling RPM alone. Electric has no combustion idle.
+		const R drive = (R(0.24) + R(0.76) * sqrt_(ratio)) * (R(0.28) + R(0.42) * throttle + R(0.30) * load);
+		R level = running ? R(0.5) * drive * spin : R(0.0);
+		if (k.family == kBankElectric) {
+			level = R(0.30) * e_pow(ratio, 1.25) * (R(0.45) + R(0.55) * load) * spin;
+		} else if (k.family == kBankRotor) {
+			level = R(0.40) * e_pow(ratio, 1.5) * (R(0.35) + R(0.65) * load) * spin;
+		} else if (k.family == kBankTurbine) {
+			level = running ? R(0.7) * (R(0.015) + R(0.985) * e_pow(minf(ratio, 1.0), 2.6)) * spin : R(0.0);
+			const godot::Vector3 exhaust = h.has(kKeyExhaust) ? h.vector[kKeyExhaust] : godot::Vector3();
+			level = level * db_to_linear(table_db(kRoarDirectivity, 12, exhaust_angle_deg(exhaust, listener, source)) * R(0.45));
+		}
+		R references[kBankLayers];
+		for (int i = 0; i < k.count; ++i) references[i] = k.has_rpm[i] ? k.rpm_reference[i] : maximum * R(0.65);
+		band_weights(maxf(k.rpm, 1.0), references, k.count, k.weights);
+		const R path_gain = distance_gain(R(double(distance(source, listener))));
+		level = level * (db_to_linear(k.trim_db) * path_gain); // level *= db_to_linear(trim_db) * path_gain
+		const R scene_gain = clampf(mix_gain, 0.0, 1.0);
+		const R pitch_alpha = R(1.0) - R(e_exp((R(-dt.v) / R(0.035)).v));
+		const bool stream_paused = paused && mix_gain.v <= 0.001;
+		for (int i = 0; i < k.count; ++i) {
+			const Bound &player = k.players[i];
+			call_set(b.set_global_position, player, source);
+			const R target = level * k.weights[i] * k.gain[i];
+			k.levels[i] = lerpf(k.levels[i], target,
+				R(1.0) - R(e_exp((R(-dt.v) / R(target.v > k.levels[i].v ? 0.08 : 0.12)).v)));
+			call_set(b.set_volume_db, player, (linear_to_db(maxf(k.levels[i] * scene_gain, 0.00001)) - R(12.0)).v);
+			const R pitch = clampf(k.rpm / references[i], 0.35, 2.5) * clampf(doppler_, 0.65, 1.5);
+			call_set(b.set_pitch_scale, player,
+				k.started ? lerpf(call_get_double(b.get_pitch_scale, player), pitch, pitch_alpha).v : pitch.v);
+			if (!k.started && !paused) call_set(b.play, player, (R(double(i)) * R(0.173)).v);
+			call_set(b.set_stream_paused, player, stream_paused);
+		}
+		if (!paused) k.started = true;
+		k.accepted_rpm = accepted;
+		k.running = running;
+		k.level = level;
+		k.distance_gain = path_gain;
+		k.paused = paused;
+	}
+
 	// _level.
 	void level(int index, R target) {
 		const EngineBinds &b = engine_binds();
@@ -771,6 +916,29 @@ private:
 	Targets targets_;
 	R duck_ = 1.0, screen_gain_ = 1.0, level_alpha_ = 0.0;
 	bool profile_ = false;
+
+	struct Bank {
+		Bound players[kBankLayers];
+		int count = 0;
+		bool has_rpm[kBankLayers] = {};
+		R rpm_reference[kBankLayers] = {};
+		R gain[kBankLayers] = {};
+		int family = kBankOther;
+		R profile_max_rpm = 12000.0;
+		R trim_db = 0.0;
+		R rpm = 0.0;
+		bool primed = false;
+		bool started = false;
+		R levels[kBankLayers] = {};
+		R weights[kBankLayers] = {};
+		R accepted_rpm = 0.0;
+		bool running = false;
+		R level = 0.0;
+		R distance_gain = 0.0;
+		bool paused = false;
+	};
+	Bank bank_;
+	bool has_bank_ = false;
 };
 
 } // namespace sound

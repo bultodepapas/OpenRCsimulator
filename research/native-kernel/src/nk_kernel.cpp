@@ -1271,6 +1271,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("sound_distance_gain", "distance_m"), &OpenRCNativeKernel::sound_distance_gain);
 		godot::ClassDB::bind_method(D_METHOD("sound_core_bind", "voices", "glow_player", "absorption_filter", "screen_filter",
 			"trees", "canopies", "kind", "state"), &OpenRCNativeKernel::sound_core_bind);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_bind_bank", "players", "layers", "family", "profile_max_rpm", "trim_db",
+			"state"), &OpenRCNativeKernel::sound_core_bind_bank);
 		godot::ClassDB::bind_method(D_METHOD("sound_core_frame", "snapshot", "delta", "flags"),
 			&OpenRCNativeKernel::sound_core_frame);
 		godot::ClassDB::bind_method(D_METHOD("sound_core_events", "species_levels"), &OpenRCNativeKernel::sound_core_events);
@@ -2111,6 +2113,12 @@ public:
 		return sound_core_->bind(voices, glow_player, absorption_filter, screen_filter, trees, canopies, kind, state);
 	}
 
+	// NK-7c: the recorded powertrain bank (nk_soundscape_core.hpp Core::bind_bank), after sound_core_bind.
+	bool sound_core_bind_bank(const godot::Array &players, const PackedFloat64Array &layers, int64_t family,
+			double profile_max_rpm, double trim_db, const PackedFloat64Array &state) {
+		return sound_core_ && sound_core_->bind_bank(players, layers, family, profile_max_rpm, trim_db, state);
+	}
+
 	PackedFloat64Array sound_core_frame(const godot::Dictionary &snapshot, double delta, int64_t flags) {
 		return sound_core_ ? sound_core_->frame(snapshot, delta, flags) : PackedFloat64Array();
 	}
@@ -2432,6 +2440,10 @@ public:
 			{"-24.0", -24.0}, {"-7.0", -7.0}, {"0.0001", 0.0001}, {"0.04", 0.04}, {"0.09", 0.09}, {"0.11", 0.11},
 			{"0.21", 0.21}, {"0.22", 0.22}, {"0.26", 0.26}, {"0.30", 0.30}, {"0.31", 0.31}, {"0.78", 0.78},
 			{"150.0", 150.0}, {"2.2", 2.2}, {"273.15", 273.15}, {"343.0", 343.0}, {"5.5", 5.5}, {"6500.0", 6500.0},
+			// NK-7c: audio/powertrain_audio.gd update_sound and band_weights.
+			{"0.055", 0.055}, {"1.3", 1.3}, {"450.0", 450.0}, {"18000.0", 18000.0}, {"0.24", 0.24}, {"0.76", 0.76},
+			{"0.28", 0.28}, {"0.42", 0.42}, {"1.25", 1.25}, {"0.40", 0.40}, {"0.015", 0.015}, {"0.985", 0.985},
+			{"2.6", 2.6}, {"0.7", 0.7}, {"0.035", 0.035}, {"0.00001", 0.00001}, {"0.173", 0.173}, {"2.5", 2.5},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.
