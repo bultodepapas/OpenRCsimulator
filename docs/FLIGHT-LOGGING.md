@@ -347,6 +347,18 @@ The header, ordered data blocks and footer are versioned. The footer contains ro
 counts, final tick and an ordered digest chain. This detects corruption, truncation,
 reordering and dropped blocks; it is not a cryptographic signature proving authorship.
 
+[ORFL packet transport](../app/sim/orfl_packet.gd) owns this common encoding and
+decoding for fixed-wing, airship and multirotor recorders. Each recorder retains
+its own payload schema, file limit, observer lifecycle and replay verdicts. The
+footer stores the chain before the footer packet itself; a refused append does
+not publish a new chain. Existing `FlightLog.MAGIC`, `MAX_PACKET`, `read_packet`
+and `sha256` remain compatibility interfaces for tools and callers.
+
+The transport checks each store result, the flush error and the exact final file
+position before publishing the new chain. This detects buffered short writes
+that the engine can otherwise report as successful. A failed append may leave a
+partial packet; detection does not provide disk rollback or power-loss durability.
+
 Limits: 16 MiB per packet, 512 MiB per file (normal stop reserves footer space), and
 864,000 flight ticks, i.e. one simulated hour at 240 Hz. The initial aircraft/world
 snapshot also has to fit the packet bound. Start another file for a longer session.
@@ -384,6 +396,22 @@ python -m unittest discover -s tools/flight_log -p "test_*.py"
 `app/test.sh` discovers the GDScript tests. The native UI test can also run without
 `--headless`, saving an ignored capture under `tmp/`. Tests use isolated inputs and
 disposable log files; no golden flights or accepted aircraft data are rewritten.
+
+On Linux, the integration runtime phase also runs the real recorder write-failure
+probe for all three families. On an unenrolled Linux host, run it independently
+after importing the project:
+
+```bash
+python3 tools/flight_log/check_packet_writes.py --godot "$(app/get-godot.sh)" \
+  --out tmp/orfl-write-checks
+```
+
+The driver limits only a disposable engine child's file size and checks complete
+ordinary writes, small buffered failures, larger failures, retained chains and
+subscription/handle cleanup. It retains checked logs and source hashes. This
+fault-injection method requires Linux; ordinary packet and recorder tests remain
+part of the cross-platform suite. On an enrolled host, use the admitted integration
+suite so both child invocations retain its execution scope.
 
 [FL-01…04 source research, implementation and verification](research/flight-logging/FL-01/README.md).
 These are software checks; independent measurements and RC pilot feedback remain

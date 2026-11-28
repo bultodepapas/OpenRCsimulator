@@ -10,14 +10,17 @@ static func append_packet(file: FileAccess, value: Dictionary, prior_chain: Pack
 	var payload := var_to_bytes(value)
 	if payload.is_empty() or payload.size() > MAX_PACKET:
 		return {ok = false, error = "Flight log packet exceeds bounded format.", code = ERR_INVALID_DATA}
-	if file.get_position() + payload.size() + HEADER_BYTES > max_bytes:
+	var expected_end := file.get_position() + HEADER_BYTES + payload.size()
+	if expected_end > max_bytes:
 		return {ok = false, error = "Flight log byte limit exceeded; file is incomplete.", code = ERR_FILE_CANT_WRITE}
 	var digest := sha256(payload)
-	file.store_32(payload.size())
-	file.store_buffer(digest)
-	file.store_buffer(payload)
+	var stored_length := file.store_32(payload.size())
+	var stored_digest := file.store_buffer(digest)
+	var stored_payload := file.store_buffer(payload)
 	file.flush()
-	if file.get_error() != OK:
+	# A buffered short write can leave get_error() at OK after flush.
+	var write_error := file.get_error()
+	if not stored_length or not stored_digest or not stored_payload or write_error != OK or file.get_position() != expected_end:
 		return {ok = false, error = "Flight log disk write failed; file is incomplete.", code = ERR_FILE_CANT_WRITE}
 	return {ok = true, chain = sha256(prior_chain + digest)}
 

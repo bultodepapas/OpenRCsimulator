@@ -559,6 +559,12 @@ python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTE
 fi
 if [[ "$TEST_PART" != all && "$TEST_PART" != integration && "$TEST_PART" != integration-runtime ]]; then exit 0; fi
 
+if [[ "$(uname -s)" == Linux ]]; then
+section "VRC-07-R2: ORFL recorders reject buffered short writes"; section_body() {
+python3 "$HERE/../tools/flight_log/check_packet_writes.py" --godot "$GODOT" --project "$HERE" --out "$CHECK_OUT"
+}; end_section
+fi
+
 section "H7: exact one-ulp math sensitivity and golden branch signatures"; section_body() {
 python3 "$HERE/tests/test_check_math_sensitivity_imports.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
