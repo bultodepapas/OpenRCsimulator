@@ -1,0 +1,71 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-28",
+  "baseline_commit": "0b4a3998bfc6aec1e0c5faa1fffec823e080acd0",
+  "candidate_commit": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "candidate_overlay": "Project version 0.4.0 and the two D11g guard renewals",
+  "platform": "Windows 11 x86_64, local, pinned Godot 4.8 beta2 console editor, sequential runs",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+  },
+  "inventory": {
+    "qualified_inputs": 152,
+    "unchanged": 149,
+    "qualified_sha256_before": "ad4b79e1b0b3e868c2da770b09ba6e98284abe4c011a047092bf041ea54058b0",
+    "qualified_sha256_after": "ad4fc92685eff46a3d22de3ba8fbdde26e56881db0d73c44e6a734cba4443bbe",
+    "added": [],
+    "removed": [],
+    "changed": {
+      "app/physics/glow/flight.gd": "NK-6b and NK-6d native glow step hooks (8e5430447, 5df2eb48c)",
+      "app/physics/multirotor/controlled_plant.gd": "FPV obstacle contact and impact constants (3cd6efa05, d2b52c932)",
+      "app/project.godot": "PipelineCacheGate autoload, then version 0.3.5 -> 0.4.0"
+    }
+  },
+  "numerical_and_provenance_result": "Baseline, candidate and renewed reports agree on every leaf outside derivation_identity and the expected data_check result: trim, unrounded and rounded CG/ARP derivatives, sensitivity rows, law and generated provenance.",
+  "checks": {
+    "baseline": {
+      "generator_exit": 0,
+      "updater_exit": 0,
+      "report_sha256": "42ad601dba2eb6179cbfc19c3204a091a169b8b1fc5b01b3388f890eac64c467",
+      "generator_log_sha256": "1c082bf24cfe838f0d9153f18f9f052e9be863fc14547aa41d6c889b886b52a6",
+      "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+    },
+    "candidate-before": {
+      "generator_exit": 1,
+      "updater_exit": 1,
+      "report_sha256": "d3c62d0655d321734690e4d9c6c553bedb5761d94738d5ab0b06ff0987923d42",
+      "generator_log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5"
+    },
+    "renewed": {
+      "generator_exit": 0,
+      "updater_exit": 0,
+      "report_sha256": "551d0d5891927fef507eca052dcc1135dcb8bd965b5119f161420be7b9f8e2a1",
+      "generator_log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+    },
+    "physics-mutation": {
+      "generator_exit": 1,
+      "updater_exit": 1,
+      "report_sha256": "55f9b16cd03fed63b421c958f051ed1ceadabdd9d8e947677595512bb1b155b7",
+      "generator_log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5"
+    },
+    "version-mutation": {
+      "generator_exit": 1,
+      "updater_exit": 1,
+      "report_sha256": "a16d0ef012f5061ee1c73286c82a71ce62718974cefe35a0a3323514ae9fd571",
+      "generator_log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5"
+    },
+    "restored": {
+      "generator_exit": 0,
+      "updater_exit": 0,
+      "report_sha256": "551d0d5891927fef507eca052dcc1135dcb8bd965b5119f161420be7b9f8e2a1",
+      "generator_log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+    }
+  },
+  "limits": "Windows-only local reconstruction; the hosted Linux check of earlier renewals was not repeated. The baseline reproduces the pinned aggregate exactly, validating the method."
+}

@@ -36,7 +36,7 @@ const QUALIFIED_CURRENT_LAW := "section-plane-source-weighted-wake-velocity-v4"
 const QUALIFIED_HISTORICAL_LAW := "section-plane-source-weighted-wake-velocity-v3"
 const QUALIFIED_ENGINE_HASH := "cafc17a192acf67903910a68aeb3c076c0907a4b"
 const QUALIFIED_AIRCRAFT_SHA256 := "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
-const QUALIFIED_SOLVER_SHA256 := "ad4b79e1b0b3e868c2da770b09ba6e98284abe4c011a047092bf041ea54058b0"
+const QUALIFIED_SOLVER_SHA256 := "ad4fc92685eff46a3d22de3ba8fbdde26e56881db0d73c44e6a734cba4443bbe"
 const QUALIFIED_ROUNDED := {"Cmq": -8.082, "CLq": 2.357, "Cnr": -0.136}
 const HISTORICAL_SOURCE_SHA256 := {
 	"Cmq": "154c5a27ddabf76baa3a34c68196eb988c4691ebf2a1c10ef217a2f79ed33386",

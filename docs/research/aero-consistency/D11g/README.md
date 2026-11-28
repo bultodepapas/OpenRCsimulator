@@ -270,3 +270,21 @@ project version. Both guards passed after renewal and rejected separate source
 and version mutations. The derivatives, trim, sensitivity and provenance
 matched across all six reports. The [receipt](2026-11-23-release-v035-qualification.json) records the
 run and aggregate `ad4b79e1b0b3e868c2da770b09ba6e98284abe4c011a047092bf041ea54058b0`.
+
+### 2026-11-28 v0.4.0 release renewal
+
+A local Windows check with pinned Godot 4.8 beta2 reconstructed the `v0.3.5` tag
+(`0b4a3998b`) and the v0.4.0 candidate. Three of the 152 qualified inputs
+changed:
+- `app/physics/glow/flight.gd` (the NK-6b and NK-6d native glow step hooks);
+- `app/physics/multirotor/controlled_plant.gd` (FPV obstacle contact);
+- `app/project.godot` (the PipelineCacheGate autoload and version `0.4.0`).
+
+The baseline reproduced the pinned aggregate exactly and passed both guards. The
+candidate was refused before renewal. After renewal it passed, rejected separate
+physics-source and version mutations, and passed again once restored. The trim,
+unrounded and rounded derivatives, sensitivity rows and generated provenance
+matched across the baseline, candidate and renewed reports. The
+[receipt](2026-11-28-release-v040-qualification.json) records the reports, logs
+and aggregate `ad4fc92685eff46a3d22de3ba8fbdde26e56881db0d73c44e6a734cba4443bbe`.
+This renewal ran on Windows only; the earlier hosted Linux check was not repeated.
