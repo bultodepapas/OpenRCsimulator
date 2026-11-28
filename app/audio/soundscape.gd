@@ -110,6 +110,8 @@ func _enter_tree() -> void:
 	gain = 0.0
 	_primed = false
 	_clear_history()
+	if _core != null:
+		_core.sound_core_reset(false)
 	_levels.fill(0.0)
 	for index: int in voices.size():
 		var voice: AudioStreamPlayer3D = voices[index]
@@ -359,6 +361,8 @@ func reset_observer() -> void:
 	_primed = false
 	_absorption_primed = false
 	_clear_history()
+	if _core != null:
+		_core.sound_core_reset(true)
 	gain = 0.0
 	_levels.fill(0.0)
 	for i: int in voices.size():
@@ -381,6 +385,10 @@ func reset_observer() -> void:
 func update_sound(snapshot: Dictionary, delta: float) -> void:
 	var started: int = Time.get_ticks_usec()
 	if voices.is_empty():
+		return
+	if (_core != null or (native_core_enabled and not _core_refused and _bind_core())) and _update_core(snapshot, delta):
+		last_update_usec = Time.get_ticks_usec() - started
+		peak_update_usec = maxi(peak_update_usec, last_update_usec)
 		return
 	var dt: float = clampf(delta, 0.0, 0.1)
 	var paused: bool = bool(snapshot.get("paused", false))
@@ -573,6 +581,149 @@ const _NATIVE_CLASS := &"OpenRCNativeKernel"
 var native_emission_enabled := true
 var _native: Object = null
 var _native_unavailable := false
+
+## NK-7b: the native soundscape core (nk_soundscape_core.hpp) runs update_sound's delay history, laws, mix state and
+## voice and filter writes in two calls per frame; the powertrain bank, glow voice, windsock fabric and wildlife events
+## stay here. update_sound's GDScript path remains the specification and the fallback. The hook is read when the core
+## binds, at an update with an empty delay history; a refused frame hands the mix state back to GDScript.
+var native_core_enabled := true
+var _core: Object = null
+var _core_refused := false
+const _CORE_FRAME_SIZE := 41
+const _CORE_GAIN := 1
+const _CORE_SCREEN_GAIN := 2
+const _CORE_DUCK := 3
+const _CORE_DOPPLER := 4
+const _CORE_CLOCK := 5
+const _CORE_SCREENED := 6
+const _CORE_DELAY := 7
+const _CORE_CUTOFF := 8
+const _CORE_DISTURBED := 9
+const _CORE_DT := 10
+const _CORE_PAUSED := 11
+const _CORE_TARGETS := 12
+const _CORE_PRESENCE := 22
+const _CORE_STATE_LEVELS := 19
+const _CORE_STATE_PRESENCE := 33
+const _CORE_KINDS: Dictionary = {glow_prop = 0, electric_prop = 1, turbine = 2}
+const _CORE_SPECIES: Array[String] = ["bird", "crow", "owl", "dog"]
+const _CORE_PRESENCE_KEYS: Array[String] = ["bird", "crow", "owl", "dog", "cricket"]
+
+
+func _bind_core() -> bool:
+	if not _history_times.is_empty() or voices.size() != MAX_VOICES or not ClassDB.class_exists(_NATIVE_CLASS):
+		return false
+	var core: Object = ClassDB.instantiate(_NATIVE_CLASS)
+	if core == null or not core.has_method(&"sound_core_bind"):
+		_core_refused = true
+		return false
+	var boxes := PackedFloat32Array()
+	for canopy: AABB in canopies:
+		boxes.append_array([canopy.position.x, canopy.position.y, canopy.position.z, canopy.size.x, canopy.size.y,
+			canopy.size.z])
+	if not core.sound_core_bind(voices, glow_player, absorption_filter, screen_filter, PackedVector3Array(trees), boxes,
+			int(_CORE_KINDS.get(kind, 3)), _core_state()):
+		_core_refused = true
+		return false
+	_core = core
+	return true
+
+
+## The mix state in sound_core_state's layout.
+func _core_state() -> PackedFloat64Array:
+	var state := PackedFloat64Array([gain, clock_s, screened, _screen_clock, _screen_goal, last_doppler, last_delay_s,
+		last_absorption_cutoff_hz, _absorption_target_hz, _absorption_clock, 1.0 if _absorption_primed else 0.0,
+		1.0 if _primed else 0.0, 1.0 if _previous_paused else 0.0, _previous_source.x, _previous_source.y,
+		_previous_source.z, _previous_listener.x, _previous_listener.y, _previous_listener.z])
+	state.append_array(_levels)
+	for species: String in _CORE_PRESENCE_KEYS:
+		state.append(float(wildlife_presence[species]))
+	return state
+
+
+## A refusal: GDScript takes the mix state back and restarts its own delay history.
+func _release_core() -> void:
+	var s: PackedFloat64Array = _core.sound_core_state()
+	_core = null
+	_core_refused = true
+	_clear_history()
+	gain = s[0]
+	clock_s = s[1]
+	screened = s[2]
+	_screen_clock = s[3]
+	_screen_goal = s[4]
+	last_doppler = s[5]
+	last_absorption_cutoff_hz = s[7]
+	_absorption_target_hz = s[8]
+	_absorption_clock = s[9]
+	_absorption_primed = s[10] != 0.0
+	_primed = s[11] != 0.0
+	_previous_paused = s[12] != 0.0
+	_previous_source = Vector3(s[13], s[14], s[15])
+	_previous_listener = Vector3(s[16], s[17], s[18])
+	_levels = s.slice(_CORE_STATE_LEVELS, _CORE_STATE_LEVELS + MAX_VOICES)
+	for i: int in _CORE_PRESENCE_KEYS.size():
+		wildlife_presence[_CORE_PRESENCE_KEYS[i]] = s[_CORE_STATE_PRESENCE + i]
+
+
+## update_sound through the core; false (after a refusal) leaves the frame to the GDScript path.
+func _update_core(snapshot: Dictionary, delta: float) -> bool:
+	var glow_snapshot: Dictionary = snapshot.get("glow", {})
+	var use_glow_voice: bool = glow_player != null and str(glow_snapshot.get("family", glow_family)) == glow_family
+	var flags: int = (1 if propagation_delay else 0) | (2 if air_absorption else 0) | (4 if use_glow_voice else 0)
+	if powertrain != null:
+		flags |= 8 | (16 if str(voice_profile.family) == "gasoline" else 0)
+	if not voice_profile.is_empty():
+		flags |= 32
+	var out: PackedFloat64Array = _core.sound_core_frame(snapshot, delta, flags)
+	if out.size() != _CORE_FRAME_SIZE:
+		_release_core()
+		return false
+	gain = out[_CORE_GAIN]
+	clock_s = out[_CORE_CLOCK]
+	screened = out[_CORE_SCREENED]
+	last_doppler = out[_CORE_DOPPLER]
+	last_delay_s = out[_CORE_DELAY]
+	last_absorption_cutoff_hz = out[_CORE_CUTOFF]
+	var dt: float = out[_CORE_DT]
+	var paused: bool = out[_CORE_PAUSED] != 0.0
+	var screen_gain: float = out[_CORE_SCREEN_GAIN]
+	var duck: float = out[_CORE_DUCK]
+	var t := _CORE_TARGETS
+	last_targets = {motor_gain = out[t], prop_gain = out[t + 1], motor_pitch = out[t + 2], prop_pitch = out[t + 3],
+		air_gain = out[t + 4], wind_low = out[t + 5], wind_high = out[t + 6], foliage = out[t + 7],
+		bird_activity = out[t + 8]}
+	if kind == "turbine":
+		last_targets.exhaust_angle_deg = out[t + 9]
+	if powertrain != null:
+		powertrain.update_sound(_core.sound_core_heard(snapshot), dt, gain * screen_gain, last_doppler)
+	elif use_glow_voice:
+		_update_glow_voice(glow_snapshot, _core.sound_core_heard(snapshot), screen_gain, duck, dt, paused)
+	# The windsock and the wildlife read no delayed key, so the snapshot itself equals the heard one for them.
+	if fabric_audio != null:
+		fabric_audio.update(snapshot, dt, gain * duck)
+	for i: int in _CORE_PRESENCE_KEYS.size():
+		wildlife_presence[_CORE_PRESENCE_KEYS[i]] = out[_CORE_PRESENCE + i]
+	var event: Dictionary = wildlife.advance(snapshot, dt, trees.size(), out[_CORE_DISTURBED] != 0.0)
+	if not event.is_empty():
+		_play_wildlife(event)
+	var levels: PackedFloat64Array = _core.sound_core_events(PackedFloat64Array([
+		_CORE_SPECIES.find(event_species[0]), _CORE_SPECIES.find(event_species[1]), _CORE_SPECIES.find(event_species[2]),
+		event_levels[0], event_levels[1], event_levels[2]]))
+	if levels.size() != MAX_VOICES:
+		push_error("Soundscape: the native core refused the event levels; GDScript resumes the mix")
+		var delay: float = last_delay_s
+		_release_core()
+		last_delay_s = delay # this frame's answer; the GDScript history restarts on the next one
+		return true
+	_levels = levels
+	if not paused and not _start_offsets.is_empty():
+		for index: int in _start_offsets:
+			if use_glow_voice and int(index) < 2:
+				continue
+			voices[index].play(float(_start_offsets[index]))
+		_start_offsets.clear()
+	return true
 
 
 ## AUD-11b: ISO 9613-1 path loss over the heard (retarded) path and canopy screening, on the aircraft bus.

@@ -7,8 +7,12 @@
 // so GDScript's parse is proven equal.
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
+#if defined(__x86_64__) || defined(_M_X64)
+#include <xmmintrin.h>
+#endif
 
 #include <godot_cpp/core/gdextension_interface_loader.hpp>
 #include <godot_cpp/variant/aabb.hpp>
@@ -26,11 +30,17 @@ inline double e_exp(double x) { return godot::UtilityFunctions::exp(x); }
 inline double e_log(double x) { return godot::UtilityFunctions::log(x); }
 inline R e_pow(R base, R exponent) { return godot::UtilityFunctions::pow(base.v, exponent.v); }
 
-// The engine's Vector3.angle_to (real_t atan2 of the engine's libm, widened to double), or NaN when the engine does
-// not expose it (hash from extension_api.json, stable since 4.0).
-inline double engine_angle_to(const godot::Vector3 &from, const godot::Vector3 &to) {
+// The engine's Vector3.angle_to builtin method (hash from extension_api.json, stable since 4.0), or null.
+inline GDExtensionPtrBuiltInMethod engine_angle_method() {
 	static const GDExtensionPtrBuiltInMethod method = godot::gdextension_interface::variant_get_ptr_builtin_method(
 		GDEXTENSION_VARIANT_TYPE_VECTOR3, godot::StringName("angle_to")._native_ptr(), 1047977935);
+	return method;
+}
+
+// The engine's Vector3.angle_to (real_t atan2 of the engine's libm, widened to double), or NaN when the engine does
+// not expose it; the soundscape core refuses to bind then.
+inline double engine_angle_to(const godot::Vector3 &from, const godot::Vector3 &to) {
+	const GDExtensionPtrBuiltInMethod method = engine_angle_method();
 	if (method == nullptr) return std::nan("");
 	godot::Vector3 base = from;
 	const GDExtensionConstTypePtr args[1] = {&to};
@@ -49,7 +59,7 @@ inline R smoothstep(R from, R to, R s) {
 	return x * x * (R(3.0) - R(2.0) * x);
 }
 
-// Godot Math::sign(double): +1, -1 or 0 (NaN gives 0).
+// +1, -1 or 0. The soundscape only takes the sign of a finite gain difference, so the engine's NaN case never arises.
 inline R sign(R x) { return x.v > 0.0 ? R(1.0) : (x.v < 0.0 ? R(-1.0) : R(0.0)); }
 
 // Godot Math::move_toward(double).
@@ -60,10 +70,36 @@ inline R move_toward(R from, R to, R delta) {
 inline R db_to_linear(R db) { return e_exp((db * R(0.11512925464970228420089957273422)).v); }
 inline R linear_to_db(R linear) { return R(e_log(linear.v)) * R(8.6858896380650365530225783783321); }
 
+// Godot's real_t square root, correctly rounded without a library call (as the engine's own sqrtf is).
+inline float sqrt_float(float x) {
+#if defined(__x86_64__) || defined(_M_X64)
+	return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(x)));
+#else
+	return std::sqrt(x);
+#endif
+}
+
+// Vector3::length_squared, length, distance_to (p_to - *this), distance_squared_to and normalized, in real_t.
+inline float length_squared(const godot::Vector3 &v) {
+	const float x2 = v.x * v.x;
+	const float y2 = v.y * v.y;
+	const float z2 = v.z * v.z;
+	return x2 + y2 + z2;
+}
+inline float length(const godot::Vector3 &v) { return sqrt_float(length_squared(v)); }
+inline float distance(const godot::Vector3 &from, const godot::Vector3 &to) { return length(to - from); }
+inline float distance_squared(const godot::Vector3 &from, const godot::Vector3 &to) { return length_squared(to - from); }
+inline godot::Vector3 normalized(const godot::Vector3 &v) {
+	const float squared = length_squared(v);
+	if (squared == 0.0f) return godot::Vector3();
+	const float l = sqrt_float(squared);
+	return godot::Vector3(v.x / l, v.y / l, v.z / l);
+}
+
 // SoundscapeModel.doppler.
 inline R doppler(const godot::Vector3 &source, const godot::Vector3 &listener, const godot::Vector3 &source_velocity,
 		const godot::Vector3 &listener_velocity, R sound_speed) {
-	const godot::Vector3 ray = (source - listener).normalized();
+	const godot::Vector3 ray = normalized(source - listener);
 	const R c = clampf(sound_speed, 300.0, 380.0);
 	return clampf((c + R(double(listener_velocity.dot(ray)))) /
 			maxf(c + R(double(source_velocity.dot(ray))), c * R(0.5)), 0.65, 1.5);
@@ -91,15 +127,15 @@ constexpr double kWhineDirectivity[10] = {0.0, -8.0, 30.0, -6.0, 90.0, -2.0, 150
 // SoundscapeModel.exhaust_angle_deg.
 inline R exhaust_angle_deg(const godot::Vector3 &exhaust, const godot::Vector3 &listener, const godot::Vector3 &source) {
 	const godot::Vector3 ray = listener - source;
-	if (double(exhaust.length_squared()) < 1e-6 || double(ray.length_squared()) < 1e-6) return 90.0;
+	if (double(length_squared(exhaust)) < 1e-6 || double(length_squared(ray)) < 1e-6) return 90.0;
 	return R(engine_angle_to(exhaust, ray)) * R(180.0 / 3.1415926535897932384626433833); // Math::rad_to_deg(double)
 }
 
 // SoundscapeModel.targets (+ turbine_targets): rpm, max_rpm, load, throttle, airspeed, wind_speed, running (as passed,
-// before the rpm test), blades, sun_elevation, and for a turbine jet_velocity, jet_velocity_max, exhaust, listener,
-// source.
+// before the rpm test), blades, sun_elevation, and for a turbine its own max_rpm (a missing key defaults to 1.0
+// there, 12000.0 above), jet_velocity, jet_velocity_max, exhaust, listener, source.
 inline Targets targets(R rpm_in, R max_rpm, R load_in, R throttle_in, R airspeed, R wind_speed, bool running_in, R blades,
-		R sun_elevation, int kind, R jet_velocity, R jet_velocity_max, const godot::Vector3 &exhaust,
+		R sun_elevation, int kind, R turbine_max_rpm, R jet_velocity, R jet_velocity_max, const godot::Vector3 &exhaust,
 		const godot::Vector3 &listener, const godot::Vector3 &source) {
 	const R rpm = maxf(rpm_in, 0.0);
 	const R ratio = clampf(rpm / maxf(max_rpm, 1.0), 0.0, 1.4);
@@ -122,7 +158,7 @@ inline Targets targets(R rpm_in, R max_rpm, R load_in, R throttle_in, R airspeed
 	if (kind == kElectricProp) {
 		t.motor_gain = t.motor_gain * R(0.4);
 	} else if (kind == kTurbine) {
-		const R n_ratio = clampf(rpm / maxf(max_rpm, 1.0), 0.0, 1.2);
+		const R n_ratio = clampf(rpm / maxf(turbine_max_rpm, 1.0), 0.0, 1.2);
 		const R jet_ratio = clampf(jet_velocity / maxf(jet_velocity_max, 1.0), 0.0, 1.5);
 		const R theta = exhaust_angle_deg(exhaust, listener, source);
 		const R roar = e_pow(jet_ratio, 4.0) + R(0.05) * n_ratio;
@@ -134,6 +170,55 @@ inline Targets targets(R rpm_in, R max_rpm, R load_in, R throttle_in, R airspeed
 		t.exhaust_angle_deg = theta;
 	}
 	return t;
+}
+
+// NK-6r: SoundscapeModel.retarded_emission, exact. Times, the sound speed and the bisection run in double, while
+// Vector3.lerp (its weight cast to float), the difference and the length run in float, as Godot's real_t.
+struct Emission {
+	int64_t index = -1;
+	double alpha = 0.0;
+	double delay = 0.0;
+	bool truncated = true;
+};
+
+inline double emission_lerp(double from, double to, double weight) { return from + (to - from) * weight; }
+
+inline Emission retarded_emission(const double *t, const godot::Vector3 *pos, int64_t count, const godot::Vector3 &listener,
+		double now, double sound_speed, int64_t min_index) {
+	Emission out;
+	if (count <= 0) return out;
+	const int64_t first = std::min(std::max(min_index, int64_t(0)), count - 1);
+	const double c = std::min(std::max(sound_speed, 300.0), 380.0);
+	const double newer_g = (now - t[count - 1]) - double(distance(pos[count - 1], listener)) / c;
+	if (newer_g >= 0.0) {
+		out.index = count - 1; out.alpha = 0.0; out.delay = now - t[count - 1]; out.truncated = false;
+		return out;
+	}
+	for (int64_t k = count - 2; k >= first; --k) {
+		const double g = (now - t[k]) - double(distance(pos[k], listener)) / c;
+		if (g >= 0.0) {
+			double low = 0.0;
+			double high = 1.0;
+			for (int iteration = 0; iteration < 40; ++iteration) {
+				const double mid = 0.5 * (low + high);
+				const double t_mid = emission_lerp(t[k], t[k + 1], mid);
+				const float w = static_cast<float>(mid); // Vector3.lerp(p_to, real_t p_weight)
+				const godot::Vector3 a = pos[k];
+				const godot::Vector3 b = pos[k + 1];
+				const godot::Vector3 lerped(a.x + (b.x - a.x) * w, a.y + (b.y - a.y) * w, a.z + (b.z - a.z) * w);
+				if ((now - t_mid) - double(distance(lerped, listener)) / c >= 0.0) {
+					low = mid;
+				} else {
+					high = mid;
+				}
+			}
+			const double alpha = 0.5 * (low + high);
+			out.index = k; out.alpha = alpha; out.delay = now - emission_lerp(t[k], t[k + 1], alpha); out.truncated = false;
+			return out;
+		}
+	}
+	out.index = first; out.alpha = 0.0; out.delay = now - t[first]; out.truncated = true;
+	return out;
 }
 
 // SoundscapeModel.humidity_molar_pct.

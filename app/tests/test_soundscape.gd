@@ -735,6 +735,8 @@ func _test_absorption_sequence(field: Dictionary) -> void:
 	root.add_child(rig)
 	rig.configure(field, "electric_prop", 4102026)
 	rig.propagation_delay = false
+	# Reads the GDScript path's absorption state; test_native_soundscape_core proves the native core equal to it.
+	rig.native_core_enabled = false
 	var old := LegacyAbsorption.new()
 	var matches := true
 	var air: Dictionary = Atmosphere.evaluate(1500.0, 35.0, 1013.25, 50.0)

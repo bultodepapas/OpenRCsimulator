@@ -19,11 +19,9 @@
 #include <chrono>
 #include <algorithm>
 #include <cmath>
-#if defined(__x86_64__) || defined(_M_X64)
-#include <xmmintrin.h>
-#endif
 #include <cstdint>
 #include <cstring>
+#include <memory>
 #include <initializer_list>
 #include <limits>
 #include <string>
@@ -46,6 +44,7 @@
 #include "nk_point_sampler.hpp"
 #include "nk_configuration_guard.hpp"
 #include "nk_soundscape.hpp"
+#include "nk_soundscape_core.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1031,6 +1030,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::LiveHullBinding live_hull_;
 	nk::WeatherGuard weather_guard_;
 	nk::ConfigurationGuard configuration_guard_;
+	std::unique_ptr<nk::sound::Core> sound_core_; // NK-7b: this instance's soundscape core, made on first bind
 	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
@@ -1269,6 +1269,15 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("sound_activity", "sun_elevation", "wind_speed", "temperature_c"),
 			&OpenRCNativeKernel::sound_activity);
 		godot::ClassDB::bind_method(D_METHOD("sound_distance_gain", "distance_m"), &OpenRCNativeKernel::sound_distance_gain);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_bind", "voices", "glow_player", "absorption_filter", "screen_filter",
+			"trees", "canopies", "kind", "state"), &OpenRCNativeKernel::sound_core_bind);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_frame", "snapshot", "delta", "flags"),
+			&OpenRCNativeKernel::sound_core_frame);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_events", "species_levels"), &OpenRCNativeKernel::sound_core_events);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_heard", "snapshot"), &OpenRCNativeKernel::sound_core_heard);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_reset", "absorption"), &OpenRCNativeKernel::sound_core_reset);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_state"), &OpenRCNativeKernel::sound_core_state);
+		godot::ClassDB::bind_method(D_METHOD("sound_core_history_size"), &OpenRCNativeKernel::sound_core_history_size);
 		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
 			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
@@ -2060,7 +2069,7 @@ public:
 		if (values.size() != 12) return out;
 		const double *v = values.ptr();
 		const nk::sound::Targets t = nk::sound::targets(v[0], v[1], v[2], v[3], v[4], v[5], v[6] != 0.0, v[7], v[8],
-			static_cast<int>(v[9]), v[10], v[11], exhaust, listener, source);
+			static_cast<int>(v[9]), v[1], v[10], v[11], exhaust, listener, source);
 		out.resize(10);
 		out[0] = t.motor_gain.v; out[1] = t.prop_gain.v; out[2] = t.motor_pitch.v; out[3] = t.prop_pitch.v;
 		out[4] = t.air_gain.v; out[5] = t.wind_low.v; out[6] = t.wind_high.v; out[7] = t.foliage.v;
@@ -2090,6 +2099,39 @@ public:
 	}
 
 	double sound_distance_gain(double distance_m) const { return nk::sound::distance_gain(distance_m).v; }
+
+	// NK-7b: audio/soundscape.gd update_sound (nk_soundscape_core.hpp). bind takes the soundscape's fourteen voices, its
+	// glow player (or null), both bus filters, trees, canopy boxes [px, py, pz, sx, sy, sz], the targets kind and the
+	// mix state (sound_core_state's layout); false leaves the core unbound. frame and events return empty when they
+	// refuse; nothing changes then.
+	bool sound_core_bind(const godot::Array &voices, const godot::Variant &glow_player, const godot::Variant &absorption_filter,
+			const godot::Variant &screen_filter, const godot::PackedVector3Array &trees, const godot::PackedFloat32Array &canopies,
+			int64_t kind, const PackedFloat64Array &state) {
+		if (!sound_core_) sound_core_ = std::make_unique<nk::sound::Core>();
+		return sound_core_->bind(voices, glow_player, absorption_filter, screen_filter, trees, canopies, kind, state);
+	}
+
+	PackedFloat64Array sound_core_frame(const godot::Dictionary &snapshot, double delta, int64_t flags) {
+		return sound_core_ ? sound_core_->frame(snapshot, delta, flags) : PackedFloat64Array();
+	}
+
+	PackedFloat64Array sound_core_events(const PackedFloat64Array &species_levels) {
+		return sound_core_ ? sound_core_->events(species_levels) : PackedFloat64Array();
+	}
+
+	godot::Dictionary sound_core_heard(const godot::Dictionary &snapshot) const {
+		return sound_core_ ? sound_core_->heard(snapshot) : snapshot;
+	}
+
+	void sound_core_reset(bool absorption) {
+		if (sound_core_) sound_core_->reset(absorption);
+	}
+
+	PackedFloat64Array sound_core_state() const {
+		return sound_core_ ? sound_core_->state() : PackedFloat64Array();
+	}
+
+	int64_t sound_core_history_size() const { return sound_core_ ? sound_core_->history_size() : 0; }
 
 	// NK-6s: physics/glow/vibration.gd evaluate's numbers for a validated geometry [crank radius, rod, reciprocating
 	// mass, cosine 1x, cosine 2x, cycle revolutions]: [ok (1/0), phase, source force, 1x cosine, 1x sine, 2x cosine,
@@ -2137,67 +2179,16 @@ public:
 		return out;
 	}
 
-	// NK-6r: audio/soundscape_model.gd retarded_emission, exact: [index, alpha, delay, truncated (1/0)]. Presentation
-	// only; GDScript's mixed precision is kept: times, the sound speed and the bisection run in double, while
-	// Vector3.lerp (its weight cast to float), the difference and the length run in float, as Godot's real_t.
-	static float emission_distance(const godot::Vector3 &p, const godot::Vector3 &listener) {
-		const float dx = listener.x - p.x; // Vector3::distance_to: (p_to - *this).length()
-		const float dy = listener.y - p.y;
-		const float dz = listener.z - p.z;
-		const float x2 = dx * dx;
-		const float y2 = dy * dy;
-		const float z2 = dz * dz;
-#if defined(__x86_64__) || defined(_M_X64)
-		return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(x2 + y2 + z2))); // correctly rounded, no library call
-#else
-		return std::sqrt(x2 + y2 + z2);
-#endif
-	}
-
-	static double emission_lerp(double from, double to, double weight) { return from + (to - from) * weight; }
-
+	// NK-6r: audio/soundscape_model.gd retarded_emission, exact (nk_soundscape.hpp): [index, alpha, delay, truncated
+	// (1/0)]. Presentation only.
 	PackedFloat64Array retarded_emission(const PackedFloat64Array &times, const godot::PackedVector3Array &positions,
 			const godot::Vector3 &listener, double now, double sound_speed, int64_t min_index) const {
+		const int64_t count = std::min(times.size(), positions.size());
+		const nk::sound::Emission e = nk::sound::retarded_emission(times.ptr(), positions.ptr(), count, listener, now,
+			sound_speed, min_index);
 		PackedFloat64Array out;
 		out.resize(4);
-		const int64_t count = std::min(times.size(), positions.size());
-		if (count == 0) {
-			out[0] = -1.0; out[1] = 0.0; out[2] = 0.0; out[3] = 1.0;
-			return out;
-		}
-		const int64_t first = std::min(std::max(min_index, int64_t(0)), count - 1);
-		const double c = std::min(std::max(sound_speed, 300.0), 380.0);
-		const double *t = times.ptr();
-		const godot::Vector3 *pos = positions.ptr();
-		const double newer_g = (now - t[count - 1]) - double(emission_distance(pos[count - 1], listener)) / c;
-		if (newer_g >= 0.0) {
-			out[0] = double(count - 1); out[1] = 0.0; out[2] = now - t[count - 1]; out[3] = 0.0;
-			return out;
-		}
-		for (int64_t k = count - 2; k >= first; --k) {
-			const double g = (now - t[k]) - double(emission_distance(pos[k], listener)) / c;
-			if (g >= 0.0) {
-				double low = 0.0;
-				double high = 1.0;
-				for (int iteration = 0; iteration < 40; ++iteration) {
-					const double mid = 0.5 * (low + high);
-					const double t_mid = emission_lerp(t[k], t[k + 1], mid);
-					const float w = static_cast<float>(mid); // Vector3.lerp(p_to, real_t p_weight)
-					const godot::Vector3 a = pos[k];
-					const godot::Vector3 b = pos[k + 1];
-					const godot::Vector3 lerped(a.x + (b.x - a.x) * w, a.y + (b.y - a.y) * w, a.z + (b.z - a.z) * w);
-					if ((now - t_mid) - double(emission_distance(lerped, listener)) / c >= 0.0) {
-						low = mid;
-					} else {
-						high = mid;
-					}
-				}
-				const double alpha = 0.5 * (low + high);
-				out[0] = double(k); out[1] = alpha; out[2] = now - emission_lerp(t[k], t[k + 1], alpha); out[3] = 0.0;
-				return out;
-			}
-		}
-		out[0] = double(first); out[1] = 0.0; out[2] = now - t[first]; out[3] = 1.0;
+		out[0] = double(e.index); out[1] = e.alpha; out[2] = e.delay; out[3] = e.truncated ? 1.0 : 0.0;
 		return out;
 	}
 
@@ -2437,6 +2428,10 @@ public:
 			{"0.4", 0.4}, {"82320.0", 82320.0}, {"1.40", 1.40}, {"0.98", 0.98}, {"2.28", 2.28}, {"1.2", 1.2},
 			{"0.46", 0.46}, {"1e-6", 1e-6}, {"4.0", 4.0}, {"60.0", 60.0}, {"120.0", 120.0}, {"10.0", 10.0},
 			{"2.0", 2.0}, {"0.6", 0.6}, {"22.0", 22.0}, {"25.0", 25.0}, {"1500.0", 1500.0}, {"0.0", 0.0},
+			// NK-7b: audio/soundscape.gd update_sound (nk_soundscape_core.hpp); -12.0 there is 0.5 * SCREEN_SHELF_DB.
+			{"-24.0", -24.0}, {"-7.0", -7.0}, {"0.0001", 0.0001}, {"0.04", 0.04}, {"0.09", 0.09}, {"0.11", 0.11},
+			{"0.21", 0.21}, {"0.22", 0.22}, {"0.26", 0.26}, {"0.30", 0.30}, {"0.31", 0.31}, {"0.78", 0.78},
+			{"150.0", 150.0}, {"2.2", 2.2}, {"273.15", 273.15}, {"343.0", 343.0}, {"5.5", 5.5}, {"6500.0", 6500.0},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.

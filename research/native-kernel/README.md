@@ -631,6 +631,10 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   and `sound_distance_gain` (NK-7a, `nk_soundscape.hpp`) are the soundscape model's laws, `Wildlife.activity` and
   `PowertrainAudio.distance_gain`, exact; `exp`, `log`, `pow` and `Vector3.angle_to` call the engine's own functions
   ([evidence](../../docs/research/native-kernel/NK-7a/README.md)).
+- `sound_core_bind`, `sound_core_frame`, `sound_core_events`, `sound_core_heard`, `sound_core_reset` and
+  `sound_core_state` (NK-7b, `nk_soundscape_core.hpp`) run `Soundscape.update_sound`: the delay history, mix state and
+  voice and filter writes through the engine's method binds, refusing any frame the reference would read differently
+  ([evidence](../../docs/research/native-kernel/NK-7b/README.md)).
 - Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
   A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
   replacing its owner. The pre-step, commit and publication, discrete supervision, collision, step policies,
