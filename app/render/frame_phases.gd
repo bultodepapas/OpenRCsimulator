@@ -185,10 +185,11 @@ func stop() -> void:
 		RenderingServer.frame_post_draw.disconnect(_on_post_draw)
 	for node: Variant in [_low, _high]:
 		if is_instance_valid(node):
-			if (node as Node).is_inside_tree():
-				(node as Node).queue_free()
-			else:
+			# During tree exit a bracket can still belong to a parent that is removing children.
+			if (node as Node).get_parent() == null:
 				(node as Node).free()
+			else:
+				(node as Node).queue_free()
 	_low = null
 	_high = null
 
