@@ -36,11 +36,19 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var gear_contacts: Array = gear.get("contacts", [])
 	if gear_contacts.is_empty():
 		return contacts_out
-	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")	
-	var lake_value: Variant = session.get("_lake")
-	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
+	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")
 	var track_value: Variant = session.get("_rc_track")
 	var track: Dictionary = track_value if track_value is Dictionary else {}
+	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
+	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
+	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
+	# NK-7h: tested before the loaded rows' inputs below, which the unloaded rows never read.
+	if _clear_of_ground(state, gear, ground_surfaces, track):
+		return _unloaded_rows(gear_contacts, state,
+			M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]),
+			M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]), state.slice(RB.RATE, RB.RATE + 3), reference_load)
+	var lake_value: Variant = session.get("_lake")
+	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
 	var steer: float = auxiliary[3]
 	var wheel_count: int = int(session.call("wheel_count")) if session.has_method("wheel_count") else 0
 	var wheel_index: int = int(session.call("wheel_index")) if session.has_method("wheel_index") else 0
@@ -55,11 +63,6 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var attitude := M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
 	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
 	var body_rate := state.slice(RB.RATE, RB.RATE + 3)
-	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
-	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
-	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
-	if _clear_of_ground(state, gear, ground_surfaces, track):
-		return _unloaded_rows(gear_contacts, state, attitude, base_velocity, body_rate, reference_load)
 	var wheel_evaluation: Dictionary = {}
 	# NK-6o: the session's native stage may answer Ground.evaluate's diagnostics and each wheel's frame for the endpoint
 	# it published, with the same values; otherwise they are evaluated here.
