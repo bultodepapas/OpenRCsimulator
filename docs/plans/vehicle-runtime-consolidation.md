@@ -1,6 +1,6 @@
 # OpenRC Simulator — consolidated repository and vehicle-runtime plan
 
-**Updated:** 2026-11-22 (America/Bogota). **Status:** implementation planning and source reconciliation only; no runtime change or new qualification. **Coordination steps:** VRC-00…VRC-11, all open. Existing D6/UI/DR/HELI/BL/RCV/AS/AE/AC/TELEM/PT/VQ/DT owners retain their implementation and acceptance authority.
+**Updated:** 2026-11-28 (America/Bogota). **Status:** the original controls cohort remains open; section 6.1 tracks the bounded native/recording consolidation cohort. **Coordination steps:** VRC-00…VRC-11 and their named repair substeps. Existing D6/UI/DR/HELI/BL/RCV/AS/AE/AC/TELEM/PT/VQ/DT owners retain their implementation and acceptance authority.
 
 **This is the single execution and dependency plan for repository consolidation on this branch.** It absorbs the refined controls/VRC proposals and the vehicle/repository unification audit. Dated branch reports retain evidence, counterexamples and detailed contract definitions; they are not parallel execution plans. Domain specifications retain their technical gates and domain status, linked from the work packets below. VRC status is maintained only in section 6; this document does not create a replacement feature-ID namespace.
 
@@ -116,7 +116,7 @@ Home, direct launch and Workshop trial are separate matrix entries where impleme
 
 ## 6. Step plan and independent changes
 
-All implementation steps remain **open**. This table owns status; the evidence package defines gates, not a second progress tracker.
+The original implementation steps remain **open** unless explicitly scoped below. This section owns status; dated evidence defines results and limitations, not a second execution plan. The historical C01–C40 controls cases are not reclassified by unrelated native or packet work.
 
 | Step | One reviewable deliverable | Dependencies and owners | Required proof |
 | --- | --- | --- | --- |
@@ -134,6 +134,33 @@ All implementation steps remain **open**. This table owns status; the evidence p
 | **VRC-11** | Qualify the selected migration cohort and publish supported/limited/unqualified scope. | Relevant required steps, not every optional extraction; QA/DT/UI/D6/PT | [Q5](https://github.com/bultodepapas/OpenRCsimulator/blob/3095afd95220232e8e659d53635acab5104ee94c/docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q5-promotion-and-rollback): affected checks, required CI, source/package/device/pilot evidence and exact claims. No silent safety waiver. |
 
 Order: **baseline → minimal contract → one fixed-wing consumer**, with separately owned defect repairs before their affected migration. Expand after that seam proves useful and qualified. VRC-06…09 are conditional improvements; controls quality must not wait for a broad rewrite.
+
+### 6.1 Native and recording consolidation cohort — 2026-11-28
+
+Continue the existing `audit/vehicle-system-unification-2026-11-22` branch at `023043b78daef10b0fc4f746ec83e7c41bf51d17`, preserving its four audit commits and canonical plan. Merge pinned main `8d4169f8febfd7d78a028eaa817414217a54f24b` normally. Merge `c7b5c3db279b2897e0c0d33d5123ba011abb8a7e` has both tips as parents; its product, research tooling and workflow trees equal main. The previous plan, audit, source inventory and forty control cases are byte-preserved. Other worktrees and their uncommitted work remain untouched.
+
+| Source branches / commits | Reuse and conflicts |
+| --- | --- |
+| This branch: `b9e2a3ffd`, `f9b727dd1`, `e6dc52ddb`, `023043b78` | Retain U/R findings and refined controls obligations. Eighty of the original 839 application scripts changed on current main; revalidate touched mechanisms. |
+| Main `8d4169f8`; native roadmap `e439f667`; guard repair `5f4dbda4` | Authoritative implementation. Preserve completed native work and its qualified backend/reference policy. |
+| `audit/swarm-physics-fps-2026-11-28` at `f104b39a`, based on `71306784` | Reuse dated probes. Its guard-alias timings predate the new bounded plan; standalone allocation/call counts do not establish production frame cost. No wholesale merge. |
+| PRs [16](https://github.com/bultodepapas/OpenRCsimulator/pull/16), [17](https://github.com/bultodepapas/OpenRCsimulator/pull/17), [18](https://github.com/bultodepapas/OpenRCsimulator/pull/18), [21](https://github.com/bultodepapas/OpenRCsimulator/pull/21), [22](https://github.com/bultodepapas/OpenRCsimulator/pull/22) | Keep separate helicopter, physics, EDF, CI and graphics histories. Their branch-local implementations and historical passes do not qualify this candidate. |
+
+The [dated evidence and adversarial review](../research/vehicle-runtime-consolidation-2026-11-28/README.md) records the ten assignments and objections. These steps refine existing owners; they do not create another kernel or family abstraction.
+
+| Priority / step | Affected modules and change | Dependencies / risks | Acceptance and status |
+| --- | --- | --- | --- |
+| P0 · **VRC-00-R1** | Branch/source reconciliation and current baseline. | Resolve shallow ancestry, preserve original payloads and unrelated work. | **Source reconciliation complete.** Independently checked parents and no product delta from main. Runtime baseline remains separate. |
+| P1 · **VRC-10-R1** | NK: one `StageConfig.pack_deflections` replaces seven encoders in `native_stage.gd` and electric/liquid/glow/prescribed adapters. | Preserve old/returned servo sampling, family order, mandatory fields, optional flap, fresh array and no-downwash empty packet. Old native receipts become stale. | **Planned; design independently reviewed.** Independent lane bytes, signed/absent flap, result isolation and real-caller checks; keep four-lane research/oracle ABI. Actual native parity requires a qualified installed build. |
+| P1 · **VRC-07-R1** | FL: one bounded ORFL packet transport for fixed-wing, airship and multirotor recorders; retain public compatibility facades. | Family schemas, lifecycle, cleanup and replay verdicts remain separate. Preserve three ordered writes, one flush, cap equality and pre-footer chain. | **Planned; design independently reviewed.** Literal frames/chains, exact/over bounds, real filesystem-error characterization, three recording/replay consumers, no accepted-state change. Any inherited error repair is separately identified. |
+| P1 · **VRC-09-R1** | PT/NK/FL: matched recording workload and focused packet/packing benchmarks. | Stable sources, actual backend, identical payloads, contention/noise; an extra helper call may cost more. | **Planned.** Repeated paired timings, dispersion, state/byte checks and explicit regression analysis. No FPS or target claim from helper timings. |
+| P1 · **VRC-11-R1** | FL/NK/QA: source migration, affected consumers and integrated review. | All simulation-script bytes enter the solver fingerprint. Historical identity equality cannot be fabricated; preserve companion/native admission. | **Planned.** Checked regressions, meaningful mutation controls, same-tape comparison where supported, changed-source refusal, source-bound receipts and required CI before full automated qualification. |
+| P2 · R08 / **VRC-10** | Native diagnostic source/export/package catalog. | Six general modes, four Mac-selectable modes, five experimental Mac files and the ordinary Mac probe differ; exporter bytes are bound. | **Deferred** until platform/provenance and omitted/replaced-case controls can be exercised. Nineteen install oracles remain a distinct contract. |
+| P2 · NK | Contact, liquid/glow context, endpoint/audio and guard-root work. | Actual native answers, installer gates, parity and live measurements. | **Deferred to the [native roadmap](native-kernel-roadmap.md).** ABI deduplication does not complete NK-6y or establish its estimated savings. |
+| P2 · Native admission | Late refusal after live configuration becomes read-only. | Refusal can happen during guards, install or initial context; moving one freeze does not repair the transaction. | **Unresolved.** Require a loaded qualified backend, late failure and alias/writability controls before changing behavior. |
+| P3 · U05 / **VRC-06** | Independently proven environment primitives only. | Quad clearance projects onto `axis_ned`; airship assumes a vertical capsule. | **Reject whole-clearance consolidation.** A horizontal capsule gives opposite inside/outside results. Preserve family contact laws. |
+
+The pinned Godot 4.8-beta2 is available locally. Production Linux native qualification requires GCC 13.3.0, SCons 4.10.1 and pinned godot-cpp; the host has GCC 14.2.0 and no qualified extension. Keep the lock. Reference tests, Python contracts and host-only C++ probes have their own scope. Required CI, installed native parity, platform packages, live target performance, pilot and physical validation remain distinct gates.
 
 ## 7. Acceptance, stop and rollback
 
