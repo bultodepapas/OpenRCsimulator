@@ -120,7 +120,9 @@ vec3 cultivated_field(vec3 palette, float kind, float row_length_m, vec2 field_u
 	stubble *= 1.0 + 0.18 * windrow - 0.06 * rows;
 	field = mix(field * (1.0 - (maize ? 0.23 : 0.10) * rows), stubble, harvested);
 	field *= 1.0 - 0.20 * tramlines * interior;
-	vec3 headland = mix(vec3(0.35, 0.40, 0.23), palette, 0.28) * photo_value(grass);
+	// Keep this fixed headland swatch in the same working color space as the mesh palette.
+	vec3 headland_palette = vertex_color_to_linear(vec3(0.35, 0.40, 0.23));
+	vec3 headland = mix(headland_palette, palette, 0.28) * photo_value(grass);
 	return mix(headland, field, interior);
 }
 

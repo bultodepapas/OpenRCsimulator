@@ -1,0 +1,28 @@
+{
+  "format": "OpenRC lossless rejected-headland crop v1",
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "candidate": "9d4569310ef223fc129472a20e21aada8ea624f0",
+  "artifact_id": 15273698470,
+  "run_id": 46165331310,
+  "left": "baseline",
+  "right": "candidate",
+  "source_crop_xyxy_exclusive": [
+    1698,
+    472,
+    1840,
+    610
+  ],
+  "png_sha256": "ae07f053f43f399bfb397fc1241d056511bf4eccb50068b2f70896cecc516f51",
+  "source_images": [
+    {
+      "side": "baseline",
+      "png_sha256": "0b64a5d24a65796ec1fea0fcc28ac4e870b8f90a0e9605ba5231087099952c30",
+      "roi_rgb_sha256": "b122a61210ae6ccf47e113ad16575889aa29cf406255cb114d4bc7c53ff26ae0"
+    },
+    {
+      "side": "candidate",
+      "png_sha256": "56e3bd659b3ad43100269fef8afd9bae570e946f6b17ac34c2eca2f771646124",
+      "roi_rgb_sha256": "0e2cec25e1287dc6bbb3bfb180e812da4c1927412606b1cb1a2b96d04d39fc7d"
+    }
+  ]
+}
