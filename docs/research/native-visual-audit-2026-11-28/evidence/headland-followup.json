@@ -1,0 +1,197 @@
+{
+  "format": "openrc-native-visual-headland-followup-v1",
+  "disposition": "9d first-candidate regional visual acceptance withheld. Narrow single-swatch change approved for hosted rendering.",
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "first_candidate": "9d4569310ef223fc129472a20e21aada8ea624f0",
+  "source_shader": "app/render/landscape_upgrade/countryside_surface.gdshader",
+  "corrected_shader_sha256": "9dc794c13360241358ba1e8505550dccbe967de8f76d0b39e4d24f984196797b",
+  "original_field_entry": {
+    "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46165331310/job/141041486834",
+    "artifact": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46165331310/artifacts/15273698470",
+    "archive_sha256": "b477ac41dd058a11d02adccdbe3f2731e6e4bd3a9e5b5ebd9ae4677ad967c5f5",
+    "changed_pixels": 225058,
+    "repeat_control": {
+      "baseline_changed_pixels": 0,
+      "candidate_changed_pixels": 0,
+      "cross_variant_changed_pixels_with_both_repeats_stable": 225058
+    },
+    "crop_xyxy_exclusive": [
+      1408,
+      456,
+      1920,
+      696
+    ],
+    "patch_centers": {
+      "crop": [
+        1800,
+        512
+      ],
+      "headland": [
+        1800,
+        584
+      ]
+    },
+    "patch_size": [
+      5,
+      5
+    ],
+    "method": "Median each RGB8 channel over a fixed 5\u00d75 pixel patch. The difference of the green channel and the Rec.709-weighted difference of the two RGB code medians are display-code metrics. They do not measure scene-linear radiance.",
+    "patch_measurements": {
+      "forward_plus/1-baseline": {
+        "crop": [
+          133,
+          145,
+          107
+        ],
+        "headland": [
+          148,
+          155,
+          118
+        ],
+        "green_gap": 10,
+        "luma_from_channel_medians_gap": 11.1352
+      },
+      "forward_plus/2-candidate": {
+        "crop": [
+          50,
+          68,
+          29
+        ],
+        "headland": [
+          131,
+          138,
+          100
+        ],
+        "green_gap": 70,
+        "luma_from_channel_medians_gap": 72.4108
+      },
+      "gl_compatibility/1-baseline": {
+        "crop": [
+          55,
+          82,
+          31
+        ],
+        "headland": [
+          61,
+          81,
+          32
+        ],
+        "green_gap": -1,
+        "luma_from_channel_medians_gap": 0.6326000000000002
+      },
+      "gl_compatibility/2-candidate": {
+        "crop": [
+          55,
+          82,
+          31
+        ],
+        "headland": [
+          61,
+          81,
+          32
+        ],
+        "green_gap": -1,
+        "luma_from_channel_medians_gap": 0.6326000000000002
+      }
+    },
+    "observed": "At the field entrance, the planted surface darkened strongly while the adjacent diagonal headland remained pale. Every changed channel darkened. This created a conspicuous wedge under the authored lighting. Compatibility remained unchanged."
+  },
+  "source_judgment": {
+    "scope": "Interpret only the fixed headland pigment vec3(0.35,0.40,0.23) as a display-authored swatch. Apply the existing vertex_color_to_linear helper to this constant before the 0.28 mix with the previously converted mesh palette. This leaves all texture sampling, stubble, lane marking colors, scale factors and masks on their existing routes.",
+    "rationale": "The headland previously mixed the decoded field tint with a 72% fixed-color contribution. The new art decision shares the palette working space. Available evidence does not determine the original color-space intent of every shader literal.",
+    "headland_swatch_linear_rd": [
+      0.10048150993772331,
+      0.13286832155381798,
+      0.0432336359153358
+    ],
+    "compatibility_swatch": [
+      0.35,
+      0.4,
+      0.23
+    ]
+  },
+  "predeclared_qualification": {
+    "art_target": "A positive Forward+ field-entry headland-to-row display-luma gap of 6\u201330 codes at the 24\u00d716 art patches specified here, with a discernible and visually continuous headland, free of the bright 9d wedge or an over-dark replacement. This interval is a local editorial criterion.",
+    "verifier_checks": [
+      "Reproduce the same original masked region, renderer, exposure, camera, seed and field identity on both renderers. Compare candidate-repeat and baseline-repeat pixels independently.",
+      "Evaluate the fixed 5\u00d75 patch samples and native crop, preserve the previously corrected planted-row and dirt-track interiors, and inspect stubble when visible.",
+      "For the highway frame, compare prior and corrected lane/median/shoulder controls in x1510\u20131900/y760\u2013944. Inspect distant fields in x1390\u20131915/y520\u2013680. Lane and asphalt interiors should match the previous correction.",
+      "Compatibility headland, row and road results should retain their prior source-matched appearance. Verify contiguous boundaries, foreground track, and surrounding grass as well as the numeric tolerance."
+    ],
+    "status": "Exact final-source render verification pending. The complete two-shader source delta from 9d selects all 24 hosted workload jobs.",
+    "art_patches": {
+      "coordinates": "Top-left origin, half-open bounds",
+      "rows_xyxy": [
+        1718,
+        486,
+        1742,
+        502
+      ],
+      "headland_xyxy": [
+        1718,
+        546,
+        1742,
+        562
+      ],
+      "statistic": "Average decoded RGB8 across each 24\u00d716 crop, then compare headland-minus-row mean display luma using 0.2126/0.7152/0.0722 weights. The separate 5\u00d75 verifier medians above provide a second spatial check.",
+      "initial_references": {
+        "forward_plus/1-baseline": {
+          "row_mean_rgb8": [
+            126.3359375,
+            137.49739583333334,
+            100.66927083333333
+          ],
+          "headland_mean_rgb8": [
+            147.91145833333334,
+            154.8984375,
+            118.08854166666667
+          ],
+          "headland_minus_row_mean_display_luma": 18.28985208333333
+        },
+        "forward_plus/2-candidate": {
+          "row_mean_rgb8": [
+            47.028645833333336,
+            63.703125,
+            27.229166666666668
+          ],
+          "headland_mean_rgb8": [
+            130.13020833333334,
+            137.63802083333334,
+            99.80989583333333
+          ],
+          "headland_minus_row_mean_display_luma": 75.78595833333334
+        },
+        "gl_compatibility/1-baseline": {
+          "row_mean_rgb8": [
+            46.205729166666664,
+            69.6015625,
+            25.1953125
+          ],
+          "headland_mean_rgb8": [
+            61.177083333333336,
+            81.01041666666667,
+            32.309895833333336
+          ],
+          "headland_minus_row_mean_display_luma": 11.856195312500004
+        },
+        "gl_compatibility/2-candidate": {
+          "row_mean_rgb8": [
+            46.205729166666664,
+            69.6015625,
+            25.1953125
+          ],
+          "headland_mean_rgb8": [
+            61.177083333333336,
+            81.01041666666667,
+            32.309895833333336
+          ],
+          "headland_minus_row_mean_display_luma": 11.856195312500004
+        }
+      },
+      "corrected_forward_plus_gap_target": [
+        6,
+        30
+      ]
+    }
+  }
+}

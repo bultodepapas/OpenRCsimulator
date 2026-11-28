@@ -1,0 +1,98 @@
+{
+  "archive": "field-benchmarks-final.zip",
+  "zip_bytes": 1479684,
+  "zip_sha256": "3af02ab7617a4838b2ce9d164fe5683a5ec40d8708c38fa128c0dd3d955ef47c",
+  "embedded_manifest_sha256": "110daa7f4001d259a96cbd4117dce05a086952e4c0ba9ed64ac96df2767fac7f",
+  "candidate": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+  "base": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "field_shards": 12,
+  "raw_json_files": 181,
+  "original_archives": [
+    {
+      "renderer": "forward_plus",
+      "case": "lake_overview",
+      "github_artifact_id": 15277695900,
+      "original_zip_sha256": "bed2d4f4f715a19ae2f140edcd710ff584ec2ad070595caa04dc56a17ca9f81d",
+      "original_zip_bytes": 3739753
+    },
+    {
+      "renderer": "forward_plus",
+      "case": "lake_shore",
+      "github_artifact_id": 15277090345,
+      "original_zip_sha256": "084c52877eb10138aae13e573e02636713ee962241e8f3d1b0f3453f52d7f8b6",
+      "original_zip_bytes": 3069904
+    },
+    {
+      "renderer": "forward_plus",
+      "case": "pilot_north",
+      "github_artifact_id": 15278010338,
+      "original_zip_sha256": "d80acb58c750a15e343e051ae26f5092732eb9879354d8834d3e33d2e98f0e94",
+      "original_zip_bytes": 3229607
+    },
+    {
+      "renderer": "forward_plus",
+      "case": "plain_field_entry",
+      "github_artifact_id": 15277202149,
+      "original_zip_sha256": "1bd74cc0a2a75dca749f481ff3d33530ebe58dae4ded8724e23b6f1314b6b1b4",
+      "original_zip_bytes": 3843508
+    },
+    {
+      "renderer": "forward_plus",
+      "case": "plain_highway",
+      "github_artifact_id": 15276704188,
+      "original_zip_sha256": "831f869ede2a8605ed14df7788930836e6062cb412ad1199c61d8605e3ad53df",
+      "original_zip_bytes": 4335517
+    },
+    {
+      "renderer": "forward_plus",
+      "case": "postcard_pavilion",
+      "github_artifact_id": 15278390564,
+      "original_zip_sha256": "d47a96b8cf04877187820d42c97b6fe3043c8bb219090abe6e86f6806ac5f49f",
+      "original_zip_bytes": 3941429
+    },
+    {
+      "renderer": "gl_compatibility",
+      "case": "lake_overview",
+      "github_artifact_id": 15276735464,
+      "original_zip_sha256": "5c3951e1cdf3c5fd103d235dd2365ef565f1ef50089d0b4858cc5268208c9008",
+      "original_zip_bytes": 4813137
+    },
+    {
+      "renderer": "gl_compatibility",
+      "case": "lake_shore",
+      "github_artifact_id": 15276387690,
+      "original_zip_sha256": "c0510c46a299d23faba47671f202675df390892f6e5132ca8b7cc4b39b19e63b",
+      "original_zip_bytes": 4434955
+    },
+    {
+      "renderer": "gl_compatibility",
+      "case": "pilot_north",
+      "github_artifact_id": 15276351915,
+      "original_zip_sha256": "3826c2c33ddbea1e675183f20b7def27390a4f4dcaf1db798b6eabb45a823e7b",
+      "original_zip_bytes": 5582545
+    },
+    {
+      "renderer": "gl_compatibility",
+      "case": "plain_field_entry",
+      "github_artifact_id": 15276408008,
+      "original_zip_sha256": "3c23f22d30a9d424152bda61c8cc220c0b110e4c3014b85dea45582c5b02adf7",
+      "original_zip_bytes": 5851075
+    },
+    {
+      "renderer": "gl_compatibility",
+      "case": "plain_highway",
+      "github_artifact_id": 15276521409,
+      "original_zip_sha256": "93261f8a4376593e4aaf9be58f25e99538de4ca63578f6ea6075659f3afabc9b",
+      "original_zip_bytes": 5877613
+    },
+    {
+      "renderer": "gl_compatibility",
+      "case": "postcard_pavilion",
+      "github_artifact_id": 15276891405,
+      "original_zip_sha256": "1e22ddedf68eb8acc89d1401cbbdb6cd7db23d5193d28ce98fff6c59654dff65",
+      "original_zip_bytes": 6125834
+    }
+  ],
+  "shared_runtime_manifest_sha256": "262695ea4d6b30939e82372c8a607837e5893fe0982a282f5fa4c501ef205908",
+  "runtime_inputs": 7858
+}

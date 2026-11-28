@@ -5,6 +5,8 @@
 shader_type spatial;
 render_mode cull_back;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 uniform sampler2D grass_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D soil_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D asphalt_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -34,6 +36,10 @@ uniform float beta = 0.00017;
 varying vec3 world_pos;
 
 void vertex() {
+	// The bake writes one sRGB hex tint per triangle. Decode once per vertex on
+	// RD; Compatibility keeps its authored palette and source_color photographs
+	// keep their own sampler conversion. UV2 metadata and alpha are untouched.
+	COLOR.rgb = vertex_color_to_linear(COLOR.rgb);
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	// Bounded projected offset: keep X/Y coverage at the unbiased render position
 	// while separating flat overlays from the 21 km depth buffer at aerial distance.
@@ -114,7 +120,9 @@ vec3 cultivated_field(vec3 palette, float kind, float row_length_m, vec2 field_u
 	stubble *= 1.0 + 0.18 * windrow - 0.06 * rows;
 	field = mix(field * (1.0 - (maize ? 0.23 : 0.10) * rows), stubble, harvested);
 	field *= 1.0 - 0.20 * tramlines * interior;
-	vec3 headland = mix(vec3(0.35, 0.40, 0.23), palette, 0.28) * photo_value(grass);
+	// Keep this fixed headland swatch in the same working color space as the mesh palette.
+	vec3 headland_palette = vertex_color_to_linear(vec3(0.35, 0.40, 0.23));
+	vec3 headland = mix(headland_palette, palette, 0.28) * photo_value(grass);
 	return mix(headland, field, interior);
 }
 

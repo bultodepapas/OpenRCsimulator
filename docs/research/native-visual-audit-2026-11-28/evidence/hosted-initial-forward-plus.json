@@ -1,0 +1,230 @@
+{
+  "format": "openrc-native-visual-initial-hosted-evidence-v1",
+  "candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3",
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "renderer": "Forward+",
+  "driver": "Vulkan 1.4.318",
+  "device": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160123980/job/141025387393",
+  "artifact": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160123980/artifacts/15271160859",
+  "archive_bytes": 27482081,
+  "archive_sha256": "1a56750ff131a4bd67f48f1a1e4c47184b0cb8a5ff0de16700685c686ce1876f",
+  "verified_archive_members": 44,
+  "source": "The SHA-256 equals the digest in the official job log. All 44 extracted member byte sequences equal the archive entries.",
+  "capture_blocks": [
+    "1-baseline"
+  ],
+  "processes": {
+    "controls": {
+      "reason": "passed",
+      "complete": true,
+      "ok": true,
+      "elapsed_seconds": 29.117498,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "40001990748b5ee48194fdba76c8f69543cf356f183f49b1bfd2154b692121b4",
+      "re_spirv_unsupported_opcode_lines": 0
+    },
+    "field": {
+      "reason": "passed",
+      "complete": true,
+      "ok": true,
+      "elapsed_seconds": 1137.844342,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ed1b657d9b421f84c40bf5b8a160e3febe859eb347b8f47cbbafe930b08681bc",
+      "re_spirv_unsupported_opcode_lines": 8
+    },
+    "import": {
+      "reason": "passed",
+      "complete": true,
+      "ok": true,
+      "elapsed_seconds": 444.12134,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "log_sha256": "9a6f39bd4778dcdef57c7078d12300fa700002a65d31f067b3e6ba9dd183b7c3",
+      "re_spirv_unsupported_opcode_lines": 0
+    },
+    "moon": {
+      "reason": "passed",
+      "complete": true,
+      "ok": true,
+      "elapsed_seconds": 55.489113,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "bd74eb09fa230ccdfa1d454712d63132981219e5f26e737e67e0f24957b87ea2",
+      "re_spirv_unsupported_opcode_lines": 8
+    },
+    "roofs": {
+      "reason": "timeout",
+      "complete": false,
+      "ok": false,
+      "elapsed_seconds": 900.224202,
+      "process_exit": -9,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c36b484a3cbd63dac5dee3997ee7510e71c1233a862b746cb871a55f9c0af37e",
+      "re_spirv_unsupported_opcode_lines": 8
+    }
+  },
+  "image_groups": {
+    "field": {
+      "size": [
+        1920,
+        1080
+      ],
+      "manifest": "1-baseline/field/report.json",
+      "manifest_sha256": "0e72a2344fc87baf2b373894f8dd8e5b5fcbaecf4c3c2f4c8168cfbfc2e0c997",
+      "declares_complete": null,
+      "recorded_png_hashes_verified": false,
+      "images": [
+        {
+          "view": "lake_overview",
+          "png_sha256": "f0dae29d971cf511e0889f936b8a0b33967fc49f7a891c62a47c84456ec0dadd"
+        },
+        {
+          "view": "lake_shore",
+          "png_sha256": "3ab81b8947bb8272011b5f299426ede14099558cbbdfc25dc04790310f398eb2"
+        },
+        {
+          "view": "pilot_north",
+          "png_sha256": "ce3779404cefc93fdc99834992b24fbf163e84d5fa25b57119e522a4004cfa84"
+        },
+        {
+          "view": "plain_field_entry",
+          "png_sha256": "0b64a5d24a65796ec1fea0fcc28ac4e870b8f90a0e9605ba5231087099952c30"
+        },
+        {
+          "view": "plain_highway",
+          "png_sha256": "9a89b02e32c2638c6661bdc263a67eb231b17d5dc111299becbf18d45d1ce053"
+        },
+        {
+          "view": "postcard_pavilion",
+          "png_sha256": "4687ac06944fdca483192472f80ca0ed481720a1cf09155b08cc42740e8d4509"
+        }
+      ]
+    },
+    "controls": {
+      "size": [
+        1920,
+        1080
+      ],
+      "manifest": "1-baseline/controls/capture.json",
+      "manifest_sha256": "bbb03631a903a5e9d1ffa3b25920c01ae4bad0df7fe744cad31ea1c5e32e7d97",
+      "declares_complete": true,
+      "recorded_png_hashes_verified": true,
+      "images": [
+        {
+          "view": "dirt_light_off",
+          "png_sha256": "e215bbe4e9173f1d8fb1ec98e5e8a72de731900a1cc53acb548c1217cf846a47"
+        },
+        {
+          "view": "dirt_specular_000",
+          "png_sha256": "854bc49c3b68bbd47188c18437b1837bc8621c3385cc04d5bea5ed2de0d2571b"
+        },
+        {
+          "view": "dirt_specular_035",
+          "png_sha256": "854bc49c3b68bbd47188c18437b1837bc8621c3385cc04d5bea5ed2de0d2571b"
+        },
+        {
+          "view": "dirt_specular_050",
+          "png_sha256": "854bc49c3b68bbd47188c18437b1837bc8621c3385cc04d5bea5ed2de0d2571b"
+        },
+        {
+          "view": "lens_curtain_held",
+          "png_sha256": "7b7a588d4a494acaf26f0b2d60eb0c8ee27fbfd765065ad9c3864ba9ca3da076"
+        },
+        {
+          "view": "lens_curtain_partial",
+          "png_sha256": "999053eb0ac6e8b4a99f0b973465b7d309d4b8df0383a863a2ef2ae4707ad5e5"
+        },
+        {
+          "view": "lens_disabled",
+          "png_sha256": "1849e7b6a1011354c646ba0be460a74fb840aaa1619d0c6c2ef2e2faafb0dd6b"
+        }
+      ]
+    },
+    "moon": {
+      "size": [
+        1920,
+        1080
+      ],
+      "manifest": "1-baseline/moon/manifest.json",
+      "manifest_sha256": "324231063a4fe786574494120145c0c1ffc17f9b4e88f50e3f7a6ec47f9b7c68",
+      "declares_complete": null,
+      "recorded_png_hashes_verified": false,
+      "images": [
+        {
+          "view": "full_high-close",
+          "png_sha256": "0f538946a685356d909ba3d2ce321f07e759df8a8230f9f040d8e1c4189f9bbb"
+        },
+        {
+          "view": "full_high-wide",
+          "png_sha256": "98078987747169d25d3e8d12788b1b360c5acdf6bfa8def72ebdf5df04bc84c6"
+        }
+      ]
+    },
+    "roofs": {
+      "size": [
+        1920,
+        1080
+      ],
+      "manifest": "1-baseline/roofs/capture.json",
+      "manifest_sha256": "7718cae5dfd2fdc76e6a15f08226ec4a12cb5505551235988eb4dd8fceb68540",
+      "declares_complete": true,
+      "recorded_png_hashes_verified": true,
+      "images": [
+        {
+          "view": "club_air",
+          "png_sha256": "99493bc832094da24e38483c6b2769e32c4a2b7a389c9d4cfe0b008cd86913ed"
+        },
+        {
+          "view": "farm_roofs",
+          "png_sha256": "5d3a12898b1c9d702dbff09d9eadf7f9f07b5ed569a89d391493731befb51ad6"
+        },
+        {
+          "view": "pavilion_pilot",
+          "png_sha256": "8ebebaae2bfb45cbfd468808c272f9c312f191cd959c1f0fdb0542081ba239c0"
+        },
+        {
+          "view": "pavilion_roof",
+          "png_sha256": "524ece536051aa3d5cb897ef01272e87dd24a057d752e9b0095669002716ac5b"
+        },
+        {
+          "view": "shed_roof",
+          "png_sha256": "45a600b229194e8052f66e4df9720989e4b1f60ff6d93216de21aac6a03cbe40"
+        }
+      ]
+    }
+  },
+  "interpretation": [
+    "All 20 baseline PNGs fully decoded. The roof manifest declares five records and complete:true. Its fixture writes the manifest after saving and hashing all views and before queuing scene cleanup and calling quit.",
+    "The roof process failed to exit within 900 seconds. The checked log parser counted zero engine errors or warnings. Eight additional optional re-spirv optimizer messages also occur in the successful field and moon logs. The evidence does not identify a deadlock or time of final image write.",
+    "There is no candidate block in this archive. Visual superiority, paired frame-time deltas and physical GPU qualification remain open."
+  ],
+  "backend_diagnostic": {
+    "literal": "OpVectorExtractDynamic is not supported yet.",
+    "classification": "The optional re-spirv optimizer reports an unsupported SPIR-V opcode. Its parser emits this literal message pattern and returns false. The shader wrapper clears the failed parse; the Vulkan shader creation path preserves the original decoded SPIR-V. When specialization optimization is unavailable, the pipeline can pass specialization constants to the driver.",
+    "sources": [
+      "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/thirdparty/re-spirv/re-spirv.cpp#L1851-L1863",
+      "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/thirdparty/re-spirv/re-spirv.cpp#L2225-L2265",
+      "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp#L4445-L4490",
+      "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp#L6204-L6270"
+    ],
+    "scope": "Raw logs preserve these messages. The sources explain the opcode diagnostic; neither the sources nor the logs attribute the roof process timeout to it."
+  }
+}

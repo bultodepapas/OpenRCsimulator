@@ -1,0 +1,51 @@
+{
+  "format": "openrc-native-visual-lunar-limb-review-v1",
+  "status": "Initial candidate rejected for close-up limb acceptance; conservative follow-up awaits matched rendering.",
+  "initial_candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3",
+  "native_evidence": "hosted-initial-compatibility.json",
+  "method": "For original close-view pixels, compare decoded candidate/baseline RGB8 maxima, then estimate log2((abs(x)+abs(y))/hypot(x,y)) on the isotropic local image-plane model, with offsets from the image center. This ratio approximates the excess of radial fwidth over the maximum length of the two plane derivatives. It is an analytic estimate and does not read the actual interpolated GPU derivatives.",
+  "mip_estimates": {
+    "center_xy": [
+      959.5,
+      539.5
+    ],
+    "specific_pixel_xy": [
+      1166,
+      390
+    ],
+    "specific_log2_ratio": 0.4817406193295711,
+    "log2_ratio_ranges_at_delta_thresholds": {
+      "8": {
+        "count": 141,
+        "min": 0.13148173563789478,
+        "max": 0.5
+      },
+      "64": {
+        "count": 34,
+        "min": 0.2947467961625012,
+        "max": 0.5
+      },
+      "128": {
+        "count": 3,
+        "min": 0.34260684907069017,
+        "max": 0.4817406193295711
+      }
+    }
+  },
+  "followup_criteria": [
+    "Preserve the equal-radius centre-quad correction. An old radial derivative of zero remains a valid input when the orthogonal footprint is nonzero.",
+    "For each backend, compare the same 1920x1080 close and wide physical camera, light, ephemeris, material, exposure and texture settings before assigning the result. Reproduce the original high-contrast close-view edge or identify a differing input.",
+    "Record counts of old high-contrast outlier pixels matched or reduced to baseline, residual outliers and newly introduced large changes; inspect the original upper-right and lower-right limbs at native scale.",
+    "Subpixel and motion statements require captures at matched phases or a reproducible motion path. Static captures alone qualify the supplied views."
+  ],
+  "protocol_admission": {
+    "production_shader_sha256": "0468425bd15236aa2310c5cf657034cf0fb09c3635c1b7173a0dbee2ce8950e3",
+    "workflow_sha256": "6864638a30b40d54aca3919ae73e08183daddc36ddf47514c7cee3751f0cdbd1",
+    "verdict": "Approved for hosted execution. Close-up visual qualification is pending.",
+    "source_method": "Independently checked the app/assets/tools diff against 9d456931 and found only the lunar shader. max(plane_footprint, aa) leaves the old radial filter as a lower bound for both texture levels and retains the centre-quad correction.",
+    "selector_checks": "Executed the Python selection body from the YAML with five inputs. Moon-only push selected seven workloads \u00d7 two renderers. Manual dispatch, a second changed tool, an empty diff, and a non-push event each selected all 12 workloads \u00d7 two renderers. Field workloads preserve A/B/B/A on one VM. Original unrelated detail frames retain their source revision.",
+    "scalar_evidence": "moon-floor-math.json",
+    "scalar_evidence_sha256": "8bee8046103c489d815413575ee185ebf86bb9692da3a9365e31b0494a2c857e",
+    "independent_rerun": "Reexecuted the source-bound EGL probe and matched every field of the frozen report, including source identities, per-pixel LOD, radius, AA and all five checks. This probe exits the shader before texture sampling; it cannot confirm the final limb pixels."
+  }
+}

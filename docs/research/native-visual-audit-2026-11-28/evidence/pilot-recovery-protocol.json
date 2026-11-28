@@ -1,0 +1,57 @@
+{
+  "format": "openrc-native-visual-pilot-recovery-protocol-v1",
+  "disposition": "Approved as a predeclared fallback for the final Forward+ pilot_north field workload.",
+  "reason": {
+    "prior_job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46165331310/job/141041486764",
+    "prior_artifact": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46165331310/artifacts/15274381976",
+    "prior_artifact_sha256": "8bb7ec5d4eb4eeb345e3682fd940765009d955566577f5830b5df53962da0d5b",
+    "runner_start_utc": "2026-11-28T17:12:24.346Z",
+    "canceled_utc": "2026-11-28T17:57:36.435Z",
+    "outer_allowance_minutes": 45,
+    "checked_launches": [
+      {
+        "1-baseline": {
+          "field": 531.196514,
+          "import": 578.552446
+        }
+      },
+      {
+        "2-candidate": {
+          "field": 549.604818,
+          "import": 5.757989
+        }
+      },
+      {
+        "3-candidate": {
+          "field": 547.402743,
+          "import": 5.859976
+        }
+      },
+      {
+        "4-baseline": {
+          "import": 5.900721
+        }
+      }
+    ],
+    "outcome": "Three field invocations completed. The fourth baseline import completed; the final field frame, checked field report and four-block results.json are absent. The observed outer 45-minute cancellation leaves no complete ABBA comparison."
+  },
+  "scope": {
+    "workflow": ".github/workflows/native-visual-audit-recovery.yml",
+    "workflow_sha256": "8c2f69293a2963e16227d52b117082610133b287924cbb94ace8ec457d1c2415",
+    "reference_workflow_sha256": "6864638a30b40d54aca3919ae73e08183daddc36ddf47514c7cee3751f0cdbd1",
+    "trigger": "Own workflow path on the audit branch or manual dispatch. The regular audit does not watch the recovery workflow file.",
+    "pinned_project_and_harness": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+    "pinned_baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+    "expected_runtime_manifest_sha256": "262695ea4d6b30939e82372c8a607837e5893fe0982a282f5fa4c501ef205908",
+    "renderer": "forward_plus",
+    "workload": "field:pilot_north",
+    "host_image": "ubuntu-24.04",
+    "outer_allowance_minutes": 60,
+    "workflow_comparison": "Parsed both YAML documents and compared all seven job steps. After normalizing only checkout ref, matrix substitutions for the concrete renderer/workload and artifact name, every step and command matched. The job retains the same imports, pinned engine, resource sampler, environment, 60 warmups, 31 raw samples and first-interval exclusion. All four field processes must exit cleanly on one VM. The workflow has read-only repository permissions."
+  },
+  "selection": {
+    "primary_run": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46172321068",
+    "rule": "Use a qualified original final 1e91 Forward+ pilot_north four-launch result whenever present. Use the recovery only when the original is explicitly failed, canceled, incomplete, or fails the pre-existing qualification checks. An in-progress original is pending. If both qualify, retain both attempts but select the original. A validated recovery selection must use its own complete A/B/B/A block; cross-job launch pooling and selection by speed are excluded.",
+    "hardware_scope": "The recovered result would characterize the software Vulkan runner. It cannot establish performance on a target GPU."
+  }
+}

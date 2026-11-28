@@ -1,0 +1,150 @@
+{
+  "format": "openrc-native-regression-triptychs-v1",
+  "scope": "Exact native-pixel crops at review regions declared before the final captures. No resampling, color changes, generated imagery or labels inside the pixel evidence. Three adjacent panels: baseline, rejected first candidate, final candidate.",
+  "images": [
+    {
+      "image": "evidence/images/headland-final-triptych.png",
+      "image_sha256": "25cc9ea4b59d6b22491449e60b74c9b7516d2ea3e477c8032d04ac0aad0231e7",
+      "dimensions": [
+        1536,
+        240
+      ],
+      "renderer": "forward_plus",
+      "workload": "field-plain_field_entry",
+      "rectangle_top_left_half_open": [
+        1408,
+        456,
+        1920,
+        696
+      ],
+      "panel_order": [
+        "baseline",
+        "rejected first candidate",
+        "final candidate"
+      ],
+      "final_baseline_rgb_matches_original_baseline": true,
+      "panels": [
+        {
+          "label": "baseline",
+          "source_commit": "71306784a250d634854f0c8bab3a927cc46a61b8",
+          "source_path": "tmp/native-visual-audit/hosted-sharded/forward_plus/field-plain_field_entry/1-baseline/field/plain_field_entry.png",
+          "source_png_sha256": "0b64a5d24a65796ec1fea0fcc28ac4e870b8f90a0e9605ba5231087099952c30",
+          "source_rgb_sha256": "ca113a370608c9c60beda772ca1be66fd57d3c9bc1fc6b7b708c8dba42a16874",
+          "crop_rgb_sha256": "5dc0d82587f51a436f4a54a0b9d9404ad6440d57499bda7c171fdd606836c0f9"
+        },
+        {
+          "label": "rejected first candidate",
+          "source_commit": "9d4569310ef223fc129472a20e21aada8ea624f0",
+          "source_path": "tmp/native-visual-audit/hosted-sharded/forward_plus/field-plain_field_entry/2-candidate/field/plain_field_entry.png",
+          "source_png_sha256": "56e3bd659b3ad43100269fef8afd9bae570e946f6b17ac34c2eca2f771646124",
+          "source_rgb_sha256": "d0c313dfb1674cea54ce9cf059e688111aa9111a8136e5d12812075a4f0d476d",
+          "crop_rgb_sha256": "375586addf0a6518dd12648aa7d7e0701c7572cd266b7bf6f0a09518b9081852"
+        },
+        {
+          "label": "final candidate",
+          "source_commit": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+          "source_path": "tmp/native-visual-audit/hosted-final/46172321068/forward_plus/field-plain_field_entry/2-candidate/field/plain_field_entry.png",
+          "source_png_sha256": "1e16463bc19fa915cde3292313d8bcb0af2e347f0fb2c775044dc3676c01c21e",
+          "source_rgb_sha256": "60904356680db1eecd12c0274d69ce445c0e3e36ae527492efd6611b993f11bd",
+          "crop_rgb_sha256": "9d1d4a293ff259aa271c46d7b91c43fc1a55d7860fb914f914f358c9f0876c73"
+        }
+      ]
+    },
+    {
+      "image": "evidence/images/moon-gl-final-triptych.png",
+      "image_sha256": "05a2837783477df8084e0050bb98e5a4b859f4db09da692aaf5262ffca862d88",
+      "dimensions": [
+        720,
+        200
+      ],
+      "renderer": "gl_compatibility",
+      "workload": "detail-moon",
+      "rectangle_top_left_half_open": [
+        1046,
+        290,
+        1286,
+        490
+      ],
+      "panel_order": [
+        "baseline",
+        "rejected first candidate",
+        "final candidate"
+      ],
+      "final_baseline_rgb_matches_original_baseline": true,
+      "panels": [
+        {
+          "label": "baseline",
+          "source_commit": "71306784a250d634854f0c8bab3a927cc46a61b8",
+          "source_path": "tmp/native-visual-audit/hosted-sharded/gl_compatibility/detail-moon/1-baseline/moon/full_high-close.png",
+          "source_png_sha256": "bc9ba75beee3c3111c936c6c9c81404f8b73d797cf51d87ade8f18a2cedb2348",
+          "source_rgb_sha256": "272356c59c729b29cec2f85eea311311a6c8ab6610006d7ff1f52b0c38d5ca70",
+          "crop_rgb_sha256": "9d1f0c64f2a0113f16154255bfe1914100519f09c781c66d104ff3a9dd0399d3"
+        },
+        {
+          "label": "rejected first candidate",
+          "source_commit": "9d4569310ef223fc129472a20e21aada8ea624f0",
+          "source_path": "tmp/native-visual-audit/hosted-sharded/gl_compatibility/detail-moon/2-candidate/moon/full_high-close.png",
+          "source_png_sha256": "50390b3d22377949abc4c33d7af8928b9c077613049245e44a71c62e5b9ea243",
+          "source_rgb_sha256": "73213ad8884cbf3ba338bc5163d2ee7653c2489cb0991245e5c9483691746f0d",
+          "crop_rgb_sha256": "4d5be5154c462cdbed21d0fcc2cffb1e47e4a2e4bf2c204dfb05709202aaf7dd"
+        },
+        {
+          "label": "final candidate",
+          "source_commit": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+          "source_path": "tmp/native-visual-audit/hosted-final/46172321068/gl_compatibility/detail-moon/2-candidate/moon/full_high-close.png",
+          "source_png_sha256": "bc9ba75beee3c3111c936c6c9c81404f8b73d797cf51d87ade8f18a2cedb2348",
+          "source_rgb_sha256": "272356c59c729b29cec2f85eea311311a6c8ab6610006d7ff1f52b0c38d5ca70",
+          "crop_rgb_sha256": "9d1f0c64f2a0113f16154255bfe1914100519f09c781c66d104ff3a9dd0399d3"
+        }
+      ]
+    },
+    {
+      "image": "evidence/images/moon-fp-final-triptych.png",
+      "image_sha256": "deb1c8938adde886cf82fb53df1af8e624f1c7eb6d1b7cbf1d02e9e552da1f27",
+      "dimensions": [
+        480,
+        142
+      ],
+      "renderer": "forward_plus",
+      "workload": "detail-moon",
+      "rectangle_top_left_half_open": [
+        1120,
+        552,
+        1280,
+        694
+      ],
+      "panel_order": [
+        "baseline",
+        "rejected first candidate",
+        "final candidate"
+      ],
+      "final_baseline_rgb_matches_original_baseline": true,
+      "panels": [
+        {
+          "label": "baseline",
+          "source_commit": "71306784a250d634854f0c8bab3a927cc46a61b8",
+          "source_path": "tmp/native-visual-audit/hosted-sharded/forward_plus/detail-moon/1-baseline/moon/full_high-close.png",
+          "source_png_sha256": "0f538946a685356d909ba3d2ce321f07e759df8a8230f9f040d8e1c4189f9bbb",
+          "source_rgb_sha256": "18ff8d5764a06b7b6b4ca27186b8fb5afd0497cae188c360e88de6e09feb2a78",
+          "crop_rgb_sha256": "d4607d4e598471e7a40ec252b361cf7e832a6bb618eb2fae858d7bce1618af30"
+        },
+        {
+          "label": "rejected first candidate",
+          "source_commit": "9d4569310ef223fc129472a20e21aada8ea624f0",
+          "source_path": "tmp/native-visual-audit/hosted-sharded/forward_plus/detail-moon/2-candidate/moon/full_high-close.png",
+          "source_png_sha256": "afe88dcd9015618b16b23cbcedb6a03adc0ad7b9063f02ef25dea07ef062abe6",
+          "source_rgb_sha256": "5358cff7f130a31d68fcb31c94d1a949ab236564962f8b91d5ec5d53ab15fa36",
+          "crop_rgb_sha256": "446bde038102ff34d1e9b9904a30c99f800ece5a19fc4a7f3918e5549c78038d"
+        },
+        {
+          "label": "final candidate",
+          "source_commit": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+          "source_path": "tmp/native-visual-audit/hosted-final/46172321068/forward_plus/detail-moon/2-candidate/moon/full_high-close.png",
+          "source_png_sha256": "0f538946a685356d909ba3d2ce321f07e759df8a8230f9f040d8e1c4189f9bbb",
+          "source_rgb_sha256": "18ff8d5764a06b7b6b4ca27186b8fb5afd0497cae188c360e88de6e09feb2a78",
+          "crop_rgb_sha256": "d4607d4e598471e7a40ec252b361cf7e832a6bb618eb2fae858d7bce1618af30"
+        }
+      ]
+    }
+  ]
+}

@@ -128,7 +128,8 @@ void windsock_deform_fabric_vertex(vec2 uv, out vec3 vertex_position, out vec3 v
 	float radius;
 	windsock_fabric_geometry(t, angle, centreline, axis, radial, around, radius);
 	vec3 local_position = vec3(arm_m, basket_height_m, 0.0) + centreline + radial * radius;
-	vec3 surface_tangent = normalize(axis + radial * ((tail_diameter_m - throat_diameter_m) / max(length_m, 0.001)));
+	// Positions use radii, so the conical slope is the radius change per metre.
+	vec3 surface_tangent = normalize(axis + radial * (0.5 * (tail_diameter_m - throat_diameter_m) / max(length_m, 0.001)));
 	vec3 surface_normal = normalize(cross(around, surface_tangent));
 	vertex_position = windsock_rotate_yaw(local_position, basket_yaw_rad);
 	vertex_normal = normalize(windsock_rotate_yaw(surface_normal, basket_yaw_rad));

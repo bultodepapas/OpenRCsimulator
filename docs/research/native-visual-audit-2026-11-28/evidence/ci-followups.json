@@ -1,0 +1,806 @@
+{
+  "format": "openrc-native-visual-ci-followups-v1",
+  "scope": "Synthetic PR-merge checks are separate from the exact 1e91cb28 native visual and timing campaign. These observations do not establish physical-device performance or flight qualification.",
+  "windows": [
+    {
+      "head": "1e91cb28eaed0079837e9a49d9e0b5a90253ee3e",
+      "base": "4093b254dc615016d8b03bac61c1a5b6a3f6406b",
+      "tested_merge": "b4df796662e0eab7f75342eeaf8d5b5d2e8cc6b4",
+      "run_id": 46172325829,
+      "job_id": 141063282970,
+      "conclusion": "failure",
+      "suite_tests": 579,
+      "suite_skipped": 33,
+      "failed_test": "test_routing.RegistryTests.test_committed_registry_is_valid_and_names_existing_scripts",
+      "observation": "Registry validation reported 19 missing app scripts; first reported path was res://tests/test_auto_calibration.gd. Later steps were skipped.",
+      "cause": "Not independently attributed in this receipt.",
+      "artifact_id": 15274920349,
+      "artifact_bytes": 1471,
+      "published_archive_sha256": "e97f34cfe82156e413ba5cb4b3811976ba071ffb2cb562572a5cb6578b49d15c"
+    },
+    {
+      "head": "57ea3da93de5ad5c7cf8cf39e6099cbcb72f1003",
+      "base": "27ddb8c4297f74109bacfd02c54410903ba82a2b",
+      "tested_merge": "bed150f86bd46b3dc4469a02100a860421a3366b",
+      "run_id": 46173889609,
+      "job_id": 141068151205,
+      "conclusion": "success",
+      "suite_tests": [
+        592,
+        187,
+        22,
+        14,
+        75,
+        221
+      ],
+      "suite_skipped": [
+        36,
+        1,
+        1,
+        0,
+        1,
+        7
+      ],
+      "observation": "All six Windows test suites reported OK. Some tests intentionally exercise failing synthetic inputs; those expected log messages are not real simulator benchmark failures.",
+      "artifact_id": 15275151033,
+      "artifact_bytes": 5188,
+      "published_archive_sha256": "5a07d19b81101f842f6ced24848614a8fd9c33e38d5414f5dd28290484bae364"
+    },
+    {
+      "head": "4ed6eed644e51522c068eec0e7f46c813f83fd75",
+      "base": "4bf5b399e5cafcb5fd101ddcfadecfcd236337cf",
+      "tested_merge": "2efd19a64e2cabe4e737669ac2069cdec846948e",
+      "run_id": 46179053647,
+      "job_id": 141084241298,
+      "conclusion": "success",
+      "suite_tests": [
+        616,
+        187,
+        22,
+        14,
+        75,
+        221
+      ],
+      "suite_skipped": [
+        36,
+        1,
+        1,
+        0,
+        1,
+        7
+      ],
+      "observation": "All six Windows fixture suites reported OK at this later synthetic merge. This is not a simulator rendering or physical-device performance result.",
+      "artifact_id": 15276489845,
+      "artifact_bytes": 5198,
+      "published_archive_sha256": "d7790415b7aea49ad9bf9d16b227f5e752538b1824c40049047be28da40a5d44"
+    }
+  ],
+  "verification": "Read GitHub job logs, exact checkout commits and run artifact metadata. The independent verifier separately confirmed the latest Windows merge, six suite totals/skips and published archive hash. Published archive hashes in this receipt identify GitHub's artifact digest; this receipt does not assert an independent download.",
+  "limitations": [
+    "These synthetic merges include different main-branch revisions, so they are not a controlled before/after comparison.",
+    "The audit's app, assets and tools inputs are unchanged from 1e91cb28 through 4ed6eed6; the two intervening commits add only pinned recovery workflows and protocols.",
+    "A Windows fixture-suite pass is not a game-rendering benchmark."
+  ],
+  "broader_ci": [
+    {
+      "run_id": 46173889610,
+      "head": "57ea3da93de5ad5c7cf8cf39e6099cbcb72f1003",
+      "observed_utc": "2026-11-28T19:36:15Z",
+      "jobs": [
+        {
+          "job_id": 141070017431,
+          "name": "CI selection and release preflight",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:11:54Z",
+          "completed_utc": "2026-11-28T18:15:58Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141070018501,
+          "name": "Publication source rebind evidence",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T18:11:34Z",
+          "completed_utc": "2026-11-28T18:11:33Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298779,
+          "name": "NK-4 native kernel qualification (Windows)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:16:20Z",
+          "completed_utc": "2026-11-28T18:36:20Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298824,
+          "name": "NK-3 native kernel qualification (Linux)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:25:02Z",
+          "completed_utc": "2026-11-28T18:46:02Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298828,
+          "name": "RC native Windows build",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:17:04Z",
+          "completed_utc": "2026-11-28T18:25:00Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298833,
+          "name": "Godot visual captures",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:39:37Z",
+          "completed_utc": "2026-11-28T19:02:46Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298835,
+          "name": "Website source and download checks",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:38:30Z",
+          "completed_utc": "2026-11-28T18:40:22Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298844,
+          "name": "three.js prototype (archived bake-off build)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:22:48Z",
+          "completed_utc": "2026-11-28T18:25:41Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298845,
+          "name": "Godot app (integration 0)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:25:41Z",
+          "completed_utc": "2026-11-28T19:02:47Z",
+          "failed_steps": [
+            "Validate diagnostic evidence and export JUnit"
+          ]
+        },
+        {
+          "job_id": 141071298846,
+          "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:24:21Z",
+          "completed_utc": "2026-11-28T19:03:03Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298859,
+          "name": "RC native Linux build",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:19:18Z",
+          "completed_utc": "2026-11-28T18:22:25Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298874,
+          "name": "Godot app (units 6)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:32:46Z",
+          "completed_utc": "2026-11-28T19:02:46Z",
+          "failed_steps": [
+            "Validate diagnostic evidence and export JUnit"
+          ]
+        },
+        {
+          "job_id": 141071298886,
+          "name": "Godot app (units 5)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:25:44Z",
+          "completed_utc": "2026-11-28T19:01:51Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298887,
+          "name": "Godot app (units 3)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:27:00Z",
+          "completed_utc": "2026-11-28T18:55:59Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298901,
+          "name": "Godot app (units 1)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:36:31Z",
+          "completed_utc": "2026-11-28T19:02:46Z",
+          "failed_steps": [
+            "Validate diagnostic evidence and export JUnit"
+          ]
+        },
+        {
+          "job_id": 141071298908,
+          "name": "Godot app (units 0)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:25:48Z",
+          "completed_utc": "2026-11-28T18:59:14Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071298916,
+          "name": "Godot app (units 2)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:34:38Z",
+          "completed_utc": "2026-11-28T19:02:44Z",
+          "failed_steps": [
+            "Validate diagnostic evidence and export JUnit"
+          ]
+        },
+        {
+          "job_id": 141071298931,
+          "name": "Godot app (units 4)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:36:54Z",
+          "completed_utc": "2026-11-28T19:02:47Z",
+          "failed_steps": [
+            "Validate diagnostic evidence and export JUnit"
+          ]
+        },
+        {
+          "job_id": 141071298932,
+          "name": "Godot app (units 7)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T18:40:23Z",
+          "completed_utc": "2026-11-28T19:02:44Z",
+          "failed_steps": [
+            "Validate diagnostic evidence and export JUnit"
+          ]
+        },
+        {
+          "job_id": 141071299895,
+          "name": "Visual group shadow (${{ matrix.group }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T18:15:59Z",
+          "completed_utc": "2026-11-28T18:15:58Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141071300103,
+          "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T18:15:59Z",
+          "completed_utc": "2026-11-28T18:15:58Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141073845772,
+          "name": "RC native production checks (windows)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:25:44Z",
+          "completed_utc": "2026-11-28T18:34:55Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141073845778,
+          "name": "RC native production checks (linux)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T18:45:58Z",
+          "completed_utc": "2026-11-28T18:56:18Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141079787219,
+          "name": "Release builds (Windows, Linux, macOS)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T18:46:03Z",
+          "completed_utc": "2026-11-28T18:46:02Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141079787320,
+          "name": "NK-4 Windows package qualification",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T18:46:03Z",
+          "completed_utc": "2026-11-28T18:46:02Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141084325014,
+          "name": "Visual group shadow comparison",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T19:02:47Z",
+          "completed_utc": "2026-11-28T19:02:46Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141084398469,
+          "name": "CI required",
+          "status": "completed",
+          "conclusion": "failure",
+          "started_utc": "2026-11-28T19:03:20Z",
+          "completed_utc": "2026-11-28T19:04:59Z",
+          "failed_steps": [
+            "Reject failed, cancelled, missing or unexpected skipped jobs"
+          ]
+        },
+        {
+          "job_id": 141084941468,
+          "name": "GitHub release (v* tags)",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "started_utc": "2026-11-28T19:05:00Z",
+          "completed_utc": "2026-11-28T19:04:59Z",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "run_id": 46179053666,
+      "head": "4ed6eed644e51522c068eec0e7f46c813f83fd75",
+      "observed_utc": "2026-11-28T19:36:15Z",
+      "jobs": [
+        {
+          "job_id": 141084941827,
+          "name": "CI selection and release preflight",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:10:36Z",
+          "completed_utc": "2026-11-28T19:14:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141084942876,
+          "name": "Publication source rebind evidence",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:05:00Z",
+          "completed_utc": "2026-11-28T19:05:00Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581003,
+          "name": "three.js prototype (archived bake-off build)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:22:17Z",
+          "completed_utc": "2026-11-28T19:25:14Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581010,
+          "name": "RC native Linux build",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:22:57Z",
+          "completed_utc": "2026-11-28T19:26:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581012,
+          "name": "NK-3 native kernel qualification (Linux)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:15:25Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581015,
+          "name": "Website source and download checks",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:29:24Z",
+          "completed_utc": "2026-11-28T19:31:13Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581021,
+          "name": "RC native Windows build",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:18:01Z",
+          "completed_utc": "2026-11-28T19:25:33Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581033,
+          "name": "NK-4 native kernel qualification (Windows)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:19:57Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581056,
+          "name": "Godot app (units 5)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:19:02Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581060,
+          "name": "Godot visual captures",
+          "status": "queued",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581063,
+          "name": "Godot app (units 1)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:28:36Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581068,
+          "name": "Godot app (units 2)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:27:27Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581072,
+          "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:15:33Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581074,
+          "name": "Godot app (units 4)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:26:01Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581084,
+          "name": "Godot app (units 0)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:28:10Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581098,
+          "name": "Godot app (integration 0)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:26:32Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581104,
+          "name": "Godot app (units 6)",
+          "status": "queued",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581108,
+          "name": "Godot app (units 7)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:25:15Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581180,
+          "name": "Godot app (units 3)",
+          "status": "queued",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087582124,
+          "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": "2026-11-28T19:14:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087582721,
+          "name": "Visual group shadow (${{ matrix.group }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": "2026-11-28T19:14:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141090859473,
+          "name": "RC native production checks (windows)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:26:37Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141090859599,
+          "name": "RC native production checks (linux)",
+          "status": "queued",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:26:30Z",
+          "completed_utc": null,
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "run_id": 46179053666,
+      "head": "4ed6eed644e51522c068eec0e7f46c813f83fd75",
+      "observed_utc": "2026-11-28T19:47:50Z",
+      "jobs": [
+        {
+          "job_id": 141084941827,
+          "name": "CI selection and release preflight",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:10:36Z",
+          "completed_utc": "2026-11-28T19:14:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141084942876,
+          "name": "Publication source rebind evidence",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:05:00Z",
+          "completed_utc": "2026-11-28T19:05:00Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581003,
+          "name": "three.js prototype (archived bake-off build)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:22:17Z",
+          "completed_utc": "2026-11-28T19:25:14Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581010,
+          "name": "RC native Linux build",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:22:57Z",
+          "completed_utc": "2026-11-28T19:26:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581012,
+          "name": "NK-3 native kernel qualification (Linux)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:15:25Z",
+          "completed_utc": "2026-11-28T19:36:32Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581015,
+          "name": "Website source and download checks",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:29:24Z",
+          "completed_utc": "2026-11-28T19:31:13Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581021,
+          "name": "RC native Windows build",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:18:01Z",
+          "completed_utc": "2026-11-28T19:25:33Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581033,
+          "name": "NK-4 native kernel qualification (Windows)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:19:57Z",
+          "completed_utc": "2026-11-28T19:41:55Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581056,
+          "name": "Godot app (units 5)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:19:02Z",
+          "completed_utc": "2026-11-28T19:45:37Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581060,
+          "name": "Godot visual captures",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:37:50Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581063,
+          "name": "Godot app (units 1)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:28:36Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581068,
+          "name": "Godot app (units 2)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:27:27Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581072,
+          "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:15:33Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581074,
+          "name": "Godot app (units 4)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:26:01Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581084,
+          "name": "Godot app (units 0)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:28:10Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581098,
+          "name": "Godot app (integration 0)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:26:32Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581104,
+          "name": "Godot app (units 6)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:38:32Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581108,
+          "name": "Godot app (units 7)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:25:15Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087581180,
+          "name": "Godot app (units 3)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:39:32Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087582124,
+          "name": "Vulkan capture shadow (${{ matrix.renderer }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": "2026-11-28T19:14:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141087582721,
+          "name": "Visual group shadow (${{ matrix.group }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:14:30Z",
+          "completed_utc": "2026-11-28T19:14:30Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141090859473,
+          "name": "RC native production checks (windows)",
+          "status": "completed",
+          "conclusion": "success",
+          "started_utc": "2026-11-28T19:26:37Z",
+          "completed_utc": "2026-11-28T19:40:44Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141090859599,
+          "name": "RC native production checks (linux)",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_utc": "2026-11-28T19:40:09Z",
+          "completed_utc": null,
+          "failed_steps": []
+        },
+        {
+          "job_id": 141095057506,
+          "name": "Release builds (Windows, Linux, macOS)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:41:56Z",
+          "completed_utc": "2026-11-28T19:41:55Z",
+          "failed_steps": []
+        },
+        {
+          "job_id": 141095057702,
+          "name": "NK-4 Windows package qualification",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_utc": "2026-11-28T19:41:56Z",
+          "completed_utc": "2026-11-28T19:41:55Z",
+          "failed_steps": []
+        }
+      ]
+    }
+  ],
+  "broader_ci_scope": "These are actual job states at the stated observation time, not a blanket green CI claim. The 57ea run contains successful builds, production checks, Linux/Windows native qualifications and units 0/3/5, plus cancelled checks and a failed required aggregate that rejects failed/cancelled/missing/skipped jobs. The 4ed6 run remains in progress. Cancellation and diagnostic-export statuses do not independently attribute a simulator defect."
+}

@@ -409,6 +409,7 @@ void light() {
 		float k = pow(ROUGHNESS + 1.0, 2.0) * 0.125;
 		float geometry = (nl / max(nl * (1.0 - k) + k, 0.001)) * (nv / (nv * (1.0 - k) + k));
 		float fresnel = 0.04 + 0.96 * pow(1.0 - vh, 5.0);
-		SPECULAR_LIGHT += LIGHT_COLOR * ATTENUATION * transmission * rc_soil_specular * distribution * geometry * fresnel / (4.0 * nv);
+		SPECULAR_LIGHT += LIGHT_COLOR * ATTENUATION * transmission * SPECULAR_AMOUNT
+			* rc_soil_specular * distribution * geometry * fresnel / (4.0 * nv);
 	}
 }

@@ -78,7 +78,9 @@ float curtain_height(vec2 uv, float aspect) {
 	// Sheet: thick at the top, thinner toward the edge, a slightly fuller rim held by surface tension.
 	float in_sheet = 1.0 - smoothstep(edge - 0.004, edge + 0.002, y);
 	float profile = mix(1.0, 0.5, clamp(y / max(edge, 1e-3), 0.0, 1.0));
-	float rim = exp(-pow((edge - y - 0.006) / 0.008, 2.0)) * 0.35;
+	// The signed distance crosses zero; GLSL pow is undefined for a negative base.
+	float rim_distance = (edge - y - 0.006) / 0.008;
+	float rim = exp(-rim_distance * rim_distance) * 0.35;
 	float h = in_sheet * (profile + rim);
 	// Runners.
 	float column_width = 1.7778 / columns;

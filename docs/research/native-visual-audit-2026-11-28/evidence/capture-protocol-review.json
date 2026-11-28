@@ -1,0 +1,187 @@
+{
+  "format": "openrc-native-visual-capture-protocol-review-v1",
+  "disposition": "Approved for hosted execution",
+  "scope": "Independent source and offline process review. Hosted game renders and physical-GPU performance remain separate acceptance steps.",
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "production_reference": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3",
+  "reviewed_file_sha256": {
+    ".github/workflows/native-visual-audit.yml": "101515c37872cf13c5c7d94a42e7dbed2c356c1d4a4751de5e913d9f5064d47c",
+    "tools/graphics/native_visual_audit.py": "355fbfe3642f886b920c3b511aa6ba71e48b1a1fc9c39ba68a6866d105501ee0",
+    "tools/graphics/test_native_visual_audit.py": "94947e773a266aa3ec8f6528fd452b9d1c23d1abcc238eddfeced079437419a9",
+    "tools/landscape/capture_building_roofs.gd": "2ac4f382812337f632bfdb12c3e7cc3471f78e188b34eb3387adb41e4cca07bb",
+    "tools/godot/run_checked.py": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+    "tools/godot/resource_samples.py": "5dc82ef9c0875d34addc6a446b58cf3a83b619b8dfaa8d778ad008cf61069a03",
+    "app/tests/capture_landscape_upgrade.gd": "fb0c34698212d5846bdd6baf227f8db7700c892c4f268e6321ea4a91fa0e3e79"
+  },
+  "production_shader_sha256": {
+    "app/assets/vehicle-paints/turbo-lumber-evolution/aserradero.gdshader": "534af2a88323165e6dd977830659b56ae1a5de4b27c012ac1a173f7d84c679e1",
+    "app/render/ground.gdshader": "2f0a54a8b7857a89a59ccb0b70725a20d3c6a12e5749cdcc2ac8b68e95518b83",
+    "app/render/lake/water.gdshader": "6e40728845e10a4fd0c4d4124c4078ae36599de44750d73c95aa98533abde04f",
+    "app/render/landscape_upgrade/countryside_surface.gdshader": "06e67e32b2379fae45603d19e623222b49f6564f0cc730daa612da41ec4cf864",
+    "app/render/lens/lens_film.gdshader": "def1faa2ebe5facf66233ff272c1a7035828221762ecc25de3e2a6bfd83335be",
+    "app/render/weather/rain_curtain.gdshader": "28f62584bbcdd0334b2fd1ba035c4cc7c356630a7bcd09e1901cc698bf5873ce",
+    "app/render/windsock_deformation.gdshaderinc": "def2404b78ac467301925dbd87dc6fdbe997735d1aa5118ef5f1709b9687ba97",
+    "app/render/world/moon_disc.gdshaderinc": "6eeb74974dbd723aa22b1608fdba3e6ef2c49e7d96d41ac64862242146eccb57",
+    "app/scenery/building_roofs.gdshader": "5aa7e91a83ba08022778701c90a20738763673565248921d477ec65861a18db9",
+    "app/scenery/pit_shelter_roof.gdshader": "0018da50ff094227420091a8043ea5ab85a2f05dbe6221b73b6b6da764cba2f7"
+  },
+  "evidence_harness_sha256": {
+    "controls": "5bd37500e6de0692853616b6475b990b25fc0246bf46f04673017f349fd37b9c",
+    "moon": "f669fa90fe96b4b884650e47a6d0e2d3494eeeb3c41886284c09dcd4f865595e",
+    "roofs": "90b69de3dd9bb3a8d16533e1e8262b7415b82c56d13279fa449ca1bbeb821405",
+    "windsock": "02878e64898ffbfe341d426f89b59524c94b31ec01d9a70e6e50b277b3de0271",
+    "storm": "46e72ad0edd74cc7b70dab2dfaec05f9087fcd034d06691f3be780e7b8356cd8",
+    "paint": "5c0098a92393c008d43cd77a8e4b631218ac4069426292df241ac30b05c785cb"
+  },
+  "shard_selection": {
+    "renderers": [
+      "gl_compatibility",
+      "forward_plus"
+    ],
+    "field_cases": [
+      "lake_shore",
+      "lake_overview",
+      "pilot_north",
+      "plain_highway",
+      "plain_field_entry",
+      "postcard_pavilion"
+    ],
+    "detail_groups": [
+      "controls",
+      "moon",
+      "roofs",
+      "windsock",
+      "storm",
+      "paint"
+    ],
+    "jobs": 24,
+    "views_per_renderer": 30,
+    "field_order": [
+      "baseline",
+      "candidate",
+      "candidate",
+      "baseline"
+    ],
+    "detail_order": [
+      "baseline",
+      "candidate"
+    ],
+    "warmup": 60,
+    "recorded_samples": 31,
+    "wall_intervals_after_bootstrap": 30
+  },
+  "offline_suite": {
+    "command": "python -m unittest discover -s tools/graphics -p test_native_visual_audit.py -q",
+    "tests_passed": 12,
+    "elapsed_s": 2.39,
+    "git_diff_check": "passed"
+  },
+  "admission": [
+    "Each job owns a single renderer and workload. Every field case executes baseline/candidate/candidate/baseline in one matrix job on the same VM. Normal imports and field captures require clean checked exits. The detail-only runs pair baseline/candidate on one VM. Timings and image differences are compared within a workload.",
+    "Before launch, the runner checks the candidate checkout against the exact tracked app/assets scope, hashes runtime files, and verifies the original candidate and baseline shader bytes. It restores the prior bytes in a finally block. Each variant has a fresh environment profile and reimports its native resources. Production hashes listed here match the previously reviewed f066ef26 commit byte-for-byte.",
+    "The field runner samples the direct engine process with --resources and a one-second interval; its raw telemetry file and capture ID are matched to the checked verdict. CPU and RSS include engine startup and the selected workload. GPU poll age is unverified; the virtual device cannot establish physical-GPU throughput or target FPS.",
+    "The lifecycle helper relays both Godot output streams through EOF to the independent checked runner, identifies the renderer from a bounded copy of the startup header and rejects mismatched or missing expected evidence. This resolves a draft bug that read the buffered and unfinished outer engine log. Final validation waits for the relay to drain. A late engine error still fails the outer checked verdict even after image acceptance.",
+    "An image-only lifecycle may request termination after a fully validated expected manifest and PNG set remains unchanged across the 30-second grace. It verifies full PNG structure, full pixel decode, 1920\u00d71080 dimensions, nonuniform content, expected metadata and any supplied native hashes. It records wrapper-issued signals, engine exit and evidence digests, then recomputes the evidence after exit. Ordinary failures, external signals, changed evidence and deadline expiry cannot be promoted to clean completion.",
+    "Pair reduction verifies corresponding device and scene inputs before comparing RGB pixels. Camera/clock/material inputs are fixture-specific. The six field views use source-identified camera definitions and readback of the recorded scene configuration. Raw per-run field samples and resource reports are retained. Duplicate repeat-field PNGs may be removed when all RGB values match their same-variant primary; each repeat still has its own PNG and RGB digest. Different repeat images and all first baseline/candidate images are retained.",
+    "The two roof close-ups add named-mesh, active material, two-metre distance and UV determinant witnesses from three rays. They guard against the old 1e-6 condition at the targeted centre; actual pixel visibility, foreground occlusion and any improvement must be checked in the resulting frames.",
+    "All stdout/stderr remains available. The known optional re-spirv unsupported-opcode message has a dedicated counter; the classification, pinned engine sources and original Forward+ occurrence counts appear in hosted-initial-forward-plus.json. A forced image-only cleanup is independent of whether all engine teardown completed."
+  ],
+  "independent_nested_process_checks": {
+    "method": "Ran the actual run_checked process around the actual detail helper with a Python child, a short renderer-identification log, and the two archived Forward+ baseline lunar PNGs and manifest in a fresh temporary directory for each case. These synthetic process checks exercise the lifecycle and error plumbing without starting Godot.",
+    "cases": {
+      "clean": {
+        "outer_result": "passed",
+        "outer_exit": 0,
+        "outer_elapsed_s": 0.805504,
+        "log_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "wrapper_lifecycle": {
+          "engine_pid": 28,
+          "engine_returncode": 0,
+          "signals_sent": [],
+          "forced_post_save_cleanup": false,
+          "grace_seconds": 30,
+          "accepted": true,
+          "initial_verified_digest": null,
+          "pre_signal_verified_digest": null,
+          "first_verified_after_s": null,
+          "first_signal_after_s": null,
+          "exit_observed_after_s": 0.5001479839993408,
+          "verified_digest": "dfdca9e3d1d5fc381fe3a1f63bbcceaf9ab641764916c50eb12f9a28cbe157f5"
+        }
+      },
+      "late_stderr_error": {
+        "outer_result": "engine_error",
+        "outer_exit": 1,
+        "outer_elapsed_s": 0.786812,
+        "log_counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "wrapper_lifecycle": {
+          "engine_pid": 24,
+          "engine_returncode": 0,
+          "signals_sent": [],
+          "forced_post_save_cleanup": false,
+          "grace_seconds": 30,
+          "accepted": true,
+          "initial_verified_digest": null,
+          "pre_signal_verified_digest": null,
+          "first_verified_after_s": null,
+          "first_signal_after_s": null,
+          "exit_observed_after_s": 0.5001710850010568,
+          "verified_digest": "dfdca9e3d1d5fc381fe3a1f63bbcceaf9ab641764916c50eb12f9a28cbe157f5"
+        }
+      },
+      "nonzero": {
+        "outer_result": "process_exit",
+        "outer_exit": 7,
+        "outer_elapsed_s": 0.563883,
+        "log_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "wrapper_lifecycle": {
+          "engine_pid": 22,
+          "engine_returncode": 7,
+          "signals_sent": [],
+          "forced_post_save_cleanup": false,
+          "grace_seconds": 30,
+          "accepted": false,
+          "initial_verified_digest": null,
+          "pre_signal_verified_digest": null,
+          "first_verified_after_s": null,
+          "first_signal_after_s": null,
+          "exit_observed_after_s": 0.5001489640017098
+        }
+      },
+      "post_save_stall": {
+        "outer_result": "passed",
+        "outer_exit": 0,
+        "outer_elapsed_s": 31.056291,
+        "log_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "wrapper_lifecycle": {
+          "engine_pid": 26,
+          "engine_returncode": -15,
+          "signals_sent": [
+            15
+          ],
+          "forced_post_save_cleanup": true,
+          "grace_seconds": 30,
+          "accepted": true,
+          "initial_verified_digest": "dfdca9e3d1d5fc381fe3a1f63bbcceaf9ab641764916c50eb12f9a28cbe157f5",
+          "pre_signal_verified_digest": "dfdca9e3d1d5fc381fe3a1f63bbcceaf9ab641764916c50eb12f9a28cbe157f5",
+          "first_verified_after_s": 0.7066025560015987,
+          "first_signal_after_s": 30.892681535999145,
+          "exit_observed_after_s": 30.893892994001362,
+          "verified_digest": "dfdca9e3d1d5fc381fe3a1f63bbcceaf9ab641764916c50eb12f9a28cbe157f5"
+        }
+      }
+    }
+  }
+}

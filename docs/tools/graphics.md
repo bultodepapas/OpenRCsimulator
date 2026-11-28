@@ -79,6 +79,7 @@ Complete assertion inventory and performance qualification remain pending, as do
 
 | Area | Entry point | Contract |
 | --- | --- | --- |
+| Fixed native shader audit, matched 1080p views and software timing | `tools/graphics/native_visual_audit.py`, `shader_math_probe.py` (not in `capture.sh`) | [Dated protocol, source identities and evidence limits](../research/native-visual-audit-2026-11-28/README.md#reproducible-evidence) |
 | Grass placement, seams | `tools/grass/check_grass.py`, `check_grass_seam.py` | [tools/grass](../../tools/grass/README.md) |
 | Ground surfaces, stripes, windsock | `tools/ground/check_surfaces.py`, `check_stripes.py`, `check_windsock.py` | [tools/ground](../../tools/ground/README.md) |
 | Horizon | `tools/terrain/check_horizon.py` | [tools/terrain](../../tools/terrain/README.md) |

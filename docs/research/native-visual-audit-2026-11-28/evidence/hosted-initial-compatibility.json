@@ -1,0 +1,974 @@
+{
+  "format": "openrc-native-visual-initial-compatibility-review-v1",
+  "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160123980/job/141025387656",
+  "artifact": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160123980/artifacts/15272014501",
+  "archive_sha256": "d18ee9345fcf6c087b019b471d0eb358e333d046072afbf6f93f9ce467ec3a14",
+  "members_verified": 131,
+  "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+  "candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3",
+  "result": "Canceled during final baseline field capture. The last block has no field report or checked field verdict.",
+  "qualification": "The first three blocks completed and remain source-identified. The first baseline/candidate block supplies 28 matched image pairs from the original seven fixtures. The candidate field repeat is complete; two saved PNGs from the final baseline are isolated diagnostics. There is no complete balanced timing result for this run.",
+  "processes": {
+    "1-baseline": {
+      "moon": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 38.547795,
+        "log_sha256": "03171ca013a35b73c0c06433e08ef40f8a3aa977ac1bc27db2c1a64287299143"
+      },
+      "storm": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 13.841796,
+        "log_sha256": "b42e57657b0f047fa5c229c70626541d19e3ef8a06ed20f0a36c4531bc3a5677"
+      },
+      "import": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 8
+        },
+        "elapsed_seconds": 446.018428,
+        "log_sha256": "9a6f39bd4778dcdef57c7078d12300fa700002a65d31f067b3e6ba9dd183b7c3"
+      },
+      "field": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 1062.224661,
+        "log_sha256": "df4e138cce6c34395f30d82ed25abab90022fe80a7a218b8961b9427f8c81f59"
+      },
+      "roofs": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 395.055438,
+        "log_sha256": "b7b46dbc4dea8e6c777195cef9e63d7cbc47941d438aa777589a48f7820958c0"
+      },
+      "paint": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 12.293868,
+        "log_sha256": "cfcff20b87aab34fae5c154a0cd490b447cd4e1fc5a0a493ec21c0556ad1aff3"
+      },
+      "controls": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 38.970542,
+        "log_sha256": "62721a19e387dc01eb0e936ebc40229fffccbde90ad54a52b18e03435e16c465"
+      },
+      "windsock": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 132.808246,
+        "log_sha256": "b7b46dbc4dea8e6c777195cef9e63d7cbc47941d438aa777589a48f7820958c0"
+      }
+    },
+    "2-candidate": {
+      "moon": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 37.829036,
+        "log_sha256": "03171ca013a35b73c0c06433e08ef40f8a3aa977ac1bc27db2c1a64287299143"
+      },
+      "storm": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 13.411903,
+        "log_sha256": "84890dea4c092a4dd040158d6a696e560b580cf6dd1ebf7e14cd3562e3650b18"
+      },
+      "import": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.491402,
+        "log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4"
+      },
+      "field": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 1046.479531,
+        "log_sha256": "513daff19d8f2c384e7e9c9625f102f79717a191c4a93b48ba44bad08fa40cab"
+      },
+      "roofs": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 392.834848,
+        "log_sha256": "b7b46dbc4dea8e6c777195cef9e63d7cbc47941d438aa777589a48f7820958c0"
+      },
+      "paint": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 11.867435,
+        "log_sha256": "6e8adb7035f9eeecb44db4c716c8003867740ab940d9db82f8dd9d8509623f53"
+      },
+      "controls": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 38.784671,
+        "log_sha256": "62721a19e387dc01eb0e936ebc40229fffccbde90ad54a52b18e03435e16c465"
+      },
+      "windsock": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 131.198406,
+        "log_sha256": "b7b46dbc4dea8e6c777195cef9e63d7cbc47941d438aa777589a48f7820958c0"
+      }
+    },
+    "3-candidate": {
+      "import": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.362553,
+        "log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4"
+      },
+      "field": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "elapsed_seconds": 1066.298793,
+        "log_sha256": "134cc7ac50ad3c956c08dae6060194b2c97a5cdb91170b46a550495d10378e6b"
+      }
+    },
+    "4-baseline": {
+      "import": {
+        "reason": "passed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 5.434994,
+        "log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4"
+      }
+    }
+  },
+  "groups": {
+    "field": {
+      "conditions_sha256": "0fd2d197f9d70e10104a8a8eafd83b793e966c0dd2bc06bcb04284e47678397e",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "lake_shore": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "9efbfa5d3e1f28c0abb5c633ab24c23b1159ca825e904caef27a81e7d8a7b45c",
+              "png_sha256": "3d7784e332fecc30cefa66795e5e10129ff5f539474d99030a3ae2bd81399994"
+            },
+            "2-candidate": {
+              "rgb_sha256": "e8a4d408b94820a1d2806ba332887dc1bc582c068adbc22bab08b84f3ad90ef3",
+              "png_sha256": "a1dd676d075c1aebad51c3b2f92d2f0458eb9d530c725fc24ec70f4e8a82e718"
+            },
+            "3-candidate": {
+              "rgb_sha256": "e8a4d408b94820a1d2806ba332887dc1bc582c068adbc22bab08b84f3ad90ef3",
+              "png_sha256": "a1dd676d075c1aebad51c3b2f92d2f0458eb9d530c725fc24ec70f4e8a82e718"
+            },
+            "4-baseline": {
+              "rgb_sha256": "9efbfa5d3e1f28c0abb5c633ab24c23b1159ca825e904caef27a81e7d8a7b45c",
+              "png_sha256": "3d7784e332fecc30cefa66795e5e10129ff5f539474d99030a3ae2bd81399994"
+            }
+          },
+          "changed_pixels": 224421,
+          "changed_bbox_xyxy_exclusive": [
+            0,
+            517,
+            1920,
+            980
+          ],
+          "lower_channel_values": 92647,
+          "higher_channel_values": 324661,
+          "min_delta_rgb8": -3,
+          "max_delta_rgb8": 5,
+          "candidate_repeat_changed_pixels": 0,
+          "unfinalized_baseline_repeat_changed_pixels": 0
+        },
+        "lake_overview": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "23b5411a7d627d99c2f8c49fc6ec573ee8dec55e576b71dc2dca76df7aec11eb",
+              "png_sha256": "d31b14e76601162d2197aa0136457a4c034d2eff50fdad3a2667039f26e32826"
+            },
+            "2-candidate": {
+              "rgb_sha256": "10f99e6ce049082612d53a0fb0e0c8bf5d835feb840e2775f7a131abdc1a7125",
+              "png_sha256": "7a0a5ed772f0d5fc6c9edf7983633eec12933ff3673973c0843696ae4bff8733"
+            },
+            "3-candidate": {
+              "rgb_sha256": "10f99e6ce049082612d53a0fb0e0c8bf5d835feb840e2775f7a131abdc1a7125",
+              "png_sha256": "7a0a5ed772f0d5fc6c9edf7983633eec12933ff3673973c0843696ae4bff8733"
+            },
+            "4-baseline": {
+              "rgb_sha256": "23b5411a7d627d99c2f8c49fc6ec573ee8dec55e576b71dc2dca76df7aec11eb",
+              "png_sha256": "d31b14e76601162d2197aa0136457a4c034d2eff50fdad3a2667039f26e32826"
+            }
+          },
+          "changed_pixels": 35053,
+          "changed_bbox_xyxy_exclusive": [
+            534,
+            420,
+            1233,
+            750
+          ],
+          "lower_channel_values": 8421,
+          "higher_channel_values": 37641,
+          "min_delta_rgb8": -1,
+          "max_delta_rgb8": 1,
+          "candidate_repeat_changed_pixels": 0,
+          "unfinalized_baseline_repeat_changed_pixels": 0
+        },
+        "pilot_north": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "aa6eb03dcf879e6867294bc2e1d88f9280b5e7f3bdd65cedc543191e4a6e12f2",
+              "png_sha256": "f41d7a1bbd7cef0a82ebcefb3b6b5c32ee8cbc242bd3a93c910eca88b7eb0ff3"
+            },
+            "2-candidate": {
+              "rgb_sha256": "debbc6771eb301dda5464957dc238974ec06da363c365b0d3d81430f1bf61894",
+              "png_sha256": "29edbe2839de8caf51dbf0a6a250801217044c5e4be001793478bcd80b260679"
+            },
+            "3-candidate": {
+              "rgb_sha256": "debbc6771eb301dda5464957dc238974ec06da363c365b0d3d81430f1bf61894",
+              "png_sha256": "29edbe2839de8caf51dbf0a6a250801217044c5e4be001793478bcd80b260679"
+            }
+          },
+          "changed_pixels": 62,
+          "changed_bbox_xyxy_exclusive": [
+            1808,
+            582,
+            1919,
+            584
+          ],
+          "lower_channel_values": 65,
+          "higher_channel_values": 4,
+          "min_delta_rgb8": -1,
+          "max_delta_rgb8": 1,
+          "candidate_repeat_changed_pixels": 0
+        },
+        "plain_highway": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "53b8993375d11cb15acd6b5cebf6ade8f0a64c87ba8bc772810336cc614526cf",
+              "png_sha256": "c93397a5b9bda813a474948bb61131c3adb0db565968bd986393e9e63a92aeb4"
+            },
+            "2-candidate": {
+              "rgb_sha256": "53b8993375d11cb15acd6b5cebf6ade8f0a64c87ba8bc772810336cc614526cf",
+              "png_sha256": "c93397a5b9bda813a474948bb61131c3adb0db565968bd986393e9e63a92aeb4"
+            },
+            "3-candidate": {
+              "rgb_sha256": "53b8993375d11cb15acd6b5cebf6ade8f0a64c87ba8bc772810336cc614526cf",
+              "png_sha256": "c93397a5b9bda813a474948bb61131c3adb0db565968bd986393e9e63a92aeb4"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0,
+          "candidate_repeat_changed_pixels": 0
+        },
+        "plain_field_entry": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "69e9336b39ffa06332dadbf62da99cc9af8ac5fe79f0195b792c1239f6820145",
+              "png_sha256": "5095d408133bb92d4ae5f7139dafcd713ef8f6226167dd64cc6e8767172b569c"
+            },
+            "2-candidate": {
+              "rgb_sha256": "69e9336b39ffa06332dadbf62da99cc9af8ac5fe79f0195b792c1239f6820145",
+              "png_sha256": "5095d408133bb92d4ae5f7139dafcd713ef8f6226167dd64cc6e8767172b569c"
+            },
+            "3-candidate": {
+              "rgb_sha256": "69e9336b39ffa06332dadbf62da99cc9af8ac5fe79f0195b792c1239f6820145",
+              "png_sha256": "5095d408133bb92d4ae5f7139dafcd713ef8f6226167dd64cc6e8767172b569c"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0,
+          "candidate_repeat_changed_pixels": 0
+        },
+        "postcard_pavilion": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "af9dbb7a0c49a58eb72654509f0f5f4da4c023cc9759ecd99ce273742dad942f",
+              "png_sha256": "5b14cf55058eb577ce420d1d6bb025f1d781c3bdc6f6e0ceb978c3c7f104884b"
+            },
+            "2-candidate": {
+              "rgb_sha256": "af9dbb7a0c49a58eb72654509f0f5f4da4c023cc9759ecd99ce273742dad942f",
+              "png_sha256": "5b14cf55058eb577ce420d1d6bb025f1d781c3bdc6f6e0ceb978c3c7f104884b"
+            },
+            "3-candidate": {
+              "rgb_sha256": "af9dbb7a0c49a58eb72654509f0f5f4da4c023cc9759ecd99ce273742dad942f",
+              "png_sha256": "5b14cf55058eb577ce420d1d6bb025f1d781c3bdc6f6e0ceb978c3c7f104884b"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0,
+          "candidate_repeat_changed_pixels": 0
+        }
+      }
+    },
+    "controls": {
+      "conditions_sha256": "63cdd5a355fb5740e916b051d1c030a0830c826092cbaf75af0355bb64c79111",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "dirt_light_off": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "ab47a393d559eb565099c5beae659f9bd73f1ca3573986f2edce9dda0eaa6570",
+              "png_sha256": "f69845c470270a5502e97a29c524341ec79a9f39466d91f572de593c5c137bfb"
+            },
+            "2-candidate": {
+              "rgb_sha256": "ab47a393d559eb565099c5beae659f9bd73f1ca3573986f2edce9dda0eaa6570",
+              "png_sha256": "f69845c470270a5502e97a29c524341ec79a9f39466d91f572de593c5c137bfb"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        },
+        "dirt_specular_000": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "696b9cfc0dd4b147c6d2d2001b0cd99080f50b674d55f5eecf00e08a8733559c",
+              "png_sha256": "36a04a270f2e2d7090f4ec61f010bfd9d11f0bb84a55daeae5d89955e0f57093"
+            },
+            "2-candidate": {
+              "rgb_sha256": "a48b4afb29461e941b42e300646ce9701cfa768890300f915e8b88735e042a53",
+              "png_sha256": "1142ef311f3b9a1f212b85e575a64463bae067c10073d0b8c803f55e5df538a1"
+            }
+          },
+          "changed_pixels": 1425913,
+          "changed_bbox_xyxy_exclusive": [
+            0,
+            226,
+            1920,
+            1080
+          ],
+          "lower_channel_values": 4252255,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": -32,
+          "max_delta_rgb8": 0
+        },
+        "dirt_specular_035": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "696b9cfc0dd4b147c6d2d2001b0cd99080f50b674d55f5eecf00e08a8733559c",
+              "png_sha256": "36a04a270f2e2d7090f4ec61f010bfd9d11f0bb84a55daeae5d89955e0f57093"
+            },
+            "2-candidate": {
+              "rgb_sha256": "b07f24bf9b4b9c6aa5378596c0a14843561c0a11e25981ea89f76de6d4c65a81",
+              "png_sha256": "66620c88f65d0c6880352b8284118ba3dd245fcbdcc58cf721157b13f1751571"
+            }
+          },
+          "changed_pixels": 1409300,
+          "changed_bbox_xyxy_exclusive": [
+            0,
+            226,
+            1920,
+            1080
+          ],
+          "lower_channel_values": 3955993,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": -8,
+          "max_delta_rgb8": 0
+        },
+        "dirt_specular_050": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "696b9cfc0dd4b147c6d2d2001b0cd99080f50b674d55f5eecf00e08a8733559c",
+              "png_sha256": "36a04a270f2e2d7090f4ec61f010bfd9d11f0bb84a55daeae5d89955e0f57093"
+            },
+            "2-candidate": {
+              "rgb_sha256": "696b9cfc0dd4b147c6d2d2001b0cd99080f50b674d55f5eecf00e08a8733559c",
+              "png_sha256": "36a04a270f2e2d7090f4ec61f010bfd9d11f0bb84a55daeae5d89955e0f57093"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        },
+        "lens_disabled": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "a75b61076b3ce6fafcc5addf0ff756b430307ed558f6202ef5426c3af67ee7cf",
+              "png_sha256": "4d5be3f9d085c1fa9164e71d29cc057ff9320ce58fcc90f1c64ac1e45f4dcc40"
+            },
+            "2-candidate": {
+              "rgb_sha256": "a75b61076b3ce6fafcc5addf0ff756b430307ed558f6202ef5426c3af67ee7cf",
+              "png_sha256": "4d5be3f9d085c1fa9164e71d29cc057ff9320ce58fcc90f1c64ac1e45f4dcc40"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        },
+        "lens_curtain_partial": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "3987883c4e0719b2d505ff9f8c89b0c8d1ee8543d187aafd92d63e37d6feb2b9",
+              "png_sha256": "6c09a368bbb777c97e084995a7938861ecdeea19f43ce2620186959bb405ea7d"
+            },
+            "2-candidate": {
+              "rgb_sha256": "3987883c4e0719b2d505ff9f8c89b0c8d1ee8543d187aafd92d63e37d6feb2b9",
+              "png_sha256": "6c09a368bbb777c97e084995a7938861ecdeea19f43ce2620186959bb405ea7d"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        },
+        "lens_curtain_held": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "bb5423d80df4d0f8e2990179931ce8b7e54d05b188903536c1845ab6282819f3",
+              "png_sha256": "60f61e9187328d4bae1f04566768329486ab4c27b475697ae871658ee5b857b1"
+            },
+            "2-candidate": {
+              "rgb_sha256": "bb5423d80df4d0f8e2990179931ce8b7e54d05b188903536c1845ab6282819f3",
+              "png_sha256": "60f61e9187328d4bae1f04566768329486ab4c27b475697ae871658ee5b857b1"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        }
+      }
+    },
+    "moon": {
+      "conditions_sha256": "dcdcafff09f70272dc827b390825b75885104147923377b155e03b3491319baa",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "full_high-close": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "272356c59c729b29cec2f85eea311311a6c8ab6610006d7ff1f52b0c38d5ca70",
+              "png_sha256": "bc9ba75beee3c3111c936c6c9c81404f8b73d797cf51d87ade8f18a2cedb2348"
+            },
+            "2-candidate": {
+              "rgb_sha256": "73213ad8884cbf3ba338bc5163d2ee7653c2489cb0991245e5c9483691746f0d",
+              "png_sha256": "50390b3d22377949abc4c33d7af8928b9c077613049245e44a71c62e5b9ea243"
+            }
+          },
+          "changed_pixels": 87653,
+          "changed_bbox_xyxy_exclusive": [
+            706,
+            286,
+            1214,
+            794
+          ],
+          "lower_channel_values": 75654,
+          "higher_channel_values": 61106,
+          "min_delta_rgb8": -144,
+          "max_delta_rgb8": 110
+        },
+        "full_high-wide": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "d222826ac3d7b6e9426631644bfdc29c90190dcbfcdd03c9c3176dc5ca758f4a",
+              "png_sha256": "73ba026435d04ca91f72584d95cb28e4691301a995e522b466be45c199d4f5b8"
+            },
+            "2-candidate": {
+              "rgb_sha256": "4da1bfa6b2dc25547fae1e7d139eef1a938640b7ae970405051d5029f2e0c8b9",
+              "png_sha256": "9e8bf8f68f763a571aeb361b625c91f8ff0deeaba9aa76adfa1ec1c926ea4f37"
+            }
+          },
+          "changed_pixels": 45,
+          "changed_bbox_xyxy_exclusive": [
+            955,
+            535,
+            964,
+            544
+          ],
+          "lower_channel_values": 75,
+          "higher_channel_values": 30,
+          "min_delta_rgb8": -4,
+          "max_delta_rgb8": 3
+        }
+      }
+    },
+    "roofs": {
+      "conditions_sha256": "eda34eb4fcf1e1672d1b6f46ac46fd2b03cda025addbb45374c763f92b2d533f",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "club_air": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "3bf673eb711c347bd377d77d8eda9ecb23a1268af6da75480774dd4d70af2339",
+              "png_sha256": "d329294d2966119bc83e294105b0cb9f55f0f0456299a658174026d6299c2434"
+            },
+            "2-candidate": {
+              "rgb_sha256": "5e5083e2fc5f4978fb30e12fe82592d54a810b29b13a337e8b35d5d345069e84",
+              "png_sha256": "12a70fef95f433d8226b2116fa1649e224efb1c9570cdf158657d8450fc8e443"
+            }
+          },
+          "changed_pixels": 396,
+          "changed_bbox_xyxy_exclusive": [
+            346,
+            369,
+            1518,
+            1032
+          ],
+          "lower_channel_values": 416,
+          "higher_channel_values": 560,
+          "min_delta_rgb8": -5,
+          "max_delta_rgb8": 24
+        },
+        "pavilion_pilot": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "24714b0c85c304e0d7f88eb5f7b3bc063a0d0c04fa24fe95ad94ae1a52ff1332",
+              "png_sha256": "56c94827a27c45c8708ea22f693371fadc32ea55fd3771921ceff043c4e5c112"
+            },
+            "2-candidate": {
+              "rgb_sha256": "24714b0c85c304e0d7f88eb5f7b3bc063a0d0c04fa24fe95ad94ae1a52ff1332",
+              "png_sha256": "56c94827a27c45c8708ea22f693371fadc32ea55fd3771921ceff043c4e5c112"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        },
+        "pavilion_roof": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "91460a80f70b3f3ca586c0c858aed65f6efd45c6989758734b9ddf73cb2d8c7b",
+              "png_sha256": "ca26189b6a88629479f5b23fcd45eebde4ac57bc22f7261e821026de33132879"
+            },
+            "2-candidate": {
+              "rgb_sha256": "8829166c61e3625fad596e6114fbceec4c87e5d2a9491b12bbf1f954c482a384",
+              "png_sha256": "e0b67ce55742c6e1020908283b97bf93dafa8e5a0a3af6465e7fe9e69192498d"
+            }
+          },
+          "changed_pixels": 6,
+          "changed_bbox_xyxy_exclusive": [
+            928,
+            150,
+            1725,
+            755
+          ],
+          "lower_channel_values": 2,
+          "higher_channel_values": 4,
+          "min_delta_rgb8": -1,
+          "max_delta_rgb8": 1
+        },
+        "shed_roof": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "2e9baa0f3c302c83121d56e63f6698b8040bb16d7b1bf5489f69daf9d01ed2aa",
+              "png_sha256": "10ee90c7c0a499350a62bf48bda965a508ce0146b3e8f206d6c18ba0d082f681"
+            },
+            "2-candidate": {
+              "rgb_sha256": "0192b20121f80010174b428929738ee801f68905c40570289ed82b8a95554cce",
+              "png_sha256": "3aa36a10a340b2a675488448418838b101fbb7a2b5a0847b30edcc196c18060c"
+            }
+          },
+          "changed_pixels": 1,
+          "changed_bbox_xyxy_exclusive": [
+            1032,
+            433,
+            1033,
+            434
+          ],
+          "lower_channel_values": 0,
+          "higher_channel_values": 1,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 1
+        },
+        "farm_roofs": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "ae7ac6ee4122e59a2039ff5f225b62be2c89bf46bd21f632e4b1c503ad6c91b5",
+              "png_sha256": "eb4cac44fb7a7ae5cd2dcc75030eefe2ff9d075c87bcf43aa68c4b2e8ec0963c"
+            },
+            "2-candidate": {
+              "rgb_sha256": "ae7ac6ee4122e59a2039ff5f225b62be2c89bf46bd21f632e4b1c503ad6c91b5",
+              "png_sha256": "eb4cac44fb7a7ae5cd2dcc75030eefe2ff9d075c87bcf43aa68c4b2e8ec0963c"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        }
+      }
+    },
+    "windsock": {
+      "conditions_sha256": "982fc545e960a3d40c8d53de23da688ea60cd6c23c8f30b3eb095150eb1b7dfc",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "whole": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "f35d535540568e3fda97a351f5180c294bf67d94959e37ad65a3ffb83245f07c",
+              "png_sha256": "9ffbb08bef35089e1c2b35e5e9349add878fc03fbc95230c3e523500ee38b8b2"
+            },
+            "2-candidate": {
+              "rgb_sha256": "21fa44054b9917f372653ef3cfc04c67e8d1bfc887af6626319d7921d791a2b8",
+              "png_sha256": "46dd4ff82405dfd300a6e22f012a7a1cd92b78ea848e203dcc501ae3a54a9c23"
+            }
+          },
+          "changed_pixels": 18796,
+          "changed_bbox_xyxy_exclusive": [
+            727,
+            162,
+            1810,
+            529
+          ],
+          "lower_channel_values": 38373,
+          "higher_channel_values": 7978,
+          "min_delta_rgb8": -5,
+          "max_delta_rgb8": 19
+        },
+        "fabric": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "f926969d2373ba4cbb7a70314a5a72c8554f9fe2e6c225077ceab492e1dae177",
+              "png_sha256": "9df81f4b1f18f9af2b9e0a29db6f5611644024fddfafb3c6f2180980af0fb4eb"
+            },
+            "2-candidate": {
+              "rgb_sha256": "550d998681ec4e345240b89985a7f23d615e8c0be15b2ceb0081fb42bf7590c4",
+              "png_sha256": "4e11adbc043f3b94650bb21b118f290d37c0ed78f17d89d1da4fc3ae5b005bea"
+            }
+          },
+          "changed_pixels": 107236,
+          "changed_bbox_xyxy_exclusive": [
+            587,
+            297,
+            1868,
+            1049
+          ],
+          "lower_channel_values": 197967,
+          "higher_channel_values": 62266,
+          "min_delta_rgb8": -5,
+          "max_delta_rgb8": 23
+        },
+        "throat": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "3cf9eb92b9c03f2b105dbab440de296cf8bd73b7561b9dd5527e55bf6eebc092",
+              "png_sha256": "b87e61100ad901ab9c920ab4e7878c23555530c62f46e8a89e569a9997eb64fb"
+            },
+            "2-candidate": {
+              "rgb_sha256": "c0133d7c9ae9bc47a233c8d4cd8bf2ea00296f70380733b315ebce289950235a",
+              "png_sha256": "658a88ff244919691ff51e2f7339ad4d962fe40478f61b9f724c751089278f5d"
+            }
+          },
+          "changed_pixels": 124358,
+          "changed_bbox_xyxy_exclusive": [
+            281,
+            330,
+            1167,
+            1080
+          ],
+          "lower_channel_values": 182303,
+          "higher_channel_values": 111758,
+          "min_delta_rgb8": -25,
+          "max_delta_rgb8": 44
+        },
+        "base": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "1be858733f2489c1e226d89a475ecb8bf14350ebf84a54bce73b3c186294c77f",
+              "png_sha256": "d74170a83f36872d4bc30665538777af004188191580a8e8dcceffcdc883d7d9"
+            },
+            "2-candidate": {
+              "rgb_sha256": "1be858733f2489c1e226d89a475ecb8bf14350ebf84a54bce73b3c186294c77f",
+              "png_sha256": "d74170a83f36872d4bc30665538777af004188191580a8e8dcceffcdc883d7d9"
+            }
+          },
+          "changed_pixels": 0,
+          "changed_bbox_xyxy_exclusive": null,
+          "lower_channel_values": 0,
+          "higher_channel_values": 0,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 0
+        }
+      }
+    },
+    "storm": {
+      "conditions_sha256": "94700e0c2ff7d4461177b9f935c4b40b06104f332bb213d163d3118b4cf7a3fd",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "distant_storm-day-pilot-fov50": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "45dac95401b8a8a3436c3f67a5f712b68d6e053471b5d41bf5db8c9654d71b13",
+              "png_sha256": "92b22a82d3d056202bb20bf62f6f4d311e3114c4d7b1fd26f13692f83bb514ee"
+            },
+            "2-candidate": {
+              "rgb_sha256": "27db4b8508e31a10c9c80d83f79bb3c366905ed77079dc149f8183fd2489ec34",
+              "png_sha256": "230ad0c0b904a9dadc00a5475e5d19c5e3a333e726944d725d43b12e0e9692d4"
+            }
+          },
+          "changed_pixels": 189,
+          "changed_bbox_xyxy_exclusive": [
+            864,
+            714,
+            1048,
+            847
+          ],
+          "lower_channel_values": 0,
+          "higher_channel_values": 245,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 1
+        },
+        "distant_storm-day-pilot-fov25": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "e67dc72cbe5c00e35ddc8e6d5e272ceb630aa0ce1d790e4e2c987eeafc001107",
+              "png_sha256": "3587d97cb1cb0c4584939bfd5917f163699449290c98f6649dce0b7aefe5311f"
+            },
+            "2-candidate": {
+              "rgb_sha256": "d344028cec157ace10c465cbc3c5a05a7c443061d5164b8dd609b8c99512fe54",
+              "png_sha256": "fcf6b369b6b6a94e3f71127f04d7f72875c03f8e4274c48ece76c10873c8c88f"
+            }
+          },
+          "changed_pixels": 213,
+          "changed_bbox_xyxy_exclusive": [
+            762,
+            902,
+            1144,
+            1080
+          ],
+          "lower_channel_values": 0,
+          "higher_channel_values": 297,
+          "min_delta_rgb8": 0,
+          "max_delta_rgb8": 1
+        }
+      }
+    },
+    "paint": {
+      "conditions_sha256": "4b0d5809413c71eed891d4a73edd534a1e821796a82537ddd2120b32018ecb0d",
+      "renderer_device": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.5 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+      "pairs": {
+        "turbo-lumber-evolution_aserradero_front34": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "2e0b72fbd16c6d8e9a30ed1528db49e57ede23700f7ddc6979cc8e72abf71ae5",
+              "png_sha256": "712b1fdd2bff9129fe8a1d3e6969dec96898aa2e732785c8eabfa35f4c5e9d6b"
+            },
+            "2-candidate": {
+              "rgb_sha256": "e59ce13d9f565e928d700f19e23b1f47d2988a5c25c85ea06a9332e3b3bb14ce",
+              "png_sha256": "b074e9e90628bd4651a06690d9f649ea342207a3c4346d479ede8f930907e83a"
+            }
+          },
+          "changed_pixels": 8608,
+          "changed_bbox_xyxy_exclusive": [
+            496,
+            318,
+            1435,
+            691
+          ],
+          "lower_channel_values": 6435,
+          "higher_channel_values": 10505,
+          "min_delta_rgb8": -25,
+          "max_delta_rgb8": 29
+        },
+        "turbo-lumber-evolution_aserradero_top": {
+          "identities": {
+            "1-baseline": {
+              "rgb_sha256": "607d743ce6bd397d924b232d2a8399ad1498c58354a96b5ed86c249d363bd1a7",
+              "png_sha256": "b47336b40e4cca0421e3e44b152bfaedd9daa332f21350d061b16f0ff3260466"
+            },
+            "2-candidate": {
+              "rgb_sha256": "f3376dfc39719c1276a54ee3a1cccd2c5c743149d726895bd90ff0369b3fbc25",
+              "png_sha256": "97d319881da9f961beb5bee48df3461cdd2c62dbbb1fdbf8a49173035d575677"
+            }
+          },
+          "changed_pixels": 9754,
+          "changed_bbox_xyxy_exclusive": [
+            491,
+            162,
+            1562,
+            930
+          ],
+          "lower_channel_values": 8108,
+          "higher_channel_values": 11848,
+          "min_delta_rgb8": -24,
+          "max_delta_rgb8": 23
+        }
+      }
+    }
+  },
+  "runtime_manifest_sha256": "afba9d4944a7b22a9ae29cdd1fb5e47ea620ab4eb477184d431f5278ba0c6b47",
+  "image_inspection": {
+    "views": [
+      "lake_shore",
+      "full_high-close",
+      "throat",
+      "turbo-lumber-evolution_aserradero_top"
+    ],
+    "method": "Inspected baseline/candidate views and the spatial support of absolute RGB differences. The difference visualization was contrast-normalized for localization; all reported counts use original decoded PNGs.",
+    "observations": [
+      "The visible lake-shore difference concentrates along shallow water near the bank.",
+      "The close lunar frames retain a recognizable disc and surface features. The differences are subtle at presentation size.",
+      "The windsock throat difference follows the fabric shading. The aircraft paint difference traces narrow lines on wing and fuselage surfaces."
+    ],
+    "scope": "These are controlled static views. Flight motion, temporal aliasing, human preference and native-GPU performance require other evidence.",
+    "close_moon_limb": {
+      "finding": "The candidate drops an intermediate shade on part of the diagonal lunar limb. Other limb pixels move in the opposite direction. Static visual acceptance of the lunar change is conditional.",
+      "reference_center_xy": [
+        959.5,
+        539.5
+      ],
+      "pixel_xy": [
+        1166,
+        390
+      ],
+      "baseline_rgb8": [
+        181,
+        182,
+        187
+      ],
+      "candidate_rgb8": [
+        37,
+        58,
+        88
+      ],
+      "changed_pixel_counts_by_minimum_max_absolute_channel_delta": {
+        "1": 87653,
+        "2": 2562,
+        "4": 287,
+        "8": 141,
+        "16": 80,
+        "32": 47,
+        "64": 34,
+        "128": 3
+      },
+      "radius_range_px_at_least_8": [
+        249.1916932804944,
+        255.5239714782157
+      ],
+      "source_qualification": "The analytic edge expression is unchanged. The candidate plane footprint can be smaller than the previous radial fwidth along diagonal directions; the associated normal and albedo mip choices may alter limb lighting. Attribution of the individual edge pixels requires a matched alternate-shader capture. No temporal claim follows from these stills."
+    }
+  }
+}

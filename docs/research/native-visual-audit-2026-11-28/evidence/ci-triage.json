@@ -1,0 +1,117 @@
+{
+  "format": "openrc-native-visual-ci-attribution-v1",
+  "scope": "PR #25 merged CI and a separate Windows fixture retry. The exact-candidate native visual audit has its own workflow and image evidence.",
+  "revisions": {
+    "baseline": "71306784a250d634854f0c8bab3a927cc46a61b8",
+    "candidate": "f066ef26c28947fbfa2f7893ececbc1f8657e5b3",
+    "main_at_merge": "8d4169f8febfd7d78a028eaa817414217a54f24b",
+    "tested_merge": "0c48ec1719f02a1db55f19204dfa2ae5f4fed846"
+  },
+  "native_visual_workflow": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160123980",
+  "publication_identity": {
+    "method": "Read the committed fixture and each of its 19 app-relative source blobs with git show at the baseline, candidate and main-at-merge revisions. For script-lf inputs, decode valid UTF-8 and normalize CRLF to LF before SHA-256. For exact inputs, hash the original bytes. All 19 source bytes and the fixture are identical across the three revisions. Both overlay hashes equal their declared source pins. The shared gate checks all sources before it selects the requested family.",
+    "bridge_source": "https://github.com/bultodepapas/OpenRCsimulator/blob/71306784a250d634854f0c8bab3a927cc46a61b8/app/tests/publication_fixture_bridge.gd#L29-L75",
+    "manifest_path": "app/tests/fixtures/publication_fixture_bridge.json",
+    "manifest_lf_sha256": "4a3f0c36fa759968d990a97a591eaea7b2d1bb6c69fadd859dece76c688e4cb3",
+    "source_count": 19,
+    "matched": 15,
+    "mismatches": [
+      {
+        "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+        "mode": "exact",
+        "declared_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "observed_sha256_each_revision": "46ece9af4381baaef9dfbdc5a1adc2427f4aaf60d250db99ed386e570bd9b4f2"
+      },
+      {
+        "path": "app/data/aircraft/p51d_mustang_120.json",
+        "mode": "exact",
+        "declared_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "observed_sha256_each_revision": "59d43fa446b8639cc30f8290ba6617e9ddfd5d3f2f90bae2be3e3b6f097bfe25"
+      },
+      {
+        "path": "app/sim/flight_session.gd",
+        "mode": "script-lf",
+        "declared_sha256": "7046a99ff2258458933ef7e3c2a25b0b5c65557cf903cfd87acb64afb3e5bc35",
+        "observed_sha256_each_revision": "8df9adccef7c46c2b2afb9c73070d84e019354bfc413e261f690b548dba6cedb"
+      },
+      {
+        "path": "app/sim/simulation.gd",
+        "mode": "script-lf",
+        "declared_sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+        "observed_sha256_each_revision": "4a3ca39ee4c8ddca57b287641b4dd237e0938ed3a300173fb7ca6351063f4727"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "check": "Godot visual captures",
+      "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/job/141027319416",
+      "result": "failed",
+      "attribution": "Source on main introduced runtime global enumeration in commit 9900d065c2417b757d05b81a200d0fa48de72155. The helper is absent from both audit baseline and candidate. On 4.8.beta2.cafc17a19, GLES3 Compatibility with Mesa llvmpipe, the guard calls the editor-only global_shader_parameter_get_list, then tries to register an already-registered project shader global. Both errors originate in ensure_ground_global, called from ground_material while building the atmosphere fixture. The log records a saved image and the diagnostics index explicitly marks qualification false.",
+      "source": "https://github.com/bultodepapas/OpenRCsimulator/blob/8d4169f8febfd7d78a028eaa817414217a54f24b/app/render/field_detail_preferences.gd#L16-L21",
+      "introduced": "https://github.com/bultodepapas/OpenRCsimulator/commit/9900d065c2417b757d05b81a200d0fa48de72155",
+      "archive": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/artifacts/15270181713",
+      "archive_sha256": "3d0b570c69bb99c2fa33a8d505a093b75a01eaa374dc8de6811a8ad9ba949935",
+      "capture_log_sha256": "526bc8722a4dabde0d22aa912d2105f9416fd948864e5470d12fc5c0c0e8974c"
+    },
+    {
+      "check": "Shaft publication",
+      "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/job/141027319532",
+      "result": "154 checks, 1 failed",
+      "attribution": "Baseline source-pin mismatch in publication_identity prevents loading the source-bound shaft fixture. The logged error occurs before shaft parity.",
+      "observation": "source-bound shaft fixture loads / fixture manifest or source identity differs",
+      "diagnostics": {
+        "archive": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/artifacts/15269968353",
+        "archive_sha256": "3b3232996c97c552ca1b7a15b3f4e3bc46d4be80daec275f7a1225328d41af0d",
+        "report_sha256": "81b139ff0d2f1023ef6c87b7726ab51cf714da80c6a945ce6fc0c92dbfdbcab1",
+        "capture_log_sha256": "36ee48d529546fcc96fe92269cf54e122d756f3c9206c2bfe59c0b67445d954e",
+        "verification": "Downloaded archive and recomputed archive, report, and embedded log hashes."
+      }
+    },
+    {
+      "check": "Weather publication",
+      "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/job/141027319473",
+      "result": "193 checks, 1 failed",
+      "attribution": "The weather test calls the same source-identity gate before selecting its own replay. The four baseline pin mismatches reproduce its failure.",
+      "source": "https://github.com/bultodepapas/OpenRCsimulator/blob/71306784a250d634854f0c8bab3a927cc46a61b8/app/tests/test_weather_publication.gd#L61-L63",
+      "observation": "source-bound weather fixture loads / fixture manifest or source identity differs",
+      "diagnostics": {
+        "archive": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/artifacts/15270328083",
+        "archive_sha256": "9a1861030b4e3d80e12db63427bea619ae0b3b2c49ea8dfbfcfb4edc00938dd3",
+        "report_sha256": "f27d7a378b37bd311e71f6c198f959bc048838f3f423c46503ced95ce7efced3",
+        "capture_log_sha256": "6c914494f7119941bfb1a13b1b93f55f79c2a2090bbbb18c4d37d17119bbbea5",
+        "verification": "Downloaded archive and recomputed archive, report, and embedded log hashes."
+      }
+    },
+    {
+      "check": "Session reach bounds",
+      "job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/job/141027319541",
+      "result": "timeout; incomplete",
+      "baseline_job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46153937220/job/141007347300",
+      "baseline_result": "40 checks passed. Job-log timestamps span 45.78 seconds.",
+      "current_elapsed_s": 60.075264,
+      "configured_deadline_s": 60,
+      "process_exit": -9,
+      "wrapper_exit": 124,
+      "attribution": "The merged run completed the third aircraft landing with zero reported mismatches and stopped before its final overflight and test summary. The test and app/sim sources match both parents and the baseline. This observation establishes the wall-time termination only. Host contention or a slowdown remains unproven. A comparison at the existing deadline is needed.",
+      "diagnostics": {
+        "archive": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163842/artifacts/15270785052",
+        "archive_sha256": "e77ae05eaf07147fbd55e9f39998dbface1840851960d9c77902cbb71078de60",
+        "report_sha256": "6bf1b259ef4a30bac2c17f61c34444a4ce1fdb755c4aaaf801ba4a60c3a23a58",
+        "capture_log_sha256": "587af24bfe466732f7846a9671502013b089bf13357ecc56154b3213bcf9e8c3",
+        "verification": "Downloaded archive and recomputed archive, report, and embedded log hashes."
+      }
+    },
+    {
+      "check": "Windows remote-storage GC deadline",
+      "first_job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163817/job/141025509910",
+      "retry_job": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/46160163817/job/141030776817",
+      "original_result": "516 tests, 1 failure, 32 skipped",
+      "retry_result": "Passed on the same merge SHA. The 516-test suite completed in 187.585 seconds with 32 skipped.",
+      "attribution": "The test mocks GC and samples a live monotonic clock. It subtracts the current timestamp from a rounded absolute deadline and compares against a strict upper bound of 120.0. Using monotonic 136.004 for both calls reproduces 120.00000000000003; 136.0 yields exactly 120.0. This reproduces the reported value. The original Windows timestamps were not retained.",
+      "source": "https://github.com/bultodepapas/OpenRCsimulator/blob/71306784a250d634854f0c8bab3a927cc46a61b8/tools/testqueue/test_pool_reconcile.py#L265-L277",
+      "implementation": "https://github.com/bultodepapas/OpenRCsimulator/blob/71306784a250d634854f0c8bab3a927cc46a61b8/tools/testqueue/pool.py#L1205-L1211",
+      "tools_testqueue_git_tree_each_parent_and_baseline": "a6a2df33702a40243a6005b29d35ea95422306b2"
+    }
+  ]
+}

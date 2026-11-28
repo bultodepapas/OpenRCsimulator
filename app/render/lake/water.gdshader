@@ -148,6 +148,15 @@ float view_depth_at(vec2 screen_uv, mat4 inverse_projection) {
 }
 
 
+// Beer attenuation uses the length travelled through the water, not its
+// projection onto the camera's Z axis. Orthographic rays are parallel to Z;
+// VIEW still points toward the camera position, so it must not scale them.
+float water_optical_path_m(float axial_depth_m, float view_cosine, float projection_ww) {
+	float ray_cosine = projection_ww == 0.0 ? max(view_cosine, 1e-4) : 1.0;
+	return clamp(axial_depth_m / ray_cosine, 0.0, 12.0);
+}
+
+
 vec2 shore_distance_gradient_ne(vec2 north_east, float distance_m) {
 	// Recover the distance-field gradient from screen derivatives. UV2.x is a
 	// linearly interpolated nearest-shore distance on the water mesh.
@@ -179,8 +188,10 @@ void fragment() {
 	float surface_depth_view = -VERTEX.z;
 	float scene_depth_view = view_depth_at(SCREEN_UV, INV_PROJECTION_MATRIX);
 	float water_depth_m = clamp(scene_depth_view - surface_depth_view, 0.0, 12.0);
+	float optical_path_m = water_optical_path_m(scene_depth_view - surface_depth_view,
+		VIEW.z, PROJECTION_MATRIX[3][3]);
 	float depth_fraction = clamp(water_depth_m / deep_reference_depth_m, 0.0, 1.0);
-	float absorption = 1.0 - exp(-water_depth_m * absorption_per_m);
+	float absorption = 1.0 - exp(-optical_path_m * absorption_per_m);
 	vec3 depth_tint = mix(shallow_color.rgb, deep_color.rgb, depth_fraction);
 
 	vec2 refracted_uv = SCREEN_UV + wave_normal_view.xy * refraction_strength

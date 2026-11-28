@@ -1,0 +1,202 @@
+{
+  "format": "openrc-headless-raw-v1",
+  "archive": "headless-raw.tar.gz",
+  "archive_sha256": "17e67a7c996cda44e9bd89bed3c5f0fb960ad5435420a371967715b9097300f9",
+  "archive_bytes": 26359,
+  "integration_receipt_sha256": "5441094ce0d232fec5cb3ffd1b77c04b9e454642b7798e02874ad8a2f9bbc98a",
+  "attempt_count": 19,
+  "file_count": 38,
+  "scope": "Exact checked-runner reports and unmodified engine logs referenced by integration.json, including unsuccessful attempts. Headless evidence, not rendered performance.",
+  "files": [
+    {
+      "path": "baseline-test_lake_world/godot-7umh43qv/engine.log",
+      "bytes": 4171,
+      "sha256": "a161bbbe543a5a782d227a4196a9e435fd913a917486e3b0a4adf53838d8a7c2"
+    },
+    {
+      "path": "baseline-test_lake_world/godot-7umh43qv/report.json",
+      "bytes": 1160,
+      "sha256": "7c1a8a75dc215cf3b588214c559b5c6f7b5ae7b8d9e353595c045068721e1055"
+    },
+    {
+      "path": "baseline-test_lens_effects/godot-s_4nvauq/engine.log",
+      "bytes": 4164,
+      "sha256": "d40c17c856ac5c2e6a388be2b8ea36331b107aadd261630b3f1ba042dbad747e"
+    },
+    {
+      "path": "baseline-test_lens_effects/godot-s_4nvauq/report.json",
+      "bytes": 1165,
+      "sha256": "bd909504b23a993a1928debb75b9ba9756614fda981f5fc6105fc1181d86e49d"
+    },
+    {
+      "path": "baseline-test_world_moon_assets/godot-txn7amvh/engine.log",
+      "bytes": 222,
+      "sha256": "b5cf0c87a4b02c37074f6d86b029cecde2730652971726ea49ff1ee5bef068b2"
+    },
+    {
+      "path": "baseline-test_world_moon_assets/godot-txn7amvh/report.json",
+      "bytes": 1179,
+      "sha256": "8982d56d3b1931eeccba639fcd0f9955cd422462c3a796d7ff07145d9d2d8a33"
+    },
+    {
+      "path": "baseline-test_world_moon_sky/godot-kxyy0og3/engine.log",
+      "bytes": 171,
+      "sha256": "482e39595f6629cc55e44eb9defddf368103be2d923170a22e2fb5f84076aca2"
+    },
+    {
+      "path": "baseline-test_world_moon_sky/godot-kxyy0og3/report.json",
+      "bytes": 1170,
+      "sha256": "bd2464696747b4f41e9c40d2d58b322e1c56a7184cfb0078ab555137f8e12d63"
+    },
+    {
+      "path": "candidate-check_building_roofs/check_building_roofs-6p66opmw/engine.log",
+      "bytes": 158,
+      "sha256": "e7fe0905e350aff1d6fd472f961c0149a0713bde4ac9bee7c57973a286a9585a"
+    },
+    {
+      "path": "candidate-check_building_roofs/check_building_roofs-6p66opmw/report.json",
+      "bytes": 1302,
+      "sha256": "ea6701050583da728d70667f8ef640eaa6ea52147b5a77dded45e857584c699e"
+    },
+    {
+      "path": "candidate-test_lake_world/test_lake_world-ykpxvay1/engine.log",
+      "bytes": 4171,
+      "sha256": "a161bbbe543a5a782d227a4196a9e435fd913a917486e3b0a4adf53838d8a7c2"
+    },
+    {
+      "path": "candidate-test_lake_world/test_lake_world-ykpxvay1/report.json",
+      "bytes": 1210,
+      "sha256": "3aa600d259aa95b1c2ceb78159387d78abc5c8cdd41fa1adbd3246517cb59a39"
+    },
+    {
+      "path": "candidate-test_lens_effects/test_lens_effects-ikgt1qyp/engine.log",
+      "bytes": 4164,
+      "sha256": "d40c17c856ac5c2e6a388be2b8ea36331b107aadd261630b3f1ba042dbad747e"
+    },
+    {
+      "path": "candidate-test_lens_effects/test_lens_effects-ikgt1qyp/report.json",
+      "bytes": 1220,
+      "sha256": "1e0f135bfc3d968e485e6a66fb4ccfbc060b6fc4535ecc429bcb474706e31485"
+    },
+    {
+      "path": "candidate-test_storm_bank/test_storm_bank-goqd5nho/engine.log",
+      "bytes": 102,
+      "sha256": "470443a5983c5950f246520ca792ae853302413d3909aac298dc711dc58bd5b6"
+    },
+    {
+      "path": "candidate-test_storm_bank/test_storm_bank-goqd5nho/report.json",
+      "bytes": 1208,
+      "sha256": "bd039ea951091a465f5c973357399c588b3f9d91bbab566dc260c55b2ea51e76"
+    },
+    {
+      "path": "candidate-test_vehicle_paint-hydrated/test_vehicle_paint-pzsqj5ug/engine.log",
+      "bytes": 107,
+      "sha256": "22d22d668eb6c3368452788123048896f0d5f30065531dcdeec39f980feea910"
+    },
+    {
+      "path": "candidate-test_vehicle_paint-hydrated/test_vehicle_paint-pzsqj5ug/report.json",
+      "bytes": 1243,
+      "sha256": "c88ea7e76aa9dc88f1ea61a7465257af9c2f0b721a1087baab7a29a534b9b444"
+    },
+    {
+      "path": "candidate-test_vehicle_paint/test_vehicle_paint-jbhlqy78/engine.log",
+      "bytes": 30082,
+      "sha256": "6e0a19fa589190c06d014da00359c8895861ac0472224b958a80ef15077fc786"
+    },
+    {
+      "path": "candidate-test_vehicle_paint/test_vehicle_paint-jbhlqy78/report.json",
+      "bytes": 14684,
+      "sha256": "2c5ea3009d18213d0cbd8db2b9fd12270fea59e14ab5bd8e4d11ae4f07e2e60b"
+    },
+    {
+      "path": "candidate-test_windsock/test_windsock-7dfy00r3/engine.log",
+      "bytes": 90,
+      "sha256": "d1492f282b093f121fea2eba7771da2d52cb6c8fb005af5b918f9d5a98991dbb"
+    },
+    {
+      "path": "candidate-test_windsock/test_windsock-7dfy00r3/report.json",
+      "bytes": 1195,
+      "sha256": "3e9ce8e3ea7aa3cf626b9e058bf4ec351e789b54fb3c46d9856320607863e1f1"
+    },
+    {
+      "path": "candidate-test_windsock_motion-hydrated/test_windsock_motion-yxhc529u/engine.log",
+      "bytes": 2919,
+      "sha256": "81dfd0de6b4b97156d67a99a497e76e1e614675d95696db670d7d866a035a8fb"
+    },
+    {
+      "path": "candidate-test_windsock_motion-hydrated/test_windsock_motion-yxhc529u/report.json",
+      "bytes": 1792,
+      "sha256": "690b1d7e8fa1ddbfb2fdd8af683b462a71ce263a902f2baf30ec21c449055ea4"
+    },
+    {
+      "path": "candidate-test_windsock_motion/test_windsock_motion-huwmc8os/engine.log",
+      "bytes": 2512,
+      "sha256": "b0a0e8c78203ab65357bd8d27c76fb48dfcf4d1d6000de1cd9c9e22bad15097b"
+    },
+    {
+      "path": "candidate-test_windsock_motion/test_windsock_motion-huwmc8os/report.json",
+      "bytes": 1831,
+      "sha256": "54333cef6074f7b4abeb3e609dde7cbe3269fdd5f665fad6d9e0d683434c736e"
+    },
+    {
+      "path": "candidate-test_world_moon_assets/test_world_moon_assets-b8pz49_3/engine.log",
+      "bytes": 222,
+      "sha256": "b5cf0c87a4b02c37074f6d86b029cecde2730652971726ea49ff1ee5bef068b2"
+    },
+    {
+      "path": "candidate-test_world_moon_assets/test_world_moon_assets-b8pz49_3/report.json",
+      "bytes": 1250,
+      "sha256": "345eb46093a51dc3ff96f3c97d1f74168666081c5dc6a520c92ae42983666011"
+    },
+    {
+      "path": "candidate-test_world_moon_sky/test_world_moon_sky-ya_jzvvz/engine.log",
+      "bytes": 171,
+      "sha256": "482e39595f6629cc55e44eb9defddf368103be2d923170a22e2fb5f84076aca2"
+    },
+    {
+      "path": "candidate-test_world_moon_sky/test_world_moon_sky-ya_jzvvz/report.json",
+      "bytes": 1232,
+      "sha256": "a19cfb84580f3414cfadf69addca4a91cce5faf6f68ae4da506d17bbf3abc73a"
+    },
+    {
+      "path": "control-harness-parse-independent-absolute/control_harness_parse-52lkrik4/engine.log",
+      "bytes": 70,
+      "sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "path": "control-harness-parse-independent-absolute/control_harness_parse-52lkrik4/report.json",
+      "bytes": 1326,
+      "sha256": "2f3972b73ef984651078471813645905520cdbefbac6c475ed3d3855d6fbfc69"
+    },
+    {
+      "path": "control-harness-parse-independent/control_harness_parse-dkylxgru/engine.log",
+      "bytes": 498,
+      "sha256": "933c781705c6f10981a7bbaba5b2d1217977b065c6b48040a4200a7b74e9605d"
+    },
+    {
+      "path": "control-harness-parse-independent/control_harness_parse-dkylxgru/report.json",
+      "bytes": 2087,
+      "sha256": "c0aef9b63e7841dec63a7f02fdbce0033fbacff5af66868cdf06879a325cfb3f"
+    },
+    {
+      "path": "import-baseline/godot-mnvpmqjc/engine.log",
+      "bytes": 291415,
+      "sha256": "d9e0fff081972464dd6f324bcf65760aac55bc7ae4e7ae2d87650e45ac618248"
+    },
+    {
+      "path": "import-baseline/godot-mnvpmqjc/report.json",
+      "bytes": 3606,
+      "sha256": "cd0c99f5267368fd8be9a6d4f87ac23b7dbda21d59f810f4fd5f5913a1e1e4e7"
+    },
+    {
+      "path": "paint-harness-parse/godot-ous311vo/engine.log",
+      "bytes": 70,
+      "sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "path": "paint-harness-parse/godot-ous311vo/report.json",
+      "bytes": 1223,
+      "sha256": "e8dd6e5c8b80bb8555f09a9d65f207ec01586e682b1d6f243323967f80390713"
+    }
+  ]
+}

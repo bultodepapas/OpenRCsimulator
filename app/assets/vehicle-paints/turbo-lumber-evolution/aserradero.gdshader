@@ -39,8 +39,18 @@ vec3 grain(vec2 p, int species) {
 	return texture(wood_atlas, (cell + (vec2(8.5) + 495.0 * uv) / 512.0) * 0.5).rgb;
 }
 
-float billet_joint(float across, float width) {
-	return inside(abs(fract(across / width + 0.5) - 0.5) * width - 0.00055);
+float billet_integral(float coordinate, float width) {
+	const float joint_width = 0.0011;
+	return floor(coordinate / width) * joint_width + clamp(mod(coordinate, width), 0.0, joint_width);
+}
+
+float billet_joint(float across, float width, float footprint) {
+	// Integrate the 1.1 mm seam across the unfolded pixel footprint. Whole boards
+	// converge to their true seam coverage instead of flashing between 0 and 1.
+	float span = max(footprint, 0.000001);
+	float centre = across + 0.00055;
+	return clamp((billet_integral(centre + span * 0.5, width)
+		- billet_integral(centre - span * 0.5, width)) / span, 0.0, 1.0);
 }
 
 vec3 end_grain(vec2 p, vec2 center, int species) {
@@ -58,6 +68,8 @@ vec3 dowel(vec3 c, vec2 p, float radius) {
 }
 
 vec3 wing(vec3 p, vec3 n) {
+	// Evaluate before the top/bottom branch; derivatives require uniform flow.
+	float joint_footprint = fwidth(p.z);
 	float span = abs(p.x);
 	float sweep = span + 0.42 * (p.z - 0.075);
 	vec2 uv = vec2(span * 1.23, p.z * 3.25 + p.y * 1.7);
@@ -67,13 +79,13 @@ vec3 wing(vec3 p, vec3 n) {
 		float beams = max(band(sweep, 0.18, 0.29), band(sweep, 0.405, 0.53));
 		vec3 c = mix(light, dark, beams);
 		c = mix(c, grain(uv, CHERRY), inside(0.592 - sweep));
-		return c * (1.0 - 0.20 * billet_joint(p.z + 0.003, 0.039));
+		return c * (1.0 - 0.20 * billet_joint(p.z + 0.003, 0.039, joint_footprint));
 	}
 	vec3 c = mix(light, grain(uv, CHERRY), inside(0.482 - sweep));
 	c = mix(c, dark, max(band(sweep, 0.471, 0.502), inside(p.z - 0.021)));
 	c = mix(c, light, max(band(sweep, 0.507, 0.515), band(sweep, 0.528, 0.532)));
 	c = mix(c, grain(uv + vec2(0.21, 0.0), MAHOGANY), inside(0.702 - sweep));
-	c *= 1.0 - 0.28 * billet_joint(p.z - 0.019, 0.043);
+	c *= 1.0 - 0.28 * billet_joint(p.z - 0.019, 0.043, joint_footprint);
 	if (n.y > 0.35 && span > 0.110 && span < 0.700) {
 		float along = (fract((span - 0.018) / 0.108) - 0.5) * 0.108;
 		c = dowel(c, vec2(along, p.z - 0.120), 0.0040);
@@ -84,6 +96,7 @@ vec3 wing(vec3 p, vec3 n) {
 vec3 fuselage(vec3 p, vec3 n) {
 	float side = abs(p.x);
 	float plank = p.y + 0.029 * clamp((p.z - 0.02) / 0.56, 0.0, 1.0);
+	float joint_footprint = fwidth(plank);
 	vec2 uv = vec2(p.z * 1.24, (p.y + side * 0.85) * 4.2 + 0.52);
 	vec3 walnut = grain(uv, WALNUT) * 1.18;
 	vec3 maple = grain(uv + vec2(0.28, 0.0), MAPLE);
@@ -98,7 +111,7 @@ vec3 fuselage(vec3 p, vec3 n) {
 		cowl = mix(cowl, end_grain(p.xy, vec2(-0.016, 0.005), MAPLE), end_face);
 		c = mix(c, cowl, inside(scarf + 0.158));
 	}
-	c *= 1.0 - 0.26 * billet_joint(plank + 0.021, 0.034);
+	c *= 1.0 - 0.26 * billet_joint(plank + 0.021, 0.034, joint_footprint);
 	if (abs(n.x) > 0.50 && p.z > 0.222 && p.z < 0.546) {
 		float u = (p.z - 0.231) / 0.307;
 		if (n.x > 0.0) {
@@ -114,6 +127,8 @@ vec3 fuselage(vec3 p, vec3 n) {
 }
 
 vec3 tail(vec3 p, bool upright) {
+	float joint_across = upright ? p.z : p.z + p.x * 0.002;
+	float joint_footprint = fwidth(joint_across);
 	vec2 uv = upright ? vec2(p.y * 4.1, p.z * 4.5) : vec2(abs(p.x) * 2.8, p.z * 5.0);
 	float cut = upright ? p.y + 0.42 * (p.z - 0.65) : abs(p.x) + 0.34 * (p.z - 0.69);
 	float beyond = upright ? 0.095 : 0.170;
@@ -121,7 +136,7 @@ vec3 tail(vec3 p, bool upright) {
 	vec3 c = mix(maple, grain(uv, MAHOGANY), inside(beyond - cut));
 	c = mix(c, grain(uv, WALNUT), band(cut, beyond - 0.014, beyond + 0.019));
 	c = mix(c, maple, band(cut, beyond + 0.025, beyond + 0.029));
-	return c * (1.0 - 0.26 * billet_joint(upright ? p.z : p.z + p.x * 0.002, 0.037));
+	return c * (1.0 - 0.26 * billet_joint(joint_across, 0.037, joint_footprint));
 }
 
 void fragment() {
