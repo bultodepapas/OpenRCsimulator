@@ -45,6 +45,7 @@
 #include "nk_weather_guard.hpp"
 #include "nk_point_sampler.hpp"
 #include "nk_configuration_guard.hpp"
+#include "nk_soundscape.hpp"
 #include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include "nk_contact_reach.hpp"
@@ -1256,6 +1257,18 @@ protected:
 			&OpenRCNativeKernel::stage_wheel_rows);
 		godot::ClassDB::bind_method(D_METHOD("wheel_rows_answers"), &OpenRCNativeKernel::wheel_rows_answers);
 		godot::ClassDB::bind_method(D_METHOD("state_valid", "s"), &OpenRCNativeKernel::state_valid);
+		godot::ClassDB::bind_method(D_METHOD("sound_doppler", "source", "listener", "source_velocity", "listener_velocity",
+			"sound_speed"), &OpenRCNativeKernel::sound_doppler);
+		godot::ClassDB::bind_method(D_METHOD("sound_targets", "values", "exhaust", "listener", "source"),
+			&OpenRCNativeKernel::sound_targets);
+		godot::ClassDB::bind_method(D_METHOD("sound_humidity", "relative_humidity_pct", "temperature_k", "pressure_pa"),
+			&OpenRCNativeKernel::sound_humidity);
+		godot::ClassDB::bind_method(D_METHOD("sound_absorption_cutoff", "path_m", "temperature_k", "pressure_pa", "humidity_pct"),
+			&OpenRCNativeKernel::sound_absorption_cutoff);
+		godot::ClassDB::bind_method(D_METHOD("sound_screening", "source", "listener", "boxes"), &OpenRCNativeKernel::sound_screening);
+		godot::ClassDB::bind_method(D_METHOD("sound_activity", "sun_elevation", "wind_speed", "temperature_c"),
+			&OpenRCNativeKernel::sound_activity);
+		godot::ClassDB::bind_method(D_METHOD("sound_distance_gain", "distance_m"), &OpenRCNativeKernel::sound_distance_gain);
 		godot::ClassDB::bind_method(D_METHOD("glow_vibration", "geometry", "crank_phase", "omega", "alpha", "firing"),
 			&OpenRCNativeKernel::glow_vibration);
 		godot::ClassDB::bind_method(D_METHOD("retarded_emission", "times", "positions", "listener", "now", "sound_speed",
@@ -2032,6 +2045,52 @@ public:
 		return out;
 	}
 
+	// NK-7a: the soundscape model's pure functions (nk_soundscape.hpp), for flight audio and their parity tests.
+	double sound_doppler(const godot::Vector3 &source, const godot::Vector3 &listener, const godot::Vector3 &source_velocity,
+			const godot::Vector3 &listener_velocity, double sound_speed) const {
+		return nk::sound::doppler(source, listener, source_velocity, listener_velocity, sound_speed).v;
+	}
+
+	// values: [rpm, max_rpm, load, throttle, airspeed, wind_speed, running (1/0), blades, sun_elevation, kind
+	// (TargetKind), jet_velocity, jet_velocity_max] -> [motor_gain, prop_gain, motor_pitch, prop_pitch, air_gain, wind_low,
+	// wind_high, foliage, bird_activity, exhaust_angle_deg]; empty for a malformed request.
+	PackedFloat64Array sound_targets(const PackedFloat64Array &values, const godot::Vector3 &exhaust,
+			const godot::Vector3 &listener, const godot::Vector3 &source) const {
+		PackedFloat64Array out;
+		if (values.size() != 12) return out;
+		const double *v = values.ptr();
+		const nk::sound::Targets t = nk::sound::targets(v[0], v[1], v[2], v[3], v[4], v[5], v[6] != 0.0, v[7], v[8],
+			static_cast<int>(v[9]), v[10], v[11], exhaust, listener, source);
+		out.resize(10);
+		out[0] = t.motor_gain.v; out[1] = t.prop_gain.v; out[2] = t.motor_pitch.v; out[3] = t.prop_pitch.v;
+		out[4] = t.air_gain.v; out[5] = t.wind_low.v; out[6] = t.wind_high.v; out[7] = t.foliage.v;
+		out[8] = t.bird_activity.v; out[9] = t.exhaust_angle_deg.v;
+		return out;
+	}
+
+	double sound_humidity(double relative_humidity_pct, double temperature_k, double pressure_pa) const {
+		return nk::sound::humidity_molar_pct(relative_humidity_pct, temperature_k, pressure_pa).v;
+	}
+
+	double sound_absorption_cutoff(double path_m, double temperature_k, double pressure_pa, double humidity_pct) const {
+		return nk::sound::absorption_cutoff_hz(path_m, temperature_k, pressure_pa, humidity_pct).v;
+	}
+
+	double sound_screening(const godot::Vector3 &source, const godot::Vector3 &listener, const godot::PackedFloat32Array &boxes) const {
+		return nk::sound::screening(source, listener, boxes.ptr(), boxes.size() / 6).v;
+	}
+
+	PackedFloat64Array sound_activity(double sun_elevation, double wind_speed, double temperature_c) const {
+		nk::R values[5];
+		nk::sound::wildlife_activity(sun_elevation, wind_speed, temperature_c, values);
+		PackedFloat64Array out;
+		out.resize(5);
+		for (int i = 0; i < 5; ++i) out[i] = values[i].v;
+		return out;
+	}
+
+	double sound_distance_gain(double distance_m) const { return nk::sound::distance_gain(distance_m).v; }
+
 	// NK-6s: physics/glow/vibration.gd evaluate's numbers for a validated geometry [crank radius, rod, reciprocating
 	// mass, cosine 1x, cosine 2x, cycle revolutions]: [ok (1/0), phase, source force, 1x cosine, 1x sine, 2x cosine,
 	// 2x sine, 1x peak, 2x peak, opportunity Hz, mean fire rate Hz], in its operation order. 0 wherever evaluate fails
@@ -2364,6 +2423,20 @@ public:
 			{"1e-30", nk::kGd1eMinus30}, {"1.0e-30", 1.0e-30},
 			// NK-6q: scenery_collision.gd _state_is_valid.
 			{"1.0e-9", 1.0e-9},
+			// NK-7a: audio/soundscape_model.gd, wildlife.gd and powertrain_audio.gd (nk_soundscape.hpp).
+			{"300.0", 300.0}, {"380.0", 380.0}, {"0.65", 0.65}, {"293.15", 293.15}, {"273.16", 273.16},
+			{"101325.0", 101325.0}, {"16000.0", 16000.0}, {"6.8346", 6.8346}, {"1.261", 1.261}, {"4.6151", 4.6151},
+			{"100.0", 100.0}, {"180.0", 180.0}, {"330.0", 330.0}, {"120000.0", 120000.0}, {"24.0", 24.0},
+			{"4.04e4", 4.04e4}, {"0.02", 0.02}, {"0.391", 0.391}, {"9.0", 9.0}, {"280.0", 280.0}, {"4.170", 4.170},
+			{"8.686", 8.686}, {"1.84e-11", 1.84e-11}, {"2.5", 2.5}, {"0.01275", 0.01275}, {"2239.1", 2239.1},
+			{"0.1068", 0.1068}, {"3352.0", 3352.0}, {"1e-300", 1e-300}, {"1e-12", 1e-12}, {"0.16", 0.16},
+			{"0.38", 0.38}, {"0.35", 0.35}, {"0.07", 0.07}, {"0.32", 0.32}, {"0.55", 0.55}, {"0.45", 0.45},
+			{"6000.0", 6000.0}, {"0.12", 0.12}, {"3.5", 3.5}, {"0.18", 0.18}, {"55.0", 55.0}, {"0.20", 0.20},
+			{"18.0", 18.0}, {"1.1", 1.1}, {"0.10", 0.10}, {"1.7", 1.7}, {"0.008", 0.008}, {"0.23", 0.23},
+			{"14.0", 14.0}, {"45.0", 45.0}, {"1200.0", 1200.0}, {"35.0", 35.0}, {"12000.0", 12000.0}, {"1.4", 1.4},
+			{"0.4", 0.4}, {"82320.0", 82320.0}, {"1.40", 1.40}, {"0.98", 0.98}, {"2.28", 2.28}, {"1.2", 1.2},
+			{"0.46", 0.46}, {"1e-6", 1e-6}, {"4.0", 4.0}, {"60.0", 60.0}, {"120.0", 120.0}, {"10.0", 10.0},
+			{"2.0", 2.0}, {"0.6", 0.6}, {"22.0", 22.0}, {"25.0", 25.0}, {"1500.0", 1500.0}, {"0.0", 0.0},
 			// NK-6a: simulation.gd EVENT_TIME_SLACK_S and event_step.gd VALUE_TOL.
 			{"1e-9", nk::kTickEventTimeSlack}, {"1e-7", nk::kEventValueTol},
 			// NK-6c: electric_contact_step.gd FLOAT64_EPSILON.
